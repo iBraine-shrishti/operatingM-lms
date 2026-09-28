@@ -1,0 +1,67 @@
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { SharedLayout } from "./components/layout/SharedLayout";
+// Pages
+import { ManageCoursesPage } from "./pages/ManageCoursesPage";
+import { DashboardPage } from "./pages/DashboardPage";
+import { CreateCoursePage } from "./pages/CreateCoursePage";
+import { CourseDetailPage } from "./pages/CourseDetailPage";
+import { ManageUnitsPage } from "./pages/ManageUnitsPage";
+import { ManageQuizzesPage } from "./pages/ManageQuizzesPage";
+import { ManageAssignmentsPage } from "./pages/ManageAssignmentsPage";
+import { ManageStudentsPage } from "./pages/ManageStudentsPage";
+import { ManageQuestionsPage } from "./pages/ManageQuestionsPage";
+import { QuestionDiscussionsPage } from "./pages/QuestionDiscussionsPage";
+import { ManageReportsPage } from "./pages/ManageReportsPage";
+import { EnrolledCoursesPage } from "./pages/EnrolledCoursesPage";
+import { LessonPlayerPage } from "./pages/LessonPlayerPage";
+import { MyQuizzesPage } from "./pages/MyQuizzesPage";
+import { MyAssignmentsPage } from "./pages/MyAssignmentsPage";
+import { AchievementsPage } from "./pages/AchievementsPage";
+import { NotesReviewsPage } from "./pages/NotesReviewsPage";
+import { ActivityPage } from "./pages/ActivityPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { LoginPage } from "./pages/LoginPage.jsx";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import { ToastProvider } from "./context/ToastContext";
+function RootRedirect() {
+    const { isStudent } = useAuth();
+    return <Navigate to={isStudent ? "/dashboard" : "/dashboard"} replace/>;
+}
+export function App() {
+    return (<AuthProvider>
+      <ToastProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />}/>
+
+          {/* Shared App Shell Layout */}
+          <Route path="/" element={<SharedLayout />}>
+            <Route index element={<RootRedirect />}/>
+            <Route path="manage-courses" element={<ManageCoursesPage />}/>
+            <Route path="courses" element={<ManageCoursesPage />}/>
+            <Route path="courses/:id" element={<CourseDetailPage />}/>
+            <Route path="dashboard" element={<DashboardPage />}/>
+            <Route path="create-course" element={<CreateCoursePage />}/>
+            <Route path="manage-units" element={<ManageUnitsPage />}/>
+            <Route path="manage-quizzes" element={<ManageQuizzesPage />}/>
+            <Route path="manage-assignments" element={<ManageAssignmentsPage />}/>
+            <Route path="manage-students" element={<ManageStudentsPage />}/>
+            <Route path="manage-questions" element={<ManageQuestionsPage />}/>
+            <Route path="question-discussions" element={<QuestionDiscussionsPage />}/>
+            <Route path="manage-reports" element={<ManageReportsPage />}/>
+            <Route path="enrolled-courses" element={<EnrolledCoursesPage />}/>
+            <Route path="lesson-player" element={<LessonPlayerPage />}/>
+            <Route path="my-quizzes" element={<MyQuizzesPage />}/>
+            <Route path="my-assignments" element={<MyAssignmentsPage />}/>
+            <Route path="achievements" element={<AchievementsPage />}/>
+            <Route path="notes-reviews" element={<NotesReviewsPage />}/>
+            <Route path="activity" element={<ActivityPage />}/>
+            <Route path="profile" element={<ProfilePage />}/>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+      </ToastProvider>
+    </AuthProvider>);
+}
+export default App;

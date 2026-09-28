@@ -1,0 +1,1154 @@
+export const INITIAL_COURSES = [
+    {
+        id: 'course-1',
+        title: 'Social Media Marketing',
+        category: 'Social Media',
+        status: 'published',
+        thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&auto=format&fit=crop&q=80',
+        bannerGradient: 'from-blue-600 to-indigo-800',
+        studentsCount: 185,
+        completedCount: 130,
+        rating: 4.8,
+        reviewsCount: 52,
+        author: 'OPERATING MEDIA',
+        price: 0,
+        duration: '20h 30m',
+        lessonsCount: 22,
+        updatedAt: 'Today',
+        description: 'Organic & paid growth strategies across Instagram, LinkedIn, YouTube, Twitter/X, and viral community management.'
+    },
+    {
+        id: 'course-2',
+        title: 'Counseling Video, Quiz and Brochure',
+        category: 'Student Orientation & Guidance',
+        status: 'published',
+        thumbnail: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&auto=format&fit=crop&q=80',
+        bannerGradient: 'from-rose-500 to-amber-600',
+        studentsCount: 240,
+        completedCount: 220,
+        rating: 4.9,
+        reviewsCount: 68,
+        author: 'OPERATING MEDIA',
+        price: 0,
+        duration: '4h 15m',
+        lessonsCount: 8,
+        updatedAt: 'Today',
+        description: 'Admissions counseling video series, digital marketing career aptitude quiz, and downloadable curriculum brochure.'
+    },
+    {
+        id: 'course-3',
+        title: 'Advanced Topics',
+        category: 'Advanced Digital Marketing',
+        status: 'published',
+        thumbnail: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=600&auto=format&fit=crop&q=80',
+        bannerGradient: 'from-sky-500 to-blue-700',
+        studentsCount: 142,
+        completedCount: 88,
+        rating: 4.9,
+        reviewsCount: 34,
+        author: 'OPERATING MEDIA',
+        price: 0,
+        duration: '32h 10m',
+        lessonsCount: 20,
+        updatedAt: '4 days ago',
+        description: 'Master Affiliate Marketing, Influencer Marketing, WhatsApp Marketing, Mobile Marketing, ORM, Viral Marketing, Content Marketing, and Freelancing.'
+    },
+    {
+        id: 'course-4',
+        title: 'Creative Designing',
+        category: 'Design & Media',
+        status: 'published',
+        thumbnail: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop&q=80',
+        bannerGradient: 'from-purple-500 to-pink-600',
+        studentsCount: 98,
+        completedCount: 76,
+        rating: 4.5,
+        reviewsCount: 19,
+        author: 'OPERATING MEDIA',
+        price: 0,
+        duration: '16h 20m',
+        lessonsCount: 20,
+        updatedAt: '5 days ago',
+        description: 'Learn Figma, Photoshop, and Canva to create stunning ad creatives, social banners, and brand identity packages.'
+    },
+    {
+        id: 'course-5',
+        title: 'Google Analytics Course',
+        category: 'Data & Analytics',
+        status: 'published',
+        thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80',
+        bannerGradient: 'from-emerald-500 to-green-600',
+        studentsCount: 130,
+        completedCount: 90,
+        rating: 4.6,
+        reviewsCount: 28,
+        author: 'OPERATING MEDIA',
+        price: 0,
+        duration: '14h 45m',
+        lessonsCount: 18,
+        updatedAt: '3 days ago',
+        description: 'Complete GA4 setup, custom event tracking, funnel analysis, and data-driven conversion rate optimization.'
+    },
+    {
+        id: 'course-6',
+        title: 'Google Ads',
+        category: 'Paid Media',
+        status: 'published',
+        thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=80',
+        bannerGradient: 'from-amber-500 to-orange-600',
+        studentsCount: 210,
+        completedCount: 150,
+        rating: 4.7,
+        reviewsCount: 65,
+        author: 'OPERATING MEDIA',
+        price: 0,
+        duration: '26h 00m',
+        lessonsCount: 35,
+        updatedAt: 'Yesterday',
+        description: 'Run profitable Search, Display, Video, and Performance Max campaigns with high ROI bidding strategies.'
+    },
+    {
+        id: 'course-7',
+        title: 'Website Development With WordPress',
+        category: 'Web Development',
+        status: 'published',
+        thumbnail: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&auto=format&fit=crop&q=80',
+        bannerGradient: 'from-teal-600 to-cyan-700',
+        studentsCount: 166,
+        completedCount: 120,
+        rating: 4.8,
+        reviewsCount: 42,
+        author: 'OPERATING MEDIA',
+        price: 0,
+        duration: '22h 15m',
+        lessonsCount: 30,
+        updatedAt: '1 week ago',
+        description: 'Build professional, high-converting websites using WordPress, Elementor, WooCommerce, and custom themes without coding.'
+    },
+    {
+        id: 'course-8',
+        title: 'Search Engine Optimization (SEO)',
+        category: 'Digital Marketing',
+        status: 'published',
+        thumbnail: 'https://images.unsplash.com/photo-1572021335469-31706a17aaef?w=600&auto=format&fit=crop&q=80',
+        bannerGradient: 'from-blue-500 to-indigo-600',
+        studentsCount: 147,
+        completedCount: 100,
+        rating: 5.0,
+        reviewsCount: 38,
+        author: 'OPERATING MEDIA',
+        price: 0,
+        duration: '18h 30m',
+        lessonsCount: 24,
+        updatedAt: '2 days ago',
+        description: 'Master Keyword Research, On-Page Optimization, Technical SEO, Backlink Building and Rank #1 on Google.'
+    }
+];
+export const INITIAL_UNITS = [
+    // -------------------------------------------------------------
+    // COURSE-3: ADVANCED TOPICS (matches advanded topic deatils.png)
+    // -------------------------------------------------------------
+    // Affiliate Marketing
+    {
+        id: 'u-adv-1',
+        courseId: 'course-3',
+        moduleName: 'Affiliate Marketing',
+        title: 'Affiliate Marketing',
+        duration: '25:00',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Affiliate networks, commission structures, CPA models, and cookie tracking mechanics.'
+    },
+    {
+        id: 'u-adv-2',
+        courseId: 'course-3',
+        moduleName: 'Affiliate Marketing',
+        title: 'Affiliate Marketing Assignment',
+        duration: 'Due in 5 days',
+        videoUrl: '',
+        isCompleted: true, // checked ✓ in screenshot
+        isLocked: false,
+        type: 'assignment',
+        description: 'Create an affiliate product comparison bridge page and integrate compliance disclaimers.'
+    },
+    // Influencer Marketing
+    {
+        id: 'u-adv-3',
+        courseId: 'course-3',
+        moduleName: 'Influencer Marketing',
+        title: 'Influencer Marketing',
+        duration: '28:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Identifying authentic creators, engagement calculations, campaign briefs, and deliverables.'
+    },
+    {
+        id: 'u-adv-4',
+        courseId: 'course-3',
+        moduleName: 'Influencer Marketing',
+        title: 'Influencer Marketing Assignment-1',
+        duration: 'Due in 7 days',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'assignment',
+        description: 'Curate a 10-tier influencer list across beauty and tech niches with outreach templates.'
+    },
+    {
+        id: 'u-adv-5',
+        courseId: 'course-3',
+        moduleName: 'Influencer Marketing',
+        title: 'Influencer Marketing Assignment-2',
+        duration: 'Due in 10 days',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'assignment',
+        description: 'Draft an influencer barter collaboration agreement and campaign KPI scorecard.'
+    },
+    // Whatsapp Marketing
+    {
+        id: 'u-adv-6',
+        courseId: 'course-3',
+        moduleName: 'Whatsapp Marketing',
+        title: 'Whatsapp Marketing',
+        duration: '20:45',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'WhatsApp Cloud API integration, green badge verification, and compliance policies.'
+    },
+    {
+        id: 'u-adv-7',
+        courseId: 'course-3',
+        moduleName: 'Whatsapp Marketing',
+        title: 'WhatsApp Marketing-1',
+        duration: '18:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Building automated chatbots, interactive reply buttons, and catalog product feeds.'
+    },
+    {
+        id: 'u-adv-8',
+        courseId: 'course-3',
+        moduleName: 'Whatsapp Marketing',
+        title: 'WhatsApp Marketing-2',
+        duration: '22:10',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Abandoned cart broadcast sequences, automated reminders, and CRM sync.'
+    },
+    // Mobile Marketing
+    {
+        id: 'u-adv-9',
+        courseId: 'course-3',
+        moduleName: 'Mobile Marketing',
+        title: 'Mobile Marketing',
+        duration: '24:00',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'App Store Optimization (ASO), push notifications, in-app messaging, and deep-linking.'
+    },
+    {
+        id: 'u-adv-10',
+        courseId: 'course-3',
+        moduleName: 'Mobile Marketing',
+        title: 'Mobile Marketing Assignment',
+        duration: 'Due in 6 days',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'assignment',
+        description: 'Conduct Google Play & Apple App Store metadata audit and draft 5 push notification copies.'
+    },
+    // Online Reputation Management (ORM)
+    {
+        id: 'u-adv-11',
+        courseId: 'course-3',
+        moduleName: 'Online Reputation Management (ORM)',
+        title: 'Online Reputation Management (ORM)',
+        duration: '26:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Brand sentiment analysis, crisis public relations, review monitoring, and negative SERP suppression.'
+    },
+    {
+        id: 'u-adv-12',
+        courseId: 'course-3',
+        moduleName: 'Online Reputation Management (ORM)',
+        title: 'Online Reputation Management (ORM) Assignment',
+        duration: 'Due in 8 days',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'assignment',
+        description: 'Create an ORM crisis management manual and response matrix for negative customer feedback.'
+    },
+    // Viral Marketing
+    {
+        id: 'u-adv-13',
+        courseId: 'course-3',
+        moduleName: 'Viral Marketing',
+        title: 'Viral Marketing',
+        duration: '21:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Psychology of viral growth loops, meme marketing, social currency, and trigger mapping.'
+    },
+    {
+        id: 'u-adv-14',
+        courseId: 'course-3',
+        moduleName: 'Viral Marketing',
+        title: 'Viral Marketing Assignment-1',
+        duration: 'Due in 4 days',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'assignment',
+        description: 'Design a meme marketing campaign pack consisting of 5 topical memes for social channels.'
+    },
+    {
+        id: 'u-adv-15',
+        courseId: 'course-3',
+        moduleName: 'Viral Marketing',
+        title: 'Viral Marketing Assignment-2',
+        duration: 'Due in 9 days',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'assignment',
+        description: 'Engineer a referral viral loop mechanism with tier unlocking and share incentive triggers.'
+    },
+    // Content Marketing
+    {
+        id: 'u-adv-16',
+        courseId: 'course-3',
+        moduleName: 'Content Marketing',
+        title: 'Content Marketing',
+        duration: '27:40',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Content pillars, topic clusters, audience persona journey mapping, and repurposing workflows.'
+    },
+    {
+        id: 'u-adv-17',
+        courseId: 'course-3',
+        moduleName: 'Content Marketing',
+        title: 'Content Marketing Assignment-1',
+        duration: 'Due in 5 days',
+        videoUrl: '',
+        isCompleted: true, // checked ✓ in screenshot
+        isLocked: false,
+        type: 'assignment',
+        description: 'Develop a 90-day pillar content framework with lead magnet gate and distribution schedule.'
+    },
+    {
+        id: 'u-adv-18',
+        courseId: 'course-3',
+        moduleName: 'Content Marketing',
+        title: 'Content Marketing Assignment-2',
+        duration: 'Due in 8 days',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'assignment',
+        description: 'Write a 2,000-word authoritative case study with data charts and actionable takeaways.'
+    },
+    // Digital Marketing Freelancing
+    {
+        id: 'u-adv-19',
+        courseId: 'course-3',
+        moduleName: 'Digital Marketing Freelancing',
+        title: 'Digital Marketing Freelancing',
+        duration: '31:20',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Freelance platform optimization, pricing hourly vs retainer, proposals, and client onboarding.'
+    },
+    {
+        id: 'u-adv-20',
+        courseId: 'course-3',
+        moduleName: 'Digital Marketing Freelancing',
+        title: 'Freelance Digital Marketing Assignment',
+        duration: 'Due in 7 days',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'assignment',
+        description: 'Build your client proposal deck, scope-of-work agreement, and pricing tier packages.'
+    },
+    // -------------------------------------------------------------
+    // COURSE-1: SOCIAL MEDIA MARKETING
+    // -------------------------------------------------------------
+    {
+        id: 'u-smm-1',
+        courseId: 'course-1',
+        moduleName: 'Instagram & Viral Short-Form Video',
+        title: 'Instagram Reels Algorithm Mastery & Hook Formulations',
+        duration: '18:40',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Analyzing retention graphs, 3-second audio hooks, and visual pattern interrupts.'
+    },
+    {
+        id: 'u-smm-2',
+        courseId: 'course-1',
+        moduleName: 'Instagram & Viral Short-Form Video',
+        title: '30-Day Social Media Content Calendar',
+        duration: 'Due in 4 days',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'assignment',
+        description: 'Build an omnichannel editorial calendar with caption copywriting and visual references.'
+    },
+    {
+        id: 'u-smm-3',
+        courseId: 'course-1',
+        moduleName: 'LinkedIn B2B Growth & Lead Gen',
+        title: 'LinkedIn Personal Branding & Outbound InMail Sequences',
+        duration: '22:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Executive profile transformation and high-converting B2B conversation starters.'
+    },
+    // -------------------------------------------------------------
+    // COURSE-2: COUNSELING VIDEO, QUIZ AND BROCHURE
+    // -------------------------------------------------------------
+    {
+        id: 'u-coun-1',
+        courseId: 'course-2',
+        moduleName: 'Admissions & Career Counseling',
+        title: 'Admissions Counseling Video: Career Roadmaps & Industry Scope',
+        duration: '16:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Comprehensive orientation video on digital marketing career trajectories and salaries.'
+    },
+    {
+        id: 'u-coun-2',
+        courseId: 'course-2',
+        moduleName: 'Admissions & Career Counseling',
+        title: 'Operating Media Course Curriculum & Specialization Brochure (PDF)',
+        duration: '10 Mins Read',
+        videoUrl: '',
+        isCompleted: true,
+        isLocked: false,
+        type: 'document',
+        description: 'Download and review the complete syllabus, batch schedules, and practical project lists.'
+    },
+    {
+        id: 'u-coun-3',
+        courseId: 'course-2',
+        moduleName: 'Skill Aptitude Evaluation',
+        title: 'Digital Marketing Career Aptitude Quiz',
+        duration: '15 Mins',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'quiz',
+        description: 'Evaluate your creative, analytical, and technical aptitude to recommend your ideal specialization.'
+    },
+    // -------------------------------------------------------------
+    // COURSE-4: CREATIVE DESIGNING
+    // -------------------------------------------------------------
+    {
+        id: 'u-cd-1',
+        courseId: 'course-4',
+        moduleName: 'Figma Design System & UI',
+        title: 'Figma Auto-Layout & Social Media Component Library',
+        duration: '24:50',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Creating reusable graphic templates, text styles, and color variables in Figma.'
+    },
+    {
+        id: 'u-cd-2',
+        courseId: 'course-4',
+        moduleName: 'Photoshop Ad Creatives',
+        title: 'High-Converting Performance Ad Creatives in Photoshop',
+        duration: '29:10',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Photo manipulation, typography layout, lighting effects, and CTA button styling.'
+    },
+    // -------------------------------------------------------------
+    // COURSE-5: GOOGLE ANALYTICS COURSE
+    // -------------------------------------------------------------
+    {
+        id: 'u-ga-1',
+        courseId: 'course-5',
+        moduleName: 'GA4 Setup & Configuration',
+        title: 'GA4 Property Architecture & Google Tag Manager Integration',
+        duration: '21:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Setting up data streams, custom dimensions, enhanced measurement, and GTM web containers.'
+    },
+    {
+        id: 'u-ga-2',
+        courseId: 'course-5',
+        moduleName: 'Funnels & Conversion Tracking',
+        title: 'Custom Event Tracking & Funnel Exploration Reports',
+        duration: '26:00',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Building closed checkout funnels, user journey drop-off reports, and key conversion events.'
+    },
+    // -------------------------------------------------------------
+    // COURSE-6: GOOGLE ADS
+    // -------------------------------------------------------------
+    {
+        id: 'u-gads-1',
+        courseId: 'course-6',
+        moduleName: 'Search Ads Mastery',
+        title: 'Campaign Hierarchy & High-Intent Keyword Match Types',
+        duration: '23:45',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Broad, Phrase, and Exact match keyword structuring with negative keyword lists.'
+    },
+    {
+        id: 'u-gads-2',
+        courseId: 'course-6',
+        moduleName: 'Performance Max (PMax)',
+        title: 'Performance Max Asset Groups & Audience Signals Setup',
+        duration: '27:20',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Combining search themes, first-party customer lists, and creative assets for Google AI bidding.'
+    },
+    // -------------------------------------------------------------
+    // COURSE-7: WEBSITE DEVELOPMENT WITH WORDPRESS
+    // -------------------------------------------------------------
+    {
+        id: 'u-wp-1',
+        courseId: 'course-7',
+        moduleName: 'WordPress Setup & Security',
+        title: 'Domain, Hosting, SSL & Clean WordPress Installation',
+        duration: '19:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Configuring DNS records, PHP settings, database optimization, and login security.'
+    },
+    {
+        id: 'u-wp-2',
+        courseId: 'course-7',
+        moduleName: 'Page Building with Elementor',
+        title: 'Building Responsive Landing Pages with Elementor Pro',
+        duration: '32:00',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Header templates, hero sections, mobile breakpoints, and lead capture forms.'
+    },
+    // -------------------------------------------------------------
+    // COURSE-8: SEARCH ENGINE OPTIMIZATION (SEO)
+    // -------------------------------------------------------------
+    {
+        id: 'u-seo-1',
+        courseId: 'course-8',
+        moduleName: 'SEO Foundations & Search Mechanics',
+        title: '1.1 How Search Engines Crawl & Index Websites',
+        duration: '14:20',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Learn how Googlebot operates, rendering budgets, indexing queues, and canonicalization fundamentals.'
+    },
+    {
+        id: 'u-seo-2',
+        courseId: 'course-8',
+        moduleName: 'SEO Foundations & Search Mechanics',
+        title: '1.2 Keyword Research & Search Intent Mapping',
+        duration: '22:45',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Mastering Semrush and Ahrefs to identify transactional, informational, and commercial intent keywords.'
+    },
+    {
+        id: 'u-seo-3',
+        courseId: 'course-8',
+        moduleName: 'On-Page Optimization',
+        title: '2.1 Crafting Click-Worthy Title Tags & Meta Descriptions',
+        duration: '18:10',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Formulaic approaches to CTR optimization and header hierarchy (H1, H2, H3).'
+    },
+    {
+        id: 'u-seo-4',
+        courseId: 'course-8',
+        moduleName: 'On-Page Optimization',
+        title: '2.2 Schema Markup & Structured Data Implementation',
+        duration: '25:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'JSON-LD rich snippets for products, FAQs, organization schemas, and review badges.'
+    }
+];
+export const INITIAL_QUIZZES = [
+    {
+        id: 'q-1',
+        courseId: 'course-2',
+        courseTitle: 'Counseling Video, Quiz and Brochure',
+        title: 'Digital Marketing Career Aptitude Quiz',
+        totalQuestions: 15,
+        durationMinutes: 20,
+        passScorePercentage: 75,
+        attemptsCount: 215,
+        averageScore: 86.4,
+        status: 'active'
+    },
+    {
+        id: 'q-2',
+        courseId: 'course-8',
+        courseTitle: 'Search Engine Optimization (SEO)',
+        title: 'SEO Fundamentals & Keyword Strategy Assessment',
+        totalQuestions: 20,
+        durationMinutes: 25,
+        passScorePercentage: 80,
+        attemptsCount: 142,
+        averageScore: 84.5,
+        status: 'active'
+    },
+    {
+        id: 'q-3',
+        courseId: 'course-7',
+        courseTitle: 'Website Development With WordPress',
+        title: 'WordPress Core Architecture & Elementor Layout Test',
+        totalQuestions: 18,
+        durationMinutes: 25,
+        passScorePercentage: 75,
+        attemptsCount: 158,
+        averageScore: 88.0,
+        status: 'active'
+    },
+    {
+        id: 'q-4',
+        courseId: 'course-5',
+        courseTitle: 'Google Analytics Course',
+        title: 'GA4 Event Tracking & Funnel Analysis Quiz',
+        totalQuestions: 15,
+        durationMinutes: 20,
+        passScorePercentage: 80,
+        attemptsCount: 110,
+        averageScore: 79.2,
+        status: 'active'
+    },
+    {
+        id: 'q-5',
+        courseId: 'course-6',
+        courseTitle: 'Google Ads',
+        title: 'Google Ads Search & Bidding Strategies Quiz',
+        totalQuestions: 20,
+        durationMinutes: 30,
+        passScorePercentage: 85,
+        attemptsCount: 195,
+        averageScore: 82.4,
+        status: 'active'
+    },
+    {
+        id: 'q-6',
+        courseId: 'course-1',
+        courseTitle: 'Social Media Marketing',
+        title: 'Social Media Growth Tactics & Viral Algorithms Quiz',
+        totalQuestions: 16,
+        durationMinutes: 20,
+        passScorePercentage: 80,
+        attemptsCount: 168,
+        averageScore: 85.0,
+        status: 'active'
+    },
+    {
+        id: 'q-7',
+        courseId: 'course-4',
+        courseTitle: 'Creative Designing',
+        title: 'Graphic Design Principles & Typography Assessment',
+        totalQuestions: 15,
+        durationMinutes: 20,
+        passScorePercentage: 75,
+        attemptsCount: 94,
+        averageScore: 81.5,
+        status: 'active'
+    },
+    {
+        id: 'q-8',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Advanced Digital Marketing Strategy Comprehensive Exam',
+        totalQuestions: 30,
+        durationMinutes: 45,
+        passScorePercentage: 85,
+        attemptsCount: 124,
+        averageScore: 87.2,
+        status: 'active'
+    }
+];
+export const INITIAL_ASSIGNMENTS = [
+    {
+        id: 'a-adv-1',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Affiliate Marketing Assignment',
+        dueDate: '2026-10-15',
+        totalSubmissions: 86,
+        pendingGrading: 6,
+        maxScore: 100,
+        instructions: 'Create an affiliate product comparison bridge page and integrate compliance disclaimers.'
+    },
+    {
+        id: 'a-adv-2',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Influencer Marketing Assignment-1',
+        dueDate: '2026-10-18',
+        totalSubmissions: 74,
+        pendingGrading: 9,
+        maxScore: 100,
+        instructions: 'Curate a 10-tier influencer list across beauty and tech niches with outreach templates.'
+    },
+    {
+        id: 'a-adv-3',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Influencer Marketing Assignment-2',
+        dueDate: '2026-10-22',
+        totalSubmissions: 62,
+        pendingGrading: 4,
+        maxScore: 100,
+        instructions: 'Draft an influencer barter collaboration agreement and campaign KPI scorecard.'
+    },
+    {
+        id: 'a-adv-4',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Mobile Marketing Assignment',
+        dueDate: '2026-10-25',
+        totalSubmissions: 58,
+        pendingGrading: 7,
+        maxScore: 100,
+        instructions: 'Conduct Google Play & Apple App Store metadata audit and draft 5 push notification copies.'
+    },
+    {
+        id: 'a-adv-5',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Online Reputation Management (ORM) Assignment',
+        dueDate: '2026-10-28',
+        totalSubmissions: 69,
+        pendingGrading: 5,
+        maxScore: 100,
+        instructions: 'Create an ORM crisis management manual and response matrix for negative customer feedback.'
+    },
+    {
+        id: 'a-adv-6',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Viral Marketing Assignment-1',
+        dueDate: '2026-11-02',
+        totalSubmissions: 71,
+        pendingGrading: 8,
+        maxScore: 100,
+        instructions: 'Design a meme marketing campaign pack consisting of 5 topical memes for social channels.'
+    },
+    {
+        id: 'a-adv-7',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Viral Marketing Assignment-2',
+        dueDate: '2026-11-05',
+        totalSubmissions: 55,
+        pendingGrading: 3,
+        maxScore: 100,
+        instructions: 'Engineer a referral viral loop mechanism with tier unlocking and share incentive triggers.'
+    },
+    {
+        id: 'a-adv-8',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Content Marketing Assignment-1',
+        dueDate: '2026-11-10',
+        totalSubmissions: 82,
+        pendingGrading: 4,
+        maxScore: 100,
+        instructions: 'Develop a 90-day pillar content framework with lead magnet gate and distribution schedule.'
+    },
+    {
+        id: 'a-adv-9',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Content Marketing Assignment-2',
+        dueDate: '2026-11-14',
+        totalSubmissions: 60,
+        pendingGrading: 6,
+        maxScore: 100,
+        instructions: 'Write a 2,000-word authoritative case study with data charts and actionable takeaways.'
+    },
+    {
+        id: 'a-adv-10',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Freelance Digital Marketing Assignment',
+        dueDate: '2026-11-20',
+        totalSubmissions: 78,
+        pendingGrading: 5,
+        maxScore: 100,
+        instructions: 'Build your client proposal deck, scope-of-work agreement, and pricing tier packages.'
+    },
+    {
+        id: 'a-seo-1',
+        courseId: 'course-8',
+        courseTitle: 'Search Engine Optimization (SEO)',
+        title: 'Perform Full Technical & Keyword Audit on Client Website',
+        dueDate: '2026-10-15',
+        totalSubmissions: 94,
+        pendingGrading: 12,
+        maxScore: 100,
+        instructions: 'Submit a comprehensive PDF report containing keyword gap analysis, Core Web Vitals audit, and 30-day action plan.'
+    },
+    {
+        id: 'a-wp-1',
+        courseId: 'course-7',
+        courseTitle: 'Website Development With WordPress',
+        title: 'Build a Live 5-Page Business Website on WordPress Sandbox',
+        dueDate: '2026-10-20',
+        totalSubmissions: 115,
+        pendingGrading: 8,
+        maxScore: 100,
+        instructions: 'Submit your staging URL, admin credentials, and lighthouse performance test screenshot.'
+    },
+    {
+        id: 'a-cd-1',
+        courseId: 'course-4',
+        courseTitle: 'Creative Designing',
+        title: 'Social Media Ad Campaign Design System (Figma File)',
+        dueDate: '2026-10-05',
+        totalSubmissions: 68,
+        pendingGrading: 5,
+        maxScore: 100,
+        instructions: 'Provide public Figma link with component library, color styles, typography tokens, and 6 ad variations.'
+    },
+    {
+        id: 'a-smm-1',
+        courseId: 'course-1',
+        courseTitle: 'Social Media Marketing',
+        title: '30-Day Social Media Content Calendar & Viral Strategy',
+        dueDate: '2026-10-12',
+        totalSubmissions: 72,
+        pendingGrading: 7,
+        maxScore: 100,
+        instructions: 'Build an omnichannel editorial calendar with caption copywriting and visual references.'
+    },
+    {
+        id: 'a-coun-1',
+        courseId: 'course-2',
+        courseTitle: 'Counseling Video, Quiz and Brochure',
+        title: 'Career Roadmap & Goal Setting Worksheet',
+        dueDate: '2026-10-10',
+        totalSubmissions: 140,
+        pendingGrading: 15,
+        maxScore: 100,
+        instructions: 'Complete the digital marketing specialization selection matrix based on your career goals.'
+    },
+    {
+        id: 'a-ga-1',
+        courseId: 'course-5',
+        courseTitle: 'Google Analytics Course',
+        title: 'GA4 Custom Measurement Plan & Looker Studio Dashboard',
+        dueDate: '2026-10-24',
+        totalSubmissions: 64,
+        pendingGrading: 6,
+        maxScore: 100,
+        instructions: 'Set up custom events in GTM and build an interactive Looker Studio traffic dashboard.'
+    },
+    {
+        id: 'a-gads-1',
+        courseId: 'course-6',
+        courseTitle: 'Google Ads',
+        title: 'Full-Funnel Google Search Ads Campaign Structure',
+        dueDate: '2026-10-27',
+        totalSubmissions: 88,
+        pendingGrading: 10,
+        maxScore: 100,
+        instructions: 'Structure responsive search ads, ad extensions, and negative keyword lists for a service business.'
+    }
+];
+export const INITIAL_STUDENTS = [
+    {
+        id: 'std-1',
+        name: 'Aarav Patel',
+        email: 'aarav.patel@example.com',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+        enrolledCoursesCount: 4,
+        completedCoursesCount: 2,
+        overallProgress: 78,
+        joinedDate: '2026-01-12',
+        status: 'active'
+    },
+    {
+        id: 'std-2',
+        name: 'Priya Sharma',
+        email: 'priya.sharma@example.com',
+        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+        enrolledCoursesCount: 5,
+        completedCoursesCount: 4,
+        overallProgress: 92,
+        joinedDate: '2025-11-04',
+        status: 'active'
+    },
+    {
+        id: 'std-3',
+        name: 'Rohan Mehta',
+        email: 'rohan.mehta@example.com',
+        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+        enrolledCoursesCount: 2,
+        completedCoursesCount: 1,
+        overallProgress: 55,
+        joinedDate: '2026-02-18',
+        status: 'active'
+    },
+    {
+        id: 'std-4',
+        name: 'Ananya Gupta',
+        email: 'ananya.g@example.com',
+        avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
+        enrolledCoursesCount: 3,
+        completedCoursesCount: 3,
+        overallProgress: 100,
+        joinedDate: '2025-09-15',
+        status: 'active'
+    },
+    {
+        id: 'std-5',
+        name: 'Kabir Verma',
+        email: 'kabir.v@example.com',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+        enrolledCoursesCount: 1,
+        completedCoursesCount: 0,
+        overallProgress: 30,
+        joinedDate: '2026-03-01',
+        status: 'active'
+    }
+];
+export const INITIAL_QUESTIONS = [
+    {
+        id: 'quest-1',
+        text: 'Which HTML tag is most critical for search engine page title evaluation?',
+        category: 'SEO',
+        difficulty: 'Easy',
+        type: 'Multiple Choice',
+        options: ['<meta>', '<title>', '<h1>', '<header>'],
+        correctAnswer: '<title>'
+    },
+    {
+        id: 'quest-2',
+        text: 'What does GA4 use as its primary measurement model?',
+        category: 'Google Analytics',
+        difficulty: 'Medium',
+        type: 'Multiple Choice',
+        options: ['Session-based', 'Event-based', 'Pageview-based', 'Hit-based'],
+        correctAnswer: 'Event-based'
+    },
+    {
+        id: 'quest-3',
+        text: 'True or False: WordPress plugins can execute PHP code directly on the web server.',
+        category: 'WordPress',
+        difficulty: 'Easy',
+        type: 'True/False',
+        options: ['True', 'False'],
+        correctAnswer: 'True'
+    }
+];
+export const INITIAL_DISCUSSIONS = [
+    {
+        id: 'disc-1',
+        courseTitle: 'Search Engine Optimization (SEO)',
+        authorName: 'Sneha Roy',
+        authorRole: 'Student',
+        authorAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+        title: 'How do you handle Core Web Vitals LCP latency on WordPress with heavy images?',
+        content: 'Hi everyone, my client website score on mobile is LCP 4.2s due to hero image preload issues. What plugin or CDN setting worked best for you?',
+        repliesCount: 8,
+        createdAt: '3 hours ago',
+        category: 'Technical SEO',
+        isPinned: true
+    },
+    {
+        id: 'disc-2',
+        courseTitle: 'Google Ads Masterclass',
+        authorName: 'Vikram Malhotra',
+        authorRole: 'Instructor',
+        authorAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+        title: 'Weekly Q&A Thread: Smart Bidding vs Manual CPC in 2026',
+        content: 'Post your campaign bidding strategy questions here for this week review call. We will cover Target CPA scaling live!',
+        repliesCount: 19,
+        createdAt: '1 day ago',
+        category: 'PMAX & Bidding',
+        isPinned: true
+    }
+];
+export const INITIAL_ACTIVITIES = [
+    {
+        id: 'act-1',
+        user: { name: 'Aarav Patel', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
+        action: 'enrolled in',
+        target: 'Search Engine Optimization (SEO)',
+        timeAgo: '5 min ago',
+        type: 'enrollment'
+    },
+    {
+        id: 'act-2',
+        user: { name: 'Priya Sharma', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80' },
+        action: 'passed quiz with 95%',
+        target: 'WordPress Core & Elementor Layout Test',
+        timeAgo: '22 min ago',
+        type: 'quiz'
+    },
+    {
+        id: 'act-3',
+        user: { name: 'Rohan Mehta', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' },
+        action: 'completed course',
+        target: 'Google Analytics Course',
+        timeAgo: '1 hour ago',
+        type: 'completion'
+    },
+    {
+        id: 'act-4',
+        user: { name: 'Ananya Gupta', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80' },
+        action: 'submitted assignment for',
+        target: 'Google Ads Masterclass',
+        timeAgo: '3 hours ago',
+        type: 'assignment'
+    }
+];
+export const INITIAL_ACHIEVEMENTS = [
+    {
+        id: 'ach-1',
+        title: 'SEO Specialist',
+        description: 'Completed 100% of Search Engine Optimization Masterclass & passed technical audit.',
+        iconName: 'Search',
+        earnedDate: 'Sep 12, 2026',
+        category: 'SEO',
+        unlocked: true
+    },
+    {
+        id: 'ach-2',
+        title: 'WordPress Developer',
+        description: 'Built and deployed 3 live client sites with Elementor Pro.',
+        iconName: 'Code',
+        earnedDate: 'Aug 28, 2026',
+        category: 'WordPress',
+        unlocked: true
+    },
+    {
+        id: 'ach-3',
+        title: 'GA4 Master Certified',
+        description: 'Achieved 90%+ on Google Analytics conversion tracking exam.',
+        iconName: 'BarChart3',
+        earnedDate: 'Sep 01, 2026',
+        category: 'Analytics',
+        unlocked: true
+    },
+    {
+        id: 'ach-4',
+        title: 'Design Innovator',
+        description: 'Created top-rated Figma design system in Creative Designing Essentials.',
+        iconName: 'Palette',
+        earnedDate: 'Jul 19, 2026',
+        category: 'Design',
+        unlocked: true
+    },
+    {
+        id: 'ach-5',
+        title: 'Digital Marketing Strategist',
+        description: 'Complete all 6 core masterclass tracks at Operating Media.',
+        iconName: 'Award',
+        earnedDate: 'Locked',
+        category: 'Marketing',
+        unlocked: false
+    }
+];
+export const INITIAL_NOTES = [
+    {
+        id: 'note-1',
+        courseId: 'course-1',
+        courseTitle: 'Search Engine Optimization (SEO)',
+        lessonTitle: '1.2 Keyword Research & Search Intent Mapping',
+        content: 'Remember: Informational keywords often have high volume but lower commercial conversion rates. Target transactional long-tail keywords on landing pages.',
+        createdAt: 'Sep 20, 2026'
+    },
+    {
+        id: 'note-2',
+        courseId: 'course-3',
+        courseTitle: 'Google Analytics Course',
+        lessonTitle: 'GA4 Event Tracking Setup',
+        content: 'Always mark custom events as conversion key events in GA4 admin before building Looker Studio reports.',
+        createdAt: 'Sep 22, 2026'
+    }
+];
+export const INITIAL_REVIEWS = [
+    {
+        id: 'rev-1',
+        courseId: 'course-1',
+        courseTitle: 'Search Engine Optimization (SEO)',
+        rating: 5,
+        comment: 'The best practical SEO training course in India! Helped me double organic search traffic for our e-commerce client in 60 days.',
+        date: '2026-09-18'
+    },
+    {
+        id: 'rev-2',
+        courseId: 'course-2',
+        courseTitle: 'Website Development With WordPress',
+        rating: 5,
+        comment: 'Clear explanation of custom fields, Elementor flexbox containers, and site speed optimization.',
+        date: '2026-09-15'
+    }
+];
