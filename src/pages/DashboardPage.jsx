@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StatCard } from '../components/common/StatCard';
-import { BookOpen, Users, User, Award, ArrowRight, Star, Play, CheckCircle2, CheckSquare, Shield, GraduationCap, Clock, Flame, Sparkles, DollarSign, Camera, Upload, X, Check, RefreshCw, Image as ImageIcon } from 'lucide-react';
+import { BookOpen, Users, User, Award, ArrowRight, ArrowLeft, Star, Play, CheckCircle2, CheckSquare, Shield, GraduationCap, Clock, Flame, Sparkles, DollarSign, Camera, Upload, X, Check, RefreshCw, Image as ImageIcon } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { lmsService } from '../services/lmsService';
 import { useNavigate } from 'react-router-dom';
@@ -59,61 +59,47 @@ export const DashboardPage = () => {
 
     return (
       <div className="space-y-6">
-        {/* Student Welcome Header with 3D Character pop-out overflow & outside callout */}
+        {/* Student Welcome Header with 3D Character bottom-anchored touching border and overflowing top */}
         <div className="relative mt-12 sm:mt-16 bg-white border border-slate-200/90 p-5 sm:p-7 rounded-2xl shadow-2xs">
-          {/* Floating Callout OUTSIDE the container with pointing arrow */}
-          <div className="absolute -top-11 sm:-top-13 left-4 sm:left-8 z-20 flex items-center gap-2">
+          {/* Simple, small change indicator outside the container on the other side (top-right) */}
+          <div className="absolute -top-6 sm:-top-7 right-3 sm:right-7 z-20">
             <button
               type="button"
               onClick={() => setIsAvatarModalOpen(true)}
-              className="bg-slate-900 hover:bg-slate-800 text-white text-[11px] sm:text-xs font-semibold px-3.5 py-1.5 rounded-full shadow-lg border border-slate-700/80 flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 cursor-pointer group"
+              className="inline-flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-slate-500 hover:text-slate-800 transition-colors cursor-pointer group"
               title="Click to customize your student character"
             >
-              <Sparkles size={12} className="text-amber-400 group-hover:rotate-12 transition-transform" />
-              <span>Change for / into your own</span>
+              <ArrowLeft size={11} className="text-slate-400 group-hover:text-slate-700 group-hover:-translate-x-0.5 transition-transform" />
+              <span className="font-normal">Change for / into your own</span>
+              <Sparkles size={11} className="text-amber-500" />
             </button>
+          </div>
 
-            {/* Hand-drawn styled curved pointing arrow aimed at character */}
-            <svg
-              className="w-7 h-7 text-slate-800 -rotate-12 transform translate-y-1 drop-shadow-xs"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path
-                d="M3 4 C 7 14, 13 18, 19 18"
-                strokeWidth="2.5"
-                strokeLinecap="round"
+          {/* 3D Character Image anchored touching the bottom container border and overflowing above the top */}
+          <div className="absolute bottom-0 left-3 sm:left-7 z-10 pointer-events-auto group">
+            <div className="relative">
+              <img
+                src={currentUser.avatar || boyAvatar}
+                alt={currentUser.name}
+                className="h-32 sm:h-44 md:h-52 w-auto max-w-[105px] sm:max-w-[165px] md:max-w-[200px] object-contain drop-shadow-md select-none transition-transform duration-300 group-hover:scale-105 cursor-pointer block"
+                onClick={() => setIsAvatarModalOpen(true)}
+                title="Click to customize avatar"
               />
-              <path
-                d="M13 13 L 19 18 L 14 22"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+              <button
+                type="button"
+                onClick={() => setIsAvatarModalOpen(true)}
+                className="absolute bottom-1.5 right-0.5 sm:bottom-2 sm:right-1 bg-white/95 hover:bg-white text-slate-800 p-1 sm:p-1.5 rounded-full shadow-md border border-slate-200 transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                title="Change avatar"
+              >
+                <Camera size={12} className="text-slate-700" />
+              </button>
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-            <div className="flex items-end sm:items-center space-x-3.5 sm:space-x-5">
-              {/* 3D Character Image with Over-the-Card Overflow */}
-              <div className="relative shrink-0 -mt-14 sm:-mt-20 md:-mt-24 group">
-                <img
-                  src={currentUser.avatar || boyAvatar}
-                  alt={currentUser.name}
-                  className="h-28 sm:h-36 md:h-44 w-auto max-w-[130px] sm:max-w-[170px] md:max-w-[200px] object-contain drop-shadow-md select-none transition-transform duration-300 group-hover:scale-105 cursor-pointer"
-                  onClick={() => setIsAvatarModalOpen(true)}
-                  title="Click to customize avatar"
-                />
-                <button
-                  type="button"
-                  onClick={() => setIsAvatarModalOpen(true)}
-                  className="absolute bottom-1 right-1 bg-white/95 hover:bg-white text-slate-800 p-1.5 rounded-full shadow-md border border-slate-200 transition-all hover:scale-110 active:scale-95 cursor-pointer"
-                  title="Change avatar"
-                >
-                  <Camera size={13} className="text-slate-700" />
-                </button>
-              </div>
+            <div className="flex items-center space-x-3.5 sm:space-x-5">
+              {/* Spacer matching character width to prevent text overlap */}
+              <div className="w-28 sm:w-36 md:w-44 shrink-0 self-stretch pointer-events-none" aria-hidden="true" />
 
               {/* Greeting & Information */}
               <div className="space-y-1">
