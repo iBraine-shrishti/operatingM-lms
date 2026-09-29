@@ -97,8 +97,8 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
                     </div>
                   </>) : (<>
                     <div className="px-4 py-3 hover:bg-slate-50 transition-colors flex space-x-3 items-start">
-                      <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 font-bold text-xs">
-                        ✓
+                      <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                        <Check size={14} />
                       </div>
                       <div>
                         <p className="text-xs font-semibold text-slate-800">Congratulations! You earned "GA4 Master Certified" badge</p>
@@ -138,8 +138,9 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
               <div className="px-4 py-2.5 border-b border-slate-100">
                 <p className="text-sm font-semibold text-slate-900">{currentUser.name}</p>
                 <p className="text-xs text-slate-500 font-normal truncate">{currentUser.email}</p>
-                <span className="mt-1.5 inline-block text-[11px] font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-800 border border-slate-200">
-                  {isAdmin ? '🛡️ Administrator' : '🎓 Enrolled Student'}
+                <span className="mt-1.5 inline-flex items-center space-x-1.5 text-[11px] font-medium px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-800 border border-slate-200">
+                  {isAdmin ? <Shield size={12} className="text-slate-600" /> : <GraduationCap size={12} className="text-teal-700" />}
+                  <span>{isAdmin ? 'Administrator' : 'Enrolled Student'}</span>
                 </span>
               </div>
 

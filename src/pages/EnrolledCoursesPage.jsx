@@ -1,6 +1,6 @@
 import React from 'react';
 import { lmsService } from '../services/lmsService';
-import { Play, BookOpen, Clock, Award, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Play, BookOpen, Clock, Award, ArrowRight, CheckCircle2, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const EnrolledCoursesPage = () => {
@@ -60,8 +60,9 @@ export const EnrolledCoursesPage = () => {
                     {course.category}
                   </span>
 
-                  <span className="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-xs text-white text-[11px] font-medium px-2 py-0.5 rounded-md border border-white/10 shadow-2xs">
-                    ★ {course.rating.toFixed(1)}
+                  <span className="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-xs text-white text-[11px] font-medium px-2 py-0.5 rounded-md border border-white/10 shadow-2xs flex items-center space-x-1">
+                    <Star size={11} className="fill-amber-400 text-amber-400" />
+                    <span>{course.rating.toFixed(1)}</span>
                   </span>
                 </div>
 

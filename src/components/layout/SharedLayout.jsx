@@ -15,7 +15,7 @@ export const SharedLayout = () => {
             setSidebarCollapsed(!sidebarCollapsed);
         }
     };
-    return (<div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
+    return (<div className="min-h-screen bg-white font-sans text-slate-900 flex flex-col">
       {/* Sidebar Desktop */}
       <div className="hidden md:block">
         <Sidebar collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}/>
@@ -34,8 +34,8 @@ export const SharedLayout = () => {
         {/* Topbar */}
         <Topbar onToggleSidebar={toggleSidebar} onOpenSearch={() => setSearchModalOpen(true)}/>
 
-        {/* Page Content View - Expansive, edge-conscious layout */}
-        <main className="flex-1 w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-6 animate-in fade-in duration-200">
+        {/* Page Content View - Pure edge-to-edge fluid responsive workspace */}
+        <main className="flex-1 w-full p-6 lg:p-8 animate-in fade-in duration-200">
           <Outlet />
         </main>
       </div>

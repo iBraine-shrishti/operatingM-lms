@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { lmsService } from '../services/lmsService';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Check } from 'lucide-react';
 export const ManageQuestionsPage = () => {
     const [questions, setQuestions] = useState(() => lmsService.getQuestions());
     const [search, setSearch] = useState('');
@@ -52,8 +52,14 @@ export const ManageQuestionsPage = () => {
             <h3 className="font-semibold text-slate-900 text-base">{q.text}</h3>
 
             {q.options && (<div className="grid grid-cols-2 gap-2 pt-2">
-                {q.options.map((opt, i) => (<div key={i} className={`p-2.5 rounded-xl border text-xs font-medium ${opt === q.correctAnswer ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-slate-50 border-slate-100 text-slate-700'}`}>
-                    {opt} {opt === q.correctAnswer && '✓ (Correct)'}
+                {q.options.map((opt, i) => (<div key={i} className={`p-2.5 rounded-xl border text-xs font-medium flex items-center justify-between ${opt === q.correctAnswer ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-slate-50 border-slate-100 text-slate-700'}`}>
+                    <span>{opt}</span>
+                    {opt === q.correctAnswer && (
+                      <span className="inline-flex items-center space-x-1 text-emerald-700 font-semibold">
+                        <Check size={13} />
+                        <span>(Correct)</span>
+                      </span>
+                    )}
                   </div>))}
               </div>)}
           </div>))}

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { lmsService } from '../services/lmsService';
-import { Plus, Search, Calendar, Edit, Trash2, ChevronDown } from 'lucide-react';
+import { Plus, Search, Calendar, Edit, Trash2, ChevronDown, X } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 export const ManageAssignmentsPage = () => {
     const { showToast } = useToast();
@@ -175,14 +175,14 @@ export const ManageAssignmentsPage = () => {
 
       {/* NEW ASSIGNMENT MODAL (Scoped to Course) */}
       {showAddModal && (<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
-          <div className="bg-white rounded-3xl p-6 md:p-7 max-w-md w-full shadow-2xl space-y-4 border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-xl p-6 md:p-7 max-w-md w-full shadow-2xl space-y-4 border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <h3 className="font-semibold text-slate-900 text-base">New Assignment</h3>
                 <p className="text-[11px] text-slate-400 font-normal">Target practical assignment to a specific course.</p>
               </div>
-              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 font-medium text-sm">
-                ✕
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+                <X size={16} />
               </button>
             </div>
 

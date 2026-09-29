@@ -11,7 +11,8 @@ import {
   Eye,
   EyeOff,
   Sparkles,
-  Info
+  Info,
+  X
 } from "lucide-react";
 import { useAuth, ADMIN_USER, STUDENT_USER } from "../context/AuthContext";
 import logo from "../assets/logo.png";
@@ -168,10 +169,10 @@ export const LoginPage = () => {
             </div>
             <button
               onClick={() => setError("")}
-              className="text-rose-500 hover:text-rose-700 text-xs font-bold px-1"
+              className="text-rose-500 hover:text-rose-700 p-1 cursor-pointer"
               title="Dismiss error"
             >
-              ✕
+              <X size={14} />
             </button>
           </div>
         )}

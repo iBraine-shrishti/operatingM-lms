@@ -168,7 +168,7 @@ export const INITIAL_UNITS = [
         title: 'Affiliate Marketing Assignment',
         duration: 'Due in 5 days',
         videoUrl: '',
-        isCompleted: true, // checked ✓ in screenshot
+        isCompleted: true,
         isLocked: false,
         type: 'assignment',
         description: 'Create an affiliate product comparison bridge page and integrate compliance disclaimers.'
@@ -354,7 +354,7 @@ export const INITIAL_UNITS = [
         title: 'Content Marketing Assignment-1',
         duration: 'Due in 5 days',
         videoUrl: '',
-        isCompleted: true, // checked ✓ in screenshot
+        isCompleted: true,
         isLocked: false,
         type: 'assignment',
         description: 'Develop a 90-day pillar content framework with lead magnet gate and distribution schedule.'

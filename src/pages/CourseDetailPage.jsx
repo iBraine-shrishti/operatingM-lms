@@ -4,7 +4,7 @@ import { lmsService } from '../services/lmsService';
 import {
   Star, Users, CheckCircle2, Play, Clock, ArrowLeft, Trash2, Camera,
   BookOpen, Video, FileText, CheckSquare, HelpCircle, Sparkles,
-  MoreVertical, Eye, Settings, Plus, Upload, Download, Info, ChevronDown, ChevronUp, Layers, Award
+  MoreVertical, Eye, Settings, Plus, Upload, Download, Info, ChevronDown, ChevronUp, Layers, Award, X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -175,7 +175,7 @@ export const CourseDetailPage = () => {
       prev.map(u => {
         if (u.id === unitId) {
           const updated = !u.isCompleted;
-          showToast(updated ? `Marked "${u.title}" as completed! 🌟` : `Marked "${u.title}" as incomplete`, 'info');
+          showToast(updated ? `Marked "${u.title}" as completed!` : `Marked "${u.title}" as incomplete`, 'info');
           return { ...u, isCompleted: updated };
         }
         return u;
@@ -974,7 +974,9 @@ export const CourseDetailPage = () => {
               <div className="bg-white rounded-3xl p-6 md:p-7 max-w-md w-full shadow-2xl space-y-4 border border-slate-200 animate-in fade-in duration-150">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <h3 className="font-semibold text-slate-900 text-base">Ask a Question</h3>
-                  <button onClick={() => setShowQnaModal(false)} className="text-slate-400 hover:text-slate-600 font-semibold">✕</button>
+                  <button onClick={() => setShowQnaModal(false)} className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+                    <X size={16} />
+                  </button>
                 </div>
                 <form onSubmit={handleAskQuestion} className="space-y-3">
                   <div>
@@ -1123,14 +1125,14 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {showCoverModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+          <div className="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h3 className="text-base font-semibold text-slate-900">Choose Course Cover Banner</h3>
               <button
                 onClick={() => setShowCoverModal(false)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
               >
-                ✕
+                <X size={16} />
               </button>
             </div>
 
@@ -1150,9 +1152,9 @@ export const CourseDetailPage = () => {
                   onClick={() => {
                     setCoverImage(imgUrl);
                     setShowCoverModal(false);
-                    showToast('Course cover updated successfully! 🎨', 'success');
+                    showToast('Course cover updated successfully!', 'success');
                   }}
-                  className="h-24 rounded-2xl overflow-hidden border-2 border-slate-200 hover:border-[#0d7a5f] cursor-pointer transition-all relative group shadow-2xs"
+                  className="h-24 rounded-lg overflow-hidden border-2 border-slate-200 hover:border-slate-800 cursor-pointer transition-all relative group shadow-2xs"
                 >
                   <img src={imgUrl} alt="Cover option" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors flex items-center justify-center">
@@ -1167,7 +1169,7 @@ export const CourseDetailPage = () => {
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setShowCoverModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium"
+                className="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium cursor-pointer"
               >
                 Close
               </button>
@@ -1181,7 +1183,7 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {showAiModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+          <div className="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center space-x-2 text-purple-700">
                 <Sparkles size={18} />
@@ -1189,9 +1191,9 @@ export const CourseDetailPage = () => {
               </div>
               <button
                 onClick={() => setShowAiModal(false)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
               >
-                ✕
+                <X size={16} />
               </button>
             </div>
 

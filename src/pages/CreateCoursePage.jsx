@@ -407,7 +407,7 @@ export const CreateCoursePage = () => {
             lessonsCount: totalLessons > 0 ? totalLessons : 12,
             updatedAt: 'Just now'
         });
-        showToast('🎉 Course created and published successfully! Redirecting...', 'success', 'Course Published');
+        showToast('Course created and published successfully! Redirecting...', 'success', 'Course Published');
         setTimeout(() => {
             navigate('/manage-courses');
         }, 1200);
@@ -1282,7 +1282,7 @@ export const CreateCoursePage = () => {
                           {unitUploadedFile ? (<div className="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between">
                               <div className="flex items-center space-x-3">
                                 <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
-                                  ✓
+                                  <Check size={18} />
                                 </div>
                                 <div>
                                   <div className="flex items-center space-x-2">
@@ -1295,10 +1295,10 @@ export const CreateCoursePage = () => {
                                 </div>
                               </div>
                               <div className="flex items-center space-x-2">
-                                <button type="button" onClick={() => unitDeviceFileInputRef.current?.click()} className="text-xs font-bold text-slate-700 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-50 transition-colors shadow-2xs">
+                                <button type="button" onClick={() => unitDeviceFileInputRef.current?.click()} className="text-xs font-bold text-slate-700 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer">
                                   Change File
                                 </button>
-                                <button type="button" onClick={() => setUnitUploadedFile(null)} className="text-slate-400 hover:text-rose-600 p-1.5 rounded-xl hover:bg-rose-50 transition-colors" title="Remove">
+                                <button type="button" onClick={() => setUnitUploadedFile(null)} className="text-slate-400 hover:text-rose-600 p-1.5 rounded-xl hover:bg-rose-50 transition-colors cursor-pointer" title="Remove">
                                   <Trash2 size={15}/>
                                 </button>
                               </div>
@@ -1366,7 +1366,7 @@ export const CreateCoursePage = () => {
                   <div className="space-y-2 py-1">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-slate-700">Connect Assignments</span>
-                      <button type="button" onClick={() => setShowConnectAssignmentModal((prev) => !prev)} className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-3.5 py-1 rounded-lg shadow-2xs transition-colors flex items-center space-x-1">
+                      <button type="button" onClick={() => setShowConnectAssignmentModal((prev) => !prev)} className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-3.5 py-1 rounded-lg shadow-2xs transition-colors flex items-center space-x-1 cursor-pointer">
                         <span>Add</span>
                         {unitConnectedAssignments.length > 0 && (<span className="bg-white text-amber-700 text-[10px] font-black px-1.5 py-0.5 rounded-full ml-1">
                             {unitConnectedAssignments.length}
@@ -1382,8 +1382,8 @@ export const CreateCoursePage = () => {
                             <button type="button" onClick={() => {
                                 setUnitConnectedAssignments((prev) => prev.filter((_, i) => i !== idx));
                                 showToast(`Removed "${asgn}" connection`, 'info');
-                            }} className="text-amber-600 hover:text-amber-900 ml-1 font-bold text-xs" title="Remove assignment">
-                              ✕
+                            }} className="text-amber-600 hover:text-amber-900 ml-1 font-bold text-xs cursor-pointer flex items-center" title="Remove assignment">
+                              <X size={12} />
                             </button>
                           </div>))}
                       </div>)}
@@ -1392,8 +1392,8 @@ export const CreateCoursePage = () => {
                     {showConnectAssignmentModal && (<div className="p-3.5 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-2.5 animate-in fade-in duration-150">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-bold text-slate-800">Select or Add Assignment</span>
-                          <button type="button" onClick={() => setShowConnectAssignmentModal(false)} className="text-slate-400 hover:text-slate-600 text-xs font-bold">
-                            ✕
+                          <button type="button" onClick={() => setShowConnectAssignmentModal(false)} className="text-slate-400 hover:text-slate-600 text-xs font-bold cursor-pointer">
+                            <X size={14} />
                           </button>
                         </div>
 

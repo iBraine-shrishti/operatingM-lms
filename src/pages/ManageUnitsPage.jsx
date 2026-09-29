@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { lmsService } from '../services/lmsService';
-import { Plus, Search, Video, FileText, CheckCircle2, Edit, Trash2, Play, CheckSquare, ChevronDown } from 'lucide-react';
+import { Plus, Search, Video, FileText, CheckCircle2, Edit, Trash2, Play, CheckSquare, ChevronDown, X } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 export const ManageUnitsPage = () => {
@@ -219,14 +219,14 @@ export const ManageUnitsPage = () => {
 
       {/* ADD UNIT MODAL (Scoped to Course) */}
       {showAddModal && (<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
-          <div className="bg-white rounded-3xl p-6 md:p-7 max-w-md w-full shadow-2xl space-y-4 border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-xl p-6 md:p-7 max-w-md w-full shadow-2xl space-y-4 border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <h3 className="font-semibold text-slate-900 text-base">Add New Unit</h3>
                 <p className="text-[11px] text-slate-400 font-normal">Attach unit to specific course & module.</p>
               </div>
-              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 font-medium text-sm">
-                ✕
+              <button onClick={() => setShowAddModal(false)} className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+                <X size={16} />
               </button>
             </div>
 
