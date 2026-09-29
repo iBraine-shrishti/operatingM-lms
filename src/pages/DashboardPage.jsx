@@ -59,15 +59,15 @@ export const DashboardPage = () => {
 
     return (
       <div className="space-y-6">
-        {/* Student Welcome Header with 3D Character bottom-anchored touching border and overflowing top */}
-        <div className="relative mt-10 sm:mt-14 lg:mt-16 bg-white border border-slate-200/90 p-4.5 sm:p-6 lg:p-7 rounded-2xl shadow-2xs">
-          {/* 3D Character Image stuck to the bottom container border and overflowing above the top */}
-          <div className="absolute -bottom-0.5 left-2 sm:left-4 lg:left-6 z-10 pointer-events-auto group">
+        {/* Student Welcome Header with 3D Character bottom-anchored touching bottom border only */}
+        <div className="relative mt-12 sm:mt-16 md:mt-20 lg:mt-24 bg-white border-b border-slate-200 pb-3.5 sm:pb-4 px-1 sm:px-3 lg:px-4">
+          {/* 3D Character Image stuck to the bottom container border and prominently overflowing above */}
+          <div className="absolute -bottom-0.5 left-0 sm:left-2 lg:left-3 z-10 pointer-events-auto group">
             <div className="relative">
               <img
                 src={currentUser.avatar || boyAvatar}
                 alt={currentUser.name}
-                className="h-34 sm:h-38 md:h-42 lg:h-54 w-auto max-w-[110px] sm:max-w-[130px] md:max-w-[140px] lg:max-w-[190px] object-contain object-bottom drop-shadow-md select-none transition-transform duration-300 group-hover:scale-105 cursor-pointer block"
+                className="h-[145px] sm:h-[165px] md:h-[195px] lg:h-[235px] w-auto max-w-[110px] sm:max-w-[130px] md:max-w-[155px] lg:max-w-[200px] object-contain object-bottom drop-shadow-md select-none transition-transform duration-300 group-hover:scale-105 cursor-pointer block"
                 onClick={() => setIsAvatarModalOpen(true)}
                 title="Click to customize avatar"
               />
@@ -82,86 +82,85 @@ export const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
+          <div className="flex items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center space-x-2.5 sm:space-x-4 min-w-0">
               {/* Spacer matching character width + clearance to prevent hand overlap */}
-              <div className="w-32 sm:w-40 md:w-48 lg:w-56 shrink-0 self-stretch pointer-events-none" aria-hidden="true" />
+              <div className="w-[105px] sm:w-[125px] md:w-[145px] lg:w-[195px] shrink-0 self-stretch pointer-events-none" aria-hidden="true" />
 
-              {/* Greeting & Information - Big Two-Tone Heading */}
+              {/* Greeting & Information - Two-Tone Heading inline on desktop/tablet, stacked column only on small screen */}
               <div className="min-w-0 py-0.5">
-                <h1 className="text-xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold tracking-tight leading-snug">
-                  <span className="text-slate-500 font-semibold block sm:inline">Welcome back, </span>
-                  <span className="text-[#3b49df] font-black">{currentUser.name}!</span>
+                <h1 className="tracking-tight leading-snug flex flex-col sm:flex-row sm:items-baseline gap-x-2">
+                  <span className="text-sm sm:text-base md:text-lg lg:text-xl font-semibold text-slate-500 leading-tight">Welcome back,</span>
+                  <span className="text-xl sm:text-2xl md:text-3xl lg:text-[38px] font-black text-[#3b49df] leading-tight">{currentUser.name}!</span>
                 </h1>
+                {/* Section commented out to save width, moved to Up Next section:
                 <p className="text-slate-500 text-xs sm:text-sm mt-1 sm:mt-1.5 font-normal max-w-xl">
                   You are making great progress across your 4 active specializations. Keep up the momentum!
                 </p>
-
-                {/* Action button on mobile/tablet below text */}
-                <div className="mt-3 lg:hidden">
-                  <button
-                    onClick={() => navigate('/enrolled-courses')}
-                    className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2 rounded-xl transition-colors inline-flex items-center space-x-2 shadow-xs cursor-pointer"
-                  >
-                    <span>My Courses</span>
-                    <ArrowRight size={13} />
-                  </button>
-                </div>
+                */}
               </div>
             </div>
 
-            {/* Action button on large desktop placed on the right */}
-            <div className="hidden lg:flex items-center space-x-3 shrink-0 self-center">
+            {/* Action button always placed on the right to keep card height slim and maintain character overflow */}
+            <div className="shrink-0 self-center">
               <button
                 onClick={() => navigate('/enrolled-courses')}
-                className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs cursor-pointer"
+                className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-3 py-1.5 sm:px-3.5 sm:py-2 lg:px-4 lg:py-2.5 rounded-xl transition-colors flex items-center space-x-1.5 sm:space-x-2 shadow-xs cursor-pointer"
               >
                 <span>My Courses</span>
-                <ArrowRight size={14} />
+                <ArrowRight size={13} />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Student Learning KPI Cards matching dashborad cards.png */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
-            title="ENROLLED COURSES"
-            value="4 Courses"
-            progress={65}
-            subtitle="2 Active In-Progress"
-            icon={BookOpen}
-            color="blue"
-          />
-          <StatCard
-            title="COMPLETED LESSONS"
-            value="28 / 72"
-            progress={40}
-            subtitle="4 Lessons this week"
-            icon={CheckCircle2}
-            color="emerald"
-          />
-          <StatCard
-            title="AVG QUIZ SCORE"
-            value="88.5%"
-            progress={88}
-            subtitle="Passed all 3 quizzes"
-            icon={CheckSquare}
-            color="purple"
-          />
-          <StatCard
-            title="BADGES & HONORS"
-            value="4 Unlocked"
-            progress={80}
-            subtitle="1 badge pending"
-            icon={Award}
-            color="orange"
-          />
+        {/* Student Learning KPI Cards matching dashborad cards.png - compact, logically centered, not full-width on mobile */}
+        <div className="flex flex-wrap justify-center items-stretch gap-3 sm:gap-3.5 lg:gap-4">
+          <div className="w-full max-w-[320px] sm:max-w-none sm:w-[calc(50%-0.5rem)] lg:flex-1 lg:max-w-[270px] min-w-[200px]">
+            <StatCard
+              title="ENROLLED COURSES"
+              value="4 Courses"
+              progress={65}
+              subtitle="2 Active In-Progress"
+              icon={BookOpen}
+              color="blue"
+            />
+          </div>
+          <div className="w-full max-w-[320px] sm:max-w-none sm:w-[calc(50%-0.5rem)] lg:flex-1 lg:max-w-[270px] min-w-[200px]">
+            <StatCard
+              title="COMPLETED LESSONS"
+              value="28 / 72"
+              progress={40}
+              subtitle="4 Lessons this week"
+              icon={CheckCircle2}
+              color="emerald"
+            />
+          </div>
+          <div className="w-full max-w-[320px] sm:max-w-none sm:w-[calc(50%-0.5rem)] lg:flex-1 lg:max-w-[270px] min-w-[200px]">
+            <StatCard
+              title="AVG QUIZ SCORE"
+              value="88.5%"
+              progress={88}
+              subtitle="Passed all 3 quizzes"
+              icon={CheckSquare}
+              color="purple"
+            />
+          </div>
+          <div className="w-full max-w-[320px] sm:max-w-none sm:w-[calc(50%-0.5rem)] lg:flex-1 lg:max-w-[270px] min-w-[200px]">
+            <StatCard
+              title="BADGES & HONORS"
+              value="4 Unlocked"
+              progress={80}
+              subtitle="1 badge pending"
+              icon={Award}
+              color="orange"
+            />
+          </div>
         </div>
 
         {/* Continue Learning Featured Lesson Card */}
         <div className="bg-white rounded-xl border border-slate-200/90 p-5 shadow-2xs">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
             <div className="flex items-start space-x-4">
               <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs">
                 <Play size={16} className="fill-teal-700 translate-x-0.5" />
@@ -176,10 +175,13 @@ export const DashboardPage = () => {
                 <p className="text-xs text-slate-500 font-normal">
                   Module 2: On-Page & Content Optimization • 25 mins video lesson
                 </p>
+                <p className="text-xs text-slate-600 font-medium pt-1">
+                  You are making great progress across your 4 active specializations. Keep up the momentum!
+                </p>
               </div>
             </div>
 
-            <div className="flex items-center space-x-4 md:self-center">
+            <div className="flex items-center space-x-4 lg:self-center">
               <div className="w-36 hidden sm:block">
                 <div className="flex justify-between text-xs font-medium text-slate-600 mb-1">
                   <span>Progress</span>

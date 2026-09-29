@@ -12,23 +12,24 @@ export const StatCard = ({
   color = 'blue',
   variant = 'colored', // 'colored' (matching dashborad cards.png) | 'neutral'
   iconColor,
-  iconBg
+  iconBg,
+  className = ''
 }) => {
   // If explicitly neutral variant (e.g. For plain reports)
   if (variant === 'neutral') {
     return (
-      <div className="bg-white rounded-xl border border-slate-200/90 p-5 shadow-2xs hover:border-slate-300 transition-all duration-200 flex flex-col justify-between">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{title}</span>
+      <div className={`bg-white rounded-xl border border-slate-200/90 p-4 sm:p-5 shadow-2xs hover:border-slate-300 transition-all duration-200 flex flex-col justify-between ${className}`}>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider truncate">{title}</span>
           {Icon && (
-            <div className={`w-10 h-10 rounded-xl ${iconBg || 'bg-slate-100'} ${iconColor || 'text-slate-700'} flex items-center justify-center shrink-0 border border-slate-200/70`}>
-              <Icon size={18} />
+            <div className={`w-9 h-9 rounded-xl ${iconBg || 'bg-slate-100'} ${iconColor || 'text-slate-700'} flex items-center justify-center shrink-0 border border-slate-200/70`}>
+              <Icon size={16} />
             </div>
           )}
         </div>
 
         <div>
-          <div className="text-2xl font-bold text-slate-900 tracking-tight tabular-nums">{value}</div>
+          <div className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight tabular-nums truncate">{value}</div>
           {change && (
             <div className="flex items-center space-x-2 mt-2">
               <span className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200/60">
@@ -79,25 +80,25 @@ export const StatCard = ({
   const displaySubtitle = subtitle || (change ? `${change} vs last period` : null);
 
   return (
-    <div className={`${scheme.bg} p-4 sm:p-4.5 lg:p-5 rounded-xl shadow-xs transition-all duration-200 flex items-center space-x-3 sm:space-x-4 group`}>
+    <div className={`${scheme.bg} p-3 sm:p-3.5 lg:p-4 rounded-xl shadow-xs transition-all duration-200 flex items-center space-x-3 group ${className}`}>
       {/* Left Icon: White circular badge */}
       {Icon && (
-        <div className="w-11 h-11 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
-          <Icon size={20} className={iconColor || scheme.iconText} />
+        <div className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full bg-white flex items-center justify-center shrink-0 shadow-xs">
+          <Icon size={17} className={iconColor || scheme.iconText} />
         </div>
       )}
 
       {/* Right Content */}
       <div className="flex-1 min-w-0">
-        <span className="text-[10px] sm:text-[11px] font-bold text-white/90 uppercase tracking-wider block leading-tight">
+        <span className="text-[10px] sm:text-[10.5px] font-bold text-white/90 uppercase tracking-wider block leading-tight truncate">
           {title}
         </span>
-        <div className="text-xl sm:text-2xl lg:text-[28px] font-extrabold text-white leading-tight tracking-tight my-0.5 tabular-nums">
+        <div className="text-lg sm:text-xl lg:text-[22px] font-extrabold text-white leading-tight tracking-tight my-0.5 tabular-nums truncate">
           {value}
         </div>
 
         {/* Horizontal White Progress Track */}
-        <div className="w-full h-1.5 bg-white/30 rounded-full mt-2 overflow-hidden">
+        <div className="w-full h-1.5 bg-white/30 rounded-full mt-1.5 overflow-hidden">
           <div
             className="h-full bg-white rounded-full transition-all duration-500"
             style={{ width: `${Math.min(Math.max(progress, 5), 100)}%` }}
@@ -106,7 +107,7 @@ export const StatCard = ({
 
         {/* Subtitle / Increase Metric */}
         {displaySubtitle && (
-          <p className="text-[10px] sm:text-[11px] font-medium text-white/90 mt-1 truncate">
+          <p className="text-[10px] sm:text-[10.5px] font-medium text-white/90 mt-1 truncate">
             {displaySubtitle}
           </p>
         )}

@@ -15,7 +15,7 @@ export const SharedLayout = () => {
             setSidebarCollapsed(!sidebarCollapsed);
         }
     };
-    return (<div className="min-h-screen bg-white font-sans text-slate-900 flex flex-col">
+    return (<div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden">
       {/* Sidebar Desktop */}
       <div className="hidden md:block">
         <Sidebar collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}/>
@@ -30,12 +30,12 @@ export const SharedLayout = () => {
         </div>)}
 
       {/* Main Container */}
-      <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'md:ml-20' : 'md:ml-64'}`}>
+      <div className={`min-h-screen flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'md:ml-20' : 'md:ml-64'} overflow-x-hidden`}>
         {/* Topbar */}
         <Topbar onToggleSidebar={toggleSidebar} onOpenSearch={() => setSearchModalOpen(true)}/>
 
         {/* Page Content View - Pure edge-to-edge fluid responsive workspace */}
-        <main className="flex-1 w-full p-6 lg:p-8 animate-in fade-in duration-200">
+        <main className="flex-1 w-full p-4 sm:p-6 lg:p-8 animate-in fade-in duration-200">
           <Outlet />
         </main>
       </div>
