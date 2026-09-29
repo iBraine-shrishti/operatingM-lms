@@ -6,6 +6,7 @@ import { lmsService } from '../services/lmsService';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assests/logo.png';
+import { DoodleStar, DoodleHeart, DoodleCloud, DoodleBurst } from '../components/common/CheerfulDoodles';
 
 const chartData = [
   { month: 'Jan', completions: 180, enrollments: 320 },
@@ -35,49 +36,55 @@ export const DashboardPage = () => {
 
     return (
       <div className="space-y-6">
-        {/* Student Welcome Header - Clean Enterprise Card */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200/80 p-6 md:p-7 rounded-2xl shadow-xs">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center space-x-1.5 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-              <GraduationCap size={15} className="text-slate-600" />
-              <span>Student Learning Hub</span>
-            </div>
-            <h1 className="text-2xl md:text-[28px] font-semibold text-slate-900 tracking-tight">
-              Welcome back, {currentUser.name}!
-            </h1>
-            <p className="text-slate-500 text-sm max-w-xl font-normal">
-              You are currently active in 4 courses. 28 lessons completed and 4 certification badges earned.
-            </p>
-          </div>
+        {/* Student Welcome Header - Cheerful Banner matching our-courses.png */}
+        <div className="bg-[#fbf7f4] border border-[#f0e6de] p-6 sm:p-8 rounded-3xl relative overflow-hidden shadow-xs">
+          <DoodleStar className="w-9 h-9 absolute top-3 left-4 -rotate-12 pointer-events-none opacity-90 hidden sm:block" />
+          <DoodleHeart className="w-8 h-8 absolute top-3 left-1/2 -translate-x-1/2 -rotate-6 pointer-events-none opacity-90" />
+          <DoodleCloud className="w-12 h-9 absolute top-3 right-6 rotate-6 pointer-events-none opacity-90 hidden sm:block" />
 
-          <div className="flex items-center space-x-3 shrink-0">
-            <button
-              onClick={() => navigate('/enrolled-courses')}
-              className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs"
-            >
-              <span>My Enrolled Courses</span>
-              <ArrowRight size={15} />
-            </button>
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center space-x-1.5 text-xs font-medium text-teal-800 bg-teal-50 px-3 py-0.5 rounded-full border border-teal-200/80">
+                <GraduationCap size={14} className="text-teal-700" />
+                <span>Student Learning Hub</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight font-serif">
+                Welcome back, {currentUser.name}! 🌟
+              </h1>
+              <p className="text-slate-600 text-xs sm:text-sm max-w-xl font-normal leading-relaxed">
+                You are currently active in 4 courses. 28 lessons completed and 4 official certification badges unlocked!
+              </p>
+            </div>
+
+            <div className="flex items-center space-x-3 shrink-0">
+              <button
+                onClick={() => navigate('/enrolled-courses')}
+                className="bg-[#0d7a5f] hover:bg-teal-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs cursor-pointer"
+              >
+                <span>My Enrolled Courses</span>
+                <ArrowRight size={14} />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Student Learning KPI Cards */}
+        {/* Student Learning KPI Cards with Cheerful Accents */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Enrolled Courses" value="4 Courses" change="2 Active In-Progress" isPositive={true} icon={BookOpen} />
-          <StatCard title="Completed Lessons" value="28 / 72" change="+4 this week" isPositive={true} icon={CheckCircle2} />
-          <StatCard title="Avg Quiz Score" value="88.5%" change="Passed all 3 quizzes" isPositive={true} icon={CheckSquare} />
-          <StatCard title="Badges & Honors" value="4 Unlocked" change="1 badge pending" isPositive={true} icon={Award} />
+          <StatCard title="Enrolled Courses" value="4 Courses" change="2 Active In-Progress" isPositive={true} icon={BookOpen} iconColor="text-sky-600" iconBg="bg-sky-50 border border-sky-100" />
+          <StatCard title="Completed Lessons" value="28 / 72" change="+4 this week" isPositive={true} icon={CheckCircle2} iconColor="text-emerald-600" iconBg="bg-emerald-50 border border-emerald-100" />
+          <StatCard title="Avg Quiz Score" value="88.5%" change="Passed all 3 quizzes" isPositive={true} icon={CheckSquare} iconColor="text-purple-600" iconBg="bg-purple-50 border border-purple-100" />
+          <StatCard title="Badges & Honors" value="4 Unlocked" change="1 badge pending" isPositive={true} icon={Award} iconColor="text-amber-600" iconBg="bg-amber-50 border border-amber-100" />
         </div>
 
         {/* Continue Learning Featured Lesson Card */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-5 md:p-6 shadow-xs">
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-5 md:p-6 shadow-2xs">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="flex items-start space-x-4">
-              <div className="w-11 h-11 rounded-xl bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-xs">
-                <Play size={18} className="fill-white translate-x-0.5" />
+              <div className="w-11 h-11 rounded-2xl bg-teal-50 text-[#0d7a5f] border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs">
+                <Play size={18} className="fill-[#0d7a5f] translate-x-0.5" />
               </div>
               <div className="space-y-1">
-                <span className="text-[11px] font-medium uppercase tracking-wider text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-md border border-slate-200">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200/80">
                   Up Next • Search Engine Optimization (SEO)
                 </span>
                 <h3 className="text-base font-semibold text-slate-900">
@@ -93,15 +100,15 @@ export const DashboardPage = () => {
               <div className="w-36 hidden sm:block">
                 <div className="flex justify-between text-xs font-medium text-slate-600 mb-1">
                   <span>Progress</span>
-                  <span className="text-slate-900 tabular-nums">65%</span>
+                  <span className="text-[#0d7a5f] font-semibold tabular-nums">65%</span>
                 </div>
-                <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-slate-900 rounded-full" style={{ width: '65%' }} />
+                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200/70">
+                  <div className="h-full bg-[#0d7a5f] rounded-full" style={{ width: '65%' }} />
                 </div>
               </div>
               <button
                 onClick={() => navigate('/lesson-player?courseId=course-8')}
-                className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2 rounded-xl transition-colors flex items-center space-x-2 shadow-xs"
+                className="bg-[#0d7a5f] hover:bg-teal-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs cursor-pointer"
               >
                 <Play size={13} className="fill-white" />
                 <span>Resume Lesson</span>
