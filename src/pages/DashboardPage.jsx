@@ -75,20 +75,20 @@ export const DashboardPage = () => {
             </button>
           </div>
 
-          {/* 3D Character Image anchored touching the bottom container border and overflowing above the top */}
-          <div className="absolute bottom-0 left-3 sm:left-7 z-10 pointer-events-auto group">
+          {/* 3D Character Image stuck to the bottom container border and overflowing above the top */}
+          <div className="absolute -bottom-0.5 left-5 sm:left-8 z-10 pointer-events-auto group">
             <div className="relative">
               <img
                 src={currentUser.avatar || boyAvatar}
                 alt={currentUser.name}
-                className="h-32 sm:h-44 md:h-52 w-auto max-w-[105px] sm:max-w-[165px] md:max-w-[200px] object-contain drop-shadow-md select-none transition-transform duration-300 group-hover:scale-105 cursor-pointer block"
+                className="h-38 sm:h-46 md:h-54 lg:h-58 w-auto max-w-[125px] sm:max-w-[165px] md:max-w-[195px] object-contain object-bottom drop-shadow-md select-none transition-transform duration-300 group-hover:scale-105 cursor-pointer block"
                 onClick={() => setIsAvatarModalOpen(true)}
                 title="Click to customize avatar"
               />
               <button
                 type="button"
                 onClick={() => setIsAvatarModalOpen(true)}
-                className="absolute bottom-1.5 right-0.5 sm:bottom-2 sm:right-1 bg-white/95 hover:bg-white text-slate-800 p-1 sm:p-1.5 rounded-full shadow-md border border-slate-200 transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                className="absolute bottom-2 right-1 bg-white/95 hover:bg-white text-slate-800 p-1 sm:p-1.5 rounded-full shadow-md border border-slate-200 transition-all hover:scale-110 active:scale-95 cursor-pointer"
                 title="Change avatar"
               >
                 <Camera size={12} className="text-slate-700" />
@@ -96,43 +96,36 @@ export const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-            <div className="flex items-center space-x-3.5 sm:space-x-5">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="flex items-center space-x-3.5 sm:space-x-5 min-w-0">
               {/* Spacer matching character width to prevent text overlap */}
-              <div className="w-28 sm:w-36 md:w-44 shrink-0 self-stretch pointer-events-none" aria-hidden="true" />
+              <div className="w-32 sm:w-40 md:w-48 lg:w-52 shrink-0 self-stretch pointer-events-none" aria-hidden="true" />
 
-              {/* Greeting & Information */}
-              <div className="space-y-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center space-x-1.5 text-[11px] font-semibold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-md border border-teal-200/80">
-                    <GraduationCap size={13} className="text-teal-700" />
-                    <span>Student Portal</span>
-                  </span>
-                  <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200/80">
-                    <Flame size={12} className="text-amber-600 fill-amber-500" />
-                    <span>5-Day Streak</span>
-                  </span>
-                  {/* Quick toggle pill button for super fast testing */}
-                  <button
-                    type="button"
-                    onClick={toggleGenderAvatar}
-                    className="inline-flex items-center space-x-1 text-[11px] font-medium text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/80 px-2.5 py-0.5 rounded-md border border-slate-200 transition-colors cursor-pointer"
-                    title="Quick toggle between Boy & Girl"
-                  >
-                    <RefreshCw size={11} className="text-slate-500" />
-                    <span>Switch: {isCurrentlyBoy ? 'Girl' : 'Boy'}</span>
-                  </button>
-                </div>
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-                  Welcome back, {currentUser.name}!
+              {/* Greeting & Information - Big Two-Tone Heading */}
+              <div className="min-w-0 py-0.5">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-extrabold tracking-tight leading-tight">
+                  <span className="text-slate-500 font-semibold">Welcome back, </span>
+                  <span className="text-[#3b49df] font-black">{currentUser.name}!</span>
                 </h1>
-                <p className="text-slate-500 text-xs sm:text-sm font-normal">
+                <p className="text-slate-500 text-xs sm:text-sm mt-1.5 font-normal max-w-xl">
                   You are making great progress across your 4 active specializations. Keep up the momentum!
                 </p>
+
+                {/* Action button on mobile/tablet below text */}
+                <div className="mt-3.5 lg:hidden">
+                  <button
+                    onClick={() => navigate('/enrolled-courses')}
+                    className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2 rounded-xl transition-colors inline-flex items-center space-x-2 shadow-xs cursor-pointer"
+                  >
+                    <span>My Courses</span>
+                    <ArrowRight size={13} />
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center space-x-3 shrink-0 self-end sm:self-center">
+            {/* Action button on large desktop placed on the right */}
+            <div className="hidden lg:flex items-center space-x-3 shrink-0 self-center">
               <button
                 onClick={() => navigate('/enrolled-courses')}
                 className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs cursor-pointer"
