@@ -1,4 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import boyAvatar from '../assets/Boy.png';
+import girlAvatar from '../assets/Girl.png';
+
+export { boyAvatar, girlAvatar };
+
 export const ADMIN_USER = {
     id: 'admin-1',
     name: 'Vishal Chaurasiya',
@@ -14,7 +19,7 @@ export const STUDENT_USER = {
     email: 'aarav.patel@operatingmedia.com',
     role: 'STUDENT',
     roleLabel: 'STUDENT',
-    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+    avatar: boyAvatar,
     designation: 'Digital Marketing & SEO Student',
     enrolledCoursesCount: 4,
     completedCoursesCount: 2,
@@ -26,6 +31,11 @@ const STORAGE_KEY = 'om_lms_current_role';
 export const AuthProvider = ({ children }) => {
     const [role, setRole] = useState(() => {
         try {
+            const params = new URLSearchParams(window.location.search);
+            const queryRole = params.get('role')?.toUpperCase();
+            if (queryRole === 'STUDENT' || queryRole === 'ADMIN') {
+                return queryRole;
+            }
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved === 'STUDENT' || saved === 'ADMIN') {
                 return saved;
@@ -37,7 +47,30 @@ export const AuthProvider = ({ children }) => {
         return 'ADMIN';
     });
     const [adminUser, setAdminUser] = useState(ADMIN_USER);
-    const [studentUser, setStudentUser] = useState(STUDENT_USER);
+    const [studentUser, setStudentUser] = useState(() => {
+        const initial = { ...STUDENT_USER };
+        try {
+            const params = new URLSearchParams(window.location.search);
+            const queryAvatar = params.get('avatar')?.toLowerCase();
+            if (queryAvatar === 'girl') {
+                initial.avatar = girlAvatar;
+                return initial;
+            }
+            if (queryAvatar === 'boy') {
+                initial.avatar = boyAvatar;
+                return initial;
+            }
+            const savedAvatar = localStorage.getItem('om_lms_student_avatar');
+            if (savedAvatar) {
+                initial.avatar = savedAvatar;
+            } else {
+                initial.avatar = boyAvatar;
+            }
+        } catch {
+            initial.avatar = boyAvatar;
+        }
+        return initial;
+    });
     useEffect(() => {
         try {
             localStorage.setItem(STORAGE_KEY, role);
@@ -64,7 +97,17 @@ export const AuthProvider = ({ children }) => {
             setAdminUser((prev) => ({ ...prev, ...updates }));
         }
         else {
-            setStudentUser((prev) => ({ ...prev, ...updates }));
+            setStudentUser((prev) => {
+                const next = { ...prev, ...updates };
+                if (updates.avatar) {
+                    try {
+                        localStorage.setItem('om_lms_student_avatar', updates.avatar);
+                    } catch (e) {
+                        console.error('Failed to store avatar in localStorage', e);
+                    }
+                }
+                return next;
+            });
         }
     };
     return (<AuthContext.Provider value={{

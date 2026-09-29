@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StatCard } from '../components/common/StatCard';
-import { BookOpen, Users, User, Award, ArrowRight, Star, Play, CheckCircle2, CheckSquare, Shield, GraduationCap, Clock, Flame, Sparkles, DollarSign } from 'lucide-react';
+import { BookOpen, Users, User, Award, ArrowRight, Star, Play, CheckCircle2, CheckSquare, Shield, GraduationCap, Clock, Flame, Sparkles, DollarSign, Camera, Upload, X, Check, RefreshCw, Image as ImageIcon } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { lmsService } from '../services/lmsService';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, boyAvatar, girlAvatar } from '../context/AuthContext';
 import logo from '../assests/logo.png';
 
 const chartData = [
@@ -20,12 +20,36 @@ const chartData = [
 
 export const DashboardPage = () => {
   const navigate = useNavigate();
-  const { isStudent, isAdmin, currentUser } = useAuth();
+  const { isStudent, isAdmin, currentUser, updateCurrentUser } = useAuth();
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const courses = lmsService.getCourses();
   const activities = lmsService.getActivities();
   const quizzes = lmsService.getQuizzes();
   const assignments = lmsService.getAssignments();
   const achievements = lmsService.getAchievements().filter(a => a.unlocked);
+
+  const isCurrentlyBoy = currentUser.avatar === boyAvatar || (!currentUser.avatar?.includes('Girl') && currentUser.avatar !== girlAvatar);
+
+  const toggleGenderAvatar = (e) => {
+    e?.stopPropagation();
+    const nextAvatar = isCurrentlyBoy ? girlAvatar : boyAvatar;
+    updateCurrentUser({ avatar: nextAvatar });
+  };
+
+  const handleCustomUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (uploadEvent) => {
+        const result = uploadEvent.target?.result;
+        if (typeof result === 'string') {
+          updateCurrentUser({ avatar: result });
+          setIsAvatarModalOpen(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // -------------------------------------------------------------
   // STUDENT DASHBOARD VIEW
@@ -35,15 +59,63 @@ export const DashboardPage = () => {
 
     return (
       <div className="space-y-6">
-        {/* Student Welcome Header - Clean, Expansive SaaS Greeting */}
-        <div className="bg-white border border-slate-200/90 p-6 sm:p-7 rounded-2xl relative shadow-2xs">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-            <div className="flex items-start sm:items-center space-x-4">
-              <img
-                src={currentUser.avatar || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80"}
-                alt={currentUser.name}
-                className="w-14 h-14 rounded-full object-cover ring-2 ring-slate-100 shadow-xs shrink-0"
+        {/* Student Welcome Header with 3D Character pop-out overflow & outside callout */}
+        <div className="relative mt-12 sm:mt-16 bg-white border border-slate-200/90 p-5 sm:p-7 rounded-2xl shadow-2xs">
+          {/* Floating Callout OUTSIDE the container with pointing arrow */}
+          <div className="absolute -top-11 sm:-top-13 left-4 sm:left-8 z-20 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsAvatarModalOpen(true)}
+              className="bg-slate-900 hover:bg-slate-800 text-white text-[11px] sm:text-xs font-semibold px-3.5 py-1.5 rounded-full shadow-lg border border-slate-700/80 flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 cursor-pointer group"
+              title="Click to customize your student character"
+            >
+              <Sparkles size={12} className="text-amber-400 group-hover:rotate-12 transition-transform" />
+              <span>Change for / into your own</span>
+            </button>
+
+            {/* Hand-drawn styled curved pointing arrow aimed at character */}
+            <svg
+              className="w-7 h-7 text-slate-800 -rotate-12 transform translate-y-1 drop-shadow-xs"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path
+                d="M3 4 C 7 14, 13 18, 19 18"
+                strokeWidth="2.5"
+                strokeLinecap="round"
               />
+              <path
+                d="M13 13 L 19 18 L 14 22"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+            <div className="flex items-end sm:items-center space-x-3.5 sm:space-x-5">
+              {/* 3D Character Image with Over-the-Card Overflow */}
+              <div className="relative shrink-0 -mt-14 sm:-mt-20 md:-mt-24 group">
+                <img
+                  src={currentUser.avatar || boyAvatar}
+                  alt={currentUser.name}
+                  className="h-28 sm:h-36 md:h-44 w-auto max-w-[130px] sm:max-w-[170px] md:max-w-[200px] object-contain drop-shadow-md select-none transition-transform duration-300 group-hover:scale-105 cursor-pointer"
+                  onClick={() => setIsAvatarModalOpen(true)}
+                  title="Click to customize avatar"
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsAvatarModalOpen(true)}
+                  className="absolute bottom-1 right-1 bg-white/95 hover:bg-white text-slate-800 p-1.5 rounded-full shadow-md border border-slate-200 transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                  title="Change avatar"
+                >
+                  <Camera size={13} className="text-slate-700" />
+                </button>
+              </div>
+
+              {/* Greeting & Information */}
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center space-x-1.5 text-[11px] font-semibold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-md border border-teal-200/80">
@@ -54,6 +126,16 @@ export const DashboardPage = () => {
                     <Flame size={12} className="text-amber-600 fill-amber-500" />
                     <span>5-Day Streak</span>
                   </span>
+                  {/* Quick toggle pill button for super fast testing */}
+                  <button
+                    type="button"
+                    onClick={toggleGenderAvatar}
+                    className="inline-flex items-center space-x-1 text-[11px] font-medium text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/80 px-2.5 py-0.5 rounded-md border border-slate-200 transition-colors cursor-pointer"
+                    title="Quick toggle between Boy & Girl"
+                  >
+                    <RefreshCw size={11} className="text-slate-500" />
+                    <span>Switch: {isCurrentlyBoy ? 'Girl' : 'Boy'}</span>
+                  </button>
                 </div>
                 <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
                   Welcome back, {currentUser.name}!
@@ -279,6 +361,148 @@ export const DashboardPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Avatar Customization Modal */}
+        {isAvatarModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+            <div className="bg-white rounded-2xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+              {/* Modal Header */}
+              <div className="px-6 py-4.5 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold text-base text-slate-900 flex items-center gap-2">
+                    <Sparkles size={16} className="text-amber-500" />
+                    Customize Your Student Avatar
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Personalize your dashboard character or upload your own photo.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsAvatarModalOpen(false)}
+                  className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-6 space-y-5">
+                <div>
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-3">
+                    Choose 3D Animated Character
+                  </span>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Option 1: 3D Boy */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateCurrentUser({ avatar: boyAvatar });
+                        setIsAvatarModalOpen(false);
+                      }}
+                      className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center text-center cursor-pointer group ${
+                        currentUser.avatar === boyAvatar
+                          ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20'
+                          : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/60'
+                      }`}
+                    >
+                      <div className="w-24 h-24 flex items-center justify-center mb-2.5">
+                        <img
+                          src={boyAvatar}
+                          alt="Boy Character"
+                          className="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform"
+                        />
+                      </div>
+                      <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
+                        <span>3D Boy (Waving)</span>
+                        {currentUser.avatar === boyAvatar && (
+                          <Check size={14} className="text-blue-600" />
+                        )}
+                      </div>
+                      <span className="text-[11px] text-slate-500 mt-0.5">Friendly animated boy</span>
+                    </button>
+
+                    {/* Option 2: 3D Girl */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        updateCurrentUser({ avatar: girlAvatar });
+                        setIsAvatarModalOpen(false);
+                      }}
+                      className={`p-4 rounded-xl border-2 transition-all flex flex-col items-center text-center cursor-pointer group ${
+                        currentUser.avatar === girlAvatar
+                          ? 'border-purple-600 bg-purple-50/50 ring-2 ring-purple-500/20'
+                          : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50/60'
+                      }`}
+                    >
+                      <div className="w-24 h-24 flex items-center justify-center mb-2.5">
+                        <img
+                          src={girlAvatar}
+                          alt="Girl Character"
+                          className="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform"
+                        />
+                      </div>
+                      <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
+                        <span>3D Girl (Waving)</span>
+                        {currentUser.avatar === girlAvatar && (
+                          <Check size={14} className="text-purple-600" />
+                        )}
+                      </div>
+                      <span className="text-[11px] text-slate-500 mt-0.5">Friendly animated girl</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Option 3: Upload Custom Photo */}
+                <div className="pt-2 border-t border-slate-100">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-2.5">
+                    Or Upload Your Own Photo
+                  </span>
+
+                  <label className="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl p-5 flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-slate-50/50 hover:bg-blue-50/20 group">
+                    <div className="w-10 h-10 rounded-full bg-slate-200/80 group-hover:bg-blue-100 text-slate-600 group-hover:text-blue-600 flex items-center justify-center mb-2 transition-colors">
+                      <Upload size={18} />
+                    </div>
+                    <span className="text-xs font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                      Click to choose photo from your computer
+                    </span>
+                    <span className="text-[11px] text-slate-400 mt-0.5">
+                      PNG, JPG, SVG or WEBP (Transparent PNG recommended)
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleCustomUpload}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Modal Footer */}
+              <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateCurrentUser({ avatar: boyAvatar });
+                    setIsAvatarModalOpen(false);
+                  }}
+                  className="text-xs text-slate-500 hover:text-slate-800 font-medium cursor-pointer"
+                >
+                  Reset to default (Boy)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsAvatarModalOpen(false)}
+                  className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-4 py-2 rounded-xl transition-colors cursor-pointer"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
