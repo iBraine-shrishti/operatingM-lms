@@ -1,12 +1,11 @@
 import React from 'react';
 import { StatCard } from '../components/common/StatCard';
-import { BookOpen, Users, Award, ArrowRight, Star, Play, CheckCircle2, CheckSquare, Shield, GraduationCap, Clock } from 'lucide-react';
+import { BookOpen, Users, Award, ArrowRight, Star, Play, CheckCircle2, CheckSquare, Shield, GraduationCap, Clock, Flame, Sparkles } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { lmsService } from '../services/lmsService';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import logo from '../assests/logo.png';
-import { DoodleStar, DoodleHeart, DoodleCloud, DoodleBurst } from '../components/common/CheerfulDoodles';
 
 const chartData = [
   { month: 'Jan', completions: 180, enrollments: 320 },
@@ -36,39 +35,48 @@ export const DashboardPage = () => {
 
     return (
       <div className="space-y-6">
-        {/* Student Welcome Header - Cheerful Banner matching our-courses.png */}
-        <div className="bg-[#fbf7f4] border border-[#f0e6de] p-6 sm:p-8 rounded-3xl relative overflow-hidden shadow-xs">
-          <DoodleStar className="w-9 h-9 absolute top-3 left-4 -rotate-12 pointer-events-none opacity-90 hidden sm:block" />
-          <DoodleHeart className="w-8 h-8 absolute top-3 left-1/2 -translate-x-1/2 -rotate-6 pointer-events-none opacity-90" />
-          <DoodleCloud className="w-12 h-9 absolute top-3 right-6 rotate-6 pointer-events-none opacity-90 hidden sm:block" />
-
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="space-y-1.5">
-              <div className="inline-flex items-center space-x-1.5 text-xs font-medium text-teal-800 bg-teal-50 px-3 py-0.5 rounded-full border border-teal-200/80">
-                <GraduationCap size={14} className="text-teal-700" />
-                <span>Student Learning Hub</span>
+        {/* Student Welcome Header - Clean, Expansive SaaS Greeting */}
+        <div className="bg-white border border-slate-200/90 p-6 sm:p-7 rounded-2xl relative shadow-2xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+            <div className="flex items-start sm:items-center space-x-4">
+              <img
+                src={currentUser.avatar || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80"}
+                alt={currentUser.name}
+                className="w-14 h-14 rounded-full object-cover ring-2 ring-slate-100 shadow-xs shrink-0"
+              />
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center space-x-1.5 text-[11px] font-semibold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-md border border-teal-200/80">
+                    <GraduationCap size={13} className="text-teal-700" />
+                    <span>Student Portal</span>
+                  </span>
+                  <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-md border border-amber-200/80">
+                    <Flame size={12} className="text-amber-600 fill-amber-500" />
+                    <span>5-Day Streak</span>
+                  </span>
+                </div>
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                  Welcome back, {currentUser.name}!
+                </h1>
+                <p className="text-slate-500 text-xs sm:text-sm font-normal">
+                  You are making great progress across your 4 active specializations. Keep up the momentum!
+                </p>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight font-serif">
-                Welcome back, {currentUser.name}! 🌟
-              </h1>
-              <p className="text-slate-600 text-xs sm:text-sm max-w-xl font-normal leading-relaxed">
-                You are currently active in 4 courses. 28 lessons completed and 4 official certification badges unlocked!
-              </p>
             </div>
 
-            <div className="flex items-center space-x-3 shrink-0">
+            <div className="flex items-center space-x-3 shrink-0 self-end sm:self-center">
               <button
                 onClick={() => navigate('/enrolled-courses')}
-                className="bg-[#0d7a5f] hover:bg-teal-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs cursor-pointer"
+                className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs cursor-pointer"
               >
-                <span>My Enrolled Courses</span>
+                <span>My Courses</span>
                 <ArrowRight size={14} />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Student Learning KPI Cards with Cheerful Accents */}
+        {/* Student Learning KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard title="Enrolled Courses" value="4 Courses" change="2 Active In-Progress" isPositive={true} icon={BookOpen} iconColor="text-sky-600" iconBg="bg-sky-50 border border-sky-100" />
           <StatCard title="Completed Lessons" value="28 / 72" change="+4 this week" isPositive={true} icon={CheckCircle2} iconColor="text-emerald-600" iconBg="bg-emerald-50 border border-emerald-100" />
@@ -77,14 +85,14 @@ export const DashboardPage = () => {
         </div>
 
         {/* Continue Learning Featured Lesson Card */}
-        <div className="bg-white rounded-3xl border border-slate-200/90 p-5 md:p-6 shadow-2xs">
+        <div className="bg-white rounded-xl border border-slate-200/90 p-5 shadow-2xs">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div className="flex items-start space-x-4">
-              <div className="w-11 h-11 rounded-2xl bg-teal-50 text-[#0d7a5f] border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs">
-                <Play size={18} className="fill-[#0d7a5f] translate-x-0.5" />
+              <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs">
+                <Play size={16} className="fill-teal-700 translate-x-0.5" />
               </div>
               <div className="space-y-1">
-                <span className="text-[11px] font-medium uppercase tracking-wider text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200/80">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-md border border-teal-200/80">
                   Up Next • Search Engine Optimization (SEO)
                 </span>
                 <h3 className="text-base font-semibold text-slate-900">
@@ -100,15 +108,15 @@ export const DashboardPage = () => {
               <div className="w-36 hidden sm:block">
                 <div className="flex justify-between text-xs font-medium text-slate-600 mb-1">
                   <span>Progress</span>
-                  <span className="text-[#0d7a5f] font-semibold tabular-nums">65%</span>
+                  <span className="text-teal-700 font-bold tabular-nums">65%</span>
                 </div>
                 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200/70">
-                  <div className="h-full bg-[#0d7a5f] rounded-full" style={{ width: '65%' }} />
+                  <div className="h-full bg-teal-700 rounded-full" style={{ width: '65%' }} />
                 </div>
               </div>
               <button
                 onClick={() => navigate('/lesson-player?courseId=course-8')}
-                className="bg-[#0d7a5f] hover:bg-teal-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs cursor-pointer"
+                className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs cursor-pointer"
               >
                 <Play size={13} className="fill-white" />
                 <span>Resume Lesson</span>
@@ -120,7 +128,7 @@ export const DashboardPage = () => {
         {/* 2-Column Section: Active Courses & Learning Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Active In-Progress Courses (2 columns) */}
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-4">
+          <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200/80 p-5 shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-semibold text-slate-900 text-base">In-Progress Learning Tracks</h3>
@@ -128,7 +136,7 @@ export const DashboardPage = () => {
               </div>
               <button
                 onClick={() => navigate('/enrolled-courses')}
-                className="text-xs font-medium text-slate-600 hover:text-slate-900 hover:underline"
+                className="text-xs font-medium text-slate-600 hover:text-slate-900 hover:underline cursor-pointer"
               >
                 View All
               </button>
@@ -165,12 +173,12 @@ export const DashboardPage = () => {
                           <span className="tabular-nums">{progressVal}%</span>
                         </div>
                         <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                          <div className="h-full bg-slate-900 rounded-full" style={{ width: `${progressVal}%` }} />
+                          <div className="h-full bg-teal-700 rounded-full" style={{ width: `${progressVal}%` }} />
                         </div>
                       </div>
                       <button
                         onClick={() => navigate(`/lesson-player?courseId=${c.id}`)}
-                        className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1"
+                        className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
                       >
                         <Play size={11} className="fill-slate-700" />
                         <span>Continue</span>
@@ -185,7 +193,7 @@ export const DashboardPage = () => {
           {/* Right Column: Quizzes & Achievements */}
           <div className="space-y-5">
             {/* Upcoming Quizzes */}
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-3">
+            <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-2xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <CheckSquare size={16} className="text-slate-600" />
@@ -193,7 +201,7 @@ export const DashboardPage = () => {
                 </div>
                 <button
                   onClick={() => navigate('/my-quizzes')}
-                  className="text-xs font-medium text-slate-500 hover:text-slate-900 hover:underline"
+                  className="text-xs font-medium text-slate-500 hover:text-slate-900 hover:underline cursor-pointer"
                 >
                   View All
                 </button>
@@ -205,7 +213,7 @@ export const DashboardPage = () => {
                     <p className="text-xs font-medium text-slate-800 leading-snug">{q.title}</p>
                     <div className="flex justify-between text-xs text-slate-500 font-normal">
                       <span>{q.totalQuestions} Questions • {q.durationMinutes} mins</span>
-                      <span className="font-semibold text-slate-700 tabular-nums">{q.passScorePercentage}% pass</span>
+                      <span className="font-semibold text-teal-700 tabular-nums">{q.passScorePercentage}% pass</span>
                     </div>
                   </div>
                 ))}
@@ -213,7 +221,7 @@ export const DashboardPage = () => {
             </div>
 
             {/* Achievements Unlocked */}
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-3">
+            <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-2xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Award size={16} className="text-slate-600" />
@@ -221,7 +229,7 @@ export const DashboardPage = () => {
                 </div>
                 <button
                   onClick={() => navigate('/achievements')}
-                  className="text-xs font-medium text-slate-500 hover:text-slate-900 hover:underline"
+                  className="text-xs font-medium text-slate-500 hover:text-slate-900 hover:underline cursor-pointer"
                 >
                   See All (4)
                 </button>
@@ -230,8 +238,8 @@ export const DashboardPage = () => {
               <div className="space-y-2">
                 {achievements.slice(0, 3).map((a) => (
                   <div key={a.id} className="flex items-center space-x-3 p-2.5 bg-slate-50/80 rounded-xl border border-slate-200/60">
-                    <div className="w-8 h-8 rounded-lg bg-slate-200 text-slate-700 flex items-center justify-center font-semibold text-xs shrink-0">
-                      🏆
+                    <div className="w-8 h-8 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-semibold text-xs shrink-0">
+                      <Award size={15} />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-medium text-slate-900 truncate">{a.title}</p>
@@ -272,7 +280,7 @@ export const DashboardPage = () => {
         <div className="flex items-center space-x-3 shrink-0 self-start sm:self-auto">
           <button
             onClick={() => navigate('/manage-reports')}
-            className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs"
+            className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs cursor-pointer"
           >
             <span>View Analytics Report</span>
             <ArrowRight size={14} />
@@ -291,7 +299,7 @@ export const DashboardPage = () => {
       {/* Charts & Activity Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Analytics Chart (2 columns) */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200/80 p-6 shadow-2xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-slate-900 text-base">Student Enrollments & Completions</h3>
@@ -337,13 +345,13 @@ export const DashboardPage = () => {
         </div>
 
         {/* Real-time Activity Stream (1 column) */}
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs flex flex-col justify-between space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-2xs flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-slate-900 text-base">Real-time Activity</h3>
               <button
                 onClick={() => navigate('/activity')}
-                className="text-xs font-medium text-slate-500 hover:text-slate-900 hover:underline"
+                className="text-xs font-medium text-slate-500 hover:text-slate-900 hover:underline cursor-pointer"
               >
                 View Log
               </button>
@@ -370,19 +378,17 @@ export const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/70 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="h-9 px-2 bg-white rounded-lg border border-slate-200 flex items-center justify-center shrink-0">
-                <img src={logo} alt="Operating Media" className="h-5 w-auto object-contain" />
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-slate-900">Operating Media LMS</p>
-                <p className="text-xs text-slate-500 font-normal">Instructor & Portal Documentation</p>
+          <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <img src={logo} alt="Operating Media" className="h-4 w-auto object-contain opacity-70" />
+              <div className="text-[11px] text-slate-400">
+                <span className="font-medium text-slate-600 block">Operating Media LMS</span>
+                <span>Instructor & Portal Documentation</span>
               </div>
             </div>
             <button
-              onClick={() => navigate('/manage-reports')}
-              className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors"
+              onClick={() => showToast('Documentation knowledgebase is up to date!', 'info')}
+              className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
             >
               Docs
             </button>
@@ -390,8 +396,8 @@ export const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Popular Courses Table */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+      {/* Top Performing Courses Table */}
+      <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-2xs space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-semibold text-slate-900 text-base">Top Performing Courses</h3>
@@ -399,46 +405,54 @@ export const DashboardPage = () => {
           </div>
           <button
             onClick={() => navigate('/manage-courses')}
-            className="text-xs font-medium text-slate-600 hover:text-slate-900 hover:underline"
+            className="text-xs font-medium text-slate-600 hover:text-slate-900 hover:underline cursor-pointer"
           >
             Manage Courses
           </button>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-100 text-slate-500 uppercase text-[11px] font-medium tracking-wider">
-                <th className="pb-3 font-medium">Course</th>
-                <th className="pb-3 font-medium">Category</th>
-                <th className="pb-3 font-medium">Enrolled</th>
-                <th className="pb-3 font-medium">Rating</th>
-                <th className="pb-3 font-medium">Status</th>
-                <th className="pb-3 text-right font-medium">Action</th>
+              <tr className="border-b border-slate-100 text-slate-400 font-semibold uppercase tracking-wider">
+                <th className="pb-3 font-semibold">Course</th>
+                <th className="pb-3 font-semibold">Category</th>
+                <th className="pb-3 font-semibold">Enrolled</th>
+                <th className="pb-3 font-semibold">Rating</th>
+                <th className="pb-3 font-semibold">Status</th>
+                <th className="pb-3 font-semibold text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
-              {courses.slice(0, 4).map((c) => (
-                <tr key={c.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="py-3 font-medium text-slate-900 flex items-center space-x-3">
-                    <img src={c.thumbnail} alt={c.title} className="w-10 h-7 rounded-lg object-cover shrink-0" />
-                    <span className="truncate max-w-xs">{c.title}</span>
-                  </td>
-                  <td className="py-3 text-slate-500 text-xs font-normal">{c.category}</td>
-                  <td className="py-3 text-slate-900 font-semibold tabular-nums">{c.studentsCount}</td>
-                  <td className="py-3 text-slate-700 font-medium flex items-center space-x-1">
-                    <Star size={13} className="fill-amber-400 text-amber-400" />
-                    <span className="tabular-nums">{c.rating.toFixed(1)}</span>
-                  </td>
-                  <td className="py-3">
-                    <span className="bg-slate-100 text-slate-700 border border-slate-200 text-xs font-medium px-2 py-0.5 rounded-md">
-                      {c.status.toUpperCase()}
+            <tbody className="divide-y divide-slate-100 text-slate-700">
+              {courses.slice(0, 5).map((course) => (
+                <tr key={course.id} className="hover:bg-slate-50/60 transition-colors">
+                  <td className="py-3.5 pr-4 flex items-center space-x-3">
+                    <img
+                      src={course.thumbnail}
+                      alt={course.title}
+                      className="w-10 h-8 rounded-md object-cover shrink-0 border border-slate-200/70"
+                    />
+                    <span className="font-semibold text-slate-900 hover:text-teal-700 cursor-pointer" onClick={() => navigate(`/courses/${course.id}`)}>
+                      {course.title}
                     </span>
                   </td>
-                  <td className="py-3 text-right">
+                  <td className="py-3.5 pr-4 text-slate-500 font-normal">{course.category}</td>
+                  <td className="py-3.5 pr-4 font-bold text-slate-900 tabular-nums">{course.studentsCount}</td>
+                  <td className="py-3.5 pr-4">
+                    <div className="flex items-center space-x-1">
+                      <Star size={12} className="fill-amber-400 text-amber-400" />
+                      <span className="font-bold text-slate-800">{course.rating.toFixed(1)}</span>
+                    </div>
+                  </td>
+                  <td className="py-3.5 pr-4">
+                    <span className="bg-slate-100 text-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded-md uppercase">
+                      {course.status}
+                    </span>
+                  </td>
+                  <td className="py-3.5 text-right">
                     <button
-                      onClick={() => navigate(`/courses/${c.id}`)}
-                      className="text-slate-700 hover:text-slate-900 hover:underline font-medium text-xs"
+                      onClick={() => navigate(`/courses/${course.id}`)}
+                      className="text-xs font-semibold text-slate-600 hover:text-teal-700 transition-colors cursor-pointer"
                     >
                       View Details
                     </button>

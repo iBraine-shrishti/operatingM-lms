@@ -34,8 +34,8 @@ export const SharedLayout = () => {
         {/* Topbar */}
         <Topbar onToggleSidebar={toggleSidebar} onOpenSearch={() => setSearchModalOpen(true)}/>
 
-        {/* Page Content View */}
-        <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto animate-in fade-in duration-300">
+        {/* Page Content View - Expansive, edge-conscious layout */}
+        <main className="flex-1 w-full max-w-[1680px] mx-auto px-4 sm:px-6 lg:px-8 py-6 animate-in fade-in duration-200">
           <Outlet />
         </main>
       </div>

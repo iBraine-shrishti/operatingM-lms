@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { DoodleStar, DoodleHeart, DoodleCloud, DoodleBurst, CheerfulBadge } from '../components/common/CheerfulDoodles';
 
 export const CourseDetailPage = () => {
   const { id } = useParams();
@@ -316,7 +315,7 @@ export const CourseDetailPage = () => {
           </button>
           <button
             onClick={() => navigate(`/lesson-player?courseId=${course.id}`)}
-            className="px-5 py-2 rounded-xl bg-[#0d7a5f] hover:bg-teal-800 text-white text-xs font-medium transition-all shadow-xs flex items-center space-x-1.5"
+            className="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer"
           >
             <Play size={13} className="fill-white" />
             <span>Preview & Learn</span>
@@ -327,24 +326,19 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {/* WIDE COVER BANNER & INSET AVATAR matching course-outline.png  */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden">
         {/* Cover Image Container */}
         <div className="relative h-48 sm:h-56 md:h-64 w-full bg-gradient-to-r from-teal-900 via-slate-800 to-indigo-900 overflow-hidden">
           <img
             src={coverImage}
             alt={course.title}
-            className="w-full h-full object-cover opacity-85"
+            className="w-full h-full object-cover"
           />
-
-          {/* Cheerful subtle doodle stickers floating in cover matching our-courses.png */}
-          <DoodleStar className="w-10 h-10 absolute top-4 left-6 -rotate-12 pointer-events-none opacity-85 drop-shadow-md" />
-          <DoodleHeart className="w-8 h-8 absolute bottom-6 right-36 rotate-12 pointer-events-none opacity-85 drop-shadow-md" />
-          <DoodleCloud className="w-14 h-10 absolute top-4 right-32 -rotate-6 pointer-events-none opacity-85 drop-shadow-md hidden sm:block" />
 
           {/* Change Cover Pill Button matching course-outline.png */}
           <button
             onClick={() => setShowCoverModal(true)}
-            className="absolute top-4 right-4 bg-white/90 hover:bg-white text-slate-800 text-xs font-medium px-3.5 py-1.5 rounded-xl border border-slate-200/80 shadow-xs backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer"
+            className="absolute top-4 right-4 bg-white/90 hover:bg-white text-slate-800 text-xs font-medium px-3.5 py-1.5 rounded-lg border border-slate-200/80 shadow-xs backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer"
           >
             <Camera size={14} className="text-slate-600" />
             <span>Change Cover</span>
@@ -352,11 +346,11 @@ export const CourseDetailPage = () => {
         </div>
 
         {/* Header Body with Inset Circular Avatar */}
-        <div className="px-6 sm:px-8 pb-7 pt-4 bg-white">
+        <div className="px-6 sm:px-8 pb-6 pt-3 bg-white">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 -mt-14 sm:-mt-16 mb-5">
             {/* Inset Circular Avatar matching course-outline.png */}
             <div className="flex items-end space-x-4">
-              <div className="relative w-22 h-22 sm:w-26 sm:h-26 rounded-full ring-4 ring-white shadow-lg bg-white overflow-hidden shrink-0">
+              <div className="relative w-22 h-22 sm:w-26 sm:h-26 rounded-full ring-4 ring-white shadow-md bg-white overflow-hidden shrink-0">
                 <img
                   src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"
                   alt="Operating Media Faculty"
@@ -365,17 +359,17 @@ export const CourseDetailPage = () => {
               </div>
 
               <div className="pb-1">
-                <span className="inline-block bg-teal-50 text-teal-800 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-teal-200/80 mb-1">
+                <span className="inline-block bg-slate-100 text-slate-700 text-[11px] font-semibold px-2.5 py-0.5 rounded-md border border-slate-200 mb-1">
                   {course.category}
                 </span>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-slate-900 tracking-tight leading-tight">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 tracking-tight leading-tight">
                   {course.title}
                 </h1>
               </div>
             </div>
 
             {/* Instructor Credit on Right Side matching course-outline.png */}
-            <div className="flex items-center space-x-3 bg-slate-50 border border-slate-200/80 px-4 py-2.5 rounded-2xl shrink-0">
+            <div className="flex items-center space-x-3 bg-slate-50 border border-slate-200/80 px-4 py-2.5 rounded-xl shrink-0">
               <img
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80"
                 alt="Tony Stark"
@@ -392,63 +386,63 @@ export const CourseDetailPage = () => {
             </div>
           </div>
 
-          {/* Cheerful Stat Chips Row matching course-outline.png */}
+          {/* Clean Stat Chips Row matching course-outline.png */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-100">
             {/* Chip 1: Total Modules */}
-            <div className="bg-sky-50/70 border border-sky-100 rounded-2xl p-3 flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-sky-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+            <div className="bg-sky-50/70 border border-sky-100 rounded-xl p-3 flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-lg bg-sky-500 text-white flex items-center justify-center shrink-0 shadow-2xs">
                 <Layers size={18} />
               </div>
               <div>
                 <span className="text-[10px] uppercase font-semibold text-sky-700 tracking-wider block">
                   Total Modules
                 </span>
-                <span className="text-base font-semibold text-slate-900 tabular-nums">
+                <span className="text-base font-bold text-slate-900 tabular-nums">
                   0{sections.length}
                 </span>
               </div>
             </div>
 
             {/* Chip 2: Activities */}
-            <div className="bg-emerald-50/70 border border-emerald-100 rounded-2xl p-3 flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-[#0d7a5f] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <div className="bg-emerald-50/70 border border-emerald-100 rounded-xl p-3 flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
                 <Play size={18} className="fill-white translate-x-0.5" />
               </div>
               <div>
                 <span className="text-[10px] uppercase font-semibold text-emerald-800 tracking-wider block">
                   Activities
                 </span>
-                <span className="text-base font-semibold text-slate-900 tabular-nums">
+                <span className="text-base font-bold text-slate-900 tabular-nums">
                   {totalActivitiesCount}
                 </span>
               </div>
             </div>
 
             {/* Chip 3: Course Level */}
-            <div className="bg-purple-50/70 border border-purple-100 rounded-2xl p-3 flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+            <div className="bg-purple-50/70 border border-purple-100 rounded-xl p-3 flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-lg bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
                 <Star size={18} className="fill-white" />
               </div>
               <div>
                 <span className="text-[10px] uppercase font-semibold text-purple-800 tracking-wider block">
                   Course Level
                 </span>
-                <span className="text-base font-semibold text-slate-900">
+                <span className="text-base font-bold text-slate-900">
                   Beginner
                 </span>
               </div>
             </div>
 
             {/* Chip 4: Verified Certificate */}
-            <div className="bg-amber-50/70 border border-amber-100 rounded-2xl p-3 flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+            <div className="bg-amber-50/70 border border-amber-100 rounded-xl p-3 flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-2xs">
                 <Award size={18} />
               </div>
               <div>
                 <span className="text-[10px] uppercase font-semibold text-amber-800 tracking-wider block">
                   Credential
                 </span>
-                <span className="text-base font-semibold text-slate-900">
+                <span className="text-base font-bold text-slate-900">
                   Certified
                 </span>
               </div>
@@ -488,23 +482,31 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {activeTab === 'outline' && (
         <div className="space-y-6">
-          {/* Cheerful Progress Summary Banner */}
-          <div className="bg-[#fbf7f4] border border-[#f0e6de] p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+          {/* Progress Summary Banner */}
+          <div className="bg-slate-50 border border-slate-200/90 p-4 sm:p-5 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
             <div className="flex items-center space-x-3">
-              <DoodleBurst className="w-8 h-8 shrink-0" />
+              <div className="w-9 h-9 rounded-lg bg-teal-50 text-teal-700 border border-teal-200/80 flex items-center justify-center shrink-0">
+                <Award size={18} />
+              </div>
               <div>
                 <p className="text-xs font-semibold text-slate-900">
-                  Your Progress: {completedActivitiesCount} of {totalActivitiesCount} activities completed
+                  Course Progress: {completedActivitiesCount} of {totalActivitiesCount} activities completed
                 </p>
                 <p className="text-[11px] text-slate-500 font-normal">
-                  Complete all modules to unlock your official Operating Media certificate!
+                  Complete all modules to unlock your official Operating Media certificate.
                 </p>
               </div>
             </div>
             <div className="w-full sm:w-48">
-              <div className="w-full h-2 bg-white rounded-full border border-slate-200 overflow-hidden">
+              <div className="flex items-center justify-between text-[11px] font-medium text-slate-500 mb-1">
+                <span>Completion</span>
+                <span className="text-teal-700 font-bold tabular-nums">
+                  {Math.round((completedActivitiesCount / totalActivitiesCount) * 100)}%
+                </span>
+              </div>
+              <div className="w-full h-2 bg-slate-200/80 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-[#0d7a5f] rounded-full transition-all duration-500"
+                  className="h-full bg-teal-700 rounded-full transition-all duration-500"
                   style={{ width: `${Math.round((completedActivitiesCount / totalActivitiesCount) * 100)}%` }}
                 />
               </div>
@@ -526,7 +528,7 @@ export const CourseDetailPage = () => {
               return (
                 <div
                   key={section.name + sIdx}
-                  className="bg-white rounded-3xl border border-slate-200/90 shadow-2xs overflow-hidden transition-all"
+                  className="bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden transition-all"
                 >
                   {/* Module Header Bar matching course-outline.png */}
                   <div
