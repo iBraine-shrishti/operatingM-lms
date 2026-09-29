@@ -1,6 +1,6 @@
 import React from 'react';
 import { StatCard } from '../components/common/StatCard';
-import { BookOpen, Users, Award, ArrowRight, Star, Play, CheckCircle2, CheckSquare, Shield, GraduationCap, Clock, Flame, Sparkles } from 'lucide-react';
+import { BookOpen, Users, User, Award, ArrowRight, Star, Play, CheckCircle2, CheckSquare, Shield, GraduationCap, Clock, Flame, Sparkles, DollarSign } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { lmsService } from '../services/lmsService';
 import { useNavigate } from 'react-router-dom';
@@ -76,12 +76,40 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Student Learning KPI Cards */}
+        {/* Student Learning KPI Cards matching dashborad cards.png */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard title="Enrolled Courses" value="4 Courses" change="2 Active In-Progress" isPositive={true} icon={BookOpen} iconColor="text-sky-600" iconBg="bg-sky-50 border border-sky-100" />
-          <StatCard title="Completed Lessons" value="28 / 72" change="+4 this week" isPositive={true} icon={CheckCircle2} iconColor="text-emerald-600" iconBg="bg-emerald-50 border border-emerald-100" />
-          <StatCard title="Avg Quiz Score" value="88.5%" change="Passed all 3 quizzes" isPositive={true} icon={CheckSquare} iconColor="text-purple-600" iconBg="bg-purple-50 border border-purple-100" />
-          <StatCard title="Badges & Honors" value="4 Unlocked" change="1 badge pending" isPositive={true} icon={Award} iconColor="text-amber-600" iconBg="bg-amber-50 border border-amber-100" />
+          <StatCard
+            title="ENROLLED COURSES"
+            value="4 Courses"
+            progress={65}
+            subtitle="2 Active In-Progress"
+            icon={BookOpen}
+            color="blue"
+          />
+          <StatCard
+            title="COMPLETED LESSONS"
+            value="28 / 72"
+            progress={40}
+            subtitle="4 Lessons this week"
+            icon={CheckCircle2}
+            color="emerald"
+          />
+          <StatCard
+            title="AVG QUIZ SCORE"
+            value="88.5%"
+            progress={88}
+            subtitle="Passed all 3 quizzes"
+            icon={CheckSquare}
+            color="purple"
+          />
+          <StatCard
+            title="BADGES & HONORS"
+            value="4 Unlocked"
+            progress={80}
+            subtitle="1 badge pending"
+            icon={Award}
+            color="orange"
+          />
         </div>
 
         {/* Continue Learning Featured Lesson Card */}
@@ -288,12 +316,40 @@ export const DashboardPage = () => {
         </div>
       </div>
 
-      {/* KPI Stat Cards Grid - Clean Uniform Management Palette */}
+      {/* 4 Cards matching dashborad cards.png */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Courses" value="8 Tracks" change="All Active & Published" isPositive={true} icon={BookOpen} />
-        <StatCard title="Total Students" value="1,480" change="+18.4% this semester" isPositive={true} icon={Users} />
-        <StatCard title="Completion Rate" value="88%" change="+3.5% vs avg benchmark" isPositive={true} icon={Award} />
-        <StatCard title="Active Batches" value="18 Batches" change="+3 ongoing batches" isPositive={true} icon={GraduationCap} />
+        <StatCard
+          title="TOTAL STUDENTS"
+          value="3280"
+          progress={80}
+          subtitle="80% Increase in 20 Days"
+          icon={Users}
+          color="blue"
+        />
+        <StatCard
+          title="NEW STUDENTS"
+          value="245"
+          progress={50}
+          subtitle="50% Increase in 25 Days"
+          icon={User}
+          color="orange"
+        />
+        <StatCard
+          title="TOTAL COURSE"
+          value="28"
+          progress={76}
+          subtitle="76% Increase in 20 Days"
+          icon={GraduationCap}
+          color="purple"
+        />
+        <StatCard
+          title="FEES COLLECTION"
+          value="25160$"
+          progress={30}
+          subtitle="30% Increase in 30 Days"
+          icon={DollarSign}
+          color="red"
+        />
       </div>
 
       {/* Charts & Activity Grid */}
