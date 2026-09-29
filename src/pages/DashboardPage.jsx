@@ -60,59 +60,45 @@ export const DashboardPage = () => {
     return (
       <div className="space-y-6">
         {/* Student Welcome Header with 3D Character bottom-anchored touching border and overflowing top */}
-        <div className="relative mt-12 sm:mt-16 bg-white border border-slate-200/90 p-5 sm:p-7 rounded-2xl shadow-2xs">
-          {/* Simple, small change indicator outside the container on the other side (top-right) */}
-          <div className="absolute -top-6 sm:-top-7 right-3 sm:right-7 z-20">
-            <button
-              type="button"
-              onClick={() => setIsAvatarModalOpen(true)}
-              className="inline-flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs text-slate-500 hover:text-slate-800 transition-colors cursor-pointer group"
-              title="Click to customize your student character"
-            >
-              <ArrowLeft size={11} className="text-slate-400 group-hover:text-slate-700 group-hover:-translate-x-0.5 transition-transform" />
-              <span className="font-normal">Change for / into your own</span>
-              <Sparkles size={11} className="text-amber-500" />
-            </button>
-          </div>
-
+        <div className="relative mt-10 sm:mt-14 lg:mt-16 bg-white border border-slate-200/90 p-4.5 sm:p-6 lg:p-7 rounded-2xl shadow-2xs">
           {/* 3D Character Image stuck to the bottom container border and overflowing above the top */}
-          <div className="absolute -bottom-0.5 left-5 sm:left-8 z-10 pointer-events-auto group">
+          <div className="absolute -bottom-0.5 left-2 sm:left-4 lg:left-6 z-10 pointer-events-auto group">
             <div className="relative">
               <img
                 src={currentUser.avatar || boyAvatar}
                 alt={currentUser.name}
-                className="h-38 sm:h-46 md:h-54 lg:h-58 w-auto max-w-[125px] sm:max-w-[165px] md:max-w-[195px] object-contain object-bottom drop-shadow-md select-none transition-transform duration-300 group-hover:scale-105 cursor-pointer block"
+                className="h-34 sm:h-38 md:h-42 lg:h-54 w-auto max-w-[110px] sm:max-w-[130px] md:max-w-[140px] lg:max-w-[190px] object-contain object-bottom drop-shadow-md select-none transition-transform duration-300 group-hover:scale-105 cursor-pointer block"
                 onClick={() => setIsAvatarModalOpen(true)}
                 title="Click to customize avatar"
               />
               <button
                 type="button"
                 onClick={() => setIsAvatarModalOpen(true)}
-                className="absolute bottom-2 right-1 bg-white/95 hover:bg-white text-slate-800 p-1 sm:p-1.5 rounded-full shadow-md border border-slate-200 transition-all hover:scale-110 active:scale-95 cursor-pointer"
-                title="Change avatar"
+                className="absolute bottom-2 right-0.5 sm:right-1 bg-white hover:bg-slate-50 text-slate-800 p-1.5 rounded-full shadow-md border border-slate-200 transition-all hover:scale-110 active:scale-95 cursor-pointer"
+                title="Click to customize avatar"
               >
-                <Camera size={12} className="text-slate-700" />
+                <Camera size={13} className="text-slate-700" />
               </button>
             </div>
           </div>
 
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex items-center space-x-3.5 sm:space-x-5 min-w-0">
-              {/* Spacer matching character width to prevent text overlap */}
-              <div className="w-32 sm:w-40 md:w-48 lg:w-52 shrink-0 self-stretch pointer-events-none" aria-hidden="true" />
+            <div className="flex items-center space-x-3 sm:space-x-4 min-w-0">
+              {/* Spacer matching character width + clearance to prevent hand overlap */}
+              <div className="w-32 sm:w-40 md:w-48 lg:w-56 shrink-0 self-stretch pointer-events-none" aria-hidden="true" />
 
               {/* Greeting & Information - Big Two-Tone Heading */}
               <div className="min-w-0 py-0.5">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-extrabold tracking-tight leading-tight">
-                  <span className="text-slate-500 font-semibold">Welcome back, </span>
+                <h1 className="text-xl sm:text-2xl md:text-2xl lg:text-3xl xl:text-4xl font-extrabold tracking-tight leading-snug">
+                  <span className="text-slate-500 font-semibold block sm:inline">Welcome back, </span>
                   <span className="text-[#3b49df] font-black">{currentUser.name}!</span>
                 </h1>
-                <p className="text-slate-500 text-xs sm:text-sm mt-1.5 font-normal max-w-xl">
+                <p className="text-slate-500 text-xs sm:text-sm mt-1 sm:mt-1.5 font-normal max-w-xl">
                   You are making great progress across your 4 active specializations. Keep up the momentum!
                 </p>
 
                 {/* Action button on mobile/tablet below text */}
-                <div className="mt-3.5 lg:hidden">
+                <div className="mt-3 lg:hidden">
                   <button
                     onClick={() => navigate('/enrolled-courses')}
                     className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2 rounded-xl transition-colors inline-flex items-center space-x-2 shadow-xs cursor-pointer"

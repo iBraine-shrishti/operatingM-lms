@@ -79,20 +79,20 @@ export const StatCard = ({
   const displaySubtitle = subtitle || (change ? `${change} vs last period` : null);
 
   return (
-    <div className={`${scheme.bg} p-5 sm:p-5.5 rounded-xl shadow-xs transition-all duration-200 flex items-center space-x-4 group`}>
+    <div className={`${scheme.bg} p-4 sm:p-4.5 lg:p-5 rounded-xl shadow-xs transition-all duration-200 flex items-center space-x-3 sm:space-x-4 group`}>
       {/* Left Icon: White circular badge */}
       {Icon && (
-        <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
-          <Icon size={22} className={iconColor || scheme.iconText} />
+        <div className="w-11 h-11 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm">
+          <Icon size={20} className={iconColor || scheme.iconText} />
         </div>
       )}
 
       {/* Right Content */}
       <div className="flex-1 min-w-0">
-        <span className="text-[11px] font-bold text-white/90 uppercase tracking-wider block truncate">
+        <span className="text-[10px] sm:text-[11px] font-bold text-white/90 uppercase tracking-wider block leading-tight">
           {title}
         </span>
-        <div className="text-2xl sm:text-[28px] font-extrabold text-white leading-tight tracking-tight my-0.5 tabular-nums">
+        <div className="text-xl sm:text-2xl lg:text-[28px] font-extrabold text-white leading-tight tracking-tight my-0.5 tabular-nums">
           {value}
         </div>
 
