@@ -36,8 +36,15 @@ export const CourseCard = ({ course, onDelete }) => {
     }
   };
 
+  const handleCardClick = () => {
+    navigate(`/courses/${course.id}`);
+  };
+
   return (
-    <div className="bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col justify-between overflow-hidden group">
+    <div
+      onClick={handleCardClick}
+      className="bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col justify-between overflow-hidden group cursor-pointer"
+    >
       <div>
         {/* Banner / Thumbnail Container */}
         <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
@@ -61,8 +68,7 @@ export const CourseCard = ({ course, onDelete }) => {
           {/* Header & Title */}
           <div className="flex items-start justify-between gap-2 mb-1.5">
             <h3
-              onClick={() => navigate(`/courses/${course.id}`)}
-              className="font-semibold text-slate-900 text-sm xl:text-[15px] leading-snug cursor-pointer hover:text-teal-700 transition-colors line-clamp-2 min-h-[2.5rem]"
+              className="font-semibold text-slate-900 text-sm xl:text-[15px] leading-snug group-hover:text-[#3b49df] transition-colors line-clamp-2 min-h-[2.5rem]"
               title={course.title}
             >
               {course.title}
@@ -83,23 +89,26 @@ export const CourseCard = ({ course, onDelete }) => {
                 </button>
 
                 {menuOpen && (
-                  <div className="absolute right-0 mt-1 w-40 bg-white shadow-xl border border-slate-200 py-1.5 z-30 animate-in fade-in">
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute right-0 mt-1 w-40 bg-white shadow-xl border border-slate-200 py-1.5 z-30 animate-in fade-in"
+                  >
                     <button
-                      onClick={() => { setMenuOpen(false); navigate(`/courses/${course.id}`); }}
+                      onClick={(e) => { e.stopPropagation(); setMenuOpen(false); navigate(`/courses/${course.id}`); }}
                       className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2"
                     >
                       <Eye size={13} className="text-slate-400" />
                       <span>View Outline</span>
                     </button>
                     <button
-                      onClick={() => { setMenuOpen(false); navigate(`/create-course?edit=${course.id}`); }}
+                      onClick={(e) => { e.stopPropagation(); setMenuOpen(false); navigate(`/create-course?edit=${course.id}`); }}
                       className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2"
                     >
                       <Edit size={13} className="text-slate-400" />
                       <span>Edit Course</span>
                     </button>
                     <button
-                      onClick={() => { setMenuOpen(false); }}
+                      onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}
                       className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2"
                     >
                       <Copy size={13} className="text-slate-400" />
@@ -107,7 +116,7 @@ export const CourseCard = ({ course, onDelete }) => {
                     </button>
                     {onDelete && (
                       <button
-                        onClick={() => { setMenuOpen(false); onDelete(course.id); }}
+                        onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onDelete(course.id); }}
                         className="w-full px-3 py-1.5 text-left text-xs font-medium text-red-600 hover:bg-red-50 flex items-center space-x-2 border-t border-slate-100"
                       >
                         <Trash2 size={13} />
@@ -154,8 +163,11 @@ export const CourseCard = ({ course, onDelete }) => {
       {/* Card Footer: Action Button */}
       <div className="px-4 pb-4 xl:px-5 xl:pb-5 pt-0">
         <button
-          onClick={() => navigate(`/courses/${course.id}`)}
-          className="w-full py-2.5 px-3 bg-slate-900 hover:bg-teal-700 text-white font-medium text-xs flex items-center justify-center space-x-1.5 transition-all shadow-xs group/btn cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/courses/${course.id}`);
+          }}
+          className="w-full py-2.5 px-3 bg-slate-900 group-hover:bg-[#3b49df] text-white font-medium text-xs flex items-center justify-center space-x-1.5 transition-all shadow-xs group/btn cursor-pointer"
         >
           <span>View Course Outline</span>
           <ArrowRight size={13} className="group-hover/btn:translate-x-0.5 transition-transform" />
