@@ -66,38 +66,56 @@ export const ManageCoursesPage = () => {
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* PROFESSIONAL CATALOG HERO BANNER                              */}
+      {/* PROFESSIONAL CATALOG HERO BANNER (In-Progress Accent Style)   */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white border border-slate-200/90 p-6 sm:p-8 shadow-xs relative overflow-hidden">
+      <div className="bg-white border border-slate-200/80 border-l-4 border-l-[#5068f2] p-6 sm:p-7 shadow-2xs relative overflow-hidden transition-all">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div className="max-w-3xl space-y-2">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200/80 text-teal-800 text-xs font-medium">
-              <Award size={13} className="text-teal-700" />
+            <div className="inline-flex items-center space-x-2 px-2.5 py-1 bg-blue-50 border border-blue-200/80 text-[#3b49df] text-xs font-bold uppercase tracking-wider">
+              <BookOpen size={13} className="text-[#3b49df]" />
               <span>Operating Media Masterclass Curriculum</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-              Explore Our Courses
+              Explore Our <span className="text-[#3b49df]">Courses</span>
             </h1>
             <p className="text-slate-600 text-xs sm:text-sm font-normal leading-relaxed max-w-2xl">
               Comprehensive hands-on digital marketing, SEO, analytics, and development programs with live industry projects and verified credentials.
             </p>
           </div>
 
-          {/* Quick Metrics Strip */}
-          <div className="flex items-center space-x-4 sm:space-x-6 shrink-0 bg-slate-50 border border-slate-100 p-3.5 sm:p-4">
-            <div className="text-center sm:text-left">
-              <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider block">Specializations</span>
-              <span className="text-lg font-bold text-slate-900 tabular-nums">08 Tracks</span>
+          {/* Quick Metrics Chips: Colorful In-Progress Style Stat Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 shrink-0 w-full lg:w-auto">
+            {/* Chip 1: Blue Scheme */}
+            <div className="bg-white border border-slate-200/80 border-l-4 border-l-[#5068f2] p-2.5 sm:px-3.5 sm:py-2.5 shadow-2xs flex items-center space-x-2.5 hover:bg-blue-50/20 transition-colors">
+              <div className="w-8 h-8 rounded-full bg-blue-50 border border-blue-200/80 text-[#5068f2] flex items-center justify-center shrink-0">
+                <BookOpen size={15} />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[9px] sm:text-[9.5px] uppercase font-bold text-slate-500 tracking-wider block whitespace-nowrap">Specializations</span>
+                <span className="text-sm sm:text-base font-extrabold text-slate-900 tabular-nums whitespace-nowrap">08 Tracks</span>
+              </div>
             </div>
-            <div className="h-8 w-px bg-slate-200" />
-            <div className="text-center sm:text-left">
-              <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider block">Practical Labs</span>
-              <span className="text-lg font-bold text-slate-900 tabular-nums">140+ Labs</span>
+
+            {/* Chip 2: Teal Scheme */}
+            <div className="bg-white border border-slate-200/80 border-l-4 border-l-[#0d9488] p-2.5 sm:px-3.5 sm:py-2.5 shadow-2xs flex items-center space-x-2.5 hover:bg-teal-50/20 transition-colors">
+              <div className="w-8 h-8 rounded-full bg-teal-50 border border-teal-200/80 text-[#0d9488] flex items-center justify-center shrink-0">
+                <CheckCircle2 size={15} />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[9px] sm:text-[9.5px] uppercase font-bold text-slate-500 tracking-wider block whitespace-nowrap">Practical Labs</span>
+                <span className="text-sm sm:text-base font-extrabold text-slate-900 tabular-nums whitespace-nowrap">140+ Labs</span>
+              </div>
             </div>
-            <div className="h-8 w-px bg-slate-200" />
-            <div className="text-center sm:text-left">
-              <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider block">Credentials</span>
-              <span className="text-lg font-bold text-teal-700 font-semibold">Certified</span>
+
+            {/* Chip 3: Amber Scheme */}
+            <div className="bg-white border border-slate-200/80 border-l-4 border-l-[#fca119] p-2.5 sm:px-3.5 sm:py-2.5 shadow-2xs flex items-center space-x-2.5 hover:bg-amber-50/20 transition-colors">
+              <div className="w-8 h-8 rounded-full bg-amber-50 border border-amber-200/80 text-[#fca119] flex items-center justify-center shrink-0">
+                <Award size={15} />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[9px] sm:text-[9.5px] uppercase font-bold text-slate-500 tracking-wider block whitespace-nowrap">Credentials</span>
+                <span className="text-sm sm:text-base font-extrabold text-[#fca119] whitespace-nowrap">Certified</span>
+              </div>
             </div>
           </div>
         </div>
@@ -110,10 +128,10 @@ export const ManageCoursesPage = () => {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
+                    ? 'bg-[#3b49df] text-white shadow-xs'
+                    : 'bg-white text-slate-700 border border-slate-200/90 hover:border-blue-300 hover:text-[#3b49df] hover:bg-blue-50/40'
                 }`}
               >
                 {cat.label}

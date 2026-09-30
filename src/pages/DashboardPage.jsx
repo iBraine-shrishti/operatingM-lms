@@ -199,27 +199,27 @@ export const DashboardPage = () => {
 
             {/* Right: Pie Chart Visualization + Start Action Button */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 xl:gap-6 shrink-0 xl:pl-6 xl:border-l xl:border-slate-100 pt-3 xl:pt-0 border-t xl:border-t-0 border-slate-100">
-              {/* Pie Chart: Bigger visual with rich Module & Minutes Breakdown */}
-              <div className="flex flex-col sm:flex-row items-center gap-4 bg-slate-50/80 border border-slate-200/90 px-4 py-3.5">
-                {/* Bigger Donut / Pie Chart */}
+              {/* Professional Frontend Developer: Clean white card, colorful in limit */}
+              <div className="flex flex-col sm:flex-row items-center gap-4.5 bg-white border border-slate-200/90 p-4 shadow-2xs hover:border-slate-300 transition-all">
+                {/* Dual-Tone Crisp Pie Chart: Brand Blue (65% Covered) & Warm Amber (35% Remaining) */}
                 <div className="relative w-20 h-20 sm:w-[88px] sm:h-[88px] shrink-0 flex items-center justify-center">
                   <svg className="w-20 h-20 sm:w-[88px] sm:h-[88px] -rotate-90" viewBox="0 0 88 88">
-                    {/* Remaining 35% track */}
+                    {/* Remaining 35% track: Warm Amber */}
                     <circle
                       cx="44"
                       cy="44"
                       r="36"
-                      fill="transparent"
-                      stroke="#e2e8f0"
+                      fill="#ffffff"
+                      stroke="#f59e0b"
                       strokeWidth="7.5"
                     />
-                    {/* Covered 65% track */}
+                    {/* Covered 65% track: Brand Blue */}
                     <circle
                       cx="44"
                       cy="44"
                       r="36"
                       fill="transparent"
-                      stroke="#0d9488"
+                      stroke="#3b49df"
                       strokeWidth="7.5"
                       strokeDasharray="226.19"
                       strokeDashoffset={226.19 * (1 - 0.65)}
@@ -227,52 +227,52 @@ export const DashboardPage = () => {
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center select-none pointer-events-none">
-                    <span className="text-lg sm:text-xl font-extrabold text-slate-900 leading-none tabular-nums">65%</span>
-                    <span className="text-[9.5px] uppercase font-bold text-teal-700 tracking-wider leading-none mt-1">done</span>
+                    <span className="text-xl sm:text-2xl font-black text-slate-900 leading-none tabular-nums">65%</span>
+                    <span className="text-[10px] uppercase font-black text-[#3b49df] tracking-wider leading-none mt-1">done</span>
                   </div>
                 </div>
 
-                {/* Detailed Info: Total number of modules [covered numbered] + Minutes covered & remaining */}
+                {/* Detailed Info: Clean typography with colorful pills and indicators */}
                 <div className="space-y-1.5 text-xs min-w-[210px] w-full sm:w-auto">
-                  <div className="flex items-center justify-between pb-1 border-b border-slate-200/70">
-                    <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider">
+                  <div className="flex items-center justify-between pb-1.5 border-b border-slate-200/80">
+                    <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
                       Module Progress
                     </span>
-                    <span className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 border border-teal-200/70">
+                    <span className="text-[10.5px] font-extrabold text-[#3b49df] bg-blue-50 px-2 py-0.5 border border-blue-200/80">
                       Module 2 of 4
                     </span>
                   </div>
 
                   {/* Total Number of Modules [Covered Numbered] */}
-                  <div className="flex items-center justify-between gap-3 text-xs">
-                    <div className="flex items-center space-x-1.5 text-slate-600 font-medium">
-                      <span className="w-2 h-2 bg-[#3b49df] shrink-0" />
+                  <div className="flex items-center justify-between gap-3 text-xs pt-0.5">
+                    <div className="flex items-center space-x-2 text-slate-600 font-medium">
+                      <span className="w-2.5 h-2.5 bg-[#3b49df] shrink-0" />
                       <span>Total Modules:</span>
                     </div>
                     <div className="text-slate-900 font-bold tabular-nums whitespace-nowrap">
-                      4 Modules <span className="text-[#3b49df] font-bold">[2 Covered]</span>
+                      4 Modules <span className="text-[#3b49df] font-black">[2 Covered]</span>
                     </div>
                   </div>
 
                   {/* Minutes Covered */}
                   <div className="flex items-center justify-between gap-3 text-xs">
-                    <div className="flex items-center space-x-1.5 text-slate-600 font-medium">
-                      <span className="w-2 h-2 bg-teal-600 shrink-0" />
+                    <div className="flex items-center space-x-2 text-slate-600 font-medium">
+                      <span className="w-2.5 h-2.5 bg-[#3b49df] shrink-0" />
                       <span>Covered:</span>
                     </div>
                     <div className="text-slate-900 font-bold tabular-nums whitespace-nowrap">
-                      16m <span className="text-teal-700 font-semibold">(65%)</span>
+                      16m <span className="text-[#3b49df] font-black">(65%)</span>
                     </div>
                   </div>
 
                   {/* Minutes Remaining */}
                   <div className="flex items-center justify-between gap-3 text-xs">
-                    <div className="flex items-center space-x-1.5 text-slate-600 font-medium">
-                      <span className="w-2 h-2 bg-slate-300 shrink-0" />
+                    <div className="flex items-center space-x-2 text-slate-600 font-medium">
+                      <span className="w-2.5 h-2.5 bg-amber-500 shrink-0" />
                       <span>Remaining:</span>
                     </div>
-                    <div className="text-slate-700 font-semibold tabular-nums whitespace-nowrap">
-                      9m <span className="text-slate-400 font-normal">(35%)</span>
+                    <div className="text-slate-700 font-bold tabular-nums whitespace-nowrap">
+                      9m <span className="text-amber-600 font-semibold">(35%)</span>
                     </div>
                   </div>
                 </div>
@@ -281,71 +281,101 @@ export const DashboardPage = () => {
               {/* Start / Resume Action Button */}
               <button
                 onClick={() => navigate('/lesson-player?courseId=course-8')}
-                className="bg-[#3b49df] hover:bg-[#2f3cb8] text-white font-semibold text-xs sm:text-sm px-5 py-3 transition-all shadow-xs flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95"
+                className="bg-[#3b49df] hover:bg-[#2f3cb8] text-white font-bold text-xs sm:text-sm px-6 py-3.5 transition-all shadow-sm flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95"
               >
-                <Play size={13} className="fill-white" />
+                <Play size={14} className="fill-white" />
                 <span>Resume Lesson</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* 2-Column Section: Active Courses & Learning Sidebar */}
+        {/* 2-Column Section: Active Courses & Learning Sidebar with Clean White BG, Accent Borders, and Vibrant Colors */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Active In-Progress Courses (2 columns) */}
           <div className="lg:col-span-2 bg-white border border-slate-200/80 p-5 shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-slate-900 text-base">In-Progress Learning Tracks</h3>
+                <h3 className="font-bold text-slate-900 text-base">In-Progress Learning Tracks</h3>
                 <p className="text-xs text-slate-500 font-normal">Jump right back into your active curriculum</p>
               </div>
               <button
                 onClick={() => navigate('/enrolled-courses')}
-                className="text-xs font-medium text-slate-600 hover:text-slate-900 hover:underline cursor-pointer"
+                className="text-xs font-semibold text-[#3b49df] hover:underline cursor-pointer flex items-center space-x-1"
               >
-                View All
+                <span>View All</span>
+                <ArrowRight size={13} />
               </button>
             </div>
 
             <div className="space-y-3">
               {enrolledCourses.map((c, idx) => {
                 const progressVal = idx === 0 ? 65 : idx === 1 ? 40 : 20;
+                // Color schemes: Text color, border color, hover tint, progress bar color - NOT entire bg!
+                const trackSchemes = [
+                  {
+                    border: 'border-l-4 border-l-[#5068f2]',
+                    hover: 'hover:border-blue-300 hover:bg-blue-50/30',
+                    tag: 'text-[#5068f2]',
+                    progress: 'bg-[#5068f2]',
+                    btn: 'text-[#5068f2] bg-blue-50 hover:bg-[#5068f2] hover:text-white border-blue-200'
+                  },
+                  {
+                    border: 'border-l-4 border-l-[#0d9488]',
+                    hover: 'hover:border-teal-300 hover:bg-teal-50/30',
+                    tag: 'text-[#0d9488]',
+                    progress: 'bg-[#0d9488]',
+                    btn: 'text-[#0d9488] bg-teal-50 hover:bg-[#0d9488] hover:text-white border-teal-200'
+                  },
+                  {
+                    border: 'border-l-4 border-l-[#6b3ec6]',
+                    hover: 'hover:border-purple-300 hover:bg-purple-50/30',
+                    tag: 'text-[#6b3ec6]',
+                    progress: 'bg-[#6b3ec6]',
+                    btn: 'text-[#6b3ec6] bg-purple-50 hover:bg-[#6b3ec6] hover:text-white border-purple-200'
+                  },
+                ];
+                const scheme = trackSchemes[idx % trackSchemes.length];
+
                 return (
                   <div
                     key={c.id}
-                    className="p-3.5 bg-slate-50/70 hover:bg-slate-100/60 border border-slate-200/70 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    className={`bg-white border border-slate-200/80 ${scheme.border} p-3.5 sm:p-4 transition-all duration-200 ${scheme.hover} flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 group`}
                   >
-                    <div className="flex items-center space-x-3.5">
+                    <div className="flex items-center space-x-3.5 min-w-0">
                       <img
                         src={c.thumbnail}
                         alt={c.title}
-                        className="w-14 h-11 object-cover shrink-0 shadow-2xs"
+                        className="w-16 h-12 object-cover shrink-0 shadow-2xs border border-slate-200/80"
                       />
-                      <div>
-                        <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                      <div className="min-w-0">
+                        <span className={`text-[10.5px] font-extrabold uppercase tracking-wider ${scheme.tag} block leading-tight`}>
                           {c.category}
                         </span>
-                        <h4 className="font-medium text-slate-900 text-sm">{c.title}</h4>
-                        <span className="text-xs text-slate-400 font-normal">
+                        <h4 className="font-bold text-slate-900 text-sm sm:text-base truncate leading-snug my-0.5 group-hover:text-slate-950">
+                          {c.title}
+                        </h4>
+                        <span className="text-xs text-slate-500 font-normal">
                           {c.duration} • 12 of {c.lessonsCount} lessons
                         </span>
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-4 sm:shrink-0 justify-between sm:justify-end">
-                      <div className="w-24">
-                        <div className="flex justify-between text-xs font-medium text-slate-600 mb-1">
-                          <span className="tabular-nums">{progressVal}%</span>
+                      <div className="w-28 sm:w-36">
+                        <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                          <span className="text-slate-500 text-[11px] font-medium">Curriculum</span>
+                          <span className={`tabular-nums font-bold ${scheme.tag}`}>{progressVal}%</span>
                         </div>
-                        <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                          <div className="h-full bg-teal-700 rounded-full" style={{ width: `${progressVal}%` }} />
+                        <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200/60">
+                          <div className={`h-full ${scheme.progress} rounded-full transition-all duration-500`} style={{ width: `${progressVal}%` }} />
                         </div>
                       </div>
                       <button
                         onClick={() => navigate(`/lesson-player?courseId=${c.id}`)}
-                        className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 text-xs font-medium px-3 py-1.5 transition-colors flex items-center space-x-1 cursor-pointer"
+                        className={`border text-xs font-bold px-3.5 py-2 transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer shrink-0 active:scale-95 ${scheme.btn}`}
                       >
-                        <Play size={11} className="fill-slate-700" />
+                        <Play size={11} className="fill-current" />
                         <span>Continue</span>
                       </button>
                     </div>
@@ -355,63 +385,149 @@ export const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Right Column: Quizzes & Achievements */}
+          {/* Right Column: Quizzes & Achievements with Clean White BG, Accent Borders, and Vibrant Colors */}
           <div className="space-y-5">
             {/* Upcoming Quizzes */}
-            <div className="bg-white border border-slate-200/80 p-5 shadow-2xs space-y-3">
+            <div className="bg-white border border-slate-200/80 p-5 shadow-2xs space-y-3.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <CheckSquare size={16} className="text-slate-600" />
-                  <h4 className="font-semibold text-slate-900 text-sm">Active Quizzes</h4>
+                  <CheckSquare size={16} className="text-[#6b3ec6]" />
+                  <h4 className="font-bold text-slate-900 text-base">Active Quizzes</h4>
                 </div>
                 <button
                   onClick={() => navigate('/my-quizzes')}
-                  className="text-xs font-medium text-slate-500 hover:text-slate-900 hover:underline cursor-pointer"
+                  className="text-xs font-semibold text-[#6b3ec6] hover:underline cursor-pointer flex items-center space-x-1"
                 >
-                  View All
+                  <span>View All</span>
+                  <ArrowRight size={12} />
                 </button>
               </div>
 
-              <div className="space-y-2.5">
-                {quizzes.slice(0, 2).map((q) => (
-                  <div key={q.id} className="p-3 bg-slate-50/80 border border-slate-200/60 space-y-1">
-                    <p className="text-xs font-medium text-slate-800 leading-snug">{q.title}</p>
-                    <div className="flex justify-between text-xs text-slate-500 font-normal">
-                      <span>{q.totalQuestions} Questions • {q.durationMinutes} mins</span>
-                      <span className="font-semibold text-teal-700 tabular-nums">{q.passScorePercentage}% pass</span>
+              <div className="space-y-3">
+                {quizzes.slice(0, 2).map((q, idx) => {
+                  const quizSchemes = [
+                    {
+                      border: 'border-l-4 border-l-[#6b3ec6]',
+                      hover: 'hover:border-purple-300 hover:bg-purple-50/20',
+                      badge: 'bg-purple-50 text-[#6b3ec6] border-purple-200',
+                      tag: 'text-[#6b3ec6]',
+                      btn: 'text-[#6b3ec6] bg-purple-50 hover:bg-[#6b3ec6] hover:text-white border-purple-200'
+                    },
+                    {
+                      border: 'border-l-4 border-l-[#f03030]',
+                      hover: 'hover:border-red-300 hover:bg-red-50/20',
+                      badge: 'bg-red-50 text-[#f03030] border-red-200',
+                      tag: 'text-[#f03030]',
+                      btn: 'text-[#f03030] bg-red-50 hover:bg-[#f03030] hover:text-white border-red-200'
+                    }
+                  ];
+                  const qScheme = quizSchemes[idx % quizSchemes.length];
+
+                  return (
+                    <div
+                      key={q.id}
+                      className={`bg-white border border-slate-200/80 ${qScheme.border} p-3.5 transition-all duration-200 ${qScheme.hover} flex items-center justify-between gap-3 group`}
+                    >
+                      <div className="flex items-center space-x-3 min-w-0">
+                        <div className={`w-10 h-10 rounded-full border flex items-center justify-center shrink-0 ${qScheme.badge}`}>
+                          <CheckSquare size={17} />
+                        </div>
+                        <div className="min-w-0">
+                          <span className={`text-[9.5px] font-extrabold uppercase tracking-wider ${qScheme.tag} block leading-tight`}>
+                            Specialization Test
+                          </span>
+                          <h5 className="font-bold text-slate-900 text-xs sm:text-sm truncate leading-tight my-0.5 group-hover:text-slate-950">
+                            {q.title}
+                          </h5>
+                          <span className="text-[11px] text-slate-500 font-medium block">
+                            {q.totalQuestions} Questions • {q.durationMinutes} mins
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="shrink-0 flex flex-col items-end space-y-1.5">
+                        <span className={`text-[10px] font-extrabold border px-2 py-0.5 ${qScheme.badge}`}>
+                          {q.passScorePercentage}% PASS
+                        </span>
+                        <button
+                          onClick={() => navigate('/my-quizzes')}
+                          className={`border text-xs font-bold px-3 py-1 transition-all active:scale-95 cursor-pointer flex items-center space-x-1 ${qScheme.btn}`}
+                        >
+                          <span>Start</span>
+                          <ArrowRight size={11} />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
             {/* Achievements Unlocked */}
-            <div className="bg-white border border-slate-200/80 p-5 shadow-2xs space-y-3">
+            <div className="bg-white border border-slate-200/80 p-5 shadow-2xs space-y-3.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <Award size={16} className="text-slate-600" />
-                  <h4 className="font-semibold text-slate-900 text-sm">Unlocked Badges</h4>
+                  <Award size={16} className="text-[#fca119]" />
+                  <h4 className="font-bold text-slate-900 text-base">Unlocked Badges</h4>
                 </div>
                 <button
                   onClick={() => navigate('/achievements')}
-                  className="text-xs font-medium text-slate-500 hover:text-slate-900 hover:underline cursor-pointer"
+                  className="text-xs font-semibold text-[#fca119] hover:underline cursor-pointer flex items-center space-x-1"
                 >
-                  See All (4)
+                  <span>See All ({achievements.length})</span>
+                  <ArrowRight size={12} />
                 </button>
               </div>
 
-              <div className="space-y-2">
-                {achievements.slice(0, 3).map((a) => (
-                  <div key={a.id} className="flex items-center space-x-3 p-2.5 bg-slate-50/80 border border-slate-200/60">
-                    <div className="w-8 h-8 rounded-full bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-semibold text-xs shrink-0">
-                      <Award size={15} />
+              <div className="space-y-2.5">
+                {achievements.slice(0, 3).map((a, idx) => {
+                  const badgeSchemes = [
+                    {
+                      border: 'border-l-4 border-l-[#fca119]',
+                      hover: 'hover:border-amber-300 hover:bg-amber-50/20',
+                      badge: 'bg-amber-50 text-[#fca119] border-amber-200',
+                      tag: 'text-amber-700 bg-amber-50 border-amber-200'
+                    },
+                    {
+                      border: 'border-l-4 border-l-[#0d9488]',
+                      hover: 'hover:border-teal-300 hover:bg-teal-50/20',
+                      badge: 'bg-teal-50 text-[#0d9488] border-teal-200',
+                      tag: 'text-teal-700 bg-teal-50 border-teal-200'
+                    },
+                    {
+                      border: 'border-l-4 border-l-[#6b3ec6]',
+                      hover: 'hover:border-purple-300 hover:bg-purple-50/20',
+                      badge: 'bg-purple-50 text-[#6b3ec6] border-purple-200',
+                      tag: 'text-purple-700 bg-purple-50 border-purple-200'
+                    }
+                  ];
+                  const bScheme = badgeSchemes[idx % badgeSchemes.length];
+
+                  return (
+                    <div
+                      key={a.id}
+                      className={`bg-white border border-slate-200/80 ${bScheme.border} p-3 transition-all duration-200 ${bScheme.hover} flex items-center justify-between gap-3 group`}
+                    >
+                      <div className="flex items-center space-x-3 min-w-0">
+                        <div className={`w-9 h-9 rounded-full border flex items-center justify-center shrink-0 ${bScheme.badge}`}>
+                          <Award size={16} />
+                        </div>
+                        <div className="min-w-0">
+                          <h5 className="font-bold text-slate-900 text-xs truncate leading-snug group-hover:text-slate-950">
+                            {a.title}
+                          </h5>
+                          <span className="text-[11px] text-slate-500 font-medium truncate block">
+                            {a.description}
+                          </span>
+                        </div>
+                      </div>
+
+                      <span className={`text-[9.5px] font-extrabold border px-2 py-0.5 shrink-0 whitespace-nowrap ${bScheme.tag}`}>
+                        Unlocked
+                      </span>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-slate-900 truncate">{a.title}</p>
-                      <p className="text-xs text-slate-400 font-normal truncate">{a.earnedDate}</p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
