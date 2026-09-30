@@ -114,86 +114,144 @@ export const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Student Learning KPI Cards matching dashborad cards.png - compact, logically centered, not full-width on mobile */}
-        <div className="flex flex-wrap justify-center items-stretch gap-3 sm:gap-3.5 lg:gap-4">
-          <div className="w-full max-w-[320px] sm:max-w-none sm:w-[calc(50%-0.5rem)] lg:flex-1 lg:max-w-[270px] min-w-[200px]">
-            <StatCard
-              title="ENROLLED COURSES"
-              value="4 Courses"
-              progress={65}
-              subtitle="2 Active In-Progress"
-              icon={BookOpen}
-              color="blue"
-            />
-          </div>
-          <div className="w-full max-w-[320px] sm:max-w-none sm:w-[calc(50%-0.5rem)] lg:flex-1 lg:max-w-[270px] min-w-[200px]">
-            <StatCard
-              title="COMPLETED LESSONS"
-              value="28 / 72"
-              progress={40}
-              subtitle="4 Lessons this week"
-              icon={CheckCircle2}
-              color="emerald"
-            />
-          </div>
-          <div className="w-full max-w-[320px] sm:max-w-none sm:w-[calc(50%-0.5rem)] lg:flex-1 lg:max-w-[270px] min-w-[200px]">
-            <StatCard
-              title="AVG QUIZ SCORE"
-              value="88.5%"
-              progress={88}
-              subtitle="Passed all 3 quizzes"
-              icon={CheckSquare}
-              color="purple"
-            />
-          </div>
-          <div className="w-full max-w-[320px] sm:max-w-none sm:w-[calc(50%-0.5rem)] lg:flex-1 lg:max-w-[270px] min-w-[200px]">
-            <StatCard
-              title="BADGES & HONORS"
-              value="4 Unlocked"
-              progress={80}
-              subtitle="1 badge pending"
-              icon={Award}
-              color="orange"
-            />
-          </div>
+        {/* Student Learning KPI Cards - 2x2 grid from mobile up to 1023px, 4-col on desktop (no asymmetry, no auto margin) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 lg:gap-4">
+          <StatCard
+            title="ENROLLED COURSES"
+            value="4 Courses"
+            progress={65}
+            subtitle="2 Active In-Progress"
+            icon={BookOpen}
+            color="blue"
+          />
+          <StatCard
+            title="COMPLETED LESSONS"
+            value="28 / 72"
+            progress={40}
+            subtitle="4 Lessons this week"
+            icon={CheckCircle2}
+            color="emerald"
+          />
+          <StatCard
+            title="AVG QUIZ SCORE"
+            value="88.5%"
+            progress={88}
+            subtitle="Passed all 3 quizzes"
+            icon={CheckSquare}
+            color="purple"
+          />
+          <StatCard
+            title="BADGES & HONORS"
+            value="4 Unlocked"
+            progress={80}
+            subtitle="1 badge pending"
+            icon={Award}
+            color="orange"
+          />
         </div>
 
-        {/* Continue Learning Featured Lesson Card */}
-        <div className="bg-white rounded-xl border border-slate-200/90 p-5 shadow-2xs">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-            <div className="flex items-start space-x-4">
-              <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/80 flex items-center justify-center shrink-0 shadow-2xs">
-                <Play size={16} className="fill-teal-700 translate-x-0.5" />
+        {/* Pick Up Where You Left Off - Clean Light Card with Logical Flow & Seamless Pie Chart */}
+        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 sm:p-5 lg:p-6 transition-all">
+          {/* Header Bar: Category & Course Title */}
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-3.5 border-b border-slate-100">
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6 rounded-lg bg-blue-50 text-[#3b49df] flex items-center justify-center">
+                <Play size={12} className="fill-[#3b49df]" />
               </div>
-              <div className="space-y-1">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded-md border border-teal-200/80">
-                  Up Next • Search Engine Optimization (SEO)
-                </span>
-                <h3 className="text-base font-semibold text-slate-900">
-                  2.2 Schema Markup & Structured Data Implementation
-                </h3>
-                <p className="text-xs text-slate-500 font-normal">
-                  Module 2: On-Page & Content Optimization • 25 mins video lesson
-                </p>
-                <p className="text-xs text-slate-600 font-medium pt-1">
-                  You are making great progress across your 4 active specializations. Keep up the momentum!
-                </p>
+              <span className="text-xs font-bold uppercase tracking-wider text-[#3b49df]">
+                Pick Up Where You Left Off
+              </span>
+            </div>
+            <span className="text-xs font-medium text-slate-500">
+              Course: <strong className="text-slate-800 font-semibold">SEO Masterclass</strong>
+            </span>
+          </div>
+
+          {/* Main Content Area: Logical Left-to-Right Flow */}
+          <div className="pt-4 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+            {/* Left: Module & Lesson Information with Stopped Timestamp */}
+            <div className="space-y-2 min-w-0 max-w-2xl">
+              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                Module 2: On-Page & Technical Optimization
               </div>
+              <h3 className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 tracking-tight leading-snug">
+                Lesson 2.2: Schema Markup & Structured Data Implementation
+              </h3>
+
+              {/* Stopped Timestamp & "Yay only _ mins remains" Callout (Clean typography, no repetitive border boxes) */}
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs pt-0.5">
+                <div className="flex items-center space-x-1.5 text-slate-600 font-medium">
+                  <Clock size={14} className="text-slate-400 shrink-0" />
+                  <span>Stopped at <strong className="text-slate-900 font-semibold tabular-nums">16:15</strong> of 25:00 min</span>
+                </div>
+                <span className="text-slate-300 hidden sm:inline" aria-hidden="true">•</span>
+                <div className="inline-flex items-center space-x-1.5 text-amber-700 font-semibold bg-amber-50 px-2 py-0.5 rounded-md">
+                  <Sparkles size={13} className="text-amber-500 shrink-0" />
+                  <span>Yay, only 9 mins remains. Almost there!</span>
+                </div>
+              </div>
+
+              {/* Encouragement line */}
+              <p className="text-xs text-slate-500 font-normal pt-0.5">
+                You are making great progress across your 4 active specializations. Keep up the momentum!
+              </p>
             </div>
 
-            <div className="flex items-center space-x-4 lg:self-center">
-              <div className="w-36 hidden sm:block">
-                <div className="flex justify-between text-xs font-medium text-slate-600 mb-1">
-                  <span>Progress</span>
-                  <span className="text-teal-700 font-bold tabular-nums">65%</span>
+            {/* Right: Pie Chart Visualization + Start Action Button */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 lg:gap-6 shrink-0 lg:pl-6 lg:border-l lg:border-slate-100 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+              {/* Pie Chart: Module Covered vs Remaining (Integrated, no duplicate outer box border) */}
+              <div className="flex items-center space-x-3 bg-slate-50/80 px-3.5 py-2.5 rounded-xl">
+                <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
+                  <svg className="w-14 h-14 -rotate-90" width="56" height="56" viewBox="0 0 72 72">
+                    {/* Remaining 35% track */}
+                    <circle
+                      cx="36"
+                      cy="36"
+                      r="28"
+                      fill="transparent"
+                      stroke="#e2e8f0"
+                      strokeWidth="6"
+                    />
+                    {/* Covered 65% track */}
+                    <circle
+                      cx="36"
+                      cy="36"
+                      r="28"
+                      fill="transparent"
+                      stroke="#0d9488"
+                      strokeWidth="6"
+                      strokeDasharray="175.93"
+                      strokeDashoffset={175.93 * (1 - 0.65)}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <span className="text-xs font-bold text-slate-900 leading-none tabular-nums">65%</span>
+                    <span className="text-[8.5px] text-slate-500 font-medium leading-none mt-0.5">done</span>
+                  </div>
                 </div>
-                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200/70">
-                  <div className="h-full bg-teal-700 rounded-full" style={{ width: '65%' }} />
+
+                <div className="space-y-1 text-xs">
+                  <div className="text-[11px] font-semibold text-slate-700">
+                    Module Progress
+                  </div>
+                  <div className="flex items-center space-x-1.5">
+                    <span className="w-2 h-2 rounded-full bg-teal-600 shrink-0" />
+                    <span className="text-slate-500 text-[11px]">Covered:</span>
+                    <span className="text-slate-900 text-[11px] font-semibold tabular-nums">16m (65%)</span>
+                  </div>
+                  <div className="flex items-center space-x-1.5">
+                    <span className="w-2 h-2 rounded-full bg-slate-300 shrink-0" />
+                    <span className="text-slate-400 text-[11px]">Remaining:</span>
+                    <span className="text-slate-700 text-[11px] font-medium tabular-nums">9m (35%)</span>
+                  </div>
                 </div>
               </div>
+
+              {/* Start / Resume Action Button */}
               <button
                 onClick={() => navigate('/lesson-player?courseId=course-8')}
-                className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl transition-colors flex items-center space-x-2 shadow-xs cursor-pointer"
+                className="bg-[#3b49df] hover:bg-[#2f3cb8] text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl transition-all shadow-xs flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95"
               >
                 <Play size={13} className="fill-white" />
                 <span>Resume Lesson</span>

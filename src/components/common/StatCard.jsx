@@ -80,25 +80,25 @@ export const StatCard = ({
   const displaySubtitle = subtitle || (change ? `${change} vs last period` : null);
 
   return (
-    <div className={`${scheme.bg} p-3 sm:p-3.5 lg:p-4 rounded-xl shadow-xs transition-all duration-200 flex items-center space-x-3 group ${className}`}>
+    <div className={`${scheme.bg} p-2.5 sm:p-3 xl:p-4 rounded-xl shadow-xs transition-all duration-200 flex items-center space-x-2 sm:space-x-2.5 xl:space-x-3 group ${className}`}>
       {/* Left Icon: White circular badge */}
       {Icon && (
-        <div className="w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full bg-white flex items-center justify-center shrink-0 shadow-xs">
-          <Icon size={17} className={iconColor || scheme.iconText} />
+        <div className="w-8 h-8 sm:w-9 sm:h-9 xl:w-10 xl:h-10 rounded-full bg-white flex items-center justify-center shrink-0 shadow-xs">
+          <Icon className={`${iconColor || scheme.iconText} w-4 h-4 sm:w-[17px] sm:h-[17px]`} />
         </div>
       )}
 
       {/* Right Content */}
       <div className="flex-1 min-w-0">
-        <span className="text-[10px] sm:text-[10.5px] font-bold text-white/90 uppercase tracking-wider block leading-tight truncate">
+        <span className="text-[9px] sm:text-[9.5px] xl:text-[10.5px] font-bold text-white/90 uppercase tracking-wide block leading-tight">
           {title}
         </span>
-        <div className="text-lg sm:text-xl lg:text-[22px] font-extrabold text-white leading-tight tracking-tight my-0.5 tabular-nums truncate">
+        <div className="text-base sm:text-lg xl:text-[22px] font-extrabold text-white leading-tight tracking-tight my-0.5 tabular-nums">
           {value}
         </div>
 
         {/* Horizontal White Progress Track */}
-        <div className="w-full h-1.5 bg-white/30 rounded-full mt-1.5 overflow-hidden">
+        <div className="w-full h-1 sm:h-1.5 bg-white/30 rounded-full mt-1 sm:mt-1.5 overflow-hidden">
           <div
             className="h-full bg-white rounded-full transition-all duration-500"
             style={{ width: `${Math.min(Math.max(progress, 5), 100)}%` }}
@@ -107,7 +107,7 @@ export const StatCard = ({
 
         {/* Subtitle / Increase Metric */}
         {displaySubtitle && (
-          <p className="text-[10px] sm:text-[10.5px] font-medium text-white/90 mt-1 truncate">
+          <p className="text-[9px] sm:text-[9.5px] xl:text-[10.5px] font-medium text-white/90 mt-0.5 sm:mt-1 truncate">
             {displaySubtitle}
           </p>
         )}
