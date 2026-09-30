@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Star, MoreVertical, Edit, Copy, Trash2, Eye, Clock, BookOpen, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Users, MoreVertical, Edit, Copy, Trash2, Eye, Clock, BookOpen, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import logo from '../../assets/logo.png';
@@ -46,22 +46,6 @@ export const CourseCard = ({ course, onDelete }) => {
             alt={course.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-
-          {/* Subtle Gradient Overlay for bottom legibility */}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent pointer-events-none" />
-
-          {/* Bottom Overlay: Rating & Level */}
-          <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs z-10">
-            <div className="flex items-center space-x-1.5 bg-slate-900/80 backdrop-blur-xs px-2.5 py-1 rounded-md text-[11px] font-medium border border-white/10">
-              <Star size={12} className="fill-amber-400 text-amber-400" />
-              <span className="font-semibold text-white">{course.rating > 0 ? course.rating.toFixed(1) : '5.0'}</span>
-              <span className="text-slate-300 text-[10px]">({course.studentsCount || 48} reviews)</span>
-            </div>
-
-            <span className="bg-white/20 backdrop-blur-xs px-2 py-0.5 rounded-md text-[10px] font-medium uppercase tracking-wider text-white border border-white/20">
-              Certified
-            </span>
-          </div>
         </div>
 
         {/* Content Body */}
@@ -153,19 +137,15 @@ export const CourseCard = ({ course, onDelete }) => {
             </span>
           </div>
 
-          {/* Metadata Row: Duration | Lessons | Enrolled */}
-          <div className="grid grid-cols-3 gap-1 text-center text-xs text-slate-600 bg-slate-50/80 rounded-xl p-2 xl:p-2.5 border border-slate-100 mb-3.5">
+          {/* Metadata Row: Duration | Lessons */}
+          <div className="grid grid-cols-2 gap-2 text-center text-xs text-slate-600 bg-slate-50/80 rounded-xl p-2 xl:p-2.5 border border-slate-100 mb-3.5">
             <div className="flex flex-col items-center justify-center">
               <span className="text-[9px] uppercase font-semibold text-slate-400 tracking-wider">Duration</span>
               <span className="font-semibold text-slate-800 tabular-nums text-[11px] sm:text-xs">{course.duration}</span>
             </div>
-            <div className="flex flex-col items-center justify-center border-x border-slate-200/70">
+            <div className="flex flex-col items-center justify-center border-l border-slate-200/70">
               <span className="text-[9px] uppercase font-semibold text-slate-400 tracking-wider">Lessons</span>
               <span className="font-semibold text-slate-800 tabular-nums text-[11px] sm:text-xs">{course.lessonsCount || 16}</span>
-            </div>
-            <div className="flex flex-col items-center justify-center">
-              <span className="text-[9px] uppercase font-semibold text-slate-400 tracking-wider">Level</span>
-              <span className="font-semibold text-slate-800 text-[11px] sm:text-xs">All Levels</span>
             </div>
           </div>
         </div>
