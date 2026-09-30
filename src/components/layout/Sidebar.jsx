@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import logo from '../../assests/logo.png';
+import logo from '../../assets/logo.png';
 import { LayoutDashboard, BookOpen, Activity, User, GraduationCap, Award, CheckSquare, FileText, BookCheck, Layers, ClipboardList, FolderCheck, Users, HelpCircle, MessageCircle, BarChart3, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
 export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
     const location = useLocation();

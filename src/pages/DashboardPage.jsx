@@ -5,7 +5,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { lmsService } from '../services/lmsService';
 import { useNavigate } from 'react-router-dom';
 import { useAuth, boyAvatar, girlAvatar } from '../context/AuthContext';
-import logo from '../assests/logo.png';
+import logo from '../assets/logo.png';
 
 const chartData = [
   { month: 'Jan', completions: 180, enrollments: 320 },

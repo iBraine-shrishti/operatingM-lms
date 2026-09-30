@@ -103,14 +103,14 @@ export const ManageCoursesPage = () => {
         </div>
 
         {/* Category Filter Pills Bar */}
-        <div className="mt-6 pt-5 border-t border-slate-100 flex items-center space-x-2 overflow-x-auto pb-1">
+        <div className="mt-6 pt-5 border-t border-slate-100 flex flex-wrap items-center gap-2">
           {CATEGORIES.map(cat => {
             const isActive = selectedCategory === cat.id;
             return (
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-3.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
                   isActive
                     ? 'bg-slate-900 text-white shadow-xs'
                     : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'
@@ -127,7 +127,7 @@ export const ManageCoursesPage = () => {
       <div className="bg-white rounded-xl border border-slate-200/90 p-3 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
         {/* Admin Tabs / Student Count */}
         {isAdmin ? (
-          <div className="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-lg overflow-x-auto">
+          <div className="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-lg shrink-0">
             <button
               onClick={() => { setActiveTab('published'); setShowEmptyState(false); }}
               className={`px-3.5 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap tabular-nums cursor-pointer ${
@@ -261,7 +261,8 @@ export const ManageCoursesPage = () => {
 
       {/* Main Course Content View */}
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-5">
+          <CourseSkeletonCard />
           <CourseSkeletonCard />
           <CourseSkeletonCard />
           <CourseSkeletonCard />
@@ -283,7 +284,7 @@ export const ManageCoursesPage = () => {
           </button>
         </div>
       ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-5">
           {filteredCourses.map((course) => (
             <CourseCard key={course.id} course={course} onDelete={handleDelete} />
           ))}

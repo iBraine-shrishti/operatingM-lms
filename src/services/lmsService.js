@@ -1,6 +1,6 @@
-import { INITIAL_COURSES, INITIAL_UNITS, INITIAL_QUIZZES, INITIAL_ASSIGNMENTS, INITIAL_STUDENTS, INITIAL_QUESTIONS, INITIAL_DISCUSSIONS, INITIAL_ACTIVITIES, INITIAL_ACHIEVEMENTS, INITIAL_NOTES, INITIAL_REVIEWS } from '../data/mockData';
+import { INITIAL_COURSES, COURSE_THUMBNAILS, INITIAL_UNITS, INITIAL_QUIZZES, INITIAL_ASSIGNMENTS, INITIAL_STUDENTS, INITIAL_QUESTIONS, INITIAL_DISCUSSIONS, INITIAL_ACTIVITIES, INITIAL_ACHIEVEMENTS, INITIAL_NOTES, INITIAL_REVIEWS } from '../data/mockData';
 // Helper for persistent local storage mock service
-const STORAGE_PREFIX = 'om_lms_v6_';
+const STORAGE_PREFIX = 'om_lms_v8_';
 const getStored = (key, initial) => {
     try {
         const item = localStorage.getItem(`${STORAGE_PREFIX}${key}`);
@@ -20,7 +20,15 @@ const setStored = (key, value) => {
 };
 export const lmsService = {
     // Courses
-    getCourses: () => getStored('courses', INITIAL_COURSES),
+    getCourses: () => {
+        const stored = getStored('courses', INITIAL_COURSES);
+        return stored.map(course => {
+            if (COURSE_THUMBNAILS && COURSE_THUMBNAILS[course.id] && (!course.thumbnail || course.thumbnail.includes('unsplash.com'))) {
+                return { ...course, thumbnail: COURSE_THUMBNAILS[course.id] };
+            }
+            return course;
+        });
+    },
     getCourseById: (id) => {
         return lmsService.getCourses().find(c => c.id === id);
     },

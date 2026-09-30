@@ -1,10 +1,30 @@
+import socialMediaImg from '../assets/courses/social-media-marketing.png';
+import counselingImg from '../assets/courses/counseling-video-quiz-brochure.png';
+import advancedTopicsImg from '../assets/courses/advanced-topics-digital-marketing.png';
+import creativeDesigningImg from '../assets/courses/creative-designing.png';
+import googleAnalyticsImg from '../assets/courses/google-analytics.png';
+import googleAdsImg from '../assets/courses/google-ads.png';
+import wordpressImg from '../assets/courses/website-development-wordpress.png';
+import seoImg from '../assets/courses/search-engine-optimization-seo.png';
+
+export const COURSE_THUMBNAILS = {
+    'course-1': socialMediaImg,
+    'course-2': counselingImg,
+    'course-3': advancedTopicsImg,
+    'course-4': creativeDesigningImg,
+    'course-5': googleAnalyticsImg,
+    'course-6': googleAdsImg,
+    'course-7': wordpressImg,
+    'course-8': seoImg,
+};
+
 export const INITIAL_COURSES = [
     {
         id: 'course-1',
         title: 'Social Media Marketing',
         category: 'Social Media',
         status: 'published',
-        thumbnail: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&auto=format&fit=crop&q=80',
+        thumbnail: socialMediaImg,
         bannerGradient: 'from-blue-600 to-indigo-800',
         studentsCount: 185,
         completedCount: 130,
@@ -22,7 +42,7 @@ export const INITIAL_COURSES = [
         title: 'Counseling Video, Quiz and Brochure',
         category: 'Student Orientation & Guidance',
         status: 'published',
-        thumbnail: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&auto=format&fit=crop&q=80',
+        thumbnail: counselingImg,
         bannerGradient: 'from-rose-500 to-amber-600',
         studentsCount: 240,
         completedCount: 220,
@@ -40,7 +60,7 @@ export const INITIAL_COURSES = [
         title: 'Advanced Topics',
         category: 'Advanced Digital Marketing',
         status: 'published',
-        thumbnail: 'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=600&auto=format&fit=crop&q=80',
+        thumbnail: advancedTopicsImg,
         bannerGradient: 'from-sky-500 to-blue-700',
         studentsCount: 142,
         completedCount: 88,
@@ -58,7 +78,7 @@ export const INITIAL_COURSES = [
         title: 'Creative Designing',
         category: 'Design & Media',
         status: 'published',
-        thumbnail: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop&q=80',
+        thumbnail: creativeDesigningImg,
         bannerGradient: 'from-purple-500 to-pink-600',
         studentsCount: 98,
         completedCount: 76,
@@ -76,7 +96,7 @@ export const INITIAL_COURSES = [
         title: 'Google Analytics Course',
         category: 'Data & Analytics',
         status: 'published',
-        thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80',
+        thumbnail: googleAnalyticsImg,
         bannerGradient: 'from-emerald-500 to-green-600',
         studentsCount: 130,
         completedCount: 90,
@@ -94,7 +114,7 @@ export const INITIAL_COURSES = [
         title: 'Google Ads',
         category: 'Paid Media',
         status: 'published',
-        thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=80',
+        thumbnail: googleAdsImg,
         bannerGradient: 'from-amber-500 to-orange-600',
         studentsCount: 210,
         completedCount: 150,
@@ -112,7 +132,7 @@ export const INITIAL_COURSES = [
         title: 'Website Development With WordPress',
         category: 'Web Development',
         status: 'published',
-        thumbnail: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&auto=format&fit=crop&q=80',
+        thumbnail: wordpressImg,
         bannerGradient: 'from-teal-600 to-cyan-700',
         studentsCount: 166,
         completedCount: 120,
@@ -130,7 +150,7 @@ export const INITIAL_COURSES = [
         title: 'Search Engine Optimization (SEO)',
         category: 'Digital Marketing',
         status: 'published',
-        thumbnail: 'https://images.unsplash.com/photo-1572021335469-31706a17aaef?w=600&auto=format&fit=crop&q=80',
+        thumbnail: seoImg,
         bannerGradient: 'from-blue-500 to-indigo-600',
         studentsCount: 147,
         completedCount: 100,
