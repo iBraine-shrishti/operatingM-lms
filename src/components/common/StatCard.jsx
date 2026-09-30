@@ -18,11 +18,11 @@ export const StatCard = ({
   // If explicitly neutral variant (e.g. For plain reports)
   if (variant === 'neutral') {
     return (
-      <div className={`bg-white rounded-xl border border-slate-200/90 p-4 sm:p-5 shadow-2xs hover:border-slate-300 transition-all duration-200 flex flex-col justify-between ${className}`}>
+      <div className={`bg-white border border-slate-200/90 p-4 sm:p-5 shadow-2xs hover:border-slate-300 transition-all duration-200 flex flex-col justify-between ${className}`}>
         <div className="flex items-center justify-between mb-2">
           <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider truncate">{title}</span>
           {Icon && (
-            <div className={`w-9 h-9 rounded-xl ${iconBg || 'bg-slate-100'} ${iconColor || 'text-slate-700'} flex items-center justify-center shrink-0 border border-slate-200/70`}>
+            <div className={`w-9 h-9 ${iconBg || 'bg-slate-100'} ${iconColor || 'text-slate-700'} flex items-center justify-center shrink-0 border border-slate-200/70`}>
               <Icon size={16} />
             </div>
           )}

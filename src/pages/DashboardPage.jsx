@@ -151,11 +151,11 @@ export const DashboardPage = () => {
         </div>
 
         {/* Pick Up Where You Left Off - Clean Light Card with Logical Flow & Seamless Pie Chart */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs p-4 sm:p-5 lg:p-6 transition-all">
+        <div className="bg-white border border-slate-200/90 shadow-2xs p-4 sm:p-5 lg:p-6 transition-all">
           {/* Header Bar: Category & Course Title */}
           <div className="flex flex-wrap items-center justify-between gap-2 pb-3.5 border-b border-slate-100">
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 rounded-lg bg-blue-50 text-[#3b49df] flex items-center justify-center">
+              <div className="w-6 h-6 bg-blue-50 text-[#3b49df] flex items-center justify-center">
                 <Play size={12} className="fill-[#3b49df]" />
               </div>
               <span className="text-xs font-bold uppercase tracking-wider text-[#3b49df]">
@@ -163,16 +163,16 @@ export const DashboardPage = () => {
               </span>
             </div>
             <span className="text-xs font-medium text-slate-500">
-              Course: <strong className="text-slate-800 font-semibold">SEO Masterclass</strong>
+              Course: <strong className="text-slate-800 font-semibold">Search Engine Optimization (SEO)</strong>
             </span>
           </div>
 
           {/* Main Content Area: Logical Left-to-Right Flow */}
-          <div className="pt-4 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div className="pt-4 flex flex-col xl:flex-row xl:items-center justify-between gap-5">
             {/* Left: Module & Lesson Information with Stopped Timestamp */}
             <div className="space-y-2 min-w-0 max-w-2xl">
-              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                Module 2: On-Page & Technical Optimization
+              <div className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                Module 2 of 4: On-Page & Technical Optimization
               </div>
               <h3 className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 tracking-tight leading-snug">
                 Lesson 2.2: Schema Markup & Structured Data Implementation
@@ -185,7 +185,7 @@ export const DashboardPage = () => {
                   <span>Stopped at <strong className="text-slate-900 font-semibold tabular-nums">16:15</strong> of 25:00 min</span>
                 </div>
                 <span className="text-slate-300 hidden sm:inline" aria-hidden="true">•</span>
-                <div className="inline-flex items-center space-x-1.5 text-amber-700 font-semibold bg-amber-50 px-2 py-0.5 rounded-md">
+                <div className="inline-flex items-center space-x-1.5 text-amber-700 font-semibold bg-amber-50 px-2 py-0.5 border border-amber-200/60">
                   <Sparkles size={13} className="text-amber-500 shrink-0" />
                   <span>Yay, only 9 mins remains. Almost there!</span>
                 </div>
@@ -198,52 +198,82 @@ export const DashboardPage = () => {
             </div>
 
             {/* Right: Pie Chart Visualization + Start Action Button */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 lg:gap-6 shrink-0 lg:pl-6 lg:border-l lg:border-slate-100 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-100">
-              {/* Pie Chart: Module Covered vs Remaining (Integrated, no duplicate outer box border) */}
-              <div className="flex items-center space-x-3 bg-slate-50/80 px-3.5 py-2.5 rounded-xl">
-                <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
-                  <svg className="w-14 h-14 -rotate-90" width="56" height="56" viewBox="0 0 72 72">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 xl:gap-6 shrink-0 xl:pl-6 xl:border-l xl:border-slate-100 pt-3 xl:pt-0 border-t xl:border-t-0 border-slate-100">
+              {/* Pie Chart: Bigger visual with rich Module & Minutes Breakdown */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 bg-slate-50/80 border border-slate-200/90 px-4 py-3.5">
+                {/* Bigger Donut / Pie Chart */}
+                <div className="relative w-20 h-20 sm:w-[88px] sm:h-[88px] shrink-0 flex items-center justify-center">
+                  <svg className="w-20 h-20 sm:w-[88px] sm:h-[88px] -rotate-90" viewBox="0 0 88 88">
                     {/* Remaining 35% track */}
                     <circle
-                      cx="36"
-                      cy="36"
-                      r="28"
+                      cx="44"
+                      cy="44"
+                      r="36"
                       fill="transparent"
                       stroke="#e2e8f0"
-                      strokeWidth="6"
+                      strokeWidth="7.5"
                     />
                     {/* Covered 65% track */}
                     <circle
-                      cx="36"
-                      cy="36"
-                      r="28"
+                      cx="44"
+                      cy="44"
+                      r="36"
                       fill="transparent"
                       stroke="#0d9488"
-                      strokeWidth="6"
-                      strokeDasharray="175.93"
-                      strokeDashoffset={175.93 * (1 - 0.65)}
+                      strokeWidth="7.5"
+                      strokeDasharray="226.19"
+                      strokeDashoffset={226.19 * (1 - 0.65)}
                       strokeLinecap="round"
                     />
                   </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <span className="text-xs font-bold text-slate-900 leading-none tabular-nums">65%</span>
-                    <span className="text-[8.5px] text-slate-500 font-medium leading-none mt-0.5">done</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center select-none pointer-events-none">
+                    <span className="text-lg sm:text-xl font-extrabold text-slate-900 leading-none tabular-nums">65%</span>
+                    <span className="text-[9.5px] uppercase font-bold text-teal-700 tracking-wider leading-none mt-1">done</span>
                   </div>
                 </div>
 
-                <div className="space-y-1 text-xs">
-                  <div className="text-[11px] font-semibold text-slate-700">
-                    Module Progress
+                {/* Detailed Info: Total number of modules [covered numbered] + Minutes covered & remaining */}
+                <div className="space-y-1.5 text-xs min-w-[210px] w-full sm:w-auto">
+                  <div className="flex items-center justify-between pb-1 border-b border-slate-200/70">
+                    <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider">
+                      Module Progress
+                    </span>
+                    <span className="text-[10px] font-bold text-teal-800 bg-teal-50 px-2 py-0.5 border border-teal-200/70">
+                      Module 2 of 4
+                    </span>
                   </div>
-                  <div className="flex items-center space-x-1.5">
-                    <span className="w-2 h-2 rounded-full bg-teal-600 shrink-0" />
-                    <span className="text-slate-500 text-[11px]">Covered:</span>
-                    <span className="text-slate-900 text-[11px] font-semibold tabular-nums">16m (65%)</span>
+
+                  {/* Total Number of Modules [Covered Numbered] */}
+                  <div className="flex items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center space-x-1.5 text-slate-600 font-medium">
+                      <span className="w-2 h-2 bg-[#3b49df] shrink-0" />
+                      <span>Total Modules:</span>
+                    </div>
+                    <div className="text-slate-900 font-bold tabular-nums whitespace-nowrap">
+                      4 Modules <span className="text-[#3b49df] font-bold">[2 Covered]</span>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-1.5">
-                    <span className="w-2 h-2 rounded-full bg-slate-300 shrink-0" />
-                    <span className="text-slate-400 text-[11px]">Remaining:</span>
-                    <span className="text-slate-700 text-[11px] font-medium tabular-nums">9m (35%)</span>
+
+                  {/* Minutes Covered */}
+                  <div className="flex items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center space-x-1.5 text-slate-600 font-medium">
+                      <span className="w-2 h-2 bg-teal-600 shrink-0" />
+                      <span>Covered:</span>
+                    </div>
+                    <div className="text-slate-900 font-bold tabular-nums whitespace-nowrap">
+                      16m <span className="text-teal-700 font-semibold">(65%)</span>
+                    </div>
+                  </div>
+
+                  {/* Minutes Remaining */}
+                  <div className="flex items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center space-x-1.5 text-slate-600 font-medium">
+                      <span className="w-2 h-2 bg-slate-300 shrink-0" />
+                      <span>Remaining:</span>
+                    </div>
+                    <div className="text-slate-700 font-semibold tabular-nums whitespace-nowrap">
+                      9m <span className="text-slate-400 font-normal">(35%)</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -251,7 +281,7 @@ export const DashboardPage = () => {
               {/* Start / Resume Action Button */}
               <button
                 onClick={() => navigate('/lesson-player?courseId=course-8')}
-                className="bg-[#3b49df] hover:bg-[#2f3cb8] text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-xl transition-all shadow-xs flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95"
+                className="bg-[#3b49df] hover:bg-[#2f3cb8] text-white font-semibold text-xs sm:text-sm px-5 py-3 transition-all shadow-xs flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95"
               >
                 <Play size={13} className="fill-white" />
                 <span>Resume Lesson</span>
@@ -263,7 +293,7 @@ export const DashboardPage = () => {
         {/* 2-Column Section: Active Courses & Learning Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Active In-Progress Courses (2 columns) */}
-          <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200/80 p-5 shadow-2xs space-y-4">
+          <div className="lg:col-span-2 bg-white border border-slate-200/80 p-5 shadow-2xs space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-semibold text-slate-900 text-base">In-Progress Learning Tracks</h3>
@@ -283,13 +313,13 @@ export const DashboardPage = () => {
                 return (
                   <div
                     key={c.id}
-                    className="p-3.5 bg-slate-50/70 hover:bg-slate-100/60 rounded-xl border border-slate-200/70 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    className="p-3.5 bg-slate-50/70 hover:bg-slate-100/60 border border-slate-200/70 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                   >
                     <div className="flex items-center space-x-3.5">
                       <img
                         src={c.thumbnail}
                         alt={c.title}
-                        className="w-14 h-11 rounded-lg object-cover shrink-0 shadow-2xs"
+                        className="w-14 h-11 object-cover shrink-0 shadow-2xs"
                       />
                       <div>
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
@@ -313,7 +343,7 @@ export const DashboardPage = () => {
                       </div>
                       <button
                         onClick={() => navigate(`/lesson-player?courseId=${c.id}`)}
-                        className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
+                        className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-800 text-xs font-medium px-3 py-1.5 transition-colors flex items-center space-x-1 cursor-pointer"
                       >
                         <Play size={11} className="fill-slate-700" />
                         <span>Continue</span>
@@ -328,7 +358,7 @@ export const DashboardPage = () => {
           {/* Right Column: Quizzes & Achievements */}
           <div className="space-y-5">
             {/* Upcoming Quizzes */}
-            <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-2xs space-y-3">
+            <div className="bg-white border border-slate-200/80 p-5 shadow-2xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <CheckSquare size={16} className="text-slate-600" />
@@ -344,7 +374,7 @@ export const DashboardPage = () => {
 
               <div className="space-y-2.5">
                 {quizzes.slice(0, 2).map((q) => (
-                  <div key={q.id} className="p-3 bg-slate-50/80 rounded-xl border border-slate-200/60 space-y-1">
+                  <div key={q.id} className="p-3 bg-slate-50/80 border border-slate-200/60 space-y-1">
                     <p className="text-xs font-medium text-slate-800 leading-snug">{q.title}</p>
                     <div className="flex justify-between text-xs text-slate-500 font-normal">
                       <span>{q.totalQuestions} Questions • {q.durationMinutes} mins</span>
@@ -356,7 +386,7 @@ export const DashboardPage = () => {
             </div>
 
             {/* Achievements Unlocked */}
-            <div className="bg-white rounded-xl border border-slate-200/80 p-5 shadow-2xs space-y-3">
+            <div className="bg-white border border-slate-200/80 p-5 shadow-2xs space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <Award size={16} className="text-slate-600" />
@@ -372,8 +402,8 @@ export const DashboardPage = () => {
 
               <div className="space-y-2">
                 {achievements.slice(0, 3).map((a) => (
-                  <div key={a.id} className="flex items-center space-x-3 p-2.5 bg-slate-50/80 rounded-xl border border-slate-200/60">
-                    <div className="w-8 h-8 rounded-lg bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-semibold text-xs shrink-0">
+                  <div key={a.id} className="flex items-center space-x-3 p-2.5 bg-slate-50/80 border border-slate-200/60">
+                    <div className="w-8 h-8 rounded-full bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center font-semibold text-xs shrink-0">
                       <Award size={15} />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -604,7 +634,7 @@ export const DashboardPage = () => {
       {/* Charts & Activity Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Analytics Chart (2 columns) */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200/80 p-6 shadow-2xs space-y-4">
+        <div className="lg:col-span-2 bg-white border border-slate-200/80 p-6 shadow-2xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold text-slate-900 text-base">Student Enrollments & Completions</h3>
@@ -650,7 +680,7 @@ export const DashboardPage = () => {
         </div>
 
         {/* Real-time Activity Stream (1 column) */}
-        <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-2xs flex flex-col justify-between space-y-4">
+        <div className="bg-white border border-slate-200/80 p-6 shadow-2xs flex flex-col justify-between space-y-4">
           <div>
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-slate-900 text-base">Real-time Activity</h3>
@@ -702,7 +732,7 @@ export const DashboardPage = () => {
       </div>
 
       {/* Top Performing Courses Table */}
-      <div className="bg-white rounded-xl border border-slate-200/80 p-6 shadow-2xs space-y-4">
+      <div className="bg-white border border-slate-200/80 p-6 shadow-2xs space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-semibold text-slate-900 text-base">Top Performing Courses</h3>

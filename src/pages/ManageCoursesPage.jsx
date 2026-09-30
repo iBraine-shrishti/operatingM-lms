@@ -68,7 +68,7 @@ export const ManageCoursesPage = () => {
       {/* ------------------------------------------------------------- */}
       {/* PROFESSIONAL CATALOG HERO BANNER                              */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-6 sm:p-8 shadow-xs relative overflow-hidden">
+      <div className="bg-white border border-slate-200/90 p-6 sm:p-8 shadow-xs relative overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div className="max-w-3xl space-y-2">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-teal-50 border border-teal-200/80 text-teal-800 text-xs font-medium">
@@ -84,7 +84,7 @@ export const ManageCoursesPage = () => {
           </div>
 
           {/* Quick Metrics Strip */}
-          <div className="flex items-center space-x-4 sm:space-x-6 shrink-0 bg-slate-50 border border-slate-100 rounded-xl p-3.5 sm:p-4">
+          <div className="flex items-center space-x-4 sm:space-x-6 shrink-0 bg-slate-50 border border-slate-100 p-3.5 sm:p-4">
             <div className="text-center sm:text-left">
               <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider block">Specializations</span>
               <span className="text-lg font-bold text-slate-900 tabular-nums">08 Tracks</span>
@@ -124,7 +124,7 @@ export const ManageCoursesPage = () => {
       </div>
 
       {/* Controls Bar: Tabs, Search, Sort, View Toggle */}
-      <div className="bg-white rounded-xl border border-slate-200/90 p-3 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
+      <div className="bg-white border border-slate-200/90 p-3 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
         {/* Admin Tabs / Student Count */}
         {isAdmin ? (
           <div className="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-lg shrink-0">
@@ -268,8 +268,8 @@ export const ManageCoursesPage = () => {
           <CourseSkeletonCard />
         </div>
       ) : showEmptyState || filteredCourses.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center max-w-md mx-auto my-8">
-          <div className="w-14 h-14 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3">
+        <div className="bg-white border border-slate-200 p-12 text-center max-w-md mx-auto my-8">
+          <div className="w-14 h-14 bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3">
             <Sparkles size={28} />
           </div>
           <h3 className="text-base font-semibold text-slate-900">No courses found</h3>

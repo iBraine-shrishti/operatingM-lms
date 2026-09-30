@@ -4,9 +4,9 @@ import { useAuth } from '../../context/AuthContext';
 export const CourseListItem = ({ course, onDelete }) => {
     const navigate = useNavigate();
     const { isAdmin } = useAuth();
-    return (<div className="bg-white rounded-2xl border border-slate-200/80 p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-xs transition-shadow">
+    return (<div className="bg-white border border-slate-200/80 p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-xs transition-shadow">
       <div className="flex items-center space-x-4">
-        <img src={course.thumbnail} alt={course.title} className="w-20 h-16 rounded-xl object-cover shrink-0"/>
+        <img src={course.thumbnail} alt={course.title} className="w-20 h-16 object-cover shrink-0"/>
         <div>
           <div className="flex items-center space-x-2">
             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${course.status === 'published'

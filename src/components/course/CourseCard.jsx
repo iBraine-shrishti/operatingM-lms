@@ -37,7 +37,7 @@ export const CourseCard = ({ course, onDelete }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col justify-between overflow-hidden group">
+    <div className="bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col justify-between overflow-hidden group">
       <div>
         {/* Banner / Thumbnail Container */}
         <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
@@ -83,7 +83,7 @@ export const CourseCard = ({ course, onDelete }) => {
                 </button>
 
                 {menuOpen && (
-                  <div className="absolute right-0 mt-1 w-40 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-30 animate-in fade-in">
+                  <div className="absolute right-0 mt-1 w-40 bg-white shadow-xl border border-slate-200 py-1.5 z-30 animate-in fade-in">
                     <button
                       onClick={() => { setMenuOpen(false); navigate(`/courses/${course.id}`); }}
                       className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2"
@@ -138,7 +138,7 @@ export const CourseCard = ({ course, onDelete }) => {
           </div>
 
           {/* Metadata Row: Duration | Lessons */}
-          <div className="grid grid-cols-2 gap-2 text-center text-xs text-slate-600 bg-slate-50/80 rounded-xl p-2 xl:p-2.5 border border-slate-100 mb-3.5">
+          <div className="grid grid-cols-2 gap-2 text-center text-xs text-slate-600 bg-slate-50/80 p-2 xl:p-2.5 border border-slate-100 mb-3.5">
             <div className="flex flex-col items-center justify-center">
               <span className="text-[9px] uppercase font-semibold text-slate-400 tracking-wider">Duration</span>
               <span className="font-semibold text-slate-800 tabular-nums text-[11px] sm:text-xs">{course.duration}</span>
@@ -155,7 +155,7 @@ export const CourseCard = ({ course, onDelete }) => {
       <div className="px-4 pb-4 xl:px-5 xl:pb-5 pt-0">
         <button
           onClick={() => navigate(`/courses/${course.id}`)}
-          className="w-full py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-teal-700 text-white font-medium text-xs flex items-center justify-center space-x-1.5 transition-all shadow-xs group/btn cursor-pointer"
+          className="w-full py-2.5 px-3 bg-slate-900 hover:bg-teal-700 text-white font-medium text-xs flex items-center justify-center space-x-1.5 transition-all shadow-xs group/btn cursor-pointer"
         >
           <span>View Course Outline</span>
           <ArrowRight size={13} className="group-hover/btn:translate-x-0.5 transition-transform" />
