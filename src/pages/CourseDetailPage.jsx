@@ -4,7 +4,8 @@ import { lmsService } from '../services/lmsService';
 import {
   Star, Users, CheckCircle2, Play, Clock, ArrowLeft, Trash2, Camera,
   BookOpen, Video, FileText, CheckSquare, HelpCircle, Sparkles,
-  MoreVertical, Eye, Settings, Plus, Upload, Download, Info, ChevronDown, ChevronUp, Layers, Award, X
+  MoreVertical, Eye, Settings, Plus, Upload, Download, Info, ChevronDown, ChevronUp,
+  Layers, Award, X, MessageSquare, BookMarked, UserCheck, Check, Sparkle
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -16,9 +17,9 @@ export const CourseDetailPage = () => {
   const { showToast } = useToast();
 
   const courses = lmsService.getCourses();
-  // Default to course-3 (Advanced Topics) or first course if not found
+  // Default to course matching id, or first course
   const course = courses.find(c => c.id === id) ||
-    courses.find(c => c.title.toLowerCase().includes('advanced')) ||
+    courses.find(c => c.title.toLowerCase().includes('social')) ||
     courses[0];
 
   const [units, setUnits] = useState(() => lmsService.getUnitsByCourse(course.id));
@@ -49,12 +50,12 @@ export const CourseDetailPage = () => {
   const [announcements, setAnnouncements] = useState([
     {
       id: 'ann-1',
-      title: 'Upcoming Live Q&A Session on Affiliate Networks & CPA Models',
+      title: 'Upcoming Live Q&A Session on Meta Ads & Campaign Scaling',
       date: 'Yesterday at 4:30 PM',
       author: 'Operating Media Faculty',
       tag: 'Live Masterclass',
       content:
-        'Join our senior digital strategist this Saturday at 11:00 AM IST for a live campaign walkthrough on ShareASale and Amazon Associates API setup. Meeting link has been shared via email.'
+        'Join our senior digital marketing strategist this Saturday at 11:00 AM IST for a live campaign walkthrough on Meta Advantage+ budget setup and ROAS optimization. Meeting link has been shared via email.'
     },
     {
       id: 'ann-2',
@@ -79,7 +80,7 @@ export const CourseDetailPage = () => {
       date: '2 days ago',
       title: 'How do we track affiliate conversions without server-side cookies?',
       question:
-        'With third-party cookie restrictions, how can we reliably attribute conversions in our custom Affiliate Marketing bridge pages?',
+        'With third-party cookie restrictions, how can we reliably attribute conversions in our custom digital marketing campaign funnels?',
       upvotes: 6,
       replies: [
         {
@@ -87,7 +88,7 @@ export const CourseDetailPage = () => {
           role: 'Instructor',
           date: '1 day ago',
           text:
-            'Great question Aarav! You should use server-to-server (S2S) postback URLs or First-Party Click IDs (like s1/subID parameters) passed directly into your bridge page query strings.'
+            'Great question Aarav! You should use server-to-server (S2S) postback URLs or First-Party Click IDs passed directly into your campaign query strings.'
         }
       ]
     },
@@ -96,9 +97,9 @@ export const CourseDetailPage = () => {
       author: 'Priya Sharma',
       avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
       date: '4 days ago',
-      title: 'Content Marketing Assignment-1 Submission format',
+      title: 'Social Media Content Calendar Assignment Submission Format',
       question:
-        'Should the 90-day pillar content plan be submitted as a Google Sheets link or an exported PDF with calendar views?',
+        'Should the 30-day content calendar be submitted as a Google Sheets link or an exported PDF with design mockups?',
       upvotes: 4,
       replies: [
         {
@@ -106,7 +107,7 @@ export const CourseDetailPage = () => {
           role: 'Admin',
           date: '3 days ago',
           text:
-            'Both Google Sheets with public view access or an exported PDF are acceptable. Please make sure the pillar topic clusters are clearly color-coded.'
+            'Both Google Sheets with public view access or an exported PDF are acceptable. Please make sure the content pillars are clearly labeled.'
         }
       ]
     }
@@ -121,20 +122,20 @@ export const CourseDetailPage = () => {
     {
       id: 'n-1',
       date: '24 Sep 2026',
-      lessonTag: 'Affiliate Marketing',
+      lessonTag: 'Viral Video Hooks',
       text:
-        'Remember to always check CPA payout tiers and cookies retention window (30 days vs 90 days) before running paid traffic to affiliate bridge funnels.'
+        'Remember the 3-second hook rule: introduce the visual pattern interrupt before delivering the core proposition.'
     },
     {
       id: 'n-2',
       date: '22 Sep 2026',
-      lessonTag: 'Content Marketing',
+      lessonTag: 'Content Pillars',
       text:
-        'Topic Cluster model: 1 Pillar page (3,000+ words) linking internally to 6-8 cluster sub-articles targeting long-tail queries.'
+        'Topic Cluster model: 1 Core Pillar (Educational/Proof) feeding 4 secondary supporting posts each week.'
     }
   ]);
   const [newNoteText, setNewNoteText] = useState('');
-  const [newNoteTag, setNewNoteTag] = useState('Affiliate Marketing');
+  const [newNoteTag, setNewNoteTag] = useState('Viral Video Hooks');
 
   // Group units by moduleName for Course Outline
   const sections = useMemo(() => {
@@ -148,18 +149,18 @@ export const CourseDetailPage = () => {
     if (map.size === 0) {
       return [
         {
-          name: 'Introduction & Core Fundamentals',
+          name: 'Introduction & Core Strategy Framework',
           items: [
-            { id: 'u-1', title: '01 Overview & Architecture Setup', duration: '15:00', type: 'video', isCompleted: true },
-            { id: 'u-2', title: '02 Key Performance Metrics & KPIs', duration: '20:00', type: 'reading', isCompleted: false },
-            { id: 'u-3', title: '03 Hands-on Assignment & Strategy Plan', duration: '45:00', type: 'assignment', isCompleted: false }
+            { id: 'u-1', title: '01 Overview & Channel Architecture Setup', duration: '15:00', type: 'video', isCompleted: true },
+            { id: 'u-2', title: '02 Key Performance Metrics & Organic KPIs', duration: '20:00', type: 'reading', isCompleted: false },
+            { id: 'u-3', title: '03 Hands-on Strategy Plan & Pillar Creation', duration: '45:00', type: 'assignment', isCompleted: false }
           ]
         },
         {
-          name: 'Execution & Campaign Management',
+          name: 'Campaign Execution & Growth Scaling',
           items: [
             { id: 'u-4', title: '01 Live Campaign Launch Walkthrough', duration: '28:00', type: 'video', isCompleted: false },
-            { id: 'u-5', title: '02 Optimization Checklist & Audit', duration: '18:00', type: 'quiz', isCompleted: false }
+            { id: 'u-5', title: '02 Optimization Checklist & Analytics Audit', duration: '18:00', type: 'quiz', isCompleted: false }
           ]
         }
       ];
@@ -273,49 +274,46 @@ export const CourseDetailPage = () => {
 
   const totalActivitiesCount = units.length || 16;
   const completedActivitiesCount = units.filter(u => u.isCompleted).length;
+  const progressPercent = Math.round((completedActivitiesCount / (totalActivitiesCount || 1)) * 100);
 
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
       {/* TOP NAVIGATION BAR matching course-outline.png                */}
       {/* ------------------------------------------------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
-        <div className="flex items-center space-x-3 truncate">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-2xs">
+        <div className="flex items-start sm:items-center space-x-3.5">
           <button
-            onClick={() => navigate('/manage-courses')}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors shrink-0"
+            onClick={() => navigate('/courses')}
+            className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors shrink-0 cursor-pointer"
             title="Back to Courses"
           >
             <ArrowLeft size={18} />
           </button>
-          <div className="space-y-0.5 truncate">
+          <div className="space-y-0.5">
             <div className="flex items-center space-x-2">
-              <h2 className="text-base sm:text-lg font-semibold text-slate-900 truncate">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight whitespace-nowrap">
                 Course outline
               </h2>
-              <span className="hidden sm:inline-flex items-center space-x-1 text-xs text-slate-400 font-medium">
-                <Info size={13} />
+              <button
+                onClick={() => showToast('Course outline lets you structure modules, schedule drip releases, and configure activities.', 'info', 'Course Outline Guide')}
+                className="inline-flex items-center space-x-1 text-xs text-slate-400 font-medium hover:text-[#3b49df] cursor-pointer shrink-0"
+              >
                 <span>Learn more</span>
-              </span>
+                <Info size={13} />
+              </button>
             </div>
-            <p className="text-xs text-slate-500 font-normal truncate max-w-xl">
+            <p className="text-xs text-slate-500 font-normal max-w-xl">
               Develop your course outline and contents and set up the drip feed to schedule lesson delivery.
             </p>
           </div>
         </div>
 
-        {/* Right Action Buttons matching course-outline.png */}
-        <div className="flex items-center space-x-2.5 shrink-0 self-end sm:self-auto">
-          <button
-            onClick={() => showToast('Drip feed schedule active. Lessons are released on milestone pace!', 'info', 'Drip Feed')}
-            className="px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-medium transition-colors flex items-center space-x-1.5 shadow-2xs"
-          >
-            <Clock size={14} className="text-slate-500" />
-            <span>Deep Feed</span>
-          </button>
+        {/* Right Action Button matching course-outline.png */}
+        <div className="flex items-center space-x-2.5 shrink-0 self-start md:self-auto">
           <button
             onClick={() => navigate(`/lesson-player?courseId=${course.id}`)}
-            className="px-5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer"
+            className="px-5 py-2 rounded-xl bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer"
           >
             <Play size={13} className="fill-white" />
             <span>Preview & Learn</span>
@@ -326,60 +324,63 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {/* WIDE COVER BANNER & INSET AVATAR matching course-outline.png  */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden">
-        {/* Cover Image Container */}
-        <div className="relative h-48 sm:h-56 md:h-64 w-full bg-gradient-to-r from-teal-900 via-slate-800 to-indigo-900 overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs overflow-hidden">
+        {/* Cover Image Container with Change Cover button */}
+        <div className="relative h-48 sm:h-56 md:h-64 w-full bg-slate-900 overflow-hidden">
           <img
             src={coverImage}
             alt={course.title}
             className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-slate-950/10 to-transparent pointer-events-none" />
 
-          {/* Change Cover Pill Button matching course-outline.png */}
-          <button
-            onClick={() => setShowCoverModal(true)}
-            className="absolute top-4 right-4 bg-white/90 hover:bg-white text-slate-800 text-xs font-medium px-3.5 py-1.5 rounded-lg border border-slate-200/80 shadow-xs backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer"
-          >
-            <Camera size={14} className="text-slate-600" />
-            <span>Change Cover</span>
-          </button>
+          {/* Change Cover Pill Button (Admin only) */}
+          {isAdmin && (
+            <button
+              onClick={() => setShowCoverModal(true)}
+              className="absolute top-4 right-4 bg-white/95 hover:bg-white text-slate-800 text-xs font-semibold px-3.5 py-1.5 rounded-xl border border-slate-200/80 shadow-xs backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer z-10"
+            >
+              <Camera size={14} className="text-[#3b49df]" />
+              <span>Change Cover</span>
+            </button>
+          )}
         </div>
 
-        {/* Header Body with Inset Circular Avatar */}
-        <div className="px-6 sm:px-8 pb-6 pt-3 bg-white">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 -mt-14 sm:-mt-16 mb-5">
+        {/* Header Body: Inset Circular Badge + Title + Instructor + Stat Chips */}
+        <div className="px-5 sm:px-8 pb-6 pt-3 bg-white">
+          <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 -mt-10 sm:-mt-12 mb-5">
             {/* Inset Circular Avatar matching course-outline.png */}
-            <div className="flex items-end space-x-4">
-              <div className="relative w-22 h-22 sm:w-26 sm:h-26 rounded-full ring-4 ring-white shadow-md bg-white overflow-hidden shrink-0">
+            <div className="flex flex-col sm:flex-row sm:items-end gap-3.5 sm:gap-4">
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 xl:w-28 xl:h-28 rounded-full ring-4 ring-white shadow-md bg-white overflow-hidden shrink-0 border border-slate-100">
                 <img
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"
-                  alt="Operating Media Faculty"
+                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&auto=format&fit=crop&q=80"
+                  alt="Operating Media Masterclass"
                   className="w-full h-full object-cover"
                 />
               </div>
 
-              <div className="pb-1">
-                <span className="inline-block bg-slate-100 text-slate-700 text-[11px] font-semibold px-2.5 py-0.5 rounded-md border border-slate-200 mb-1">
+              <div className="pb-1 min-w-0">
+                <span className="inline-block bg-blue-50 text-[#3b49df] text-[11px] font-bold px-2.5 py-0.5 rounded-md border border-blue-200/80 mb-1.5">
                   {course.category}
                 </span>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 tracking-tight leading-tight">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
                   {course.title}
                 </h1>
               </div>
             </div>
 
             {/* Instructor Credit on Right Side matching course-outline.png */}
-            <div className="flex items-center space-x-3 bg-slate-50 border border-slate-200/80 px-4 py-2.5 rounded-xl shrink-0">
+            <div className="flex items-center space-x-3 bg-slate-50/80 border border-slate-200/80 px-4 py-2.5 rounded-2xl shrink-0 self-start xl:self-auto">
               <img
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80"
                 alt="Tony Stark"
-                className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-2xs"
+                className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-2xs shrink-0"
               />
               <div>
-                <p className="text-xs font-semibold text-slate-900 leading-snug">
+                <p className="text-xs font-bold text-slate-900 leading-snug">
                   Instructor: Tony Stark
                 </p>
-                <p className="text-[11px] text-slate-400 font-normal">
+                <p className="text-[11px] text-slate-500 font-medium">
                   tonystark@lms.com
                 </p>
               </div>
@@ -387,62 +388,62 @@ export const CourseDetailPage = () => {
           </div>
 
           {/* Clean Stat Chips Row matching course-outline.png */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-100">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 pt-3 border-t border-slate-100">
             {/* Chip 1: Total Modules */}
-            <div className="bg-sky-50/70 border border-sky-100 rounded-xl p-3 flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-sky-500 text-white flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="bg-slate-50/80 hover:bg-blue-50/20 border border-slate-200/80 rounded-xl p-3 flex items-center space-x-3 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200/80 text-[#3b49df] flex items-center justify-center shrink-0 shadow-2xs">
                 <Layers size={18} />
               </div>
-              <div>
-                <span className="text-[10px] uppercase font-semibold text-sky-700 tracking-wider block">
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                   Total Modules
                 </span>
-                <span className="text-base font-bold text-slate-900 tabular-nums">
+                <span className="text-base font-extrabold text-slate-900 tabular-nums">
                   0{sections.length}
                 </span>
               </div>
             </div>
 
             {/* Chip 2: Activities */}
-            <div className="bg-emerald-50/70 border border-emerald-100 rounded-xl p-3 flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-                <Play size={18} className="fill-white translate-x-0.5" />
+            <div className="bg-slate-50/80 hover:bg-emerald-50/20 border border-slate-200/80 rounded-xl p-3 flex items-center space-x-3 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs">
+                <Play size={18} className="fill-current translate-x-0.5" />
               </div>
-              <div>
-                <span className="text-[10px] uppercase font-semibold text-emerald-800 tracking-wider block">
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                   Activities
                 </span>
-                <span className="text-base font-bold text-slate-900 tabular-nums">
+                <span className="text-base font-extrabold text-slate-900 tabular-nums">
                   {totalActivitiesCount}
                 </span>
               </div>
             </div>
 
             {/* Chip 3: Course Level */}
-            <div className="bg-purple-50/70 border border-purple-100 rounded-xl p-3 flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-                <Star size={18} className="fill-white" />
+            <div className="bg-slate-50/80 hover:bg-purple-50/20 border border-slate-200/80 rounded-xl p-3 flex items-center space-x-3 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200/80 text-purple-600 flex items-center justify-center shrink-0 shadow-2xs">
+                <Star size={18} className="fill-current" />
               </div>
-              <div>
-                <span className="text-[10px] uppercase font-semibold text-purple-800 tracking-wider block">
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                   Course Level
                 </span>
-                <span className="text-base font-bold text-slate-900">
+                <span className="text-base font-extrabold text-slate-900">
                   Beginner
                 </span>
               </div>
             </div>
 
             {/* Chip 4: Verified Certificate */}
-            <div className="bg-amber-50/70 border border-amber-100 rounded-xl p-3 flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="bg-slate-50/80 hover:bg-amber-50/20 border border-slate-200/80 rounded-xl p-3 flex items-center space-x-3 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200/80 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs">
                 <Award size={18} />
               </div>
-              <div>
-                <span className="text-[10px] uppercase font-semibold text-amber-800 tracking-wider block">
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
                   Credential
                 </span>
-                <span className="text-base font-bold text-slate-900">
+                <span className="text-base font-extrabold text-amber-700">
                   Certified
                 </span>
               </div>
@@ -454,27 +455,32 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {/* TABS HEADER: Course Outline | Overview | Announcements | QnA  */}
       {/* ------------------------------------------------------------- */}
-      <div className="border-b border-slate-200 flex space-x-6 overflow-x-auto custom-scrollbar">
+      <div className="bg-white rounded-xl border border-slate-200/80 p-1.5 shadow-2xs flex space-x-1 sm:space-x-2 overflow-x-auto custom-scrollbar">
         {[
-          { key: 'outline', label: 'Course Outline' },
-          { key: 'overview', label: 'Overview' },
-          { key: 'announcements', label: 'Announcements & News' },
-          { key: 'qna', label: 'QnA' },
-          { key: 'notes', label: 'Notes' },
-          ...(isAdmin ? [{ key: 'students', label: `Enrolled Students (${students.length})` }] : [])
-        ].map(t => (
-          <button
-            key={t.key}
-            onClick={() => setActiveTab(t.key)}
-            className={`pb-3 text-sm font-medium transition-all border-b-2 whitespace-nowrap cursor-pointer ${
-              activeTab === t.key
-                ? 'border-[#0d7a5f] text-[#0d7a5f] font-semibold'
-                : 'border-transparent text-slate-500 hover:text-slate-900'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+          { key: 'outline', label: 'Course Outline', icon: Layers },
+          { key: 'overview', label: 'Overview', icon: BookOpen },
+          { key: 'announcements', label: 'Announcements & News', icon: MessageSquare },
+          { key: 'qna', label: 'Q&A Forum', icon: HelpCircle },
+          { key: 'notes', label: 'Notes', icon: BookMarked },
+          ...(isAdmin ? [{ key: 'students', label: `Enrolled Students (${students.length})`, icon: UserCheck }] : [])
+        ].map(t => {
+          const Icon = t.icon;
+          const isActive = activeTab === t.key;
+          return (
+            <button
+              key={t.key}
+              onClick={() => setActiveTab(t.key)}
+              className={`px-4 py-2 text-xs font-bold rounded-lg whitespace-nowrap transition-all flex items-center space-x-2 cursor-pointer ${
+                isActive
+                  ? 'bg-[#3b49df] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <Icon size={14} className={isActive ? 'text-white' : 'text-slate-400'} />
+              <span>{t.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* ------------------------------------------------------------- */}
@@ -482,32 +488,33 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {activeTab === 'outline' && (
         <div className="space-y-6">
-          {/* Progress Summary Banner */}
-          <div className="bg-slate-50 border border-slate-200/90 p-4 sm:p-5 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
-            <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-lg bg-teal-50 text-teal-700 border border-teal-200/80 flex items-center justify-center shrink-0">
-                <Award size={18} />
+          {/* Progress Summary Banner: Clean Distinct Milestone Card */}
+          <div className="bg-gradient-to-r from-blue-50/80 via-indigo-50/40 to-white border border-blue-200/80 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+            <div className="flex items-center space-x-3.5">
+              <div className="w-10 h-10 rounded-xl bg-[#3b49df] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <Award size={20} />
               </div>
               <div>
-                <p className="text-xs font-semibold text-slate-900">
-                  Course Progress: {completedActivitiesCount} of {totalActivitiesCount} activities completed
+                <p className="text-xs sm:text-sm font-bold text-slate-900">
+                  Course Progress: <span className="text-[#3b49df]">{completedActivitiesCount}</span> of {totalActivitiesCount} activities completed
                 </p>
-                <p className="text-[11px] text-slate-500 font-normal">
+                <p className="text-[11px] text-slate-500 font-medium mt-0.5">
                   Complete all modules to unlock your official Operating Media certificate.
                 </p>
               </div>
             </div>
-            <div className="w-full sm:w-48">
-              <div className="flex items-center justify-between text-[11px] font-medium text-slate-500 mb-1">
-                <span>Completion</span>
-                <span className="text-teal-700 font-bold tabular-nums">
-                  {Math.round((completedActivitiesCount / totalActivitiesCount) * 100)}%
+
+            <div className="w-full sm:w-56 shrink-0">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-600 mb-1.5">
+                <span>Completion Status</span>
+                <span className="text-[#3b49df] font-black tabular-nums">
+                  {progressPercent}%
                 </span>
               </div>
-              <div className="w-full h-2 bg-slate-200/80 rounded-full overflow-hidden">
+              <div className="w-full h-2.5 bg-slate-200/80 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-teal-700 rounded-full transition-all duration-500"
-                  style={{ width: `${Math.round((completedActivitiesCount / totalActivitiesCount) * 100)}%` }}
+                  className="h-full bg-gradient-to-r from-[#3b49df] to-[#5068f2] rounded-full transition-all duration-500"
+                  style={{ width: `${progressPercent}%` }}
                 />
               </div>
             </div>
@@ -528,7 +535,7 @@ export const CourseDetailPage = () => {
               return (
                 <div
                   key={section.name + sIdx}
-                  className="bg-white rounded-xl border border-slate-200/90 shadow-2xs overflow-hidden transition-all"
+                  className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden transition-all"
                 >
                   {/* Module Header Bar matching course-outline.png */}
                   <div
@@ -539,68 +546,71 @@ export const CourseDetailPage = () => {
                       <button
                         type="button"
                         onClick={(e) => { e.stopPropagation(); toggleSection(sIdx); }}
-                        className="text-slate-400 hover:text-slate-700 transition-colors p-1"
+                        className="text-slate-400 hover:text-slate-700 transition-colors p-1 cursor-pointer"
                       >
-                        {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                        {isExpanded ? <ChevronUp size={20} className="text-[#3b49df]" /> : <ChevronDown size={20} />}
                       </button>
 
-                      <div>
-                        <h3 className="text-sm sm:text-base font-semibold text-slate-900 leading-snug">
+                      <div className="flex items-center space-x-2.5">
+                        <span className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
                           {String(sIdx + 1).padStart(2, '0')} {section.name}
-                        </h3>
+                        </span>
                       </div>
                     </div>
 
-                    {/* Right side: 3-dot dropdown menu matching course-outline.png */}
-                    <div className="relative" onClick={(e) => e.stopPropagation()}>
-                      <button
-                        onClick={() => setActiveMenuIdx(activeMenuIdx === sIdx ? null : sIdx)}
-                        className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                      >
-                        <MoreVertical size={18} />
-                      </button>
+                    {/* Right side: 3-dot dropdown menu matching course-outline.png (Admin Only) */}
+                    {isAdmin && (
+                      <div className="relative" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => setActiveMenuIdx(activeMenuIdx === sIdx ? null : sIdx)}
+                          className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                          title="Edit section options"
+                        >
+                          <MoreVertical size={18} />
+                        </button>
 
-                      {/* Dropdown Menu from screenshot: Edit, Settings, Preview, Add, Upload, Ai Assistant */}
-                      {activeMenuIdx === sIdx && (
-                        <div className="absolute right-0 mt-1 w-48 bg-white rounded-2xl shadow-xl border border-slate-200/90 py-2 z-30 animate-in fade-in">
-                          <button
-                            onClick={() => { setActiveMenuIdx(null); showToast(`Editing section: ${section.name}`, 'info'); }}
-                            className="w-full px-4 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2.5"
-                          >
-                            <Settings size={14} className="text-slate-400" />
-                            <span>Edit Section</span>
-                          </button>
-                          <button
-                            onClick={() => { setActiveMenuIdx(null); navigate(`/lesson-player?courseId=${course.id}`); }}
-                            className="w-full px-4 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2.5"
-                          >
-                            <Play size={14} className="text-slate-400" />
-                            <span>Preview Section</span>
-                          </button>
-                          <button
-                            onClick={() => { setActiveMenuIdx(null); showToast(`Add activity dialog opened`, 'info'); }}
-                            className="w-full px-4 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2.5"
-                          >
-                            <Plus size={14} className="text-slate-400" />
-                            <span>Add Activity</span>
-                          </button>
-                          <button
-                            onClick={() => { setActiveMenuIdx(null); showToast(`Upload module content`, 'info'); }}
-                            className="w-full px-4 py-2 text-left text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2.5"
-                          >
-                            <Upload size={14} className="text-slate-400" />
-                            <span>Upload Material</span>
-                          </button>
-                          <button
-                            onClick={() => { setActiveMenuIdx(null); setShowAiModal(true); }}
-                            className="w-full px-4 py-2 text-left text-xs font-medium text-purple-700 hover:bg-purple-50 flex items-center space-x-2.5 border-t border-slate-100"
-                          >
-                            <Sparkles size={14} className="text-purple-600" />
-                            <span>Ai Assistant</span>
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                        {/* Dropdown Menu matching course-outline.png */}
+                        {activeMenuIdx === sIdx && (
+                          <div className="absolute right-0 mt-1 w-48 bg-white rounded-2xl shadow-xl border border-slate-200/90 py-2 z-30 animate-in fade-in">
+                            <button
+                              onClick={() => { setActiveMenuIdx(null); showToast(`Editing section: ${section.name}`, 'info'); }}
+                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#3b49df] flex items-center space-x-2.5"
+                            >
+                              <Settings size={14} className="text-slate-400" />
+                              <span>Edit Section</span>
+                            </button>
+                            <button
+                              onClick={() => { setActiveMenuIdx(null); navigate(`/lesson-player?courseId=${course.id}`); }}
+                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#3b49df] flex items-center space-x-2.5"
+                            >
+                              <Play size={14} className="text-slate-400" />
+                              <span>Preview Section</span>
+                            </button>
+                            <button
+                              onClick={() => { setActiveMenuIdx(null); showToast(`Add activity dialog opened`, 'info'); }}
+                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#3b49df] flex items-center space-x-2.5"
+                            >
+                              <Plus size={14} className="text-slate-400" />
+                              <span>Add Activity</span>
+                            </button>
+                            <button
+                              onClick={() => { setActiveMenuIdx(null); showToast(`Upload module content started`, 'info'); }}
+                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#3b49df] flex items-center space-x-2.5"
+                            >
+                              <Upload size={14} className="text-slate-400" />
+                              <span>Upload Material</span>
+                            </button>
+                            <button
+                              onClick={() => { setActiveMenuIdx(null); setShowAiModal(true); }}
+                              className="w-full px-4 py-2 text-left text-xs font-semibold text-purple-700 hover:bg-purple-50 flex items-center space-x-2.5 border-t border-slate-100"
+                            >
+                              <Sparkles size={14} className="text-purple-600" />
+                              <span>Ai Assistant</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   {/* Expanded Section Content */}
@@ -608,31 +618,31 @@ export const CourseDetailPage = () => {
                     <div className="p-5 sm:p-6 space-y-4">
                       {/* Description & What's included block matching course-outline.png */}
                       {!isInfoHidden && (
-                        <div className="space-y-3.5 bg-slate-50/70 border border-slate-200/70 p-4 sm:p-5 rounded-2xl">
+                        <div className="space-y-3.5 bg-slate-50/90 border border-slate-200/80 p-4 sm:p-5 rounded-2xl">
                           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
                             In this foundational module, students will be introduced to the core principles and practical frameworks behind {section.name}. The module explores comprehensive step-by-step execution, industry standard metrics, and practical campaign creation.
                           </p>
 
                           {/* "What's included" row with icons matching course-outline.png */}
                           <div>
-                            <span className="text-xs font-semibold text-slate-900 block mb-2">
+                            <span className="text-xs font-bold text-slate-900 block mb-2">
                               What's included
                             </span>
-                            <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-600">
-                              <div className="flex items-center space-x-1.5">
-                                <Video size={14} className="text-slate-500" />
+                            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-700">
+                              <div className="flex items-center space-x-1.5 bg-white border border-slate-200/80 px-2.5 py-1 rounded-lg shadow-2xs">
+                                <Video size={14} className="text-blue-600" />
                                 <span>{videoCount} videos</span>
                               </div>
-                              <div className="flex items-center space-x-1.5">
-                                <BookOpen size={14} className="text-slate-500" />
+                              <div className="flex items-center space-x-1.5 bg-white border border-slate-200/80 px-2.5 py-1 rounded-lg shadow-2xs">
+                                <BookOpen size={14} className="text-emerald-600" />
                                 <span>{readingCount} readings</span>
                               </div>
-                              <div className="flex items-center space-x-1.5">
-                                <FileText size={14} className="text-slate-500" />
+                              <div className="flex items-center space-x-1.5 bg-white border border-slate-200/80 px-2.5 py-1 rounded-lg shadow-2xs">
+                                <FileText size={14} className="text-amber-600" />
                                 <span>{assignmentCount} assignments</span>
                               </div>
-                              <div className="flex items-center space-x-1.5">
-                                <CheckSquare size={14} className="text-slate-500" />
+                              <div className="flex items-center space-x-1.5 bg-white border border-slate-200/80 px-2.5 py-1 rounded-lg shadow-2xs">
+                                <CheckSquare size={14} className="text-purple-600" />
                                 <span>{quizCount} Quiz</span>
                               </div>
                             </div>
@@ -645,7 +655,7 @@ export const CourseDetailPage = () => {
                         <button
                           type="button"
                           onClick={() => toggleModuleInfo(sIdx)}
-                          className="text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors inline-flex items-center space-x-1"
+                          className="text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors inline-flex items-center space-x-1 cursor-pointer"
                         >
                           <span>{isInfoHidden ? 'Show info about module content' : 'Hide info about module content'}</span>
                           <ChevronDown size={14} className={isInfoHidden ? '' : 'rotate-180'} />
@@ -657,6 +667,7 @@ export const CourseDetailPage = () => {
                         {section.items.map((item, iIdx) => {
                           const isAss = item.type === 'assignment';
                           const isQuiz = item.type === 'quiz' || item.title.toLowerCase().includes('quiz');
+                          const isReading = item.type === 'reading';
 
                           return (
                             <div
@@ -666,26 +677,27 @@ export const CourseDetailPage = () => {
                             >
                               <div className="flex items-center space-x-3.5 truncate">
                                 {/* Type icon */}
-                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
-                                  isAss ? 'bg-amber-100 text-amber-800' :
-                                  isQuiz ? 'bg-purple-100 text-purple-800' :
-                                  'bg-teal-100 text-teal-800'
+                                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border ${
+                                  isAss ? 'bg-amber-50 border-amber-200/80 text-amber-700' :
+                                  isQuiz ? 'bg-purple-50 border-purple-200/80 text-purple-700' :
+                                  isReading ? 'bg-emerald-50 border-emerald-200/80 text-emerald-700' :
+                                  'bg-blue-50 border-blue-200/80 text-[#3b49df]'
                                 }`}>
-                                  {isAss ? <FileText size={15} /> : isQuiz ? <HelpCircle size={15} /> : <Play size={14} className="fill-current" />}
+                                  {isAss ? <FileText size={15} /> : isQuiz ? <HelpCircle size={15} /> : isReading ? <BookOpen size={15} /> : <Play size={14} className="fill-current translate-x-0.5" />}
                                 </div>
 
                                 <div className="truncate">
                                   <div className="flex items-center space-x-2">
-                                    <span className="text-xs sm:text-sm font-medium text-slate-900 group-hover:text-[#0d7a5f] transition-colors truncate">
+                                    <span className="text-xs sm:text-sm font-semibold text-slate-900 group-hover:text-[#3b49df] transition-colors truncate">
                                       {item.title}
                                     </span>
                                     {isAss && (
-                                      <span className="text-[10px] font-medium bg-amber-50 text-amber-800 border border-amber-200/80 px-2 py-0.5 rounded-full shrink-0">
+                                      <span className="text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200/80 px-2 py-0.5 rounded-full shrink-0">
                                         Assignment
                                       </span>
                                     )}
                                     {isQuiz && (
-                                      <span className="text-[10px] font-medium bg-purple-50 text-purple-800 border border-purple-200/80 px-2 py-0.5 rounded-full shrink-0">
+                                      <span className="text-[10px] font-bold bg-purple-50 text-purple-800 border border-purple-200/80 px-2 py-0.5 rounded-full shrink-0">
                                         Quiz
                                       </span>
                                     )}
@@ -701,13 +713,13 @@ export const CourseDetailPage = () => {
                                 <button
                                   type="button"
                                   onClick={(e) => handleToggleCompletion(item.id, e)}
-                                  className="p-1 rounded-full hover:bg-slate-100 transition-colors"
+                                  className="p-1 rounded-full hover:bg-slate-100 transition-colors cursor-pointer"
                                   title={item.isCompleted ? 'Mark as incomplete' : 'Mark as complete'}
                                 >
                                   {item.isCompleted ? (
                                     <CheckCircle2 size={20} className="text-emerald-600 fill-emerald-50" />
                                   ) : (
-                                    <div className="w-5 h-5 rounded-full border-2 border-slate-300 group-hover:border-teal-600 transition-colors" />
+                                    <div className="w-5 h-5 rounded-full border-2 border-slate-300 group-hover:border-[#3b49df] transition-colors" />
                                   )}
                                 </button>
                               </div>
@@ -716,43 +728,45 @@ export const CourseDetailPage = () => {
                         })}
                       </div>
 
-                      {/* Action buttons row matching course-outline.png */}
-                      <div className="pt-2 flex flex-wrap items-center gap-2.5">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            showToast(`Activity creation opened for: ${section.name}`, 'info');
-                          }}
-                          className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition-colors flex items-center space-x-1.5 shadow-xs"
-                        >
-                          <Plus size={14} />
-                          <span>Add activity</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => showToast(`Upload module content started`, 'info')}
-                          className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium transition-colors flex items-center space-x-1.5 shadow-2xs"
-                        >
-                          <Upload size={14} className="text-slate-500" />
-                          <span>Upload activity</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => showToast(`Importing shared curriculum library`, 'info')}
-                          className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-medium transition-colors flex items-center space-x-1.5 shadow-2xs"
-                        >
-                          <Download size={14} className="text-slate-500" />
-                          <span>Import activity</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setShowAiModal(true)}
-                          className="px-4 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 text-xs font-medium transition-colors flex items-center space-x-1.5 shadow-2xs ml-auto"
-                        >
-                          <Sparkles size={14} className="text-purple-600" />
-                          <span>Create activity with AI</span>
-                        </button>
-                      </div>
+                      {/* Action buttons row matching course-outline.png (Admin Only) */}
+                      {isAdmin && (
+                        <div className="pt-2 flex flex-wrap items-center gap-2.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              showToast(`Activity creation opened for: ${section.name}`, 'info');
+                            }}
+                            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-[#3b49df] text-white text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-xs cursor-pointer"
+                          >
+                            <Plus size={14} />
+                            <span>Add activity</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => showToast(`Upload module content started`, 'info')}
+                            className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-2xs cursor-pointer"
+                          >
+                            <Upload size={14} className="text-slate-500" />
+                            <span>Upload activity</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => showToast(`Importing shared curriculum library`, 'info')}
+                            className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-2xs cursor-pointer"
+                          >
+                            <Download size={14} className="text-slate-500" />
+                            <span>Import activity</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShowAiModal(true)}
+                            className="px-4 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-2xs ml-auto cursor-pointer"
+                          >
+                            <Sparkles size={14} className="text-purple-600" />
+                            <span>Create activity with AI</span>
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -767,16 +781,16 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-200/80 p-6 md:p-8 shadow-xs space-y-6">
+          <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-6 md:p-8 shadow-xs space-y-6">
             <div>
-              <h3 className="font-semibold text-slate-900 text-base mb-2">About this Course</h3>
+              <h3 className="font-bold text-slate-900 text-base mb-2">About this Specialization</h3>
               <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
-                {course.description} Designed by seasoned industry practitioners at Operating Media, this specialization delivers complete hands-on proficiency through real brand campaigns, live client scenarios, and rigorous certification prep.
+                {course.description} Designed by seasoned industry practitioners at Operating Media, this course delivers complete hands-on proficiency through real brand campaigns, live client scenarios, and rigorous certification prep.
               </p>
             </div>
 
             <div>
-              <h3 className="font-semibold text-slate-900 text-base mb-3">Key Skills & Core Competencies</h3>
+              <h3 className="font-bold text-slate-900 text-base mb-3">Key Skills & Practical Competencies</h3>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-700">
                 <li className="flex items-start space-x-2">
                   <CheckCircle2 size={16} className="text-emerald-500 shrink-0 mt-0.5" />
@@ -798,23 +812,23 @@ export const CourseDetailPage = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs space-y-4">
-            <h3 className="font-semibold text-slate-900 text-base">Course Credentials</h3>
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+            <h3 className="font-bold text-slate-900 text-base">Course Credentials</h3>
             <div className="space-y-3 text-xs">
               <div className="flex justify-between py-2 border-b border-slate-100">
-                <span className="text-slate-500">Instructor</span>
+                <span className="text-slate-500 font-medium">Instructor</span>
                 <span className="font-semibold text-slate-900">{course.author}</span>
               </div>
               <div className="flex justify-between py-2 border-b border-slate-100">
-                <span className="text-slate-500">Duration</span>
+                <span className="text-slate-500 font-medium">Duration</span>
                 <span className="font-semibold text-slate-900 tabular-nums">{course.duration}</span>
               </div>
               <div className="flex justify-between py-2 border-b border-slate-100">
-                <span className="text-slate-500">Curriculum Units</span>
+                <span className="text-slate-500 font-medium">Curriculum Units</span>
                 <span className="font-semibold text-slate-900 tabular-nums">{units.length} Items</span>
               </div>
               <div className="flex justify-between py-2 border-b border-slate-100">
-                <span className="text-slate-500">Certificate</span>
+                <span className="text-slate-500 font-medium">Certificate</span>
                 <span className="font-semibold text-emerald-600">Official Operating Media Credential</span>
               </div>
             </div>
@@ -829,13 +843,13 @@ export const CourseDetailPage = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-slate-900 text-base">Course Announcements & News</h3>
+              <h3 className="font-bold text-slate-900 text-base">Course Announcements & News</h3>
               <p className="text-xs text-slate-400">Important batch updates, live webinars, and schedule changes.</p>
             </div>
             {isAdmin && (
               <button
                 onClick={() => setShowAnnForm(prev => !prev)}
-                className="bg-[#0d7a5f] hover:bg-teal-800 text-white text-xs font-medium px-4 py-2 rounded-xl transition-colors shadow-2xs"
+                className="bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors shadow-2xs cursor-pointer"
               >
                 {showAnnForm ? 'Cancel' : '+ Post Announcement'}
               </button>
@@ -843,15 +857,15 @@ export const CourseDetailPage = () => {
           </div>
 
           {showAnnForm && (
-            <form onSubmit={handlePostAnnouncement} className="p-5 bg-white rounded-3xl border border-slate-200 shadow-xs space-y-3">
-              <h4 className="text-xs font-semibold text-slate-800">New Announcement</h4>
+            <form onSubmit={handlePostAnnouncement} className="p-5 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-3">
+              <h4 className="text-xs font-bold text-slate-800">New Announcement</h4>
               <input
                 type="text"
                 required
                 value={newAnnTitle}
                 onChange={(e) => setNewAnnTitle(e.target.value)}
                 placeholder="Announcement Title"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-hidden focus:border-teal-600"
+                className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
               />
               <textarea
                 rows={3}
@@ -859,11 +873,11 @@ export const CourseDetailPage = () => {
                 value={newAnnContent}
                 onChange={(e) => setNewAnnContent(e.target.value)}
                 placeholder="Announcement body text..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-hidden focus:border-teal-600"
+                className="w-full bg-slate-50/80 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
               />
               <button
                 type="submit"
-                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-4 py-2 rounded-xl transition-colors"
+                className="bg-slate-900 hover:bg-[#3b49df] text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer"
               >
                 Publish Announcement
               </button>
@@ -872,17 +886,17 @@ export const CourseDetailPage = () => {
 
           <div className="space-y-3">
             {announcements.map(ann => (
-              <div key={ann.id} className="p-5 bg-white rounded-3xl border border-slate-200/80 shadow-xs space-y-2">
+              <div key={ann.id} className="p-5 bg-white rounded-2xl border border-slate-200/80 shadow-xs space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-medium bg-teal-50 text-teal-800 px-2.5 py-0.5 rounded-full uppercase">
+                  <span className="text-[10px] font-bold bg-blue-50 text-[#3b49df] border border-blue-200/80 px-2.5 py-0.5 rounded-full uppercase">
                     {ann.tag}
                   </span>
                   <span className="text-[11px] text-slate-400 font-medium">{ann.date}</span>
                 </div>
-                <h4 className="font-semibold text-slate-900 text-sm">{ann.title}</h4>
+                <h4 className="font-bold text-slate-900 text-sm">{ann.title}</h4>
                 <p className="text-xs text-slate-600 leading-relaxed font-normal">{ann.content}</p>
                 <div className="text-[11px] text-slate-400 font-medium pt-1">
-                  Posted by <span className="text-slate-700">{ann.author}</span>
+                  Posted by <span className="text-slate-800 font-semibold">{ann.author}</span>
                 </div>
               </div>
             ))}
@@ -897,12 +911,12 @@ export const CourseDetailPage = () => {
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <h3 className="font-semibold text-slate-900 text-base">Questions & Answers Forum</h3>
+              <h3 className="font-bold text-slate-900 text-base">Questions & Answers Forum</h3>
               <p className="text-xs text-slate-400">Ask doubts, discuss campaign setups, and learn together.</p>
             </div>
             <button
               onClick={() => setShowQnaModal(true)}
-              className="bg-[#0d7a5f] hover:bg-teal-800 text-white text-xs font-medium px-4 py-2 rounded-xl transition-colors shadow-2xs self-start sm:self-auto"
+              className="bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors shadow-2xs self-start sm:self-auto cursor-pointer"
             >
               Ask a Question
             </button>
@@ -910,28 +924,28 @@ export const CourseDetailPage = () => {
 
           <div className="space-y-4">
             {qnaList.map(q => (
-              <div key={q.id} className="p-5 bg-white rounded-3xl border border-slate-200/80 shadow-xs space-y-3">
+              <div key={q.id} className="p-5 bg-white rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
                 <div className="flex items-center space-x-3">
                   <img src={q.avatar} alt={q.author} className="w-8 h-8 rounded-full object-cover shrink-0" />
                   <div>
-                    <h4 className="text-xs font-semibold text-slate-900">{q.author}</h4>
+                    <h4 className="text-xs font-bold text-slate-900">{q.author}</h4>
                     <span className="text-[10px] text-slate-400">{q.date}</span>
                   </div>
                 </div>
 
                 <div>
-                  <h5 className="font-semibold text-slate-900 text-sm mb-1">{q.title}</h5>
+                  <h5 className="font-bold text-slate-900 text-sm mb-1">{q.title}</h5>
                   <p className="text-xs text-slate-600 leading-relaxed font-normal">{q.question}</p>
                 </div>
 
                 {/* Replies */}
                 {q.replies.length > 0 && (
-                  <div className="bg-slate-50 rounded-2xl p-4 space-y-2 border border-slate-100">
+                  <div className="bg-slate-50/80 rounded-xl p-4 space-y-2 border border-slate-200/70">
                     {q.replies.map((r, rIdx) => (
                       <div key={rIdx} className="space-y-1">
                         <div className="flex items-center space-x-2">
-                          <span className="text-xs font-semibold text-slate-900">{r.author}</span>
-                          <span className="text-[10px] font-medium bg-amber-100 text-amber-800 px-1.5 py-0.2 rounded">
+                          <span className="text-xs font-bold text-slate-900">{r.author}</span>
+                          <span className="text-[10px] font-bold bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">
                             {r.role}
                           </span>
                           <span className="text-[10px] text-slate-400">{r.date}</span>
@@ -949,7 +963,7 @@ export const CourseDetailPage = () => {
                     value={replyInput[q.id] || ''}
                     onChange={(e) => setReplyInput({ ...replyInput, [q.id]: e.target.value })}
                     placeholder="Write a helpful answer..."
-                    className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-teal-600"
+                    className="flex-1 bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
@@ -959,7 +973,7 @@ export const CourseDetailPage = () => {
                   />
                   <button
                     onClick={() => handleAddReply(q.id)}
-                    className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-3 py-1.5 rounded-xl transition-colors"
+                    className="bg-slate-900 hover:bg-[#3b49df] text-white text-xs font-semibold px-3.5 py-1.5 rounded-xl transition-colors cursor-pointer"
                   >
                     Reply
                   </button>
@@ -970,10 +984,10 @@ export const CourseDetailPage = () => {
 
           {/* Ask Question Modal */}
           {showQnaModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
-              <div className="bg-white rounded-3xl p-6 md:p-7 max-w-md w-full shadow-2xl space-y-4 border border-slate-200 animate-in fade-in duration-150">
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
+              <div className="bg-white rounded-2xl p-6 md:p-7 max-w-md w-full shadow-2xl space-y-4 border border-slate-200 animate-in fade-in duration-150">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <h3 className="font-semibold text-slate-900 text-base">Ask a Question</h3>
+                  <h3 className="font-bold text-slate-900 text-base">Ask a Question</h3>
                   <button onClick={() => setShowQnaModal(false)} className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
                     <X size={16} />
                   </button>
@@ -987,7 +1001,7 @@ export const CourseDetailPage = () => {
                       value={newQTitle}
                       onChange={(e) => setNewQTitle(e.target.value)}
                       placeholder="e.g. How to set up CPA postback URL?"
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-hidden"
+                      className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
                     />
                   </div>
                   <div>
@@ -998,20 +1012,20 @@ export const CourseDetailPage = () => {
                       value={newQBody}
                       onChange={(e) => setNewQBody(e.target.value)}
                       placeholder="Explain your scenario in detail..."
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-hidden"
+                      className="w-full bg-slate-50/80 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
                     />
                   </div>
                   <div className="flex justify-end space-x-2 pt-2 border-t border-slate-100">
                     <button
                       type="button"
                       onClick={() => setShowQnaModal(false)}
-                      className="px-4 py-2 text-xs font-medium text-slate-600 bg-slate-100 rounded-xl"
+                      className="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="px-5 py-2 text-xs font-medium text-white bg-[#0d7a5f] hover:bg-teal-800 rounded-xl transition-colors"
+                      className="px-5 py-2 text-xs font-semibold text-white bg-[#3b49df] hover:bg-[#2f3ab2] rounded-xl transition-colors cursor-pointer"
                     >
                       Post Question
                     </button>
@@ -1029,17 +1043,17 @@ export const CourseDetailPage = () => {
       {activeTab === 'notes' && (
         <div className="space-y-6">
           <div>
-            <h3 className="font-semibold text-slate-900 text-base">My Course Notebook</h3>
+            <h3 className="font-bold text-slate-900 text-base">My Course Notebook</h3>
             <p className="text-xs text-slate-400">Capture personal notes, timestamps, and strategies while learning.</p>
           </div>
 
-          <form onSubmit={handleSaveNote} className="p-5 bg-white rounded-3xl border border-slate-200/80 shadow-xs space-y-3">
+          <form onSubmit={handleSaveNote} className="p-5 bg-white rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <label className="text-xs font-semibold text-slate-700">Add a Quick Note</label>
               <select
                 value={newNoteTag}
                 onChange={(e) => setNewNoteTag(e.target.value)}
-                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1 text-xs font-medium text-slate-700 focus:outline-hidden"
+                className="bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 focus:outline-hidden"
               >
                 {sections.map(s => (
                   <option key={s.name} value={s.name}>{s.name}</option>
@@ -1052,12 +1066,12 @@ export const CourseDetailPage = () => {
               value={newNoteText}
               onChange={(e) => setNewNoteText(e.target.value)}
               placeholder="Type your notes here..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-teal-600"
+              className="w-full bg-slate-50/80 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
             />
             <div className="flex justify-end">
               <button
                 type="submit"
-                className="bg-[#0d7a5f] hover:bg-teal-800 text-white text-xs font-medium px-5 py-2 rounded-xl transition-colors shadow-2xs"
+                className="bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs font-semibold px-5 py-2 rounded-xl transition-colors shadow-2xs cursor-pointer"
               >
                 Save Note
               </button>
@@ -1069,7 +1083,7 @@ export const CourseDetailPage = () => {
               <div key={note.id} className="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex items-start justify-between gap-4">
                 <div className="space-y-1">
                   <div className="flex items-center space-x-2">
-                    <span className="text-[10px] font-medium bg-teal-50 text-teal-800 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold bg-blue-50 text-[#3b49df] border border-blue-200/80 px-2 py-0.5 rounded-full">
                       {note.lessonTag}
                     </span>
                     <span className="text-[10px] text-slate-400">{note.date}</span>
@@ -1081,7 +1095,7 @@ export const CourseDetailPage = () => {
                     setNotesList(prev => prev.filter(n => n.id !== note.id));
                     showToast('Note deleted', 'info');
                   }}
-                  className="p-1 text-slate-300 hover:text-red-500 rounded transition-colors"
+                  className="p-1 text-slate-300 hover:text-red-500 rounded transition-colors cursor-pointer"
                   title="Delete Note"
                 >
                   <Trash2 size={14} />
@@ -1096,21 +1110,21 @@ export const CourseDetailPage = () => {
       {/* TAB 6 (ADMIN ONLY): ENROLLED STUDENTS                         */}
       {/* ------------------------------------------------------------- */}
       {activeTab === 'students' && isAdmin && (
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs space-y-4">
-          <h3 className="font-semibold text-slate-900 text-base">Enrolled Learners & Performance</h3>
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs space-y-4">
+          <h3 className="font-bold text-slate-900 text-base">Enrolled Learners & Performance</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {students.map(s => (
-              <div key={s.id} className="p-3.5 rounded-2xl border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors">
+              <div key={s.id} className="p-3.5 rounded-xl border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors">
                 <div className="flex items-center space-x-3">
                   <img src={s.avatar} alt={s.name} className="w-10 h-10 rounded-full object-cover" />
                   <div>
-                    <h4 className="text-xs font-semibold text-slate-900">{s.name}</h4>
+                    <h4 className="text-xs font-bold text-slate-900">{s.name}</h4>
                     <p className="text-[10px] text-slate-400">{s.email}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-semibold tabular-nums text-teal-700 block">{s.overallProgress}%</span>
-                  <span className="text-[10px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                  <span className="text-xs font-bold tabular-nums text-[#3b49df] block">{s.overallProgress}%</span>
+                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full">
                     {s.status}
                   </span>
                 </div>
@@ -1125,9 +1139,9 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {showCoverModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-base font-semibold text-slate-900">Choose Course Cover Banner</h3>
+              <h3 className="text-base font-bold text-slate-900">Choose Course Cover Banner</h3>
               <button
                 onClick={() => setShowCoverModal(false)}
                 className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
@@ -1154,11 +1168,11 @@ export const CourseDetailPage = () => {
                     setShowCoverModal(false);
                     showToast('Course cover updated successfully!', 'success');
                   }}
-                  className="h-24 rounded-lg overflow-hidden border-2 border-slate-200 hover:border-slate-800 cursor-pointer transition-all relative group shadow-2xs"
+                  className="h-24 rounded-xl overflow-hidden border-2 border-slate-200 hover:border-[#3b49df] cursor-pointer transition-all relative group shadow-2xs"
                 >
                   <img src={imgUrl} alt="Cover option" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors flex items-center justify-center">
-                    <span className="text-white text-[10px] font-semibold bg-black/50 px-2 py-0.5 rounded-full">
+                    <span className="text-white text-[10px] font-bold bg-black/60 px-2.5 py-0.5 rounded-full">
                       Cover {i + 1}
                     </span>
                   </div>
@@ -1169,7 +1183,7 @@ export const CourseDetailPage = () => {
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setShowCoverModal(false)}
-                className="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer"
               >
                 Close
               </button>
@@ -1183,11 +1197,11 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {showAiModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center space-x-2 text-purple-700">
                 <Sparkles size={18} />
-                <h3 className="text-base font-semibold text-slate-900">AI Curriculum Assistant</h3>
+                <h3 className="text-base font-bold text-slate-900">AI Curriculum Assistant</h3>
               </div>
               <button
                 onClick={() => setShowAiModal(false)}
@@ -1206,13 +1220,13 @@ export const CourseDetailPage = () => {
               value={aiPrompt}
               onChange={(e) => setAiPrompt(e.target.value)}
               placeholder="e.g. Generate 5 multiple-choice questions on Instagram Reels organic reach algorithm..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-purple-600"
+              className="w-full bg-slate-50/80 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-purple-600"
             />
 
             <div className="flex justify-end space-x-2 pt-2">
               <button
                 onClick={() => setShowAiModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium"
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer"
               >
                 Cancel
               </button>
@@ -1226,7 +1240,7 @@ export const CourseDetailPage = () => {
                   }, 1200);
                 }}
                 disabled={aiGenerating}
-                className="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-medium flex items-center space-x-1.5 shadow-xs"
+                className="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-semibold flex items-center space-x-1.5 shadow-xs cursor-pointer"
               >
                 <Sparkles size={14} />
                 <span>{aiGenerating ? 'Generating...' : 'Generate Activity'}</span>

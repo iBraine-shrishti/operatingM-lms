@@ -17,6 +17,9 @@ export default {
           navy: '#1e293b'
         }
       },
+      screens: {
+        '3xl': '1750px',
+      },
       fontFamily: {
         sans: ['"Geist"', '"Inter"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
         geist: ['"Geist"', 'sans-serif'],

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Plus, Search, ChevronDown, Grid, List, Sparkles, GraduationCap, BookOpen, Clock, Award, CheckCircle2 } from 'lucide-react';
+import { Plus, Search, ChevronDown, Sparkles, GraduationCap, BookOpen, Clock, Award, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { lmsService } from '../services/lmsService';
 import { CourseCard } from '../components/course/CourseCard';
-import { CourseListItem } from '../components/course/CourseListItem';
 import { CourseSkeletonCard } from '../components/common/SkeletonLoader';
 import { useAuth } from '../context/AuthContext';
 
@@ -15,7 +14,6 @@ export const ManageCoursesPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('recent');
-  const [viewMode, setViewMode] = useState('grid');
   const [isLoading, setIsLoading] = useState(false);
   const [showEmptyState, setShowEmptyState] = useState(false);
 
@@ -141,51 +139,52 @@ export const ManageCoursesPage = () => {
         </div>
       </div>
 
-      {/* Controls Bar: Tabs, Search, Sort, View Toggle */}
-      <div className="bg-white border border-slate-200/90 p-3 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
-        {/* Admin Tabs / Student Count */}
+      {/* Controls Bar: Tabs, Search, Sort (Matching the Page Accent Design) */}
+      <div className="bg-white border border-slate-200/80 p-3 sm:p-4 flex flex-col xl:flex-row xl:items-center justify-between gap-3 sm:gap-4 shadow-2xs">
+        {/* Admin Tabs / Student Available Count */}
         {isAdmin ? (
-          <div className="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-lg shrink-0">
+          <div className="flex items-center space-x-1.5 bg-slate-100/90 p-1 border border-slate-200/60 shrink-0">
             <button
               onClick={() => { setActiveTab('published'); setShowEmptyState(false); }}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap tabular-nums cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs font-bold transition-all whitespace-nowrap tabular-nums cursor-pointer ${
                 activeTab === 'published' && !showEmptyState
-                  ? 'bg-white text-slate-900 shadow-2xs font-semibold'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#3b49df] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
               }`}
             >
               Published ({publishedCount})
             </button>
             <button
               onClick={() => { setActiveTab('pending'); setShowEmptyState(false); }}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap tabular-nums cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs font-bold transition-all whitespace-nowrap tabular-nums cursor-pointer ${
                 activeTab === 'pending' && !showEmptyState
-                  ? 'bg-white text-slate-900 shadow-2xs font-semibold'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#3b49df] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
               }`}
             >
               Pending ({pendingCount})
             </button>
             <button
               onClick={() => { setActiveTab('draft'); setShowEmptyState(false); }}
-              className={`px-3.5 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap tabular-nums cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs font-bold transition-all whitespace-nowrap tabular-nums cursor-pointer ${
                 activeTab === 'draft' && !showEmptyState
-                  ? 'bg-white text-slate-900 shadow-2xs font-semibold'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#3b49df] text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
               }`}
             >
               Drafts ({draftCount})
             </button>
           </div>
         ) : (
-          <div className="flex items-center space-x-2">
-            <span className="text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1.5 rounded-lg tabular-nums">
-              Available Courses ({filteredCourses.length})
+          <div className="flex items-center space-x-2.5">
+            <span className="text-xs font-bold text-[#3b49df] bg-blue-50 border border-blue-200/80 px-3 py-1.5 tabular-nums inline-flex items-center space-x-1.5 shadow-2xs">
+              <BookOpen size={13} className="text-[#3b49df]" />
+              <span>Available Courses ({filteredCourses.length})</span>
             </span>
             {selectedCategory !== 'all' && (
               <button
                 onClick={() => setSelectedCategory('all')}
-                className="text-xs text-teal-700 hover:underline font-medium cursor-pointer"
+                className="text-xs text-[#3b49df] hover:underline font-semibold cursor-pointer"
               >
                 Clear Category Filter
               </button>
@@ -193,93 +192,73 @@ export const ManageCoursesPage = () => {
           </div>
         )}
 
-        {/* Right Controls: Search, Sort, Grid/List toggle, Create Course */}
-        <div className="flex flex-wrap items-center gap-3">
+        {/* Right Controls: Search, Sort, Create Course */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3 w-full xl:w-auto">
           {/* Search box */}
-          <div className="relative flex-1 sm:w-64">
+          <div className="relative w-full sm:w-64">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search courses..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-1.5 text-xs font-medium text-slate-700 placeholder-slate-400 focus:outline-hidden focus:border-teal-600 transition-colors"
+              className="w-full bg-slate-50/80 border border-slate-200/90 pl-9 pr-3 py-1.5 text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-[#3b49df] focus:bg-white focus:ring-1 focus:ring-[#3b49df]/20 transition-all shadow-2xs"
             />
           </div>
 
-          {/* Sort dropdown */}
-          <div className="relative">
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="appearance-none bg-slate-50 border border-slate-200 rounded-lg pl-3 pr-7 py-1.5 text-xs font-medium text-slate-700 cursor-pointer focus:outline-hidden focus:border-teal-600"
-            >
-              <option value="recent">Recent</option>
-              <option value="popular">Most Popular</option>
-              <option value="rating">Highest Rating</option>
-            </select>
-            <ChevronDown size={13} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-          </div>
-
-          {/* Grid / List toggle */}
-          <div className="flex items-center space-x-1 bg-slate-100 p-1 rounded-lg">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer ${
-                viewMode === 'grid' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-400 hover:text-slate-600'
-              }`}
-              title="Grid View"
-            >
-              <Grid size={15} />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`p-1.5 rounded-md transition-colors cursor-pointer ${
-                viewMode === 'list' ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-400 hover:text-slate-600'
-              }`}
-              title="List View"
-            >
-              <List size={15} />
-            </button>
-          </div>
-
-          {isAdmin && (
-            <button
-              onClick={() => navigate('/create-course')}
-              className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-3.5 py-1.5 rounded-lg shadow-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
-            >
-              <Plus size={14} />
-              <span>Create Course</span>
-            </button>
-          )}
-
-          {/* Developer / Admin Test Tools */}
-          {isAdmin && (
-            <div className="flex items-center space-x-1.5 border-l border-slate-200 pl-2.5">
-              <button
-                onClick={handleSimulateLoading}
-                className="text-[11px] font-medium text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded-md transition-colors cursor-pointer"
-                title="Test skeleton loading"
+          <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+            {/* Sort dropdown */}
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="appearance-none bg-slate-50/80 border border-slate-200/90 pl-3 pr-7 py-1.5 text-xs font-bold text-slate-700 cursor-pointer focus:outline-hidden focus:border-[#3b49df] focus:bg-white transition-all shadow-2xs"
               >
-                Skeleton
-              </button>
-              <button
-                onClick={() => setShowEmptyState(!showEmptyState)}
-                className={`text-[11px] font-medium px-2 py-1 rounded-md transition-colors cursor-pointer ${
-                  showEmptyState ? 'bg-amber-100 text-amber-800' : 'text-slate-500 hover:text-slate-800 bg-slate-100'
-                }`}
-                title="Toggle empty state view"
-              >
-                Empty
-              </button>
+                <option value="recent">Recent</option>
+                <option value="popular">Most Popular</option>
+                <option value="rating">Highest Rating</option>
+              </select>
+              <ChevronDown size={13} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             </div>
-          )}
+
+            {isAdmin && (
+              <button
+                onClick={() => navigate('/create-course')}
+                className="bg-slate-900 hover:bg-[#3b49df] text-white font-bold text-xs px-3.5 py-1.5 shadow-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
+              >
+                <Plus size={14} />
+                <span>Create Course</span>
+              </button>
+            )}
+
+            {/* Developer / Admin Test Tools */}
+            {isAdmin && (
+              <div className="flex items-center space-x-1.5 border-l border-slate-200 pl-2">
+                <button
+                  onClick={handleSimulateLoading}
+                  className="text-[11px] font-bold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200/80 px-2 py-1 transition-colors cursor-pointer"
+                  title="Test skeleton loading"
+                >
+                  Skeleton
+                </button>
+                <button
+                  onClick={() => setShowEmptyState(!showEmptyState)}
+                  className={`text-[11px] font-bold px-2 py-1 transition-colors cursor-pointer ${
+                    showEmptyState ? 'bg-amber-100 text-amber-800' : 'text-slate-500 hover:text-slate-800 bg-slate-100'
+                  }`}
+                  title="Toggle empty state view"
+                >
+                  Empty
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Main Course Content View */}
+      {/* Main Course Content View: 2 columns on mobile, 4 columns on laptop */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4.5 lg:gap-6">
           <CourseSkeletonCard />
           <CourseSkeletonCard />
           <CourseSkeletonCard />
@@ -296,21 +275,15 @@ export const ManageCoursesPage = () => {
           </p>
           <button
             onClick={() => { setSelectedCategory('all'); setSearchQuery(''); setShowEmptyState(false); }}
-            className="mt-4 bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium px-4 py-2 rounded-lg transition-colors inline-flex items-center space-x-2 cursor-pointer"
+            className="mt-4 bg-slate-900 hover:bg-[#3b49df] text-white text-xs font-bold px-4 py-2 transition-colors inline-flex items-center space-x-2 cursor-pointer"
           >
             <span>Reset All Filters</span>
           </button>
         </div>
-      ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 xl:gap-5">
+      ) : (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4.5 lg:gap-6">
           {filteredCourses.map((course) => (
             <CourseCard key={course.id} course={course} onDelete={handleDelete} />
-          ))}
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {filteredCourses.map((course) => (
-            <CourseListItem key={course.id} course={course} onDelete={handleDelete} />
           ))}
         </div>
       )}

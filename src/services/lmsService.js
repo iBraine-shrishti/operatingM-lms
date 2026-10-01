@@ -1,6 +1,6 @@
 import { INITIAL_COURSES, COURSE_THUMBNAILS, INITIAL_UNITS, INITIAL_QUIZZES, INITIAL_ASSIGNMENTS, INITIAL_STUDENTS, INITIAL_QUESTIONS, INITIAL_DISCUSSIONS, INITIAL_ACTIVITIES, INITIAL_ACHIEVEMENTS, INITIAL_NOTES, INITIAL_REVIEWS } from '../data/mockData';
 // Helper for persistent local storage mock service
-const STORAGE_PREFIX = 'om_lms_v8_';
+const STORAGE_PREFIX = 'om_lms_v9_';
 const getStored = (key, initial) => {
     try {
         const item = localStorage.getItem(`${STORAGE_PREFIX}${key}`);
@@ -90,7 +90,27 @@ export const lmsService = {
         return newItem;
     },
     // Students
-    getStudents: () => getStored('students', INITIAL_STUDENTS),
+    getStudents: () => {
+        const stored = getStored('students', INITIAL_STUDENTS);
+        if (!stored || stored.length === 0 || !stored[0].courseId) {
+            setStored('students', INITIAL_STUDENTS);
+            return INITIAL_STUDENTS;
+        }
+        return stored;
+    },
+    getStudentsByCourse: (courseId) => {
+        const students = lmsService.getStudents();
+        if (!courseId || courseId === 'all') return students;
+        return students.filter(s => s.courseId === courseId);
+    },
+    updateStudent: (id, updates) => {
+        const students = lmsService.getStudents();
+        const index = students.findIndex(s => s.id === id);
+        if (index === -1) return undefined;
+        students[index] = { ...students[index], ...updates };
+        setStored('students', students);
+        return students[index];
+    },
     addStudent: (student) => {
         const students = lmsService.getStudents();
         const newStd = {

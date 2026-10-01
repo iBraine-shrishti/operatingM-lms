@@ -15,7 +15,7 @@ export const SharedLayout = () => {
             setSidebarCollapsed(!sidebarCollapsed);
         }
     };
-    return (<div className="min-h-screen bg-white font-sans text-slate-900 overflow-x-hidden">
+    return (<div className="min-h-screen bg-[#f8fafc] font-sans text-slate-900 overflow-x-hidden">
       {/* Sidebar Desktop */}
       <div className="hidden md:block">
         <Sidebar collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}/>

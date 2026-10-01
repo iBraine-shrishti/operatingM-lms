@@ -21,6 +21,8 @@ import { AchievementsPage } from "./pages/AchievementsPage";
 import { NotesReviewsPage } from "./pages/NotesReviewsPage";
 import { ActivityPage } from "./pages/ActivityPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { SchedulePage } from "./pages/SchedulePage";
+import { AttendanceFeesPage } from "./pages/AttendanceFeesPage";
 import { LoginPage } from "./pages/LoginPage.jsx";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
@@ -50,6 +52,8 @@ export function App() {
             <Route path="manage-questions" element={<ManageQuestionsPage />}/>
             <Route path="question-discussions" element={<QuestionDiscussionsPage />}/>
             <Route path="manage-reports" element={<ManageReportsPage />}/>
+            <Route path="schedule" element={<SchedulePage />}/>
+            <Route path="attendance-fees" element={<Navigate to="/profile?tab=attendance" replace />}/>
             <Route path="enrolled-courses" element={<EnrolledCoursesPage />}/>
             <Route path="lesson-player" element={<LessonPlayerPage />}/>
             <Route path="my-quizzes" element={<MyQuizzesPage />}/>
