@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
-import { lmsService } from '../services/lmsService';
-import { Award, CheckCircle, Download, Eye, ShieldCheck, Sparkles, ExternalLink } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-import { CertificateViewerModal } from '../components/crm/CertificateViewerModal';
+import React, { useState } from "react";
+import { lmsService } from "../services/lmsService";
+import {
+  Award,
+  CheckCircle,
+  Download,
+  Eye,
+  ShieldCheck,
+  Sparkles,
+  ExternalLink,
+} from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { CertificateViewerModal } from "../components/crm/CertificateViewerModal";
 
 export const AchievementsPage = () => {
   const { currentUser, crmCertificates } = useAuth();
@@ -29,7 +37,8 @@ export const AchievementsPage = () => {
             Student Certifications & Honor Badges
           </h1>
           <p className="text-slate-500 text-sm mt-0.5">
-            Verified diplomas, specializations, and earned badges synchronized from Operating Media CRM.
+            Verified diplomas, specializations, and earned badges synchronized
+            from Operating Media CRM.
           </p>
         </div>
 
@@ -64,7 +73,7 @@ export const AchievementsPage = () => {
           {crmCertificates.map((cert) => (
             <div
               key={cert.id}
-              className="bg-white border border-amber-200/90 rounded-2xl p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between space-y-4 relative overflow-hidden group"
+              className="bg-white border border-amber-200/90rounded p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between space-y-4 relative overflow-hidden group"
             >
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-start space-x-3.5 min-w-0">
@@ -79,7 +88,11 @@ export const AchievementsPage = () => {
                       {cert.course}
                     </h3>
                     <p className="text-xs text-slate-500 mt-1">
-                      Awarded to <strong className="text-slate-800">{cert.name || currentUser.name}</strong> • {cert.date}
+                      Awarded to{" "}
+                      <strong className="text-slate-800">
+                        {cert.name || currentUser.name}
+                      </strong>{" "}
+                      • {cert.date}
                     </p>
                   </div>
                 </div>
@@ -89,7 +102,7 @@ export const AchievementsPage = () => {
                     {cert.rating} / 10
                   </span>
                   <span className="text-[10px] uppercase font-bold text-slate-400 block mt-0.5">
-                    {cert.grade || 'A+ Distinction'}
+                    {cert.grade || "A+ Distinction"}
                   </span>
                 </div>
               </div>
@@ -134,16 +147,18 @@ export const AchievementsPage = () => {
           {achievements.map((ach) => (
             <div
               key={ach.id}
-              className={`bg-white rounded-2xl border p-5 shadow-2xs flex flex-col justify-between space-y-3 ${
+              className={`bg-whiterounded border p-5 shadow-2xs flex flex-col justify-between space-y-3 ${
                 ach.unlocked
-                  ? 'border-slate-200/90'
-                  : 'border-slate-200 opacity-60'
+                  ? "border-slate-200/90"
+                  : "border-slate-200 opacity-60"
               }`}
             >
               <div className="flex items-start space-x-3.5">
                 <div
                   className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-2xs ${
-                    ach.unlocked ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-500'
+                    ach.unlocked
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-200 text-slate-500"
                   }`}
                 >
                   <Award size={20} />
@@ -163,7 +178,7 @@ export const AchievementsPage = () => {
 
               <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs">
                 <span className="text-slate-400 text-[11px]">
-                  {ach.unlocked ? `Unlocked: ${ach.earnedDate}` : 'Locked'}
+                  {ach.unlocked ? `Unlocked: ${ach.earnedDate}` : "Locked"}
                 </span>
                 {ach.unlocked && (
                   <span className="text-emerald-700 font-bold flex items-center space-x-1 text-[11px]">

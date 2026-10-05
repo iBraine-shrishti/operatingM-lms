@@ -1,69 +1,110 @@
-import React, { useState } from 'react';
-import { 
-  Calendar, Clock, MapPin, User, ChevronRight, CheckCircle2, 
-  Sparkles, BookOpen, Video, ExternalLink, Filter, Layers, ArrowRight
-} from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from "react";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  User,
+  ChevronRight,
+  CheckCircle2,
+  Sparkles,
+  BookOpen,
+  Video,
+  ExternalLink,
+  Filter,
+  Layers,
+  ArrowRight,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export const SchedulePage = () => {
   const navigate = useNavigate();
   const { crmProfile, crmBatch } = useAuth();
-  const [activeTab, setActiveTab] = useState('upcoming'); // 'upcoming' | 'curriculum' | 'timetable'
+  const [activeTab, setActiveTab] = useState("upcoming"); // 'upcoming' | 'curriculum' | 'timetable'
 
   const upcomingSessions = [
-    { 
-      id: '01', 
-      title: 'Data Science & Analytics Foundations', 
-      dates: '22 Apr 2026 - 24 Apr 2026', 
-      timing: '9:00 AM - 10:00 AM', 
-      faculty: 'Harsh Pareek (Lead Faculty)', 
-      status: 'In Session', 
+    {
+      id: "01",
+      title: "Data Science & Analytics Foundations",
+      dates: "22 Apr 2026 - 24 Apr 2026",
+      timing: "9:00 AM - 10:00 AM",
+      faculty: "Harsh Pareek (Lead Faculty)",
+      status: "In Session",
       isLive: true,
-      room: 'Lab 2 & Zoom Hybrid',
-      batch: 'Masters Weekday Morning'
+      room: "Lab 2 & Zoom Hybrid",
+      batch: "Masters Weekday Morning",
     },
-    { 
-      id: '02', 
-      title: 'Social Media Marketing & Meta Ads Strategy', 
-      dates: '3 Mar 2026 - 19 Mar 2026', 
-      timing: '9:00 AM - 10:00 AM', 
-      faculty: 'Nishi Solanki', 
-      status: 'Upcoming', 
+    {
+      id: "02",
+      title: "Social Media Marketing & Meta Ads Strategy",
+      dates: "3 Mar 2026 - 19 Mar 2026",
+      timing: "9:00 AM - 10:00 AM",
+      faculty: "Nishi Solanki",
+      status: "Upcoming",
       isLive: false,
-      room: 'Room 104',
-      batch: 'Masters Weekday Morning'
+      room: "Room 104",
+      batch: "Masters Weekday Morning",
     },
-    { 
-      id: '03', 
-      title: 'Website Development with WordPress & CMS Customization', 
-      dates: '04 Mar 2026 - 12 Mar 2026', 
-      timing: '9:00 AM - 10:00 AM', 
-      faculty: 'Darshan Deorukhkar', 
-      status: 'Upcoming', 
+    {
+      id: "03",
+      title: "Website Development with WordPress & CMS Customization",
+      dates: "04 Mar 2026 - 12 Mar 2026",
+      timing: "9:00 AM - 10:00 AM",
+      faculty: "Darshan Deorukhkar",
+      status: "Upcoming",
       isLive: false,
-      room: 'Lab 1',
-      batch: 'Masters Weekday Morning'
+      room: "Lab 1",
+      batch: "Masters Weekday Morning",
     },
-    { 
-      id: '04', 
-      title: 'Google Ads (PPC) Campaign Planning & ROAS Optimization', 
-      dates: '16 Mar 2026 - 28 Mar 2026', 
-      timing: '9:00 AM - 10:00 AM', 
-      faculty: 'Harsh Pareek', 
-      status: 'Upcoming', 
+    {
+      id: "04",
+      title: "Google Ads (PPC) Campaign Planning & ROAS Optimization",
+      dates: "16 Mar 2026 - 28 Mar 2026",
+      timing: "9:00 AM - 10:00 AM",
+      faculty: "Harsh Pareek",
+      status: "Upcoming",
       isLive: false,
-      room: 'Main Conference',
-      batch: 'Masters Weekday Morning'
-    }
+      room: "Main Conference",
+      batch: "Masters Weekday Morning",
+    },
   ];
 
   const weeklySchedule = [
-    { day: 'Monday', time: '9:00 AM - 10:00 AM', topic: 'Technical SEO Audits & Core Web Vitals', faculty: 'Harsh Pareek', type: 'Lecture + Lab' },
-    { day: 'Tuesday', time: '9:00 AM - 10:00 AM', topic: 'Schema Markup & Rich Snippets Hands-on', faculty: 'Harsh Pareek', type: 'Live Workshop' },
-    { day: 'Wednesday', time: '9:00 AM - 10:00 AM', topic: 'Robots.txt, XML Sitemaps & Canonicalization', faculty: 'Harsh Pareek', type: 'Theory & Case Study' },
-    { day: 'Thursday', time: '9:00 AM - 10:00 AM', topic: 'Google Search Console Advanced Diagnostics', faculty: 'Harsh Pareek', type: 'Lab Session' },
-    { day: 'Friday', time: '9:00 AM - 10:00 AM', topic: 'Weekly Q&A, Doubt Solving & Project Review', faculty: 'Harsh Pareek & Nishi', type: 'Interactive Review' }
+    {
+      day: "Monday",
+      time: "9:00 AM - 10:00 AM",
+      topic: "Technical SEO Audits & Core Web Vitals",
+      faculty: "Harsh Pareek",
+      type: "Lecture + Lab",
+    },
+    {
+      day: "Tuesday",
+      time: "9:00 AM - 10:00 AM",
+      topic: "Schema Markup & Rich Snippets Hands-on",
+      faculty: "Harsh Pareek",
+      type: "Live Workshop",
+    },
+    {
+      day: "Wednesday",
+      time: "9:00 AM - 10:00 AM",
+      topic: "Robots.txt, XML Sitemaps & Canonicalization",
+      faculty: "Harsh Pareek",
+      type: "Theory & Case Study",
+    },
+    {
+      day: "Thursday",
+      time: "9:00 AM - 10:00 AM",
+      topic: "Google Search Console Advanced Diagnostics",
+      faculty: "Harsh Pareek",
+      type: "Lab Session",
+    },
+    {
+      day: "Friday",
+      time: "9:00 AM - 10:00 AM",
+      topic: "Weekly Q&A, Doubt Solving & Project Review",
+      faculty: "Harsh Pareek & Nishi",
+      type: "Interactive Review",
+    },
   ];
 
   return (
@@ -84,29 +125,30 @@ export const SchedulePage = () => {
             Classroom Schedule & Curriculum
           </h1>
           <p className="text-slate-500 text-xs sm:text-sm mt-0.5">
-            Real-time enrolled batch schedule, active lecture timings, and upcoming curriculum sessions.
+            Real-time enrolled batch schedule, active lecture timings, and
+            upcoming curriculum sessions.
           </p>
         </div>
 
         <div className="flex items-center space-x-2">
           <button
             type="button"
-            onClick={() => setActiveTab('upcoming')}
+            onClick={() => setActiveTab("upcoming")}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'upcoming'
-                ? 'bg-[#2563eb] text-white shadow-xs'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+              activeTab === "upcoming"
+                ? "bg-[#2563eb] text-white shadow-xs"
+                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
             }`}
           >
             Curriculum Sessions
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('timetable')}
+            onClick={() => setActiveTab("timetable")}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === 'timetable'
-                ? 'bg-[#2563eb] text-white shadow-xs'
-                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+              activeTab === "timetable"
+                ? "bg-[#2563eb] text-white shadow-xs"
+                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
             }`}
           >
             Weekly Timetable
@@ -115,7 +157,7 @@ export const SchedulePage = () => {
       </div>
 
       {/* 1. Enrolled Batch & Schedule Card (LATEST UI) */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs space-y-5">
+      <div className="bg-white border border-slate-200/90rounded p-6 shadow-2xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-2.5">
             <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-200">
@@ -136,7 +178,10 @@ export const SchedulePage = () => {
               <span className="w-1.5 h-1.5 rounded-full bg-purple-600 animate-pulse" />
               <span>LIVE</span>
             </span>
-            <span>{crmProfile.batchName || 'Masters in Digital Marketing - Weekday Morning'}</span>
+            <span>
+              {crmProfile.batchName ||
+                "Masters in Digital Marketing - Weekday Morning"}
+            </span>
           </div>
         </div>
 
@@ -147,8 +192,12 @@ export const SchedulePage = () => {
               <Clock size={12} />
               <span>TIMING:</span>
             </div>
-            <div className="font-extrabold text-slate-900 text-sm">9:00 AM - 10:00 AM</div>
-            <div className="text-[11px] text-slate-500 font-medium">Daily 1-Hour Lecture</div>
+            <div className="font-extrabold text-slate-900 text-sm">
+              9:00 AM - 10:00 AM
+            </div>
+            <div className="text-[11px] text-slate-500 font-medium">
+              Daily 1-Hour Lecture
+            </div>
           </div>
 
           <div className="space-y-1">
@@ -156,8 +205,12 @@ export const SchedulePage = () => {
               <Calendar size={12} />
               <span>DAYS:</span>
             </div>
-            <div className="font-extrabold text-slate-900 text-sm">Monday to Friday</div>
-            <div className="text-[11px] text-slate-500 font-medium">5 Days / Week Schedule</div>
+            <div className="font-extrabold text-slate-900 text-sm">
+              Monday to Friday
+            </div>
+            <div className="text-[11px] text-slate-500 font-medium">
+              5 Days / Week Schedule
+            </div>
           </div>
 
           <div className="space-y-1">
@@ -165,8 +218,12 @@ export const SchedulePage = () => {
               <MapPin size={12} />
               <span>BRANCH / CENTER:</span>
             </div>
-            <div className="font-extrabold text-slate-900 text-sm">{crmProfile.branch || 'Borivali Center'}</div>
-            <div className="text-[11px] text-slate-500 font-medium">Classroom + Live Zoom Hybrid</div>
+            <div className="font-extrabold text-slate-900 text-sm">
+              {crmProfile.branch || "Borivali Center"}
+            </div>
+            <div className="text-[11px] text-slate-500 font-medium">
+              Classroom + Live Zoom Hybrid
+            </div>
           </div>
 
           <div className="space-y-1">
@@ -174,8 +231,12 @@ export const SchedulePage = () => {
               <User size={12} />
               <span>FACULTY LEAD:</span>
             </div>
-            <div className="font-extrabold text-slate-900 text-sm truncate">Harsh Pareek</div>
-            <div className="text-[11px] text-slate-500 font-medium">Director & Lead Faculty</div>
+            <div className="font-extrabold text-slate-900 text-sm truncate">
+              Harsh Pareek
+            </div>
+            <div className="text-[11px] text-slate-500 font-medium">
+              Director & Lead Faculty
+            </div>
           </div>
         </div>
 
@@ -200,7 +261,7 @@ export const SchedulePage = () => {
               22 Apr 2026 - 24 Apr 2026
             </span>
             <button
-              onClick={() => navigate('/lesson-player?courseId=course-8')}
+              onClick={() => navigate("/lesson-player?courseId=course-8")}
               className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all shadow-xs flex items-center space-x-1 cursor-pointer"
             >
               <span>Join Lecture</span>
@@ -211,8 +272,8 @@ export const SchedulePage = () => {
       </div>
 
       {/* 2. Upcoming Curriculum Sessions (LATEST UI) */}
-      {activeTab === 'upcoming' ? (
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs space-y-4">
+      {activeTab === "upcoming" ? (
+        <div className="bg-white border border-slate-200/90 rounded p-6 shadow-2xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-base font-bold text-slate-900">
@@ -249,9 +310,19 @@ export const SchedulePage = () => {
                       )}
                     </div>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 mt-1 font-medium">
-                      <span>Faculty: <strong className="text-slate-700">{session.faculty}</strong></span>
+                      <span>
+                        Faculty:{" "}
+                        <strong className="text-slate-700">
+                          {session.faculty}
+                        </strong>
+                      </span>
                       <span>•</span>
-                      <span>Location: <strong className="text-slate-700">{session.room}</strong></span>
+                      <span>
+                        Location:{" "}
+                        <strong className="text-slate-700">
+                          {session.room}
+                        </strong>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -261,7 +332,7 @@ export const SchedulePage = () => {
                     {session.dates}
                   </span>
                   <button
-                    onClick={() => navigate('/enrolled-courses')}
+                    onClick={() => navigate("/enrolled-courses")}
                     className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
                   >
                     <span>Syllabus</span>
@@ -274,7 +345,7 @@ export const SchedulePage = () => {
         </div>
       ) : (
         /* Weekly Timetable View */
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs space-y-4">
+        <div className="bg-white border border-slate-200/90rounded p-6 shadow-2xs space-y-4">
           <div>
             <h3 className="text-base font-bold text-slate-900">
               Weekly Class Timetable
@@ -298,19 +369,32 @@ export const SchedulePage = () => {
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
                 {weeklySchedule.map((row, rIdx) => (
-                  <tr key={rIdx} className="hover:bg-slate-50 transition-colors">
-                    <td className="py-3.5 pr-3 font-black text-slate-900">{row.day}</td>
-                    <td className="py-3.5 pr-3 font-semibold text-blue-600">{row.time}</td>
-                    <td className="py-3.5 pr-3 font-bold text-slate-800">{row.topic}</td>
+                  <tr
+                    key={rIdx}
+                    className="hover:bg-slate-50 transition-colors"
+                  >
+                    <td className="py-3.5 pr-3 font-black text-slate-900">
+                      {row.day}
+                    </td>
+                    <td className="py-3.5 pr-3 font-semibold text-blue-600">
+                      {row.time}
+                    </td>
+                    <td className="py-3.5 pr-3 font-bold text-slate-800">
+                      {row.topic}
+                    </td>
                     <td className="py-3.5 pr-3">
                       <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium text-[11px]">
                         {row.type}
                       </span>
                     </td>
-                    <td className="py-3.5 pr-3 font-medium text-slate-600">{row.faculty}</td>
+                    <td className="py-3.5 pr-3 font-medium text-slate-600">
+                      {row.faculty}
+                    </td>
                     <td className="py-3.5 text-right">
                       <button
-                        onClick={() => navigate('/lesson-player?courseId=course-8')}
+                        onClick={() =>
+                          navigate("/lesson-player?courseId=course-8")
+                        }
                         className="text-xs font-bold text-[#2563eb] hover:underline cursor-pointer"
                       >
                         Enter Room

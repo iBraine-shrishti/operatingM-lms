@@ -1,8 +1,20 @@
-import React from 'react';
-import { Award, CheckCircle, ExternalLink, Download, ShieldCheck, Eye, Sparkles } from 'lucide-react';
+import React from "react";
+import {
+  Award,
+  CheckCircle,
+  ExternalLink,
+  Download,
+  ShieldCheck,
+  Eye,
+  Sparkles,
+} from "lucide-react";
 
-export const StudentCertificatesCard = ({ certificates = [], onOpenCertificate }) => {
-  const primaryCert = certificates && certificates.length > 0 ? certificates[0] : null;
+export const StudentCertificatesCard = ({
+  certificates = [],
+  onOpenCertificate,
+}) => {
+  const primaryCert =
+    certificates && certificates.length > 0 ? certificates[0] : null;
 
   if (!primaryCert) return null;
 
@@ -24,10 +36,10 @@ export const StudentCertificatesCard = ({ certificates = [], onOpenCertificate }
         </div>
 
         {/* Certificate Feature Card */}
-        <div className="mt-3.5 p-4 rounded-2xl bg-gradient-to-br from-amber-50/50 via-white to-slate-50 border border-amber-200/80 shadow-2xs space-y-3">
+        <div className="mt-3.5 p-4rounded bg-gradient-to-br from-amber-50/50 via-white to-slate-50 border border-amber-200/80 shadow-2xs space-y-3">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center space-x-3 min-w-0">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-400 text-white flex items-center justify-center shrink-0 shadow-md">
+              <div className="w-12 h-12rounded bg-gradient-to-tr from-amber-500 to-amber-400 text-white flex items-center justify-center shrink-0 shadow-md">
                 <Award size={24} />
               </div>
               <div className="min-w-0">
@@ -38,16 +50,24 @@ export const StudentCertificatesCard = ({ certificates = [], onOpenCertificate }
                   {primaryCert.course}
                 </h4>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Conferred in <strong className="text-slate-700 font-semibold">{primaryCert.date}</strong>
+                  Conferred in{" "}
+                  <strong className="text-slate-700 font-semibold">
+                    {primaryCert.date}
+                  </strong>
                 </p>
               </div>
             </div>
 
             <div className="shrink-0 text-right">
               <div className="inline-block bg-white border border-amber-200 px-2.5 py-1 rounded-xl shadow-2xs">
-                <span className="text-[10px] uppercase font-bold text-slate-400 block leading-none">Score</span>
+                <span className="text-[10px] uppercase font-bold text-slate-400 block leading-none">
+                  Score
+                </span>
                 <span className="text-sm font-black text-amber-600 tabular-nums">
-                  {primaryCert.rating} <span className="text-[10px] font-bold text-slate-400">/ 10</span>
+                  {primaryCert.rating}{" "}
+                  <span className="text-[10px] font-bold text-slate-400">
+                    / 10
+                  </span>
                 </span>
               </div>
             </div>

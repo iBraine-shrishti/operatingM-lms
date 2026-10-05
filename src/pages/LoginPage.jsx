@@ -12,7 +12,7 @@ import {
   EyeOff,
   Sparkles,
   Info,
-  X
+  X,
 } from "lucide-react";
 import { useAuth, ADMIN_USER, STUDENT_USER } from "../context/AuthContext";
 import logo from "../assets/logo.png";
@@ -30,8 +30,14 @@ export const LoginPage = () => {
   const [studentImgFailed, setStudentImgFailed] = useState(false);
 
   // Accounts configuration
-  const validAdminEmails = ["admin@operatingmedia.com", "vishal.c@operatingmedia.com"];
-  const validStudentEmails = ["student@operatingmedia.com", "aarav.patel@operatingmedia.com"];
+  const validAdminEmails = [
+    "admin@operatingmedia.com",
+    "vishal.c@operatingmedia.com",
+  ];
+  const validStudentEmails = [
+    "student@operatingmedia.com",
+    "aarav.patel@operatingmedia.com",
+  ];
   const validPasswords = ["password123", "admin123", "student123"];
 
   // Handle clicking role card
@@ -53,9 +59,17 @@ export const LoginPage = () => {
     if (error) setError("");
 
     const lower = val.toLowerCase().trim();
-    if (validStudentEmails.includes(lower) || lower.startsWith("student") || lower.startsWith("aarav")) {
+    if (
+      validStudentEmails.includes(lower) ||
+      lower.startsWith("student") ||
+      lower.startsWith("aarav")
+    ) {
       setSelectedRole("STUDENT");
-    } else if (validAdminEmails.includes(lower) || lower.startsWith("admin") || lower.startsWith("vishal")) {
+    } else if (
+      validAdminEmails.includes(lower) ||
+      lower.startsWith("admin") ||
+      lower.startsWith("vishal")
+    ) {
       setSelectedRole("ADMIN");
     }
   };
@@ -87,7 +101,9 @@ export const LoginPage = () => {
     // 2. Check email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(trimmedEmail)) {
-      setError("Please enter a valid email address (e.g., name@operatingmedia.com).");
+      setError(
+        "Please enter a valid email address (e.g., name@operatingmedia.com).",
+      );
       return;
     }
 
@@ -106,7 +122,9 @@ export const LoginPage = () => {
         performLogin("ADMIN");
         return;
       } else {
-        setError("Incorrect password for Administrator account. Demo password is: password123");
+        setError(
+          "Incorrect password for Administrator account. Demo password is: password123",
+        );
         return;
       }
     }
@@ -116,13 +134,17 @@ export const LoginPage = () => {
         performLogin("STUDENT");
         return;
       } else {
-        setError("Incorrect password for Student account. Demo password is: password123");
+        setError(
+          "Incorrect password for Student account. Demo password is: password123",
+        );
         return;
       }
     }
 
     // Unrecognized email
-    setError("Unrecognized account credentials. Please use one of the demo accounts or click a role card above.");
+    setError(
+      "Unrecognized account credentials. Please use one of the demo accounts or click a role card above.",
+    );
   };
 
   // Direct 1-click login helper
@@ -133,7 +155,9 @@ export const LoginPage = () => {
 
   // Trigger error simulation for visual inspection
   const handleSimulateError = () => {
-    setError("Demo Error: Invalid email or password. Please verify your credentials or select an account card.");
+    setError(
+      "Demo Error: Invalid email or password. Please verify your credentials or select an account card.",
+    );
   };
 
   return (
@@ -148,7 +172,7 @@ export const LoginPage = () => {
               className="h-12 w-auto object-contain"
               onError={(e) => {
                 // Fallback to text badge if image fails
-                e.target.style.display = 'none';
+                e.target.style.display = "none";
               }}
             />
           </div>
@@ -191,7 +215,7 @@ export const LoginPage = () => {
             <div
               id="admin-role-card"
               onClick={() => handleSelectRole("ADMIN")}
-              className={`cursor-pointer rounded-2xl p-3.5 border-2 transition-all relative flex flex-col justify-between ${
+              className={`cursor-pointerrounded p-3.5 border-2 transition-all relative flex flex-col justify-between ${
                 selectedRole === "ADMIN"
                   ? "border-slate-900 bg-slate-50/80 shadow-sm"
                   : "border-slate-200 hover:border-slate-300 bg-white"
@@ -212,7 +236,10 @@ export const LoginPage = () => {
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center space-x-1.5">
-                    <ShieldCheck size={14} className="text-slate-700 shrink-0" />
+                    <ShieldCheck
+                      size={14}
+                      className="text-slate-700 shrink-0"
+                    />
                     <span className="text-xs font-bold text-slate-900 truncate">
                       Admin Portal
                     </span>
@@ -243,7 +270,10 @@ export const LoginPage = () => {
                     1-Click
                   </button>
                   {selectedRole === "ADMIN" && (
-                    <CheckCircle2 size={16} className="text-slate-900 shrink-0" />
+                    <CheckCircle2
+                      size={16}
+                      className="text-slate-900 shrink-0"
+                    />
                   )}
                 </div>
               </div>
@@ -253,7 +283,7 @@ export const LoginPage = () => {
             <div
               id="student-role-card"
               onClick={() => handleSelectRole("STUDENT")}
-              className={`cursor-pointer rounded-2xl p-3.5 border-2 transition-all relative flex flex-col justify-between ${
+              className={`cursor-pointerrounded p-3.5 border-2 transition-all relative flex flex-col justify-between ${
                 selectedRole === "STUDENT"
                   ? "border-slate-900 bg-slate-50/80 shadow-sm"
                   : "border-slate-200 hover:border-slate-300 bg-white"
@@ -274,7 +304,10 @@ export const LoginPage = () => {
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center space-x-1.5">
-                    <GraduationCap size={14} className="text-slate-700 shrink-0" />
+                    <GraduationCap
+                      size={14}
+                      className="text-slate-700 shrink-0"
+                    />
                     <span className="text-xs font-bold text-slate-900 truncate">
                       Student Hub
                     </span>
@@ -305,7 +338,10 @@ export const LoginPage = () => {
                     1-Click
                   </button>
                   {selectedRole === "STUDENT" && (
-                    <CheckCircle2 size={16} className="text-slate-900 shrink-0" />
+                    <CheckCircle2
+                      size={16}
+                      className="text-slate-900 shrink-0"
+                    />
                   )}
                 </div>
               </div>
@@ -320,7 +356,10 @@ export const LoginPage = () => {
               Email Address
             </label>
             <div className="relative">
-              <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Mail
+                size={16}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              />
               <input
                 id="login-email-input"
                 type="email"
@@ -337,10 +376,15 @@ export const LoginPage = () => {
               <label className="block text-xs font-bold text-slate-700">
                 Password
               </label>
-              <span className="text-xs text-slate-400">Demo password: password123</span>
+              <span className="text-xs text-slate-400">
+                Demo password: password123
+              </span>
             </div>
             <div className="relative">
-              <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Lock
+                size={16}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              />
               <input
                 id="login-password-input"
                 type={showPassword ? "text" : "password"}
@@ -365,7 +409,8 @@ export const LoginPage = () => {
             className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl text-sm shadow-xs transition-colors flex items-center justify-center space-x-2"
           >
             <span>
-              Sign In to {selectedRole === "ADMIN" ? "Admin Portal" : "Student Hub"}
+              Sign In to{" "}
+              {selectedRole === "ADMIN" ? "Admin Portal" : "Student Hub"}
             </span>
             <ArrowRight size={16} />
           </button>

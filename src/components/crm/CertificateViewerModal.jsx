@@ -1,7 +1,19 @@
-import React, { useRef } from 'react';
-import { X, Download, Printer, ShieldCheck, Award, ExternalLink } from 'lucide-react';
+import React, { useRef } from "react";
+import {
+  X,
+  Download,
+  Printer,
+  ShieldCheck,
+  Award,
+  ExternalLink,
+} from "lucide-react";
 
-export const CertificateViewerModal = ({ isOpen, onClose, certificate, studentName }) => {
+export const CertificateViewerModal = ({
+  isOpen,
+  onClose,
+  certificate,
+  studentName,
+}) => {
   const printRef = useRef(null);
 
   if (!isOpen || !certificate) return null;
@@ -10,11 +22,11 @@ export const CertificateViewerModal = ({ isOpen, onClose, certificate, studentNa
     window.print();
   };
 
-  const name = certificate.name || studentName || 'Aditya Jadhav';
-  const certId = certificate.certificate_id || 'OM/3/5/32';
-  const course = certificate.course || 'Masters in Digital Marketing';
-  const date = certificate.date || 'March, 2026';
-  const rating = certificate.rating || '9.4';
+  const name = certificate.name || studentName || "Aditya Jadhav";
+  const certId = certificate.certificate_id || "OM/3/5/32";
+  const course = certificate.course || "Masters in Digital Marketing";
+  const date = certificate.date || "March, 2026";
+  const rating = certificate.rating || "9.4";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
@@ -30,7 +42,8 @@ export const CertificateViewerModal = ({ isOpen, onClose, certificate, studentNa
                 Official Credential Verification
               </h3>
               <p className="text-[11px] text-slate-500">
-                Operating Media Institute of Digital Marketing • Certificate #{certId}
+                Operating Media Institute of Digital Marketing • Certificate #
+                {certId}
               </p>
             </div>
           </div>
@@ -58,12 +71,13 @@ export const CertificateViewerModal = ({ isOpen, onClose, certificate, studentNa
         <div className="p-4 sm:p-6 overflow-y-auto flex-1 bg-slate-100/60 flex items-center justify-center">
           <div
             ref={printRef}
-            className="relative w-full max-w-[800px] aspect-[1.414/1] bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-300 print:border-none print:shadow-none print:w-full"
+            className="relative w-full max-w-[800px] aspect-[1.414/1] bg-white rounded shadow-xl overflow-hidden border border-slate-300 print:border-none print:shadow-none print:w-full"
             style={{
-              backgroundImage: "url('/OM Certificate 2026 (1).png'), url('/test_cert.png')",
-              backgroundSize: '100% 100%',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
+              backgroundImage:
+                "url('/OM Certificate 2026 (1).png'), url('/test_cert.png')",
+              backgroundSize: "100% 100%",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
             }}
           >
             {/* Overlay content matching CRM CertificateTemplate positions */}
@@ -82,7 +96,9 @@ export const CertificateViewerModal = ({ isOpen, onClose, certificate, studentNa
                 </h1>
 
                 <p className="text-[9.5px] sm:text-xs text-slate-500 font-normal leading-relaxed max-w-md mx-auto">
-                  has completed the required course of study for the below mentioned topic and in testimony thereof is awarded this certificate
+                  has completed the required course of study for the below
+                  mentioned topic and in testimony thereof is awarded this
+                  certificate
                 </p>
 
                 <h2 className="text-base sm:text-xl md:text-2xl font-serif font-bold text-[#0d6b7b] tracking-wide pt-1">
@@ -90,7 +106,8 @@ export const CertificateViewerModal = ({ isOpen, onClose, certificate, studentNa
                 </h2>
 
                 <p className="text-[10px] sm:text-xs text-slate-500 font-medium">
-                  given in the month of <strong className="text-slate-800">{date}</strong>
+                  given in the month of{" "}
+                  <strong className="text-slate-800">{date}</strong>
                 </p>
               </div>
 
@@ -122,7 +139,9 @@ export const CertificateViewerModal = ({ isOpen, onClose, certificate, studentNa
               {/* Footer Meta Row */}
               <div className="w-full flex items-center justify-between text-[8px] sm:text-[10px] text-slate-400 font-medium pt-1 border-t border-slate-200/60">
                 <span>Powered by iBraine Digital LLP</span>
-                <span className="font-bold text-slate-600">Certificate ID ~ {certId}</span>
+                <span className="font-bold text-slate-600">
+                  Certificate ID ~ {certId}
+                </span>
                 <span>www.OperatingMedia.com</span>
               </div>
             </div>
@@ -133,7 +152,9 @@ export const CertificateViewerModal = ({ isOpen, onClose, certificate, studentNa
         <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
           <div className="flex items-center space-x-2 text-xs text-emerald-700 font-semibold">
             <ShieldCheck size={16} />
-            <span>Digital signature cryptographically registered on CRM system</span>
+            <span>
+              Digital signature cryptographically registered on CRM system
+            </span>
           </div>
 
           <div className="flex items-center space-x-2">

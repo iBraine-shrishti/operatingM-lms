@@ -1,39 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Save, Award, CheckCircle2, User, DollarSign, TrendingUp, 
-  Calendar, FileText, Clock, Check, ShieldCheck, Sparkles, 
-  MapPin, Shield, BookOpen, AlertCircle, Phone, Mail, Edit3
-} from 'lucide-react';
-import { 
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer 
-} from 'recharts';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { FeeReceiptModal } from '../components/crm/FeeReceiptModal';
+import React, { useState, useEffect } from "react";
+import {
+  Save,
+  Award,
+  CheckCircle2,
+  User,
+  DollarSign,
+  TrendingUp,
+  Calendar,
+  FileText,
+  Clock,
+  Check,
+  ShieldCheck,
+  Sparkles,
+  MapPin,
+  Shield,
+  BookOpen,
+  AlertCircle,
+  Phone,
+  Mail,
+  Edit3,
+} from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { FeeReceiptModal } from "../components/crm/FeeReceiptModal";
 
 export const ProfilePage = () => {
-  const { currentUser, isAdmin, isStudent, updateCurrentUser, crmProfile, crmAttendance } = useAuth();
+  const {
+    currentUser,
+    isAdmin,
+    isStudent,
+    updateCurrentUser,
+    crmProfile,
+    crmAttendance,
+  } = useAuth();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Tab state: default to 'attendance-fees' for students (as requested by user), or 'profile'
-  const initialTab = searchParams.get('tab') === 'details' ? 'details' : 'attendance-fees';
-  const [activeTab, setActiveTab] = useState(isStudent ? initialTab : 'details');
+  const initialTab =
+    searchParams.get("tab") === "details" ? "details" : "attendance-fees";
+  const [activeTab, setActiveTab] = useState(
+    isStudent ? initialTab : "details",
+  );
 
   // Sub-tabs for Attendance & Fees
-  const [crmActiveTab, setCrmActiveTab] = useState('overview'); // 'overview' | 'academic' | 'financial'
-  const [attendanceView, setAttendanceView] = useState('graph'); // 'graph' | 'logs'
+  const [crmActiveTab, setCrmActiveTab] = useState("overview"); // 'overview' | 'academic' | 'financial'
+  const [attendanceView, setAttendanceView] = useState("graph"); // 'graph' | 'logs'
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
 
   // Profile Form States
-  const [name, setName] = useState(currentUser.name || 'Hiteshpuri Goswami');
-  const [email, setEmail] = useState(currentUser.email || 'hiteshpuri.g@gmail.com');
-  const [phone, setPhone] = useState(crmProfile.phone || '+91 74001 23992');
+  const [name, setName] = useState(currentUser.name || "Hiteshpuri Goswami");
+  const [email, setEmail] = useState(
+    currentUser.email || "hiteshpuri.g@gmail.com",
+  );
+  const [phone, setPhone] = useState(crmProfile.phone || "+91 74001 23992");
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   useEffect(() => {
-    setName(currentUser.name || 'Hiteshpuri Goswami');
-    setEmail(currentUser.email || 'hiteshpuri.g@gmail.com');
+    setName(currentUser.name || "Hiteshpuri Goswami");
+    setEmail(currentUser.email || "hiteshpuri.g@gmail.com");
   }, [currentUser]);
 
   const handleSave = (e) => {
@@ -44,24 +78,24 @@ export const ProfilePage = () => {
   };
 
   const attendanceTrendData = [
-    { month: 'Nov', rate: 91 },
-    { month: 'Dec', rate: 88 },
-    { month: 'Jan', rate: 94 },
-    { month: 'Feb', rate: 89 },
-    { month: 'Mar', rate: 93 },
+    { month: "Nov", rate: 91 },
+    { month: "Dec", rate: 88 },
+    { month: "Jan", rate: 94 },
+    { month: "Feb", rate: 89 },
+    { month: "Mar", rate: 93 },
   ];
 
   return (
     <div className="space-y-6">
       {/* 1. Header Banner & Identity Card */}
-      <div className="bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-blue-50/80 border border-blue-100/90 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-2xs relative overflow-hidden">
+      <div className="bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-blue-50/80 border border-blue-100/90 rounded sm:rounded-3xl p-5 sm:p-7 shadow-2xs relative overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
           <div className="flex items-center space-x-4 sm:space-x-5 min-w-0">
             <div className="relative shrink-0">
               <img
-                src={currentUser.avatar || '/student_photo_265.jpg'}
+                src={currentUser.avatar || "/student_photo_265.jpg"}
                 alt={currentUser.name}
-                className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover object-top border-2 border-white shadow-md ring-2 ring-blue-100/80"
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded object-cover object-top border-2 border-white shadow-md ring-2 ring-blue-100/80"
               />
               <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white shadow-xs" />
             </div>
@@ -69,7 +103,9 @@ export const ProfilePage = () => {
             <div className="min-w-0 space-y-1">
               <div className="flex items-center space-x-2">
                 <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 bg-white border border-blue-200/80 px-2 py-0.5 rounded shadow-2xs">
-                  {isStudent ? 'STUDENT PROFILE & CRM LEDGER' : 'ADMINISTRATOR PROFILE'}
+                  {isStudent
+                    ? "STUDENT PROFILE & CRM LEDGER"
+                    : "ADMINISTRATOR PROFILE"}
                 </span>
                 <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -78,26 +114,43 @@ export const ProfilePage = () => {
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                {currentUser.name || 'Hiteshpuri Goswami'}
+                {currentUser.name || "Hiteshpuri Goswami"}
               </h1>
 
               {isStudent ? (
                 <div className="flex flex-wrap items-center gap-2 pt-0.5">
                   <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-0.5 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
                     <BookOpen size={12} className="text-[#2563eb]" />
-                    <span>Course <strong className="text-slate-900 font-bold">{crmProfile.course || 'Diploma in Digital Marketing'}</strong></span>
+                    <span>
+                      Course{" "}
+                      <strong className="text-slate-900 font-bold">
+                        {crmProfile.course || "Diploma in Digital Marketing"}
+                      </strong>
+                    </span>
                   </div>
                   <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-0.5 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
                     <Shield size={12} className="text-[#2563eb]" />
-                    <span>Student ID <strong className="text-slate-900 font-bold">{crmProfile.admissionNo || 'OMC-0266'}</strong></span>
+                    <span>
+                      Student ID{" "}
+                      <strong className="text-slate-900 font-bold">
+                        {crmProfile.admissionNo || "OMC-0266"}
+                      </strong>
+                    </span>
                   </div>
                   <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-0.5 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
                     <MapPin size={12} className="text-[#2563eb]" />
-                    <span>Center <strong className="text-slate-900 font-bold">{crmProfile.branch || 'Borivali Center'}</strong></span>
+                    <span>
+                      Center{" "}
+                      <strong className="text-slate-900 font-bold">
+                        {crmProfile.branch || "Borivali Center"}
+                      </strong>
+                    </span>
                   </div>
                 </div>
               ) : (
-                <p className="text-xs text-slate-500">{currentUser.designation || 'Administrator'}</p>
+                <p className="text-xs text-slate-500">
+                  {currentUser.designation || "Administrator"}
+                </p>
               )}
             </div>
           </div>
@@ -124,13 +177,13 @@ export const ProfilePage = () => {
           <button
             type="button"
             onClick={() => {
-              setActiveTab('attendance-fees');
-              setSearchParams({ tab: 'attendance' });
+              setActiveTab("attendance-fees");
+              setSearchParams({ tab: "attendance" });
             }}
             className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2 ${
-              activeTab === 'attendance-fees'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              activeTab === "attendance-fees"
+                ? "bg-slate-900 text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
             }`}
           >
             <DollarSign size={14} />
@@ -140,13 +193,13 @@ export const ProfilePage = () => {
           <button
             type="button"
             onClick={() => {
-              setActiveTab('details');
-              setSearchParams({ tab: 'details' });
+              setActiveTab("details");
+              setSearchParams({ tab: "details" });
             }}
             className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2 ${
-              activeTab === 'details'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              activeTab === "details"
+                ? "bg-slate-900 text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
             }`}
           >
             <User size={14} />
@@ -158,39 +211,39 @@ export const ProfilePage = () => {
       {/* ============================================================== */}
       {/* 3. TAB 1: ATTENDANCE RECORDS & TUITION FEES                    */}
       {/* ============================================================== */}
-      {isStudent && activeTab === 'attendance-fees' && (
+      {isStudent && activeTab === "attendance-fees" && (
         <div className="space-y-6">
           {/* The 3-Toggle Navigation Bar (matching LATEST UI specification) */}
           <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-3">
             <button
               type="button"
-              onClick={() => setCrmActiveTab('overview')}
+              onClick={() => setCrmActiveTab("overview")}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                crmActiveTab === 'overview'
-                  ? 'bg-white border border-slate-200 text-blue-600 shadow-2xs'
-                  : 'text-slate-500 hover:text-slate-800'
+                crmActiveTab === "overview"
+                  ? "bg-white border border-slate-200 text-blue-600 shadow-2xs"
+                  : "text-slate-500 hover:text-slate-800"
               }`}
             >
               Student CRM Overview
             </button>
             <button
               type="button"
-              onClick={() => setCrmActiveTab('academic')}
+              onClick={() => setCrmActiveTab("academic")}
               className={`px-4 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-                crmActiveTab === 'academic'
-                  ? 'bg-white border border-slate-200 text-blue-600 shadow-2xs font-bold'
-                  : 'text-slate-500 hover:text-slate-800'
+                crmActiveTab === "academic"
+                  ? "bg-white border border-slate-200 text-blue-600 shadow-2xs font-bold"
+                  : "text-slate-500 hover:text-slate-800"
               }`}
             >
               Official Operating Media & Academic
             </button>
             <button
               type="button"
-              onClick={() => setCrmActiveTab('financial')}
+              onClick={() => setCrmActiveTab("financial")}
               className={`px-4 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
-                crmActiveTab === 'financial'
-                  ? 'bg-white border border-slate-200 text-blue-600 shadow-2xs font-bold'
-                  : 'text-slate-500 hover:text-slate-800'
+                crmActiveTab === "financial"
+                  ? "bg-white border border-slate-200 text-blue-600 shadow-2xs font-bold"
+                  : "text-slate-500 hover:text-slate-800"
               }`}
             >
               Financial Management
@@ -198,25 +251,26 @@ export const ProfilePage = () => {
           </div>
 
           {/* 1. Classroom Attendance Card */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs space-y-5">
+          <div className="bg-white border border-slate-200/90  rounded p-6 shadow-2xs space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
               <div>
                 <h3 className="text-base sm:text-lg font-bold text-slate-900">
                   Classroom Attendance, Fees, Batches & Qualifications
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Lecture attendance compliance tracked automatically via Operating Media CRM
+                  Lecture attendance compliance tracked automatically via
+                  Operating Media CRM
                 </p>
               </div>
 
               <div className="flex items-center space-x-2">
                 <button
                   type="button"
-                  onClick={() => setAttendanceView('graph')}
+                  onClick={() => setAttendanceView("graph")}
                   className={`text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
-                    attendanceView === 'graph'
-                      ? 'bg-[#2563eb] text-white shadow-xs'
-                      : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                    attendanceView === "graph"
+                      ? "bg-[#2563eb] text-white shadow-xs"
+                      : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
                   }`}
                 >
                   <TrendingUp size={13} />
@@ -224,11 +278,11 @@ export const ProfilePage = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setAttendanceView('logs')}
+                  onClick={() => setAttendanceView("logs")}
                   className={`text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
-                    attendanceView === 'logs'
-                      ? 'bg-[#2563eb] text-white shadow-xs'
-                      : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                    attendanceView === "logs"
+                      ? "bg-[#2563eb] text-white shadow-xs"
+                      : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
                   }`}
                 >
                   <Calendar size={13} />
@@ -237,13 +291,20 @@ export const ProfilePage = () => {
               </div>
             </div>
 
-            {attendanceView === 'graph' ? (
+            {attendanceView === "graph" ? (
               <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center pt-2">
                 {/* Donut Gauge */}
                 <div className="md:col-span-4 flex flex-col items-center justify-center p-4 md:border-r border-slate-100">
                   <div className="relative w-32 h-32 shrink-0 flex items-center justify-center">
                     <svg className="w-32 h-32 -rotate-90" viewBox="0 0 100 100">
-                      <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f1f5f9" strokeWidth="10" />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        fill="transparent"
+                        stroke="#f1f5f9"
+                        strokeWidth="10"
+                      />
                       <circle
                         cx="50"
                         cy="50"
@@ -257,15 +318,21 @@ export const ProfilePage = () => {
                       />
                     </svg>
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                      <span className="text-3xl font-black text-slate-900 leading-none">89.3%</span>
+                      <span className="text-3xl font-black text-slate-900 leading-none">
+                        89.3%
+                      </span>
                       <span className="text-[10px] uppercase font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded mt-2 tracking-wider">
                         VERIFIED
                       </span>
                     </div>
                   </div>
                   <div className="mt-3 text-center">
-                    <span className="text-xs font-bold text-slate-800 block">25 Attended / 28 Lectures</span>
-                    <span className="text-[11px] text-slate-400">3 Permitted Absences</span>
+                    <span className="text-xs font-bold text-slate-800 block">
+                      25 Attended / 28 Lectures
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      3 Permitted Absences
+                    </span>
                   </div>
                 </div>
 
@@ -277,18 +344,68 @@ export const ProfilePage = () => {
                   </div>
                   <div className="h-44 w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={attendanceTrendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <AreaChart
+                        data={attendanceTrendData}
+                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                      >
                         <defs>
-                          <linearGradient id="profileAttTrendGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#2563eb" stopOpacity={0.25} />
-                            <stop offset="95%" stopColor="#2563eb" stopOpacity={0.0} />
+                          <linearGradient
+                            id="profileAttTrendGrad"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="5%"
+                              stopColor="#2563eb"
+                              stopOpacity={0.25}
+                            />
+                            <stop
+                              offset="95%"
+                              stopColor="#2563eb"
+                              stopOpacity={0.0}
+                            />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                        <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#64748b' }} />
-                        <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} unit="%" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b' }} />
-                        <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '11px' }} />
-                        <Area type="monotone" dataKey="rate" stroke="#2563eb" strokeWidth={2.5} fillOpacity={1} fill="url(#profileAttTrendGrad)" dot={{ r: 3.5, fill: '#2563eb' }} activeDot={{ r: 6 }} />
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          vertical={false}
+                          stroke="#f1f5f9"
+                        />
+                        <XAxis
+                          dataKey="month"
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fontSize: 11, fill: "#64748b" }}
+                        />
+                        <YAxis
+                          domain={[0, 100]}
+                          ticks={[0, 25, 50, 75, 100]}
+                          unit="%"
+                          axisLine={false}
+                          tickLine={false}
+                          tick={{ fontSize: 10, fill: "#64748b" }}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "#0f172a",
+                            borderRadius: "8px",
+                            border: "none",
+                            color: "#fff",
+                            fontSize: "11px",
+                          }}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="rate"
+                          stroke="#2563eb"
+                          strokeWidth={2.5}
+                          fillOpacity={1}
+                          fill="url(#profileAttTrendGrad)"
+                          dot={{ r: 3.5, fill: "#2563eb" }}
+                          activeDot={{ r: 6 }}
+                        />
                       </AreaChart>
                     </ResponsiveContainer>
                   </div>
@@ -298,17 +415,32 @@ export const ProfilePage = () => {
               /* Class Logs List */
               <div className="space-y-2 pt-1">
                 {(crmAttendance.logs || []).slice(0, 8).map((log, lIdx) => (
-                  <div key={lIdx} className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs">
+                  <div
+                    key={lIdx}
+                    className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs"
+                  >
                     <div className="flex items-center space-x-3">
-                      <span className={`w-2.5 h-2.5 rounded-full ${log.status === 'PRESENT' ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                      <span
+                        className={`w-2.5 h-2.5 rounded-full ${log.status === "PRESENT" ? "bg-emerald-500" : "bg-rose-500"}`}
+                      />
                       <div>
-                        <span className="font-bold text-slate-900 block">{log.topic}</span>
-                        <span className="text-slate-400 text-[11px]">{log.date} • {log.batch_name || 'Masters Weekday Morning'} • Faculty: {log.trainer_name || 'Harsh Pareek'}</span>
+                        <span className="font-bold text-slate-900 block">
+                          {log.topic}
+                        </span>
+                        <span className="text-slate-400 text-[11px]">
+                          {log.date} •{" "}
+                          {log.batch_name || "Masters Weekday Morning"} •
+                          Faculty: {log.trainer_name || "Harsh Pareek"}
+                        </span>
                       </div>
                     </div>
-                    <span className={`font-bold px-2.5 py-1 rounded text-xs ${
-                      log.status === 'PRESENT' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
-                    }`}>
+                    <span
+                      className={`font-bold px-2.5 py-1 rounded text-xs ${
+                        log.status === "PRESENT"
+                          ? "bg-emerald-100 text-emerald-800"
+                          : "bg-rose-100 text-rose-800"
+                      }`}
+                    >
                       {log.status}
                     </span>
                   </div>
@@ -318,7 +450,7 @@ export const ProfilePage = () => {
           </div>
 
           {/* 2. Accounts & Enrollment Billing Card */}
-          <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs space-y-5">
+          <div className="bg-white border border-slate-200/90 rounded p-6 shadow-2xs space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
               <div>
                 <div className="flex items-center space-x-2">
@@ -335,7 +467,11 @@ export const ProfilePage = () => {
               </div>
 
               <div className="text-xs text-slate-500 font-medium">
-                Student: <strong className="text-slate-900">{currentUser.name || 'Hiteshpuri Goswami'}</strong> ({crmProfile.admissionNo || 'OMC-0266'})
+                Student:{" "}
+                <strong className="text-slate-900">
+                  {currentUser.name || "Hiteshpuri Goswami"}
+                </strong>{" "}
+                ({crmProfile.admissionNo || "OMC-0266"})
               </div>
             </div>
 
@@ -404,29 +540,45 @@ export const ProfilePage = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between text-xs">
                   <div className="space-y-0.5">
-                    <span className="text-slate-500 font-medium block">Registration Fee</span>
-                    <span className="font-black text-slate-900 text-sm">₹3,000</span>
-                    <span className="text-[11px] text-slate-400 block">Mode: UPI / Online</span>
+                    <span className="text-slate-500 font-medium block">
+                      Registration Fee
+                    </span>
+                    <span className="font-black text-slate-900 text-sm">
+                      ₹3,000
+                    </span>
+                    <span className="text-[11px] text-slate-400 block">
+                      Mode: UPI / Online
+                    </span>
                   </div>
                   <div className="text-right space-y-1">
                     <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 block">
                       PAID
                     </span>
-                    <span className="text-[11px] text-slate-400">Admission Day</span>
+                    <span className="text-[11px] text-slate-400">
+                      Admission Day
+                    </span>
                   </div>
                 </div>
 
                 <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between text-xs">
                   <div className="space-y-0.5">
-                    <span className="text-slate-500 font-medium block">Installment 1</span>
-                    <span className="font-black text-slate-900 text-sm">₹52,000</span>
-                    <span className="text-[11px] text-slate-400 block">Mode: Bank Transfer</span>
+                    <span className="text-slate-500 font-medium block">
+                      Installment 1
+                    </span>
+                    <span className="font-black text-slate-900 text-sm">
+                      ₹52,000
+                    </span>
+                    <span className="text-[11px] text-slate-400 block">
+                      Mode: Bank Transfer
+                    </span>
                   </div>
                   <div className="text-right space-y-1">
                     <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 block">
                       PAID
                     </span>
-                    <span className="text-[11px] text-slate-400">25 Feb 2026</span>
+                    <span className="text-[11px] text-slate-400">
+                      25 Feb 2026
+                    </span>
                   </div>
                 </div>
               </div>
@@ -438,37 +590,56 @@ export const ProfilePage = () => {
       {/* ============================================================== */}
       {/* 4. TAB 2: PERSONAL & ACCOUNT DETAILS                           */}
       {/* ============================================================== */}
-      {(!isStudent || activeTab === 'details') && (
+      {(!isStudent || activeTab === "details") && (
         <div className="bg-white rounded-3xl border border-slate-200/80 p-6 md:p-8 shadow-xs space-y-6">
           <div className="flex items-center justify-between pb-4 border-b border-slate-100">
             <div>
               <h3 className="text-lg font-bold text-slate-900">
-                {isAdmin ? 'Administrator Access Credentials' : 'Personal & Enrollment Information'}
+                {isAdmin
+                  ? "Administrator Access Credentials"
+                  : "Personal & Enrollment Information"}
               </h3>
               <p className="text-xs text-slate-500 mt-0.5">
-                Manage your profile contact details and verified system credentials.
+                Manage your profile contact details and verified system
+                credentials.
               </p>
             </div>
           </div>
 
           {/* Student Stats Badges */}
           {isStudent && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4rounded border border-slate-100">
               <div className="text-center p-2">
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Enrolled Courses</span>
-                <span className="text-lg font-black tabular-nums text-slate-900">4 Courses</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                  Enrolled Courses
+                </span>
+                <span className="text-lg font-black tabular-nums text-slate-900">
+                  4 Courses
+                </span>
               </div>
               <div className="text-center p-2">
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Completed Lessons</span>
-                <span className="text-lg font-black tabular-nums text-emerald-600">28 / 72</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                  Completed Lessons
+                </span>
+                <span className="text-lg font-black tabular-nums text-emerald-600">
+                  28 / 72
+                </span>
               </div>
               <div className="text-center p-2">
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Overall Progress</span>
-                <span className="text-lg font-black tabular-nums text-[#2563eb]">65%</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                  Overall Progress
+                </span>
+                <span className="text-lg font-black tabular-nums text-[#2563eb]">
+                  65%
+                </span>
               </div>
               <div className="text-center p-2">
-                <span className="text-[10px] font-bold text-slate-400 uppercase block">Verified Attendance</span>
-                <span className="text-lg font-black tabular-nums text-emerald-700">89.3%</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                  Verified Attendance
+                </span>
+                <span className="text-lg font-black tabular-nums text-emerald-700">
+                  89.3%
+                </span>
               </div>
             </div>
           )}
@@ -477,7 +648,9 @@ export const ProfilePage = () => {
           <form onSubmit={handleSave} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Full Name
+                </label>
                 <input
                   type="text"
                   value={name}
@@ -487,7 +660,9 @@ export const ProfilePage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Email Address
+                </label>
                 <input
                   type="email"
                   value={email}
@@ -497,7 +672,9 @@ export const ProfilePage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Phone Number</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Phone Number
+                </label>
                 <input
                   type="text"
                   value={phone}
@@ -507,11 +684,13 @@ export const ProfilePage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Assigned Role</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Assigned Role
+                </label>
                 <input
                   type="text"
                   readOnly
-                  value={currentUser.roleLabel || 'STUDENT'}
+                  value={currentUser.roleLabel || "STUDENT"}
                   className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-500 cursor-not-allowed"
                 />
               </div>
@@ -520,31 +699,37 @@ export const ProfilePage = () => {
             {isStudent && (
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Student ID</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Student ID
+                  </label>
                   <input
                     type="text"
                     readOnly
-                    value={crmProfile.admissionNo || 'OMC-0266'}
+                    value={crmProfile.admissionNo || "OMC-0266"}
                     className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-600 cursor-not-allowed"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Enrolled Course</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Enrolled Course
+                  </label>
                   <input
                     type="text"
                     readOnly
-                    value={crmProfile.course || 'Diploma in Digital Marketing'}
+                    value={crmProfile.course || "Diploma in Digital Marketing"}
                     className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-600 cursor-not-allowed"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Center / Branch</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                    Center / Branch
+                  </label>
                   <input
                     type="text"
                     readOnly
-                    value={crmProfile.branch || 'Borivali Center'}
+                    value={crmProfile.branch || "Borivali Center"}
                     className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-600 cursor-not-allowed"
                   />
                 </div>
@@ -562,7 +747,7 @@ export const ProfilePage = () => {
               {isStudent && (
                 <button
                   type="button"
-                  onClick={() => navigate('/achievements')}
+                  onClick={() => navigate("/achievements")}
                   className="text-xs font-bold text-blue-600 hover:underline flex items-center space-x-1 cursor-pointer"
                 >
                   <Award size={14} />
