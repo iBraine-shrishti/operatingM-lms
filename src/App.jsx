@@ -21,6 +21,7 @@ import { AchievementsPage } from "./pages/AchievementsPage";
 import { NotesReviewsPage } from "./pages/NotesReviewsPage";
 import { ActivityPage } from "./pages/ActivityPage";
 import { ProfilePage } from "./pages/ProfilePage";
+import { GalleryPage } from "./pages/GalleryPage";
 import { SchedulePage } from "./pages/SchedulePage";
 import { AttendanceFeesPage } from "./pages/AttendanceFeesPage";
 import { LoginPage } from "./pages/LoginPage.jsx";
@@ -62,6 +63,7 @@ export function App() {
             <Route path="notes-reviews" element={<NotesReviewsPage />}/>
             <Route path="activity" element={<ActivityPage />}/>
             <Route path="profile" element={<ProfilePage />}/>
+            <Route path="gallery" element={<GalleryPage />}/>
           </Route>
         </Routes>
       </BrowserRouter>

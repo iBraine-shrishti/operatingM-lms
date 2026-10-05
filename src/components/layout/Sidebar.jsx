@@ -5,7 +5,7 @@ import {
   LayoutDashboard, BookOpen, Activity, User, GraduationCap, 
   Award, CheckSquare, FileText, BookCheck, Layers, ClipboardList, 
   FolderCheck, Users, HelpCircle, MessageCircle, BarChart3, LogOut, 
-  ChevronLeft, ChevronRight, Calendar 
+  ChevronLeft, ChevronRight, Calendar, Images 
 } from 'lucide-react';
 
 export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
@@ -42,6 +42,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
             { name: 'My Quizzes', path: '/my-quizzes', icon: CheckSquare },
             { name: 'Notes & Reviews', path: '/notes-reviews', icon: FileText },
             { name: 'My Assignments', path: '/my-assignments', icon: BookCheck },
+            { name: 'Gallery', path: '/gallery', icon: Images },
             { name: 'Schedule', path: '/schedule', icon: Calendar }
           ]
         }

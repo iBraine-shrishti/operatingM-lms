@@ -85,91 +85,223 @@ export const ProfilePage = () => {
     { month: "Mar", rate: 93 },
   ];
 
+  // Registration date & 365-day academic validity calculations
+  const registrationDate =
+    crmProfile?.joiningDate || crmProfile?.registrationDate || "2026-02-10";
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "10 Feb 2026";
+    try {
+      const dt = new Date(dateStr);
+      if (!isNaN(dt.getTime())) {
+        return dt.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+      }
+    } catch {}
+    return String(dateStr);
+  };
+
+  const regDateObj = new Date(registrationDate);
+  const now = new Date();
+  const diffTime = Math.max(0, now - regDateObj);
+  const daysElapsed = Math.min(
+    365,
+    Math.max(1, Math.floor(diffTime / (1000 * 60 * 60 * 24)))
+  );
+  const daysRemaining = Math.max(0, 365 - daysElapsed);
+  const validityPercentage = Math.min(
+    100,
+    Math.round((daysElapsed / 365) * 100)
+  );
+
   return (
     <div className="space-y-6">
       {/* 1. Header Banner & Identity Card */}
       <div className="bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-blue-50/80 border border-blue-100/90 rounded sm:rounded-3xl p-5 sm:p-7 shadow-2xs relative overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-          <div className="flex items-center space-x-4 sm:space-x-5 min-w-0">
-            <div className="relative shrink-0">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 min-w-0">
+          {/* Circular Profile Picture with Last Active Status Pulse */}
+          <div className="relative shrink-0">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-3 border-white shadow-md ring-2 ring-blue-100/90 bg-slate-100 p-0.5">
               <img
                 src={currentUser.avatar || "/student_photo_265.jpg"}
                 alt={currentUser.name}
-                className="w-20 h-20 sm:w-24 sm:h-24 rounded object-cover object-top border-2 border-white shadow-md ring-2 ring-blue-100/80"
+                className="w-full h-full rounded-full object-cover object-top"
               />
-              <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white shadow-xs" />
             </div>
-
-            <div className="min-w-0 space-y-1">
-              <div className="flex items-center space-x-2">
-                <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 bg-white border border-blue-200/80 px-2 py-0.5 rounded shadow-2xs">
-                  {isStudent
-                    ? "STUDENT PROFILE & CRM LEDGER"
-                    : "ADMINISTRATOR PROFILE"}
-                </span>
-                <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>CRM Verified</span>
-                </span>
-              </div>
-
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                {currentUser.name || "Hiteshpuri Goswami"}
-              </h1>
-
-              {isStudent ? (
-                <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                  <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-0.5 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
-                    <BookOpen size={12} className="text-[#2563eb]" />
-                    <span>
-                      Course{" "}
-                      <strong className="text-slate-900 font-bold">
-                        {crmProfile.course || "Diploma in Digital Marketing"}
-                      </strong>
-                    </span>
-                  </div>
-                  <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-0.5 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
-                    <Shield size={12} className="text-[#2563eb]" />
-                    <span>
-                      Student ID{" "}
-                      <strong className="text-slate-900 font-bold">
-                        {crmProfile.admissionNo || "OMC-0266"}
-                      </strong>
-                    </span>
-                  </div>
-                  <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-0.5 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
-                    <MapPin size={12} className="text-[#2563eb]" />
-                    <span>
-                      Center{" "}
-                      <strong className="text-slate-900 font-bold">
-                        {crmProfile.branch || "Borivali Center"}
-                      </strong>
-                    </span>
-                  </div>
-                </div>
-              ) : (
-                <p className="text-xs text-slate-500">
-                  {currentUser.designation || "Administrator"}
-                </p>
-              )}
-            </div>
+            {/* Green Active Pulse Status Indicator on circular avatar */}
+            <span
+              className="absolute bottom-0.5 right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white shadow-xs ring-1 ring-emerald-400"
+              title="Active Now"
+            />
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center space-x-2.5 shrink-0 self-start sm:self-center">
-            {isStudent && (
-              <button
-                type="button"
-                onClick={() => setIsReceiptModalOpen(true)}
-                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-xs flex items-center space-x-2 cursor-pointer active:scale-95"
-              >
-                <FileText size={14} />
-                <span>Official Fee Receipt</span>
-              </button>
+          <div className="min-w-0 space-y-2 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 bg-white border border-blue-200/80 px-2 py-0.5 rounded shadow-2xs">
+                {isStudent
+                  ? "STUDENT PROFILE & CRM LEDGER"
+                  : "ADMINISTRATOR PROFILE"}
+              </span>
+              <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>CRM Verified</span>
+              </span>
+              {/* Last Active Indicator Badge */}
+              <span className="inline-flex items-center space-x-1.5 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span>Active Now</span>
+                <span className="text-emerald-300">•</span>
+                <span className="text-emerald-600 font-medium">Last active 2m ago</span>
+              </span>
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              {currentUser.name || "Hiteshpuri Goswami"}
+            </h1>
+
+            {isStudent ? (
+              <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-1 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
+                  <BookOpen size={12} className="text-[#2563eb]" />
+                  <span>
+                    Course{" "}
+                    <strong className="text-slate-900 font-bold">
+                      {crmProfile.course || "Diploma in Digital Marketing"}
+                    </strong>
+                  </span>
+                </div>
+                <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-1 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
+                  <Shield size={12} className="text-[#2563eb]" />
+                  <span>
+                    Student ID{" "}
+                    <strong className="text-slate-900 font-bold">
+                      {crmProfile.admissionNo || "OMC-0266"}
+                    </strong>
+                  </span>
+                </div>
+                <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-1 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
+                  <MapPin size={12} className="text-[#2563eb]" />
+                  <span>
+                    Center{" "}
+                    <strong className="text-slate-900 font-bold">
+                      {crmProfile.branch || "Borivali Center"}
+                    </strong>
+                  </span>
+                </div>
+                {/* Registration Date & 365 Days Indicator Pill */}
+                <div className="bg-white/95 border border-blue-200/90 rounded-full px-3 py-1 text-xs text-slate-700 flex items-center space-x-1.5 shadow-2xs">
+                  <Calendar size={12} className="text-[#2563eb]" />
+                  <span>
+                    Registered:{" "}
+                    <strong className="text-slate-900 font-bold">
+                      {formatDate(registrationDate)}
+                    </strong>
+                  </span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-[#2563eb] font-bold">
+                    {daysElapsed} of 365 Days
+                  </span>
+                </div>
+                {/* Last Active Timestamp Pill */}
+                <div className="bg-white/95 border border-emerald-200/90 rounded-full px-3 py-1 text-xs text-slate-700 flex items-center space-x-1.5 shadow-2xs">
+                  <Clock size={12} className="text-emerald-600" />
+                  <span>
+                    Last Active:{" "}
+                    <strong className="text-slate-900 font-bold">
+                      Today, 04:30 PM
+                    </strong>
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <p className="text-xs text-slate-500">
+                {currentUser.designation || "Administrator"}
+              </p>
             )}
           </div>
         </div>
       </div>
+
+      {/* 2. Academic Validity & CRM Documentation Bar */}
+      {isStudent && (
+        <div className="bg-white border border-slate-200/90 rounded sm:rounded-2xl p-4 sm:p-5 shadow-2xs">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            {/* Validity Details & Progress */}
+            <div className="flex-1 min-w-0 space-y-2.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center space-x-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100/80 text-[#2563eb] flex items-center justify-center shrink-0">
+                    <Calendar size={15} />
+                  </div>
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-tight">
+                        Academic Enrolment Validity
+                      </h4>
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full leading-none">
+                        Active
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      Registered: <strong className="text-slate-700 font-semibold">{formatDate(registrationDate)}</strong> • 365 Days Course Period
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200/80 px-2.5 py-1 rounded-full">
+                    {daysRemaining} days remaining
+                  </span>
+                </div>
+              </div>
+
+              {/* Progress Bar & Indicators */}
+              <div className="space-y-1.5 pt-0.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-slate-800">
+                    {daysElapsed}{" "}
+                    <span className="text-slate-400 font-medium">
+                      of 365 days completed
+                    </span>
+                  </span>
+                  <span className="font-black text-[#2563eb] tabular-nums">
+                    {validityPercentage}%
+                  </span>
+                </div>
+                <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                  <div
+                    className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full transition-all duration-500 shadow-xs"
+                    style={{ width: `${validityPercentage}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Divider */}
+            <div className="hidden md:block w-px h-14 bg-slate-200/80 self-center mx-1" />
+
+            {/* Receipt Action Button */}
+            <div className="flex flex-col sm:flex-row md:flex-col items-stretch sm:items-center md:items-end justify-center gap-1.5 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+              <button
+                type="button"
+                onClick={() => setIsReceiptModalOpen(true)}
+                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-all shadow-xs flex items-center justify-center space-x-2 cursor-pointer active:scale-95 w-full sm:w-auto md:min-w-[190px]"
+              >
+                <FileText size={15} />
+                <span>Official Fee Receipt</span>
+              </button>
+              <span className="text-[10px] text-slate-400 text-center md:text-right font-medium">
+                Verified CRM Financial Record
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 2. Main Page Tab Navigation */}
       {isStudent && (
@@ -608,7 +740,7 @@ export const ProfilePage = () => {
 
           {/* Student Stats Badges */}
           {isStudent && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4rounded border border-slate-100">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
               <div className="text-center p-2">
                 <span className="text-[10px] font-bold text-slate-400 uppercase block">
                   Enrolled Courses
@@ -639,6 +771,17 @@ export const ProfilePage = () => {
                 </span>
                 <span className="text-lg font-black tabular-nums text-emerald-700">
                   89.3%
+                </span>
+              </div>
+              <div className="text-center p-2 col-span-2 sm:col-span-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase block">
+                  Registration Validity
+                </span>
+                <span className="text-lg font-black tabular-nums text-indigo-600">
+                  {daysElapsed} / 365 Days
+                </span>
+                <span className="text-[10px] text-slate-400 block font-medium">
+                  {daysRemaining} Days Left
                 </span>
               </div>
             </div>

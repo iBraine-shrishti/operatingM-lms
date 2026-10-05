@@ -19,8 +19,9 @@ import {
   Trophy,
 } from "lucide-react";
 import dashboardHeaderBg from "../../assets/header-bg/dashboard-header.png";
-import dashboardHatImg from "../../assets/header-bg/dashboard-hat.png";
+// import dashboardHatImg from "../../assets/header-bg/dashboard-hat.png";
 import continueLearningLaptopImg from "../../assets/continue-learning-laptop.png";
+import { PhotoVideoLibraryHub } from "./PhotoVideoLibraryHub";
 
 export const StudentDashboardHub = ({
   currentUser = {},
@@ -414,6 +415,9 @@ export const StudentDashboardHub = ({
           </button>
         </div>
       </div>
+
+      {/* 2B. PHOTO & VIDEO LIBRARY (MATCHING PHOTO-LIB.png) */}
+      <PhotoVideoLibraryHub />
 
       {/* 3. TWO-COLUMN MAIN WORKSPACE          */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
