@@ -21,6 +21,7 @@ import {
 import dashboardHeaderBg from "../../assets/header-bg/dashboard-header.png";
 // import dashboardHatImg from "../../assets/header-bg/dashboard-hat.png";
 import continueLearningLaptopImg from "../../assets/continue-learning-laptop.png";
+import profilePic from "../../assets/profile-pic.png";
 import { PhotoVideoLibraryHub } from "./PhotoVideoLibraryHub";
 
 export const StudentDashboardHub = ({
@@ -55,7 +56,7 @@ export const StudentDashboardHub = ({
                 <div className="w-16 h-16 sm:w-24 sm:h-24 md:w-26 md:h-26 lg:w-28 lg:h-28 xl:w-32 xl:h-32 2xl:w-36 2xl:h-36 rounded-full border-3 2xl:border-4 border-white shadow-md ring-2 ring-blue-100/90 p-1 sm:p-1.5 transition-all">
                   <div className="w-full h-full rounded-full overflow-hidden bg-slate-100">
                     <img
-                      src={currentUser.avatar || "/student_photo_265.jpg"}
+                      src={currentUser.avatar || profilePic}
                       alt={currentUser.name || "Hiteshpuri Goswami"}
                       className="w-full h-full object-cover object-top"
                     />

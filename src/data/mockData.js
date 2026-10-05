@@ -1023,7 +1023,7 @@ export const INITIAL_STUDENTS = [
         name: 'Hiteshpuri Goswami',
         email: 'hiteshpuri.g@gmail.com',
         phone: '+91 74001 23992',
-        avatar: '/student_photo_265.jpg',
+        avatar: '/profile-pic.png',
         courseId: 'course-7',
         courseName: 'Website Development With WordPress',
         batch: 'Weekday Morning (WD-M2, 10:00 AM - 12:00 PM)',

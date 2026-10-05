@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import boyAvatar from '../assets/Boy.png';
 import girlAvatar from '../assets/Girl.png';
+import profilePic from '../assets/profile-pic.png';
 import { crmService, DEFAULT_CRM_PROFILE, DEFAULT_CRM_ATTENDANCE, DEFAULT_CRM_BATCH, DEFAULT_CRM_CERTIFICATES } from '../services/crmService';
 
-export { boyAvatar, girlAvatar };
+export { boyAvatar, girlAvatar, profilePic };
 
 export const ADMIN_USER = {
     id: 'admin-1',
@@ -23,7 +24,7 @@ export const STUDENT_USER = {
     email: 'hiteshpuri.g@gmail.com',
     role: 'STUDENT',
     roleLabel: 'STUDENT',
-    avatar: '/student_photo_265.jpg', // Official CRM uploaded student photograph matching LASTEST UI
+    avatar: profilePic, // Official CRM uploaded student photograph from profile-pic.png
     designation: 'Diploma in Digital Marketing Student',
     course: 'Diploma in Digital Marketing',
     center: 'Borivali Center',
@@ -60,13 +61,13 @@ export const AuthProvider = ({ children }) => {
         const initial = { ...STUDENT_USER };
         try {
             const savedAvatar = localStorage.getItem('om_lms_student_avatar');
-            if (savedAvatar && savedAvatar !== boyAvatar && savedAvatar !== girlAvatar) {
+            if (savedAvatar && savedAvatar !== boyAvatar && savedAvatar !== girlAvatar && savedAvatar !== '/student_photo_265.jpg') {
                 initial.avatar = savedAvatar;
             } else {
-                initial.avatar = '/student_photo_265.jpg';
+                initial.avatar = profilePic;
             }
         } catch {
-            initial.avatar = '/student_photo_265.jpg';
+            initial.avatar = profilePic;
         }
         return initial;
     });
@@ -100,7 +101,7 @@ export const AuthProvider = ({ children }) => {
                 setCrmProfile(profile);
                 // Directly integrate and bind uploaded photograph if available!
                 setStudentUser((prev) => {
-                    const avatarUrl = profile.photo || prev.avatar || boyAvatar;
+                    const avatarUrl = (profile.photo && profile.photo !== '/student_photo_265.jpg') ? profile.photo : profilePic;
                     return {
                         ...prev,
                         crmAdmissionId: profile.id,

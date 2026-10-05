@@ -25,7 +25,7 @@ export const DEFAULT_CRM_PROFILE = {
   course: 'Diploma in Digital Marketing',
   batchName: 'Weekday Morning (WD-M2, 10:00 AM - 12:00 PM)',
   joiningDate: '2026-02-10',
-  photo: '/student_photo_265.jpg', // Official CRM uploaded student photograph
+  photo: '/profile-pic.png', // Official CRM uploaded student photograph
   // Financial Overview matching LASTEST UI
   totalFees: 45000,
   regAmount: 3000,
