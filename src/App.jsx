@@ -25,6 +25,7 @@ import { GalleryPage } from "./pages/GalleryPage";
 import { SchedulePage } from "./pages/SchedulePage";
 import { AttendanceFeesPage } from "./pages/AttendanceFeesPage";
 import { LoginPage } from "./pages/LoginPage.jsx";
+import { CertificateVerificationPage } from "./pages/CertificateVerificationPage.jsx";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 function RootRedirect() {
@@ -37,6 +38,7 @@ export function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />}/>
+            <Route path="/verify-certificate" element={<CertificateVerificationPage />}/>
 
           {/* Shared App Shell Layout */}
           <Route path="/" element={<SharedLayout />}>
@@ -52,6 +54,7 @@ export function App() {
             <Route path="manage-students" element={<ManageStudentsPage />}/>
             <Route path="manage-questions" element={<ManageQuestionsPage />}/>
             <Route path="question-discussions" element={<QuestionDiscussionsPage />}/>
+            <Route path="forums" element={<QuestionDiscussionsPage />}/>
             <Route path="manage-reports" element={<ManageReportsPage />}/>
             <Route path="schedule" element={<SchedulePage />}/>
             <Route path="attendance-fees" element={<Navigate to="/profile?tab=attendance" replace />}/>
@@ -61,6 +64,7 @@ export function App() {
             <Route path="my-assignments" element={<MyAssignmentsPage />}/>
             <Route path="achievements" element={<AchievementsPage />}/>
             <Route path="notes-reviews" element={<NotesReviewsPage />}/>
+            <Route path="notes" element={<NotesReviewsPage />}/>
             <Route path="activity" element={<ActivityPage />}/>
             <Route path="profile" element={<ProfilePage />}/>
             <Route path="gallery" element={<GalleryPage />}/>

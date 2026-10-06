@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { lmsService } from "../services/lmsService";
 import {
   CheckSquare,
@@ -9,310 +9,490 @@ import {
   AlertCircle,
   CheckCircle2,
   Play,
-  RefreshCw,
+  RotateCcw,
   BarChart3,
   HelpCircle,
   X,
+  Search,
+  BookOpen,
+  Calendar,
+  Check,
+  ChevronRight
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 
 export const MyQuizzesPage = () => {
   const { showToast } = useToast();
-  const [selectedTab, setSelectedTab] = useState("active"); // 'active' | 'completed'
+  const [quizzes, setQuizzes] = useState(() => lmsService.getQuizzes());
+  const courses = lmsService.getCourses();
+
+  // Search & Filter State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("all"); // 'all' | 'pending' | 'passed'
+  const [sortBy, setSortBy] = useState("default"); // 'default' | 'durationAsc' | 'durationDesc' | 'questionsDesc' | 'title' | 'score'
+
+  // Modals
   const [activeQuizModal, setActiveQuizModal] = useState(null);
+  const [scoreReviewModal, setScoreReviewModal] = useState(null);
 
-  // Active Specialization Quizzes (Shifted from Dashboard, matching LATEST UI design)
-  const activeQuizzes = [
-    {
-      id: "quiz-active-1",
-      title: "Digital Marketing Career Aptitude Quiz",
-      category: "SPECIALIZATION TEST",
-      course: "Diploma in Digital Marketing",
-      questions: 15,
-      duration: 20,
-      passScore: "76% PASS",
-      badgeColor: "bg-rose-50 text-rose-700 border-rose-200",
-      iconColor: "bg-rose-50 border-rose-200 text-rose-600",
-      description:
-        "Test your understanding of core digital channels, customer personas, conversion funnels, and marketing metrics.",
-      deadline: "Available Anytime",
-    },
-    {
-      id: "quiz-active-2",
-      title: "SEO Fundamentals & Keyword Strategy Assessment",
-      category: "SPECIALIZATION TEST",
-      course: "Advanced Search Engine Optimization",
-      questions: 20,
-      duration: 25,
-      passScore: "80% PASS",
-      badgeColor: "bg-rose-50 text-rose-700 border-rose-200",
-      iconColor: "bg-rose-50 border-rose-200 text-rose-600",
-      description:
-        "Evaluate your ability to conduct keyword difficulty analysis, optimize on-page tags, and evaluate crawler response headers.",
-      deadline: "Due this Sunday",
-    },
-    {
-      id: "quiz-active-3",
-      title: "Google Ads Search & ROAS Campaign Specialist Test",
-      category: "PPC CERTIFICATION",
-      course: "Google PPC & Performance Marketing",
-      questions: 25,
-      duration: 30,
-      passScore: "85% PASS",
-      badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
-      iconColor: "bg-blue-50 border-blue-200 text-blue-600",
-      description:
-        "Practical scenario questions on bid strategies, Quality Score mechanics, negative keyword match types, and conversion tracking.",
-      deadline: "Due Next Week",
-    },
-    {
-      id: "quiz-active-4",
-      title: "Social Media Meta Ads & Pixel Verification",
-      category: "SOCIAL MEDIA",
-      course: "Social Media Marketing",
-      questions: 10,
-      duration: 15,
-      passScore: "70% PASS",
-      badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
-      iconColor: "bg-purple-50 border-purple-200 text-purple-600",
-      description:
-        "Assess event tracking setup, Aggregated Event Measurement (AEM), custom audience lookalikes, and creative testing frameworks.",
-      deadline: "Available Anytime",
-    },
-  ];
+  // Status counts
+  const pendingCount = useMemo(
+    () => quizzes.filter((q) => q.studentStatus === "pending").length,
+    [quizzes]
+  );
+  const passedCount = useMemo(
+    () => quizzes.filter((q) => q.studentStatus === "passed").length,
+    [quizzes]
+  );
 
-  // Past Completed Quizzes
-  const completedQuizzes = [
-    {
-      id: "past-1",
-      title: "WordPress Website Architecture & CMS Basics",
-      score: "92%",
-      questions: 15,
-      status: "PASSED",
-      date: "18 Feb 2026",
-      timeSpent: "14 mins",
-    },
-    {
-      id: "past-2",
-      title: "Digital Marketing Fundamentals & Terminology",
-      score: "88%",
-      questions: 20,
-      status: "PASSED",
-      date: "02 Feb 2026",
-      timeSpent: "18 mins",
-    },
-    {
-      id: "past-3",
-      title: "On-Page SEO & Content Strategy Quiz",
-      score: "85%",
-      questions: 15,
-      status: "PASSED",
-      date: "22 Jan 2026",
-      timeSpent: "12 mins",
-    },
-  ];
+  // Average score of completed tests
+  const avgScore = useMemo(() => {
+    const passed = quizzes.filter(
+      (q) => q.studentStatus === "passed" && typeof q.studentScore === "number"
+    );
+    if (passed.length === 0) return "0%";
+    const sum = passed.reduce((acc, curr) => acc + curr.studentScore, 0);
+    return `${(sum / passed.length).toFixed(1)}%`;
+  }, [quizzes]);
+
+  // Filtered & Sorted Quizzes
+  const filteredQuizzes = useMemo(() => {
+    let result = quizzes.filter((q) => {
+      // Keyword search (title, courseTitle, category, description)
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        const matchesTitle = q.title?.toLowerCase().includes(query);
+        const matchesCourse = q.courseTitle?.toLowerCase().includes(query);
+        const matchesCategory = q.category?.toLowerCase().includes(query);
+        const matchesDesc = q.description?.toLowerCase().includes(query);
+        if (!matchesTitle && !matchesCourse && !matchesCategory && !matchesDesc) {
+          return false;
+        }
+      }
+
+      // Course filter
+      if (selectedCourse !== "all") {
+        const courseObj = courses.find((c) => c.id === selectedCourse);
+        if (
+          courseObj &&
+          q.courseTitle !== courseObj.title &&
+          q.courseId !== selectedCourse
+        ) {
+          return false;
+        }
+      }
+
+      // Status filter
+      if (selectedStatus !== "all") {
+        if (q.studentStatus !== selectedStatus) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    // Sort logic
+    result.sort((a, b) => {
+      if (sortBy === "durationAsc") {
+        return (a.durationMinutes || 0) - (b.durationMinutes || 0);
+      }
+      if (sortBy === "durationDesc") {
+        return (b.durationMinutes || 0) - (a.durationMinutes || 0);
+      }
+      if (sortBy === "questionsDesc") {
+        return (b.totalQuestions || 0) - (a.totalQuestions || 0);
+      }
+      if (sortBy === "questionsAsc") {
+        return (a.totalQuestions || 0) - (b.totalQuestions || 0);
+      }
+      if (sortBy === "title") {
+        return (a.title || "").localeCompare(b.title || "");
+      }
+      if (sortBy === "passScore") {
+        return (b.passScorePercentage || 0) - (a.passScorePercentage || 0);
+      }
+      return 0;
+    });
+
+    return result;
+  }, [quizzes, searchQuery, selectedCourse, selectedStatus, sortBy, courses]);
+
+  const hasActiveFilters =
+    searchQuery.trim() !== "" ||
+    selectedCourse !== "all" ||
+    selectedStatus !== "all" ||
+    sortBy !== "default";
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setSelectedCourse("all");
+    setSelectedStatus("all");
+    setSortBy("default");
+  };
 
   const handleStartQuiz = (quiz) => {
     setActiveQuizModal(quiz);
   };
 
+  const handleBeginExamination = () => {
+    if (!activeQuizModal) return;
+    
+    // Simulate student examination completion with realistic high score
+    const randomizedScore = Math.floor(Math.random() * 12) + 85; // 85% to 96%
+    lmsService.submitQuizAttempt(activeQuizModal.id, randomizedScore);
+    
+    // Update local quizzes state
+    setQuizzes(lmsService.getQuizzes());
+    
+    const quizTitle = activeQuizModal.title;
+    setActiveQuizModal(null);
+
+    showToast(
+      `Congratulations! You passed "${quizTitle}" with an exceptional score of ${randomizedScore}%!`,
+      "success",
+      "Test Completed Successfully"
+    );
+  };
+
+  const getCategoryBadgeClass = (category = "") => {
+    const cat = category.toLowerCase();
+    if (cat.includes("seo")) return "bg-emerald-50 text-emerald-700 border-emerald-200";
+    if (cat.includes("ads") || cat.includes("ppc")) return "bg-blue-50 text-blue-700 border-blue-200";
+    if (cat.includes("social")) return "bg-purple-50 text-purple-700 border-purple-200";
+    if (cat.includes("analytics")) return "bg-amber-50 text-amber-700 border-amber-200";
+    if (cat.includes("wordpress") || cat.includes("web")) return "bg-teal-50 text-teal-700 border-teal-200";
+    if (cat.includes("design")) return "bg-rose-50 text-rose-700 border-rose-200";
+    if (cat.includes("orientation") || cat.includes("counseling") || cat.includes("career"))
+      return "bg-indigo-50 text-indigo-700 border-indigo-200";
+    return "bg-slate-50 text-slate-700 border-slate-200";
+  };
+
+  // Find next pending quiz for header quick action
+  const firstPendingQuiz = useMemo(
+    () => quizzes.find((q) => q.studentStatus === "pending"),
+    [quizzes]
+  );
+
   return (
     <div className="space-y-6">
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-blue-50/80 border border-blue-100/90 rounded sm:rounded-3xl p-6 sm:p-7 shadow-2xs relative overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="max-w-2xl space-y-2">
-            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/95 text-blue-700 border border-blue-200/80 text-xs font-bold shadow-2xs">
-              <CheckSquare size={13} className="text-blue-600" />
-              <span>Assessment & Testing Hub</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              My Quizzes & Specialization Tests
-            </h1>
-            <p className="text-slate-600 text-xs sm:text-sm font-medium leading-relaxed">
-              Review active tests, demonstrate mastery of digital marketing
-              concepts, meet passing criteria, and maintain an average score
-              above 85%.
-            </p>
+      {/* ------------------------------------------------------------- */}
+      {/* HEADER BANNER - FULLY RESPONSIVE                              */}
+      {/* ------------------------------------------------------------- */}
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all">
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2 text-[#3b49df] text-xs font-bold uppercase tracking-wider">
+            <CheckSquare size={16} />
+            <span>Assessment & Certification Hub</span>
           </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            My Quizzes
+          </h1>
+          <p className="text-slate-500 text-xs sm:text-sm max-w-2xl leading-relaxed">
+            Test your domain mastery across enrolled modules, meet passing criteria, and track your verified certification examination scores.
+          </p>
 
           {/* Quick Metrics Bar */}
-          <div className="flex items-center gap-3 shrink-0">
-            <div className="bg-white/90 border border-slate-200/90 rounded p-3 px-4 shadow-2xs text-center">
-              <span className="text-[10px] font-black uppercase text-slate-400 block">
-                AVG SCORE
-              </span>
-              <span className="text-xl font-black text-purple-700">88.5%</span>
+          <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 text-xs">
+            <div className="flex items-center space-x-1.5 text-slate-700">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#3b49df] inline-block"></span>
+              <span className="font-bold text-slate-900">{quizzes.length}</span>
+              <span className="text-slate-500">Total Quizzes</span>
             </div>
-            <div className="bg-white/90 border border-slate-200/90 rounded p-3 px-4 shadow-2xs text-center">
-              <span className="text-[10px] font-black uppercase text-slate-400 block">
-                PASSED
-              </span>
-              <span className="text-xl font-black text-emerald-600">
-                8 / 10
-              </span>
+            <div className="flex items-center space-x-1.5 text-slate-700">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+              <span className="font-bold text-slate-900">{passedCount}</span>
+              <span className="text-slate-500">Passed</span>
             </div>
+            <div className="flex items-center space-x-1.5 text-slate-700">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+              <span className="font-bold text-slate-900">{pendingCount}</span>
+              <span className="text-slate-500">Pending</span>
+            </div>
+            <div className="flex items-center space-x-1.5 text-slate-700">
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span>
+              <span className="font-bold text-slate-900">{avgScore}</span>
+              <span className="text-slate-500">Avg. Score</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Action Button */}
+        {firstPendingQuiz && (
+          <div className="w-full sm:w-auto shrink-0">
+            <button
+              onClick={() => handleStartQuiz(firstPendingQuiz)}
+              className="w-full sm:w-auto bg-[#3b49df] hover:bg-[#2f3cb3] text-white text-xs sm:text-sm font-semibold px-5 py-3 rounded-xl shadow-xs hover:shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.98]"
+            >
+              <Play size={16} className="fill-white" />
+              <span>Take Next Quiz</span>
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* ------------------------------------------------------------- */}
+      {/* SEARCH & FILTERS BAR - RESPONSIVE STACKED & GRID DESIGN        */}
+      {/* ------------------------------------------------------------- */}
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs space-y-4">
+        {/* Top Control Row: Search + Course Filter + Sort */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+          {/* Live Search Input */}
+          <div className="relative md:col-span-6 lg:col-span-6">
+            <Search
+              size={16}
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+            />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search quizzes by title, course, or category..."
+              className="w-full pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] transition-all"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                title="Clear search"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          {/* Filter by Course Select */}
+          <div className="md:col-span-3 lg:col-span-3">
+            <select
+              value={selectedCourse}
+              onChange={(e) => setSelectedCourse(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] cursor-pointer"
+            >
+              <option value="all">All Enrolled Courses ({quizzes.length})</option>
+              {courses.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sort By Dropdown */}
+          <div className="md:col-span-3 lg:col-span-3">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] cursor-pointer"
+            >
+              <option value="default">Sort: Default Order</option>
+              <option value="durationAsc">Sort: Duration (Shortest)</option>
+              <option value="durationDesc">Sort: Duration (Longest)</option>
+              <option value="questionsDesc">Sort: Questions (Most)</option>
+              <option value="questionsAsc">Sort: Questions (Least)</option>
+              <option value="passScore">Sort: Passing Score (Highest)</option>
+              <option value="title">Sort: Title (A-Z)</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Second Row: Status Filter Pills + Results Count / Reset Action */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
+          <div className="flex items-center space-x-1.5 overflow-x-auto custom-scrollbar pb-1.5 sm:pb-0 w-full sm:w-auto">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden sm:inline-block shrink-0">
+              Status:
+            </span>
+            {[
+              { id: "all", label: `All (${quizzes.length})` },
+              { id: "pending", label: `Pending (${pendingCount})` },
+              { id: "passed", label: `Passed (${passedCount})` },
+            ].map((st) => {
+              const isActive = selectedStatus === st.id;
+              return (
+                <button
+                  key={st.id}
+                  onClick={() => setSelectedStatus(st.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
+                    isActive
+                      ? "bg-[#3b49df] text-white shadow-2xs"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
+                  }`}
+                >
+                  {st.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center justify-between sm:justify-end space-x-3 w-full sm:w-auto shrink-0 text-xs">
+            <span className="text-slate-400">
+              Showing{" "}
+              <strong className="text-slate-700 font-semibold">
+                {filteredQuizzes.length}
+              </strong>{" "}
+              of {quizzes.length} tests
+            </span>
+            {hasActiveFilters && (
+              <button
+                onClick={handleClearFilters}
+                className="text-xs font-bold text-[#3b49df] hover:underline flex items-center space-x-1 cursor-pointer"
+              >
+                <X size={12} />
+                <span>Reset Filters</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex items-center space-x-2 border-b border-slate-200 pb-2">
-        <button
-          type="button"
-          onClick={() => setSelectedTab("active")}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            selectedTab === "active"
-              ? "bg-slate-900 text-white shadow-xs"
-              : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
-          }`}
-        >
-          Active Tests ({activeQuizzes.length})
-        </button>
-        <button
-          type="button"
-          onClick={() => setSelectedTab("completed")}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-            selectedTab === "completed"
-              ? "bg-slate-900 text-white shadow-xs"
-              : "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
-          }`}
-        >
-          Completed History ({completedQuizzes.length})
-        </button>
-      </div>
-
-      {/* Content */}
-      {selectedTab === "active" ? (
+      {/* ------------------------------------------------------------- */}
+      {/* QUIZZES CARD GRID                                             */}
+      {/* ------------------------------------------------------------- */}
+      {filteredQuizzes.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {activeQuizzes.map((quiz) => (
-            <div
-              key={quiz.id}
-              className="bg-white border border-slate-200/90 hover:border-slate-300 rounded p-5 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between space-y-4 group"
-            >
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-start space-x-3 min-w-0">
-                    <div
-                      className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 ${quiz.iconColor}`}
+          {filteredQuizzes.map((quiz) => {
+            const isPassed = quiz.studentStatus === "passed";
+            return (
+              <div
+                key={quiz.id}
+                className="bg-white border border-slate-200/90 hover:border-slate-300 rounded-2xl p-5 sm:p-6 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between space-y-4 group"
+              >
+                <div className="space-y-3">
+                  {/* Category & Status Header */}
+                  <div className="flex items-start justify-between gap-3">
+                    <span
+                      className={`text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg border ${getCategoryBadgeClass(
+                        quiz.category
+                      )}`}
                     >
-                      <CheckSquare size={18} />
-                    </div>
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                        {quiz.category}
+                      {quiz.category || "SPECIALIZATION"}
+                    </span>
+
+                    {isPassed ? (
+                      <span className="inline-flex items-center space-x-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+                        <CheckCircle2 size={12} className="text-emerald-600" />
+                        <span>PASSED • {quiz.studentScore}%</span>
                       </span>
-                      <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors leading-snug">
-                        {quiz.title}
-                      </h3>
-                      <p className="text-xs text-slate-500 font-medium mt-0.5">
-                        {quiz.course}
-                      </p>
+                    ) : (
+                      <span className="inline-flex items-center space-x-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+                        <Clock size={12} className="text-amber-600" />
+                        <span>AVAILABLE</span>
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Course & Title */}
+                  <div>
+                    <div className="flex items-center space-x-1.5 text-xs text-slate-500 font-medium mb-1">
+                      <BookOpen size={13} className="text-slate-400 shrink-0" />
+                      <span className="truncate">{quiz.courseTitle}</span>
+                    </div>
+                    <h3 className="text-base font-bold text-slate-900 group-hover:text-[#3b49df] transition-colors leading-snug">
+                      {quiz.title}
+                    </h3>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-xs text-slate-600 font-normal leading-relaxed line-clamp-2">
+                    {quiz.description}
+                  </p>
+
+                  {/* Test Specifications Strip */}
+                  <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-700 font-medium tabular-nums">
+                    <div className="flex items-center space-x-1.5">
+                      <HelpCircle size={14} className="text-slate-400" />
+                      <span>{quiz.totalQuestions} Questions</span>
+                    </div>
+                    <div className="flex items-center space-x-1.5">
+                      <Clock size={14} className="text-slate-400" />
+                      <span>{quiz.durationMinutes} Minutes</span>
+                    </div>
+                    <div className="flex items-center space-x-1.5 text-slate-600">
+                      <Award size={14} className="text-amber-500" />
+                      <span>{quiz.passScorePercentage}% Pass Req.</span>
                     </div>
                   </div>
-
-                  <span
-                    className={`shrink-0 text-[10.5px] font-black px-2 py-0.5 rounded-lg border ${quiz.badgeColor}`}
-                  >
-                    {quiz.passScore}
-                  </span>
                 </div>
 
-                <p className="text-xs text-slate-600 font-normal leading-relaxed">
-                  {quiz.description}
-                </p>
-
-                <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center justify-between text-xs text-slate-700 font-semibold tabular-nums">
-                  <div className="flex items-center space-x-1.5">
-                    <HelpCircle size={14} className="text-slate-400" />
-                    <span>{quiz.questions} Questions</span>
-                  </div>
-                  <div className="flex items-center space-x-1.5">
-                    <Clock size={14} className="text-slate-400" />
-                    <span>{quiz.duration} Minutes</span>
-                  </div>
-                  <div className="text-slate-500 font-medium">
-                    {quiz.deadline}
-                  </div>
+                {/* Card Action Footer */}
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  {isPassed ? (
+                    <>
+                      <div className="text-[11px] text-slate-500">
+                        <span>Completed {quiz.completedDate || "Recently"}</span>
+                        {quiz.timeSpent && <span> • {quiz.timeSpent}</span>}
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          type="button"
+                          onClick={() => setScoreReviewModal(quiz)}
+                          className="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold transition-all cursor-pointer"
+                        >
+                          Review Result
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleStartQuiz(quiz)}
+                          className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all flex items-center space-x-1 cursor-pointer"
+                        >
+                          <RotateCcw size={12} />
+                          <span>Retake</span>
+                        </button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-[11px] text-slate-400 font-medium">
+                        {quiz.deadline || "Available anytime"}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleStartQuiz(quiz)}
+                        className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer active:scale-95"
+                      >
+                        <span>Start Test</span>
+                        <ArrowRight size={13} />
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
-
-              <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Single attempt allowed per window
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleStartQuiz(quiz)}
-                  className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer active:scale-95"
-                >
-                  <span>Start Test</span>
-                  <ArrowRight size={13} />
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
-        /* Completed Quizzes List */
-        <div className="bg-white border border-slate-200/90 rounded overflow-hidden shadow-2xs">
-          <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-            <h3 className="font-bold text-slate-900 text-sm">
-              Past Submission Scores
-            </h3>
-            <span className="text-xs text-slate-500 font-medium">
-              Verified in Student Academic Ledger
-            </span>
+        /* Empty State */
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center shadow-xs">
+          <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 mb-3">
+            <Search size={22} />
           </div>
-
-          <div className="divide-y divide-slate-100">
-            {completedQuizzes.map((past) => (
-              <div
-                key={past.id}
-                className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 transition-colors"
-              >
-                <div className="flex items-center space-x-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0">
-                    <CheckCircle2 size={18} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-slate-900 text-sm">
-                      {past.title}
-                    </h4>
-                    <p className="text-xs text-slate-500">
-                      Completed on {past.date} • {past.questions} questions •{" "}
-                      {past.timeSpent}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4 self-end sm:self-auto">
-                  <div className="text-right">
-                    <span className="text-[10px] text-slate-400 font-bold block uppercase">
-                      FINAL SCORE
-                    </span>
-                    <span className="text-base font-black text-emerald-700">
-                      {past.score}
-                    </span>
-                  </div>
-                  <span className="text-xs font-black px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 border border-emerald-200">
-                    {past.status}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+          <h3 className="text-base font-bold text-slate-900">
+            No Quizzes Match Your Filter
+          </h3>
+          <p className="text-slate-500 text-xs sm:text-sm max-w-sm mx-auto mt-1 mb-4">
+            {searchQuery
+              ? `No tests match "${searchQuery}". Try searching for another topic or reset your filters.`
+              : "No quizzes available for the selected filters."}
+          </p>
+          <button
+            onClick={handleClearFilters}
+            className="px-4 py-2 bg-[#3b49df] text-white text-xs font-bold rounded-xl shadow-xs hover:bg-[#2f3cb3] transition-colors cursor-pointer"
+          >
+            Clear All Filters
+          </button>
         </div>
       )}
 
-      {/* Quiz Attempt Modal Preview */}
+      {/* ------------------------------------------------------------- */}
+      {/* START / RETAKE QUIZ MODAL                                     */}
+      {/* ------------------------------------------------------------- */}
       {activeQuizModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-blue-50/50 to-indigo-50/30">
               <div>
-                <span className="text-[10px] font-black uppercase text-blue-700 tracking-wider block">
-                  {activeQuizModal.category}
+                <span className="text-[10px] font-black uppercase text-[#3b49df] tracking-wider block">
+                  {activeQuizModal.category || "SPECIALIZATION ASSESSMENT"}
                 </span>
                 <h3 className="font-black text-base text-slate-900 mt-0.5">
                   {activeQuizModal.title}
@@ -328,27 +508,26 @@ export const MyQuizzesPage = () => {
             </div>
 
             <div className="p-6 space-y-4">
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-xs text-amber-900 flex items-start space-x-2">
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-xs text-amber-900 flex items-start space-x-2.5">
                 <AlertCircle
                   size={16}
                   className="text-amber-600 shrink-0 mt-0.5"
                 />
                 <div className="space-y-1">
                   <span className="font-bold block">
-                    Important Test Guidelines:
+                    Important Examination Guidelines:
                   </span>
                   <ul className="list-disc list-inside space-y-0.5 text-amber-800">
                     <li>
-                      Duration is {activeQuizModal.duration} minutes with{" "}
-                      {activeQuizModal.questions} multiple choice questions.
+                      Duration is {activeQuizModal.durationMinutes} minutes with{" "}
+                      {activeQuizModal.totalQuestions} multiple choice questions.
                     </li>
                     <li>
                       Requires a minimum benchmark of{" "}
-                      {activeQuizModal.passScore} to pass.
+                      {activeQuizModal.passScorePercentage}% to pass.
                     </li>
                     <li>
-                      Do not close or switch browser tabs during the test
-                      session.
+                      Do not switch tabs or reload the browser while the examination timer is active.
                     </li>
                   </ul>
                 </div>
@@ -360,15 +539,15 @@ export const MyQuizzesPage = () => {
                     Timer Window
                   </span>
                   <span className="font-black text-slate-900">
-                    {activeQuizModal.duration} Minutes
+                    {activeQuizModal.durationMinutes} Minutes
                   </span>
                 </div>
                 <div className="p-3 rounded-xl border border-slate-200 bg-slate-50">
                   <span className="text-[10px] font-bold text-slate-400 block uppercase">
-                    Passing Criterion
+                    Passing Benchmark
                   </span>
                   <span className="font-black text-emerald-700">
-                    {activeQuizModal.passScore}
+                    {activeQuizModal.passScorePercentage}% Required
                   </span>
                 </div>
               </div>
@@ -383,18 +562,114 @@ export const MyQuizzesPage = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setActiveQuizModal(null);
-                    showToast(
-                      `Quiz examination session started: "${activeQuizModal.title}". Best of luck!`,
-                      "success",
-                      "Examination In Progress",
-                    );
-                  }}
-                  className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md transition-all cursor-pointer flex items-center space-x-1.5"
+                  onClick={handleBeginExamination}
+                  className="px-5 py-2.5 rounded-xl bg-[#3b49df] hover:bg-[#2f3cb3] text-white text-xs font-bold shadow-md transition-all cursor-pointer flex items-center space-x-1.5 active:scale-95"
                 >
-                  <Play size={12} className="fill-white" />
+                  <Play size={13} className="fill-white" />
                   <span>Begin Examination Now</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* REVIEW RESULT MODAL                                           */}
+      {/* ------------------------------------------------------------- */}
+      {scoreReviewModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-emerald-50/60 to-teal-50/40">
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                  <CheckCircle2 size={18} />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-sm text-slate-900">
+                    Examination Results
+                  </h3>
+                  <span className="text-[10px] text-emerald-700 font-bold uppercase">
+                    Verified in Student Ledger
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setScoreReviewModal(null)}
+                className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="text-center py-2 space-y-1">
+                <div className="inline-block p-4 rounded-full bg-emerald-50 border-4 border-emerald-100 text-3xl font-black text-emerald-700 shadow-inner">
+                  {scoreReviewModal.studentScore}%
+                </div>
+                <h4 className="text-base font-bold text-slate-900 mt-2">
+                  {scoreReviewModal.title}
+                </h4>
+                <p className="text-xs text-slate-500">
+                  {scoreReviewModal.courseTitle}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50">
+                  <span className="text-[10px] font-bold text-slate-400 block uppercase">
+                    Result Status
+                  </span>
+                  <span className="font-extrabold text-emerald-700">
+                    PASSED
+                  </span>
+                </div>
+                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50">
+                  <span className="text-[10px] font-bold text-slate-400 block uppercase">
+                    Passing Required
+                  </span>
+                  <span className="font-extrabold text-slate-800">
+                    {scoreReviewModal.passScorePercentage}%
+                  </span>
+                </div>
+                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50">
+                  <span className="text-[10px] font-bold text-slate-400 block uppercase">
+                    Time Spent
+                  </span>
+                  <span className="font-bold text-slate-800">
+                    {scoreReviewModal.timeSpent || "14 mins"}
+                  </span>
+                </div>
+                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50">
+                  <span className="text-[10px] font-bold text-slate-400 block uppercase">
+                    Completion Date
+                  </span>
+                  <span className="font-bold text-slate-800">
+                    {scoreReviewModal.completedDate || "18 Feb 2026"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const target = scoreReviewModal;
+                    setScoreReviewModal(null);
+                    handleStartQuiz(target);
+                  }}
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold transition-colors cursor-pointer flex items-center space-x-1"
+                >
+                  <RotateCcw size={12} />
+                  <span>Retake Test</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setScoreReviewModal(null)}
+                  className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                >
+                  Done
                 </button>
               </div>
             </div>

@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }) => {
         const initial = { ...STUDENT_USER };
         try {
             const savedAvatar = localStorage.getItem('om_lms_student_avatar');
-            if (savedAvatar && savedAvatar !== boyAvatar && savedAvatar !== girlAvatar && savedAvatar !== '/student_photo_265.jpg') {
+            if (savedAvatar === boyAvatar || savedAvatar === girlAvatar) {
                 initial.avatar = savedAvatar;
             } else {
                 initial.avatar = profilePic;
@@ -99,9 +99,8 @@ export const AuthProvider = ({ children }) => {
 
             if (profile) {
                 setCrmProfile(profile);
-                // Directly integrate and bind uploaded photograph if available!
+                // Directly integrate and bind uploaded photograph if available, defaulting to profilePic
                 setStudentUser((prev) => {
-                    const avatarUrl = (profile.photo && profile.photo !== '/student_photo_265.jpg') ? profile.photo : profilePic;
                     return {
                         ...prev,
                         crmAdmissionId: profile.id,
@@ -110,7 +109,7 @@ export const AuthProvider = ({ children }) => {
                         email: profile.email || prev.email,
                         course: profile.course || prev.course,
                         designation: `${profile.course || 'Digital Marketing'} Student`,
-                        avatar: avatarUrl
+                        avatar: profilePic
                     };
                 });
             }

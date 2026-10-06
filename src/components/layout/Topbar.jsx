@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  Menu,
+  ChevronRight,
   Search,
   Bell,
   ChevronDown,
@@ -12,7 +12,7 @@ import {
   GraduationCap,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth, profilePic } from "../../context/AuthContext";
 export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(3);
@@ -22,14 +22,15 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
     useAuth();
   return (
     <header className="sticky top-0 z-20 h-16 bg-white border-b border-slate-200 px-4 md:px-6 flex items-center justify-between shadow-xs">
-      {/* Left side: Hamburger & Global Search */}
-      <div className="flex items-center space-x-4 flex-1 max-w-xl">
+      {/* Left side: Mobile Toggle & Global Search */}
+      <div className="flex items-center space-x-3 flex-1 max-w-xl">
         <button
           onClick={onToggleSidebar}
-          className="p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors focus:outline-hidden cursor-pointer"
-          aria-label="Toggle Navigation"
+          className="p-2 rounded-xl text-slate-600 hover:bg-slate-100 transition-colors focus:outline-hidden cursor-pointer md:hidden"
+          aria-label="Open Navigation"
+          title="Open Navigation"
         >
-          <Menu size={20} />
+          <ChevronRight size={20} />
         </button>
 
         {/* Global Search Bar - shown on desktop screens where width permits */}
@@ -233,7 +234,7 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
             aria-label="User Profile Menu"
           >
             <img
-              src={currentUser.avatar}
+              src={role === "ADMIN" ? currentUser.avatar : profilePic}
               alt={currentUser.name}
               className="w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full object-cover ring-2 ring-slate-200/90 shadow-2xs shrink-0"
             />
@@ -252,10 +253,10 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-64 bg-whiterounded shadow-xl border border-slate-200/90 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+            <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-200/90 py-2 z-50 animate-in fade-in slide-in-from-top-2">
               <div className="px-4 py-3 border-b border-slate-100 flex items-center space-x-3">
                 <img
-                  src={currentUser.avatar}
+                  src={role === "ADMIN" ? currentUser.avatar : profilePic}
                   alt={currentUser.name}
                   className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-200 shrink-0"
                 />

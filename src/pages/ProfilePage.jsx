@@ -126,7 +126,7 @@ export const ProfilePage = () => {
           <div className="relative shrink-0">
             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-3 border-white shadow-md ring-2 ring-blue-100/90 bg-slate-100 p-0.5">
               <img
-                src={currentUser.avatar || profilePic}
+                src={profilePic}
                 alt={currentUser.name}
                 className="w-full h-full rounded-full object-cover object-top"
               />

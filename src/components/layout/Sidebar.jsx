@@ -1,11 +1,12 @@
 import React from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import logoImg from '../../assets/logo.png';
 import { 
   LayoutDashboard, BookOpen, Activity, User, GraduationCap, 
   Award, CheckSquare, FileText, BookCheck, Layers, ClipboardList, 
   FolderCheck, Users, HelpCircle, MessageCircle, BarChart3, LogOut, 
-  ChevronLeft, ChevronRight, Calendar, Images 
+  ChevronLeft, ChevronRight, Calendar, Images, MessagesSquare 
 } from 'lucide-react';
 
 export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
@@ -19,7 +20,6 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           title: 'MAIN',
           items: [
             { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-            { name: 'Browse Courses', path: '/courses', icon: BookOpen },
             { name: 'Activity', path: '/activity', icon: Activity },
             { name: 'Profile', path: '/profile', icon: User }
           ]
@@ -40,9 +40,10 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
               badge: '4'
             },
             { name: 'My Quizzes', path: '/my-quizzes', icon: CheckSquare },
-            { name: 'Notes & Reviews', path: '/notes-reviews', icon: FileText },
+            { name: 'Notes', path: '/notes', icon: FileText },
             { name: 'My Assignments', path: '/my-assignments', icon: BookCheck },
-            { name: 'Gallery', path: '/gallery', icon: Images },
+            { name: 'Forums', path: '/forums', icon: MessagesSquare },
+            // { name: 'Gallery', path: '/gallery', icon: Images },
             { name: 'Schedule', path: '/schedule', icon: Calendar }
           ]
         }
@@ -66,7 +67,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
             { name: 'Manage Assignments', path: '/manage-assignments', icon: FolderCheck },
             { name: 'Manage Students', path: '/manage-students', icon: Users },
             { name: 'Manage Questions', path: '/manage-questions', icon: HelpCircle },
-            { name: 'Question & Discussions', path: '/question-discussions', icon: MessageCircle },
+            { name: 'Forums', path: '/forums', icon: MessagesSquare },
             { name: 'Manage Reports', path: '/manage-reports', icon: BarChart3, badge: 'Beta' }
           ]
         }
@@ -78,27 +79,31 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
         collapsed ? 'w-20' : 'w-64'
       }`}
     >
-      {/* Sidebar Header / Logo (matching DASHBOARD.png) */}
-      <div className="h-16 flex items-center justify-between px-5 border-b border-slate-100 shrink-0">
+      {/* Sidebar Header / Logo */}
+      <div className={`h-16 flex items-center border-b border-slate-100 shrink-0 ${
+        collapsed ? 'justify-between px-2.5' : 'justify-between px-4'
+      }`}>
         {!collapsed ? (
-          <div className="flex items-center space-x-2.5 overflow-hidden py-1">
-            <div className="w-8 h-8 rounded-xl bg-[#0c1e3d] flex items-center justify-center text-white shrink-0 shadow-xs">
-              <GraduationCap size={18} className="text-white" />
-            </div>
-            <div className="flex flex-col tracking-wider">
-              <span className="text-[11px] font-black uppercase text-[#0c1e3d] leading-none">OPERATING</span>
-              <span className="text-[11px] font-black uppercase text-[#0c1e3d] leading-tight mt-0.5">MEDIA</span>
-            </div>
-          </div>
+          <NavLink to="/dashboard" className="flex items-center overflow-hidden py-1">
+            <img
+              src={logoImg}
+              alt="Operating Media"
+              className="h-9 w-auto max-w-[160px] object-contain"
+            />
+          </NavLink>
         ) : (
-          <div className="w-9 h-9 mx-auto rounded-xl bg-[#0c1e3d] flex items-center justify-center text-white shrink-0 shadow-xs">
-            <GraduationCap size={18} className="text-white" />
-          </div>
+          <NavLink to="/dashboard" className="w-7 h-7 flex items-center justify-center overflow-hidden shrink-0">
+            <img
+              src={logoImg}
+              alt="Operating Media"
+              className="h-6 w-auto max-w-[28px] object-cover object-left"
+            />
+          </NavLink>
         )}
 
         <button
           onClick={onToggleCollapse}
-          className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors hidden md:block cursor-pointer"
+          className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer shrink-0"
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}

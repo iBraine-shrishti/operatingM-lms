@@ -660,11 +660,18 @@ export const INITIAL_QUIZZES = [
         courseId: 'course-2',
         courseTitle: 'Counseling Video, Quiz and Brochure',
         title: 'Digital Marketing Career Aptitude Quiz',
+        category: 'Career Orientation',
         totalQuestions: 15,
         durationMinutes: 20,
         passScorePercentage: 75,
         attemptsCount: 215,
         averageScore: 86.4,
+        description: 'Test your understanding of core digital channels, customer personas, conversion funnels, and marketing metrics.',
+        studentStatus: 'passed',
+        studentScore: 92,
+        completedDate: '18 Feb 2026',
+        timeSpent: '14 mins',
+        deadline: 'Available Anytime',
         status: 'active'
     },
     {
@@ -672,11 +679,18 @@ export const INITIAL_QUIZZES = [
         courseId: 'course-8',
         courseTitle: 'Search Engine Optimization (SEO)',
         title: 'SEO Fundamentals & Keyword Strategy Assessment',
+        category: 'SEO Strategy',
         totalQuestions: 20,
         durationMinutes: 25,
         passScorePercentage: 80,
         attemptsCount: 142,
         averageScore: 84.5,
+        description: 'Evaluate your ability to conduct keyword difficulty analysis, optimize on-page tags, and evaluate crawler response headers.',
+        studentStatus: 'passed',
+        studentScore: 88,
+        completedDate: '02 Feb 2026',
+        timeSpent: '18 mins',
+        deadline: 'Due this Sunday',
         status: 'active'
     },
     {
@@ -684,11 +698,18 @@ export const INITIAL_QUIZZES = [
         courseId: 'course-7',
         courseTitle: 'Website Development With WordPress',
         title: 'WordPress Core Architecture & Elementor Layout Test',
+        category: 'WordPress Architecture',
         totalQuestions: 18,
         durationMinutes: 25,
         passScorePercentage: 75,
         attemptsCount: 158,
         averageScore: 88.0,
+        description: 'Test your knowledge of WordPress site structure, theme customizers, Elementor layouts, and plugin security configurations.',
+        studentStatus: 'passed',
+        studentScore: 85,
+        completedDate: '22 Jan 2026',
+        timeSpent: '19 mins',
+        deadline: 'Available Anytime',
         status: 'active'
     },
     {
@@ -696,11 +717,18 @@ export const INITIAL_QUIZZES = [
         courseId: 'course-5',
         courseTitle: 'Google Analytics Course',
         title: 'GA4 Event Tracking & Funnel Analysis Quiz',
+        category: 'Analytics & Tracking',
         totalQuestions: 15,
         durationMinutes: 20,
         passScorePercentage: 80,
         attemptsCount: 110,
         averageScore: 79.2,
+        description: 'Demonstrate hands-on understanding of GA4 custom dimensions, event tags, e-commerce purchase funnels, and debugging tools.',
+        studentStatus: 'passed',
+        studentScore: 90,
+        completedDate: '12 Feb 2026',
+        timeSpent: '15 mins',
+        deadline: 'Available Anytime',
         status: 'active'
     },
     {
@@ -708,11 +736,18 @@ export const INITIAL_QUIZZES = [
         courseId: 'course-6',
         courseTitle: 'Google Ads',
         title: 'Google Ads Search & Bidding Strategies Quiz',
+        category: 'PPC Advertising',
         totalQuestions: 20,
         durationMinutes: 30,
         passScorePercentage: 85,
         attemptsCount: 195,
         averageScore: 82.4,
+        description: 'Practical scenario questions on Target CPA, Target ROAS, Quality Score mechanics, negative keyword match types, and conversion tracking.',
+        studentStatus: 'pending',
+        studentScore: null,
+        completedDate: null,
+        timeSpent: null,
+        deadline: 'Due this Sunday',
         status: 'active'
     },
     {
@@ -720,11 +755,18 @@ export const INITIAL_QUIZZES = [
         courseId: 'course-1',
         courseTitle: 'Social Media Marketing',
         title: 'Social Media Growth Tactics & Viral Algorithms Quiz',
+        category: 'Social Media',
         totalQuestions: 16,
         durationMinutes: 20,
         passScorePercentage: 80,
         attemptsCount: 168,
         averageScore: 85.0,
+        description: 'Assess campaign setup, Meta Pixel tracking, Aggregated Event Measurement (AEM), custom lookalikes, and creative testing frameworks.',
+        studentStatus: 'pending',
+        studentScore: null,
+        completedDate: null,
+        timeSpent: null,
+        deadline: 'Due Next Week',
         status: 'active'
     },
     {
@@ -732,11 +774,18 @@ export const INITIAL_QUIZZES = [
         courseId: 'course-4',
         courseTitle: 'Creative Designing',
         title: 'Graphic Design Principles & Typography Assessment',
+        category: 'Creative Design',
         totalQuestions: 15,
         durationMinutes: 20,
         passScorePercentage: 75,
         attemptsCount: 94,
         averageScore: 81.5,
+        description: 'Evaluate composition balance, color theory contrasts, vector typography, Canva branding kits, and social banner hierarchy.',
+        studentStatus: 'pending',
+        studentScore: null,
+        completedDate: null,
+        timeSpent: null,
+        deadline: 'Available Anytime',
         status: 'active'
     },
     {
@@ -744,11 +793,18 @@ export const INITIAL_QUIZZES = [
         courseId: 'course-3',
         courseTitle: 'Advanced Topics',
         title: 'Advanced Digital Marketing Strategy Comprehensive Exam',
+        category: 'Capstone Exam',
         totalQuestions: 30,
         durationMinutes: 45,
         passScorePercentage: 85,
         attemptsCount: 124,
         averageScore: 87.2,
+        description: 'Comprehensive end-to-end evaluation covering affiliate tracking, programmatic DSPs, omnichannel attribution, and client audit strategies.',
+        studentStatus: 'pending',
+        studentScore: null,
+        completedDate: null,
+        timeSpent: null,
+        deadline: 'End of Term Exam',
         status: 'active'
     }
 ];
@@ -872,6 +928,8 @@ export const INITIAL_ASSIGNMENTS = [
         totalSubmissions: 94,
         pendingGrading: 12,
         maxScore: 100,
+        status: 'submitted',
+        submittedAt: 'Oct 02, 2026',
         instructions: 'Submit a comprehensive PDF report containing keyword gap analysis, Core Web Vitals audit, and 30-day action plan.'
     },
     {
@@ -883,6 +941,7 @@ export const INITIAL_ASSIGNMENTS = [
         totalSubmissions: 115,
         pendingGrading: 8,
         maxScore: 100,
+        status: 'pending',
         instructions: 'Submit your staging URL, admin credentials, and lighthouse performance test screenshot.'
     },
     {
@@ -894,6 +953,10 @@ export const INITIAL_ASSIGNMENTS = [
         totalSubmissions: 68,
         pendingGrading: 5,
         maxScore: 100,
+        status: 'graded',
+        score: 92,
+        feedback: 'Superb Figma design system and typography hierarchy tokens. Clean auto-layouts throughout!',
+        submittedAt: 'Sep 29, 2026',
         instructions: 'Provide public Figma link with component library, color styles, typography tokens, and 6 ad variations.'
     },
     {
@@ -905,6 +968,10 @@ export const INITIAL_ASSIGNMENTS = [
         totalSubmissions: 72,
         pendingGrading: 7,
         maxScore: 100,
+        status: 'graded',
+        score: 96,
+        feedback: 'Exceptional viral hook structure and comprehensive multi-channel distribution plan!',
+        submittedAt: 'Sep 26, 2026',
         instructions: 'Build an omnichannel editorial calendar with caption copywriting and visual references.'
     },
     {
@@ -916,6 +983,8 @@ export const INITIAL_ASSIGNMENTS = [
         totalSubmissions: 140,
         pendingGrading: 15,
         maxScore: 100,
+        status: 'submitted',
+        submittedAt: 'Oct 01, 2026',
         instructions: 'Complete the digital marketing specialization selection matrix based on your career goals.'
     },
     {
@@ -927,6 +996,7 @@ export const INITIAL_ASSIGNMENTS = [
         totalSubmissions: 64,
         pendingGrading: 6,
         maxScore: 100,
+        status: 'pending',
         instructions: 'Set up custom events in GTM and build an interactive Looker Studio traffic dashboard.'
     },
     {
@@ -1281,10 +1351,30 @@ export const INITIAL_DISCUSSIONS = [
         authorAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
         title: 'How do you handle Core Web Vitals LCP latency on WordPress with heavy images?',
         content: 'Hi everyone, my client website score on mobile is LCP 4.2s due to hero image preload issues. What plugin or CDN setting worked best for you?',
-        repliesCount: 8,
+        repliesCount: 2,
         createdAt: '3 hours ago',
         category: 'Technical SEO',
-        isPinned: true
+        isPinned: true,
+        replies: [
+            {
+                id: 'rep-1-1',
+                authorName: 'Vikram Malhotra',
+                authorRole: 'Instructor',
+                authorAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+                content: 'Ensure you add fetchpriority="high" to your featured hero image tag and exclude it from lazy-loading. Also enable Cloudflare Polish with WebP conversion.',
+                createdAt: '2 hours ago',
+                isOfficial: true
+            },
+            {
+                id: 'rep-1-2',
+                authorName: 'Rohan Mehta',
+                authorRole: 'Student',
+                authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+                content: 'Using FlyingPress with BunnyCDN brought our score down to 1.8s! Highly recommend checking image dimensions on mobile viewport.',
+                createdAt: '1 hour ago',
+                isOfficial: false
+            }
+        ]
     },
     {
         id: 'disc-2',
@@ -1294,10 +1384,69 @@ export const INITIAL_DISCUSSIONS = [
         authorAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
         title: 'Weekly Q&A Thread: Smart Bidding vs Manual CPC in 2026',
         content: 'Post your campaign bidding strategy questions here for this week review call. We will cover Target CPA scaling live!',
-        repliesCount: 19,
+        repliesCount: 1,
         createdAt: '1 day ago',
         category: 'PMAX & Bidding',
-        isPinned: true
+        isPinned: true,
+        replies: [
+            {
+                id: 'rep-2-1',
+                authorName: 'Hiteshpuri Goswami',
+                authorRole: 'Student',
+                authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+                content: 'Is it recommended to start with Enhanced CPC during the learning phase before switching to Target ROAS once 30 conversions are recorded?',
+                createdAt: '18 hours ago',
+                isOfficial: false
+            }
+        ]
+    },
+    {
+        id: 'disc-3',
+        courseTitle: 'Social Media Marketing',
+        authorName: 'Ananya Gupta',
+        authorRole: 'Student',
+        authorAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
+        title: 'What is the optimal video ratio and duration for Instagram Reels to maximize reach?',
+        content: 'I noticed 9:16 videos under 15 seconds have higher completion rates, but longer tutorials get more saves. How are you balancing retention vs utility in your client campaigns?',
+        repliesCount: 1,
+        createdAt: '2 days ago',
+        category: 'Social Media',
+        isPinned: false,
+        replies: [
+            {
+                id: 'rep-3-1',
+                authorName: 'Pooja Bhatt',
+                authorRole: 'Instructor',
+                authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+                content: 'For brand discovery, aim for punchy 7-12 second hooks. For authority and trust building, 45-60 second carousel or step-by-step videos get bookmarked. Test both on a 70/30 split.',
+                createdAt: '1 day ago',
+                isOfficial: true
+            }
+        ]
+    },
+    {
+        id: 'disc-4',
+        courseTitle: 'Google Analytics Course',
+        authorName: 'Aarav Patel',
+        authorRole: 'Student',
+        authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+        title: 'GA4 Event Tracking: Why are custom parameters not showing up in standard reports?',
+        content: 'I created a custom event "brochure_download" in GTM with parameter "course_name". In GA4 realtime it triggers, but in standard reports the parameter is missing.',
+        repliesCount: 1,
+        createdAt: '3 days ago',
+        category: 'Analytics',
+        isPinned: false,
+        replies: [
+            {
+                id: 'rep-4-1',
+                authorName: 'Vikram Malhotra',
+                authorRole: 'Instructor',
+                authorAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+                content: 'In GA4, you must register every custom parameter under Admin > Custom Definitions as a Custom Dimension before it populates in exploratory and standard reports. It takes 24-48 hours to backfill.',
+                createdAt: '2 days ago',
+                isOfficial: true
+            }
+        ]
     }
 ];
 export const INITIAL_ACTIVITIES = [
@@ -1385,18 +1534,56 @@ export const INITIAL_NOTES = [
     {
         id: 'note-1',
         courseId: 'course-1',
-        courseTitle: 'Search Engine Optimization (SEO)',
-        lessonTitle: '1.2 Keyword Research & Search Intent Mapping',
-        content: 'Remember: Informational keywords often have high volume but lower commercial conversion rates. Target transactional long-tail keywords on landing pages.',
+        courseTitle: 'Social Media Marketing',
+        lessonTitle: '01 Overview & Channel Architecture Setup',
+        category: 'Social Media',
+        content: 'Remember: 9:16 vertical short-form reels need a strong 3-second hook before retention dips below 60%. Test audio trends weekly.',
         createdAt: 'Sep 20, 2026'
     },
     {
         id: 'note-2',
-        courseId: 'course-3',
-        courseTitle: 'Google Analytics Course',
-        lessonTitle: 'GA4 Event Tracking Setup',
-        content: 'Always mark custom events as conversion key events in GA4 admin before building Looker Studio reports.',
+        courseId: 'course-8',
+        courseTitle: 'Search Engine Optimization (SEO)',
+        lessonTitle: '1.2 Keyword Research & Search Intent Mapping',
+        category: 'SEO',
+        content: 'Informational keywords often have high volume but lower commercial conversion rates. Target transactional long-tail keywords on high-intent product landing pages.',
         createdAt: 'Sep 22, 2026'
+    },
+    {
+        id: 'note-3',
+        courseId: 'course-5',
+        courseTitle: 'Google Analytics Course',
+        lessonTitle: 'GA4 Event Tracking & Conversion Modeling',
+        category: 'Analytics',
+        content: 'Always mark custom events as conversion key events in GA4 admin before building Looker Studio reports. Allow 24-48 hours for data attribution backfill.',
+        createdAt: 'Sep 25, 2026'
+    },
+    {
+        id: 'note-4',
+        courseId: 'course-6',
+        courseTitle: 'Google Ads',
+        lessonTitle: 'PMAX Bidding & Target ROAS Scaling',
+        category: 'Google Ads',
+        content: 'Wait until campaign records at least 30 conversions in 30 days before enabling Target ROAS bidding strategy to prevent algorithmic volatility.',
+        createdAt: 'Oct 01, 2026'
+    },
+    {
+        id: 'note-5',
+        courseId: 'course-7',
+        courseTitle: 'Website Development With WordPress',
+        lessonTitle: 'Core Web Vitals & Elementor Layouts',
+        category: 'WordPress',
+        content: 'Use Flexbox containers instead of legacy sections/columns to reduce DOM depth by 40%. Preload featured LCP hero image with fetchpriority="high".',
+        createdAt: 'Oct 03, 2026'
+    },
+    {
+        id: 'note-6',
+        courseId: 'course-4',
+        courseTitle: 'Creative Designing',
+        lessonTitle: 'Figma Typography Hierarchy & Auto Layout',
+        category: 'Design',
+        content: 'Stick to 8pt grid spacing and use sRGB color profiles for social media graphics to ensure color consistency across iOS and Android displays.',
+        createdAt: 'Oct 05, 2026'
     }
 ];
 export const INITIAL_REVIEWS = [

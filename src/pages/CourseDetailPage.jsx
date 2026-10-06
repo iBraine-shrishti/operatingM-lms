@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import {
   Star,
@@ -33,6 +33,7 @@ import {
   UserCheck,
   Check,
   Sparkle,
+  Search,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -56,8 +57,9 @@ export const CourseDetailPage = () => {
   const students = lmsService.getStudents();
   const reviews = lmsService.getReviews();
 
-  // Tab state: 'outline' (default matching course-outline.png), 'overview', 'announcements', 'qna', 'notes', 'students'
-  const [activeTab, setActiveTab] = useState("outline");
+  const [searchParams] = useSearchParams();
+  // Tab state: 'outline' (default matching course-outline.png), 'overview', 'notes', 'students'
+  const [activeTab, setActiveTab] = useState(() => searchParams.get("tab") || "outline");
 
   // Cover image customizable state matching "Change Cover" in course-outline.png
   const [coverImage, setCoverImage] = useState(
@@ -169,6 +171,23 @@ export const CourseDetailPage = () => {
   ]);
   const [newNoteText, setNewNoteText] = useState("");
   const [newNoteTag, setNewNoteTag] = useState("Viral Video Hooks");
+  const [courseNotesSearch, setCourseNotesSearch] = useState("");
+  const [courseNotesFilterTag, setCourseNotesFilterTag] = useState("all");
+
+  const filteredCourseNotes = useMemo(() => {
+    return notesList.filter((note) => {
+      if (courseNotesSearch.trim()) {
+        const q = courseNotesSearch.toLowerCase();
+        const matchesText = note.text?.toLowerCase().includes(q);
+        const matchesTag = note.lessonTag?.toLowerCase().includes(q);
+        if (!matchesText && !matchesTag) return false;
+      }
+      if (courseNotesFilterTag !== "all" && note.lessonTag !== courseNotesFilterTag) {
+        return false;
+      }
+      return true;
+    });
+  }, [notesList, courseNotesSearch, courseNotesFilterTag]);
 
   // Group units by moduleName for Course Outline
   const sections = useMemo(() => {
@@ -533,18 +552,12 @@ export const CourseDetailPage = () => {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* TABS HEADER: Course Outline | Overview | Announcements | QnA  */}
+      {/* TABS HEADER: Course Outline | Overview | Notes                */}
       {/* ------------------------------------------------------------- */}
       <div className="bg-white rounded-xl border border-slate-200/80 p-1.5 shadow-2xs flex space-x-1 sm:space-x-2 overflow-x-auto custom-scrollbar">
         {[
           { key: "outline", label: "Course Outline", icon: Layers },
           { key: "overview", label: "Overview", icon: BookOpen },
-          {
-            key: "announcements",
-            label: "Announcements & News",
-            icon: MessageSquare,
-          },
-          { key: "qna", label: "Q&A Forum", icon: HelpCircle },
           { key: "notes", label: "Notes", icon: BookMarked },
           ...(isAdmin
             ? [
@@ -1089,262 +1102,6 @@ export const CourseDetailPage = () => {
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* TAB 3: ANNOUNCEMENTS & NEWS                                   */}
-      {/* ------------------------------------------------------------- */}
-      {activeTab === "announcements" && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="font-bold text-slate-900 text-base">
-                Course Announcements & News
-              </h3>
-              <p className="text-xs text-slate-400">
-                Important batch updates, live webinars, and schedule changes.
-              </p>
-            </div>
-            {isAdmin && (
-              <button
-                onClick={() => setShowAnnForm((prev) => !prev)}
-                className="bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors shadow-2xs cursor-pointer"
-              >
-                {showAnnForm ? "Cancel" : "+ Post Announcement"}
-              </button>
-            )}
-          </div>
-
-          {showAnnForm && (
-            <form
-              onSubmit={handlePostAnnouncement}
-              className="p-5 bg-white rounded border border-slate-200 shadow-xs space-y-3"
-            >
-              <h4 className="text-xs font-bold text-slate-800">
-                New Announcement
-              </h4>
-              <input
-                type="text"
-                required
-                value={newAnnTitle}
-                onChange={(e) => setNewAnnTitle(e.target.value)}
-                placeholder="Announcement Title"
-                className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
-              />
-              <textarea
-                rows={3}
-                required
-                value={newAnnContent}
-                onChange={(e) => setNewAnnContent(e.target.value)}
-                placeholder="Announcement body text..."
-                className="w-full bg-slate-50/80 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
-              />
-              <button
-                type="submit"
-                className="bg-slate-900 hover:bg-[#3b49df] text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer"
-              >
-                Publish Announcement
-              </button>
-            </form>
-          )}
-
-          <div className="space-y-3">
-            {announcements.map((ann) => (
-              <div
-                key={ann.id}
-                className="p-5 bg-white rounded border border-slate-200/80 shadow-xs space-y-2"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold bg-blue-50 text-[#3b49df] border border-blue-200/80 px-2.5 py-0.5 rounded-full uppercase">
-                    {ann.tag}
-                  </span>
-                  <span className="text-[11px] text-slate-400 font-medium">
-                    {ann.date}
-                  </span>
-                </div>
-                <h4 className="font-bold text-slate-900 text-sm">
-                  {ann.title}
-                </h4>
-                <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                  {ann.content}
-                </p>
-                <div className="text-[11px] text-slate-400 font-medium pt-1">
-                  Posted by{" "}
-                  <span className="text-slate-800 font-semibold">
-                    {ann.author}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ------------------------------------------------------------- */}
-      {/* TAB 4: QNA                                                    */}
-      {/* ------------------------------------------------------------- */}
-      {activeTab === "qna" && (
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-              <h3 className="font-bold text-slate-900 text-base">
-                Questions & Answers Forum
-              </h3>
-              <p className="text-xs text-slate-400">
-                Ask doubts, discuss campaign setups, and learn together.
-              </p>
-            </div>
-            <button
-              onClick={() => setShowQnaModal(true)}
-              className="bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors shadow-2xs self-start sm:self-auto cursor-pointer"
-            >
-              Ask a Question
-            </button>
-          </div>
-
-          <div className="space-y-4">
-            {qnaList.map((q) => (
-              <div
-                key={q.id}
-                className="p-5 bg-white rounded border border-slate-200/80 shadow-xs space-y-3"
-              >
-                <div className="flex items-center space-x-3">
-                  <img
-                    src={q.avatar}
-                    alt={q.author}
-                    className="w-8 h-8 rounded-full object-cover shrink-0"
-                  />
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-900">
-                      {q.author}
-                    </h4>
-                    <span className="text-[10px] text-slate-400">{q.date}</span>
-                  </div>
-                </div>
-
-                <div>
-                  <h5 className="font-bold text-slate-900 text-sm mb-1">
-                    {q.title}
-                  </h5>
-                  <p className="text-xs text-slate-600 leading-relaxed font-normal">
-                    {q.question}
-                  </p>
-                </div>
-
-                {/* Replies */}
-                {q.replies.length > 0 && (
-                  <div className="bg-slate-50/80 rounded-xl p-4 space-y-2 border border-slate-200/70">
-                    {q.replies.map((r, rIdx) => (
-                      <div key={rIdx} className="space-y-1">
-                        <div className="flex items-center space-x-2">
-                          <span className="text-xs font-bold text-slate-900">
-                            {r.author}
-                          </span>
-                          <span className="text-[10px] font-bold bg-blue-100 text-blue-800 px-1.5 py-0.2 rounded">
-                            {r.role}
-                          </span>
-                          <span className="text-[10px] text-slate-400">
-                            {r.date}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-700 leading-relaxed font-normal">
-                          {r.text}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Reply box */}
-                <div className="flex items-center space-x-2 pt-2 border-t border-slate-100">
-                  <input
-                    type="text"
-                    value={replyInput[q.id] || ""}
-                    onChange={(e) =>
-                      setReplyInput({ ...replyInput, [q.id]: e.target.value })
-                    }
-                    placeholder="Write a helpful answer..."
-                    className="flex-1 bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        handleAddReply(q.id);
-                      }
-                    }}
-                  />
-                  <button
-                    onClick={() => handleAddReply(q.id)}
-                    className="bg-slate-900 hover:bg-[#3b49df] text-white text-xs font-semibold px-3.5 py-1.5 rounded-xl transition-colors cursor-pointer"
-                  >
-                    Reply
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Ask Question Modal */}
-          {showQnaModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-              <div className="bg-white rounded p-6 md:p-7 max-w-md w-full shadow-2xl space-y-4 border border-slate-200 animate-in fade-in duration-150">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <h3 className="font-bold text-slate-900 text-base">
-                    Ask a Question
-                  </h3>
-                  <button
-                    onClick={() => setShowQnaModal(false)}
-                    className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
-                <form onSubmit={handleAskQuestion} className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Title
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={newQTitle}
-                      onChange={(e) => setNewQTitle(e.target.value)}
-                      placeholder="e.g. How to set up CPA postback URL?"
-                      className="w-full bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">
-                      Details
-                    </label>
-                    <textarea
-                      rows={4}
-                      required
-                      value={newQBody}
-                      onChange={(e) => setNewQBody(e.target.value)}
-                      placeholder="Explain your scenario in detail..."
-                      className="w-full bg-slate-50/80 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
-                    />
-                  </div>
-                  <div className="flex justify-end space-x-2 pt-2 border-t border-slate-100">
-                    <button
-                      type="button"
-                      onClick={() => setShowQnaModal(false)}
-                      className="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-5 py-2 text-xs font-semibold text-white bg-[#3b49df] hover:bg-[#2f3ab2] rounded-xl transition-colors cursor-pointer"
-                    >
-                      Post Question
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ------------------------------------------------------------- */}
       {/* TAB 5: NOTES                                                  */}
       {/* ------------------------------------------------------------- */}
       {activeTab === "notes" && (
@@ -1396,39 +1153,94 @@ export const CourseDetailPage = () => {
             </div>
           </form>
 
-          <div className="space-y-3">
-            {notesList.map((note) => (
-              <div
-                key={note.id}
-                className="p-4 bg-white rounded border border-slate-200/80 shadow-xs flex items-start justify-between gap-4"
-              >
-                <div className="space-y-1">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-[10px] font-bold bg-blue-50 text-[#3b49df] border border-blue-200/80 px-2 py-0.5 rounded-full">
-                      {note.lessonTag}
-                    </span>
-                    <span className="text-[10px] text-slate-400">
-                      {note.date}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-800 leading-relaxed font-normal">
-                    {note.text}
-                  </p>
-                </div>
+          {/* Course Notebook Search & Filter */}
+          <div className="flex flex-col sm:flex-row gap-2.5 bg-slate-50/80 p-3 rounded-xl border border-slate-200/80">
+            <div className="relative flex-1">
+              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                value={courseNotesSearch}
+                onChange={(e) => setCourseNotesSearch(e.target.value)}
+                placeholder="Search notes in this course..."
+                className="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df]"
+              />
+              {courseNotesSearch && (
                 <button
-                  onClick={() => {
-                    setNotesList((prev) =>
-                      prev.filter((n) => n.id !== note.id),
-                    );
-                    showToast("Note deleted", "info");
-                  }}
-                  className="p-1 text-slate-300 hover:text-red-500 rounded transition-colors cursor-pointer"
-                  title="Delete Note"
+                  onClick={() => setCourseNotesSearch("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
                 >
-                  <Trash2 size={14} />
+                  <X size={13} />
                 </button>
+              )}
+            </div>
+
+            <div className="sm:w-60">
+              <select
+                value={courseNotesFilterTag}
+                onChange={(e) => setCourseNotesFilterTag(e.target.value)}
+                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] cursor-pointer"
+              >
+                <option value="all">All Modules & Tags</option>
+                {sections.map((s) => (
+                  <option key={s.name} value={s.name}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {filteredCourseNotes.length === 0 ? (
+              <div className="p-8 bg-white rounded-xl border border-slate-200/80 text-center space-y-2">
+                <p className="text-xs font-semibold text-slate-700">No matching notes found</p>
+                <p className="text-[11px] text-slate-400">Try adjusting your search terms or filter.</p>
+                {(courseNotesSearch || courseNotesFilterTag !== "all") && (
+                  <button
+                    onClick={() => {
+                      setCourseNotesSearch("");
+                      setCourseNotesFilterTag("all");
+                    }}
+                    className="text-xs text-[#3b49df] hover:underline font-semibold"
+                  >
+                    Reset Filter
+                  </button>
+                )}
               </div>
-            ))}
+            ) : (
+              filteredCourseNotes.map((note) => (
+                <div
+                  key={note.id}
+                  className="p-4 bg-white rounded-xl border border-slate-200/80 shadow-xs flex items-start justify-between gap-4"
+                >
+                  <div className="space-y-1">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-[10px] font-bold bg-blue-50 text-[#3b49df] border border-blue-200/80 px-2 py-0.5 rounded-full">
+                        {note.lessonTag}
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        {note.date}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-800 leading-relaxed font-normal">
+                      {note.text}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setNotesList((prev) =>
+                        prev.filter((n) => n.id !== note.id),
+                      );
+                      showToast("Note deleted", "info");
+                    }}
+                    className="p-1 text-slate-300 hover:text-red-500 rounded transition-colors cursor-pointer"
+                    title="Delete Note"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </div>
       )}

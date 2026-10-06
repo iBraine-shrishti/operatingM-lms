@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Search, ChevronDown, Sparkles, GraduationCap, BookOpen, Clock, Award, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { lmsService } from '../services/lmsService';
@@ -9,6 +9,12 @@ import { useAuth } from '../context/AuthContext';
 export const ManageCoursesPage = () => {
   const navigate = useNavigate();
   const { isAdmin, isStudent } = useAuth();
+
+  useEffect(() => {
+    if (isStudent) {
+      navigate('/enrolled-courses', { replace: true });
+    }
+  }, [isStudent, navigate]);
   const [courses, setCourses] = useState(() => lmsService.getCourses());
   const [activeTab, setActiveTab] = useState('published');
   const [selectedCategory, setSelectedCategory] = useState('all');

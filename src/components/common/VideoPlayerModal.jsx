@@ -70,14 +70,24 @@ export const VideoPlayerModal = ({ isOpen, onClose, videos = [], currentIndex = 
 
         {/* Video Player Area with Infinite Next/Prev Overlay Controls */}
         <div className="relative aspect-video bg-black flex items-center justify-center group overflow-hidden">
-          <video
-            ref={videoRef}
-            src={currentVideo.videoUrl}
-            poster={currentVideo.thumbnail}
-            controls
-            autoPlay
-            className="w-full h-full object-contain"
-          />
+          {currentVideo.youtubeId ? (
+            <iframe
+              src={`https://www.youtube.com/embed/${currentVideo.youtubeId}?autoplay=1&enablejsapi=1&rel=0`}
+              title={currentVideo.title}
+              className="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <video
+              ref={videoRef}
+              src={currentVideo.videoUrl}
+              poster={currentVideo.thumbnail}
+              controls
+              autoPlay
+              className="w-full h-full object-contain"
+            />
+          )}
 
           {/* Previous Video Button (Infinite loop) */}
           <button

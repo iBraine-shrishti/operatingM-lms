@@ -74,18 +74,74 @@ export const lmsService = {
         return newUnit;
     },
     // Quizzes
-    getQuizzes: () => getStored('quizzes', INITIAL_QUIZZES),
+    getQuizzes: () => {
+        const stored = getStored('quizzes', INITIAL_QUIZZES);
+        if (!stored || stored.length === 0 || !stored[0].category) {
+            setStored('quizzes', INITIAL_QUIZZES);
+            return INITIAL_QUIZZES;
+        }
+        return stored;
+    },
     addQuiz: (quiz) => {
         const quizzes = lmsService.getQuizzes();
-        const newQuiz = { ...quiz, id: `q-${Date.now()}`, attemptsCount: 0, averageScore: 0 };
+        const newQuiz = { 
+            ...quiz, 
+            id: `q-${Date.now()}`, 
+            attemptsCount: 0, 
+            averageScore: 0,
+            studentStatus: 'pending',
+            studentScore: null,
+            completedDate: null,
+            timeSpent: null,
+            deadline: 'Available Anytime',
+            status: 'active'
+        };
         setStored('quizzes', [newQuiz, ...quizzes]);
         return newQuiz;
     },
+    submitQuizAttempt: (quizId, score = 90) => {
+        const quizzes = lmsService.getQuizzes();
+        const index = quizzes.findIndex(q => q.id === quizId);
+        if (index === -1) return undefined;
+        quizzes[index] = {
+            ...quizzes[index],
+            studentStatus: 'passed',
+            studentScore: score,
+            completedDate: new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }),
+            timeSpent: `${Math.max(8, (quizzes[index].durationMinutes || 20) - 5)} mins`,
+            attemptsCount: (quizzes[index].attemptsCount || 0) + 1
+        };
+        setStored('quizzes', quizzes);
+        return quizzes[index];
+    },
     // Assignments
-    getAssignments: () => getStored('assignments', INITIAL_ASSIGNMENTS),
+    getAssignments: () => {
+        const stored = getStored('assignments', INITIAL_ASSIGNMENTS);
+        if (!stored || stored.length === 0 || !stored.some(a => a.status)) {
+            setStored('assignments', INITIAL_ASSIGNMENTS);
+            return INITIAL_ASSIGNMENTS;
+        }
+        return stored.map(a => ({
+            ...a,
+            status: a.status || 'pending'
+        }));
+    },
+    submitAssignment: (id, submission = {}) => {
+        const items = lmsService.getAssignments();
+        const index = items.findIndex(a => a.id === id);
+        if (index === -1) return undefined;
+        items[index] = {
+            ...items[index],
+            status: 'submitted',
+            submittedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+            ...submission
+        };
+        setStored('assignments', items);
+        return items[index];
+    },
     addAssignment: (assign) => {
         const items = lmsService.getAssignments();
-        const newItem = { ...assign, id: `a-${Date.now()}`, totalSubmissions: 0, pendingGrading: 0 };
+        const newItem = { ...assign, id: `a-${Date.now()}`, totalSubmissions: 0, pendingGrading: 0, status: 'pending' };
         setStored('assignments', [newItem, ...items]);
         return newItem;
     },
@@ -137,17 +193,40 @@ export const lmsService = {
             ...disc,
             id: `disc-${Date.now()}`,
             repliesCount: 0,
+            replies: [],
             createdAt: 'Just now'
         };
         setStored('discussions', [newItem, ...items]);
         return newItem;
+    },
+    addDiscussionReply: (discussionId, reply) => {
+        const items = lmsService.getDiscussions();
+        const index = items.findIndex(d => d.id === discussionId);
+        if (index === -1) return undefined;
+        const newReply = {
+            ...reply,
+            id: `rep-${Date.now()}`,
+            createdAt: 'Just now'
+        };
+        const currentReplies = items[index].replies || [];
+        items[index].replies = [...currentReplies, newReply];
+        items[index].repliesCount = (items[index].repliesCount || 0) + 1;
+        setStored('discussions', items);
+        return newReply;
     },
     // Activities
     getActivities: () => getStored('activities', INITIAL_ACTIVITIES),
     // Achievements
     getAchievements: () => getStored('achievements', INITIAL_ACHIEVEMENTS),
     // Notes
-    getNotes: () => getStored('notes', INITIAL_NOTES),
+    getNotes: () => {
+        const stored = getStored('notes', INITIAL_NOTES);
+        if (!stored || stored.length < INITIAL_NOTES.length) {
+            setStored('notes', INITIAL_NOTES);
+            return INITIAL_NOTES;
+        }
+        return stored;
+    },
     addNote: (note) => {
         const notes = lmsService.getNotes();
         const newNote = {
@@ -157,6 +236,12 @@ export const lmsService = {
         };
         setStored('notes', [newNote, ...notes]);
         return newNote;
+    },
+    deleteNote: (id) => {
+        const notes = lmsService.getNotes();
+        const filtered = notes.filter(n => n.id !== id);
+        setStored('notes', filtered);
+        return filtered;
     },
     // Reviews
     getReviews: () => getStored('reviews', INITIAL_REVIEWS)

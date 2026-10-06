@@ -134,36 +134,30 @@ export const DEFAULT_CRM_BATCH = {
 // Default Certificates Fallback
 export const DEFAULT_CRM_CERTIFICATES = [
   {
-    id: 2935,
-    certificate_id: 'OM/3/5/32',
-    name: 'Aditya Jadhav',
-    course: 'Masters in Digital Marketing',
-    date: 'March, 2026',
-    rating: 9.4,
+    id: 132929482,
+    certificate_id: '132929482',
+    name: 'Hiteshpuri Goswami',
+    course: 'Diploma in Digital Marketing & Artificial Intelligence',
+    date: 'February 10, 2025',
+    expiryDate: 'February 10, 2026',
+    rating: 9.6,
     grade: 'A+ Distinction',
     issuer: 'Operating Media Institute of Digital Marketing',
     signer: 'Harsh Pareek, Director',
-    bgImage: '/OM Certificate 2026 (1).png',
-    companyName: 'Powered by iBraine Digital LLP',
-    website: 'www.OperatingMedia.com',
     status: 'Verified',
-    verificationUrl: 'https://crm.dmsoi.org/certificate/OM-3-5-32'
   },
   {
-    id: 2929,
-    certificate_id: 'OM/3/5/29',
-    name: 'Aditya Jadhav',
-    course: 'WordPress Web Architecture & SEO Specialization',
-    date: 'February, 2026',
+    id: 132929483,
+    certificate_id: '132929483',
+    name: 'Hiteshpuri Goswami',
+    course: 'Advanced Search Engine Optimization (SEO) Masterclass',
+    date: 'January 15, 2025',
+    expiryDate: 'January 15, 2026',
     rating: 9.8,
-    grade: 'Honors',
+    grade: 'Honors with Distinction',
     issuer: 'Operating Media Institute of Digital Marketing',
     signer: 'Harsh Pareek, Director',
-    bgImage: '/OM Certificate 2026 (1).png',
-    companyName: 'Powered by iBraine Digital LLP',
-    website: 'www.OperatingMedia.com',
     status: 'Verified',
-    verificationUrl: 'https://crm.dmsoi.org/certificate/OM-3-5-29'
   }
 ];
 
@@ -458,45 +452,12 @@ class CrmService {
   /**
    * Fetch verified certificates from CRM
    */
-  async getCertificates(studentName = 'Aditya Jadhav') {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
-
-      const res = await fetch(`${CRM_BASE_URL}/certificates/list/?page=1&size=20`, {
-        headers: { Accept: 'application/json' },
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-
-      if (res.ok) {
-        const json = await res.json();
-        if (json?.results && json.results.length > 0) {
-          const mapped = json.results.map((c) => ({
-            id: c.id,
-            certificate_id: String(c.certificate_id).trim(),
-            name: studentName,
-            course: c.course || 'Masters in Digital Marketing',
-            date: c.date || 'March, 2026',
-            rating: typeof c.rating === 'number' ? c.rating : parseFloat(c.rating) || 9.2,
-            grade: (parseFloat(c.rating) || 9) >= 9 ? 'A+ Distinction' : 'A First Class',
-            issuer: 'Operating Media Institute of Digital Marketing',
-            signer: 'Harsh Pareek, Director',
-            bgImage: '/OM Certificate 2026 (1).png',
-            companyName: 'Powered by iBraine Digital LLP',
-            website: 'www.OperatingMedia.com',
-            status: 'Verified & Issued',
-            verificationUrl: `https://crm.dmsoi.org/certificate/${String(c.certificate_id).trim().replace(/\//g, '-')}`
-          }));
-
-          return mapped.slice(0, 3);
-        }
-      }
-    } catch (err) {
-      console.warn('Failed to fetch certificates from CRM, using fallback', err);
-    }
-
-    return DEFAULT_CRM_CERTIFICATES;
+  async getCertificates(studentName = 'Hiteshpuri Goswami') {
+    // Client-side created certificates matching CERTIFICATE.png specification
+    return DEFAULT_CRM_CERTIFICATES.map((c) => ({
+      ...c,
+      name: studentName || c.name,
+    }));
   }
 
   getAttendanceStanding(pct) {

@@ -56,7 +56,7 @@ export const StudentDashboardHub = ({
                 <div className="w-16 h-16 sm:w-24 sm:h-24 md:w-26 md:h-26 lg:w-28 lg:h-28 xl:w-32 xl:h-32 2xl:w-36 2xl:h-36 rounded-full border-3 2xl:border-4 border-white shadow-md ring-2 ring-blue-100/90 p-1 sm:p-1.5 transition-all">
                   <div className="w-full h-full rounded-full overflow-hidden bg-slate-100">
                     <img
-                      src={currentUser.avatar || profilePic}
+                      src={profilePic}
                       alt={currentUser.name || "Hiteshpuri Goswami"}
                       className="w-full h-full object-cover object-top"
                     />
@@ -101,19 +101,19 @@ export const StudentDashboardHub = ({
             </div>
 
             {/* Quick Actions (Vertical Rounded Icon Buttons on screens <= 1023px) */}
-            <div className="flex lg:hidden flex-col items-center gap-1.5 sm:gap-2 shrink-0 bg-white/85 backdrop-blur-xs p-1.5 sm:p-2 rounded-2xl border border-blue-100/80 shadow-xs">
+            <div className="flex lg:hidden flex-col items-center gap-1.5 sm:gap-2 shrink-0 bg-white/90 backdrop-blur-xs p-1.5 sm:p-2 rounded-2xl border border-blue-100/80 shadow-xs">
               <button
                 type="button"
-                onClick={() => navigate("/courses")}
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white hover:bg-blue-50 text-[#2563eb] border border-blue-100 shadow-2xs flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                title="Browse Courses"
+                onClick={() => navigate("/enrolled-courses")}
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-blue-50 text-[#2563eb] border border-blue-200 shadow-2xs flex items-center justify-center transition-all hover:bg-blue-100 hover:scale-105 active:scale-95 cursor-pointer"
+                title="Enrolled Courses"
               >
-                <BookOpen size={16} />
+                <GraduationCap size={16} />
               </button>
               <button
                 type="button"
                 onClick={() => navigate("/my-quizzes")}
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white hover:bg-purple-50 text-purple-600 border border-purple-100 shadow-2xs flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-purple-50 text-purple-600 border border-purple-200 shadow-2xs flex items-center justify-center transition-all hover:bg-purple-100 hover:scale-105 active:scale-95 cursor-pointer"
                 title="My Quizzes"
               >
                 <CheckSquare size={16} />
@@ -121,7 +121,7 @@ export const StudentDashboardHub = ({
               <button
                 type="button"
                 onClick={() => navigate("/my-assignments")}
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white hover:bg-emerald-50 text-emerald-600 border border-emerald-100 shadow-2xs flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 shadow-2xs flex items-center justify-center transition-all hover:bg-emerald-100 hover:scale-105 active:scale-95 cursor-pointer"
                 title="Assignments"
               >
                 <FileText size={16} />
@@ -142,27 +142,27 @@ export const StudentDashboardHub = ({
             </h3>
           </div>
 
-          {/* Actions: 3 clean responsive items */}
+          {/* Actions: 3 distinct styled responsive items matching actual UI */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full flex-1">
-            {/* Action 1: Browse Courses */}
+            {/* Action 1: Enrolled Courses */}
             <div
-              onClick={() => navigate("/courses")}
-              className="bg-[#f8fafd] hover:bg-blue-50/50 border border-slate-100 hover:border-blue-200/80 rounded-xl p-3 transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer group flex flex-col justify-between gap-2 min-w-0"
+              onClick={() => navigate("/enrolled-courses")}
+              className="bg-blue-50/60 hover:bg-blue-100/60 border border-blue-200/90 hover:border-blue-300 rounded-xl p-3 transition-all duration-200 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 cursor-pointer group flex flex-col justify-between gap-2 min-w-0"
             >
               <div className="flex items-center justify-between">
-                <div className="w-8 h-8 rounded-lg bg-blue-100/70 text-[#2563eb] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <BookOpen size={16} />
+                <div className="w-8 h-8 rounded-lg bg-blue-100 text-[#2563eb] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
+                  <GraduationCap size={16} />
                 </div>
-                <div className="w-5 h-5 rounded-full bg-white border border-slate-100 text-slate-400 group-hover:bg-blue-50 group-hover:text-[#2563eb] flex items-center justify-center transition-all shrink-0">
+                <div className="w-5 h-5 rounded-full bg-blue-100/80 border border-blue-200 text-[#2563eb] group-hover:bg-[#2563eb] group-hover:text-white group-hover:border-[#2563eb] flex items-center justify-center transition-all shrink-0">
                   <ArrowRight size={11} strokeWidth={2.5} />
                 </div>
               </div>
               <div className="min-w-0">
-                <h4 className="font-bold text-xs 2xl:text-sm text-slate-900 group-hover:text-blue-600 transition-colors truncate">
-                  Browse Courses
+                <h4 className="font-bold text-xs 2xl:text-sm text-blue-700 group-hover:text-blue-800 transition-colors truncate">
+                  Enrolled Courses
                 </h4>
-                <p className="text-[10.5px] text-slate-400 font-medium truncate mt-0.5">
-                  Explore new courses
+                <p className="text-[10.5px] text-blue-600/75 font-medium truncate mt-0.5">
+                  Resume active tracks
                 </p>
               </div>
             </div>
@@ -170,21 +170,21 @@ export const StudentDashboardHub = ({
             {/* Action 2: My Quizzes */}
             <div
               onClick={() => navigate("/my-quizzes")}
-              className="bg-[#f8fafd] hover:bg-purple-50/50 border border-slate-100 hover:border-purple-200/80 rounded-xl p-3 transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer group flex flex-col justify-between gap-2 min-w-0"
+              className="bg-purple-50/60 hover:bg-purple-100/60 border border-purple-200/90 hover:border-purple-300 rounded-xl p-3 transition-all duration-200 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 cursor-pointer group flex flex-col justify-between gap-2 min-w-0"
             >
               <div className="flex items-center justify-between">
-                <div className="w-8 h-8 rounded-lg bg-purple-100/70 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
                   <CheckSquare size={16} />
                 </div>
-                <div className="w-5 h-5 rounded-full bg-white border border-slate-100 text-slate-400 group-hover:bg-purple-50 group-hover:text-purple-600 flex items-center justify-center transition-all shrink-0">
+                <div className="w-5 h-5 rounded-full bg-purple-100/80 border border-purple-200 text-purple-600 group-hover:bg-purple-600 group-hover:text-white group-hover:border-purple-600 flex items-center justify-center transition-all shrink-0">
                   <ArrowRight size={11} strokeWidth={2.5} />
                 </div>
               </div>
               <div className="min-w-0">
-                <h4 className="font-bold text-xs 2xl:text-sm text-slate-900 group-hover:text-purple-600 transition-colors truncate">
+                <h4 className="font-bold text-xs 2xl:text-sm text-purple-700 group-hover:text-purple-800 transition-colors truncate">
                   My Quizzes
                 </h4>
-                <p className="text-[10.5px] text-slate-400 font-medium truncate mt-0.5">
+                <p className="text-[10.5px] text-purple-600/75 font-medium truncate mt-0.5">
                   Test your knowledge
                 </p>
               </div>
@@ -193,21 +193,21 @@ export const StudentDashboardHub = ({
             {/* Action 3: Assignments */}
             <div
               onClick={() => navigate("/my-assignments")}
-              className="bg-[#f8fafd] hover:bg-emerald-50/50 border border-slate-100 hover:border-emerald-200/80 rounded-xl p-3 transition-all duration-200 shadow-2xs hover:shadow-xs cursor-pointer group flex flex-col justify-between gap-2 min-w-0"
+              className="bg-emerald-50/60 hover:bg-emerald-100/60 border border-emerald-200/90 hover:border-emerald-300 rounded-xl p-3 transition-all duration-200 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 cursor-pointer group flex flex-col justify-between gap-2 min-w-0"
             >
               <div className="flex items-center justify-between">
-                <div className="w-8 h-8 rounded-lg bg-emerald-100/70 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
                   <FileText size={16} />
                 </div>
-                <div className="w-5 h-5 rounded-full bg-white border border-slate-100 text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-600 flex items-center justify-center transition-all shrink-0">
+                <div className="w-5 h-5 rounded-full bg-emerald-100/80 border border-emerald-200 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600 flex items-center justify-center transition-all shrink-0">
                   <ArrowRight size={11} strokeWidth={2.5} />
                 </div>
               </div>
               <div className="min-w-0">
-                <h4 className="font-bold text-xs 2xl:text-sm text-slate-900 group-hover:text-emerald-700 transition-colors truncate">
+                <h4 className="font-bold text-xs 2xl:text-sm text-emerald-700 group-hover:text-emerald-800 transition-colors truncate">
                   Assignments
                 </h4>
-                <p className="text-[10.5px] text-slate-400 font-medium truncate mt-0.5">
+                <p className="text-[10.5px] text-emerald-600/75 font-medium truncate mt-0.5">
                   Submit & track
                 </p>
               </div>
@@ -218,20 +218,20 @@ export const StudentDashboardHub = ({
 
       {/* 2. STAT CARDS: 2x2 THROUGHOUT on mobile & tablet, 4 in a row on xl: */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4 2xl:gap-5 3xl:gap-6">
-        {/* Card 1: OVERALL PROGRESS */}
+        {/* Card 1: OVERALL PROGRESS (Blue) */}
         <div
           onClick={() => navigate("/enrolled-courses")}
-          className="bg-gradient-to-br from-white to-[#f5f9ff] border border-[#dbeafe] p-3 sm:p-4 lg:p-5 2xl:p-5.5 3xl:p-6 shadow-[0_2px_12px_rgba(37,99,235,0.03)] hover:shadow-xs transition-shadow flex items-start justify-between min-w-0 cursor-pointer group"
+          className="bg-gradient-to-br from-blue-50/95 via-[#edf5ff] to-[#dbeafe]/70 border border-blue-200/90 hover:border-blue-300 rounded-2xl p-3 sm:p-4 lg:p-5 2xl:p-5.5 3xl:p-6 shadow-[0_2px_14px_rgba(37,99,235,0.06)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex items-start justify-between min-w-0 cursor-pointer group"
         >
           <div className="flex items-center space-x-2.5 sm:space-x-3.5 2xl:space-x-4 min-w-0">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-13 2xl:h-13 3xl:w-14 3xl:h-14 rounded-full bg-[#eff6ff] text-[#2563eb] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-13 2xl:h-13 3xl:w-14 3xl:h-14 rounded-full bg-blue-100 text-[#2563eb] border border-blue-200/80 shadow-2xs flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <div className="relative w-6.5 h-6.5 sm:w-8 sm:h-8 2xl:w-9 2xl:h-9 flex items-center justify-center">
                 <svg
                   className="w-6.5 h-6.5 sm:w-8 sm:h-8 2xl:w-9 2xl:h-9 -rotate-90"
                   viewBox="0 0 36 36"
                 >
                   <path
-                    className="text-blue-100"
+                    className="text-blue-200/80"
                     strokeWidth="3.5"
                     stroke="currentColor"
                     fill="none"
@@ -252,13 +252,13 @@ export const StudentDashboardHub = ({
             </div>
 
             <div className="min-w-0">
-              <span className="text-[9.5px] sm:text-[11px] 2xl:text-xs 3xl:text-[13px] font-bold uppercase tracking-wider text-[#3b82f6] block leading-tight">
+              <span className="text-[9.5px] sm:text-[11px] 2xl:text-xs 3xl:text-[13px] font-extrabold uppercase tracking-wider text-[#2563eb] block leading-tight">
                 OVERALL PROGRESS
               </span>
-              <h3 className="text-xl sm:text-2xl 2xl:text-[32px] 3xl:text-[36px] font-extrabold text-[#010f58] mt-0.5 sm:mt-1 leading-none tracking-tight">
+              <h3 className="text-xl sm:text-2xl 2xl:text-[32px] 3xl:text-[36px] font-black text-[#0c1e3d] mt-0.5 sm:mt-1 leading-none tracking-tight">
                 65%
               </h3>
-              <p className="text-[10px] sm:text-[11.5px] 2xl:text-xs 3xl:text-sm text-slate-500 font-medium mt-0.5 sm:mt-1 truncate">
+              <p className="text-[10px] sm:text-[11.5px] 2xl:text-xs 3xl:text-sm text-blue-900/70 font-semibold mt-0.5 sm:mt-1 truncate">
                 Keep going! You're doing great!
               </p>
             </div>
@@ -270,7 +270,7 @@ export const StudentDashboardHub = ({
               e.stopPropagation();
               navigate("/enrolled-courses");
             }}
-            className="hidden md:flex w-6.5 h-6.5 2xl:w-7.5 2xl:h-7.5 3xl:w-8.5 3xl:h-8.5 rounded-full bg-[#eff6ff] hover:bg-blue-100 text-[#3b82f6] items-center justify-center transition-colors cursor-pointer shrink-0 self-start mt-0.5 ml-2"
+            className="hidden md:flex w-6.5 h-6.5 2xl:w-7.5 2xl:h-7.5 3xl:w-8.5 3xl:h-8.5 rounded-full bg-blue-100/90 group-hover:bg-[#2563eb] text-[#2563eb] group-hover:text-white border border-blue-200 items-center justify-center transition-all cursor-pointer shrink-0 self-start mt-0.5 ml-2 shadow-2xs"
             title="View Details"
           >
             <ChevronRight
@@ -281,13 +281,13 @@ export const StudentDashboardHub = ({
           </button>
         </div>
 
-        {/* Card 2: COURSES */}
+        {/* Card 2: COURSES (Teal/Emerald) */}
         <div
           onClick={() => navigate("/enrolled-courses")}
-          className="bg-gradient-to-br from-white to-[#f2faf7] border border-[#ccfbf1] p-3 sm:p-4 lg:p-5 2xl:p-5.5 3xl:p-6 shadow-[0_2px_12px_rgba(13,148,136,0.03)] hover:shadow-xs transition-shadow flex items-start justify-between min-w-0 cursor-pointer group"
+          className="bg-gradient-to-br from-teal-50/95 via-[#e9faf5] to-[#ccfbf1]/70 border border-teal-200/90 hover:border-teal-300 rounded-2xl p-3 sm:p-4 lg:p-5 2xl:p-5.5 3xl:p-6 shadow-[0_2px_14px_rgba(13,148,136,0.06)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex items-start justify-between min-w-0 cursor-pointer group"
         >
           <div className="flex items-center space-x-2.5 sm:space-x-3.5 2xl:space-x-4 min-w-0">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-13 2xl:h-13 3xl:w-14 3xl:h-14 rounded-full bg-[#e6fbf4] text-[#0d9488] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-13 2xl:h-13 3xl:w-14 3xl:h-14 rounded-full bg-teal-100 text-[#0d9488] border border-teal-200/80 shadow-2xs flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <BookOpen size={18} className="sm:hidden" strokeWidth={2} />
               <BookOpen
                 size={21}
@@ -297,13 +297,13 @@ export const StudentDashboardHub = ({
             </div>
 
             <div className="min-w-0">
-              <span className="text-[9.5px] sm:text-[11px] 2xl:text-xs 3xl:text-[13px] font-bold uppercase tracking-wider text-[#0d9488] block leading-tight">
+              <span className="text-[9.5px] sm:text-[11px] 2xl:text-xs 3xl:text-[13px] font-extrabold uppercase tracking-wider text-[#0d9488] block leading-tight">
                 COURSES
               </span>
-              <h3 className="text-xl sm:text-2xl 2xl:text-[32px] 3xl:text-[36px] font-extrabold text-[#010f58] mt-0.5 sm:mt-1 leading-none tracking-tight">
+              <h3 className="text-xl sm:text-2xl 2xl:text-[32px] 3xl:text-[36px] font-black text-[#042f2e] mt-0.5 sm:mt-1 leading-none tracking-tight">
                 4
               </h3>
-              <p className="text-[10px] sm:text-[11.5px] 2xl:text-xs 3xl:text-sm text-slate-500 font-medium mt-0.5 sm:mt-1 truncate">
+              <p className="text-[10px] sm:text-[11.5px] 2xl:text-xs 3xl:text-sm text-teal-900/70 font-semibold mt-0.5 sm:mt-1 truncate">
                 Enrolled Courses
               </p>
             </div>
@@ -315,7 +315,7 @@ export const StudentDashboardHub = ({
               e.stopPropagation();
               navigate("/enrolled-courses");
             }}
-            className="hidden md:flex w-6.5 h-6.5 2xl:w-7.5 2xl:h-7.5 3xl:w-8.5 3xl:h-8.5 rounded-full bg-[#e6fbf4] hover:bg-teal-100 text-[#0d9488] items-center justify-center transition-colors cursor-pointer shrink-0 self-start mt-0.5 ml-2"
+            className="hidden md:flex w-6.5 h-6.5 2xl:w-7.5 2xl:h-7.5 3xl:w-8.5 3xl:h-8.5 rounded-full bg-teal-100/90 group-hover:bg-[#0d9488] text-[#0d9488] group-hover:text-white border border-teal-200 items-center justify-center transition-all cursor-pointer shrink-0 self-start mt-0.5 ml-2 shadow-2xs"
             title="View Courses"
           >
             <ChevronRight
@@ -326,13 +326,13 @@ export const StudentDashboardHub = ({
           </button>
         </div>
 
-        {/* Card 3: QUIZ SCORE */}
+        {/* Card 3: QUIZ SCORE (Purple) */}
         <div
           onClick={() => navigate("/my-quizzes")}
-          className="bg-gradient-to-br from-white to-[#faf8ff] border border-[#ede9fe] p-3 sm:p-4 lg:p-5 2xl:p-5.5 3xl:p-6 shadow-[0_2px_12px_rgba(124,58,237,0.03)] hover:shadow-xs transition-shadow flex items-start justify-between min-w-0 cursor-pointer group"
+          className="bg-gradient-to-br from-purple-50/95 via-[#f5efff] to-[#ede9fe]/70 border border-purple-200/90 hover:border-purple-300 rounded-2xl p-3 sm:p-4 lg:p-5 2xl:p-5.5 3xl:p-6 shadow-[0_2px_14px_rgba(124,58,237,0.06)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex items-start justify-between min-w-0 cursor-pointer group"
         >
           <div className="flex items-center space-x-2.5 sm:space-x-3.5 2xl:space-x-4 min-w-0">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-13 2xl:h-13 3xl:w-14 3xl:h-14 rounded-full bg-[#f5f3ff] text-[#7c3aed] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-13 2xl:h-13 3xl:w-14 3xl:h-14 rounded-full bg-purple-100 text-[#7c3aed] border border-purple-200/80 shadow-2xs flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <Trophy size={18} className="sm:hidden" strokeWidth={2} />
               <Trophy
                 size={21}
@@ -342,13 +342,13 @@ export const StudentDashboardHub = ({
             </div>
 
             <div className="min-w-0">
-              <span className="text-[9.5px] sm:text-[11px] 2xl:text-xs 3xl:text-[13px] font-bold uppercase tracking-wider text-[#7c3aed] block leading-tight">
+              <span className="text-[9.5px] sm:text-[11px] 2xl:text-xs 3xl:text-[13px] font-extrabold uppercase tracking-wider text-[#7c3aed] block leading-tight">
                 QUIZ SCORE
               </span>
-              <h3 className="text-xl sm:text-2xl 2xl:text-[32px] 3xl:text-[36px] font-extrabold text-[#010f58] mt-0.5 sm:mt-1 leading-none tracking-tight">
+              <h3 className="text-xl sm:text-2xl 2xl:text-[32px] 3xl:text-[36px] font-black text-[#2e1065] mt-0.5 sm:mt-1 leading-none tracking-tight">
                 88.5%
               </h3>
-              <p className="text-[10px] sm:text-[11.5px] 2xl:text-xs 3xl:text-sm text-slate-500 font-medium mt-0.5 sm:mt-1 truncate">
+              <p className="text-[10px] sm:text-[11.5px] 2xl:text-xs 3xl:text-sm text-purple-900/70 font-semibold mt-0.5 sm:mt-1 truncate">
                 Average Score
               </p>
             </div>
@@ -360,7 +360,7 @@ export const StudentDashboardHub = ({
               e.stopPropagation();
               navigate("/my-quizzes");
             }}
-            className="hidden md:flex w-6.5 h-6.5 2xl:w-7.5 2xl:h-7.5 3xl:w-8.5 3xl:h-8.5 rounded-full bg-[#f5f3ff] hover:bg-purple-100 text-[#7c3aed] items-center justify-center transition-colors cursor-pointer shrink-0 self-start mt-0.5 ml-2"
+            className="hidden md:flex w-6.5 h-6.5 2xl:w-7.5 2xl:h-7.5 3xl:w-8.5 3xl:h-8.5 rounded-full bg-purple-100/90 group-hover:bg-[#7c3aed] text-[#7c3aed] group-hover:text-white border border-purple-200 items-center justify-center transition-all cursor-pointer shrink-0 self-start mt-0.5 ml-2 shadow-2xs"
             title="View Quizzes"
           >
             <ChevronRight
@@ -371,13 +371,13 @@ export const StudentDashboardHub = ({
           </button>
         </div>
 
-        {/* Card 4: UPCOMING */}
+        {/* Card 4: UPCOMING (Amber / Orange) */}
         <div
           onClick={() => navigate("/schedule")}
-          className="bg-gradient-to-br from-white to-[#fff8f3] border border-[#fed7aa] p-3 sm:p-4 lg:p-5 2xl:p-5.5 3xl:p-6 shadow-[0_2px_12px_rgba(234,88,12,0.03)] hover:shadow-xs transition-shadow flex items-start justify-between min-w-0 cursor-pointer group"
+          className="bg-gradient-to-br from-amber-50/95 via-[#fff3e6] to-[#fed7aa]/70 border border-amber-200/90 hover:border-amber-300 rounded-2xl p-3 sm:p-4 lg:p-5 2xl:p-5.5 3xl:p-6 shadow-[0_2px_14px_rgba(234,88,12,0.06)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex items-start justify-between min-w-0 cursor-pointer group"
         >
           <div className="flex items-center space-x-2.5 sm:space-x-3.5 2xl:space-x-4 min-w-0">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-13 2xl:h-13 3xl:w-14 3xl:h-14 rounded-full bg-[#fff7ed] text-[#ea580c] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-13 2xl:h-13 3xl:w-14 3xl:h-14 rounded-full bg-amber-100 text-[#ea580c] border border-amber-200/80 shadow-2xs flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               <Calendar size={18} className="sm:hidden" strokeWidth={2} />
               <Calendar
                 size={21}
@@ -387,13 +387,13 @@ export const StudentDashboardHub = ({
             </div>
 
             <div className="min-w-0">
-              <span className="text-[9.5px] sm:text-[11px] 2xl:text-xs 3xl:text-[13px] font-bold uppercase tracking-wider text-[#ea580c] block leading-tight">
+              <span className="text-[9.5px] sm:text-[11px] 2xl:text-xs 3xl:text-[13px] font-extrabold uppercase tracking-wider text-[#ea580c] block leading-tight">
                 UPCOMING
               </span>
-              <h3 className="text-xl sm:text-2xl 2xl:text-[32px] 3xl:text-[36px] font-extrabold text-[#010f58] mt-0.5 sm:mt-1 leading-none tracking-tight">
+              <h3 className="text-xl sm:text-2xl 2xl:text-[32px] 3xl:text-[36px] font-black text-[#431407] mt-0.5 sm:mt-1 leading-none tracking-tight">
                 2
               </h3>
-              <p className="text-[10px] sm:text-[11.5px] 2xl:text-xs 3xl:text-sm text-slate-500 font-medium mt-0.5 sm:mt-1 truncate">
+              <p className="text-[10px] sm:text-[11.5px] 2xl:text-xs 3xl:text-sm text-amber-900/70 font-semibold mt-0.5 sm:mt-1 truncate">
                 Today & Tomorrow
               </p>
             </div>
@@ -405,7 +405,7 @@ export const StudentDashboardHub = ({
               e.stopPropagation();
               navigate("/schedule");
             }}
-            className="hidden md:flex w-6.5 h-6.5 2xl:w-7.5 2xl:h-7.5 3xl:w-8.5 3xl:h-8.5 rounded-full bg-[#fff7ed] hover:bg-orange-100 text-[#ea580c] items-center justify-center transition-colors cursor-pointer shrink-0 self-start mt-0.5 ml-2"
+            className="hidden md:flex w-6.5 h-6.5 2xl:w-7.5 2xl:h-7.5 3xl:w-8.5 3xl:h-8.5 rounded-full bg-amber-100/90 group-hover:bg-[#ea580c] text-[#ea580c] group-hover:text-white border border-amber-200 items-center justify-center transition-all cursor-pointer shrink-0 self-start mt-0.5 ml-2 shadow-2xs"
             title="View Schedule"
           >
             <ChevronRight
@@ -418,7 +418,7 @@ export const StudentDashboardHub = ({
       </div>
 
       {/* 2B. PHOTO & VIDEO LIBRARY (MATCHING PHOTO-LIB.png) */}
-      <PhotoVideoLibraryHub />
+      {/* <PhotoVideoLibraryHub /> */}
 
       {/* 3. TWO-COLUMN MAIN WORKSPACE          */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">

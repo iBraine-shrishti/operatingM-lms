@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Image as ImageIcon, PlaySquare, ArrowRight, ChevronLeft, ChevronRight, 
-  Film, Play, X, ExternalLink 
+  Film, Maximize2 
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { galleryPhotos, galleryVideos } from '../../data/galleryData';
@@ -9,67 +9,52 @@ import { PhotoLightboxModal } from '../common/PhotoLightboxModal';
 import { VideoPlayerModal } from '../common/VideoPlayerModal';
 import photoBg from '../../assets/photo-bg.png';
 import videoBg from '../../assets/video-bg.png';
+import imageGall1 from '../../assets/image-gall1.webp';
 
 export const PhotoVideoLibraryHub = () => {
   const navigate = useNavigate();
 
-  // Photo Carousel State
-  const [currentPhotoIdx, setCurrentPhotoIdx] = useState(0);
+  // Photo Carousel State (Infinite loop on imageGall1)
+  const [photoCycleKey, setPhotoCycleKey] = useState(0);
   const [isPhotoHovered, setIsPhotoHovered] = useState(false);
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
 
-  // Video State
-  const [currentVideoIdx, setCurrentVideoIdx] = useState(0);
-  const [isVideoHovered, setIsVideoHovered] = useState(false);
+  // Video State (Infinite loop on YouTube Short MVpDf5bariI)
+  const [videoCycleKey, setVideoCycleKey] = useState(0);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-  const [isInlineVideoPlaying, setIsInlineVideoPlaying] = useState(false);
 
   const totalPhotosCount = 150; // Visual badge matching samplw-ui.png (1 / 150)
 
-  // Infinite Loop Auto-rotation for Photos (4s cycle)
+  // Subtle infinite cycle effect for photo (auto loops every 4s unless hovered)
   useEffect(() => {
     if (isPhotoHovered || isPhotoModalOpen) return;
     const photoTimer = setInterval(() => {
-      setCurrentPhotoIdx((prev) => (prev + 1) % galleryPhotos.length);
-    }, 4000);
+      setPhotoCycleKey((prev) => prev + 1);
+    }, 4500);
     return () => clearInterval(photoTimer);
   }, [isPhotoHovered, isPhotoModalOpen]);
 
-  // Infinite Loop Auto-rotation for Videos (5.5s cycle, only when not playing inline)
-  useEffect(() => {
-    if (isVideoHovered || isVideoModalOpen || isInlineVideoPlaying) return;
-    const videoTimer = setInterval(() => {
-      setCurrentVideoIdx((prev) => (prev + 1) % galleryVideos.length);
-    }, 5500);
-    return () => clearInterval(videoTimer);
-  }, [isVideoHovered, isVideoModalOpen, isInlineVideoPlaying]);
-
-  // Photo Navigation (Infinite Loop)
+  // Infinite loop navigation for photos
   const prevPhoto = (e) => {
     e?.stopPropagation();
-    setCurrentPhotoIdx((prev) => (prev - 1 + galleryPhotos.length) % galleryPhotos.length);
+    setPhotoCycleKey((prev) => prev - 1);
   };
 
   const nextPhoto = (e) => {
     e?.stopPropagation();
-    setCurrentPhotoIdx((prev) => (prev + 1) % galleryPhotos.length);
+    setPhotoCycleKey((prev) => prev + 1);
   };
 
-  // Video Navigation (Infinite Loop)
+  // Infinite loop navigation for video (re-triggers loop)
   const prevVideo = (e) => {
     e?.stopPropagation();
-    setIsInlineVideoPlaying(false);
-    setCurrentVideoIdx((prev) => (prev - 1 + galleryVideos.length) % galleryVideos.length);
+    setVideoCycleKey((prev) => prev - 1);
   };
 
   const nextVideo = (e) => {
     e?.stopPropagation();
-    setIsInlineVideoPlaying(false);
-    setCurrentVideoIdx((prev) => (prev + 1) % galleryVideos.length);
+    setVideoCycleKey((prev) => prev + 1);
   };
-
-  const currentPhoto = galleryPhotos[currentPhotoIdx] || galleryPhotos[0];
-  const currentVideo = galleryVideos[currentVideoIdx] || galleryVideos[0];
 
   return (
     <>
@@ -116,7 +101,7 @@ export const PhotoVideoLibraryHub = () => {
               type="button"
               onClick={prevPhoto}
               className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-[#2563eb] shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100"
-              title="Previous Photo"
+              title="Previous Photo (Infinite Loop)"
             >
               <ChevronLeft size={16} strokeWidth={2.5} />
             </button>
@@ -124,20 +109,20 @@ export const PhotoVideoLibraryHub = () => {
             {/* Center Vertical Social Card (matching samplw-ui.png) */}
             <div
               onClick={() => setIsPhotoModalOpen(true)}
-              className="relative w-[155px] sm:w-[185px] md:w-[205px] h-[215px] sm:h-[250px] md:h-[275px] rounded-2xl overflow-hidden border-[3.5px] border-white ring-1 ring-blue-100/70 shadow-[0_16px_40px_rgba(37,99,235,0.18)] cursor-pointer transform -rotate-2 hover:rotate-0 transition-all duration-300 z-10 flex items-center justify-center bg-slate-900"
+              className="relative w-[155px] sm:w-[185px] md:w-[205px] h-[215px] sm:h-[250px] md:h-[275px] rounded-2xl overflow-hidden border-[3.5px] border-white ring-1 ring-blue-100/70 shadow-[0_16px_40px_rgba(37,99,235,0.18)] cursor-pointer transform -rotate-2 hover:rotate-0 transition-all duration-300 z-10 flex items-center justify-center bg-slate-900 group"
               title="Click to view full photo"
             >
               <img
-                src={currentPhoto.url}
-                alt={currentPhoto.title}
-                key={currentPhoto.id}
-                className="w-full h-full object-cover object-center transition-all duration-500 animate-in fade-in"
+                key={photoCycleKey}
+                src={imageGall1}
+                alt="Operating Media Campus & Certification"
+                className="w-full h-full object-cover object-center transition-all duration-500 group-hover:scale-105 animate-in fade-in"
               />
 
-              {/* Bottom-right Counter Badge: [Film/Clapperboard] 1 / 150 */}
+              {/* Bottom-right Counter Badge: [Film] 1 / 150 */}
               <div className="absolute bottom-2.5 right-2.5 bg-black/75 backdrop-blur-md text-white text-[10.5px] sm:text-[11px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1.5 shadow-md border border-white/10 z-20 pointer-events-none">
                 <Film size={11} strokeWidth={2.2} />
-                <span>{currentPhotoIdx + 1} / {totalPhotosCount}</span>
+                <span>1 / {totalPhotosCount}</span>
               </div>
             </div>
 
@@ -146,7 +131,7 @@ export const PhotoVideoLibraryHub = () => {
               type="button"
               onClick={nextPhoto}
               className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-[#2563eb] shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100"
-              title="Next Photo"
+              title="Next Photo (Infinite Loop)"
             >
               <ChevronRight size={16} strokeWidth={2.5} />
             </button>
@@ -187,72 +172,38 @@ export const PhotoVideoLibraryHub = () => {
           <div
             className="relative rounded-2xl overflow-hidden bg-cover bg-center h-64 sm:h-72 lg:h-80 flex items-center justify-center p-4 select-none shadow-xs border border-blue-50/80"
             style={{ backgroundImage: `url(${videoBg})` }}
-            onMouseEnter={() => setIsVideoHovered(true)}
-            onMouseLeave={() => setIsVideoHovered(false)}
           >
             {/* Left Circular Navigation Button (Infinite loop) */}
             <button
               type="button"
               onClick={prevVideo}
               className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-[#2563eb] shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100"
-              title="Previous Video"
+              title="Previous Video (Infinite Loop)"
             >
               <ChevronLeft size={16} strokeWidth={2.5} />
             </button>
 
-            {/* Center Vertical Social Media Video Card (matching samplw-ui.png) */}
-            <div className="relative w-[155px] sm:w-[185px] md:w-[205px] h-[215px] sm:h-[250px] md:h-[275px] rounded-2xl overflow-hidden border-[3.5px] border-white ring-1 ring-blue-100/70 shadow-[0_16px_40px_rgba(37,99,235,0.18)] z-10 flex items-center justify-center bg-slate-950 group">
-              {isInlineVideoPlaying ? (
-                <div className="relative w-full h-full bg-black">
-                  <iframe
-                    src="https://www.youtube.com/embed/MVpDf5bariI?autoplay=1&enablejsapi=1&rel=0"
-                    title="Operating Media YouTube Short"
-                    className="w-full h-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsInlineVideoPlaying(false);
-                    }}
-                    className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/80 text-white flex items-center justify-center hover:bg-red-600 transition z-30"
-                    title="Close Video"
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-              ) : (
-                <div
-                  onClick={() => setIsInlineVideoPlaying(true)}
-                  className="w-full h-full relative cursor-pointer flex items-center justify-center"
-                  title="Click to play YouTube Short"
-                >
-                  {/* Vertical Video Thumbnail */}
-                  <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&auto=format&fit=crop&q=80"
-                    alt={currentVideo.title}
-                    key={currentVideo.id}
-                    className="w-full h-full object-cover object-top filter brightness-95 group-hover:scale-105 transition-transform duration-700 animate-in fade-in"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 pointer-events-none" />
+            {/* Center Vertical Social Media Video Card (Infinite Loop YouTube Short MVpDf5bariI) */}
+            <div className="relative w-[155px] sm:w-[185px] md:w-[205px] h-[215px] sm:h-[250px] md:h-[275px] rounded-2xl overflow-hidden border-[3.5px] border-white ring-1 ring-blue-100/70 shadow-[0_16px_40px_rgba(37,99,235,0.18)] z-10 flex items-center justify-center bg-black group">
+              {/* YouTube Short Player Embed looping infinitely */}
+              <iframe
+                key={videoCycleKey}
+                src="https://www.youtube.com/embed/MVpDf5bariI?autoplay=1&mute=1&loop=1&playlist=MVpDf5bariI&controls=1&playsinline=1&rel=0&modestbranding=1"
+                title="Operating Media YouTube Short"
+                className="w-full h-full border-0 object-cover"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
 
-                  {/* Center Circular Play Button (matching samplw-ui.png) */}
-                  <div
-                    className="w-12 h-12 rounded-full bg-slate-900/75 hover:bg-[#2563eb] border border-white/20 text-white flex items-center justify-center shadow-xl transition-all duration-200 transform group-hover:scale-115 cursor-pointer z-20"
-                    title="Play Video"
-                  >
-                    <Play size={18} className="fill-white translate-x-0.5" />
-                  </div>
-
-                  {/* Bottom-right Duration Badge: [Film] 08:24 */}
-                  <div className="absolute bottom-2.5 right-2.5 bg-black/75 backdrop-blur-md text-white text-[10.5px] sm:text-[11px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1.5 shadow-md border border-white/10 z-20 pointer-events-none">
-                    <Film size={11} strokeWidth={2.2} />
-                    <span>08:24</span>
-                  </div>
-                </div>
-              )}
+              {/* Expand Fullscreen Modal Button */}
+              <button
+                type="button"
+                onClick={() => setIsVideoModalOpen(true)}
+                className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center shadow-md z-20 cursor-pointer transition-transform hover:scale-110 active:scale-95"
+                title="Open Video Modal"
+              >
+                <Maximize2 size={13} />
+              </button>
             </div>
 
             {/* Right Circular Navigation Button (Infinite loop) */}
@@ -260,7 +211,7 @@ export const PhotoVideoLibraryHub = () => {
               type="button"
               onClick={nextVideo}
               className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-[#2563eb] shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100"
-              title="Next Video"
+              title="Next Video (Infinite Loop)"
             >
               <ChevronRight size={16} strokeWidth={2.5} />
             </button>
@@ -273,16 +224,16 @@ export const PhotoVideoLibraryHub = () => {
         isOpen={isPhotoModalOpen}
         onClose={() => setIsPhotoModalOpen(false)}
         photos={galleryPhotos}
-        currentIndex={currentPhotoIdx}
-        onIndexChange={setCurrentPhotoIdx}
+        currentIndex={0}
+        onIndexChange={() => {}}
       />
 
       <VideoPlayerModal
         isOpen={isVideoModalOpen}
         onClose={() => setIsVideoModalOpen(false)}
         videos={galleryVideos}
-        currentIndex={currentVideoIdx}
-        onIndexChange={setCurrentVideoIdx}
+        currentIndex={0}
+        onIndexChange={() => {}}
       />
     </>
   );
