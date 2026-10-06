@@ -17,6 +17,10 @@ import {
   FileText,
   Check,
   Trophy,
+  Bell,
+  AlertTriangle,
+  AlertCircle,
+  Flame,
 } from "lucide-react";
 import dashboardHeaderBg from "../../assets/header-bg/dashboard-header.png";
 // import dashboardHatImg from "../../assets/header-bg/dashboard-hat.png";
@@ -36,6 +40,93 @@ export const StudentDashboardHub = ({
   onUpdateCurrentUser,
 }) => {
   const navigate = useNavigate();
+  const [notifTab, setNotifTab] = useState("all");
+
+  // Notifications & Deadlines Alert List
+  // Due Date Business Logic:
+  // - 0 to 2 days left (or due today): RED color throughout (Critical urgency)
+  // - 3 to 5 days left: YELLOW / Amber color for 5 (Warning)
+  // - 6 to 7 days left: Soft Yellow/Notice (7 days advance notice)
+  const NOTIFICATIONS_LIST = [
+    {
+      id: "notif-1",
+      type: "assignment",
+      category: "today",
+      title: "Affiliate Marketing Campaign Strategy",
+      course: "Advanced Topics • Module 4",
+      dueDate: "Today • 11:59 PM",
+      daysLeft: 0,
+      status: "pending",
+      badgeText: "Due Today",
+      severity: "critical", // RED
+      link: "/my-assignments",
+      btnText: "Submit Now",
+    },
+    {
+      id: "notif-2",
+      type: "assignment",
+      category: "pending",
+      title: "Influencer Outreach & Rate Card Proposal",
+      course: "Advanced Topics • Influencer Track",
+      dueDate: "In 2 days • Oct 8, 2026",
+      daysLeft: 2,
+      status: "pending",
+      badgeText: "2 Days Left",
+      severity: "urgent", // RED
+      link: "/my-assignments",
+      btnText: "Submit Work",
+    },
+    {
+      id: "notif-3",
+      type: "assignment",
+      category: "pending",
+      title: "Mobile Marketing & App Store Optimization Audit",
+      course: "Advanced Topics • Mobile Growth",
+      dueDate: "In 5 days • Oct 11, 2026",
+      daysLeft: 5,
+      status: "pending",
+      badgeText: "5 Days Left",
+      severity: "warning", // YELLOW / AMBER
+      link: "/my-assignments",
+      btnText: "View Details",
+    },
+    {
+      id: "notif-4",
+      type: "exam",
+      category: "exams",
+      title: "Digital Marketing Mid-Term Certification Exam",
+      course: "Diploma Track • Final Assessment",
+      dueDate: "In 4 days • Oct 10, 2026 (10:00 AM)",
+      daysLeft: 4,
+      status: "scheduled",
+      badgeText: "Exam In 4 Days",
+      severity: "exam", // Purple / High Priority
+      examMeta: "Proctored Online • 60 Mins • 50 MCQs • Passing 80%",
+      link: "/my-quizzes",
+      btnText: "Exam Details",
+    },
+    {
+      id: "notif-5",
+      type: "assignment",
+      category: "pending",
+      title: "Online Reputation Management (ORM) Crisis Matrix",
+      course: "Advanced Topics • Brand Security",
+      dueDate: "In 7 days • Oct 13, 2026",
+      daysLeft: 7,
+      status: "pending",
+      badgeText: "7 Days Left",
+      severity: "notice", // YELLOW / NOTICE
+      link: "/my-assignments",
+      btnText: "Start Draft",
+    },
+  ];
+
+  const filteredNotifs = NOTIFICATIONS_LIST.filter((item) => {
+    if (notifTab === "today") return item.category === "today" || item.daysLeft === 0;
+    if (notifTab === "pending") return item.type === "assignment";
+    if (notifTab === "exams") return item.type === "exam";
+    return true;
+  });
 
   return (
     <div className="space-y-6">
@@ -371,30 +462,30 @@ export const StudentDashboardHub = ({
           </button>
         </div>
 
-        {/* Card 4: UPCOMING (Amber / Orange) */}
+        {/* Card 4: PENDING TASKS (Amber / Orange) */}
         <div
-          onClick={() => navigate("/schedule")}
+          onClick={() => navigate("/my-assignments")}
           className="bg-gradient-to-br from-amber-50/95 via-[#fff3e6] to-[#fed7aa]/70 border border-amber-200/90 hover:border-amber-300 rounded-2xl p-3 sm:p-4 lg:p-5 2xl:p-5.5 3xl:p-6 shadow-[0_2px_14px_rgba(234,88,12,0.06)] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex items-start justify-between min-w-0 cursor-pointer group"
         >
           <div className="flex items-center space-x-2.5 sm:space-x-3.5 2xl:space-x-4 min-w-0">
             <div className="w-10 h-10 sm:w-12 sm:h-12 2xl:w-13 2xl:h-13 3xl:w-14 3xl:h-14 rounded-full bg-amber-100 text-[#ea580c] border border-amber-200/80 shadow-2xs flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-              <Calendar size={18} className="sm:hidden" strokeWidth={2} />
-              <Calendar
+              <Bell size={18} className="sm:hidden" strokeWidth={2.2} />
+              <Bell
                 size={21}
                 className="hidden sm:block 2xl:w-6 2xl:h-6"
-                strokeWidth={2}
+                strokeWidth={2.2}
               />
             </div>
 
             <div className="min-w-0">
               <span className="text-[9.5px] sm:text-[11px] 2xl:text-xs 3xl:text-[13px] font-extrabold uppercase tracking-wider text-[#ea580c] block leading-tight">
-                UPCOMING
+                PENDING TASKS
               </span>
               <h3 className="text-xl sm:text-2xl 2xl:text-[32px] 3xl:text-[36px] font-black text-[#431407] mt-0.5 sm:mt-1 leading-none tracking-tight">
-                2
+                7
               </h3>
               <p className="text-[10px] sm:text-[11.5px] 2xl:text-xs 3xl:text-sm text-amber-900/70 font-semibold mt-0.5 sm:mt-1 truncate">
-                Today & Tomorrow
+                Assignments & Exams
               </p>
             </div>
           </div>
@@ -403,10 +494,10 @@ export const StudentDashboardHub = ({
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              navigate("/schedule");
+              navigate("/my-assignments");
             }}
             className="hidden md:flex w-6.5 h-6.5 2xl:w-7.5 2xl:h-7.5 3xl:w-8.5 3xl:h-8.5 rounded-full bg-amber-100/90 group-hover:bg-[#ea580c] text-[#ea580c] group-hover:text-white border border-amber-200 items-center justify-center transition-all cursor-pointer shrink-0 self-start mt-0.5 ml-2 shadow-2xs"
-            title="View Schedule"
+            title="View Deadlines & Assignments"
           >
             <ChevronRight
               size={13}
@@ -729,134 +820,241 @@ export const StudentDashboardHub = ({
         {/* RIGHT COLUMN: ~42% (lg:col-span-5)                          */}
         {/* ----------------------------------------------------------- */}
         <div className="lg:col-span-5 space-y-5 sm:space-y-6 w-full max-w-full 2xl:max-w-xl 3xl:max-w-2xl">
-          {/* R1: Today / Upcoming Card */}
-          <div className="bg-white border border-slate-100/90 shadow-[0_6px_25px_rgba(0,0,0,0.03)] p-4 sm:p-5 2xl:p-6 space-y-4">
+          {/* ========================================================= */}
+          {/* R1: NOTIFICATIONS & DEADLINES HUB                         */}
+          {/* (Replaces Today/Upcoming with due date alerts & logic)    */}
+          {/* ========================================================= */}
+          <div className="bg-white border border-slate-100/90 shadow-[0_6px_25px_rgba(0,0,0,0.03)] rounded-2xl p-4 sm:p-5 2xl:p-6 space-y-3.5">
             {/* Header */}
             <div className="flex items-center justify-between px-0.5">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-white border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] text-[#0c1e3d] flex items-center justify-center shrink-0">
-                  <Calendar size={15} />
+                <div className="w-8 h-8 rounded-xl bg-rose-50 border border-rose-200/80 shadow-2xs text-rose-600 flex items-center justify-center shrink-0 relative">
+                  <Bell size={16} className="fill-rose-500/20" />
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-600 rounded-full ring-2 ring-white animate-pulse" />
                 </div>
-                <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
-                  Today / Upcoming
-                </h3>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                      Notifications & Deadlines
+                    </h3>
+                    <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-extrabold bg-rose-100/80 text-rose-700 border border-rose-200">
+                      7 Pending
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 font-medium">
+                    Due dates, assignment submissions & scheduled exams
+                  </p>
+                </div>
               </div>
               <button
                 type="button"
-                onClick={() => navigate("/schedule")}
-                className="text-xs sm:text-sm font-semibold text-[#2563eb] hover:text-blue-700 flex items-center gap-1 cursor-pointer transition-colors"
+                onClick={() => navigate("/my-assignments")}
+                className="text-xs sm:text-sm font-semibold text-[#2563eb] hover:text-blue-700 flex items-center gap-1 cursor-pointer transition-colors shrink-0"
               >
-                <span>View All</span>
+                <span>All Tasks</span>
                 <ArrowRight size={12} strokeWidth={2.5} />
               </button>
             </div>
 
-            {/* Schedule Items List */}
-            <div className="space-y-3">
-              {/* Item 1: Quiz */}
-              <div
-                onClick={() => navigate("/my-quizzes")}
-                className="overflow-hidden border border-slate-100/80 bg-white hover:border-purple-200/80 shadow-[0_3px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_20px_rgba(168,85,247,0.08)] transition-all duration-200 flex items-stretch cursor-pointer group"
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-1.5 p-1 bg-slate-50 border border-slate-200/70 rounded-xl overflow-x-auto">
+              <button
+                type="button"
+                onClick={() => setNotifTab("all")}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
+                  notifTab === "all"
+                    ? "bg-white text-slate-900 shadow-2xs border border-slate-200"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
               >
-                {/* Purple Left Full Height Date Badge */}
-                <div className="self-stretch flex flex-col items-center justify-center bg-purple-50/70 text-purple-700 border-l-4 border-purple-500 px-3.5 sm:px-4 text-center shrink-0 min-w-[56px] sm:min-w-[62px]">
-                  <span className="text-base sm:text-lg font-black leading-none block">
-                    22
-                  </span>
-                  <span className="text-[9.5px] sm:text-[10px] font-bold uppercase block mt-1 tracking-wide">
-                    Apr
-                  </span>
-                </div>
-
-                {/* Content: Spans + Arrow */}
-                <div className="flex-1 min-w-0 p-3 sm:p-3.5 2xl:p-4 flex items-center justify-between gap-3">
-                  <div className="min-w-0 space-y-0.5">
-                    <span className="text-[10px] sm:text-[11px] text-slate-400 font-medium block leading-tight">
-                      09:00 AM – 10:00 AM
-                    </span>
-                    <h5 className="font-bold text-slate-900 text-xs sm:text-sm group-hover:text-purple-700 transition-colors truncate">
-                      Digital Marketing Career Aptitude Quiz
-                    </h5>
-                    <span className="text-[11px] text-slate-500 font-medium block">
-                      Quiz • 20 mins
-                    </span>
-                  </div>
-
-                  <div className="w-6 h-6 rounded-full bg-white border border-slate-100 shadow-xs text-slate-400 group-hover:bg-purple-50 group-hover:text-purple-600 group-hover:border-purple-100 flex items-center justify-center shrink-0 transition-colors">
-                    <ChevronRight size={13} strokeWidth={2.5} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Item 2: SEO Assessment */}
-              <div
-                onClick={() => navigate("/my-quizzes")}
-                className="overflow-hidden border border-slate-100/80 bg-white hover:border-teal-200/80 shadow-[0_3px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_20px_rgba(20,184,166,0.08)] transition-all duration-200 flex items-stretch cursor-pointer group"
+                All Alerts (5)
+              </button>
+              <button
+                type="button"
+                onClick={() => setNotifTab("today")}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                  notifTab === "today"
+                    ? "bg-rose-50 text-rose-700 shadow-2xs border border-rose-200 font-black"
+                    : "text-slate-600 hover:text-rose-700"
+                }`}
               >
-                {/* Teal Left Full Height Date Badge */}
-                <div className="self-stretch flex flex-col items-center justify-center bg-teal-50/70 text-teal-700 border-l-4 border-teal-500 px-3.5 sm:px-4 text-center shrink-0 min-w-[56px] sm:min-w-[62px]">
-                  <span className="text-base sm:text-lg font-black leading-none block">
-                    22
-                  </span>
-                  <span className="text-[9.5px] sm:text-[10px] font-bold uppercase block mt-1 tracking-wide">
-                    Apr
-                  </span>
-                </div>
-
-                {/* Content: Spans + Arrow */}
-                <div className="flex-1 min-w-0 p-3 sm:p-3.5 2xl:p-4 flex items-center justify-between gap-3">
-                  <div className="min-w-0 space-y-0.5">
-                    <span className="text-[10px] sm:text-[11px] text-slate-400 font-medium block leading-tight">
-                      03:00 PM – 04:00 PM
-                    </span>
-                    <h5 className="font-bold text-slate-900 text-xs sm:text-sm group-hover:text-teal-700 transition-colors truncate">
-                      SEO Fundamentals & Keyword Strategy Assessment
-                    </h5>
-                    <span className="text-[11px] text-slate-500 font-medium block">
-                      Test • 25 mins
-                    </span>
-                  </div>
-
-                  <div className="w-6 h-6 rounded-full bg-white border border-slate-100 shadow-xs text-slate-400 group-hover:bg-teal-50 group-hover:text-teal-600 group-hover:border-teal-100 flex items-center justify-center shrink-0 transition-colors">
-                    <ChevronRight size={13} strokeWidth={2.5} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Item 3: Live Doubt Clearing */}
-              <div
-                onClick={() => navigate("/schedule")}
-                className="overflow-hidden border border-slate-100/80 bg-white hover:border-blue-200/80 shadow-[0_3px_12px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_20px_rgba(37,99,235,0.08)] transition-all duration-200 flex items-stretch cursor-pointer group"
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-600" />
+                Due Today (1)
+              </button>
+              <button
+                type="button"
+                onClick={() => setNotifTab("pending")}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                  notifTab === "pending"
+                    ? "bg-amber-50 text-amber-800 shadow-2xs border border-amber-200 font-black"
+                    : "text-slate-600 hover:text-amber-800"
+                }`}
               >
-                {/* Blue Left Full Height Date Badge */}
-                <div className="self-stretch flex flex-col items-center justify-center bg-blue-50/70 text-[#2563eb] border-l-4 border-[#2563eb] px-3.5 sm:px-4 text-center shrink-0 min-w-[56px] sm:min-w-[62px]">
-                  <span className="text-base sm:text-lg font-black leading-none block">
-                    24
-                  </span>
-                  <span className="text-[9.5px] sm:text-[10px] font-bold uppercase block mt-1 tracking-wide">
-                    Apr
-                  </span>
-                </div>
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                Assignments (7)
+              </button>
+              <button
+                type="button"
+                onClick={() => setNotifTab("exams")}
+                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                  notifTab === "exams"
+                    ? "bg-purple-50 text-purple-700 shadow-2xs border border-purple-200 font-black"
+                    : "text-slate-600 hover:text-purple-700"
+                }`}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-purple-600" />
+                Exams (1)
+              </button>
+            </div>
 
-                {/* Content: Spans + Arrow */}
-                <div className="flex-1 min-w-0 p-3 sm:p-3.5 2xl:p-4 flex items-center justify-between gap-3">
-                  <div className="min-w-0 space-y-0.5">
-                    <span className="text-[10px] sm:text-[11px] text-slate-400 font-medium block leading-tight">
-                      11:00 AM – 12:00 PM
-                    </span>
-                    <h5 className="font-bold text-slate-900 text-xs sm:text-sm group-hover:text-[#2563eb] transition-colors truncate">
-                      Live Doubt Clearing Session
-                    </h5>
-                    <span className="text-[11px] text-slate-500 font-medium block">
-                      Live Session • 1 hr
-                    </span>
-                  </div>
+            {/* Notification Items List */}
+            <div className="space-y-2.5">
+              {filteredNotifs.map((item) => {
+                // Strict Logic per User Request:
+                // - daysLeft <= 2 (due today or <= 2 days): Red color throughout
+                // - daysLeft === 5 (or 3-5 days): Yellow color for 5
+                // - daysLeft === 7 (or 6-7 days): Yellow notice
+                // - exams: High Priority exam alert
+                const isRed = item.daysLeft <= 2 && item.type !== "exam";
+                const isYellow = item.daysLeft > 2 && item.daysLeft <= 7 && item.type !== "exam";
+                const isExam = item.type === "exam";
 
-                  <div className="w-6 h-6 rounded-full bg-white border border-slate-100 shadow-xs text-slate-400 group-hover:bg-blue-50 group-hover:text-[#2563eb] group-hover:border-blue-100 flex items-center justify-center shrink-0 transition-colors">
-                    <ChevronRight size={13} strokeWidth={2.5} />
+                return (
+                  <div
+                    key={item.id}
+                    onClick={() => navigate(item.link)}
+                    className={`overflow-hidden rounded-xl border transition-all duration-200 flex items-stretch cursor-pointer group shadow-2xs hover:shadow-xs hover:-translate-y-0.5 ${
+                      isRed
+                        ? "border-red-200/90 bg-red-50/35 hover:bg-red-50/70"
+                        : isYellow
+                        ? "border-amber-200/90 bg-amber-50/35 hover:bg-amber-50/70"
+                        : "border-purple-200/90 bg-purple-50/35 hover:bg-purple-50/70"
+                    }`}
+                  >
+                    {/* Left Full-Height Date / Urgency Badge */}
+                    <div
+                      className={`self-stretch flex flex-col items-center justify-center px-3 sm:px-3.5 text-center shrink-0 min-w-[58px] sm:min-w-[66px] border-l-4 ${
+                        isRed
+                          ? "bg-red-100/80 text-red-700 border-red-600"
+                          : isYellow
+                          ? "bg-amber-100/80 text-amber-800 border-amber-500"
+                          : "bg-purple-100/80 text-purple-700 border-purple-600"
+                      }`}
+                    >
+                      {item.daysLeft === 0 ? (
+                        <>
+                          <Flame size={18} className="text-red-600 animate-pulse" />
+                          <span className="text-[10px] font-black uppercase mt-1 tracking-tight leading-none text-red-700">
+                            TODAY
+                          </span>
+                        </>
+                      ) : isExam ? (
+                        <>
+                          <Award size={18} className="text-purple-600" />
+                          <span className="text-[10px] font-black uppercase mt-1 tracking-tight leading-none text-purple-700">
+                            EXAM
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-base sm:text-lg font-black leading-none block">
+                            {item.daysLeft}d
+                          </span>
+                          <span className="text-[9.5px] font-bold uppercase block mt-1 tracking-wide">
+                            LEFT
+                          </span>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Content Section */}
+                    <div className="flex-1 min-w-0 p-3 sm:p-3.5 flex items-center justify-between gap-3">
+                      <div className="min-w-0 space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold border ${
+                              isRed
+                                ? "bg-red-100/90 text-red-700 border-red-200"
+                                : isYellow
+                                ? "bg-amber-100/90 text-amber-800 border-amber-200"
+                                : "bg-purple-100/90 text-purple-700 border-purple-200"
+                            }`}
+                          >
+                            {item.badgeText}
+                          </span>
+                          <span className="text-[10.5px] text-slate-500 font-medium truncate">
+                            {item.course}
+                          </span>
+                        </div>
+
+                        <h5
+                          className={`font-bold text-xs sm:text-sm truncate transition-colors ${
+                            isRed
+                              ? "text-slate-900 group-hover:text-red-700"
+                              : isYellow
+                              ? "text-slate-900 group-hover:text-amber-800"
+                              : "text-slate-900 group-hover:text-purple-700"
+                          }`}
+                        >
+                          {item.title}
+                        </h5>
+
+                        <div className="flex items-center gap-3 text-[11px] text-slate-500 font-medium">
+                          <span className="flex items-center gap-1 font-semibold text-slate-700">
+                            <Clock
+                              size={12}
+                              className={
+                                isRed
+                                  ? "text-red-600"
+                                  : isYellow
+                                  ? "text-amber-600"
+                                  : "text-purple-600"
+                              }
+                            />
+                            Due: {item.dueDate}
+                          </span>
+                          {item.examMeta && (
+                            <span className="hidden sm:inline text-purple-700 font-semibold truncate">
+                              • {item.examMeta}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Right Chevron / Action Pill */}
+                      <div
+                        className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-colors border shadow-2xs ${
+                          isRed
+                            ? "bg-white text-red-600 border-red-200 group-hover:bg-red-600 group-hover:text-white"
+                            : isYellow
+                            ? "bg-white text-amber-700 border-amber-200 group-hover:bg-amber-500 group-hover:text-white"
+                            : "bg-white text-purple-600 border-purple-200 group-hover:bg-purple-600 group-hover:text-white"
+                        }`}
+                        title={item.btnText}
+                      >
+                        <ChevronRight size={14} strokeWidth={2.5} />
+                      </div>
+                    </div>
                   </div>
-                </div>
+                );
+              })}
+            </div>
+
+            {/* Bottom Summary Bar: 7 Pending Assignments Alert */}
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+              <div className="flex items-center gap-1.5">
+                <AlertTriangle size={14} className="text-amber-500 shrink-0" />
+                <span className="font-semibold text-slate-700">
+                  <strong className="text-slate-900">7 assignments</strong> pending submission
+                </span>
               </div>
+              <button
+                type="button"
+                onClick={() => navigate("/my-assignments")}
+                className="font-bold text-[#2563eb] hover:text-blue-800 hover:underline cursor-pointer text-[11.5px]"
+              >
+                Open Assignments &rarr;
+              </button>
             </div>
           </div>
 
