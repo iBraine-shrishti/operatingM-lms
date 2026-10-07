@@ -212,7 +212,7 @@ export const DashboardPage = () => {
                 <span className="text-slate-600">Completions</span>
               </div>
               <div className="flex items-center space-x-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
                 <span className="text-slate-600">Enrollments</span>
               </div>
             </div>

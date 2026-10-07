@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import {
   ResponsiveContainer,
+  LineChart,
+  Line,
   AreaChart,
   Area,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
 } from "recharts";
 import {
   CheckCircle2,
@@ -208,42 +211,29 @@ export const StudentAttendanceCard = ({ attendance }) => {
           {/* Right Column: Attendance Progression Graph (7 cols) */}
           <div className="lg:col-span-7 flex flex-col justify-between">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-                <TrendingUp size={13} className="text-teal-600" />
-                Monthly Attendance Trend (%)
+              <span className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <TrendingUp size={14} className="text-emerald-600" />
+                Attendance 2-Way Comparison (Monthly)
               </span>
-              <span className="text-[11px] font-medium text-slate-400">
-                Operating Media LMS CRM Sync
-              </span>
+              <div className="flex items-center space-x-3 text-xs font-bold">
+                <span className="inline-flex items-center space-x-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span>Attended Lectures</span>
+                </span>
+                <span className="inline-flex items-center space-x-1 text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                  <span className="w-2 h-2 rounded-full bg-rose-500" />
+                  <span>Missed Lectures</span>
+                </span>
+              </div>
             </div>
 
-            {/* Recharts Area Chart */}
+            {/* Recharts 2-Way Comparison Line Chart */}
             <div className="w-full h-44 sm:h-48 pt-1">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
+                <LineChart
                   data={monthlyTrend}
-                  margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                  margin={{ top: 12, right: 16, left: -20, bottom: 2 }}
                 >
-                  <defs>
-                    <linearGradient
-                      id="attendanceArea"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="5%"
-                        stopColor="#0d9488"
-                        stopOpacity={0.35}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor="#0d9488"
-                        stopOpacity={0.0}
-                      />
-                    </linearGradient>
-                  </defs>
                   <CartesianGrid
                     strokeDasharray="3 3"
                     vertical={false}
@@ -251,53 +241,66 @@ export const StudentAttendanceCard = ({ attendance }) => {
                   />
                   <XAxis
                     dataKey="month"
-                    axisLine={false}
+                    axisLine={{ stroke: "#e2e8f0" }}
                     tickLine={false}
-                    tick={{ fill: "#64748b", fontSize: 11, fontWeight: 600 }}
+                    tick={{ fill: "#334155", fontSize: 11, fontWeight: 700 }}
+                    padding={{ left: 24, right: 24 }}
                   />
                   <YAxis
-                    domain={[60, 100]}
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: "#94a3b8", fontSize: 10 }}
-                    unit="%"
+                    tick={{ fill: "#64748b", fontSize: 10, fontWeight: 600 }}
+                    allowDecimals={false}
+                    domain={[0, "auto"]}
                   />
                   <Tooltip
                     content={({ active, payload }) => {
                       if (active && payload && payload.length) {
                         const data = payload[0].payload;
                         return (
-                          <div className="bg-slate-900 text-white text-xs p-2.5 rounded-xl shadow-xl border border-slate-700 space-y-1">
-                            <p className="font-bold text-amber-400">
-                              {data.month} Standing
+                          <div className="bg-slate-900 text-white text-xs p-3 rounded-xl shadow-xl border border-slate-700 space-y-1.5 min-w-[170px]">
+                            <p className="font-extrabold text-slate-200 border-b border-slate-700 pb-1">
+                              {data.month} Attendance Summary
                             </p>
-                            <p className="font-semibold text-emerald-400">
-                              Rate: {data.rate}%
+                            <p className="font-bold text-emerald-400 flex items-center justify-between">
+                              <span>Attended Lectures:</span>
+                              <span className="font-extrabold text-white">{data.present}</span>
                             </p>
-                            <p className="text-slate-300 text-[10px]">
-                              Attended: {data.present} of {data.total} lectures
+                            <p className="font-bold text-rose-400 flex items-center justify-between">
+                              <span>Missed Lectures:</span>
+                              <span className="font-extrabold text-white">{data.absent}</span>
+                            </p>
+                            <p className="text-slate-400 text-[10.5px] pt-1 border-t border-slate-800">
+                              Total: {data.total} lectures • Rate: {data.rate}%
                             </p>
                           </div>
                         );
                       }
                       return null;
                     }}
+                    cursor={{ stroke: "#94a3b8", strokeWidth: 1, strokeDasharray: "4 4" }}
                   />
-                  <Area
+                  {/* GREEN: Attended Line */}
+                  <Line
                     type="monotone"
-                    dataKey="rate"
-                    stroke="#0d9488"
+                    dataKey="present"
+                    name="Attended Lectures"
+                    stroke="#10b981"
                     strokeWidth={2.5}
-                    fillOpacity={1}
-                    fill="url(#attendanceArea)"
-                    activeDot={{
-                      r: 5,
-                      fill: "#0d9488",
-                      stroke: "#ffffff",
-                      strokeWidth: 2,
-                    }}
+                    dot={{ r: 4, fill: "#10b981", stroke: "#ffffff", strokeWidth: 1.5 }}
+                    activeDot={{ r: 6, fill: "#10b981", stroke: "#ffffff", strokeWidth: 2 }}
                   />
-                </AreaChart>
+                  {/* RED: Missed Line */}
+                  <Line
+                    type="monotone"
+                    dataKey="absent"
+                    name="Missed Lectures"
+                    stroke="#ef4444"
+                    strokeWidth={2.5}
+                    dot={{ r: 4, fill: "#ef4444", stroke: "#ffffff", strokeWidth: 1.5 }}
+                    activeDot={{ r: 6, fill: "#ef4444", stroke: "#ffffff", strokeWidth: 2 }}
+                  />
+                </LineChart>
               </ResponsiveContainer>
             </div>
 

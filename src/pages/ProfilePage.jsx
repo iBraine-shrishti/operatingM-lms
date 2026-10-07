@@ -32,7 +32,9 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FeeReceiptModal } from "../components/crm/FeeReceiptModal";
+import { AttendanceComparisonChart } from "../components/crm/AttendanceComparisonChart";
 import profilePic from "../assets/profile-pic.png";
+import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
 
 export const ProfilePage = () => {
   const {
@@ -120,7 +122,10 @@ export const ProfilePage = () => {
   return (
     <div className="space-y-6">
       {/* 1. Header Banner & Identity Card */}
-      <div className="bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-blue-50/80 border border-blue-100/90 rounded sm:rounded-3xl p-5 sm:p-7 shadow-2xs relative overflow-hidden">
+      <div 
+        className="relative bg-cover bg-center border border-blue-100/90 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-xs overflow-hidden"
+        style={{ backgroundImage: `url(${dashboardHeaderBg})` }}
+      >
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 min-w-0">
           {/* Circular Profile Picture with Last Active Status Pulse */}
           <div className="relative shrink-0">
@@ -140,24 +145,21 @@ export const ProfilePage = () => {
 
           <div className="min-w-0 space-y-2 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 bg-white border border-blue-200/80 px-2 py-0.5 rounded shadow-2xs">
+              <span className="text-xs font-black uppercase tracking-wider text-blue-800 bg-white border border-blue-200/90 px-2.5 py-1 rounded shadow-2xs">
                 {isStudent
                   ? "STUDENT PROFILE & CRM LEDGER"
                   : "ADMINISTRATOR PROFILE"}
               </span>
-              <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="inline-flex items-center space-x-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span>CRM Verified</span>
               </span>
-              {/* Last Active Indicator Badge */}
-              <span className="inline-flex items-center space-x-1.5 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                <span>Active Now</span>
-                <span className="text-emerald-300">•</span>
-                <span className="text-emerald-600 font-medium">Last active 2m ago</span>
+              {/* Last Active Indicator Badge with red indicator */}
+              <span className="inline-flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-white text-slate-800 border border-slate-200 shadow-2xs">
+                <span className="w-2 h-2 rounded-full bg-rose-500" />
+                <span>Active Today</span>
+                <span className="text-slate-300">•</span>
+                <span className="text-slate-600 font-medium">Last active 2m ago</span>
               </span>
             </div>
 
@@ -167,60 +169,60 @@ export const ProfilePage = () => {
 
             {isStudent ? (
               <div className="flex flex-wrap items-center gap-2 pt-0.5">
-                <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-1 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
-                  <BookOpen size={12} className="text-[#2563eb]" />
+                <div className="bg-white/95 border border-slate-200/90 rounded-full px-3.5 py-1.5 text-xs sm:text-sm text-slate-800 font-medium flex items-center space-x-1.5 shadow-2xs">
+                  <BookOpen size={14} className="text-[#2563eb]" />
                   <span>
-                    Course{" "}
-                    <strong className="text-slate-900 font-bold">
+                    Course:{" "}
+                    <strong className="text-slate-950 font-extrabold">
                       {crmProfile.course || "Diploma in Digital Marketing"}
                     </strong>
                   </span>
                 </div>
-                <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-1 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
-                  <Shield size={12} className="text-[#2563eb]" />
+                <div className="bg-white/95 border border-slate-200/90 rounded-full px-3.5 py-1.5 text-xs sm:text-sm text-slate-800 font-medium flex items-center space-x-1.5 shadow-2xs">
+                  <Shield size={14} className="text-[#2563eb]" />
                   <span>
-                    Student ID{" "}
-                    <strong className="text-slate-900 font-bold">
+                    Student ID:{" "}
+                    <strong className="text-slate-950 font-extrabold">
                       {crmProfile.admissionNo || "OMC-0266"}
                     </strong>
                   </span>
                 </div>
-                <div className="bg-white/95 border border-slate-200/90 rounded-full px-3 py-1 text-xs text-slate-600 flex items-center space-x-1.5 shadow-2xs">
-                  <MapPin size={12} className="text-[#2563eb]" />
+                <div className="bg-white/95 border border-slate-200/90 rounded-full px-3.5 py-1.5 text-xs sm:text-sm text-slate-800 font-medium flex items-center space-x-1.5 shadow-2xs">
+                  <MapPin size={14} className="text-[#2563eb]" />
                   <span>
-                    Center{" "}
-                    <strong className="text-slate-900 font-bold">
+                    Center:{" "}
+                    <strong className="text-slate-950 font-extrabold">
                       {crmProfile.branch || "Borivali Center"}
                     </strong>
                   </span>
                 </div>
                 {/* Registration Date & 365 Days Indicator Pill */}
-                <div className="bg-white/95 border border-blue-200/90 rounded-full px-3 py-1 text-xs text-slate-700 flex items-center space-x-1.5 shadow-2xs">
-                  <Calendar size={12} className="text-[#2563eb]" />
+                <div className="bg-white/95 border border-blue-200/90 rounded-full px-3.5 py-1.5 text-xs sm:text-sm text-slate-800 font-medium flex items-center space-x-1.5 shadow-2xs">
+                  <Calendar size={14} className="text-[#2563eb]" />
                   <span>
                     Registered:{" "}
-                    <strong className="text-slate-900 font-bold">
+                    <strong className="text-slate-950 font-extrabold">
                       {formatDate(registrationDate)}
                     </strong>
                   </span>
                   <span className="text-slate-300">•</span>
-                  <span className="text-[#2563eb] font-bold">
+                  <span className="text-[#2563eb] font-extrabold">
                     {daysElapsed} of 365 Days
                   </span>
                 </div>
                 {/* Last Active Timestamp Pill */}
-                <div className="bg-white/95 border border-emerald-200/90 rounded-full px-3 py-1 text-xs text-slate-700 flex items-center space-x-1.5 shadow-2xs">
-                  <Clock size={12} className="text-emerald-600" />
+                <div className="bg-white/95 border border-emerald-200/90 rounded-full px-3.5 py-1.5 text-xs sm:text-sm text-slate-800 font-medium flex items-center space-x-1.5 shadow-2xs">
+                  <Clock size={14} className="text-emerald-600" />
                   <span>
                     Last Active:{" "}
-                    <strong className="text-slate-900 font-bold">
+                    <strong className="text-slate-950 font-extrabold">
                       Today, 04:30 PM
                     </strong>
                   </span>
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-slate-500">
+              <p className="text-sm font-semibold text-slate-700">
                 {currentUser.designation || "Administrator"}
               </p>
             )}
@@ -241,21 +243,21 @@ export const ProfilePage = () => {
                   </div>
                   <div>
                     <div className="flex items-center space-x-2">
-                      <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-tight">
+                      <h4 className="text-sm sm:text-base font-bold text-slate-900 leading-tight">
                         Academic Enrolment Validity
                       </h4>
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full leading-none">
+                      <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full leading-none">
                         Active
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-500 mt-0.5">
-                      Registered: <strong className="text-slate-700 font-semibold">{formatDate(registrationDate)}</strong> • 365 Days Course Period
+                    <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                      Registered: <strong className="text-slate-900 font-bold">{formatDate(registrationDate)}</strong> • 365 Days Course Period
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-2">
-                  <span className="text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200/80 px-2.5 py-1 rounded-full">
+                  <span className="text-xs sm:text-sm font-bold text-blue-700 bg-blue-50 border border-blue-200/80 px-3 py-1 rounded-full">
                     {daysRemaining} days remaining
                   </span>
                 </div>
@@ -263,10 +265,10 @@ export const ProfilePage = () => {
 
               {/* Progress Bar & Indicators */}
               <div className="space-y-1.5 pt-0.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-bold text-slate-800">
+                <div className="flex items-center justify-between text-xs sm:text-sm">
+                  <span className="font-bold text-slate-900">
                     {daysElapsed}{" "}
-                    <span className="text-slate-400 font-medium">
+                    <span className="text-slate-500 font-medium">
                       of 365 days completed
                     </span>
                   </span>
@@ -291,12 +293,12 @@ export const ProfilePage = () => {
               <button
                 type="button"
                 onClick={() => setIsReceiptModalOpen(true)}
-                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-all shadow-xs flex items-center justify-center space-x-2 cursor-pointer active:scale-95 w-full sm:w-auto md:min-w-[190px]"
+                className="bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold px-5 py-2.5 rounded-xl transition-all shadow-xs flex items-center justify-center space-x-2 cursor-pointer active:scale-95 w-full sm:w-auto md:min-w-[190px]"
               >
-                <FileText size={15} />
+                <FileText size={16} />
                 <span>Official Fee Receipt</span>
               </button>
-              <span className="text-[10px] text-slate-400 text-center md:text-right font-medium">
+              <span className="text-xs text-slate-500 text-center md:text-right font-medium">
                 Verified CRM Financial Record
               </span>
             </div>
@@ -425,124 +427,10 @@ export const ProfilePage = () => {
             </div>
 
             {attendanceView === "graph" ? (
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center pt-2">
-                {/* Donut Gauge */}
-                <div className="md:col-span-4 flex flex-col items-center justify-center p-4 md:border-r border-slate-100">
-                  <div className="relative w-32 h-32 shrink-0 flex items-center justify-center">
-                    <svg className="w-32 h-32 -rotate-90" viewBox="0 0 100 100">
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        fill="transparent"
-                        stroke="#f1f5f9"
-                        strokeWidth="10"
-                      />
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        fill="transparent"
-                        stroke="#2563eb"
-                        strokeWidth="10"
-                        strokeDasharray="251.3"
-                        strokeDashoffset={251.3 * (1 - 0.893)}
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                      <span className="text-3xl font-black text-slate-900 leading-none">
-                        89.3%
-                      </span>
-                      <span className="text-[10px] uppercase font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded mt-2 tracking-wider">
-                        VERIFIED
-                      </span>
-                    </div>
-                  </div>
-                  <div className="mt-3 text-center">
-                    <span className="text-xs font-bold text-slate-800 block">
-                      25 Attended / 28 Lectures
-                    </span>
-                    <span className="text-[11px] text-slate-400">
-                      3 Permitted Absences
-                    </span>
-                  </div>
-                </div>
-
-                {/* AreaChart: Monthly Attendance Trend */}
-                <div className="md:col-span-8 min-w-0">
-                  <div className="flex items-center space-x-1.5 text-xs text-slate-700 font-bold mb-3">
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#2563eb]" />
-                    <span>Monthly Attendance Trend (%)</span>
-                  </div>
-                  <div className="h-44 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={attendanceTrendData}
-                        margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                      >
-                        <defs>
-                          <linearGradient
-                            id="profileAttTrendGrad"
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="5%"
-                              stopColor="#2563eb"
-                              stopOpacity={0.25}
-                            />
-                            <stop
-                              offset="95%"
-                              stopColor="#2563eb"
-                              stopOpacity={0.0}
-                            />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid
-                          strokeDasharray="3 3"
-                          vertical={false}
-                          stroke="#f1f5f9"
-                        />
-                        <XAxis
-                          dataKey="month"
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fontSize: 11, fill: "#64748b" }}
-                        />
-                        <YAxis
-                          domain={[0, 100]}
-                          ticks={[0, 25, 50, 75, 100]}
-                          unit="%"
-                          axisLine={false}
-                          tickLine={false}
-                          tick={{ fontSize: 10, fill: "#64748b" }}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "#0f172a",
-                            borderRadius: "8px",
-                            border: "none",
-                            color: "#fff",
-                            fontSize: "11px",
-                          }}
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="rate"
-                          stroke="#2563eb"
-                          strokeWidth={2.5}
-                          fillOpacity={1}
-                          fill="url(#profileAttTrendGrad)"
-                          dot={{ r: 3.5, fill: "#2563eb" }}
-                          activeDot={{ r: 6 }}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
+              <div className="pt-2">
+                <AttendanceComparisonChart
+                  enrolledCourseTitle={crmProfile.course || "Diploma in Digital Marketing"}
+                />
               </div>
             ) : (
               /* Class Logs List */
@@ -590,18 +478,18 @@ export const ProfilePage = () => {
                   <h3 className="text-base sm:text-lg font-bold text-slate-900">
                     Accounts & Enrollment Billing
                   </h3>
-                  <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <span className="text-xs font-black uppercase px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                     Fully Cleared
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 font-normal mt-0.5">
+                <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">
                   Course Fee Management & Installments
                 </p>
               </div>
 
-              <div className="text-xs text-slate-500 font-medium">
+              <div className="text-xs sm:text-sm text-slate-600 font-semibold">
                 Student:{" "}
-                <strong className="text-slate-900">
+                <strong className="text-slate-900 font-bold">
                   {currentUser.name || "Hiteshpuri Goswami"}
                 </strong>{" "}
                 ({crmProfile.admissionNo || "OMC-0266"})
@@ -612,25 +500,25 @@ export const ProfilePage = () => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5 relative">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-500">
                     TOTAL COURSE FEE
                   </span>
-                  <Award size={16} className="text-blue-500" />
+                  <Award size={18} className="text-blue-500" />
                 </div>
                 <div className="text-2xl font-black text-slate-900 tabular-nums">
                   ₹45,000
                 </div>
-                <div className="text-xs text-slate-500 font-medium">
+                <div className="text-xs sm:text-sm text-slate-600 font-medium">
                   Ref ID: OMC-0266 • Diploma Track
                 </div>
               </div>
 
               <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40 space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700">
+                  <span className="text-xs font-black uppercase tracking-wider text-emerald-800">
                     AMOUNT CLEARED
                   </span>
-                  <CheckCircle2 size={16} className="text-emerald-500" />
+                  <CheckCircle2 size={18} className="text-emerald-500" />
                 </div>
                 <div className="text-2xl font-black text-slate-900 tabular-nums">
                   ₹55,000
@@ -638,22 +526,22 @@ export const ProfilePage = () => {
                 <div className="w-full h-2 bg-emerald-100 rounded-full overflow-hidden mt-1">
                   <div className="w-full h-full bg-emerald-500 rounded-full" />
                 </div>
-                <div className="text-xs text-right font-black text-emerald-700">
+                <div className="text-xs sm:text-sm text-right font-black text-emerald-700">
                   122.2% Realized
                 </div>
               </div>
 
               <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  <span className="text-xs font-black uppercase tracking-wider text-slate-500">
                     OUTSTANDING BALANCE
                   </span>
-                  <Clock size={16} className="text-amber-500" />
+                  <Clock size={18} className="text-amber-500" />
                 </div>
                 <div className="text-2xl font-black text-slate-900 tabular-nums">
                   ₹0
                 </div>
-                <div className="text-xs text-emerald-600 font-bold flex items-center space-x-1">
+                <div className="text-xs sm:text-sm text-emerald-600 font-bold flex items-center space-x-1">
                   <span>All Dues Cleared ✓</span>
                 </div>
               </div>
@@ -661,55 +549,55 @@ export const ProfilePage = () => {
 
             {/* Installment Payment Roadmap */}
             <div className="pt-3 border-t border-slate-100 space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+              <div className="flex items-center justify-between text-xs sm:text-sm">
+                <span className="text-xs font-black uppercase tracking-wider text-slate-700">
                   INSTALLMENT PAYMENT ROADMAP
                 </span>
-                <span className="text-xs text-slate-400 font-medium">
+                <span className="text-xs text-slate-500 font-medium">
                   Automated CRM Receipt Sync
                 </span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between text-xs">
+                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between text-xs sm:text-sm">
                   <div className="space-y-0.5">
-                    <span className="text-slate-500 font-medium block">
+                    <span className="text-slate-600 font-medium block">
                       Registration Fee
                     </span>
-                    <span className="font-black text-slate-900 text-sm">
+                    <span className="font-black text-slate-900 text-sm sm:text-base">
                       ₹3,000
                     </span>
-                    <span className="text-[11px] text-slate-400 block">
+                    <span className="text-xs text-slate-500 block">
                       Mode: UPI / Online
                     </span>
                   </div>
                   <div className="text-right space-y-1">
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 block">
+                    <span className="text-xs font-black px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 block">
                       PAID
                     </span>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-xs text-slate-500">
                       Admission Day
                     </span>
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between text-xs">
+                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between text-xs sm:text-sm">
                   <div className="space-y-0.5">
-                    <span className="text-slate-500 font-medium block">
+                    <span className="text-slate-600 font-medium block">
                       Installment 1
                     </span>
-                    <span className="font-black text-slate-900 text-sm">
+                    <span className="font-black text-slate-900 text-sm sm:text-base">
                       ₹52,000
                     </span>
-                    <span className="text-[11px] text-slate-400 block">
+                    <span className="text-xs text-slate-500 block">
                       Mode: Bank Transfer
                     </span>
                   </div>
                   <div className="text-right space-y-1">
-                    <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 block">
+                    <span className="text-xs font-black px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 block">
                       PAID
                     </span>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-xs text-slate-500">
                       25 Feb 2026
                     </span>
                   </div>

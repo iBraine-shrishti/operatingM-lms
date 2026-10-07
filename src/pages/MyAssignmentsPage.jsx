@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import { 
   BookCheck, Search, Upload, Calendar, Clock, CheckCircle2, 
@@ -7,6 +8,7 @@ import {
   GraduationCap, BarChart3, Target, Layers, BookOpen
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
+import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
 
 // Color themes & icons for distinct course identities
 const COURSE_THEMES = {
@@ -120,6 +122,7 @@ export const MyAssignmentsPage = () => {
   const [assignments, setAssignments] = useState(() => lmsService.getAssignments());
   const courses = lmsService.getCourses();
 
+  const [searchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCourse, setSelectedCourse] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all"); // 'all' | 'pending' | 'submitted' | 'graded'
@@ -131,6 +134,18 @@ export const MyAssignmentsPage = () => {
   const [submissionLink, setSubmissionLink] = useState("");
   const [submissionNotes, setSubmissionNotes] = useState("");
   const [fileName, setFileName] = useState("");
+
+  // Automatically open target assignment if specified in query string (?id=...)
+  useEffect(() => {
+    const targetId = searchParams.get("id");
+    if (targetId && assignments.length > 0) {
+      const match = assignments.find((a) => a.id === targetId);
+      if (match) {
+        setActiveAssignment(match);
+        setIsSubmitModalOpen(true);
+      }
+    }
+  }, [searchParams, assignments]);
 
   // Feedback Modal State
   const [feedbackModalAssignment, setFeedbackModalAssignment] = useState(null);
@@ -233,42 +248,45 @@ export const MyAssignmentsPage = () => {
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* HEADER BANNER - FULLY RESPONSIVE                              */}
+      {/* HEADER BANNER - FULLY RESPONSIVE WITH BRANDED BACKGROUND      */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all">
+      <div 
+        className="relative bg-cover bg-center rounded-2xl border border-blue-100/80 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
+        style={{ backgroundImage: `url(${dashboardHeaderBg})` }}
+      >
         <div className="space-y-2">
-          <div className="flex items-center space-x-2 text-[#3b49df] text-xs font-bold uppercase tracking-wider">
-            <BookCheck size={16} />
+          <div className="flex items-center space-x-2 text-blue-700 text-sm font-extrabold uppercase tracking-wider">
+            <BookCheck size={17} />
             <span>Practical Assessment & Capstone</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             My Assignments
           </h1>
-          <p className="text-slate-500 text-xs sm:text-sm max-w-2xl leading-relaxed">
+          <p className="text-slate-900/90 text-sm sm:text-base max-w-2xl leading-relaxed font-semibold">
             Submit your live client audits, campaign spreadsheets, Figma design decks, and tracking implementations.
           </p>
 
           {/* Quick Metrics */}
-          <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 text-xs">
-            <div className="flex items-center space-x-1.5 text-slate-700">
+          <div className="flex flex-wrap items-center gap-3.5 pt-3 border-t border-slate-200/80 text-sm font-medium">
+            <div className="flex items-center space-x-1.5 text-slate-800">
               <span className="w-2.5 h-2.5 rounded-full bg-[#3b49df] inline-block"></span>
-              <span className="font-bold text-slate-900">{assignments.length}</span>
-              <span className="text-slate-500">Total</span>
+              <span className="font-extrabold text-slate-900">{assignments.length}</span>
+              <span className="text-slate-800 font-semibold">Total</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-slate-700">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
-              <span className="font-bold text-slate-900">{pendingCount}</span>
-              <span className="text-slate-500">Pending</span>
+            <div className="flex items-center space-x-1.5 text-slate-800">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
+              <span className="font-extrabold text-slate-900">{pendingCount}</span>
+              <span className="text-slate-800 font-semibold">Pending</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-slate-700">
+            <div className="flex items-center space-x-1.5 text-slate-800">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span>
-              <span className="font-bold text-slate-900">{submittedCount}</span>
-              <span className="text-slate-500">Submitted</span>
+              <span className="font-extrabold text-slate-900">{submittedCount}</span>
+              <span className="text-slate-800 font-semibold">Submitted</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-slate-700">
+            <div className="flex items-center space-x-1.5 text-slate-800">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
-              <span className="font-bold text-slate-900">{gradedCount}</span>
-              <span className="text-slate-500">Graded</span>
+              <span className="font-extrabold text-slate-900">{gradedCount}</span>
+              <span className="text-slate-800 font-semibold">Graded</span>
             </div>
           </div>
         </div>
@@ -437,14 +455,14 @@ export const MyAssignmentsPage = () => {
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center space-x-1.5">
-                        <span className={`w-2 h-2 rounded-full ${theme.pillDot} shrink-0`} />
-                        <h4 className={`text-xs sm:text-[13px] font-black uppercase tracking-wider truncate ${theme.headerColor}`}>
+                        <span className={`w-2.5 h-2.5 rounded-full ${theme.pillDot} shrink-0`} />
+                        <h4 className={`text-sm sm:text-base font-black uppercase tracking-wider truncate ${theme.headerColor}`}>
                           {a.courseTitle}
                         </h4>
                       </div>
                       <div className="mt-1">
-                        <span className={`inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-md border text-[10.5px] font-bold ${theme.badgeBg}`}>
-                          <CourseIcon size={12} className="shrink-0" />
+                        <span className={`inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md border text-xs font-bold ${theme.badgeBg}`}>
+                          <CourseIcon size={13} className="shrink-0" />
                           <span>{theme.short}</span>
                         </span>
                       </div>
@@ -452,20 +470,20 @@ export const MyAssignmentsPage = () => {
 
                     <div className="shrink-0">
                       {isPending && (
-                        <span className="inline-flex items-center space-x-1 text-xs font-black px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-                          <Clock size={12} className="text-amber-600" />
+                        <span className="inline-flex items-center space-x-1.5 text-xs sm:text-sm font-black px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                          <Clock size={13} className="text-amber-600" />
                           <span>PENDING</span>
                         </span>
                       )}
                       {isSubmitted && (
-                        <span className="inline-flex items-center space-x-1 text-xs font-black px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                          <CheckCircle2 size={12} className="text-blue-600" />
+                        <span className="inline-flex items-center space-x-1.5 text-xs sm:text-sm font-black px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                          <CheckCircle2 size={13} className="text-blue-600" />
                           <span>SUBMITTED</span>
                         </span>
                       )}
                       {isGraded && (
-                        <span className="inline-flex items-center space-x-1 text-xs font-black px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          <Award size={12} className="text-emerald-600" />
+                        <span className="inline-flex items-center space-x-1.5 text-xs sm:text-sm font-black px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <Award size={13} className="text-emerald-600" />
                           <span>GRADED • {a.score}%</span>
                         </span>
                       )}
@@ -473,25 +491,25 @@ export const MyAssignmentsPage = () => {
                   </div>
 
                   {/* Assignment Title */}
-                  <h3 className="text-base sm:text-[17px] font-black text-slate-900 leading-snug group-hover:text-[#3b49df] transition-colors mt-0.5">
+                  <h3 className="text-lg sm:text-xl font-black text-slate-900 leading-snug group-hover:text-[#3b49df] transition-colors mt-0.5">
                     {a.title}
                   </h3>
 
                   {/* Metadata Strip: Due Date & Max Score */}
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-slate-500 font-medium pt-0.5">
+                  <div className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 text-sm text-slate-600 font-medium pt-0.5">
                     <div className="flex items-center space-x-1.5">
-                      <Calendar size={13} className="text-slate-400" />
-                      <span>Due: <strong className="text-slate-800 font-bold">{a.dueDate}</strong></span>
+                      <Calendar size={14} className="text-slate-400" />
+                      <span>Due: <strong className="text-slate-900 font-bold">{a.dueDate}</strong></span>
                     </div>
                     <span className="text-slate-300">•</span>
                     <div className="flex items-center space-x-1.5">
-                      <FileCheck2 size={13} className="text-slate-400" />
-                      <span>Max: <strong className="text-slate-800 font-bold">{a.maxScore || 100} pts</strong></span>
+                      <FileCheck2 size={14} className="text-slate-400" />
+                      <span>Max: <strong className="text-slate-900 font-bold">{a.maxScore || 100} pts</strong></span>
                     </div>
                     {a.totalSubmissions && (
                       <>
                         <span className="text-slate-300 hidden sm:inline">•</span>
-                        <div className="hidden sm:flex items-center space-x-1 text-slate-400 text-[11px]">
+                        <div className="hidden sm:flex items-center space-x-1 text-slate-500 text-xs">
                           <span>({a.totalSubmissions} submissions)</span>
                         </div>
                       </>
@@ -499,29 +517,29 @@ export const MyAssignmentsPage = () => {
                   </div>
 
                   {/* Project Brief / Instructions */}
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-1 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                      <FileText size={11} />
+                  <div className="space-y-1.5">
+                    <div className="flex items-center space-x-1 text-xs font-black uppercase tracking-wider text-slate-500">
+                      <FileText size={13} />
                       <span>Project Brief</span>
                     </div>
-                    <div className="text-xs text-slate-600 bg-slate-50/90 border border-slate-100 p-3 sm:p-3.5 rounded-xl leading-relaxed whitespace-pre-line break-words">
+                    <div className="text-sm text-slate-700 bg-slate-50/90 border border-slate-100 p-3.5 sm:p-4 rounded-xl leading-relaxed whitespace-pre-line break-words font-medium">
                       {a.instructions}
                     </div>
                   </div>
 
                   {/* Evaluation / Feedback snippet if graded */}
                   {isGraded && a.feedback && (
-                    <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-3 sm:p-3.5 text-xs space-y-1.5">
-                      <div className="flex items-center justify-between text-emerald-900 font-extrabold text-[11px]">
+                    <div className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-3.5 sm:p-4 text-sm space-y-1.5">
+                      <div className="flex items-center justify-between text-emerald-900 font-black text-xs sm:text-sm">
                         <span className="flex items-center space-x-1.5">
-                          <Sparkles size={13} className="text-emerald-600" />
+                          <Sparkles size={14} className="text-emerald-600" />
                           <span>Instructor Feedback & Score</span>
                         </span>
-                        <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        <span className="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold">
                           {a.score} / 100
                         </span>
                       </div>
-                      <p className="text-emerald-950 text-xs leading-relaxed italic">
+                      <p className="text-emerald-950 text-sm leading-relaxed italic font-medium">
                         "{a.feedback}"
                       </p>
                     </div>
@@ -529,12 +547,12 @@ export const MyAssignmentsPage = () => {
 
                   {/* Submitted status snippet if submitted */}
                   {isSubmitted && (
-                    <div className="bg-blue-50/80 border border-blue-200 rounded-xl p-3 sm:p-3.5 text-xs space-y-1">
-                      <div className="flex items-center space-x-1.5 text-blue-900 font-extrabold text-[11px]">
-                        <CheckCircle2 size={13} className="text-blue-600" />
+                    <div className="bg-blue-50/80 border border-blue-200 rounded-xl p-3.5 sm:p-4 text-sm space-y-1">
+                      <div className="flex items-center space-x-1.5 text-blue-900 font-black text-xs sm:text-sm">
+                        <CheckCircle2 size={14} className="text-blue-600" />
                         <span>Work Submitted on {a.submittedAt || "Recently"}</span>
                       </div>
-                      <p className="text-blue-950 text-xs leading-relaxed">
+                      <p className="text-blue-950 text-sm leading-relaxed font-medium">
                         Under instructor review. Grades and evaluation rubric will be unlocked upon approval.
                       </p>
                     </div>
@@ -542,11 +560,11 @@ export const MyAssignmentsPage = () => {
                 </div>
 
                 {/* Actions Footer */}
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2 text-sm">
                   {isPending && (
                     <>
-                      <span className="text-[11px] text-slate-400 font-medium">
-                        Due: <strong className="text-slate-600 font-semibold">{a.dueDate || "Upcoming"}</strong>
+                      <span className="text-xs text-slate-500 font-medium">
+                        Due: <strong className="text-slate-800 font-semibold">{a.dueDate || "Upcoming"}</strong>
                       </span>
                       <button
                         onClick={() => openSubmitModal(a)}

@@ -21,12 +21,19 @@ import {
   AlertTriangle,
   AlertCircle,
   Flame,
+  CreditCard,
+  Wallet,
+  X,
+  ExternalLink,
+  BookCheck,
+  ChevronDown,
 } from "lucide-react";
 import dashboardHeaderBg from "../../assets/header-bg/dashboard-header.png";
 // import dashboardHatImg from "../../assets/header-bg/dashboard-hat.png";
 import continueLearningLaptopImg from "../../assets/continue-learning-laptop.png";
 import profilePic from "../../assets/profile-pic.png";
 import { PhotoVideoLibraryHub } from "./PhotoVideoLibraryHub";
+import { useToast } from "../../context/ToastContext";
 
 export const StudentDashboardHub = ({
   currentUser = {},
@@ -40,93 +47,199 @@ export const StudentDashboardHub = ({
   onUpdateCurrentUser,
 }) => {
   const navigate = useNavigate();
-  const [notifTab, setNotifTab] = useState("all");
+  const { showToast } = useToast();
+  const [isAssignmentsModalOpen, setIsAssignmentsModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedReminderDays, setSelectedReminderDays] = useState(3);
+  const [isRemindDropdownOpen, setIsRemindDropdownOpen] = useState(false);
+  const [reminderSnoozedInfo, setReminderSnoozedInfo] = useState(null);
 
-  // Notifications & Deadlines Alert List
-  // Due Date Business Logic:
-  // - 0 to 2 days left (or due today): RED color throughout (Critical urgency)
-  // - 3 to 5 days left: YELLOW / Amber color for 5 (Warning)
-  // - 6 to 7 days left: Soft Yellow/Notice (7 days advance notice)
-  const NOTIFICATIONS_LIST = [
+  const REMINDER_OPTIONS = [
     {
-      id: "notif-1",
-      type: "assignment",
-      category: "today",
-      title: "Affiliate Marketing Campaign Strategy",
-      course: "Advanced Topics • Module 4",
-      dueDate: "Today • 11:59 PM",
-      daysLeft: 0,
-      status: "pending",
-      badgeText: "Due Today",
-      severity: "critical", // RED
-      link: "/my-assignments",
-      btnText: "Submit Now",
+      days: 2,
+      label: "2 Days",
+      date: "Oct 9, 2026",
+      desc: "Short snooze (Alerts on Oct 9 • 5 days before due)",
     },
     {
-      id: "notif-2",
-      type: "assignment",
-      category: "pending",
-      title: "Influencer Outreach & Rate Card Proposal",
-      course: "Advanced Topics • Influencer Track",
-      dueDate: "In 2 days • Oct 8, 2026",
-      daysLeft: 2,
-      status: "pending",
-      badgeText: "2 Days Left",
-      severity: "urgent", // RED
-      link: "/my-assignments",
-      btnText: "Submit Work",
+      days: 3,
+      label: "3 Days",
+      date: "Oct 10, 2026",
+      desc: "Recommended (Alerts on Oct 10 • 4 days before due)",
     },
     {
-      id: "notif-3",
-      type: "assignment",
-      category: "pending",
-      title: "Mobile Marketing & App Store Optimization Audit",
-      course: "Advanced Topics • Mobile Growth",
-      dueDate: "In 5 days • Oct 11, 2026",
-      daysLeft: 5,
-      status: "pending",
-      badgeText: "5 Days Left",
-      severity: "warning", // YELLOW / AMBER
-      link: "/my-assignments",
-      btnText: "View Details",
+      days: 4,
+      label: "4 Days",
+      date: "Oct 11, 2026",
+      desc: "Medium snooze (Alerts on Oct 11 • 3 days before due)",
     },
     {
-      id: "notif-4",
-      type: "exam",
-      category: "exams",
-      title: "Digital Marketing Mid-Term Certification Exam",
-      course: "Diploma Track • Final Assessment",
-      dueDate: "In 4 days • Oct 10, 2026 (10:00 AM)",
-      daysLeft: 4,
-      status: "scheduled",
-      badgeText: "Exam In 4 Days",
-      severity: "exam", // Purple / High Priority
-      examMeta: "Proctored Online • 60 Mins • 50 MCQs • Passing 80%",
-      link: "/my-quizzes",
-      btnText: "Exam Details",
-    },
-    {
-      id: "notif-5",
-      type: "assignment",
-      category: "pending",
-      title: "Online Reputation Management (ORM) Crisis Matrix",
-      course: "Advanced Topics • Brand Security",
-      dueDate: "In 7 days • Oct 13, 2026",
-      daysLeft: 7,
-      status: "pending",
-      badgeText: "7 Days Left",
-      severity: "notice", // YELLOW / NOTICE
-      link: "/my-assignments",
-      btnText: "Start Draft",
+      days: 5,
+      label: "5 Days",
+      date: "Oct 12, 2026",
+      desc: "Latest snooze (Alerts on Oct 12 • 2 days before due)",
     },
   ];
 
-  const filteredNotifs = NOTIFICATIONS_LIST.filter((item) => {
-    if (notifTab === "today") return item.category === "today" || item.daysLeft === 0;
-    if (notifTab === "pending") return item.type === "assignment";
-    if (notifTab === "exams") return item.type === "exam";
-    return true;
-  });
+  const handleSetReminder = (days, dateStr) => {
+    setReminderSnoozedInfo({ days, date: dateStr });
+    if (showToast) {
+      showToast(
+        `Payment reminder scheduled for ${days} days from now (${dateStr}).`,
+        "success",
+        "Reminder Scheduled",
+      );
+    }
+    setIsPaymentModalOpen(false);
+    setIsRemindDropdownOpen(false);
+  };
+
+  // The 6 Pending & Overdue Assignments (1 Overdue where due date gone + 5 Pending)
+  const PENDING_ASSIGNMENTS_MODAL_LIST = [
+    {
+      id: "a-adv-5",
+      title: "Online Reputation Management (ORM) Assignment",
+      course: "Advanced Topics • Brand Security",
+      dueDate: "Due Yesterday • Oct 6, 2026",
+      status: "overdue",
+      daysLeft: -1,
+      badgeText: "Overdue (Due Date Gone)",
+      instructions:
+        "Create an ORM crisis management manual and response matrix for negative customer feedback.",
+      isOverdue: true,
+    },
+    {
+      id: "a-adv-2",
+      title: "Influencer Marketing Assignment-1",
+      course: "Advanced Topics • Influencer Track",
+      dueDate: "In 2 days • Oct 9, 2026 (11:59 PM)",
+      status: "pending",
+      daysLeft: 2,
+      badgeText: "2 Days Left",
+      instructions:
+        "Curate a 10-tier influencer list across beauty and tech niches with outreach templates.",
+      isUrgent: true,
+    },
+    {
+      id: "a-adv-4",
+      title: "Mobile Marketing Assignment",
+      course: "Advanced Topics • Mobile Growth",
+      dueDate: "In 5 days • Oct 12, 2026 (11:59 PM)",
+      status: "pending",
+      daysLeft: 5,
+      badgeText: "5 Days Left",
+      instructions:
+        "Conduct Google Play & Apple App Store metadata audit and draft 5 push notification copies.",
+      isYellow: true,
+    },
+    {
+      id: "a-adv-6",
+      title: "Viral Marketing Assignment-1",
+      course: "Advanced Topics • Viral Growth",
+      dueDate: "In 7 days • Oct 14, 2026 (11:59 PM)",
+      status: "pending",
+      daysLeft: 7,
+      badgeText: "7 Days Left",
+      instructions:
+        "Design a meme marketing campaign pack consisting of 5 topical memes for social channels.",
+      isYellowNotice: true,
+    },
+    {
+      id: "a-adv-7",
+      title: "Viral Marketing Assignment-2",
+      course: "Advanced Topics • Social Media",
+      dueDate: "In 9 days • Oct 16, 2026 (11:59 PM)",
+      status: "pending",
+      daysLeft: 9,
+      badgeText: "9 Days Left",
+      instructions:
+        "Engineer a referral viral loop mechanism with tier unlocking and share incentive triggers.",
+    },
+    {
+      id: "a-adv-8",
+      title: "Content Marketing Assignment-1",
+      course: "Advanced Topics • Content Marketing",
+      dueDate: "In 14 days • Oct 21, 2026 (11:59 PM)",
+      status: "pending",
+      daysLeft: 14,
+      badgeText: "14 Days Left",
+      instructions:
+        "Develop a 90-day pillar content framework with lead magnet gate and distribution schedule.",
+    },
+  ];
+
+  // Listed Notifications Array:
+  const NOTIFICATIONS_LIST = [
+    // 1. Assignment Due Today (Separate, Urgent - RED)
+    {
+      id: "notif-today",
+      type: "assignment_today",
+      title: "Affiliate Marketing Assignment",
+      course: "Advanced Topics • Module 4",
+      dueDate: "Today • 11:59 PM",
+      daysLeft: 0,
+      badgeText: "Due Today",
+      severity: "critical", // RED
+      link: "/my-assignments?id=a-adv-1",
+      btnText: "Submit Work",
+    },
+    // 2. Pending & Overdue Assignments (6) -> PURPLE (previous exams color)
+    {
+      id: "notif-assignments-group",
+      type: "assignments_group",
+      title: "Assignments (6)",
+      course: "1 Overdue (Due Date Gone) • 5 Pending Submissions",
+      dueDate: "Review 6 Pending Tasks",
+      badgeText: "1 Overdue + 5 Pending",
+      badgeCount: "6 Tasks",
+      severity: "pending_group", // PURPLE
+      actionType: "open_assignments_modal",
+      btnText: "View List (6)",
+    },
+    // 3. Payment Due (7 Days Before) -> YELLOW / AMBER
+    {
+      id: "notif-payment",
+      type: "payment",
+      title: "Course Fee Installment Due",
+      course: "Term 3 Tuition Fee • ₹12,500",
+      dueDate: reminderSnoozedInfo
+        ? `Snoozed (${reminderSnoozedInfo.days}d) • Remind on ${reminderSnoozedInfo.date}`
+        : "Due in 7 days • Oct 14, 2026",
+      daysLeft: 7,
+      badgeText: reminderSnoozedInfo
+        ? `Remind in ${reminderSnoozedInfo.days}d`
+        : "Due in 7 Days",
+      severity: "payment", // YELLOW / AMBER
+      actionType: "open_payment_modal",
+      btnText: reminderSnoozedInfo ? "Pay / Change" : "Pay Online",
+    },
+    // 4. New Quiz -> BLUE
+    {
+      id: "notif-quiz",
+      type: "quiz",
+      title: "New Quiz: SEO Technical Audit & Schema Assessment",
+      course: "Search Engine Optimization (SEO)",
+      dueDate: "In 5 days • Oct 12, 2026 (11:59 PM)",
+      daysLeft: 5,
+      badgeText: "5 Days Left",
+      severity: "quiz", // BLUE
+      link: "/my-quizzes",
+      btnText: "Start Quiz",
+    },
+    // 5. Certification Exam -> GREEN
+    {
+      id: "notif-exam",
+      type: "exam",
+      title: "Digital Marketing Mid-Term Certification Exam",
+      course: "Diploma Track • Final Assessment",
+      dueDate: "In 4 days • Oct 11, 2026 (10:00 AM)",
+      daysLeft: 4,
+      badgeText: "Exam in 4 Days",
+      severity: "exam", // GREEN
+      link: "/my-quizzes",
+      btnText: "Exam Details",
+    },
+  ];
 
   return (
     <div className="space-y-6">
@@ -156,7 +269,7 @@ export const StudentDashboardHub = ({
               </div>
 
               <div className="min-w-0 space-y-0.5 md:space-y-1 2xl:space-y-1.5">
-                <span className="text-[10px] sm:text-[11px] lg:text-xs font-bold uppercase tracking-widest text-slate-500/90 block">
+                <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-blue-900 block">
                   WELCOME BACK,
                 </span>
                 <h1 className="text-base sm:text-xl md:text-2xl lg:text-[26px] 2xl:text-3xl font-black text-[#0c1e3d] tracking-tight leading-tight flex items-center gap-1.5">
@@ -164,7 +277,7 @@ export const StudentDashboardHub = ({
                     {currentUser.name || "Hiteshpuri Goswami"}!
                   </span>
                 </h1>
-                <p className="text-[11px] sm:text-xs lg:text-sm 2xl:text-base text-slate-600 font-medium truncate">
+                <p className="text-xs sm:text-sm lg:text-base text-slate-900 font-bold truncate">
                   {crmProfile.course || "Diploma in Digital Marketing"}
                 </p>
 
@@ -516,7 +629,7 @@ export const StudentDashboardHub = ({
         {/* LEFT COLUMN: ~58% (lg:col-span-7)                           */}
         <div className="lg:col-span-7 space-y-5 sm:space-y-6">
           {/* Outer White Card Container with Soft Elevation */}
-          <div className="w-full bg-white border border-slate-100 shadow-[0_10px_35px_rgba(0,0,0,0.04)] p-5 sm:p-6 lg:p-7 space-y-6">
+          <div className="w-full bg-white rounded-2xl border border-slate-100 shadow-[0_10px_35px_rgba(0,0,0,0.04)] p-5 sm:p-6 lg:p-7 space-y-6">
             {/* Header: Pure White elements with soft drop shadow */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -819,166 +932,131 @@ export const StudentDashboardHub = ({
         {/* ----------------------------------------------------------- */}
         {/* RIGHT COLUMN: ~42% (lg:col-span-5)                          */}
         {/* ----------------------------------------------------------- */}
-        <div className="lg:col-span-5 space-y-5 sm:space-y-6 w-full max-w-full 2xl:max-w-xl 3xl:max-w-2xl">
+        <div className="lg:col-span-5 space-y-5 sm:space-y-6">
           {/* ========================================================= */}
           {/* R1: NOTIFICATIONS & DEADLINES HUB                         */}
-          {/* (Replaces Today/Upcoming with due date alerts & logic)    */}
+          {/* (Matches Continue Learning container elevation & style)   */}
           {/* ========================================================= */}
-          <div className="bg-white border border-slate-100/90 shadow-[0_6px_25px_rgba(0,0,0,0.03)] rounded-2xl p-4 sm:p-5 2xl:p-6 space-y-3.5">
-            {/* Header */}
-            <div className="flex items-center justify-between px-0.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-rose-50 border border-rose-200/80 shadow-2xs text-rose-600 flex items-center justify-center shrink-0 relative">
-                  <Bell size={16} className="fill-rose-500/20" />
-                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-600 rounded-full ring-2 ring-white animate-pulse" />
+          <div className="w-full bg-white border border-slate-100 shadow-[0_10px_35px_rgba(0,0,0,0.04)] p-5 sm:p-6 lg:p-7 space-y-5">
+            {/* Header: Pure White elements with soft drop shadow like Continue Learning */}
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                {/* 1. Icon is BLUE in pure white raised box matching Continue Learning */}
+                <div className="w-9 h-9 rounded bg-white text-[#2563eb] flex items-center justify-center shrink-0 border border-slate-100 shadow-[0_2px_10px_rgba(37,99,235,0.08)] relative">
+                  <Bell size={16} className="text-[#2563eb]" />
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#2563eb] rounded-full ring-2 ring-white animate-pulse" />
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug">
                       Notifications & Deadlines
                     </h3>
-                    <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10.5px] font-extrabold bg-rose-100/80 text-rose-700 border border-rose-200">
-                      7 Pending
+                    {/* 2. 6 action items is NOT rounded-full, but rounded like Resume Lesson btn */}
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10.5px] font-bold bg-blue-50 text-[#2563eb] border border-blue-200/80 shrink-0">
+                      6 Action Items
                     </span>
                   </div>
                   <p className="text-[11px] text-slate-500 font-medium">
-                    Due dates, assignment submissions & scheduled exams
+                    Submission deadlines, pending tasks & payment schedules
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => navigate("/my-assignments")}
-                className="text-xs sm:text-sm font-semibold text-[#2563eb] hover:text-blue-700 flex items-center gap-1 cursor-pointer transition-colors shrink-0"
-              >
-                <span>All Tasks</span>
-                <ArrowRight size={12} strokeWidth={2.5} />
-              </button>
             </div>
 
-            {/* Filter Tabs */}
-            <div className="flex items-center gap-1.5 p-1 bg-slate-50 border border-slate-200/70 rounded-xl overflow-x-auto">
-              <button
-                type="button"
-                onClick={() => setNotifTab("all")}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
-                  notifTab === "all"
-                    ? "bg-white text-slate-900 shadow-2xs border border-slate-200"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                All Alerts (5)
-              </button>
-              <button
-                type="button"
-                onClick={() => setNotifTab("today")}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
-                  notifTab === "today"
-                    ? "bg-rose-50 text-rose-700 shadow-2xs border border-rose-200 font-black"
-                    : "text-slate-600 hover:text-rose-700"
-                }`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-rose-600" />
-                Due Today (1)
-              </button>
-              <button
-                type="button"
-                onClick={() => setNotifTab("pending")}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
-                  notifTab === "pending"
-                    ? "bg-amber-50 text-amber-800 shadow-2xs border border-amber-200 font-black"
-                    : "text-slate-600 hover:text-amber-800"
-                }`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                Assignments (7)
-              </button>
-              <button
-                type="button"
-                onClick={() => setNotifTab("exams")}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
-                  notifTab === "exams"
-                    ? "bg-purple-50 text-purple-700 shadow-2xs border border-purple-200 font-black"
-                    : "text-slate-600 hover:text-purple-700"
-                }`}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-purple-600" />
-                Exams (1)
-              </button>
-            </div>
+            {/* Listed Notifications - Compact Height, White Card Body, Colored Side Section & Solid Badges */}
+            <div className="space-y-2">
+              {NOTIFICATIONS_LIST.map((item) => {
+                const handleClick = () => {
+                  if (item.actionType === "open_assignments_modal") {
+                    setIsAssignmentsModalOpen(true);
+                  } else if (item.actionType === "open_payment_modal") {
+                    setIsPaymentModalOpen(true);
+                  } else if (item.link) {
+                    navigate(item.link);
+                  }
+                };
 
-            {/* Notification Items List */}
-            <div className="space-y-2.5">
-              {filteredNotifs.map((item) => {
-                // Strict Logic per User Request:
-                // - daysLeft <= 2 (due today or <= 2 days): Red color throughout
-                // - daysLeft === 5 (or 3-5 days): Yellow color for 5
-                // - daysLeft === 7 (or 6-7 days): Yellow notice
-                // - exams: High Priority exam alert
-                const isRed = item.daysLeft <= 2 && item.type !== "exam";
-                const isYellow = item.daysLeft > 2 && item.daysLeft <= 7 && item.type !== "exam";
-                const isExam = item.type === "exam";
+                // Styling logic:
+                // 3. For all list: outer card background is strictly WHITE, border is subtle slate neutral
+                // 4. Exam is GREEN
+                // 5. Due Today is RED, other pendings (Assignments 6) is PURPLE (previous exams color)
+                // 6. Quizzes is BLUE
+                // Payment is AMBER/YELLOW
+                let stripBg = "bg-red-50 text-red-600 border-red-500";
+                let badgeBg = "bg-red-600 text-white";
+                let clockColor = "text-red-500";
+                let btnHover =
+                  "group-hover:bg-red-600 group-hover:text-white group-hover:border-red-600";
+                let stripIcon = (
+                  <Flame size={15} className="text-red-600 animate-pulse" />
+                );
+                let stripText = "TODAY";
+
+                if (item.severity === "pending_group") {
+                  // Purple (previous exam color) for other pendings
+                  stripBg = "bg-purple-50 text-purple-700 border-purple-500";
+                  badgeBg = "bg-purple-600 text-white";
+                  clockColor = "text-purple-500";
+                  btnHover =
+                    "group-hover:bg-purple-600 group-hover:text-white group-hover:border-purple-600";
+                  stripIcon = (
+                    <AlertTriangle size={15} className="text-purple-600" />
+                  );
+                  stripText = "6 TASKS";
+                } else if (item.severity === "payment") {
+                  // Amber / Yellow for payment due
+                  stripBg = "bg-amber-50 text-amber-800 border-amber-500";
+                  badgeBg = "bg-amber-500 text-white";
+                  clockColor = "text-amber-500";
+                  btnHover =
+                    "group-hover:bg-amber-500 group-hover:text-white group-hover:border-amber-500";
+                  stripIcon = (
+                    <CreditCard size={15} className="text-amber-700" />
+                  );
+                  stripText = "7d LEFT";
+                } else if (item.severity === "quiz") {
+                  // Blue for quiz
+                  stripBg = "bg-blue-50 text-blue-600 border-blue-500";
+                  badgeBg = "bg-blue-600 text-white";
+                  clockColor = "text-blue-500";
+                  btnHover =
+                    "group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600";
+                  stripIcon = <BookCheck size={15} className="text-blue-600" />;
+                  stripText = "5d LEFT";
+                } else if (item.severity === "exam") {
+                  // Green for exam
+                  stripBg = "bg-emerald-50 text-emerald-700 border-emerald-500";
+                  badgeBg = "bg-emerald-600 text-white";
+                  clockColor = "text-emerald-500";
+                  btnHover =
+                    "group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600";
+                  stripIcon = <Award size={15} className="text-emerald-600" />;
+                  stripText = "EXAM";
+                }
 
                 return (
                   <div
                     key={item.id}
-                    onClick={() => navigate(item.link)}
-                    className={`overflow-hidden rounded-xl border transition-all duration-200 flex items-stretch cursor-pointer group shadow-2xs hover:shadow-xs hover:-translate-y-0.5 ${
-                      isRed
-                        ? "border-red-200/90 bg-red-50/35 hover:bg-red-50/70"
-                        : isYellow
-                        ? "border-amber-200/90 bg-amber-50/35 hover:bg-amber-50/70"
-                        : "border-purple-200/90 bg-purple-50/35 hover:bg-purple-50/70"
-                    }`}
+                    onClick={handleClick}
+                    className="bg-white border border-slate-200/80 hover:border-slate-300 rounded-xl overflow-hidden flex items-stretch cursor-pointer group shadow-2xs hover:shadow-xs transition-all duration-150"
                   >
-                    {/* Left Full-Height Date / Urgency Badge */}
+                    {/* Left Full-Height Strip: Colored side section */}
                     <div
-                      className={`self-stretch flex flex-col items-center justify-center px-3 sm:px-3.5 text-center shrink-0 min-w-[58px] sm:min-w-[66px] border-l-4 ${
-                        isRed
-                          ? "bg-red-100/80 text-red-700 border-red-600"
-                          : isYellow
-                          ? "bg-amber-100/80 text-amber-800 border-amber-500"
-                          : "bg-purple-100/80 text-purple-700 border-purple-600"
-                      }`}
+                      className={`self-stretch flex flex-col items-center justify-center px-2 sm:px-2.5 text-center shrink-0 min-w-[50px] sm:min-w-[56px] border-l-4 ${stripBg}`}
                     >
-                      {item.daysLeft === 0 ? (
-                        <>
-                          <Flame size={18} className="text-red-600 animate-pulse" />
-                          <span className="text-[10px] font-black uppercase mt-1 tracking-tight leading-none text-red-700">
-                            TODAY
-                          </span>
-                        </>
-                      ) : isExam ? (
-                        <>
-                          <Award size={18} className="text-purple-600" />
-                          <span className="text-[10px] font-black uppercase mt-1 tracking-tight leading-none text-purple-700">
-                            EXAM
-                          </span>
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-base sm:text-lg font-black leading-none block">
-                            {item.daysLeft}d
-                          </span>
-                          <span className="text-[9.5px] font-bold uppercase block mt-1 tracking-wide">
-                            LEFT
-                          </span>
-                        </>
-                      )}
+                      {stripIcon}
+                      <span className="text-[9px] font-black uppercase tracking-tight leading-none mt-0.5">
+                        {stripText}
+                      </span>
                     </div>
 
-                    {/* Content Section */}
-                    <div className="flex-1 min-w-0 p-3 sm:p-3.5 flex items-center justify-between gap-3">
-                      <div className="min-w-0 space-y-1">
-                        <div className="flex items-center gap-2 flex-wrap">
+                    {/* Content Section: White background, normal dark text, compact height */}
+                    <div className="flex-1 min-w-0 py-2 sm:py-2.5 px-3 flex items-center justify-between gap-2.5">
+                      <div className="min-w-0 space-y-0.5">
+                        {/* Badges line: Solid color bg with white text */}
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           <span
-                            className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-extrabold border ${
-                              isRed
-                                ? "bg-red-100/90 text-red-700 border-red-200"
-                                : isYellow
-                                ? "bg-amber-100/90 text-amber-800 border-amber-200"
-                                : "bg-purple-100/90 text-purple-700 border-purple-200"
-                            }`}
+                            className={`inline-flex items-center px-1.5 py-0.5 rounded text-[9.5px] font-bold leading-none shadow-2xs ${badgeBg}`}
                           >
                             {item.badgeText}
                           </span>
@@ -987,52 +1065,30 @@ export const StudentDashboardHub = ({
                           </span>
                         </div>
 
-                        <h5
-                          className={`font-bold text-xs sm:text-sm truncate transition-colors ${
-                            isRed
-                              ? "text-slate-900 group-hover:text-red-700"
-                              : isYellow
-                              ? "text-slate-900 group-hover:text-amber-800"
-                              : "text-slate-900 group-hover:text-purple-700"
-                          }`}
-                        >
+                        {/* Title: Clean dark text */}
+                        <h5 className="font-bold text-xs sm:text-[13px] text-slate-900 group-hover:text-blue-600 transition-colors truncate leading-tight">
                           {item.title}
                         </h5>
 
-                        <div className="flex items-center gap-3 text-[11px] text-slate-500 font-medium">
-                          <span className="flex items-center gap-1 font-semibold text-slate-700">
-                            <Clock
-                              size={12}
-                              className={
-                                isRed
-                                  ? "text-red-600"
-                                  : isYellow
-                                  ? "text-amber-600"
-                                  : "text-purple-600"
-                              }
-                            />
-                            Due: {item.dueDate}
-                          </span>
-                          {item.examMeta && (
-                            <span className="hidden sm:inline text-purple-700 font-semibold truncate">
-                              • {item.examMeta}
-                            </span>
-                          )}
+                        {/* Due date line: Compact */}
+                        <div className="flex items-center gap-1.5 text-[10.5px] text-slate-500 font-medium pt-0.5">
+                          <Clock size={11} className={clockColor} />
+                          <span>{item.dueDate}</span>
                         </div>
                       </div>
 
-                      {/* Right Chevron / Action Pill */}
-                      <div
-                        className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-colors border shadow-2xs ${
-                          isRed
-                            ? "bg-white text-red-600 border-red-200 group-hover:bg-red-600 group-hover:text-white"
-                            : isYellow
-                            ? "bg-white text-amber-700 border-amber-200 group-hover:bg-amber-500 group-hover:text-white"
-                            : "bg-white text-purple-600 border-purple-200 group-hover:bg-purple-600 group-hover:text-white"
-                        }`}
-                        title={item.btnText}
-                      >
-                        <ChevronRight size={14} strokeWidth={2.5} />
+                      {/* Right Action Button */}
+                      <div className="shrink-0 flex items-center">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded text-[11px] font-bold border border-slate-200/90 bg-slate-50 text-slate-700 shadow-2xs transition-all ${btnHover}`}
+                        >
+                          <span>{item.btnText}</span>
+                          {item.actionType ? (
+                            <ExternalLink size={11} />
+                          ) : (
+                            <ChevronRight size={12} strokeWidth={2.5} />
+                          )}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -1040,21 +1096,13 @@ export const StudentDashboardHub = ({
               })}
             </div>
 
-            {/* Bottom Summary Bar: 7 Pending Assignments Alert */}
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
-              <div className="flex items-center gap-1.5">
-                <AlertTriangle size={14} className="text-amber-500 shrink-0" />
-                <span className="font-semibold text-slate-700">
-                  <strong className="text-slate-900">7 assignments</strong> pending submission
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => navigate("/my-assignments")}
-                className="font-bold text-[#2563eb] hover:text-blue-800 hover:underline cursor-pointer text-[11.5px]"
-              >
-                Open Assignments &rarr;
-              </button>
+            {/* Bottom Summary Bar */}
+            <div className="pt-2.5 border-t border-slate-100 flex items-center gap-1.5 text-xs text-slate-600">
+              <AlertTriangle size={14} className="text-amber-500 shrink-0" />
+              <span className="font-semibold text-slate-700">
+                <strong className="text-slate-900">1 Overdue</strong> • 1 Due
+                Today • 1 Fee Notice
+              </span>
             </div>
           </div>
 
@@ -1110,6 +1158,400 @@ export const StudentDashboardHub = ({
           </div>
         </div>
       </div>
+
+      {/* ------------------------------------------------------------- */}
+      {/* POPUP MODAL 1: PENDING & OVERDUE ASSIGNMENTS (6)              */}
+      {/* ------------------------------------------------------------- */}
+      {isAssignmentsModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150">
+          <div className="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 bg-slate-50/80">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 border border-rose-200 flex items-center justify-center shrink-0">
+                  <AlertTriangle size={20} />
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-base sm:text-lg flex items-center gap-2">
+                    Assignments (6)
+                    <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
+                      1 Overdue • 5 Pending
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Click any assignment below to directly open its submission
+                    form
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsAssignmentsModalOpen(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Overdue Warning Alert Strip */}
+            <div className="bg-red-50 border-b border-red-100 px-4 py-2.5 flex items-center justify-between text-xs text-red-800">
+              <div className="flex items-center gap-2">
+                <Flame
+                  size={14}
+                  className="text-red-600 shrink-0 animate-pulse"
+                />
+                <span className="font-semibold">
+                  <strong>Due date gone for 1 assignment!</strong> Submit
+                  immediately to prevent grade penalty.
+                </span>
+              </div>
+            </div>
+
+            {/* Modal Body: List of 6 Pending & Overdue Assignments */}
+            <div className="p-4 sm:p-5 overflow-y-auto space-y-3 flex-1">
+              {PENDING_ASSIGNMENTS_MODAL_LIST.map((assign) => {
+                const isOverdue =
+                  assign.status === "overdue" || assign.daysLeft < 0;
+                const isUrgent = assign.daysLeft > 0 && assign.daysLeft <= 2;
+                const isYellow = assign.daysLeft > 2 && assign.daysLeft <= 7;
+
+                return (
+                  <div
+                    key={assign.id}
+                    onClick={() => {
+                      setIsAssignmentsModalOpen(false);
+                      navigate(`/my-assignments?id=${assign.id}`);
+                    }}
+                    className={`p-3.5 sm:p-4 rounded-xl border transition-all cursor-pointer group flex items-start justify-between gap-3 shadow-2xs hover:shadow-md hover:-translate-y-0.5 ${
+                      isOverdue
+                        ? "border-red-300 bg-red-50/40 hover:bg-red-50/80"
+                        : isUrgent
+                          ? "border-rose-200 bg-rose-50/30 hover:bg-rose-50/70"
+                          : isYellow
+                            ? "border-amber-200 bg-amber-50/30 hover:bg-amber-50/70"
+                            : "border-slate-200 bg-white hover:bg-blue-50/30 hover:border-blue-300"
+                    }`}
+                  >
+                    <div className="space-y-1.5 min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span
+                          className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md border ${
+                            isOverdue
+                              ? "bg-red-100 text-red-800 border-red-300"
+                              : isUrgent
+                                ? "bg-rose-100 text-rose-800 border-rose-200"
+                                : isYellow
+                                  ? "bg-amber-100 text-amber-800 border-amber-200"
+                                  : "bg-slate-100 text-slate-700 border-slate-200"
+                          }`}
+                        >
+                          {assign.badgeText}
+                        </span>
+                        <span className="text-[11px] text-slate-500 font-medium truncate">
+                          {assign.course}
+                        </span>
+                      </div>
+
+                      <h4 className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-blue-700 transition-colors">
+                        {assign.title}
+                      </h4>
+
+                      <p className="text-[11.5px] text-slate-500 line-clamp-1">
+                        {assign.instructions}
+                      </p>
+
+                      <div className="flex items-center gap-2 text-[11px] font-semibold pt-0.5">
+                        <Clock
+                          size={12}
+                          className={
+                            isOverdue
+                              ? "text-red-600"
+                              : isUrgent
+                                ? "text-rose-600"
+                                : isYellow
+                                  ? "text-amber-600"
+                                  : "text-slate-400"
+                          }
+                        />
+                        <span
+                          className={
+                            isOverdue
+                              ? "text-red-700 font-bold"
+                              : isUrgent
+                                ? "text-rose-700 font-bold"
+                                : isYellow
+                                  ? "text-amber-700 font-bold"
+                                  : "text-slate-600"
+                          }
+                        >
+                          {assign.dueDate}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="shrink-0 flex items-center self-center">
+                      <span
+                        className={`text-xs font-bold px-3 py-1.5 rounded-lg border flex items-center gap-1 shadow-2xs transition-all ${
+                          isOverdue
+                            ? "bg-red-600 text-white border-red-600 group-hover:bg-red-700"
+                            : isUrgent
+                              ? "bg-rose-600 text-white border-rose-600 group-hover:bg-rose-700"
+                              : "bg-white text-blue-700 border-slate-200 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600"
+                        }`}
+                      >
+                        Submit <ArrowRight size={12} />
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsAssignmentsModalOpen(false);
+                  navigate("/my-assignments");
+                }}
+                className="text-xs font-bold text-[#2563eb] hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>Go to Full Assignments Hub</span>
+                <ArrowRight size={12} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsAssignmentsModalOpen(false)}
+                className="px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition-all cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* POPUP MODAL 2: PAYMENT DUE (7 DAYS NOTICE)                    */}
+      {/* ------------------------------------------------------------- */}
+      {isPaymentModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150">
+          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-150">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 bg-amber-50/80">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 border border-amber-200 flex items-center justify-center shrink-0">
+                  <CreditCard size={20} />
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-base sm:text-lg">
+                    Fee Installment Due
+                  </h3>
+                  <p className="text-xs text-amber-800 font-semibold">
+                    7 Days Remaining • Due Oct 14, 2026
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsPaymentModalOpen(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-amber-100 transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 space-y-4 text-xs">
+              {/* Amount Highlight Card */}
+              <div className="bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-white border border-amber-200 rounded-xl p-4 text-center space-y-1">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 block">
+                  Outstanding Installment
+                </span>
+                <div className="text-3xl font-black text-slate-900">
+                  ₹12,500
+                </div>
+                <span className="inline-block text-[10.5px] font-bold text-amber-800 bg-amber-100/90 px-2.5 py-0.5 rounded-full border border-amber-200">
+                  Term 3 Tuition Fee • 3 of 4 Installments
+                </span>
+              </div>
+
+              {/* Fee Breakdown */}
+              <div className="space-y-1.5 bg-slate-50 border border-slate-200/80 rounded-xl p-3">
+                <div className="flex justify-between py-1 border-b border-slate-200/60">
+                  <span className="text-slate-500 font-medium">
+                    Student Name:
+                  </span>
+                  <strong className="text-slate-900 font-bold">
+                    {currentUser.name || "Hiteshpuri Goswami"}
+                  </strong>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-200/60">
+                  <span className="text-slate-500 font-medium">
+                    Admission ID:
+                  </span>
+                  <strong className="text-slate-900 font-bold">
+                    {crmProfile.admissionNo || "OMC-0266"}
+                  </strong>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-200/60">
+                  <span className="text-slate-500 font-medium">Course:</span>
+                  <span className="text-slate-800 font-semibold">
+                    {crmProfile.course || "Diploma in Digital Marketing"}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1">
+                  <span className="text-slate-500 font-medium">
+                    Payment Due Date:
+                  </span>
+                  <strong className="text-red-700 font-bold">
+                    October 14, 2026
+                  </strong>
+                </div>
+              </div>
+
+              {/* Remind Me Later Options (2 to 5 Days) */}
+              <div className="bg-amber-50/70 border border-amber-200/90 rounded-xl p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <Clock size={13} className="text-amber-700" />
+                    <span>Remind Me Later Options:</span>
+                  </span>
+                  <span className="text-[10px] font-bold text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded">
+                    2 to 5 Days
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-4 gap-2">
+                  {REMINDER_OPTIONS.map((opt) => {
+                    const isSelected = selectedReminderDays === opt.days;
+                    return (
+                      <button
+                        key={opt.days}
+                        type="button"
+                        onClick={() => setSelectedReminderDays(opt.days)}
+                        className={`py-2 px-1 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                          isSelected
+                            ? "bg-amber-500 border-amber-600 text-slate-950 font-black shadow-xs ring-2 ring-amber-300"
+                            : "bg-white border-slate-200 text-slate-700 hover:border-amber-400 hover:bg-amber-50/50 font-bold"
+                        }`}
+                      >
+                        <span className="text-xs leading-none">
+                          {opt.days} Days
+                        </span>
+                        <span
+                          className={`text-[9.5px] leading-tight ${
+                            isSelected
+                              ? "text-slate-950 font-extrabold"
+                              : "text-slate-400 font-medium"
+                          }`}
+                        >
+                          {opt.date.split(",")[0]}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <p className="text-[10.5px] text-amber-800 font-medium leading-tight text-center pt-0.5">
+                  {
+                    REMINDER_OPTIONS.find(
+                      (o) => o.days === selectedReminderDays,
+                    )?.desc
+                  }
+                </p>
+              </div>
+
+              {/* Advisory note */}
+              <p className="text-[11px] text-slate-500 leading-relaxed bg-blue-50/60 border border-blue-100 rounded-lg p-2 text-center">
+                Payment can be made online via UPI/Netbanking or directly at the{" "}
+                <strong>{crmProfile.branch || "Borivali Center"}</strong>{" "}
+                accounts desk.
+              </p>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2 relative">
+              {/* Remind Me Later Split / Dropdown Button */}
+              <div className="relative">
+                <div className="inline-flex rounded-xl shadow-2xs border border-slate-300 bg-white overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const cur =
+                        REMINDER_OPTIONS.find(
+                          (o) => o.days === selectedReminderDays,
+                        ) || REMINDER_OPTIONS[1];
+                      handleSetReminder(cur.days, cur.date);
+                    }}
+                    className="px-3 sm:px-3.5 py-2 hover:bg-slate-50 text-slate-700 font-bold text-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                    title={`Snooze for ${selectedReminderDays} days`}
+                  >
+                    <Clock size={13} className="text-amber-600" />
+                    <span>Remind in {selectedReminderDays}d</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsRemindDropdownOpen((prev) => !prev)}
+                    className="px-2 py-2 border-l border-slate-200 hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+                    title="Choose reminder days (2-5 days)"
+                  >
+                    <ChevronDown size={13} />
+                  </button>
+                </div>
+
+                {/* Popover Dropdown for 2-5 Days */}
+                {isRemindDropdownOpen && (
+                  <div className="absolute left-0 bottom-full mb-1.5 w-56 bg-white border border-slate-200 rounded-xl shadow-xl py-1.5 z-50 text-xs animate-in fade-in zoom-in-95 duration-150">
+                    <div className="px-3 py-1 text-[10.5px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 mb-1">
+                      Choose Snooze Duration
+                    </div>
+                    {REMINDER_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.days}
+                        type="button"
+                        onClick={() => handleSetReminder(opt.days, opt.date)}
+                        className={`w-full px-3 py-1.5 text-left flex items-center justify-between hover:bg-amber-50 transition-colors cursor-pointer ${
+                          selectedReminderDays === opt.days
+                            ? "bg-amber-50/80 font-black text-amber-900"
+                            : "text-slate-700 font-semibold"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                          <span>
+                            In {opt.days} Days ({opt.date.split(",")[0]})
+                          </span>
+                        </div>
+                        {selectedReminderDays === opt.days && (
+                          <Check size={13} className="text-amber-700" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Pay Now Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  alert(
+                    "Redirecting to Razorpay / UPI Secure Payment Gateway (Demo)...",
+                  );
+                  setIsPaymentModalOpen(false);
+                }}
+                className="px-4 sm:px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+              >
+                <CreditCard size={14} />
+                <span>Pay ₹12,500 Online</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

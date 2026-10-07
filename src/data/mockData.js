@@ -666,7 +666,7 @@ export const INITIAL_QUIZZES = [
         passScorePercentage: 75,
         attemptsCount: 215,
         averageScore: 86.4,
-        description: 'Test your understanding of core digital channels, customer personas, conversion funnels, and marketing metrics.',
+        description: 'Comprehensive evaluation assessing core channel competencies across search, social, display, email, and content marketing. Measures conversion funnel analysis, customer journey mapping, and foundational return on ad spend (ROAS) calculations.',
         studentStatus: 'passed',
         studentScore: 92,
         completedDate: '18 Feb 2026',
@@ -685,7 +685,7 @@ export const INITIAL_QUIZZES = [
         passScorePercentage: 80,
         attemptsCount: 142,
         averageScore: 84.5,
-        description: 'Evaluate your ability to conduct keyword difficulty analysis, optimize on-page tags, and evaluate crawler response headers.',
+        description: 'In-depth technical and strategic examination covering keyword intent analysis, search volume clustering, on-page meta tag architecture, crawler HTTP status codes, robots.txt directives, XML sitemaps, and core web vitals optimization.',
         studentStatus: 'passed',
         studentScore: 88,
         completedDate: '02 Feb 2026',
@@ -704,7 +704,7 @@ export const INITIAL_QUIZZES = [
         passScorePercentage: 75,
         attemptsCount: 158,
         averageScore: 88.0,
-        description: 'Test your knowledge of WordPress site structure, theme customizers, Elementor layouts, and plugin security configurations.',
+        description: 'Hands-on architectural assessment testing WordPress database relationships, custom post types, responsive page-builder styling with Elementor Pro, theme hierarchy customization, caching strategies, and security configurations.',
         studentStatus: 'passed',
         studentScore: 85,
         completedDate: '22 Jan 2026',
@@ -723,7 +723,7 @@ export const INITIAL_QUIZZES = [
         passScorePercentage: 80,
         attemptsCount: 110,
         averageScore: 79.2,
-        description: 'Demonstrate hands-on understanding of GA4 custom dimensions, event tags, e-commerce purchase funnels, and debugging tools.',
+        description: 'Mastery test evaluating Google Analytics 4 event schema implementation, custom dimensions & metrics, conversion path attribution modeling, Google Tag Manager dataLayer triggers, and real-time debug view workflows.',
         studentStatus: 'passed',
         studentScore: 90,
         completedDate: '12 Feb 2026',
@@ -742,7 +742,7 @@ export const INITIAL_QUIZZES = [
         passScorePercentage: 85,
         attemptsCount: 195,
         averageScore: 82.4,
-        description: 'Practical scenario questions on Target CPA, Target ROAS, Quality Score mechanics, negative keyword match types, and conversion tracking.',
+        description: 'Advanced scenario-based examination covering Target CPA, Target ROAS, Quality Score mechanics, negative keyword match types, auction insights analysis, responsive search ads optimization, and conversion tracking tags.',
         studentStatus: 'pending',
         studentScore: null,
         completedDate: null,
@@ -761,7 +761,7 @@ export const INITIAL_QUIZZES = [
         passScorePercentage: 80,
         attemptsCount: 168,
         averageScore: 85.0,
-        description: 'Assess campaign setup, Meta Pixel tracking, Aggregated Event Measurement (AEM), custom lookalikes, and creative testing frameworks.',
+        description: 'Strategic assessment covering Meta Advantage+ campaigns, TikTok algorithmic engagement triggers, LinkedIn B2B lead generation funnels, influencer barter deliverables, and Aggregated Event Measurement (AEM) privacy protocols.',
         studentStatus: 'pending',
         studentScore: null,
         completedDate: null,
@@ -780,7 +780,7 @@ export const INITIAL_QUIZZES = [
         passScorePercentage: 75,
         attemptsCount: 94,
         averageScore: 81.5,
-        description: 'Evaluate composition balance, color theory contrasts, vector typography, Canva branding kits, and social banner hierarchy.',
+        description: 'Practical creative examination testing visual hierarchy, complementary color harmonies, vector layout grids, typography kerning and pairing, brand identity guidelines, and high-impact digital advertising banner composition.',
         studentStatus: 'pending',
         studentScore: null,
         completedDate: null,
@@ -799,7 +799,7 @@ export const INITIAL_QUIZZES = [
         passScorePercentage: 85,
         attemptsCount: 124,
         averageScore: 87.2,
-        description: 'Comprehensive end-to-end evaluation covering affiliate tracking, programmatic DSPs, omnichannel attribution, and client audit strategies.',
+        description: 'Rigorous capstone certification assessment covering multi-touch attribution, omnichannel marketing strategies, programmatic DSP ad buying, CRM automation workflows, client pitching frameworks, and live audit case studies.',
         studentStatus: 'pending',
         studentScore: null,
         completedDate: null,
@@ -1363,16 +1363,56 @@ export const INITIAL_DISCUSSIONS = [
                 authorAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
                 content: 'Ensure you add fetchpriority="high" to your featured hero image tag and exclude it from lazy-loading. Also enable Cloudflare Polish with WebP conversion.',
                 createdAt: '2 hours ago',
-                isOfficial: true
+                isOfficial: true,
+                likesCount: 6,
+                replies: [
+                    {
+                        id: 'rep-1-2',
+                        authorName: 'Rohan Mehta',
+                        authorRole: 'Student',
+                        authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+                        content: '@Vikram Malhotra Using FlyingPress with BunnyCDN brought our score down to 1.8s! Highly recommend checking image dimensions on mobile viewport.',
+                        createdAt: '1 hour ago',
+                        isOfficial: false,
+                        likesCount: 3,
+                        replies: [
+                            {
+                                id: 'rep-1-3',
+                                authorName: 'Harsh Pareek',
+                                authorRole: 'Instructor',
+                                authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+                                content: '@Rohan Mehta Spot on Rohan! BunnyCDN edge optimizer paired with modern CSS Flexbox containers is the gold standard for sub-2s mobile LCP.',
+                                createdAt: '45 min ago',
+                                isOfficial: true,
+                                likesCount: 5,
+                                replies: [
+                                    {
+                                        id: 'rep-1-4',
+                                        authorName: 'Priya Sharma',
+                                        authorRole: 'Student',
+                                        authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+                                        content: '@Harsh Pareek Thank you sir! Should we also purge local browser cache before re-testing on PageSpeed Insights?',
+                                        createdAt: '15 min ago',
+                                        isOfficial: false,
+                                        likesCount: 2,
+                                        replies: []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             },
             {
-                id: 'rep-1-2',
-                authorName: 'Rohan Mehta',
+                id: 'rep-1-5',
+                authorName: 'Ananya Gupta',
                 authorRole: 'Student',
-                authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-                content: 'Using FlyingPress with BunnyCDN brought our score down to 1.8s! Highly recommend checking image dimensions on mobile viewport.',
-                createdAt: '1 hour ago',
-                isOfficial: false
+                authorAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
+                content: 'We also converted all hero background banners from PNG to AVIF format which reduced mobile page weight by 60%.',
+                createdAt: '30 min ago',
+                isOfficial: false,
+                likesCount: 2,
+                replies: []
             }
         ]
     },
@@ -1384,7 +1424,7 @@ export const INITIAL_DISCUSSIONS = [
         authorAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
         title: 'Weekly Q&A Thread: Smart Bidding vs Manual CPC in 2026',
         content: 'Post your campaign bidding strategy questions here for this week review call. We will cover Target CPA scaling live!',
-        repliesCount: 1,
+        repliesCount: 3,
         createdAt: '1 day ago',
         category: 'PMAX & Bidding',
         isPinned: true,
@@ -1396,7 +1436,30 @@ export const INITIAL_DISCUSSIONS = [
                 authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
                 content: 'Is it recommended to start with Enhanced CPC during the learning phase before switching to Target ROAS once 30 conversions are recorded?',
                 createdAt: '18 hours ago',
-                isOfficial: false
+                isOfficial: false,
+                likesCount: 4,
+                replies: [
+                    {
+                        id: 'rep-2-2',
+                        authorName: 'Vikram Malhotra',
+                        authorRole: 'Instructor',
+                        authorAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+                        content: '@Hiteshpuri Goswami Exactly! Gathering 30-50 high-intent conversions first helps Google algorithms establish reliable customer intent profiles.',
+                        createdAt: '12 hours ago',
+                        isOfficial: true,
+                        likesCount: 7
+                    },
+                    {
+                        id: 'rep-2-3',
+                        authorName: 'Aarav Patel',
+                        authorRole: 'Student',
+                        authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+                        content: '@Vikram Malhotra Does this conversion volume requirement apply per ad group or at the full campaign account level?',
+                        createdAt: '4 hours ago',
+                        isOfficial: false,
+                        likesCount: 1
+                    }
+                ]
             }
         ]
     },
@@ -1408,7 +1471,7 @@ export const INITIAL_DISCUSSIONS = [
         authorAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
         title: 'What is the optimal video ratio and duration for Instagram Reels to maximize reach?',
         content: 'I noticed 9:16 videos under 15 seconds have higher completion rates, but longer tutorials get more saves. How are you balancing retention vs utility in your client campaigns?',
-        repliesCount: 1,
+        repliesCount: 2,
         createdAt: '2 days ago',
         category: 'Social Media',
         isPinned: false,
@@ -1420,7 +1483,20 @@ export const INITIAL_DISCUSSIONS = [
                 authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
                 content: 'For brand discovery, aim for punchy 7-12 second hooks. For authority and trust building, 45-60 second carousel or step-by-step videos get bookmarked. Test both on a 70/30 split.',
                 createdAt: '1 day ago',
-                isOfficial: true
+                isOfficial: true,
+                likesCount: 8,
+                replies: [
+                    {
+                        id: 'rep-3-2',
+                        authorName: 'Ananya Gupta',
+                        authorRole: 'Student',
+                        authorAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
+                        content: '@Pooja Bhatt That 70/30 split framework makes so much sense! We will adjust our client content calendar this week.',
+                        createdAt: '18 hours ago',
+                        isOfficial: false,
+                        likesCount: 2
+                    }
+                ]
             }
         ]
     },
@@ -1444,7 +1520,9 @@ export const INITIAL_DISCUSSIONS = [
                 authorAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
                 content: 'In GA4, you must register every custom parameter under Admin > Custom Definitions as a Custom Dimension before it populates in exploratory and standard reports. It takes 24-48 hours to backfill.',
                 createdAt: '2 days ago',
-                isOfficial: true
+                isOfficial: true,
+                likesCount: 3,
+                replies: []
             }
         ]
     }
@@ -1481,6 +1559,30 @@ export const INITIAL_ACTIVITIES = [
         target: 'Google Ads Masterclass',
         timeAgo: '3 hours ago',
         type: 'assignment'
+    },
+    {
+        id: 'act-5',
+        user: { name: 'Hiteshpuri Goswami', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
+        action: 'earned certificate for',
+        target: 'Advanced Technical SEO & Schema',
+        timeAgo: '4 hours ago',
+        type: 'certificate'
+    },
+    {
+        id: 'act-6',
+        user: { name: 'Vikram Malhotra', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80' },
+        action: 'resolved technical doubt on',
+        target: 'Core Web Vitals LCP Latency',
+        timeAgo: '5 hours ago',
+        type: 'discussion'
+    },
+    {
+        id: 'act-7',
+        user: { name: 'Harsh Pareek', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80' },
+        action: 'graded assignment submission for',
+        target: 'PMax Strategy Blueprint',
+        timeAgo: '6 hours ago',
+        type: 'grading'
     }
 ];
 export const INITIAL_ACHIEVEMENTS = [
@@ -1537,7 +1639,7 @@ export const INITIAL_NOTES = [
         courseTitle: 'Social Media Marketing',
         lessonTitle: '01 Overview & Channel Architecture Setup',
         category: 'Social Media',
-        content: 'Remember: 9:16 vertical short-form reels need a strong 3-second hook before retention dips below 60%. Test audio trends weekly.',
+        content: `• Vertical 9:16 Video Framework: Short-form Reels and TikToks require a decisive 3-second hook before user drop-off exceeds 60%.\n• Audio Trends & Algorithms: Always test trending original sounds within their initial 7 days of algorithmic surge to capitalize on Discovery feed visibility.\n• Creative Cadence: Publish 4–5 Reels weekly with high-contrast subtitles centered in the 1080x1920 safe zone for optimal engagement.`,
         createdAt: 'Sep 20, 2026'
     },
     {
@@ -1546,7 +1648,7 @@ export const INITIAL_NOTES = [
         courseTitle: 'Search Engine Optimization (SEO)',
         lessonTitle: '1.2 Keyword Research & Search Intent Mapping',
         category: 'SEO',
-        content: 'Informational keywords often have high volume but lower commercial conversion rates. Target transactional long-tail keywords on high-intent product landing pages.',
+        content: `• Search Intent Hierarchy: Informational keywords generate broad top-of-funnel traffic but yield lower conversion rates. Focus commercial long-tail queries onto dedicated high-converting product pages.\n• SERP Feature Competition: Inspect whether the top 5 ranking positions feature featured snippets, People Also Ask boxes, or video carousels before finalizing headings.\n• Keyword Difficulty Rule: Prioritize KD < 35 keywords during initial sprint phases to secure rapid topical authority on Google.`,
         createdAt: 'Sep 22, 2026'
     },
     {
@@ -1555,7 +1657,7 @@ export const INITIAL_NOTES = [
         courseTitle: 'Google Analytics Course',
         lessonTitle: 'GA4 Event Tracking & Conversion Modeling',
         category: 'Analytics',
-        content: 'Always mark custom events as conversion key events in GA4 admin before building Looker Studio reports. Allow 24-48 hours for data attribution backfill.',
+        content: `• Conversion Event Setup: Always designate custom GTM trigger events as 'Key Events' within GA4 Admin properties prior to publishing Looker Studio dashboards.\n• Attribution Stability: Allow 24–48 hours for data attribution backfill and cross-device modeling to stabilize before reporting to stakeholders.\n• DebugView Protocol: Validate all data layer variables inside Tag Assistant and the live GA4 DebugView stream before deploying container changes to production.`,
         createdAt: 'Sep 25, 2026'
     },
     {
@@ -1564,7 +1666,7 @@ export const INITIAL_NOTES = [
         courseTitle: 'Google Ads',
         lessonTitle: 'PMAX Bidding & Target ROAS Scaling',
         category: 'Google Ads',
-        content: 'Wait until campaign records at least 30 conversions in 30 days before enabling Target ROAS bidding strategy to prevent algorithmic volatility.',
+        content: `• Smart Bidding Calibration: Ensure Performance Max campaigns accrue at least 30 conversions over a 30-day window before switching to Target ROAS bidding to prevent volatility.\n• Comprehensive Asset Group: Upload full asset sets (at least 5 punchy headlines, 5 long descriptions, 1200x628 landscape banners, and square brand logos).\n• Account Exclusions: Implement account-level placement exclusion lists to avoid wasting ad spend on low-intent mobile gaming apps.`,
         createdAt: 'Oct 01, 2026'
     },
     {
@@ -1573,7 +1675,7 @@ export const INITIAL_NOTES = [
         courseTitle: 'Website Development With WordPress',
         lessonTitle: 'Core Web Vitals & Elementor Layouts',
         category: 'WordPress',
-        content: 'Use Flexbox containers instead of legacy sections/columns to reduce DOM depth by 40%. Preload featured LCP hero image with fetchpriority="high".',
+        content: `• DOM Tree Optimization: Convert legacy section and column wrappers into modern CSS Flexbox containers to reduce total DOM depth by up to 40%.\n• LCP Optimization: Preload the hero banner using fetchpriority="high" and convert high-resolution assets into next-gen WebP format.\n• Script Deferral: Dequeue unused block stylesheets and defer non-critical JavaScript to guarantee a Largest Contentful Paint under 1.2 seconds.`,
         createdAt: 'Oct 03, 2026'
     },
     {
@@ -1582,7 +1684,7 @@ export const INITIAL_NOTES = [
         courseTitle: 'Creative Designing',
         lessonTitle: 'Figma Typography Hierarchy & Auto Layout',
         category: 'Design',
-        content: 'Stick to 8pt grid spacing and use sRGB color profiles for social media graphics to ensure color consistency across iOS and Android displays.',
+        content: `• 8pt Grid Discipline: Maintain a strict 8-point spatial system for margin, padding, and layout bounding boxes to preserve visual rhythm and design consistency.\n• Color Space Fidelity: Export all web and social media ad creatives using sRGB color profiles to eliminate desaturation discrepancies across iOS Safari and Android screens.\n• Typographic Scale: Utilize a 1.25 major-third scale (12px, 14px, 16px, 20px, 24px, 32px, 40px) with minimum 140% line-height for clean readability.`,
         createdAt: 'Oct 05, 2026'
     }
 ];

@@ -16,11 +16,29 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
+
+const getDayBadgeClass = (day = "") => {
+  switch (day.toLowerCase()) {
+    case "monday":
+      return "bg-blue-100 text-blue-800 border-blue-200/90";
+    case "tuesday":
+      return "bg-emerald-100 text-emerald-800 border-emerald-200/90";
+    case "wednesday":
+      return "bg-purple-100 text-purple-800 border-purple-200/90";
+    case "thursday":
+      return "bg-amber-100 text-amber-800 border-amber-200/90";
+    case "friday":
+      return "bg-rose-100 text-rose-800 border-rose-200/90";
+    default:
+      return "bg-slate-100 text-slate-800 border-slate-200";
+  }
+};
 
 export const SchedulePage = () => {
   const navigate = useNavigate();
   const { crmProfile, crmBatch } = useAuth();
-  const [activeTab, setActiveTab] = useState("upcoming"); // 'upcoming' | 'curriculum' | 'timetable'
+  const [activeTab, setActiveTab] = useState("timetable"); // 1st default view: Weekly Timetable
 
   const upcomingSessions = [
     {
@@ -109,55 +127,83 @@ export const SchedulePage = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
-        <div>
-          <div className="flex items-center space-x-2 mb-1">
-            <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-0.5 border border-blue-200 rounded">
-              ACADEMIC CALENDAR & TIMETABLE
-            </span>
-            <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+      {/* ------------------------------------------------------------- */}
+      {/* HEADER BANNER - FULLY RESPONSIVE WITH BRANDED BACKGROUND      */}
+      {/* ------------------------------------------------------------- */}
+      <div 
+        className="relative bg-cover bg-center rounded-2xl border border-blue-100/80 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
+        style={{ backgroundImage: `url(${dashboardHeaderBg})` }}
+      >
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2 text-blue-700 text-sm font-extrabold uppercase tracking-wider">
+            <Calendar size={17} />
+            <span>Academic Calendar & Timetable</span>
+            <span className="inline-flex items-center space-x-1 text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <span>Live Batch Sync</span>
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             Classroom Schedule & Curriculum
           </h1>
-          <p className="text-slate-500 text-xs sm:text-sm mt-0.5">
-            Real-time enrolled batch schedule, active lecture timings, and
-            upcoming curriculum sessions.
+          <p className="text-slate-900/90 text-sm sm:text-base max-w-2xl leading-relaxed font-semibold">
+            Real-time enrolled batch schedule, active lecture timings, and upcoming curriculum sessions.
           </p>
+
+          {/* Quick Metrics Bar */}
+          <div className="flex flex-wrap items-center gap-3.5 pt-3 border-t border-slate-200/80 text-sm font-medium">
+            <div className="flex items-center space-x-1.5 text-slate-800">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#3b49df] inline-block"></span>
+              <span className="font-extrabold text-slate-900">4 Modules</span>
+              <span className="text-slate-800 font-semibold">Scheduled</span>
+            </div>
+            <div className="flex items-center space-x-1.5 text-slate-800">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+              <span className="font-extrabold text-slate-900">In Session</span>
+              <span className="text-slate-800 font-semibold">Live Hybrid</span>
+            </div>
+            <div className="flex items-center space-x-1.5 text-slate-800">
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span>
+              <span className="font-extrabold text-slate-900">Mon - Fri</span>
+              <span className="text-slate-800 font-semibold">9:00 AM - 10:00 AM</span>
+            </div>
+            <div className="flex items-center space-x-1.5 text-slate-800">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
+              <span className="font-extrabold text-slate-900">Borivali Center</span>
+              <span className="text-slate-800 font-semibold">Main Campus</span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <button
-            type="button"
-            onClick={() => setActiveTab("upcoming")}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              activeTab === "upcoming"
-                ? "bg-[#2563eb] text-white shadow-xs"
-                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
-            }`}
-          >
-            Curriculum Sessions
-          </button>
+        {/* View Toggle Tabs - Timetable 1st View */}
+        <div className="flex items-center space-x-1.5 shrink-0 bg-slate-100/90 p-1.5 rounded-xl border border-slate-200/80 self-start md:self-auto">
           <button
             type="button"
             onClick={() => setActiveTab("timetable")}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeTab === "timetable"
-                ? "bg-[#2563eb] text-white shadow-xs"
-                : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                ? "bg-[#3b49df] text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
             }`}
           >
             Weekly Timetable
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("upcoming")}
+            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              activeTab === "upcoming"
+                ? "bg-[#3b49df] text-white shadow-xs"
+                : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+            }`}
+          >
+            Curriculum Sessions
           </button>
         </div>
       </div>
 
       {/* 1. Enrolled Batch & Schedule Card (LATEST UI) */}
-      <div className="bg-white border border-slate-200/90rounded p-6 shadow-2xs space-y-5">
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-2.5">
             <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-200">
@@ -344,64 +390,115 @@ export const SchedulePage = () => {
           </div>
         </div>
       ) : (
-        /* Weekly Timetable View */
-        <div className="bg-white border border-slate-200/90rounded p-6 shadow-2xs space-y-4">
-          <div>
-            <h3 className="text-base font-bold text-slate-900">
-              Weekly Class Timetable
-            </h3>
-            <p className="text-xs text-slate-500">
-              Daily lecture times and active classroom rooms
-            </p>
+        /* Weekly Timetable View - Attribute BG color on thead & Distinct row colors below */
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+                Weekly Class Timetable
+              </h3>
+              <p className="text-xs text-slate-500">
+                Daily lecture times, topics, and interactive lab sessions
+              </p>
+            </div>
+            <span className="text-xs font-extrabold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg">
+              Mon – Fri Active Batch
+            </span>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-slate-200 text-slate-400 font-bold uppercase tracking-wider">
-                  <th className="pb-3">Day</th>
-                  <th className="pb-3">Time</th>
-                  <th className="pb-3">Lecture Subject / Topic</th>
-                  <th className="pb-3">Format</th>
-                  <th className="pb-3">Faculty</th>
-                  <th className="pb-3 text-right">Action</th>
+          <div className="overflow-x-auto rounded-xl border border-slate-300/80 shadow-xs">
+            <table className="w-full text-left text-xs border-collapse">
+              {/* Attribute Background Header */}
+              <thead className="bg-[#1e293b] text-white">
+                <tr>
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100">
+                    Day
+                  </th>
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100">
+                    Time
+                  </th>
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100">
+                    Lecture Subject / Topic
+                  </th>
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100">
+                    Format
+                  </th>
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100">
+                    Faculty
+                  </th>
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 text-right">
+                    Action
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
-                {weeklySchedule.map((row, rIdx) => (
-                  <tr
-                    key={rIdx}
-                    className="hover:bg-slate-50 transition-colors"
-                  >
-                    <td className="py-3.5 pr-3 font-black text-slate-900">
-                      {row.day}
-                    </td>
-                    <td className="py-3.5 pr-3 font-semibold text-blue-600">
-                      {row.time}
-                    </td>
-                    <td className="py-3.5 pr-3 font-bold text-slate-800">
-                      {row.topic}
-                    </td>
-                    <td className="py-3.5 pr-3">
-                      <span className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium text-[11px]">
-                        {row.type}
-                      </span>
-                    </td>
-                    <td className="py-3.5 pr-3 font-medium text-slate-600">
-                      {row.faculty}
-                    </td>
-                    <td className="py-3.5 text-right">
-                      <button
-                        onClick={() =>
-                          navigate("/lesson-player?courseId=course-8")
-                        }
-                        className="text-xs font-bold text-[#2563eb] hover:underline cursor-pointer"
-                      >
-                        Enter Room
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+              {/* Body with distinct alternating colors & styled chips */}
+              <tbody className="divide-y divide-slate-200/80 text-slate-700">
+                {weeklySchedule.map((row, rIdx) => {
+                  const isEven = rIdx % 2 === 0;
+                  return (
+                    <tr
+                      key={rIdx}
+                      className={`transition-colors ${
+                        isEven ? "bg-white hover:bg-blue-50/40" : "bg-slate-50/80 hover:bg-blue-50/40"
+                      }`}
+                    >
+                      {/* Day Pill with Distinct Category Color */}
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <span
+                          className={`inline-block text-[11px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg border shadow-2xs ${getDayBadgeClass(
+                            row.day
+                          )}`}
+                        >
+                          {row.day}
+                        </span>
+                      </td>
+
+                      {/* Time with Clock Icon */}
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 font-bold text-slate-700 bg-white border border-slate-200/90 px-2.5 py-1 rounded-md text-[11.5px] shadow-2xs">
+                          <Clock size={12} className="text-blue-600" />
+                          <span>{row.time}</span>
+                        </span>
+                      </td>
+
+                      {/* Topic - Bold & High Contrast */}
+                      <td className="py-4 px-4 min-w-[220px]">
+                        <span className="font-extrabold text-slate-900 text-xs sm:text-[13px] leading-snug block">
+                          {row.topic}
+                        </span>
+                      </td>
+
+                      {/* Format Badge with indicator dot */}
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 bg-blue-50/90 text-blue-700 border border-blue-200/80 px-2.5 py-1 rounded-md font-bold text-[11px]">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                          <span>{row.type}</span>
+                        </span>
+                      </td>
+
+                      {/* Faculty with User Avatar Icon */}
+                      <td className="py-4 px-4 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700 text-xs">
+                          <User size={13} className="text-slate-400" />
+                          <span>{row.faculty}</span>
+                        </span>
+                      </td>
+
+                      {/* Action Button */}
+                      <td className="py-4 px-4 text-right whitespace-nowrap">
+                        <button
+                          onClick={() =>
+                            navigate("/lesson-player?courseId=course-8")
+                          }
+                          className="inline-flex items-center gap-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-2xs transition-all cursor-pointer active:scale-95"
+                        >
+                          <span>Enter Room</span>
+                          <ArrowRight size={12} />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

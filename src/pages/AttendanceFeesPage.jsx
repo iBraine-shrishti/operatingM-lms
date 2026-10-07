@@ -13,17 +13,9 @@ import {
   Sparkles,
   AlertCircle,
 } from "lucide-react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import { useAuth } from "../context/AuthContext";
 import { FeeReceiptModal } from "../components/crm/FeeReceiptModal";
+import { AttendanceComparisonChart } from "../components/crm/AttendanceComparisonChart";
 
 export const AttendanceFeesPage = () => {
   const { currentUser, crmProfile, crmAttendance } = useAuth();
@@ -44,19 +36,19 @@ export const AttendanceFeesPage = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
-          <div className="flex items-center space-x-2 mb-1">
-            <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-0.5 border border-emerald-200 rounded">
+          <div className="flex items-center space-x-2 mb-1.5">
+            <span className="text-xs font-black uppercase tracking-wider text-emerald-800 bg-emerald-50 px-3 py-1 border border-emerald-200 rounded-lg">
               FINANCIAL & ATTENDANCE MANAGEMENT
             </span>
-            <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="inline-flex items-center space-x-1.5 text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>CRM Verified</span>
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
             Attendance Records & Tuition Fees
           </h1>
-          <p className="text-slate-500 text-xs sm:text-sm mt-0.5">
+          <p className="text-slate-600 text-sm font-medium mt-1">
             Monitor real-time lecture attendance benchmarks, installment payment
             roadmap, and official fee receipts.
           </p>
@@ -151,124 +143,10 @@ export const AttendanceFeesPage = () => {
         </div>
 
         {attendanceView === "graph" ? (
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center pt-2">
-            {/* Donut Gauge */}
-            <div className="md:col-span-4 flex flex-col items-center justify-center p-4 md:border-r border-slate-100">
-              <div className="relative w-32 h-32 shrink-0 flex items-center justify-center">
-                <svg className="w-32 h-32 -rotate-90" viewBox="0 0 100 100">
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="transparent"
-                    stroke="#f1f5f9"
-                    strokeWidth="10"
-                  />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="transparent"
-                    stroke="#2563eb"
-                    strokeWidth="10"
-                    strokeDasharray="251.3"
-                    strokeDashoffset={251.3 * (1 - 0.893)}
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="text-3xl font-black text-slate-900 leading-none">
-                    89.3%
-                  </span>
-                  <span className="text-[10px] uppercase font-black text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded mt-2 tracking-wider">
-                    VERIFIED
-                  </span>
-                </div>
-              </div>
-              <div className="mt-3 text-center">
-                <span className="text-xs font-bold text-slate-800 block">
-                  25 Attended / 28 Lectures
-                </span>
-                <span className="text-[11px] text-slate-400">
-                  3 Permitted Absences
-                </span>
-              </div>
-            </div>
-
-            {/* AreaChart: Monthly Attendance Trend */}
-            <div className="md:col-span-8 min-w-0">
-              <div className="flex items-center space-x-1.5 text-xs text-slate-700 font-bold mb-3">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#2563eb]" />
-                <span>Monthly Attendance Trend (%)</span>
-              </div>
-              <div className="h-44 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart
-                    data={attendanceTrendData}
-                    margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-                  >
-                    <defs>
-                      <linearGradient
-                        id="attTrendGrad2"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="5%"
-                          stopColor="#2563eb"
-                          stopOpacity={0.25}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="#2563eb"
-                          stopOpacity={0.0}
-                        />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      vertical={false}
-                      stroke="#f1f5f9"
-                    />
-                    <XAxis
-                      dataKey="month"
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 11, fill: "#64748b" }}
-                    />
-                    <YAxis
-                      domain={[0, 100]}
-                      ticks={[0, 25, 50, 75, 100]}
-                      unit="%"
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 10, fill: "#64748b" }}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#0f172a",
-                        borderRadius: "8px",
-                        border: "none",
-                        color: "#fff",
-                        fontSize: "11px",
-                      }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="rate"
-                      stroke="#2563eb"
-                      strokeWidth={2.5}
-                      fillOpacity={1}
-                      fill="url(#attTrendGrad2)"
-                      dot={{ r: 3.5, fill: "#2563eb" }}
-                      activeDot={{ r: 6 }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+          <div className="pt-2">
+            <AttendanceComparisonChart
+              enrolledCourseTitle={crmProfile.course || "Diploma in Digital Marketing"}
+            />
           </div>
         ) : (
           /* Class Logs List */

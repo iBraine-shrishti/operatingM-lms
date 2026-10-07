@@ -186,7 +186,16 @@ export const lmsService = {
         return newQ;
     },
     // Discussions
-    getDiscussions: () => getStored('discussions', INITIAL_DISCUSSIONS),
+    getDiscussions: () => {
+        const stored = getStored('discussions', INITIAL_DISCUSSIONS);
+        const disc1 = stored?.find(d => d.id === 'disc-1');
+        const disc1HasDeepNesting = disc1?.replies?.[0]?.replies?.[0]?.replies?.[0]?.replies;
+        if (!stored || !disc1HasDeepNesting) {
+            setStored('discussions', INITIAL_DISCUSSIONS);
+            return INITIAL_DISCUSSIONS;
+        }
+        return stored;
+    },
     addDiscussion: (disc) => {
         const items = lmsService.getDiscussions();
         const newItem = {
@@ -199,18 +208,54 @@ export const lmsService = {
         setStored('discussions', [newItem, ...items]);
         return newItem;
     },
-    addDiscussionReply: (discussionId, reply) => {
+    addDiscussionReply: (discussionId, reply, parentReplyId = null) => {
         const items = lmsService.getDiscussions();
         const index = items.findIndex(d => d.id === discussionId);
         if (index === -1) return undefined;
         const newReply = {
             ...reply,
-            id: `rep-${Date.now()}`,
-            createdAt: 'Just now'
+            id: `rep-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+            createdAt: 'Just now',
+            replies: []
         };
-        const currentReplies = items[index].replies || [];
-        items[index].replies = [...currentReplies, newReply];
-        items[index].repliesCount = (items[index].repliesCount || 0) + 1;
+
+        if (!parentReplyId) {
+            const currentReplies = items[index].replies || [];
+            items[index].replies = [...currentReplies, newReply];
+        } else {
+            const insertIntoParent = (list) => {
+                for (let i = 0; i < list.length; i++) {
+                    if (list[i].id === parentReplyId) {
+                        list[i].replies = [...(list[i].replies || []), newReply];
+                        return true;
+                    }
+                    if (list[i].replies && list[i].replies.length > 0) {
+                        const found = insertIntoParent(list[i].replies);
+                        if (found) return true;
+                    }
+                }
+                return false;
+            };
+
+            const currentReplies = items[index].replies || [];
+            const inserted = insertIntoParent(currentReplies);
+            if (!inserted) {
+                items[index].replies = [...currentReplies, newReply];
+            }
+        }
+
+        const countReplies = (list = []) => {
+            let count = 0;
+            for (const r of list) {
+                count += 1;
+                if (r.replies && r.replies.length > 0) {
+                    count += countReplies(r.replies);
+                }
+            }
+            return count;
+        };
+
+        items[index].repliesCount = countReplies(items[index].replies);
         setStored('discussions', items);
         return newReply;
     },

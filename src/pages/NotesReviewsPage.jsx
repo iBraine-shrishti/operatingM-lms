@@ -3,9 +3,145 @@ import { lmsService } from "../services/lmsService";
 import { 
   FileText, Search, Plus, Trash2, Copy, BookOpen, 
   Calendar, Check, X, Bookmark, Filter, ArrowUpDown, 
-  SlidersHorizontal, Sparkles, Tag
+  SlidersHorizontal, Sparkles, Tag, Target, Share2, 
+  BarChart3, Layout, Palette
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
+import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
+
+// Differentiated visual themes for note categories
+const NOTE_CATEGORY_THEMES = {
+  seo: {
+    name: "SEO",
+    tag: "SEO Mastery",
+    icon: Search,
+    accent: "text-emerald-600",
+    borderAccent: "border-emerald-200",
+    cardBorder: "border-emerald-200/90 hover:border-emerald-400",
+    badgeBg: "bg-emerald-50 text-emerald-800 border-emerald-200/90",
+    iconBg: "bg-emerald-50 text-emerald-600 border-emerald-200/90",
+    topGradient: "from-emerald-500 via-teal-500 to-green-600",
+    contentBg: "bg-emerald-50/30 border-emerald-100/90",
+    pillDot: "bg-emerald-500",
+  },
+  ads: {
+    name: "Google Ads",
+    tag: "Paid Advertising",
+    icon: Target,
+    accent: "text-blue-600",
+    borderAccent: "border-blue-200",
+    cardBorder: "border-blue-200/90 hover:border-blue-400",
+    badgeBg: "bg-blue-50 text-blue-800 border-blue-200/90",
+    iconBg: "bg-blue-50 text-blue-600 border-blue-200/90",
+    topGradient: "from-blue-600 via-indigo-600 to-cyan-500",
+    contentBg: "bg-blue-50/30 border-blue-100/90",
+    pillDot: "bg-blue-500",
+  },
+  social: {
+    name: "Social Media",
+    tag: "Social Strategy",
+    icon: Share2,
+    accent: "text-purple-600",
+    borderAccent: "border-purple-200",
+    cardBorder: "border-purple-200/90 hover:border-purple-400",
+    badgeBg: "bg-purple-50 text-purple-800 border-purple-200/90",
+    iconBg: "bg-purple-50 text-purple-600 border-purple-200/90",
+    topGradient: "from-purple-600 via-fuchsia-600 to-pink-500",
+    contentBg: "bg-purple-50/30 border-purple-100/90",
+    pillDot: "bg-purple-500",
+  },
+  analytics: {
+    name: "Analytics",
+    tag: "Data & Tracking",
+    icon: BarChart3,
+    accent: "text-amber-600",
+    borderAccent: "border-amber-200",
+    cardBorder: "border-amber-200/90 hover:border-amber-400",
+    badgeBg: "bg-amber-50 text-amber-800 border-amber-200/90",
+    iconBg: "bg-amber-50 text-amber-600 border-amber-200/90",
+    topGradient: "from-amber-500 via-orange-500 to-yellow-500",
+    contentBg: "bg-amber-50/30 border-amber-100/90",
+    pillDot: "bg-amber-500",
+  },
+  wordpress: {
+    name: "WordPress",
+    tag: "CMS & Web Dev",
+    icon: Layout,
+    accent: "text-teal-600",
+    borderAccent: "border-teal-200",
+    cardBorder: "border-teal-200/90 hover:border-teal-400",
+    badgeBg: "bg-teal-50 text-teal-800 border-teal-200/90",
+    iconBg: "bg-teal-50 text-teal-600 border-teal-200/90",
+    topGradient: "from-teal-500 via-emerald-600 to-cyan-600",
+    contentBg: "bg-teal-50/30 border-teal-100/90",
+    pillDot: "bg-teal-500",
+  },
+  design: {
+    name: "Design",
+    tag: "Creative & UI",
+    icon: Palette,
+    accent: "text-rose-600",
+    borderAccent: "border-rose-200",
+    cardBorder: "border-rose-200/90 hover:border-rose-400",
+    badgeBg: "bg-rose-50 text-rose-800 border-rose-200/90",
+    iconBg: "bg-rose-50 text-rose-600 border-rose-200/90",
+    topGradient: "from-rose-500 via-pink-500 to-red-500",
+    contentBg: "bg-rose-50/30 border-rose-100/90",
+    pillDot: "bg-rose-500",
+  },
+  general: {
+    name: "General",
+    tag: "Study Notes",
+    icon: BookOpen,
+    accent: "text-indigo-600",
+    borderAccent: "border-indigo-200",
+    cardBorder: "border-indigo-200/90 hover:border-indigo-400",
+    badgeBg: "bg-indigo-50 text-indigo-800 border-indigo-200/90",
+    iconBg: "bg-indigo-50 text-indigo-600 border-indigo-200/90",
+    topGradient: "from-indigo-600 via-blue-600 to-violet-600",
+    contentBg: "bg-indigo-50/30 border-indigo-100/90",
+    pillDot: "bg-indigo-500",
+  },
+};
+
+const getNoteCategoryTheme = (category = "", courseTitle = "") => {
+  const c = (category || "").toLowerCase();
+  const t = (courseTitle || "").toLowerCase();
+  if (c.includes("seo") || t.includes("seo")) return NOTE_CATEGORY_THEMES.seo;
+  if (c.includes("ads") || c.includes("ppc") || t.includes("ads")) return NOTE_CATEGORY_THEMES.ads;
+  if (c.includes("social") || t.includes("social")) return NOTE_CATEGORY_THEMES.social;
+  if (c.includes("analytic") || t.includes("analytic")) return NOTE_CATEGORY_THEMES.analytics;
+  if (c.includes("word") || c.includes("web") || t.includes("word") || t.includes("web")) return NOTE_CATEGORY_THEMES.wordpress;
+  if (c.includes("design") || c.includes("creative") || t.includes("design") || t.includes("creative")) return NOTE_CATEGORY_THEMES.design;
+  return NOTE_CATEGORY_THEMES.general;
+};
+
+// Rich practical descriptions for standard study notes
+const ENHANCED_NOTE_CONTENT = {
+  "note-1": `• Vertical 9:16 Video Framework: Short-form Reels and TikToks require a decisive 3-second hook before user drop-off exceeds 60%.
+• Audio Trends & Algorithms: Always test trending original sounds within their initial 7 days of algorithmic surge to capitalize on Discovery feed visibility.
+• Creative Cadence: Publish 4–5 Reels weekly with high-contrast subtitles centered in the 1080x1920 safe zone for optimal engagement.`,
+
+  "note-2": `• Search Intent Hierarchy: Informational keywords generate broad top-of-funnel traffic but yield lower conversion rates. Focus commercial long-tail queries onto dedicated high-converting product pages.
+• SERP Feature Competition: Inspect whether the top 5 ranking positions feature featured snippets, People Also Ask boxes, or video carousels before finalizing headings.
+• Keyword Difficulty Rule: Prioritize KD < 35 keywords during initial sprint phases to secure rapid topical authority on Google.`,
+
+  "note-3": `• Conversion Event Setup: Always designate custom GTM trigger events as 'Key Events' within GA4 Admin properties prior to publishing Looker Studio dashboards.
+• Attribution Stability: Allow 24–48 hours for data attribution backfill and cross-device modeling to stabilize before reporting to stakeholders.
+• DebugView Protocol: Validate all data layer variables inside Tag Assistant and the live GA4 DebugView stream before deploying container changes to production.`,
+
+  "note-4": `• Smart Bidding Calibration: Ensure Performance Max campaigns accrue at least 30 conversions over a 30-day window before switching to Target ROAS bidding to prevent volatility.
+• Comprehensive Asset Group: Upload full asset sets (at least 5 punchy headlines, 5 long descriptions, 1200x628 landscape banners, and square brand logos).
+• Account Exclusions: Implement account-level placement exclusion lists to avoid wasting ad spend on low-intent mobile gaming apps.`,
+
+  "note-5": `• DOM Tree Optimization: Convert legacy section and column wrappers into modern CSS Flexbox containers to reduce total DOM depth by up to 40%.
+• LCP Optimization: Preload the hero banner using fetchpriority="high" and convert high-resolution assets into next-gen WebP format.
+• Script Deferral: Dequeue unused block stylesheets and defer non-critical JavaScript to guarantee a Largest Contentful Paint under 1.2 seconds.`,
+
+  "note-6": `• 8pt Grid Discipline: Maintain a strict 8-point spatial system for margin, padding, and layout bounding boxes to preserve visual rhythm and design consistency.
+• Color Space Fidelity: Export all web and social media ad creatives using sRGB color profiles to eliminate desaturation discrepancies across iOS Safari and Android screens.
+• Typographic Scale: Utilize a 1.25 major-third scale (12px, 14px, 16px, 20px, 24px, 32px, 40px) with minimum 140% line-height for clean readability.`
+};
 
 export const NotesReviewsPage = () => {
   const { showToast } = useToast();
@@ -93,7 +229,8 @@ export const NotesReviewsPage = () => {
   };
 
   const handleCopyNote = (note) => {
-    navigator.clipboard.writeText(note.content);
+    const textToCopy = ENHANCED_NOTE_CONTENT[note.id] || note.content;
+    navigator.clipboard.writeText(textToCopy);
     setCopiedId(note.id);
     showToast("Note content copied to clipboard!", "success", "Copied");
     setTimeout(() => setCopiedId(null), 2000);
@@ -133,34 +270,42 @@ export const NotesReviewsPage = () => {
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* HEADER BANNER - FULLY RESPONSIVE                              */}
+      {/* HEADER BANNER - FULLY RESPONSIVE WITH BRANDED BACKGROUND      */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all">
+      <div 
+        className="relative bg-cover bg-center rounded-2xl border border-blue-100/80 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
+        style={{ backgroundImage: `url(${dashboardHeaderBg})` }}
+      >
         <div className="space-y-2">
-          <div className="flex items-center space-x-2 text-[#3b49df] text-xs font-bold uppercase tracking-wider">
-            <Bookmark size={15} />
+          <div className="flex items-center space-x-2 text-blue-700 text-sm font-extrabold uppercase tracking-wider">
+            <Bookmark size={17} />
             <span>Study Space & Notebook</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Notes
+            Study Notes & Reference Notebook
           </h1>
-          <p className="text-slate-500 text-xs sm:text-sm max-w-2xl leading-relaxed">
-            Search, filter, and review key formulas, definitions, and practical frameworks across all your enrolled courses.
+          <p className="text-slate-900/90 text-sm sm:text-base max-w-2xl leading-relaxed font-semibold">
+            Search, filter, and review key formulas, frameworks, definitions, and technical checklists across all your enrolled courses.
           </p>
 
-          <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 text-xs">
-            <div className="flex items-center space-x-1.5 text-slate-700">
+          <div className="flex flex-wrap items-center gap-3.5 pt-3 border-t border-slate-200/80 text-sm font-medium">
+            <div className="flex items-center space-x-1.5 text-slate-800">
               <span className="w-2.5 h-2.5 rounded-full bg-[#3b49df] inline-block"></span>
-              <span className="font-bold text-slate-900">{notes.length}</span>
-              <span className="text-slate-500">Total Notes</span>
+              <span className="font-extrabold text-slate-900">{notes.length}</span>
+              <span className="text-slate-800 font-semibold">Total Notes</span>
             </div>
             {hasActiveFilters && (
-              <div className="flex items-center space-x-1.5 text-slate-700">
+              <div className="flex items-center space-x-1.5 text-slate-800">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
-                <span className="font-bold text-slate-900">{filteredNotes.length}</span>
-                <span className="text-slate-500">Matching Filter</span>
+                <span className="font-extrabold text-slate-900">{filteredNotes.length}</span>
+                <span className="text-slate-800 font-semibold">Matching Filter</span>
               </div>
             )}
+            <div className="flex items-center space-x-1.5 text-slate-800">
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span>
+              <span className="font-extrabold text-slate-900">6 Domains</span>
+              <span className="text-slate-800 font-semibold">Covered</span>
+            </div>
           </div>
         </div>
 
@@ -273,7 +418,7 @@ export const NotesReviewsPage = () => {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* NOTES GRID - FULLY RESPONSIVE (1 col mobile, 2 col desktop)   */}
+      {/* NOTES GRID - DIFFERENTIATED CARDS WITH RICH DESCRIPTIONS      */}
       {/* ------------------------------------------------------------- */}
       {filteredNotes.length === 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200/80 p-8 sm:p-12 text-center shadow-xs">
@@ -306,73 +451,97 @@ export const NotesReviewsPage = () => {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
-          {filteredNotes.map((note) => (
-            <div
-              key={note.id}
-              className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs hover:shadow-sm transition-all flex flex-col justify-between space-y-4 group"
-            >
-              <div className="space-y-3">
-                {/* Header: Course Pill, Category Badge, Date */}
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-[10px] sm:text-[11px] font-bold text-[#3b49df] bg-blue-50 border border-blue-200/80 px-2.5 py-0.5 rounded-md truncate max-w-[200px]">
-                    {note.courseTitle}
-                  </span>
-                  
-                  <div className="flex items-center space-x-2 text-[10px] sm:text-[11px] text-slate-400">
-                    {note.category && (
-                      <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-medium">
-                        {note.category}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+          {filteredNotes.map((note) => {
+            const theme = getNoteCategoryTheme(note.category, note.courseTitle);
+            const CategoryIcon = theme.icon;
+            const contentText = ENHANCED_NOTE_CONTENT[note.id] || note.content;
+
+            return (
+              <div
+                key={note.id}
+                className={`bg-white rounded-2xl border shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between overflow-hidden group ${theme.cardBorder}`}
+              >
+                {/* Top Vibrant Accent Bar */}
+                <div className={`h-1.5 w-full bg-gradient-to-r ${theme.topGradient}`} />
+
+                <div className="p-5 sm:p-6 space-y-4 flex-1 flex flex-col justify-between">
+                  <div className="space-y-3">
+                    {/* Header Row: Category Badge + Date */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className={`inline-flex items-center gap-1.5 text-[10.5px] sm:text-[11px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg border ${theme.badgeBg}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${theme.pillDot}`} />
+                        <span>{note.category || theme.name}</span>
                       </span>
-                    )}
-                    <span className="flex items-center space-x-1">
-                      <Calendar size={11} />
-                      <span>{note.createdAt}</span>
-                    </span>
+
+                      <span className="flex items-center space-x-1 text-[11px] font-semibold text-slate-400">
+                        <Calendar size={12} />
+                        <span>{note.createdAt}</span>
+                      </span>
+                    </div>
+
+                    {/* Course Title Badge */}
+                    <div className="pt-0.5">
+                      <span className="text-[11px] font-bold text-slate-600 bg-slate-100/90 border border-slate-200/80 px-2.5 py-0.5 rounded-md inline-block">
+                        {note.courseTitle}
+                      </span>
+                    </div>
+
+                    {/* Middle Row: Themed Icon Badge + Lesson Title */}
+                    <div className="flex items-start gap-3 pt-1">
+                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 border shadow-2xs mt-0.5 ${theme.iconBg}`}>
+                        <CategoryIcon size={20} className={theme.accent} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-base sm:text-lg font-black text-slate-900 leading-snug group-hover:text-[#3b49df] transition-colors break-words">
+                          {note.lessonTitle}
+                        </h3>
+                      </div>
+                    </div>
+
+                    {/* Note Body Box: Increased Font Size & Rich Description */}
+                    <div className={`text-sm sm:text-[13.5px] text-slate-700 ${theme.contentBg} border p-4 rounded-xl leading-relaxed whitespace-pre-line break-words font-medium`}>
+                      {contentText}
+                    </div>
                   </div>
                 </div>
 
-                {/* Lesson Title */}
-                <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug group-hover:text-[#3b49df] transition-colors">
-                  {note.lessonTitle}
-                </h3>
+                {/* Action Buttons Footer */}
+                <div className="px-5 py-3.5 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <button
+                    onClick={() => handleCopyNote({ ...note, content: contentText })}
+                    className="flex items-center space-x-1.5 text-slate-700 hover:text-[#3b49df] font-bold py-1.5 px-3 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 transition-all cursor-pointer active:scale-95 shadow-2xs"
+                  >
+                    {copiedId === note.id ? (
+                      <>
+                        <Check size={14} className="text-emerald-600" />
+                        <span className="text-emerald-600 font-bold">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={14} />
+                        <span>Copy Note</span>
+                      </>
+                    )}
+                  </button>
 
-                {/* Note Body Box */}
-                <div className="text-xs sm:text-sm text-slate-700 bg-slate-50/80 border border-slate-100 p-3.5 sm:p-4 rounded-xl leading-relaxed whitespace-pre-line break-words font-normal">
-                  {note.content}
+                  <div className="flex items-center space-x-3">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 hidden sm:inline-block">
+                      {theme.tag}
+                    </span>
+                    <button
+                      onClick={() => handleDeleteNote(note.id, note.lessonTitle)}
+                      className="flex items-center space-x-1 text-slate-400 hover:text-rose-600 font-semibold py-1.5 px-2 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer active:scale-95"
+                      title="Delete note"
+                    >
+                      <Trash2 size={14} />
+                      <span className="text-[11px]">Delete</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-
-              {/* Action Buttons Footer */}
-              <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
-                <button
-                  onClick={() => handleCopyNote(note)}
-                  className="flex items-center space-x-1.5 text-slate-600 hover:text-[#3b49df] font-semibold py-1.5 px-2.5 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer active:scale-95"
-                >
-                  {copiedId === note.id ? (
-                    <>
-                      <Check size={14} className="text-emerald-600" />
-                      <span className="text-emerald-600 font-bold">Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy size={14} />
-                      <span>Copy Note</span>
-                    </>
-                  )}
-                </button>
-
-                <button
-                  onClick={() => handleDeleteNote(note.id, note.lessonTitle)}
-                  className="flex items-center space-x-1 text-slate-400 hover:text-rose-600 font-semibold py-1.5 px-2 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer active:scale-95"
-                  title="Delete note"
-                >
-                  <Trash2 size={14} />
-                  <span className="text-[11px]">Delete</span>
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
