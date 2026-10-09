@@ -1,22 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { lmsService } from "../services/lmsService";
 import {
   Award,
   CheckCircle,
-  Download,
   Eye,
   ShieldCheck,
   Sparkles,
-  ExternalLink,
   Search,
-  Layout,
-  BarChart3,
-  Palette,
   CheckCircle2,
   Lock,
-  Unlock,
   Calendar,
-  Layers,
+  Filter,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { CertificateViewerModal } from "../components/crm/CertificateViewerModal";
@@ -29,41 +23,36 @@ import badgePurple from "../assets/badge-type-purple.png";
 import badgeGreen from "../assets/badge-type-green.png";
 import badgeGold from "../assets/badge-type-gold.png";
 
-// Distinctive category themes for achievement milestone badges
+// Category theme mapping for milestone badges
 const BADGE_THEMES = {
   SEO: {
-    accent: "text-emerald-700",
-    badgeBg: "bg-emerald-50 text-emerald-800 border-emerald-200/90",
-    cardBorder: "border-emerald-200/90 hover:border-emerald-300",
-    topGradient: "from-emerald-500 via-teal-500 to-emerald-600",
+    accent: "text-emerald-700 dark:text-emerald-400",
+    badgeBg: "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200/90 dark:border-emerald-500/40",
+    topGradient: "from-emerald-400 via-teal-500 to-emerald-600",
     categoryLabel: "SEO & AUDIT",
   },
   WordPress: {
-    accent: "text-teal-700",
-    badgeBg: "bg-teal-50 text-teal-800 border-teal-200/90",
-    cardBorder: "border-teal-200/90 hover:border-teal-300",
-    topGradient: "from-teal-500 via-cyan-500 to-teal-600",
+    accent: "text-teal-700 dark:text-teal-400",
+    badgeBg: "bg-teal-50 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 border-teal-200/90 dark:border-teal-500/40",
+    topGradient: "from-teal-400 via-cyan-500 to-teal-600",
     categoryLabel: "CMS ARCHITECTURE",
   },
   Analytics: {
-    accent: "text-amber-800",
-    badgeBg: "bg-amber-50 text-amber-900 border-amber-200/90",
-    cardBorder: "border-amber-200/90 hover:border-amber-300",
-    topGradient: "from-amber-500 via-orange-500 to-amber-600",
+    accent: "text-amber-800 dark:text-amber-400",
+    badgeBg: "bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border-amber-200/90 dark:border-amber-500/40",
+    topGradient: "from-amber-400 via-orange-500 to-amber-600",
     categoryLabel: "DATA & ANALYTICS",
   },
   Design: {
-    accent: "text-rose-700",
-    badgeBg: "bg-rose-50 text-rose-800 border-rose-200/90",
-    cardBorder: "border-rose-200/90 hover:border-rose-300",
-    topGradient: "from-rose-500 via-pink-500 to-rose-600",
+    accent: "text-rose-700 dark:text-rose-400",
+    badgeBg: "bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200/90 dark:border-rose-500/40",
+    topGradient: "from-rose-400 via-pink-500 to-rose-600",
     categoryLabel: "UI & BRANDING",
   },
   Marketing: {
-    accent: "text-purple-700",
-    badgeBg: "bg-purple-50 text-purple-800 border-purple-200/90",
-    cardBorder: "border-purple-200/90 hover:border-purple-300",
-    topGradient: "from-purple-500 via-indigo-500 to-purple-600",
+    accent: "text-purple-700 dark:text-purple-400",
+    badgeBg: "bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border-purple-200/90 dark:border-purple-500/40",
+    topGradient: "from-purple-400 via-indigo-500 to-purple-600",
     categoryLabel: "DIGITAL STRATEGY",
   },
 };
@@ -78,75 +67,75 @@ const getBadgeTheme = (category = "") => {
   return BADGE_THEMES.SEO;
 };
 
-// Rich descriptions for achievements
-const ENHANCED_ACHIEVEMENT_DESCRIPTIONS = {
-  "ach-1": "Completed 100% of Search Engine Optimization Masterclass, submitted a live technical site audit with Core Web Vitals optimization, and achieved verified top-tier keyword rankings in audit simulations.",
-  "ach-2": "Built and deployed 3 live client WordPress production environments featuring custom post types, responsive Elementor Pro layouts, advanced caching architectures, and secure REST API endpoints.",
-  "ach-3": "Attained top 5% cohort score (90%+) on Google Analytics 4 conversion tracking examination, demonstrating hands-on dataLayer triggers, custom dimensions, and automated Looker Studio executive reporting.",
-  "ach-4": "Architected a comprehensive Figma design system and high-converting marketing collateral across 15+ ad formats with scalable typography tokens, WCAG AA color harmonies, and brand kits.",
-  "ach-5": "Premier Capstone Honor: Requires completing all 6 core masterclass tracks at Operating Media, delivering an end-to-end multi-channel digital marketing plan, and passing the comprehensive final exam.",
+// Concise, non-bloated 1-line details for achievements
+const SHORT_ACHIEVEMENT_DESCRIPTIONS = {
+  "ach-1": "100% course completed & technical audit passed",
+  "ach-2": "Built & deployed 3 client sites with Elementor",
+  "ach-3": "Scored 90%+ on GA4 conversion tracking exam",
+  "ach-4": "Top Figma design system in Creative Essentials",
+  "ach-5": "Complete all 6 masterclass tracks to unlock",
 };
 
-// Course Batches Data - Each course batch changes its badge image from batches-types.png
+// Course Batches Data - Each course batch has a distinctive color shield badge
 const COURSE_BATCHES_DATA = [
   {
     id: 132929482,
     certificate_id: "OMC-132929482",
-    course: "Diploma in Digital Marketing & Artificial Intelligence",
+    course: "Diploma in Digital Marketing & AI",
     category: "Diploma Program",
-    date: "February 10, 2026",
+    date: "Feb 10, 2026",
     rating: 9.8,
     grade: "A+ Distinction",
     badgeType: "gold",
     badgeImg: badgeGold,
-    badgeTitle: "100 Milestone Honor",
-    badgeDesc: "Gold Cohort Honor",
-    description: "Comprehensive 8-month diploma mastery encompassing technical SEO audits, Google Ads AI bidding, Meta Ads Manager, GA4 dataLayer tagging, and live client capstone pitches.",
+    badgeTitle: "Gold Honor",
+    badgeDesc: "Cohort Honor",
+    shortDetail: "Technical SEO, AI bidding, GA4 & client pitch",
     unlocked: true,
   },
   {
     id: 132929483,
     certificate_id: "OMC-132929483",
-    course: "Advanced Search Engine Optimization (SEO) Masterclass",
+    course: "Advanced SEO Masterclass",
     category: "Specialized Track",
-    date: "January 15, 2026",
+    date: "Jan 15, 2026",
     rating: 9.6,
     grade: "Honors with Distinction",
     badgeType: "green",
     badgeImg: badgeGreen,
-    badgeTitle: "Certified SEO Specialist",
-    badgeDesc: "Green Technical Shield",
-    description: "Hands-on mastery of on-page schema, enterprise site architecture, Core Web Vitals optimization, backlink audit strategies, and algorithmic penalty recovery.",
+    badgeTitle: "SEO Specialist",
+    badgeDesc: "Tech Shield",
+    shortDetail: "On-page schema, Core Web Vitals & audits",
     unlocked: true,
   },
   {
     id: 132929484,
     certificate_id: "OMC-132929484",
-    course: "WordPress & Performance Web Development",
+    course: "WordPress & Performance Web Dev",
     category: "Core Track",
-    date: "December 20, 2025",
+    date: "Dec 20, 2025",
     rating: 9.5,
     grade: "Certified Specialist",
     badgeType: "purple",
     badgeImg: badgePurple,
-    badgeTitle: "Interactive Web Developer",
-    badgeDesc: "Purple Interactive Shield",
-    description: "Full-stack WordPress CMS architecture, custom Elementor Pro designs, FlyingPress & BunnyCDN speed optimization, and secure WooCommerce integrations.",
+    badgeTitle: "Web Developer",
+    badgeDesc: "Purple Shield",
+    shortDetail: "Elementor Pro, speed caching & WooCommerce",
     unlocked: true,
   },
   {
     id: 132929485,
     certificate_id: "OMC-132929485",
-    course: "Social Media Marketing & Creative Performance Ads",
+    course: "Social Media & Creative Ads",
     category: "Creative Track",
-    date: "November 18, 2025",
+    date: "Nov 18, 2025",
     rating: 9.7,
     grade: "Distinction Award",
     badgeType: "blue",
     badgeImg: badgeBlue,
-    badgeTitle: "Top Tier Campaign Creator",
-    badgeDesc: "Blue Star Ribbon Shield",
-    description: "Data-driven creative strategy across Instagram Reels, LinkedIn Thought Leader campaigns, YouTube video ads, and full-funnel remarketing architecture.",
+    badgeTitle: "Top Campaigner",
+    badgeDesc: "Blue Ribbon",
+    shortDetail: "Instagram Reels, LinkedIn & performance ads",
     unlocked: true,
   },
 ];
@@ -156,305 +145,387 @@ export const AchievementsPage = () => {
   const achievements = lmsService.getAchievements();
   const [selectedCert, setSelectedCert] = useState(null);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("all"); // 'all', 'batches', 'milestones'
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleOpenCertificate = (cert) => {
     setSelectedCert(cert);
     setIsCertModalOpen(true);
   };
 
+  // Filtered lists based on search & active tab
+  const filteredBatches = useMemo(() => {
+    if (activeFilter === "milestones") return [];
+    return COURSE_BATCHES_DATA.filter(
+      (b) =>
+        b.course.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        b.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        b.certificate_id.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [activeFilter, searchQuery]);
+
+  const filteredAchievements = useMemo(() => {
+    if (activeFilter === "batches") return [];
+    return achievements.filter(
+      (a) =>
+        a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        a.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [activeFilter, searchQuery, achievements]);
+
+  const totalCredentials = COURSE_BATCHES_DATA.length + achievements.length;
+  const totalEarned = COURSE_BATCHES_DATA.length + achievements.filter((a) => a.unlocked).length;
+
   return (
-    <div className="space-y-7">
+    <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* HEADER BANNER - WITH STYLED BG TO DIFFERENTIATE FROM BELOW   */}
+      {/* HEADER HERO BANNER                                            */}
       {/* ------------------------------------------------------------- */}
       <div
-        className="relative bg-cover bg-center rounded-2xl border border-blue-100/80 p-5 sm:p-6 md:p-8 shadow-xs overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all"
-        style={{ backgroundImage: `url(${dashboardHeaderBg})` }}
+        className="relative bg-cover bg-center dashboard-hero-banner rounded-2xl border border-blue-100/70 dark:border-blue-500/30 p-5 sm:p-6 md:p-7 shadow-xs dark:shadow-[0_4px_30px_rgba(2,6,23,0.7)] overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all"
       >
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2 text-amber-900 text-sm font-extrabold uppercase tracking-wider">
-            <Award size={17} />
+        <div className="space-y-2 relative z-10">
+          <div className="flex items-center space-x-2 text-blue-600 dark:text-cyan-400 text-xs sm:text-sm font-black uppercase tracking-wider">
+            <Award size={16} />
             <span>Official Credentials & Honor Hub</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
             Student Certifications & Honor Badges
           </h1>
-          <p className="text-slate-900/90 text-sm sm:text-base max-w-2xl leading-relaxed font-semibold">
-            Verified diplomas, course completion batches, and earned achievement badges synchronized directly from Operating Media CRM.
+          <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed font-medium">
+            Verified course completion batches, diplomas, and milestone badges synchronized with Operating Media CRM.
           </p>
 
           {/* Quick Metrics Bar */}
-          <div className="flex flex-wrap items-center gap-3.5 pt-3 border-t border-slate-200/80 text-sm font-medium">
-            <div className="flex items-center space-x-1.5 text-slate-800">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" />
-              <span className="font-extrabold text-slate-900">{COURSE_BATCHES_DATA.length}</span>
-              <span className="text-slate-800 font-semibold">Course Batches</span>
+          <div className="flex flex-wrap items-center gap-3 pt-2 text-xs font-medium">
+            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-200">
+              <span className="w-2 h-2 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
+              <span className="font-black text-slate-900 dark:text-white">{COURSE_BATCHES_DATA.length}</span>
+              <span className="text-slate-600 dark:text-slate-400 font-semibold">Course Batches</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-slate-800">
-              <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block" />
-              <span className="font-extrabold text-slate-900">{achievements.length}</span>
-              <span className="text-slate-800 font-semibold">Achievement Badges</span>
+            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-200">
+              <span className="w-2 h-2 rounded-full bg-amber-500 inline-block shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
+              <span className="font-black text-slate-900 dark:text-white">{achievements.length}</span>
+              <span className="text-slate-600 dark:text-slate-400 font-semibold">Milestone Badges</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-slate-800">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
-              <span className="font-extrabold text-slate-900">{achievements.filter(a => a.unlocked).length}</span>
-              <span className="text-slate-800 font-semibold">Milestones Earned</span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-slate-800">
-              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block" />
-              <span className="font-extrabold text-slate-900">100%</span>
-              <span className="text-slate-800 font-semibold">CRM Authenticated</span>
+            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+              <span className="font-black text-slate-900 dark:text-white">{totalEarned} / {totalCredentials}</span>
+              <span className="text-slate-600 dark:text-slate-400 font-semibold">Earned</span>
             </div>
           </div>
         </div>
 
         {/* Quick Action Button */}
-        <div className="w-full sm:w-auto shrink-0">
+        <div className="shrink-0 relative z-10 self-start md:self-center">
           <button
+            type="button"
             onClick={() => handleOpenCertificate(COURSE_BATCHES_DATA[0])}
-            className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white text-xs sm:text-sm font-semibold px-5 py-3 rounded-xl shadow-xs hover:shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.98]"
+            className="bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-black text-xs sm:text-sm px-4.5 py-2.5 rounded-xl shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)] transition-all flex items-center space-x-2 cursor-pointer"
           >
-            <Award size={16} />
+            <Award size={15} />
             <span>View Verified Certificate</span>
           </button>
         </div>
       </div>
 
-      {/* ============================================================== */}
-      {/* 1. COURSE COMPLETION BATCHES SECTION (CHANGES PER COURSE)      */}
-      {/* 2-COL CARD LAYOUT: { INFO - LEFT, BATCH IMG - RIGHT }          */}
-      {/* ============================================================== */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1 border-b border-slate-100">
-          <div className="flex items-center space-x-2">
-            <ShieldCheck size={18} className="text-amber-500 shrink-0" />
-            <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
-              Course Completion Batches & Credentials
-            </h2>
-          </div>
-          <span className="text-xs text-slate-500 font-medium">
-            Distinct cohort color shields • Verifiable via QR & Credential ID
-          </span>
+      {/* ------------------------------------------------------------- */}
+      {/* FILTER TABS & SEARCH BAR                                      */}
+      {/* ------------------------------------------------------------- */}
+      <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-2 sm:p-2.5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Filter Pills */}
+        <div className="flex items-center space-x-1.5 overflow-x-auto scrollbar-none">
+          <button
+            type="button"
+            onClick={() => setActiveFilter("all")}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              activeFilter === "all"
+                ? "bg-amber-500 text-slate-950 font-black shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)]"
+                : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            All Credentials ({totalCredentials})
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveFilter("batches")}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              activeFilter === "batches"
+                ? "bg-amber-500 text-slate-950 font-black shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)]"
+                : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            Course Batches ({COURSE_BATCHES_DATA.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveFilter("milestones")}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
+              activeFilter === "milestones"
+                ? "bg-amber-500 text-slate-950 font-black shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)]"
+                : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+            }`}
+          >
+            Milestone Badges ({achievements.length})
+          </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {COURSE_BATCHES_DATA.map((cert) => (
-            <div
-              key={cert.id}
-              className="bg-white border border-slate-200/90 rounded-2xl shadow-xs hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group"
-            >
-              {/* Top Accent Gradient based on badge type */}
-              <div
-                className={`h-1.5 w-full ${
-                  cert.badgeType === "gold"
-                    ? "bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-500"
-                    : cert.badgeType === "green"
-                    ? "bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-600"
-                    : cert.badgeType === "purple"
-                    ? "bg-gradient-to-r from-purple-400 via-indigo-500 to-purple-600"
-                    : "bg-gradient-to-r from-blue-400 via-cyan-500 to-blue-600"
-                }`}
-              />
-
-              {/* 2-COLUMN CARD BODY: { INFO - LEFT, BATCH IMG - RIGHT } */}
-              <div className="p-5 sm:p-6 flex-1 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5">
-                {/* LEFT COLUMN: INFO */}
-                <div className="flex-1 min-w-0 space-y-3 w-full">
-                  {/* Top Row: Category Pill + Grade Pill */}
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="text-[10.5px] font-extrabold uppercase tracking-widest text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
-                      {cert.category}
-                    </span>
-                    <span className="bg-amber-50 text-amber-900 border border-amber-200 text-xs font-black px-2.5 py-0.5 rounded-lg shadow-2xs">
-                      {cert.rating} / 10 • {cert.grade}
-                    </span>
-                  </div>
-
-                  {/* Title & Credential Info */}
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
-                      CREDENTIAL ID: {cert.certificate_id}
-                    </span>
-                    <h3 className="font-black text-slate-900 text-base sm:text-lg leading-snug group-hover:text-[#3b49df] transition-colors break-words">
-                      {cert.course}
-                    </h3>
-                    <p className="text-xs text-slate-500 font-medium">
-                      Awarded to <strong className="text-slate-800 font-bold">{currentUser.name || "Hiteshpuri Goswami"}</strong> • {cert.date}
-                    </p>
-                  </div>
-
-                  {/* Description */}
-                  <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal break-words pt-0.5">
-                    {cert.description}
-                  </p>
-                </div>
-
-                {/* RIGHT COLUMN: BATCH IMAGE (CHANGES PER COURSE) */}
-                <div className="shrink-0 flex flex-col items-center justify-center p-3 rounded-2xl bg-gradient-to-b from-slate-50 to-white border border-slate-200/80 shadow-2xs group-hover:scale-105 transition-all w-28 sm:w-32">
-                  <img
-                    src={cert.badgeImg}
-                    alt={cert.badgeTitle}
-                    className="w-16 h-20 sm:w-20 sm:h-24 object-contain drop-shadow-sm transition-transform duration-300"
-                  />
-                  <span className="text-[10px] font-black uppercase text-slate-700 tracking-wider mt-2 text-center leading-tight">
-                    {cert.badgeTitle}
-                  </span>
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight text-center">
-                    {cert.badgeDesc}
-                  </span>
-                </div>
-              </div>
-
-              {/* Footer Row */}
-              <div className="px-5 py-3.5 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span className="text-emerald-700 font-bold flex items-center gap-1.5">
-                  <CheckCircle size={14} className="text-emerald-600" />
-                  <span>Authenticated & Issued</span>
-                </span>
-
-                <button
-                  type="button"
-                  onClick={() => handleOpenCertificate(cert)}
-                  className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs active:scale-95"
-                >
-                  <Eye size={13} />
-                  <span>View Certificate</span>
-                </button>
-              </div>
-            </div>
-          ))}
+        {/* Search Input */}
+        <div className="relative w-full sm:w-60">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search credentials..."
+            className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700/80 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+          />
         </div>
       </div>
 
       {/* ============================================================== */}
-      {/* 2. CURRICULUM MILESTONE BADGES (SAME ACH BADGE FOR ALL)        */}
-      {/* 2-COL CARD LAYOUT: { INFO - LEFT, BATCH IMG - RIGHT }          */}
+      {/* 1. COURSE COMPLETION BATCHES SECTION                           */}
+      {/* SMALL COMPACT CARDS: { LITTLE DETAIL - LEFT, BADGE IMG - RIGHT }*/}
       {/* ============================================================== */}
-      <div className="space-y-4 pt-2">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 pb-1 border-b border-slate-100">
-          <div className="flex items-center space-x-2">
-            <Sparkles size={18} className="text-blue-600 shrink-0" />
-            <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
-              Curriculum Milestone Achievement Badges
-            </h2>
+      {filteredBatches.length > 0 && (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center space-x-2">
+              <ShieldCheck size={16} className="text-amber-500 shrink-0" />
+              <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight">
+                Course Completion Batches
+              </h2>
+              <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500">
+                ({filteredBatches.length})
+              </span>
+            </div>
+            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:inline">
+              Verified CRM Certificates
+            </span>
           </div>
-          <span className="text-xs text-slate-500 font-medium">
-            Official 'Learning Master' Honor Badge • Earned across platform tasks
-          </span>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {achievements.map((ach) => {
-            const theme = getBadgeTheme(ach.category);
-            const desc = ENHANCED_ACHIEVEMENT_DESCRIPTIONS[ach.id] || ach.description;
-
-            return (
+          {/* COMPACT MULTI-COLUMN GRID (NOT STRETCHED) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-3.5 sm:gap-4">
+            {filteredBatches.map((cert) => (
               <div
-                key={ach.id}
-                className={`bg-white rounded-2xl border shadow-xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group ${
-                  ach.unlocked
-                    ? theme.cardBorder
-                    : "border-slate-200/70 opacity-75 bg-slate-50/40"
-                }`}
+                key={cert.id}
+                onClick={() => handleOpenCertificate(cert)}
+                className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 hover:border-amber-400/80 dark:hover:border-amber-500/50 rounded-2xl p-3.5 sm:p-4 shadow-xs hover:shadow-md dark:shadow-none dark:hover:shadow-[0_4px_20px_rgba(245,158,11,0.15)] hover:-translate-y-0.5 transition-all flex items-center justify-between gap-3 group relative overflow-hidden cursor-pointer"
               >
-                {/* Top Vibrant Accent Bar */}
+                {/* Top Subtle Color Accent */}
                 <div
-                  className={`h-1.5 w-full bg-gradient-to-r ${
-                    ach.unlocked ? theme.topGradient : "from-slate-300 to-slate-400"
+                  className={`absolute top-0 left-0 right-0 h-1 ${
+                    cert.badgeType === "gold"
+                      ? "bg-gradient-to-r from-amber-400 to-yellow-500"
+                      : cert.badgeType === "green"
+                      ? "bg-gradient-to-r from-emerald-400 to-teal-500"
+                      : cert.badgeType === "purple"
+                      ? "bg-gradient-to-r from-purple-400 to-indigo-500"
+                      : "bg-gradient-to-r from-blue-400 to-cyan-500"
                   }`}
                 />
 
-                {/* 2-COLUMN CARD BODY: { INFO - LEFT, BATCH IMG - RIGHT } */}
-                <div className="p-5 sm:p-6 flex-1 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5">
-                  {/* LEFT COLUMN: INFO */}
-                  <div className="flex-1 min-w-0 space-y-3 w-full">
-                    {/* Top Row: Category Pill + Status Pill */}
-                    <div className="flex items-center justify-between gap-2">
+                {/* LEFT COLUMN: A LITTLE DETAIL */}
+                <div className="flex-1 min-w-0 space-y-1.5 pt-0.5">
+                  {/* Category & Grade Pills */}
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-[9.5px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700/80 shrink-0">
+                      {cert.category}
+                    </span>
+                    <span className="text-[9.5px] font-black text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/60 px-1.5 py-0.5 rounded-md shrink-0">
+                      {cert.grade}
+                    </span>
+                  </div>
+
+                  {/* Course Title */}
+                  <h3 className="font-black text-slate-900 dark:text-white text-xs sm:text-[13px] leading-snug line-clamp-1 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    {cert.course}
+                  </h3>
+
+                  {/* Little 1-line detail */}
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1">
+                    {cert.shortDetail}
+                  </p>
+
+                  {/* Meta & View Action */}
+                  <div className="pt-1 flex items-center justify-between gap-1 text-[10.5px]">
+                    <span className="text-slate-400 dark:text-slate-500 font-semibold truncate">
+                      {cert.certificate_id} • {cert.date}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenCertificate(cert);
+                      }}
+                      className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-black inline-flex items-center space-x-1 shrink-0 cursor-pointer"
+                    >
+                      <Eye size={12} />
+                      <span>View</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* RIGHT COLUMN: BADGE IMAGE IN SMALL CARD */}
+                <div className="shrink-0 flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/80 w-20 sm:w-24 transition-all">
+                  <img
+                    src={cert.badgeImg}
+                    alt={cert.badgeTitle}
+                    className="w-12 h-14 sm:w-14 sm:h-16 object-contain drop-shadow-sm group-hover:scale-108 transition-transform duration-200"
+                  />
+                  <span className="text-[9px] font-black uppercase text-slate-700 dark:text-slate-300 tracking-tight mt-1 text-center line-clamp-1 max-w-full">
+                    {cert.badgeTitle}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* 2. CURRICULUM MILESTONE BADGES SECTION                         */}
+      {/* SMALL COMPACT CARDS: { LITTLE DETAIL - LEFT, BADGE IMG - RIGHT }*/}
+      {/* ============================================================== */}
+      {filteredAchievements.length > 0 && (
+        <div className="space-y-3 pt-1">
+          <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center space-x-2">
+              <Sparkles size={16} className="text-amber-500 shrink-0" />
+              <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight">
+                Curriculum Milestone Badges
+              </h2>
+              <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500">
+                ({filteredAchievements.length})
+              </span>
+            </div>
+            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:inline">
+              Skill & Achievement Milestones
+            </span>
+          </div>
+
+          {/* COMPACT MULTI-COLUMN GRID (NOT STRETCHED) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-3.5 sm:gap-4">
+            {filteredAchievements.map((ach) => {
+              const theme = getBadgeTheme(ach.category);
+              const desc = SHORT_ACHIEVEMENT_DESCRIPTIONS[ach.id] || ach.description;
+
+              return (
+                <div
+                  key={ach.id}
+                  className={`bg-white dark:bg-[#0b1329] border rounded-2xl p-3.5 sm:p-4 shadow-xs hover:shadow-md dark:shadow-none dark:hover:shadow-[0_4px_20px_rgba(245,158,11,0.15)] hover:-translate-y-0.5 transition-all flex items-center justify-between gap-3 group relative overflow-hidden ${
+                    ach.unlocked
+                      ? "border-slate-200/90 dark:border-slate-800 hover:border-amber-400/80 dark:hover:border-amber-500/50"
+                      : "border-slate-200/60 dark:border-slate-800/50 opacity-80 bg-slate-50/40 dark:bg-slate-900/30"
+                  }`}
+                >
+                  {/* Top Subtle Color Accent */}
+                  <div
+                    className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${
+                      ach.unlocked
+                        ? theme.topGradient
+                        : "from-slate-300 to-slate-400 dark:from-slate-700 dark:to-slate-800"
+                    }`}
+                  />
+
+                  {/* LEFT COLUMN: A LITTLE DETAIL */}
+                  <div className="flex-1 min-w-0 space-y-1.5 pt-0.5">
+                    {/* Category & Status Pills */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       <span
-                        className={`inline-block text-[10.5px] sm:text-[11px] font-black tracking-wider uppercase px-2.5 py-1 rounded-lg border shrink-0 ${
-                          ach.unlocked ? theme.badgeBg : "bg-slate-100 text-slate-500 border-slate-200"
+                        className={`text-[9.5px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md border shrink-0 ${
+                          ach.unlocked
+                            ? theme.badgeBg
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700"
                         }`}
                       >
                         {theme.categoryLabel || ach.category}
                       </span>
 
                       {ach.unlocked ? (
-                        <span className="inline-flex items-center space-x-1.5 text-xs font-black px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/90 shadow-2xs shrink-0">
-                          <CheckCircle2 size={13} className="text-emerald-600" />
+                        <span className="text-[9.5px] font-black px-1.5 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200/90 dark:border-emerald-500/40 inline-flex items-center space-x-1 shrink-0">
+                          <CheckCircle2 size={10} className="text-emerald-600 dark:text-emerald-400" />
                           <span>EARNED</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center space-x-1 text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 shrink-0">
-                          <Lock size={12} className="text-slate-400" />
+                        <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 inline-flex items-center space-x-1 shrink-0">
+                          <Lock size={9} className="text-slate-400 dark:text-slate-500" />
                           <span>LOCKED</span>
                         </span>
                       )}
                     </div>
 
                     {/* Milestone Title */}
-                    <div>
-                      <h3 className="font-black text-slate-900 text-base sm:text-lg leading-snug group-hover:text-[#3b49df] transition-colors break-words">
-                        {ach.title}
-                      </h3>
-                    </div>
+                    <h3 className="font-black text-slate-900 dark:text-white text-xs sm:text-[13px] leading-snug line-clamp-1 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                      {ach.title}
+                    </h3>
 
-                    {/* Rich Description */}
-                    <p className="text-xs sm:text-[13.5px] text-slate-600 leading-relaxed font-normal break-words">
+                    {/* Little 1-line detail */}
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1">
                       {desc}
                     </p>
+
+                    {/* Meta Status */}
+                    <div className="pt-1 flex items-center justify-between gap-1 text-[10.5px]">
+                      <span className="text-slate-400 dark:text-slate-500 font-semibold truncate">
+                        {ach.unlocked ? ach.earnedDate : "Target Milestone"}
+                      </span>
+                      {ach.unlocked && (
+                        <span className="text-emerald-700 dark:text-emerald-400 font-black inline-flex items-center space-x-1 shrink-0">
+                          <Sparkles size={11} />
+                          <span>Verified</span>
+                        </span>
+                      )}
+                    </div>
                   </div>
 
-                  {/* RIGHT COLUMN: ACHIEVEMENT BADGE (REMAINS SAME FOR ALL) */}
-                  <div className="shrink-0 flex flex-col items-center justify-center p-3 rounded-2xl bg-gradient-to-b from-rose-50/50 to-white border border-rose-100 shadow-2xs group-hover:scale-105 transition-all w-28 sm:w-32 relative">
+                  {/* RIGHT COLUMN: BADGE IMAGE IN SMALL CARD */}
+                  <div className="shrink-0 flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800/80 w-16 sm:w-20 relative transition-all">
                     <img
                       src={achivementBatchImg}
-                      alt="Achievement Learning Master Badge"
-                      className={`w-18 h-20 sm:w-22 sm:h-24 object-contain drop-shadow-sm transition-all duration-300 ${
-                        ach.unlocked ? "filter-none" : "grayscale opacity-50"
+                      alt={ach.title}
+                      className={`w-12 h-14 sm:w-14 sm:h-16 object-contain drop-shadow-sm group-hover:scale-108 transition-transform duration-200 ${
+                        ach.unlocked ? "filter-none" : "grayscale opacity-40"
                       }`}
                     />
-                    <span className="text-[10px] font-black uppercase text-rose-700 tracking-wider mt-2 text-center leading-tight">
-                      Learning Master
-                    </span>
-                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-tight text-center">
-                      {ach.unlocked ? "Verified Honor" : "Milestone Target"}
+                    <span className="text-[9px] font-black uppercase text-slate-700 dark:text-slate-300 tracking-tight mt-1 text-center truncate max-w-full">
+                      {ach.unlocked ? "Master" : "Target"}
                     </span>
 
-                    {/* Locked Badge Overlay */}
+                    {/* Lock overlay for locked milestones */}
                     {!ach.unlocked && (
-                      <div className="absolute inset-0 bg-slate-900/10 backdrop-blur-[1px] rounded-2xl flex items-center justify-center">
-                        <div className="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shadow-md">
-                          <Lock size={14} />
+                      <div className="absolute inset-0 bg-slate-950/25 rounded-xl flex items-center justify-center backdrop-blur-[0.5px]">
+                        <div className="w-6 h-6 rounded-full bg-slate-800 text-white flex items-center justify-center shadow-sm">
+                          <Lock size={11} />
                         </div>
                       </div>
                     )}
                   </div>
                 </div>
-
-                {/* Footer */}
-                <div className="px-5 py-3.5 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium flex items-center gap-1.5">
-                    <Calendar size={13} className="text-slate-400" />
-                    <span>{ach.unlocked ? `Unlocked: ${ach.earnedDate}` : "Target Milestone"}</span>
-                  </span>
-
-                  {ach.unlocked ? (
-                    <span className="text-emerald-700 font-extrabold flex items-center space-x-1 text-xs">
-                      <Sparkles size={12} className="text-emerald-600" />
-                      <span>Skill Verified</span>
-                    </span>
-                  ) : (
-                    <span className="text-slate-400 font-semibold text-xs flex items-center space-x-1">
-                      <Lock size={11} />
-                      <span>Complete track to unlock</span>
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Empty Search State */}
+      {filteredBatches.length === 0 && filteredAchievements.length === 0 && (
+        <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-8 text-center space-y-2">
+          <p className="text-sm font-bold text-slate-700 dark:text-slate-300">
+            No credentials or badges found matching "{searchQuery}"
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setSearchQuery("");
+              setActiveFilter("all");
+            }}
+            className="text-xs font-bold text-amber-600 dark:text-amber-400 hover:underline cursor-pointer"
+          >
+            Clear filters
+          </button>
+        </div>
+      )}
 
       {/* Certificate Viewer Modal */}
       <CertificateViewerModal

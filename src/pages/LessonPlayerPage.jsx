@@ -47,19 +47,19 @@ export const LessonPlayerPage = () => {
   return (
     <div className="space-y-6">
       {/* Navigation Top Bar */}
-      <div className="flex items-center justify-between bg-white p-4 rounded border border-slate-200 shadow-xs">
+      <div className="flex items-center justify-between bg-white dark:bg-[#0b1329] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
         <div className="flex items-center space-x-3">
           <button
             onClick={() => navigate(`/courses/${course.id}`)}
-            className="p-1.5 rounded-xl text-slate-500 hover:bg-slate-100 transition-colors"
+            className="p-1.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           >
             <ArrowLeft size={18} />
           </button>
           <div>
-            <span className="text-[10px] font-medium text-amber-600 uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">
               {course.title}
             </span>
-            <h1 className="text-sm font-semibold text-slate-900">
+            <h1 className="text-sm font-bold text-slate-900 dark:text-white">
               {currentLesson.title}
             </h1>
           </div>
@@ -67,7 +67,7 @@ export const LessonPlayerPage = () => {
 
         <button
           onClick={() => navigate("/manage-courses")}
-          className="bg-slate-900 text-white text-xs font-medium px-4 py-2 rounded-xl"
+          className="bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer"
         >
           Exit Player
         </button>
@@ -98,31 +98,31 @@ export const LessonPlayerPage = () => {
           </div>
 
           {/* Tabbed Info Panel below Video */}
-          <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs space-y-4">
-            <div className="border-b border-slate-100 flex space-x-6 pb-2">
+          <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-xs space-y-4">
+            <div className="border-b border-slate-100 dark:border-slate-800 flex space-x-6 pb-2">
               <button
                 onClick={() => setActiveTab("overview")}
-                className={`text-xs font-bold pb-2 border-b-2 transition-colors ${activeTab === "overview" ? "border-amber-500 text-amber-600" : "border-transparent text-slate-400 hover:text-slate-700"}`}
+                className={`text-xs font-bold pb-2 border-b-2 transition-colors cursor-pointer ${activeTab === "overview" ? "border-amber-500 text-amber-600 dark:text-amber-400" : "border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
               >
                 Lesson Overview
               </button>
               <button
                 onClick={() => setActiveTab("notes")}
-                className={`text-xs font-bold pb-2 border-b-2 transition-colors ${activeTab === "notes" ? "border-amber-500 text-amber-600" : "border-transparent text-slate-400 hover:text-slate-700"}`}
+                className={`text-xs font-bold pb-2 border-b-2 transition-colors cursor-pointer ${activeTab === "notes" ? "border-amber-500 text-amber-600 dark:text-amber-400" : "border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
               >
                 Take Personal Notes ({userNotes.length})
               </button>
               <button
                 onClick={() => setActiveTab("resources")}
-                className={`text-xs font-bold pb-2 border-b-2 transition-colors ${activeTab === "resources" ? "border-amber-500 text-amber-600" : "border-transparent text-slate-400 hover:text-slate-700"}`}
+                className={`text-xs font-bold pb-2 border-b-2 transition-colors cursor-pointer ${activeTab === "resources" ? "border-amber-500 text-amber-600 dark:text-amber-400" : "border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
               >
                 Download Resources
               </button>
             </div>
 
             {activeTab === "overview" && (
-              <div className="space-y-2 text-xs text-slate-700">
-                <h3 className="font-bold text-slate-900 text-sm">
+              <div className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm">
                   {currentLesson.title}
                 </h3>
                 <p className="leading-relaxed">
@@ -139,11 +139,11 @@ export const LessonPlayerPage = () => {
                   value={noteContent}
                   onChange={(e) => setNoteContent(e.target.value)}
                   placeholder="Type your notes for this timestamp..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs focus:outline-hidden"
+                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:focus:border-amber-500"
                 />
                 <button
                   onClick={handleSaveNote}
-                  className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors flex items-center space-x-1"
+                  className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors flex items-center space-x-1 cursor-pointer"
                 >
                   <Send size={14} />
                   <span>Save Note</span>
@@ -153,12 +153,12 @@ export const LessonPlayerPage = () => {
 
             {activeTab === "resources" && (
               <div className="space-y-2">
-                <div className="p-3 rounded-xl border border-slate-100 flex items-center justify-between bg-slate-50">
-                  <div className="flex items-center space-x-2 text-xs font-bold text-slate-800">
+                <div className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/60">
+                  <div className="flex items-center space-x-2 text-xs font-bold text-slate-800 dark:text-slate-200">
                     <FileText size={16} className="text-amber-500" />
                     <span>SEO_Audit_Checklist_2026.pdf</span>
                   </div>
-                  <button className="text-xs font-bold text-blue-600 hover:underline flex items-center space-x-1">
+                  <button className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center space-x-1 cursor-pointer">
                     <Download size={14} />
                     <span>Download</span>
                   </button>
@@ -169,12 +169,12 @@ export const LessonPlayerPage = () => {
         </div>
 
         {/* Right Column: Course Syllabus Playlist */}
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <h3 className="font-bold text-slate-900 text-sm">
+        <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">
               Course Syllabus
             </h3>
-            <span className="text-[11px] font-bold text-slate-400">
+            <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500">
               {units.length} Lessons
             </span>
           </div>
@@ -186,26 +186,26 @@ export const LessonPlayerPage = () => {
                 <div
                   key={unit.id}
                   onClick={() => setActiveLessonIdx(idx)}
-                  className={`p-3rounded border transition-all cursor-pointer ${
+                  className={`p-3 rounded-xl border transition-all cursor-pointer ${
                     isActive
-                      ? "bg-blue-50 border-blue-200 shadow-xs"
-                      : "bg-white border-slate-100 hover:bg-slate-50"
+                      ? "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900/60 shadow-xs"
+                      : "bg-white dark:bg-[#0b1329] border-slate-100 dark:border-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-800/40"
                   }`}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-start space-x-2.5">
                       <div
-                        className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${isActive ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600"}`}
+                        className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${isActive ? "bg-blue-600 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"}`}
                       >
                         {idx + 1}
                       </div>
                       <div>
                         <h4
-                          className={`text-xs font-bold leading-snug ${isActive ? "text-blue-900" : "text-slate-800"}`}
+                          className={`text-xs font-bold leading-snug ${isActive ? "text-blue-900 dark:text-blue-300" : "text-slate-800 dark:text-slate-200"}`}
                         >
                           {unit.title}
                         </h4>
-                        <span className="text-[10px] text-slate-400 font-medium block mt-0.5">
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium block mt-0.5">
                           {unit.duration}
                         </span>
                       </div>
@@ -216,14 +216,14 @@ export const LessonPlayerPage = () => {
                         className="text-emerald-500 shrink-0"
                       />
                     ) : unit.isLocked ? (
-                      <Lock size={14} className="text-slate-300 shrink-0" />
+                      <Lock size={14} className="text-slate-300 dark:text-slate-600 shrink-0" />
                     ) : (
                       <Play
                         size={14}
                         className={
                           isActive
-                            ? "text-blue-600 fill-blue-600 shrink-0"
-                            : "text-slate-300 shrink-0"
+                            ? "text-blue-600 dark:text-blue-400 fill-blue-600 dark:fill-blue-400 shrink-0"
+                            : "text-slate-300 dark:text-slate-600 shrink-0"
                         }
                       />
                     )}

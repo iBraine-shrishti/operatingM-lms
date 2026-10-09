@@ -324,25 +324,25 @@ export const AdminCourseStudentsMatrix = ({
   };
 
   return (
-    <div className="bg-white border border-slate-200/90 shadow-2xs p-5 sm:p-6 transition-all space-y-6">
+    <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl shadow-2xs p-5 sm:p-6 transition-all space-y-6">
       {/* ------------------------------------------------------------- */}
       {/* SECTION HEADER & CRM ACTIONS BAR                              */}
       {/* ------------------------------------------------------------- */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="text-[10.5px] font-black uppercase tracking-wider text-[#3b49df] bg-blue-50 px-2 py-0.5 border border-blue-200/80">
+            <span className="text-[10.5px] font-black uppercase tracking-wider text-[#3b49df] dark:text-cyan-400 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 border border-blue-200/80 dark:border-blue-800/60 rounded">
               OPERATING MEDIA CRM & LMS DIRECTORY
             </span>
-            <span className="inline-flex items-center space-x-1 text-[10.5px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="inline-flex items-center space-x-1 text-[10.5px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
               <span>Course Classification Active</span>
             </span>
           </div>
-          <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight mt-1">
+          <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight mt-1">
             Student Enrollment Classification & Multi-Course Management
           </h2>
-          <p className="text-xs text-slate-500 font-normal mt-0.5">
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-normal mt-0.5">
             Monitor attendance, tuition fees, batches, and academic progress
             classified by course.
           </p>
@@ -362,7 +362,7 @@ export const AdminCourseStudentsMatrix = ({
           <button
             type="button"
             onClick={handleExportCSV}
-            className="inline-flex items-center space-x-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl border border-slate-200 transition-all cursor-pointer"
+            className="inline-flex items-center space-x-1.5 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 transition-all cursor-pointer"
             title="Download CSV report of currently filtered students"
           >
             <Download size={13} />
@@ -376,10 +376,10 @@ export const AdminCourseStudentsMatrix = ({
       {/* ------------------------------------------------------------- */}
       <div>
         <div className="flex items-center justify-between mb-2.5">
-          <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+          <span className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
             Classify by Course Specialization
           </span>
-          <span className="text-[11px] text-slate-400 font-medium">
+          <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
             Showing {filteredStudents.length} of {students.length} students
           </span>
         </div>
@@ -392,8 +392,8 @@ export const AdminCourseStudentsMatrix = ({
             onClick={() => setSelectedCourseFilter("all")}
             className={`px-3 py-2 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center space-x-2 border ${
               selectedCourseFilter === "all"
-                ? "bg-slate-900 text-white border-slate-900 shadow-xs"
-                : "bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200/90"
+                ? "bg-slate-900 dark:bg-blue-600 text-white border-slate-900 dark:border-blue-600 shadow-xs"
+                : "bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200/90 dark:border-slate-700"
             }`}
           >
             <BookOpen size={13} />
@@ -401,8 +401,8 @@ export const AdminCourseStudentsMatrix = ({
             <span
               className={`text-[10px] px-1.5 py-0.5 rounded-full ${
                 selectedCourseFilter === "all"
-                  ? "bg-slate-800 text-slate-200"
-                  : "bg-white text-slate-600 border border-slate-200"
+                  ? "bg-slate-800 dark:bg-blue-700 text-slate-200"
+                  : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
               }`}
             >
               {students.length}
@@ -421,8 +421,8 @@ export const AdminCourseStudentsMatrix = ({
                 onClick={() => setSelectedCourseFilter(course.id)}
                 className={`px-3 py-2 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center space-x-2 border ${
                   isSelected
-                    ? "bg-[#3b49df] text-white border-[#3b49df] shadow-xs"
-                    : "bg-white hover:bg-slate-50 text-slate-700 border-slate-200/90"
+                    ? "bg-[#3b49df] dark:bg-blue-600 text-white border-[#3b49df] dark:border-blue-600 shadow-xs"
+                    : "bg-white dark:bg-slate-900/70 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200/90 dark:border-slate-700"
                 }`}
               >
                 <img
@@ -434,8 +434,8 @@ export const AdminCourseStudentsMatrix = ({
                 <span
                   className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${
                     isSelected
-                      ? "bg-blue-700 text-white"
-                      : "bg-slate-100 text-slate-600"
+                      ? "bg-blue-700 dark:bg-blue-800 text-white"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
                   }`}
                 >
                   {count}
@@ -450,58 +450,58 @@ export const AdminCourseStudentsMatrix = ({
       {/* ACTIVE COURSE BACKEND INTELLIGENCE SPOTLIGHT                   */}
       {/* ------------------------------------------------------------- */}
       {activeCourse ? (
-        <div className="bg-slate-50/70 border border-slate-200/90 rounded p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-slate-50/70 dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start space-x-3.5 min-w-0">
             <img
               src={activeCourse.thumbnail}
               alt={activeCourse.title}
-              className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover shrink-0 border border-slate-200 shadow-xs"
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover shrink-0 border border-slate-200 dark:border-slate-700 shadow-xs"
             />
             <div className="min-w-0">
               <div className="flex items-center space-x-2">
-                <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-slate-500">
+                <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   {activeCourse.category}
                 </span>
-                <span className="text-slate-300">•</span>
-                <span className="text-[10.5px] font-bold text-slate-500">
+                <span className="text-slate-300 dark:text-slate-600">•</span>
+                <span className="text-[10.5px] font-bold text-slate-500 dark:text-slate-400">
                   Faculty:{" "}
-                  <strong className="text-slate-700">
+                  <strong className="text-slate-700 dark:text-slate-200">
                     {activeCourse.author}
                   </strong>
                 </span>
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight leading-snug">
                 {activeCourse.title}
               </h3>
-              <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
                 {activeCourse.description}
               </p>
             </div>
           </div>
 
           {/* Quick Metrics for this Course */}
-          <div className="flex items-center space-x-4 sm:space-x-6 shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-slate-200/80">
+          <div className="flex items-center space-x-4 sm:space-x-6 shrink-0 border-t md:border-t-0 pt-3 md:pt-0 border-slate-200/80 dark:border-slate-800">
             <div className="text-center">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
                 Enrolled
               </span>
-              <span className="text-base sm:text-lg font-black text-slate-900 tabular-nums">
+              <span className="text-base sm:text-lg font-black text-slate-900 dark:text-white tabular-nums">
                 {courseStats[activeCourse.id]?.studentCount || 0} Students
               </span>
             </div>
             <div className="text-center">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
                 Avg Attendance
               </span>
-              <span className="text-base sm:text-lg font-black text-emerald-700 tabular-nums">
+              <span className="text-base sm:text-lg font-black text-emerald-700 dark:text-emerald-400 tabular-nums">
                 {courseStats[activeCourse.id]?.avgAttendance || 85}%
               </span>
             </div>
             <div className="text-center">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
                 Duration
               </span>
-              <span className="text-base sm:text-lg font-black text-slate-900 tabular-nums">
+              <span className="text-base sm:text-lg font-black text-slate-900 dark:text-white tabular-nums">
                 {activeCourse.duration}
               </span>
             </div>
@@ -517,14 +517,14 @@ export const AdminCourseStudentsMatrix = ({
         <div className="relative sm:col-span-2">
           <Search
             size={15}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"
           />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by student name, email, admission ID (OMC-0266)..."
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           />
         </div>
 
@@ -533,7 +533,7 @@ export const AdminCourseStudentsMatrix = ({
           <select
             value={branchFilter}
             onChange={(e) => setBranchFilter(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
+            className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
           >
             <option value="all">
               All Centers (Andheri / Borivali / Online)
@@ -549,7 +549,7 @@ export const AdminCourseStudentsMatrix = ({
           <select
             value={feeStatusFilter}
             onChange={(e) => setFeeStatusFilter(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
+            className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
           >
             <option value="all">All Fee Statuses</option>
             <option value="Cleared">Cleared (Full Paid)</option>
@@ -562,10 +562,10 @@ export const AdminCourseStudentsMatrix = ({
       {/* ------------------------------------------------------------- */}
       {/* CLASSIFIED STUDENTS DIRECTORY TABLE                           */}
       {/* ------------------------------------------------------------- */}
-      <div className="overflow-x-auto rounded-xl border border-slate-200/90">
+      <div className="overflow-x-auto rounded-xl border border-slate-200/90 dark:border-slate-800">
         <table className="w-full text-left text-xs">
           <thead>
-            <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-400 font-extrabold uppercase tracking-wider text-[10px]">
+            <tr className="bg-slate-50/80 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-400 font-extrabold uppercase tracking-wider text-[10px]">
               <th className="py-3 px-4">Student Profile</th>
               <th className="py-3 px-4">Classified Course & Batch</th>
               <th className="py-3 px-4">Attendance</th>
@@ -574,15 +574,15 @@ export const AdminCourseStudentsMatrix = ({
               <th className="py-3 px-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 text-slate-700 font-medium">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80 text-slate-700 dark:text-slate-300 font-medium">
             {filteredStudents.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-12 text-center text-slate-400">
+                <td colSpan={6} className="py-12 text-center text-slate-400 dark:text-slate-500">
                   <Users size={32} className="mx-auto mb-2 opacity-40" />
-                  <p className="text-sm font-bold text-slate-600">
+                  <p className="text-sm font-bold text-slate-600 dark:text-slate-300">
                     No students found matching your criteria
                   </p>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
                     Try clearing your search query or selecting a different
                     course filter.
                   </p>
@@ -597,7 +597,7 @@ export const AdminCourseStudentsMatrix = ({
                 return (
                   <tr
                     key={student.id}
-                    className="hover:bg-slate-50/80 transition-colors group"
+                    className="hover:bg-slate-50/80 dark:hover:bg-slate-850/60 transition-colors group"
                   >
                     {/* Student Profile */}
                     <td className="py-3.5 px-4">
@@ -611,11 +611,11 @@ export const AdminCourseStudentsMatrix = ({
                               e.target.src =
                                 "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80";
                             }}
-                            className="w-10 h-10 rounded-xl object-cover border border-slate-200 shadow-2xs"
+                            className="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shadow-2xs"
                           />
                           {student.isCrmSynced && (
                             <span
-                              className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white"
+                              className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900"
                               title="CRM Live Profile Synced"
                             />
                           )}
@@ -623,16 +623,16 @@ export const AdminCourseStudentsMatrix = ({
                         <div className="min-w-0">
                           <div className="flex items-center space-x-1.5">
                             <span
-                              className="font-bold text-slate-900 text-xs sm:text-sm hover:text-[#3b49df] cursor-pointer"
+                              className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm hover:text-[#3b49df] dark:hover:text-blue-400 cursor-pointer"
                               onClick={() => setDossierStudent(student)}
                             >
                               {student.name}
                             </span>
-                            <span className="text-[10px] font-extrabold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
+                            <span className="text-[10px] font-extrabold text-slate-400 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
                               {student.admissionNo}
                             </span>
                           </div>
-                          <span className="text-slate-400 text-[11px] block truncate">
+                          <span className="text-slate-400 dark:text-slate-500 text-[11px] block truncate">
                             {student.email} • {student.phone}
                           </span>
                         </div>
@@ -641,13 +641,13 @@ export const AdminCourseStudentsMatrix = ({
 
                     {/* Classified Course & Batch */}
                     <td className="py-3.5 px-4 min-w-[180px]">
-                      <span className="font-bold text-slate-900 block truncate">
+                      <span className="font-bold text-slate-900 dark:text-white block truncate">
                         {student.courseName}
                       </span>
-                      <span className="text-[11px] text-slate-500 block truncate">
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 block truncate">
                         {student.batch}
                       </span>
-                      <span className="text-[10.5px] font-semibold text-slate-400 block">
+                      <span className="text-[10.5px] font-semibold text-slate-400 dark:text-slate-500 block">
                         📍 {student.branch}
                       </span>
                     </td>
@@ -659,20 +659,20 @@ export const AdminCourseStudentsMatrix = ({
                           <span
                             className={`text-[10px] font-black px-1.5 py-0.5 rounded border ${
                               attPct >= 85
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/60"
                                 : attPct >= 75
-                                  ? "bg-blue-50 text-blue-700 border-blue-200"
-                                  : "bg-amber-50 text-amber-700 border-amber-200"
+                                  ? "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/60"
+                                  : "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/60"
                             }`}
                           >
                             {attPct}% Attended
                           </span>
-                          <span className="text-[10.5px] text-slate-400 tabular-nums">
+                          <span className="text-[10.5px] text-slate-400 dark:text-slate-500 tabular-nums">
                             {student.attendedLectures || 25}/
                             {student.totalLectures || 28}
                           </span>
                         </div>
-                        <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all ${
                               attPct >= 85
@@ -694,25 +694,25 @@ export const AdminCourseStudentsMatrix = ({
                           <span
                             className={`text-[10px] font-black px-1.5 py-0.5 rounded border ${
                               isPaidFull
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/60"
                                 : isOverdue
-                                  ? "bg-rose-50 text-rose-700 border-rose-200"
-                                  : "bg-amber-50 text-amber-700 border-amber-200"
+                                  ? "bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800/60"
+                                  : "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/60"
                             }`}
                           >
                             {student.feeStatus}
                           </span>
                         </div>
-                        <div className="text-[11px] font-bold text-slate-900 tabular-nums">
+                        <div className="text-[11px] font-bold text-slate-900 dark:text-white tabular-nums">
                           ₹{(student.feePaid || 0).toLocaleString("en-IN")} / ₹
                           {(student.feeTotal || 0).toLocaleString("en-IN")}
                         </div>
                         {student.feeDue > 0 ? (
-                          <span className="text-[10px] text-rose-600 font-semibold block">
+                          <span className="text-[10px] text-rose-600 dark:text-rose-400 font-semibold block">
                             Bal Due: ₹{student.feeDue.toLocaleString("en-IN")}
                           </span>
                         ) : (
-                          <span className="text-[10px] text-emerald-600 font-semibold block">
+                          <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold block">
                             Fully Cleared ✓
                           </span>
                         )}
@@ -723,15 +723,15 @@ export const AdminCourseStudentsMatrix = ({
                     <td className="py-3.5 px-4 min-w-[130px]">
                       <div className="space-y-1">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-[10.5px] font-bold text-slate-700 tabular-nums">
+                          <span className="text-[10.5px] font-bold text-slate-700 dark:text-slate-300 tabular-nums">
                             {student.overallProgress}% Complete
                           </span>
-                          <span className="text-[10px] text-slate-400">
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500">
                             {student.completedLessonsCount || 0}/
                             {student.totalLessonsCount || 25}
                           </span>
                         </div>
-                        <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-[#3b49df] rounded-full transition-all"
                             style={{
@@ -748,7 +748,7 @@ export const AdminCourseStudentsMatrix = ({
                         <button
                           type="button"
                           onClick={() => setDossierStudent(student)}
-                          className="px-2.5 py-1 text-xs font-bold text-slate-700 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
+                          className="px-2.5 py-1 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors cursor-pointer"
                           title="View Full Student CRM Dossier"
                         >
                           Dossier
@@ -760,7 +760,7 @@ export const AdminCourseStudentsMatrix = ({
                             setAttendanceStudent(student);
                             setIsAttendanceModalOpen(true);
                           }}
-                          className="p-1 text-slate-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
+                          className="p-1 text-slate-500 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-lg transition-colors cursor-pointer"
                           title="Log Lecture Attendance"
                         >
                           <UserCheck size={14} />
@@ -773,7 +773,7 @@ export const AdminCourseStudentsMatrix = ({
                               setReminderStudent(student);
                               setIsReminderModalOpen(true);
                             }}
-                            className="p-1 text-slate-500 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
+                            className="p-1 text-slate-500 dark:text-slate-400 hover:text-amber-700 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-lg transition-colors cursor-pointer"
                             title="Send Fee Reminder Alert"
                           >
                             <Mail size={14} />
@@ -786,7 +786,7 @@ export const AdminCourseStudentsMatrix = ({
                             setCertStudent(student);
                             setIsCertModalOpen(true);
                           }}
-                          className="p-1 text-slate-500 hover:text-purple-700 hover:bg-purple-50 rounded-lg transition-colors cursor-pointer"
+                          className="p-1 text-slate-500 dark:text-slate-400 hover:text-purple-700 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 rounded-lg transition-colors cursor-pointer"
                           title="Issue Verified Certificate"
                         >
                           <Award size={14} />
@@ -805,22 +805,22 @@ export const AdminCourseStudentsMatrix = ({
       {/* MODAL 1: STUDENT CRM DOSSIER QUICK VIEW                       */}
       {/* ------------------------------------------------------------- */}
       {dossierStudent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/60">
               <div className="flex items-center space-x-2">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-700 bg-blue-100/60 px-2 py-0.5 rounded">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-700 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-950/60 px-2 py-0.5 rounded">
                   CRM Admission Dossier
                 </span>
-                <span className="text-xs font-mono font-bold text-slate-500">
+                <span className="text-xs font-mono font-bold text-slate-500 dark:text-slate-400">
                   {dossierStudent.admissionNo}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setDossierStudent(null)}
-                className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -829,7 +829,7 @@ export const AdminCourseStudentsMatrix = ({
             {/* Modal Body */}
             <div className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
               {/* Profile Card */}
-              <div className="flex items-start space-x-4 p-4 bg-slate-50 rounded border border-slate-200/80">
+              <div className="flex items-start space-x-4 p-4 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200/80 dark:border-slate-800">
                 <img
                   src={dossierStudent.avatar}
                   alt={dossierStudent.name}
@@ -838,20 +838,20 @@ export const AdminCourseStudentsMatrix = ({
                     e.target.src =
                       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80";
                   }}
-                  className="w-16 h-16 rounded object-cover border-2 border-white shadow-md shrink-0"
+                  className="w-16 h-16 rounded-xl object-cover border-2 border-white dark:border-slate-700 shadow-md shrink-0"
                 />
                 <div className="min-w-0 flex-1">
-                  <h3 className="text-base font-black text-slate-900 leading-snug">
+                  <h3 className="text-base font-black text-slate-900 dark:text-white leading-snug">
                     {dossierStudent.name}
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     {dossierStudent.email} • {dossierStudent.phone}
                   </p>
                   <div className="flex flex-wrap items-center gap-2 mt-2">
-                    <span className="text-[10.5px] font-bold text-slate-700 bg-white border border-slate-200 px-2 py-0.5 rounded-md">
+                    <span className="text-[10.5px] font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-md">
                       📍 {dossierStudent.branch}
                     </span>
-                    <span className="text-[10.5px] font-bold text-slate-700 bg-white border border-slate-200 px-2 py-0.5 rounded-md">
+                    <span className="text-[10.5px] font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-md">
                       Enrolled: {dossierStudent.joinedDate}
                     </span>
                   </div>
@@ -860,19 +860,19 @@ export const AdminCourseStudentsMatrix = ({
 
               {/* Course & Batch */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3.5 bg-blue-50/40 border border-blue-200/80 rounded-xl">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 block">
+                <div className="p-3.5 bg-blue-50/40 dark:bg-blue-950/40 border border-blue-200/80 dark:border-blue-800/60 rounded-xl">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400 block">
                     Classified Course
                   </span>
-                  <span className="text-xs sm:text-sm font-black text-slate-900 mt-1 block">
+                  <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white mt-1 block">
                     {dossierStudent.courseName}
                   </span>
                 </div>
-                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                <div className="p-3.5 bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
                     Batch Schedule
                   </span>
-                  <span className="text-xs sm:text-sm font-bold text-slate-900 mt-1 block truncate">
+                  <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white mt-1 block truncate">
                     {dossierStudent.batch}
                   </span>
                 </div>
@@ -881,29 +881,29 @@ export const AdminCourseStudentsMatrix = ({
               {/* Attendance & Fees Breakdown */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Attendance Card */}
-                <div className="p-4 rounded-xl border border-slate-200 space-y-2">
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-700">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       Attendance Standing
                     </span>
-                    <span className="text-xs font-black text-emerald-700">
+                    <span className="text-xs font-black text-emerald-700 dark:text-emerald-400">
                       {dossierStudent.attendancePercentage}%
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-500">
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
                     <span>
                       Total Lectures:{" "}
-                      <strong>{dossierStudent.totalLectures || 28}</strong>
+                      <strong className="text-slate-800 dark:text-slate-200">{dossierStudent.totalLectures || 28}</strong>
                     </span>
                     <span>
                       Attended:{" "}
-                      <strong className="text-emerald-700">
+                      <strong className="text-emerald-700 dark:text-emerald-400">
                         {dossierStudent.attendedLectures || 25}
                       </strong>
                     </span>
                     <span>
                       Absent:{" "}
-                      <strong className="text-rose-600">
+                      <strong className="text-rose-600 dark:text-rose-400">
                         {(dossierStudent.totalLectures || 28) -
                           (dossierStudent.attendedLectures || 25)}
                       </strong>
@@ -912,32 +912,32 @@ export const AdminCourseStudentsMatrix = ({
                 </div>
 
                 {/* Fees Card */}
-                <div className="p-4 rounded-xl border border-slate-200 space-y-2">
+                <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-700">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       Fee Status
                     </span>
-                    <span className="text-xs font-black text-slate-900">
+                    <span className="text-xs font-black text-slate-900 dark:text-white">
                       {dossierStudent.feeStatus}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-slate-500">
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
                     <span>
                       Total:{" "}
-                      <strong>
+                      <strong className="text-slate-800 dark:text-slate-200">
                         ₹
                         {(dossierStudent.feeTotal || 0).toLocaleString("en-IN")}
                       </strong>
                     </span>
                     <span>
                       Paid:{" "}
-                      <strong className="text-emerald-700">
+                      <strong className="text-emerald-700 dark:text-emerald-400">
                         ₹{(dossierStudent.feePaid || 0).toLocaleString("en-IN")}
                       </strong>
                     </span>
                     <span>
                       Due:{" "}
-                      <strong className="text-rose-600">
+                      <strong className="text-rose-600 dark:text-rose-400">
                         ₹{(dossierStudent.feeDue || 0).toLocaleString("en-IN")}
                       </strong>
                     </span>
@@ -947,14 +947,14 @@ export const AdminCourseStudentsMatrix = ({
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-xs text-slate-400">
+            <div className="px-6 py-3.5 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <span className="text-xs text-slate-400 dark:text-slate-500">
                 Operating Media CRM Student Profile
               </span>
               <button
                 type="button"
                 onClick={() => setDossierStudent(null)}
-                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors cursor-pointer"
+                className="bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors cursor-pointer"
               >
                 Close Dossier
               </button>
@@ -967,21 +967,21 @@ export const AdminCourseStudentsMatrix = ({
       {/* MODAL 2: ENROLL NEW STUDENT MODAL                             */}
       {/* ------------------------------------------------------------- */}
       {isEnrollModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-6 py-4.5 border-b border-slate-100 flex items-center justify-between">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-6 py-4.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <h3 className="font-black text-base text-slate-900">
+                <h3 className="font-black text-base text-slate-900 dark:text-white">
                   Enroll New Student
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   Assign course specialization, batch timing, and fee schedule.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsEnrollModalOpen(false)}
-                className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -989,7 +989,7 @@ export const AdminCourseStudentsMatrix = ({
 
             <form onSubmit={handleEnrollSubmit} className="p-6 space-y-4">
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                   Student Full Name *
                 </label>
                 <input
@@ -1000,13 +1000,13 @@ export const AdminCourseStudentsMatrix = ({
                   onChange={(e) =>
                     setEnrollForm({ ...enrollForm, name: e.target.value })
                   }
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-medium text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                     Email Address *
                   </label>
                   <input
@@ -1017,11 +1017,11 @@ export const AdminCourseStudentsMatrix = ({
                     onChange={(e) =>
                       setEnrollForm({ ...enrollForm, email: e.target.value })
                     }
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-medium text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                     Phone Number
                   </label>
                   <input
@@ -1031,13 +1031,13 @@ export const AdminCourseStudentsMatrix = ({
                     onChange={(e) =>
                       setEnrollForm({ ...enrollForm, phone: e.target.value })
                     }
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-medium text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 block mb-1">
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                   Course Specialization *
                 </label>
                 <select
@@ -1045,7 +1045,7 @@ export const AdminCourseStudentsMatrix = ({
                   onChange={(e) =>
                     setEnrollForm({ ...enrollForm, courseId: e.target.value })
                   }
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
+                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
                 >
                   {courses.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -1057,7 +1057,7 @@ export const AdminCourseStudentsMatrix = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                     Campus Center
                   </label>
                   <select
@@ -1065,7 +1065,7 @@ export const AdminCourseStudentsMatrix = ({
                     onChange={(e) =>
                       setEnrollForm({ ...enrollForm, branch: e.target.value })
                     }
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
                   >
                     <option value="Andheri Center">Andheri Center</option>
                     <option value="Borivali Center">Borivali Center</option>
@@ -1073,7 +1073,7 @@ export const AdminCourseStudentsMatrix = ({
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                     Batch Schedule
                   </label>
                   <select
@@ -1081,7 +1081,7 @@ export const AdminCourseStudentsMatrix = ({
                     onChange={(e) =>
                       setEnrollForm({ ...enrollForm, batch: e.target.value })
                     }
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
+                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
                   >
                     <option value="Weekday Morning (WD-M1, 10:00 AM - 12:00 PM)">
                       Weekday Morning (10-12 PM)
@@ -1098,7 +1098,7 @@ export const AdminCourseStudentsMatrix = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                     Total Course Fee (₹)
                   </label>
                   <input
@@ -1107,11 +1107,11 @@ export const AdminCourseStudentsMatrix = ({
                     onChange={(e) =>
                       setEnrollForm({ ...enrollForm, feeTotal: e.target.value })
                     }
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
                     Initial Paid Amount (₹)
                   </label>
                   <input
@@ -1120,16 +1120,16 @@ export const AdminCourseStudentsMatrix = ({
                     onChange={(e) =>
                       setEnrollForm({ ...enrollForm, feePaid: e.target.value })
                     }
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
                   />
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end space-x-2">
                 <button
                   type="button"
                   onClick={() => setIsEnrollModalOpen(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer"
+                  className="px-4 py-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -1149,28 +1149,28 @@ export const AdminCourseStudentsMatrix = ({
       {/* MODAL 3: MARK ATTENDANCE MODAL                                */}
       {/* ------------------------------------------------------------- */}
       {isAttendanceModalOpen && attendanceStudent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded max-w-md w-full border border-slate-200 shadow-2xl overflow-hidden p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-base text-slate-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="font-bold text-base text-slate-900 dark:text-white">
                 Mark Lecture Attendance
               </h3>
               <button
                 type="button"
                 onClick={() => setIsAttendanceModalOpen(false)}
-                className="text-slate-400 hover:text-slate-700 cursor-pointer"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-slate-600 dark:text-slate-300">
               Record attendance for{" "}
-              <strong className="text-slate-900">
+              <strong className="text-slate-900 dark:text-white">
                 {attendanceStudent.name}
               </strong>{" "}
               ({attendanceStudent.admissionNo}) in session topic:{" "}
-              <strong className="text-slate-800">
+              <strong className="text-slate-800 dark:text-slate-200">
                 {attendanceStudent.courseName}
               </strong>
               .
@@ -1202,22 +1202,22 @@ export const AdminCourseStudentsMatrix = ({
       {/* MODAL 4: SEND FEE REMINDER NOTIFICATION                       */}
       {/* ------------------------------------------------------------- */}
       {isReminderModalOpen && reminderStudent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded max-w-md w-full border border-slate-200 shadow-2xl overflow-hidden p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-base text-slate-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="font-bold text-base text-slate-900 dark:text-white">
                 Send Payment Reminder
               </h3>
               <button
                 type="button"
                 onClick={() => setIsReminderModalOpen(false)}
-                className="text-slate-400 hover:text-slate-700 cursor-pointer"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-xs space-y-1 text-amber-900">
+            <div className="p-3.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl text-xs space-y-1 text-amber-900 dark:text-amber-300">
               <p>
                 <strong>Student:</strong> {reminderStudent.name}
               </p>
@@ -1231,16 +1231,16 @@ export const AdminCourseStudentsMatrix = ({
               </p>
             </div>
 
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               An automated payment link with invoice reference OMC-0266 will be
               dispatched via SMS & Email.
             </p>
 
-            <div className="flex items-center justify-end space-x-2 pt-2">
+            <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setIsReminderModalOpen(false)}
-                className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer"
+                className="px-4 py-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white cursor-pointer"
               >
                 Cancel
               </button>
@@ -1261,22 +1261,22 @@ export const AdminCourseStudentsMatrix = ({
       {/* MODAL 5: ISSUE VERIFIED CERTIFICATE                           */}
       {/* ------------------------------------------------------------- */}
       {isCertModalOpen && certStudent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded max-w-md w-full border border-slate-200 shadow-2xl overflow-hidden p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-base text-slate-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="font-bold text-base text-slate-900 dark:text-white">
                 Issue Verified Certificate
               </h3>
               <button
                 type="button"
                 onClick={() => setIsCertModalOpen(false)}
-                className="text-slate-400 hover:text-slate-700 cursor-pointer"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
               >
                 <X size={18} />
               </button>
             </div>
 
-            <div className="p-3.5 bg-purple-50 border border-purple-200 rounded-xl text-xs space-y-1 text-purple-900">
+            <div className="p-3.5 bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 rounded-xl text-xs space-y-1 text-purple-900 dark:text-purple-300">
               <p>
                 <strong>Candidate:</strong> {certStudent.name}
               </p>
@@ -1292,11 +1292,11 @@ export const AdminCourseStudentsMatrix = ({
               </p>
             </div>
 
-            <div className="flex items-center justify-end space-x-2 pt-2">
+            <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setIsCertModalOpen(false)}
-                className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer"
+                className="px-4 py-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white cursor-pointer"
               >
                 Cancel
               </button>

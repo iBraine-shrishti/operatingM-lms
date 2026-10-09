@@ -1,5 +1,4 @@
 import socialMediaImg from '../assets/courses/social-media-marketing.png';
-import counselingImg from '../assets/courses/counseling-video-quiz-brochure.png';
 import advancedTopicsImg from '../assets/courses/advanced-topics-digital-marketing.png';
 import creativeDesigningImg from '../assets/courses/creative-designing.png';
 import googleAnalyticsImg from '../assets/courses/google-analytics.png';
@@ -9,7 +8,6 @@ import seoImg from '../assets/courses/search-engine-optimization-seo.png';
 
 export const COURSE_THUMBNAILS = {
     'course-1': socialMediaImg,
-    'course-2': counselingImg,
     'course-3': advancedTopicsImg,
     'course-4': creativeDesigningImg,
     'course-5': googleAnalyticsImg,
@@ -33,27 +31,74 @@ export const INITIAL_COURSES = [
         author: 'OPERATING MEDIA',
         price: 0,
         duration: '20h 30m',
-        lessonsCount: 22,
+        lessonsCount: 10,
         updatedAt: 'Today',
-        description: 'Organic & paid growth strategies across Instagram, LinkedIn, YouTube, Twitter/X, and viral community management.'
+        bracketText: "Are you looking for social media marketing content ideas or do you need ready-to-use posts for your brand? Let me know the industry or business type, and I'll craft engaging content for your audience!",
+        description: "Are you looking for social media marketing content ideas or do you need ready-to-use posts for your brand? Let me know the industry or business type, and I'll craft engaging content for your audience! Ready to elevate your online presence and drive real engagement? Our Social Media Optimization (SMO) services are designed to make your brand stand out! Custom campaigns that boost engagement & conversions, data-driven insights, and multi-platform growth across Facebook, Instagram, LinkedIn, Quora, and Twitter/X.",
+        overview: {
+            greeting: "Ready to elevate your online presence and drive real engagement? Our Social Media Optimization (SMO) services are designed to make your brand stand out!",
+            whyChooseUsTitle: "Why Choose Us?",
+            highlights: [
+                { title: "Proven Strategies", desc: "Custom campaigns that boost engagement & conversions.", iconName: "TrendingUp" },
+                { title: "Expert Team", desc: "Social media pros with years of industry experience.", iconName: "Users" },
+                { title: "Data-Driven Insights", desc: "Real-time analytics for smarter marketing decisions.", iconName: "BarChart3" },
+                { title: "Engaging Content", desc: "Captivating visuals and copy that resonate with your target audience.", iconName: "Sparkles" },
+                { title: "Multi-Platform Approach", desc: "Facebook, Instagram, LinkedIn, Quora & Twitter/X.", iconName: "Layers" },
+                { title: "Tailored Solutions", desc: "Strategies crafted specifically for your unique brand voice.", iconName: "Target" }
+            ],
+            curriculumSummary: [
+                "Facebook & Instagram Paid Marketing",
+                "LinkedIn Paid Marketing",
+                "Quora Paid Marketing",
+                "TwitterX Organic"
+            ],
+            callToAction: "Want to see results? Check out our success stories and case studies! Book a free consultation today and let's grow your brand together!",
+            contact: {
+                phone: "7700022882 / 9326474007",
+                website: "www.operatingmedia.com"
+            }
+        }
     },
     {
-        id: 'course-2',
-        title: 'Counseling Video, Quiz and Brochure',
-        category: 'Student Orientation & Guidance',
+        id: 'course-4',
+        title: 'Creative Designing',
+        category: 'Design & Media',
         status: 'published',
-        thumbnail: counselingImg,
-        bannerGradient: 'from-rose-500 to-amber-600',
-        studentsCount: 240,
-        completedCount: 220,
-        rating: 4.9,
-        reviewsCount: 68,
+        thumbnail: creativeDesigningImg,
+        bannerGradient: 'from-purple-500 to-pink-600',
+        studentsCount: 98,
+        completedCount: 76,
+        rating: 4.5,
+        reviewsCount: 19,
         author: 'OPERATING MEDIA',
         price: 0,
-        duration: '4h 15m',
-        lessonsCount: 8,
-        updatedAt: 'Today',
-        description: 'Admissions counseling video series, digital marketing career aptitude quiz, and downloadable curriculum brochure.'
+        duration: '16h 20m',
+        lessonsCount: 6,
+        updatedAt: '5 days ago',
+        bracketText: "Elevate your brand with our innovative creative design services at Operating Media. We craft unique visuals—from custom branding to intuitive Creative Designing—that make your business stand out. Let’s bring your vision to life!",
+        description: "Elevate your brand with our innovative creative design services at Operating Media. We craft unique visuals—from custom branding to intuitive Creative Designing—that make your business stand out. Let’s bring your vision to life! Learn Canva for Graphic Design, social media creatives, and creative designing essentials for digital marketing.",
+        overview: {
+            greeting: "Thank you for showing interest in our Creative Design services at Operating Media, one of Mumbai's leading digital marketing experts!",
+            whyChooseUsTitle: "Why Choose Our Creative Design Track?",
+            highlights: [
+                { title: "Innovative Design Solutions", desc: "Over 15 years of experience crafting eye-catching, unique designs that elevate brand identity.", iconName: "Sparkles" },
+                { title: "Customized Creative Strategies", desc: "Tailored design concepts developed to match your brand's personality and goals.", iconName: "Target" },
+                { title: "Comprehensive Branding", desc: "In-depth analysis and strategy to uncover your brand's unique voice and visual style.", iconName: "Layers" },
+                { title: "UI/UX Excellence", desc: "Creating intuitive, user-friendly interfaces that enhance user experience and engagement.", iconName: "Laptop" },
+                { title: "Transparent Collaboration", desc: "Regular, detailed updates and clear communication to keep you in the loop.", iconName: "Users" },
+                { title: "Local & Global Expertise", desc: "Design solutions that resonate both locally and on a global stage.", iconName: "Award" },
+                { title: "Expert Creative Team", desc: "Work with seasoned professionals dedicated to making your brand stand out.", iconName: "Users" },
+                { title: "Ongoing Innovation & Support", desc: "Continuous creative enhancements and support to ensure your brand always stays ahead.", iconName: "ShieldCheck" }
+            ],
+            curriculumSummary: [
+                "Creative Designing Essentials"
+            ],
+            callToAction: "Would you like to schedule a free creative consultation or see a demo of our latest design portfolio? Let us know, and we'll arrange it for you!",
+            contact: {
+                phone: "7700022882 / 9326474007",
+                website: "www.operatingmedia.com"
+            }
+        }
     },
     {
         id: 'course-3',
@@ -71,43 +116,37 @@ export const INITIAL_COURSES = [
         duration: '32h 10m',
         lessonsCount: 20,
         updatedAt: '4 days ago',
-        description: 'Master Affiliate Marketing, Influencer Marketing, WhatsApp Marketing, Mobile Marketing, ORM, Viral Marketing, Content Marketing, and Freelancing.'
-    },
-    {
-        id: 'course-4',
-        title: 'Creative Designing',
-        category: 'Design & Media',
-        status: 'published',
-        thumbnail: creativeDesigningImg,
-        bannerGradient: 'from-purple-500 to-pink-600',
-        studentsCount: 98,
-        completedCount: 76,
-        rating: 4.5,
-        reviewsCount: 19,
-        author: 'OPERATING MEDIA',
-        price: 0,
-        duration: '16h 20m',
-        lessonsCount: 20,
-        updatedAt: '5 days ago',
-        description: 'Learn Figma, Photoshop, and Canva to create stunning ad creatives, social banners, and brand identity packages.'
-    },
-    {
-        id: 'course-5',
-        title: 'Google Analytics Course',
-        category: 'Data & Analytics',
-        status: 'published',
-        thumbnail: googleAnalyticsImg,
-        bannerGradient: 'from-emerald-500 to-green-600',
-        studentsCount: 130,
-        completedCount: 90,
-        rating: 4.6,
-        reviewsCount: 28,
-        author: 'OPERATING MEDIA',
-        price: 0,
-        duration: '14h 45m',
-        lessonsCount: 18,
-        updatedAt: '3 days ago',
-        description: 'Complete GA4 setup, custom event tracking, funnel analysis, and data-driven conversion rate optimization.'
+        bracketText: "This course offers a comprehensive overview of digital media, teaching you how to integrate and use it to meet business and marketing goals. It covers the entire marketing mix across various roles and disciplines, making it suitable for clients and agencies in any industry.",
+        description: "This course offers a comprehensive overview of digital media, teaching you how to integrate and use it to meet business and marketing goals. It covers the entire marketing mix across various roles and disciplines, making it suitable for clients and agencies in any industry. Master Affiliate Marketing, Influencer Marketing, WhatsApp Marketing, Mobile Marketing, ORM, Viral Marketing, Content Marketing, and Digital Marketing Freelancing.",
+        overview: {
+            greeting: "Thank you for your interest in our Masters Program in Digital Marketing Advanced Topics at Operating Media!",
+            whyChooseUsTitle: "What Sets Our Advanced Program Apart:",
+            highlights: [
+                { title: "Deep Industry Insights", desc: "Gain exposure to cutting-edge digital strategies and real-world case studies.", iconName: "TrendingUp" },
+                { title: "Advanced Analytics & Data-Driven Marketing", desc: "Master data interpretation, performance metrics, and analytics tools to drive impactful campaigns.", iconName: "BarChart3" },
+                { title: "Innovative SEO & SEM Techniques", desc: "Learn the latest search optimization and paid advertising strategies to stay ahead in the competitive market.", iconName: "Search" },
+                { title: "Performance Marketing & PPC Optimization", desc: "Explore advanced tactics for maximizing ROI through smart, results-driven campaigns.", iconName: "Target" },
+                { title: "Programmatic Advertising & Automation", desc: "Understand how automation and programmatic buying reshape digital advertising.", iconName: "Cpu" },
+                { title: "Comprehensive Curriculum", desc: "Covering everything from AI-driven marketing and content strategy to advanced conversion optimization.", iconName: "Layers" },
+                { title: "Hands-On Experience", desc: "Work on live projects and simulations to apply advanced concepts in real-world scenarios.", iconName: "CheckCircle2" },
+                { title: "Expert Mentorship", desc: "Learn from industry veterans with extensive experience and a passion for teaching.", iconName: "Users" }
+            ],
+            curriculumSummary: [
+                "Affiliate Marketing",
+                "Influencer Marketing",
+                "Whatsapp Marketing",
+                "Mobile Marketing",
+                "Online Reputation Management (ORM)",
+                "Viral Marketing",
+                "Content Marketing",
+                "Digital Marketing Freelancing"
+            ],
+            callToAction: "Our Masters Program in Digital Marketing Advanced Topics is meticulously designed to elevate your skills and transform your career. Explore our syllabus or schedule a 1:1 counseling session or demo class.",
+            contact: {
+                phone: "7700022882 / 9326474007",
+                website: "www.operatingmedia.com"
+            }
+        }
     },
     {
         id: 'course-6',
@@ -123,9 +162,73 @@ export const INITIAL_COURSES = [
         author: 'OPERATING MEDIA',
         price: 0,
         duration: '26h 00m',
-        lessonsCount: 35,
+        lessonsCount: 12,
         updatedAt: 'Yesterday',
-        description: 'Run profitable Search, Display, Video, and Performance Max campaigns with high ROI bidding strategies.'
+        bracketText: "Google Ads is an online advertising platform where businesses can create paid advertisements to appear on Google search results, YouTube, and other Google partner websites. Advertisers bid on keywords, and Google shows the most relevant ads to users based on their search intent.",
+        description: "Google Ads is an online advertising platform where businesses can create paid advertisements to appear on Google search results, YouTube, and other Google partner websites. Advertisers bid on keywords, and Google shows the most relevant ads to users based on their search intent. Run profitable Search, Display, Video, Shopping, and Smart campaigns with tracking templates and conversion tracking.",
+        overview: {
+            greeting: "Thank you for showing interest in our Google Ads management and training at Operating Media!",
+            whyChooseUsTitle: "What Sets Our Google Ads Program Apart:",
+            highlights: [
+                { title: "Proven Expertise", desc: "With years of experience in digital advertising, we create campaigns that deliver measurable results.", iconName: "Award" },
+                { title: "Data-Driven Strategies", desc: "We utilize advanced analytics and comprehensive keyword research to target the right audience for your business.", iconName: "BarChart3" },
+                { title: "Customized Campaigns", desc: "Each campaign is tailored to your specific business goals, ensuring optimal ad spend and maximum ROI.", iconName: "Target" },
+                { title: "Transparent Reporting", desc: "Stay informed with detailed performance reports that clearly outline your campaign's progress and success.", iconName: "FileText" },
+                { title: "Continuous Optimization", desc: "Our team monitors and adjusts your campaigns in real time to ensure peak performance and capitalize on emerging opportunities.", iconName: "TrendingUp" }
+            ],
+            curriculumSummary: [
+                "Introduction",
+                "Campaigns",
+                "Performance Tracking",
+                "Tests & Assignments"
+            ],
+            callToAction: "Ready to boost your online visibility and drive conversions with targeted ads? Let's schedule a 1:1 consultation to explore how our Google Ads services can help your business grow.",
+            contact: {
+                phone: "7700022882 / 9326474007",
+                website: "www.operatingmedia.com"
+            }
+        }
+    },
+    {
+        id: 'course-5',
+        title: 'Google Analytics Course',
+        category: 'Data & Analytics',
+        status: 'published',
+        thumbnail: googleAnalyticsImg,
+        bannerGradient: 'from-emerald-500 to-green-600',
+        studentsCount: 130,
+        completedCount: 90,
+        rating: 4.6,
+        reviewsCount: 28,
+        author: 'OPERATING MEDIA',
+        price: 0,
+        duration: '14h 45m',
+        lessonsCount: 3,
+        updatedAt: '3 days ago',
+        bracketText: "Learning web analytics is important because it helps you discover what is happening on your website and why is it happening. Information extracted from analytics can be used to improve the effectiveness of your marketing and advertising strategies",
+        description: "Learning web analytics is important because it helps you discover what is happening on your website and why is it happening. Information extracted from analytics can be used to improve the effectiveness of your marketing and advertising strategies. Complete Google Analytics exploration, real-time user data analysis, and user behavior metrics.",
+        overview: {
+            greeting: "Thank you for showing interest in Operating Media's Google Analytics Course—your gateway to mastering data-driven decision-making in digital marketing!",
+            whyChooseUsTitle: "What Sets Our Course Apart:",
+            highlights: [
+                { title: "Industry-Relevant Curriculum", desc: "Learn the ins and outs of Google Analytics—from basic tracking to advanced data interpretation—designed to empower you with actionable insights.", iconName: "BookOpen" },
+                { title: "Expert Trainers", desc: "Our instructors bring years of real-world experience in data analytics and digital marketing, ensuring you get practical, hands-on training.", iconName: "Users" },
+                { title: "Real-World Projects", desc: "Engage in live projects and case studies that provide practical exposure, making your learning both relevant and impactful.", iconName: "CheckCircle2" },
+                { title: "Comprehensive LMS Access", desc: "Access our state-of-the-art Learning Management System anytime, anywhere—enabling flexible, self-paced learning that fits your lifestyle.", iconName: "Laptop" },
+                { title: "Micro Batch Size", desc: "Enjoy personalized attention with small batch sizes, ensuring you get the support and guidance you need.", iconName: "Users" },
+                { title: "Flexible Learning Options", desc: "Choose from multiple batch timings to find the perfect schedule that fits your busy life.", iconName: "Clock" },
+                { title: "Industry Certification", desc: "Earn a recognized certificate upon course completion, enhancing your credentials in the competitive digital marketing landscape.", iconName: "Award" },
+                { title: "Latest Tools & Techniques", desc: "Stay ahead of the curve with training on the latest tools, techniques, and best practices in digital analytics.", iconName: "Layers" }
+            ],
+            curriculumSummary: [
+                "Exploring Google Analytics"
+            ],
+            callToAction: "Want to learn more? Explore our LMS modules or schedule a 1:1 counseling session with our senior analytics trainers or attend a free demo class.",
+            contact: {
+                phone: "7700022882 / 9326474007",
+                website: "www.operatingmedia.com"
+            }
+        }
     },
     {
         id: 'course-7',
@@ -141,9 +244,32 @@ export const INITIAL_COURSES = [
         author: 'OPERATING MEDIA',
         price: 0,
         duration: '22h 15m',
-        lessonsCount: 30,
+        lessonsCount: 3,
         updatedAt: '1 week ago',
-        description: 'Build professional, high-converting websites using WordPress, Elementor, WooCommerce, and custom themes without coding.'
+        bracketText: "WordPress is a free and open source content management system (CMS) developed on PHP and MySQL. You can use WordPress to create your own website or blog without programming knowledge. It has many features including plug-in architecture and template system. WordPress is used by over 15% of “top 1 million” websites and is currently the most popular blogging system in use.",
+        description: "WordPress is a free and open source content management system (CMS) developed on PHP and MySQL. You can use WordPress to create your own website or blog without programming knowledge. It has many features including plug-in architecture and template system. WordPress is used by over 15% of “top 1 million” websites and is currently the most popular blogging system in use. Master website creation, feature extensions, and responsive mobile optimization.",
+        overview: {
+            greeting: "Thank you for showing interest in Operating Media, your trusted partner for WordPress website development!",
+            whyChooseUsTitle: "What Sets Us Apart:",
+            highlights: [
+                { title: "Years of Experience", desc: "Crafting high-quality, custom WordPress websites with modern web standards.", iconName: "Award" },
+                { title: "Custom Designs", desc: "Unique, tailor-made designs that truly reflect your brand identity.", iconName: "Sparkles" },
+                { title: "Responsive & Mobile-Optimized", desc: "Websites that look stunning and perform flawlessly across all desktop and mobile devices.", iconName: "Laptop" },
+                { title: "Robust Functionality", desc: "Seamless integration of plugins and custom features to enhance user experience.", iconName: "Layers" },
+                { title: "SEO & Speed Optimization", desc: "Fast-loading, search engine-friendly websites to boost your online visibility.", iconName: "TrendingUp" },
+                { title: "E-commerce Solutions", desc: "Powerful WooCommerce integrations for online store setups and catalog management.", iconName: "CheckCircle2" },
+                { title: "Easy Content Management", desc: "User-friendly admin interfaces that empower you to manage content effortlessly.", iconName: "FileText" },
+                { title: "Ongoing Support & Maintenance", desc: "Comprehensive post-launch support to keep your website secure and up-to-date.", iconName: "ShieldCheck" }
+            ],
+            curriculumSummary: [
+                "WordPress Website Creation & Features"
+            ],
+            callToAction: "Want to know more? Explore our portfolio and case studies to see our work in action, and schedule a free consultation or demo to experience how we can transform your digital presence!",
+            contact: {
+                phone: "7700022882 / 9326474007",
+                website: "www.operatingmedia.com"
+            }
+        }
     },
     {
         id: 'course-8',
@@ -159,9 +285,38 @@ export const INITIAL_COURSES = [
         author: 'OPERATING MEDIA',
         price: 0,
         duration: '18h 30m',
-        lessonsCount: 24,
+        lessonsCount: 28,
         updatedAt: '2 days ago',
-        description: 'Master Keyword Research, On-Page Optimization, Technical SEO, Backlink Building and Rank #1 on Google.'
+        bracketText: "Search engine optimization (SEO) is an essential practice for any website looking to improve its visibility and attract more organic traffic. In today's digital age, most users rely on search engines like Google, Bing, or Yahoo to find information, products, and services they need.",
+        description: "Search engine optimization (SEO) is an essential practice for any website looking to improve its visibility and attract more organic traffic. In today's digital age, most users rely on search engines like Google, Bing, or Yahoo to find information, products, and services they need. Master SEO Basics, Google Algorithm updates, On-page SEO, Off-page SEO, Google Tag Manager (GTM), Local SEO, and practical tests.",
+        overview: {
+            greeting: "Thank you for showing interest in our SEO services and certification track at Operating Media, one of Mumbai's leading digital marketing experts!",
+            whyChooseUsTitle: "Why Choose Our SEO Program?",
+            highlights: [
+                { title: "Proven Track Record", desc: "Over 15 years of experience driving organic growth and boosting online visibility.", iconName: "Award" },
+                { title: "Customized SEO Strategies", desc: "Tailored plans designed to meet your business's unique needs and goals.", iconName: "Target" },
+                { title: "Comprehensive Keyword Research", desc: "In-depth analysis to uncover high-value search intent opportunities for your niche.", iconName: "Search" },
+                { title: "On-Page & Off-Page Optimization", desc: "Enhancing both your website's content and authority to improve search rankings.", iconName: "Layers" },
+                { title: "Transparent Reporting", desc: "Regular, detailed reports that keep you informed about performance and ROI.", iconName: "BarChart3" },
+                { title: "Local & Global SEO Expertise", desc: "Strategies that cater to both local search dominance and global reach.", iconName: "TrendingUp" },
+                { title: "Expert Team", desc: "Work with seasoned SEO professionals dedicated to your online success.", iconName: "Users" },
+                { title: "Continuous Monitoring & Support", desc: "Ongoing analysis and adjustments to ensure sustained organic growth.", iconName: "ShieldCheck" }
+            ],
+            curriculumSummary: [
+                "Basics SEO",
+                "Google Algorithm",
+                "Onpage SEO",
+                "Offpage SEO",
+                "GTM",
+                "Local SEO",
+                "Tests & Assignments"
+            ],
+            callToAction: "Would you like to schedule a free SEO consultation or see a demo of our latest performance dashboard? Let us know, and we'll arrange it for you!",
+            contact: {
+                phone: "7700022882 / 9326474007",
+                website: "www.operatingmedia.com"
+            }
+        }
     }
 ];
 export const INITIAL_UNITS = [
@@ -417,260 +572,808 @@ export const INITIAL_UNITS = [
         description: 'Build your client proposal deck, scope-of-work agreement, and pricing tier packages.'
     },
     // -------------------------------------------------------------
-    // COURSE-1: SOCIAL MEDIA MARKETING
+    // COURSE-1: SOCIAL MEDIA MARKETING (matches CourseInfo.txt)
     // -------------------------------------------------------------
+    // Facebook & Instagram Paid Marketing
     {
         id: 'u-smm-1',
         courseId: 'course-1',
-        moduleName: 'Instagram & Viral Short-Form Video',
-        title: 'Instagram Reels Algorithm Mastery & Hook Formulations',
+        moduleName: 'Facebook & Instagram Paid Marketing',
+        title: 'Marketing on Facebook and Instagram',
         duration: '18:40',
         videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
         isCompleted: true,
         isLocked: false,
         type: 'video',
-        description: 'Analyzing retention graphs, 3-second audio hooks, and visual pattern interrupts.'
+        description: 'Comprehensive walkthrough of Meta business suite and organic/paid marketing foundations.'
     },
     {
         id: 'u-smm-2',
         courseId: 'course-1',
-        moduleName: 'Instagram & Viral Short-Form Video',
-        title: '30-Day Social Media Content Calendar',
-        duration: 'Due in 4 days',
-        videoUrl: '',
-        isCompleted: false,
+        moduleName: 'Facebook & Instagram Paid Marketing',
+        title: 'Lead Generation Campaign',
+        duration: '22:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
         isLocked: false,
-        type: 'assignment',
-        description: 'Build an omnichannel editorial calendar with caption copywriting and visual references.'
+        type: 'video',
+        description: 'Designing instant forms, lead magnet integrations, and custom CRM webhooks on Meta.'
     },
     {
         id: 'u-smm-3',
         courseId: 'course-1',
-        moduleName: 'LinkedIn B2B Growth & Lead Gen',
-        title: 'LinkedIn Personal Branding & Outbound InMail Sequences',
-        duration: '22:15',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: false,
-        isLocked: false,
-        type: 'video',
-        description: 'Executive profile transformation and high-converting B2B conversation starters.'
-    },
-    // -------------------------------------------------------------
-    // COURSE-2: COUNSELING VIDEO, QUIZ AND BROCHURE
-    // -------------------------------------------------------------
-    {
-        id: 'u-coun-1',
-        courseId: 'course-2',
-        moduleName: 'Admissions & Career Counseling',
-        title: 'Admissions Counseling Video: Career Roadmaps & Industry Scope',
-        duration: '16:30',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: true,
-        isLocked: false,
-        type: 'video',
-        description: 'Comprehensive orientation video on digital marketing career trajectories and salaries.'
-    },
-    {
-        id: 'u-coun-2',
-        courseId: 'course-2',
-        moduleName: 'Admissions & Career Counseling',
-        title: 'Operating Media Course Curriculum & Specialization Brochure (PDF)',
-        duration: '10 Mins Read',
-        videoUrl: '',
-        isCompleted: true,
-        isLocked: false,
-        type: 'document',
-        description: 'Download and review the complete syllabus, batch schedules, and practical project lists.'
-    },
-    {
-        id: 'u-coun-3',
-        courseId: 'course-2',
-        moduleName: 'Skill Aptitude Evaluation',
-        title: 'Digital Marketing Career Aptitude Quiz',
-        duration: '15 Mins',
-        videoUrl: '',
-        isCompleted: false,
-        isLocked: false,
-        type: 'quiz',
-        description: 'Evaluate your creative, analytical, and technical aptitude to recommend your ideal specialization.'
-    },
-    // -------------------------------------------------------------
-    // COURSE-4: CREATIVE DESIGNING
-    // -------------------------------------------------------------
-    {
-        id: 'u-cd-1',
-        courseId: 'course-4',
-        moduleName: 'Figma Design System & UI',
-        title: 'Figma Auto-Layout & Social Media Component Library',
-        duration: '24:50',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: true,
-        isLocked: false,
-        type: 'video',
-        description: 'Creating reusable graphic templates, text styles, and color variables in Figma.'
-    },
-    {
-        id: 'u-cd-2',
-        courseId: 'course-4',
-        moduleName: 'Photoshop Ad Creatives',
-        title: 'High-Converting Performance Ad Creatives in Photoshop',
-        duration: '29:10',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: false,
-        isLocked: false,
-        type: 'video',
-        description: 'Photo manipulation, typography layout, lighting effects, and CTA button styling.'
-    },
-    // -------------------------------------------------------------
-    // COURSE-5: GOOGLE ANALYTICS COURSE
-    // -------------------------------------------------------------
-    {
-        id: 'u-ga-1',
-        courseId: 'course-5',
-        moduleName: 'GA4 Setup & Configuration',
-        title: 'GA4 Property Architecture & Google Tag Manager Integration',
-        duration: '21:30',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: true,
-        isLocked: false,
-        type: 'video',
-        description: 'Setting up data streams, custom dimensions, enhanced measurement, and GTM web containers.'
-    },
-    {
-        id: 'u-ga-2',
-        courseId: 'course-5',
-        moduleName: 'Funnels & Conversion Tracking',
-        title: 'Custom Event Tracking & Funnel Exploration Reports',
-        duration: '26:00',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: false,
-        isLocked: false,
-        type: 'video',
-        description: 'Building closed checkout funnels, user journey drop-off reports, and key conversion events.'
-    },
-    // -------------------------------------------------------------
-    // COURSE-6: GOOGLE ADS
-    // -------------------------------------------------------------
-    {
-        id: 'u-gads-1',
-        courseId: 'course-6',
-        moduleName: 'Search Ads Mastery',
-        title: 'Campaign Hierarchy & High-Intent Keyword Match Types',
-        duration: '23:45',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: true,
-        isLocked: false,
-        type: 'video',
-        description: 'Broad, Phrase, and Exact match keyword structuring with negative keyword lists.'
-    },
-    {
-        id: 'u-gads-2',
-        courseId: 'course-6',
-        moduleName: 'Performance Max (PMax)',
-        title: 'Performance Max Asset Groups & Audience Signals Setup',
-        duration: '27:20',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: false,
-        isLocked: false,
-        type: 'video',
-        description: 'Combining search themes, first-party customer lists, and creative assets for Google AI bidding.'
-    },
-    // -------------------------------------------------------------
-    // COURSE-7: WEBSITE DEVELOPMENT WITH WORDPRESS
-    // -------------------------------------------------------------
-    {
-        id: 'u-wp-1',
-        courseId: 'course-7',
-        moduleName: 'WordPress Setup & Security',
-        title: 'Domain, Hosting, SSL & Clean WordPress Installation',
-        duration: '19:15',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: true,
-        isLocked: false,
-        type: 'video',
-        description: 'Configuring DNS records, PHP settings, database optimization, and login security.'
-    },
-    {
-        id: 'u-wp-2',
-        courseId: 'course-7',
-        moduleName: 'Page Building with Elementor',
-        title: 'Building Responsive Landing Pages with Elementor Pro',
-        duration: '32:00',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: false,
-        isLocked: false,
-        type: 'video',
-        description: 'Header templates, hero sections, mobile breakpoints, and lead capture forms.'
-    },
-    // -------------------------------------------------------------
-    // COURSE-8: SEARCH ENGINE OPTIMIZATION (SEO)
-    // -------------------------------------------------------------
-    {
-        id: 'u-seo-1',
-        courseId: 'course-8',
-        moduleName: 'SEO Foundations & Search Mechanics',
-        title: '1.1 How Search Engines Crawl & Index Websites',
-        duration: '14:20',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: true,
-        isLocked: false,
-        type: 'video',
-        description: 'Learn how Googlebot operates, rendering budgets, indexing queues, and canonicalization fundamentals.'
-    },
-    {
-        id: 'u-seo-2',
-        courseId: 'course-8',
-        moduleName: 'SEO Foundations & Search Mechanics',
-        title: '1.2 Keyword Research & Search Intent Mapping',
-        duration: '22:45',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: true,
-        isLocked: false,
-        type: 'video',
-        description: 'Mastering Semrush and Ahrefs to identify transactional, informational, and commercial intent keywords.'
-    },
-    {
-        id: 'u-seo-3',
-        courseId: 'course-8',
-        moduleName: 'On-Page Optimization',
-        title: '2.1 Crafting Click-Worthy Title Tags & Meta Descriptions',
-        duration: '18:10',
-        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
-        isCompleted: false,
-        isLocked: false,
-        type: 'video',
-        description: 'Formulaic approaches to CTR optimization and header hierarchy (H1, H2, H3).'
-    },
-    {
-        id: 'u-seo-4',
-        courseId: 'course-8',
-        moduleName: 'On-Page Optimization',
-        title: '2.2 Schema Markup & Structured Data Implementation',
+        moduleName: 'Facebook & Instagram Paid Marketing',
+        title: 'Creating a Sales Campaign Made Easy!',
         duration: '25:30',
         videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
         isCompleted: false,
         isLocked: false,
         type: 'video',
-        description: 'JSON-LD rich snippets for products, FAQs, organization schemas, and review badges.'
+        description: 'Catalog sales ads, carousel dynamic formats, and conversion bid strategies.'
+    },
+    {
+        id: 'u-smm-4',
+        courseId: 'course-1',
+        moduleName: 'Facebook & Instagram Paid Marketing',
+        title: 'Pixel, Remarketing and Conversion Setup',
+        duration: '28:10',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Meta pixel events, Conversions API (CAPI), and custom high-intent retargeting audiences.'
+    },
+    {
+        id: 'u-smm-5',
+        courseId: 'course-1',
+        moduleName: 'Facebook & Instagram Paid Marketing',
+        title: 'Maximizing Organic Growth on Facebook and Instagram for Your Business',
+        duration: '20:45',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Algorithm optimization, viral Reels strategy, engagement spikes, and community nurturing.'
+    },
+    // LinkedIn Paid Marketing
+    {
+        id: 'u-smm-6',
+        courseId: 'course-1',
+        moduleName: 'LinkedIn Paid Marketing',
+        title: 'Mastering LinkedIn Paid Marketing',
+        duration: '24:00',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'B2B demographic targeting, Sponsored Content, Sponsored InMail, and budget optimization.'
+    },
+    {
+        id: 'u-smm-7',
+        courseId: 'course-1',
+        moduleName: 'LinkedIn Paid Marketing',
+        title: 'Creating Effective Lead Generation Campaigns',
+        duration: '26:20',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'LinkedIn native Lead Gen Forms, conversion tracking, and high-value decision-maker outreach.'
+    },
+    // Quora Paid Marketing
+    {
+        id: 'u-smm-8',
+        courseId: 'course-1',
+        moduleName: 'Quora Paid Marketing',
+        title: 'Understanding Quora for Lead Generation',
+        duration: '19:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Question targeting, topic targeting, and capturing high-intent search queries on Quora.'
+    },
+    {
+        id: 'u-smm-9',
+        courseId: 'course-1',
+        moduleName: 'Quora Paid Marketing',
+        title: 'Campaign Creation Overview',
+        duration: '21:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Ad copy creation, pixel installation, bidding models, and performance tracking on Quora Ads.'
+    },
+    // TwitterX Organic
+    {
+        id: 'u-smm-10',
+        courseId: 'course-1',
+        moduleName: 'TwitterX Organic',
+        title: 'Mastering Organic Growth on TwitterX',
+        duration: '23:50',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Thread architecture, viral hooks, X Analytics, and building thought leadership.'
+    },
+
+    // -------------------------------------------------------------
+    // COURSE-4: CREATIVE DESIGNING (matches CourseInfo.txt)
+    // -------------------------------------------------------------
+    {
+        id: 'u-cd-1',
+        courseId: 'course-4',
+        moduleName: 'Creative Designing Essentials',
+        title: 'Creative Designing Lesson',
+        duration: '22:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Core design principles, color theory, typography hierarchy, and visual balance.'
+    },
+    {
+        id: 'u-cd-2',
+        courseId: 'course-4',
+        moduleName: 'Creative Designing Essentials',
+        title: 'Understanding Canva for Graphic Design',
+        duration: '26:00',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Navigating Canva Pro, brand kits, custom templates, and layout tools.'
+    },
+    {
+        id: 'u-cd-3',
+        courseId: 'course-4',
+        moduleName: 'Creative Designing Essentials',
+        title: 'Canva Graphic Creation',
+        duration: '28:45',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Practical design of marketing assets, banners, social posts, and product flyers.'
+    },
+    {
+        id: 'u-cd-4',
+        courseId: 'course-4',
+        moduleName: 'Creative Designing Essentials',
+        title: 'Graphic Principles & Visual Layouts',
+        duration: '24:10',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Mastering composition grids, visual contrast, negative space, and branding consistency.'
+    },
+    {
+        id: 'u-cd-5',
+        courseId: 'course-4',
+        moduleName: 'Creative Designing Essentials',
+        title: 'Graphic Designing Tutorial for Social Media Marketing',
+        duration: '31:20',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Designing high-converting ad creatives, Instagram carousel sets, and story templates.'
+    },
+    {
+        id: 'u-cd-6',
+        courseId: 'course-4',
+        moduleName: 'Creative Designing Essentials',
+        title: 'Creative Designing Essentials for Digital Marketing',
+        duration: 'Due in 5 days',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'assignment',
+        description: 'Produce a complete brand identity pack including 3 ad creatives, a carousel, and a logo lockup.'
+    },
+
+    // -------------------------------------------------------------
+    // COURSE-6: GOOGLE ADS (matches CourseInfo.txt)
+    // -------------------------------------------------------------
+    // Introduction
+    {
+        id: 'u-gads-1',
+        courseId: 'course-6',
+        moduleName: 'Introduction',
+        title: 'Understanding Google Ads: A Comprehensive Overview',
+        duration: '24:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Google Ads architecture, Quality Score mechanics, Ad Rank calculation, and auction dynamics.'
+    },
+    // Campaigns
+    {
+        id: 'u-gads-2',
+        courseId: 'course-6',
+        moduleName: 'Campaigns',
+        title: 'Understanding Google Ads Campaign Setup',
+        duration: '27:40',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Account hierarchy, campaign objectives, network selections, and location targeting parameters.'
+    },
+    {
+        id: 'u-gads-3',
+        courseId: 'course-6',
+        moduleName: 'Campaigns',
+        title: 'Google Search Campaigns',
+        duration: '30:20',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Responsive search ads (RSA), ad extensions, keyword match types, and negative keyword lists.'
+    },
+    {
+        id: 'u-gads-4',
+        courseId: 'course-6',
+        moduleName: 'Campaigns',
+        title: 'Setting Up a Display Campaign',
+        duration: '26:50',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Google Display Network (GDN), responsive display ads, audience segments, and placement exclusions.'
+    },
+    {
+        id: 'u-gads-5',
+        courseId: 'course-6',
+        moduleName: 'Campaigns',
+        title: 'Google Shopping Campaign',
+        duration: '29:10',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Google Merchant Center setup, product data feed optimization, and Standard vs Smart Shopping.'
+    },
+    {
+        id: 'u-gads-6',
+        courseId: 'course-6',
+        moduleName: 'Campaigns',
+        title: 'Mastering Video Campaigns in Google Ads',
+        duration: '32:00',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'YouTube skippable in-stream ads, non-skippable bumpers, video reach campaigns, and target CPV.'
+    },
+    {
+        id: 'u-gads-7',
+        courseId: 'course-6',
+        moduleName: 'Campaigns',
+        title: 'Smart Campaign',
+        duration: '21:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Automated bidding, Performance Max signals, asset groups, and AI-driven goal optimization.'
+    },
+    // Performance Tracking
+    {
+        id: 'u-gads-8',
+        courseId: 'course-6',
+        moduleName: 'Performance Tracking',
+        title: 'Tracking Template',
+        duration: '22:45',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'UTM parameters, ValueTrack parameter implementation, and third-party attribution tracking.'
+    },
+    {
+        id: 'u-gads-9',
+        courseId: 'course-6',
+        moduleName: 'Performance Tracking',
+        title: 'Understanding Campaign Conversions',
+        duration: '25:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Setting up conversion actions, enhanced conversions, and primary vs secondary conversion goals.'
+    },
+    // Tests & Assignments
+    {
+        id: 'u-gads-10',
+        courseId: 'course-6',
+        moduleName: 'Tests & Assignments',
+        title: 'Google Ads Intermediate Test',
+        duration: '25 Mins',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'quiz',
+        description: 'Evaluate keyword bidding strategies, Quality Score calculations, and campaign troubleshooting.'
+    },
+    {
+        id: 'u-gads-11',
+        courseId: 'course-6',
+        moduleName: 'Tests & Assignments',
+        title: 'Google AdSense Intermediate Test',
+        duration: '20 Mins',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'quiz',
+        description: 'Assessing monetization principles, policy guidelines, and publisher revenue models.'
+    },
+    {
+        id: 'u-gads-12',
+        courseId: 'course-6',
+        moduleName: 'Tests & Assignments',
+        title: 'GA4 Intermediate Test',
+        duration: '25 Mins',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'quiz',
+        description: 'Cross-platform attribution, event-driven metrics, and Google Ads linked account evaluation.'
+    },
+
+    // -------------------------------------------------------------
+    // COURSE-5: GOOGLE ANALYTICS COURSE (matches CourseInfo.txt)
+    // -------------------------------------------------------------
+    {
+        id: 'u-ga-1',
+        courseId: 'course-5',
+        moduleName: 'Exploring Google Analytics',
+        title: 'Exploring Google Analytics',
+        duration: '28:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Google Analytics 4 interface orientation, data streams, custom dimensions, and report exploration.'
+    },
+    {
+        id: 'u-ga-2',
+        courseId: 'course-5',
+        moduleName: 'Exploring Google Analytics',
+        title: 'Understanding Real-Time User Data',
+        duration: '25:10',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Monitoring real-time traffic surges, geographic distributions, event counters, and user properties.'
+    },
+    {
+        id: 'u-ga-3',
+        courseId: 'course-5',
+        moduleName: 'Exploring Google Analytics',
+        title: 'Analyzing User Data from Google Analytics',
+        duration: '32:45',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Audience retention, path exploration, conversion funnels, and data export to Looker Studio.'
+    },
+
+    // -------------------------------------------------------------
+    // COURSE-7: WEBSITE DEVELOPMENT WITH WORDPRESS (matches CourseInfo.txt)
+    // -------------------------------------------------------------
+    {
+        id: 'u-wp-1',
+        courseId: 'course-7',
+        moduleName: 'WordPress Website Development',
+        title: 'Understanding Website Creation',
+        duration: '27:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'Domain connection, hosting configuration, WordPress dashboard setup, and essential CMS settings.'
+    },
+    {
+        id: 'u-wp-2',
+        courseId: 'course-7',
+        moduleName: 'WordPress Website Development',
+        title: 'Adding Features to Your Website',
+        duration: '34:20',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Plugin installation, contact form integrations, e-commerce WooCommerce setups, and payment gateways.'
+    },
+    {
+        id: 'u-wp-3',
+        courseId: 'course-7',
+        moduleName: 'WordPress Website Development',
+        title: 'Website Responsiveness Tips',
+        duration: '29:40',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Mobile breakpoints, image compression, caching configuration, and cross-browser responsiveness.'
+    },
+
+    // -------------------------------------------------------------
+    // COURSE-8: SEARCH ENGINE OPTIMIZATION (SEO) (matches CourseInfo.txt)
+    // -------------------------------------------------------------
+    // Basics SEO
+    {
+        id: 'u-seo-1',
+        courseId: 'course-8',
+        moduleName: 'Basics SEO',
+        title: 'SEO Basics Explained!',
+        duration: '18:20',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'What is SEO, organic search landscape, search engine market share, and core SEO benefits.'
+    },
+    {
+        id: 'u-seo-2',
+        courseId: 'course-8',
+        moduleName: 'Basics SEO',
+        title: 'Understanding SEO Practices',
+        duration: '22:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: true,
+        isLocked: false,
+        type: 'video',
+        description: 'White-hat vs Black-hat SEO, long-term ranking strategies, and website audit fundamentals.'
+    },
+    // Google Algorithm
+    {
+        id: 'u-seo-3',
+        courseId: 'course-8',
+        moduleName: 'Google Algorithm',
+        title: 'Google’s Algorithm Guidelines Explained',
+        duration: '24:00',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Helpful Content System, Panda, Penguin, Hummingbird, and E-E-A-T quality rater guidelines.'
+    },
+    {
+        id: 'u-seo-4',
+        courseId: 'course-8',
+        moduleName: 'Google Algorithm',
+        title: 'Mobile and Website Updates Video',
+        duration: '20:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Mobile-first indexing, page experience signals, and adapting to core search algorithm updates.'
+    },
+    {
+        id: 'u-seo-5',
+        courseId: 'course-8',
+        moduleName: 'Google Algorithm',
+        title: 'Understanding Google’s Crawling and Indexing Process',
+        duration: '26:10',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'How Googlebot discovers URLs, crawl budget allocation, rendering queues, and index storage.'
+    },
+    // Onpage SEO
+    {
+        id: 'u-seo-6',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'Keyword Types and Intents',
+        duration: '21:45',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Navigational, Informational, Commercial, and Transactional search query classification.'
+    },
+    {
+        id: 'u-seo-7',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'Onpage SEO (Keyword Research)',
+        duration: '29:00',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Practical keyword research using Google Keyword Planner, Semrush, and search intent mapping.'
+    },
+    {
+        id: 'u-seo-8',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'Content Creation Using Keywords',
+        duration: '25:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Semantic keyword placement, keyword density, LSI keywords, and comprehensive topic coverage.'
+    },
+    {
+        id: 'u-seo-9',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'Meta Title & Description',
+        duration: '18:50',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Writing high-CTR meta titles and persuasive meta descriptions within pixel limits.'
+    },
+    {
+        id: 'u-seo-10',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'Image Tag Optimization: Alt Tags Explained',
+        duration: '16:40',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Image descriptive alt text, file naming conventions, webp formats, and responsive dimensions.'
+    },
+    {
+        id: 'u-seo-11',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'SEO Friendly URLs',
+        duration: '15:20',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Permalinks, hyphen separators, keyword integration, and avoiding dynamic parameter bloat.'
+    },
+    {
+        id: 'u-seo-12',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'Redirections & 404 Page',
+        duration: '19:10',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: '301 permanent redirects, 302 temporary redirects, custom 404 error page setup, and crawl error fixes.'
+    },
+    {
+        id: 'u-seo-13',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'Robots.txt File Validation Explained',
+        duration: '17:35',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'User-agent directives, Disallow rules, Allow rules, and testing robots.txt in Google Search Console.'
+    },
+    {
+        id: 'u-seo-14',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'Internal and External Linking',
+        duration: '22:00',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Internal link architecture, contextual anchor text optimization, outbound link authority, and nofollow tags.'
+    },
+    {
+        id: 'u-seo-15',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'Schema Markup & Structured Data Implementation',
+        duration: '27:40',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'JSON-LD schema for Articles, FAQs, Courses, Local Businesses, and rich snippets validation.'
+    },
+    {
+        id: 'u-seo-16',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'Sitemap Session 1',
+        duration: '20:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'XML sitemap creation, priority tagging, changefreq tags, and submission to search engines.'
+    },
+    {
+        id: 'u-seo-17',
+        courseId: 'course-8',
+        moduleName: 'Onpage SEO',
+        title: 'Sitemap Session 2',
+        duration: '19:50',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'HTML sitemaps for user navigation, image/video sitemaps, and index status diagnostics.'
+    },
+    // Offpage SEO
+    {
+        id: 'u-seo-18',
+        courseId: 'course-8',
+        moduleName: 'Offpage SEO',
+        title: 'Offpage SEO Tutorial',
+        duration: '28:10',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Domain Authority (DA), Page Authority (PA), link building strategies, and backlink analysis.'
+    },
+    {
+        id: 'u-seo-19',
+        courseId: 'course-8',
+        moduleName: 'Offpage SEO',
+        title: 'Website Submission to Google Search Engine',
+        duration: '18:40',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Submitting URLs, URL inspection tool, requesting indexing, and verifying live URL status.'
+    },
+    {
+        id: 'u-seo-20',
+        courseId: 'course-8',
+        moduleName: 'Offpage SEO',
+        title: 'Understanding Google Search Console Indexing and Core Web Vitals',
+        duration: '31:20',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Page indexing reports, LCP, INP, CLS troubleshooting, and mobile usability audit.'
+    },
+    {
+        id: 'u-seo-21',
+        courseId: 'course-8',
+        moduleName: 'Offpage SEO',
+        title: 'Google Search Console Operations',
+        duration: '26:30',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Performance tab analysis, search queries, click-through rates (CTR), and impressions.'
+    },
+    // GTM
+    {
+        id: 'u-seo-22',
+        courseId: 'course-8',
+        moduleName: 'GTM',
+        title: 'Button Click in GTM',
+        duration: '21:00',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Creating click triggers, variables, and firing custom conversion events in Google Tag Manager.'
+    },
+    {
+        id: 'u-seo-23',
+        courseId: 'course-8',
+        moduleName: 'GTM',
+        title: 'GTM Setup & Event Triggers',
+        duration: '25:15',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Container tags, preview mode debugging, form submission triggers, and publishing versions.'
+    },
+    // Local SEO
+    {
+        id: 'u-seo-24',
+        courseId: 'course-8',
+        moduleName: 'Local SEO',
+        title: 'Optimizing Your Google Business Profile',
+        duration: '28:40',
+        videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+        isCompleted: false,
+        isLocked: false,
+        type: 'video',
+        description: 'Local pack rankings, NAP consistency, local citations, reviews management, and Google Maps optimization.'
+    },
+    // Tests & Assignments
+    {
+        id: 'u-seo-25',
+        courseId: 'course-8',
+        moduleName: 'Tests & Assignments',
+        title: 'Google Search Console Intermediate Test',
+        duration: '25 Mins',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'quiz',
+        description: 'Assessment on indexing reports, sitemap diagnostics, and search performance data evaluation.'
+    },
+    {
+        id: 'u-seo-26',
+        courseId: 'course-8',
+        moduleName: 'Tests & Assignments',
+        title: 'On-Page and Off-Page SEO Intermediate Test',
+        duration: '30 Mins',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'quiz',
+        description: 'Comprehensive test covering keyword mapping, schema markup, backlink analysis, and technical audits.'
+    },
+    {
+        id: 'u-seo-27',
+        courseId: 'course-8',
+        moduleName: 'Tests & Assignments',
+        title: 'Google Tag Manager Intermediate Test',
+        duration: '20 Mins',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'quiz',
+        description: 'Evaluate knowledge of tags, triggers, dataLayer variables, and GA4 tag deployments.'
+    },
+    {
+        id: 'u-seo-28',
+        courseId: 'course-8',
+        moduleName: 'Tests & Assignments',
+        title: 'Local SEO Intermediate Test',
+        duration: '20 Mins',
+        videoUrl: '',
+        isCompleted: false,
+        isLocked: false,
+        type: 'quiz',
+        description: 'Assess local pack optimization, Google Business Profile management, and citation building.'
     }
 ];
 export const INITIAL_QUIZZES = [
     {
         id: 'q-1',
-        courseId: 'course-2',
-        courseTitle: 'Counseling Video, Quiz and Brochure',
-        title: 'Digital Marketing Career Aptitude Quiz',
-        category: 'Career Orientation',
-        totalQuestions: 15,
-        durationMinutes: 20,
-        passScorePercentage: 75,
-        attemptsCount: 215,
-        averageScore: 86.4,
-        description: 'Comprehensive evaluation assessing core channel competencies across search, social, display, email, and content marketing. Measures conversion funnel analysis, customer journey mapping, and foundational return on ad spend (ROAS) calculations.',
-        studentStatus: 'passed',
-        studentScore: 92,
-        completedDate: '18 Feb 2026',
-        timeSpent: '14 mins',
+        courseId: 'course-3',
+        courseTitle: 'Masters in Digital Marketing - Advanced Topics',
+        title: 'Digital Marketing Aptitude Quiz!',
+        category: 'Digital Marketing',
+        totalQuestions: 20,
+        durationMinutes: 11,
+        totalMarks: 20,
+        passScorePercentage: 80,
+        attemptsCount: 2,
+        averageScore: 12.5,
+        highScore: 25,
+        lowScore: 0,
+        description: 'Comprehensive aptitude assessment testing foundational digital marketing channels, Google Ads, SEO, and social campaign fundamentals.',
+        studentStatus: 'failed',
+        studentScore: 0,
+        completedDate: 'February 25, 2025',
+        timeSpent: '11 mins',
         deadline: 'Available Anytime',
         status: 'active'
     },
@@ -810,141 +1513,6 @@ export const INITIAL_QUIZZES = [
 ];
 export const INITIAL_ASSIGNMENTS = [
     {
-        id: 'a-adv-1',
-        courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
-        title: 'Affiliate Marketing Assignment',
-        dueDate: '2026-10-15',
-        totalSubmissions: 86,
-        pendingGrading: 6,
-        maxScore: 100,
-        instructions: 'Create an affiliate product comparison bridge page and integrate compliance disclaimers.'
-    },
-    {
-        id: 'a-adv-2',
-        courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
-        title: 'Influencer Marketing Assignment-1',
-        dueDate: '2026-10-18',
-        totalSubmissions: 74,
-        pendingGrading: 9,
-        maxScore: 100,
-        instructions: 'Curate a 10-tier influencer list across beauty and tech niches with outreach templates.'
-    },
-    {
-        id: 'a-adv-3',
-        courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
-        title: 'Influencer Marketing Assignment-2',
-        dueDate: '2026-10-22',
-        totalSubmissions: 62,
-        pendingGrading: 4,
-        maxScore: 100,
-        instructions: 'Draft an influencer barter collaboration agreement and campaign KPI scorecard.'
-    },
-    {
-        id: 'a-adv-4',
-        courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
-        title: 'Mobile Marketing Assignment',
-        dueDate: '2026-10-25',
-        totalSubmissions: 58,
-        pendingGrading: 7,
-        maxScore: 100,
-        instructions: 'Conduct Google Play & Apple App Store metadata audit and draft 5 push notification copies.'
-    },
-    {
-        id: 'a-adv-5',
-        courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
-        title: 'Online Reputation Management (ORM) Assignment',
-        dueDate: '2026-10-28',
-        totalSubmissions: 69,
-        pendingGrading: 5,
-        maxScore: 100,
-        instructions: 'Create an ORM crisis management manual and response matrix for negative customer feedback.'
-    },
-    {
-        id: 'a-adv-6',
-        courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
-        title: 'Viral Marketing Assignment-1',
-        dueDate: '2026-11-02',
-        totalSubmissions: 71,
-        pendingGrading: 8,
-        maxScore: 100,
-        instructions: 'Design a meme marketing campaign pack consisting of 5 topical memes for social channels.'
-    },
-    {
-        id: 'a-adv-7',
-        courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
-        title: 'Viral Marketing Assignment-2',
-        dueDate: '2026-11-05',
-        totalSubmissions: 55,
-        pendingGrading: 3,
-        maxScore: 100,
-        instructions: 'Engineer a referral viral loop mechanism with tier unlocking and share incentive triggers.'
-    },
-    {
-        id: 'a-adv-8',
-        courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
-        title: 'Content Marketing Assignment-1',
-        dueDate: '2026-11-10',
-        totalSubmissions: 82,
-        pendingGrading: 4,
-        maxScore: 100,
-        instructions: 'Develop a 90-day pillar content framework with lead magnet gate and distribution schedule.'
-    },
-    {
-        id: 'a-adv-9',
-        courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
-        title: 'Content Marketing Assignment-2',
-        dueDate: '2026-11-14',
-        totalSubmissions: 60,
-        pendingGrading: 6,
-        maxScore: 100,
-        instructions: 'Write a 2,000-word authoritative case study with data charts and actionable takeaways.'
-    },
-    {
-        id: 'a-adv-10',
-        courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
-        title: 'Freelance Digital Marketing Assignment',
-        dueDate: '2026-11-20',
-        totalSubmissions: 78,
-        pendingGrading: 5,
-        maxScore: 100,
-        instructions: 'Build your client proposal deck, scope-of-work agreement, and pricing tier packages.'
-    },
-    {
-        id: 'a-seo-1',
-        courseId: 'course-8',
-        courseTitle: 'Search Engine Optimization (SEO)',
-        title: 'Perform Full Technical & Keyword Audit on Client Website',
-        dueDate: '2026-10-15',
-        totalSubmissions: 94,
-        pendingGrading: 12,
-        maxScore: 100,
-        status: 'submitted',
-        submittedAt: 'Oct 02, 2026',
-        instructions: 'Submit a comprehensive PDF report containing keyword gap analysis, Core Web Vitals audit, and 30-day action plan.'
-    },
-    {
-        id: 'a-wp-1',
-        courseId: 'course-7',
-        courseTitle: 'Website Development With WordPress',
-        title: 'Build a Live 5-Page Business Website on WordPress Sandbox',
-        dueDate: '2026-10-20',
-        totalSubmissions: 115,
-        pendingGrading: 8,
-        maxScore: 100,
-        status: 'pending',
-        instructions: 'Submit your staging URL, admin credentials, and lighthouse performance test screenshot.'
-    },
-    {
         id: 'a-cd-1',
         courseId: 'course-4',
         courseTitle: 'Creative Designing',
@@ -958,6 +1526,19 @@ export const INITIAL_ASSIGNMENTS = [
         feedback: 'Superb Figma design system and typography hierarchy tokens. Clean auto-layouts throughout!',
         submittedAt: 'Sep 29, 2026',
         instructions: 'Provide public Figma link with component library, color styles, typography tokens, and 6 ad variations.'
+    },
+    {
+        id: 'a-adv-cr',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Career Roadmap & Goal Setting Worksheet',
+        dueDate: '2026-10-10',
+        totalSubmissions: 140,
+        pendingGrading: 14,
+        maxScore: 100,
+        status: 'submitted',
+        submittedAt: 'Oct 01, 2026',
+        instructions: 'Complete the digital marketing specialization selection matrix based on your career goals.'
     },
     {
         id: 'a-smm-1',
@@ -975,39 +1556,184 @@ export const INITIAL_ASSIGNMENTS = [
         instructions: 'Build an omnichannel editorial calendar with caption copywriting and visual references.'
     },
     {
-        id: 'a-coun-1',
-        courseId: 'course-2',
-        courseTitle: 'Counseling Video, Quiz and Brochure',
-        title: 'Career Roadmap & Goal Setting Worksheet',
-        dueDate: '2026-10-10',
-        totalSubmissions: 140,
-        pendingGrading: 15,
+        id: 'a-seo-1',
+        courseId: 'course-8',
+        courseTitle: 'Search Engine Optimization (SEO)',
+        title: 'SEO Audit & Competitor Analysis Report',
+        dueDate: '2026-10-15',
+        totalSubmissions: 58,
+        pendingGrading: 8,
         maxScore: 100,
-        status: 'submitted',
-        submittedAt: 'Oct 01, 2026',
-        instructions: 'Complete the digital marketing specialization selection matrix based on your career goals.'
+        status: 'pending',
+        instructions: 'Analyze 3 competitor websites and provide actionable SEO improvement recommendations.'
+    },
+    {
+        id: 'a-gads-em',
+        courseId: 'course-6',
+        courseTitle: 'Google Ads',
+        title: 'Email Marketing Automation Flow',
+        dueDate: '2026-10-18',
+        totalSubmissions: 41,
+        pendingGrading: 6,
+        maxScore: 100,
+        status: 'pending',
+        instructions: 'Design a complete email drip campaign with workflow and copy for onboarding sequence.'
     },
     {
         id: 'a-ga-1',
         courseId: 'course-5',
         courseTitle: 'Google Analytics Course',
-        title: 'GA4 Custom Measurement Plan & Looker Studio Dashboard',
-        dueDate: '2026-10-24',
-        totalSubmissions: 64,
+        title: 'Google Analytics 4 Tracking Implementation',
+        dueDate: '2026-10-20',
+        totalSubmissions: 33,
+        pendingGrading: 4,
+        maxScore: 100,
+        status: 'submitted',
+        submittedAt: 'Oct 03, 2026',
+        instructions: 'Implement GA4 tracking for a demo website and submit event tracking report.'
+    },
+    {
+        id: 'a-adv-1',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Affiliate Marketing Assignment',
+        dueDate: '2026-10-22',
+        totalSubmissions: 86,
         pendingGrading: 6,
         maxScore: 100,
         status: 'pending',
-        instructions: 'Set up custom events in GTM and build an interactive Looker Studio traffic dashboard.'
+        instructions: 'Create an affiliate product comparison bridge page and integrate compliance disclaimers.'
+    },
+    {
+        id: 'a-adv-2',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Influencer Marketing Assignment-1',
+        dueDate: '2026-10-25',
+        totalSubmissions: 74,
+        pendingGrading: 9,
+        maxScore: 100,
+        status: 'pending',
+        instructions: 'Curate a 10-tier influencer list across beauty and tech niches with outreach templates.'
+    },
+    {
+        id: 'a-adv-3',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Influencer Marketing Assignment-2',
+        dueDate: '2026-10-28',
+        totalSubmissions: 62,
+        pendingGrading: 4,
+        maxScore: 100,
+        status: 'pending',
+        instructions: 'Draft an influencer barter collaboration agreement and campaign KPI scorecard.'
+    },
+    {
+        id: 'a-adv-4',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Mobile Marketing Assignment',
+        dueDate: '2026-11-02',
+        totalSubmissions: 58,
+        pendingGrading: 7,
+        maxScore: 100,
+        status: 'pending',
+        instructions: 'Conduct Google Play & Apple App Store metadata audit and draft 5 push notification copies.'
+    },
+    {
+        id: 'a-adv-5',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Online Reputation Management (ORM) Assignment',
+        dueDate: '2026-11-05',
+        totalSubmissions: 69,
+        pendingGrading: 5,
+        maxScore: 100,
+        status: 'pending',
+        instructions: 'Create an ORM crisis management manual and response matrix for negative customer feedback.'
+    },
+    {
+        id: 'a-adv-6',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Viral Marketing Assignment-1',
+        dueDate: '2026-11-08',
+        totalSubmissions: 71,
+        pendingGrading: 8,
+        maxScore: 100,
+        status: 'pending',
+        instructions: 'Design a meme marketing campaign pack consisting of 5 topical memes for social channels.'
+    },
+    {
+        id: 'a-adv-7',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Viral Marketing Assignment-2',
+        dueDate: '2026-11-12',
+        totalSubmissions: 55,
+        pendingGrading: 3,
+        maxScore: 100,
+        status: 'pending',
+        instructions: 'Engineer a referral viral loop mechanism with tier unlocking and share incentive triggers.'
+    },
+    {
+        id: 'a-adv-8',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Content Marketing Assignment-1',
+        dueDate: '2026-11-15',
+        totalSubmissions: 82,
+        pendingGrading: 4,
+        maxScore: 100,
+        status: 'pending',
+        instructions: 'Develop a 90-day pillar content framework with lead magnet gate and distribution schedule.'
+    },
+    {
+        id: 'a-adv-9',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Content Marketing Assignment-2',
+        dueDate: '2026-11-18',
+        totalSubmissions: 60,
+        pendingGrading: 6,
+        maxScore: 100,
+        status: 'pending',
+        instructions: 'Write a 2,000-word authoritative case study with data charts and actionable takeaways.'
+    },
+    {
+        id: 'a-adv-10',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        title: 'Freelance Digital Marketing Assignment',
+        dueDate: '2026-11-22',
+        totalSubmissions: 78,
+        pendingGrading: 5,
+        maxScore: 100,
+        status: 'pending',
+        instructions: 'Build your client proposal deck, scope-of-work agreement, and pricing tier packages.'
+    },
+    {
+        id: 'a-wp-1',
+        courseId: 'course-7',
+        courseTitle: 'Website Development With WordPress',
+        title: 'Build a Live 5-Page Business Website on WordPress Sandbox',
+        dueDate: '2026-11-25',
+        totalSubmissions: 115,
+        pendingGrading: 8,
+        maxScore: 100,
+        status: 'pending',
+        instructions: 'Submit your staging URL, admin credentials, and lighthouse performance test screenshot.'
     },
     {
         id: 'a-gads-1',
         courseId: 'course-6',
         courseTitle: 'Google Ads',
         title: 'Full-Funnel Google Search Ads Campaign Structure',
-        dueDate: '2026-10-27',
+        dueDate: '2026-11-28',
         totalSubmissions: 88,
         pendingGrading: 10,
         maxScore: 100,
+        status: 'pending',
         instructions: 'Structure responsive search ads, ad extensions, and negative keyword lists for a service business.'
     }
 ];
@@ -1294,20 +2020,20 @@ export const INITIAL_STUDENTS = [
         email: 'ishita.shah@example.com',
         phone: '+91 99677 11223',
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-        courseId: 'course-2',
-        courseName: 'Counseling Video, Quiz and Brochure',
-        batch: 'Orientation Cohort 2026',
-        branch: 'Online / Remote',
+        courseId: 'course-7',
+        courseName: 'Website Development With WordPress',
+        batch: 'WordPress Cohort 2026',
+        branch: 'Borivali Center',
         attendancePercentage: 100.0,
-        totalLectures: 8,
-        attendedLectures: 8,
-        feeTotal: 0,
-        feePaid: 0,
+        totalLectures: 3,
+        attendedLectures: 3,
+        feeTotal: 25000,
+        feePaid: 25000,
         feeDue: 0,
         feeStatus: 'Cleared',
         overallProgress: 100,
-        completedLessonsCount: 8,
-        totalLessonsCount: 8,
+        completedLessonsCount: 3,
+        totalLessonsCount: 3,
         joinedDate: '2026-03-10',
         status: 'completed',
         isCrmSynced: false
@@ -1691,7 +2417,7 @@ export const INITIAL_NOTES = [
 export const INITIAL_REVIEWS = [
     {
         id: 'rev-1',
-        courseId: 'course-1',
+        courseId: 'course-8',
         courseTitle: 'Search Engine Optimization (SEO)',
         rating: 5,
         comment: 'The best practical SEO training course in India! Helped me double organic search traffic for our e-commerce client in 60 days.',
@@ -1699,7 +2425,7 @@ export const INITIAL_REVIEWS = [
     },
     {
         id: 'rev-2',
-        courseId: 'course-2',
+        courseId: 'course-7',
         courseTitle: 'Website Development With WordPress',
         rating: 5,
         comment: 'Clear explanation of custom fields, Elementor flexbox containers, and site speed optimization.',

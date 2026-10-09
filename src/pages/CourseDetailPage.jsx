@@ -34,9 +34,38 @@ import {
   Check,
   Sparkle,
   Search,
+  TrendingUp,
+  BarChart3,
+  Target,
+  ShieldCheck,
+  Laptop,
+  Cpu,
+  Phone,
+  Globe,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+
+const OVERVIEW_ICONS = {
+  Sparkles,
+  Target,
+  Layers,
+  Laptop,
+  Users,
+  Award,
+  ShieldCheck,
+  TrendingUp,
+  BarChart3,
+  Search,
+  Cpu,
+  CheckCircle2,
+  Check,
+  BookOpen,
+  Clock,
+  FileText,
+  Phone,
+  Globe,
+};
 
 export const CourseDetailPage = () => {
   const { id } = useParams();
@@ -58,8 +87,10 @@ export const CourseDetailPage = () => {
   const reviews = lmsService.getReviews();
 
   const [searchParams] = useSearchParams();
-  // Tab state: 'outline' (default matching course-outline.png), 'overview', 'notes', 'students'
-  const [activeTab, setActiveTab] = useState(() => searchParams.get("tab") || "outline");
+  // Tab state: 'overview' 1st by default as requested, 'outline', 'notes', 'students'
+  const [activeTab, setActiveTab] = useState(
+    () => searchParams.get("tab") || "overview",
+  );
 
   // Cover image customizable state matching "Change Cover" in course-outline.png
   const [coverImage, setCoverImage] = useState(
@@ -68,11 +99,8 @@ export const CourseDetailPage = () => {
   );
   const [showCoverModal, setShowCoverModal] = useState(false);
 
-  // Module Accordion states
-  const [expandedSections, setExpandedSections] = useState({
-    0: true,
-    1: true,
-  });
+  // Module Accordion states - all closed by default
+  const [expandedSections, setExpandedSections] = useState({});
   const [hiddenInfoSections, setHiddenInfoSections] = useState({});
   const [activeMenuIdx, setActiveMenuIdx] = useState(null);
 
@@ -182,7 +210,10 @@ export const CourseDetailPage = () => {
         const matchesTag = note.lessonTag?.toLowerCase().includes(q);
         if (!matchesText && !matchesTag) return false;
       }
-      if (courseNotesFilterTag !== "all" && note.lessonTag !== courseNotesFilterTag) {
+      if (
+        courseNotesFilterTag !== "all" &&
+        note.lessonTag !== courseNotesFilterTag
+      ) {
         return false;
       }
       return true;
@@ -358,6 +389,18 @@ export const CourseDetailPage = () => {
     setExpandedSections((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
 
+  const handleExpandAll = () => {
+    const all = {};
+    sections.forEach((_, idx) => {
+      all[idx] = true;
+    });
+    setExpandedSections(all);
+  };
+
+  const handleCollapseAll = () => {
+    setExpandedSections({});
+  };
+
   const toggleModuleInfo = (idx) => {
     setHiddenInfoSections((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
@@ -373,18 +416,18 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {/* TOP NAVIGATION BAR matching course-outline.png                */}
       {/* ------------------------------------------------------------- */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 bg-white p-4 sm:p-5rounded border border-slate-200/80 shadow-2xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 bg-white dark:bg-[#0b1329] p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
         <div className="flex items-start sm:items-center space-x-3.5">
           <button
             onClick={() => navigate("/courses")}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors shrink-0 cursor-pointer"
+            className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 cursor-pointer"
             title="Back to Courses"
           >
             <ArrowLeft size={18} />
           </button>
           <div className="space-y-0.5">
             <div className="flex items-center space-x-2">
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight whitespace-nowrap">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight whitespace-nowrap">
                 Course outline
               </h2>
               <button
@@ -395,13 +438,13 @@ export const CourseDetailPage = () => {
                     "Course Outline Guide",
                   )
                 }
-                className="inline-flex items-center space-x-1 text-xs text-slate-400 font-medium hover:text-[#3b49df] cursor-pointer shrink-0"
+                className="inline-flex items-center space-x-1 text-xs text-slate-400 dark:text-slate-500 font-medium hover:text-[#3b49df] dark:hover:text-blue-400 cursor-pointer shrink-0"
               >
                 <span>Learn more</span>
                 <Info size={13} />
               </button>
             </div>
-            <p className="text-xs text-slate-500 font-normal max-w-xl">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-normal max-w-xl">
               Develop your course outline and contents and set up the drip feed
               to schedule lesson delivery.
             </p>
@@ -423,7 +466,7 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {/* WIDE COVER BANNER & INSET AVATAR matching course-outline.png  */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-whiterounded border border-slate-200/80 shadow-2xs overflow-hidden">
+      <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs overflow-hidden">
         {/* Cover Image Container with Change Cover button */}
         <div className="relative h-48 sm:h-56 md:h-64 w-full bg-slate-900 overflow-hidden">
           <img
@@ -431,26 +474,26 @@ export const CourseDetailPage = () => {
             alt={course.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-slate-950/10 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent pointer-events-none" />
 
           {/* Change Cover Pill Button (Admin only) */}
           {isAdmin && (
             <button
               onClick={() => setShowCoverModal(true)}
-              className="absolute top-4 right-4 bg-white/95 hover:bg-white text-slate-800 text-xs font-semibold px-3.5 py-1.5 rounded-xl border border-slate-200/80 shadow-xs backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer z-10"
+              className="absolute top-4 right-4 bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3.5 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700 shadow-xs backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer z-10"
             >
-              <Camera size={14} className="text-[#3b49df]" />
+              <Camera size={14} className="text-[#3b49df] dark:text-blue-400" />
               <span>Change Cover</span>
             </button>
           )}
         </div>
 
         {/* Header Body: Inset Circular Badge + Title + Instructor + Stat Chips */}
-        <div className="px-5 sm:px-8 pb-6 pt-3 bg-white">
+        <div className="px-5 sm:px-8 pb-6 pt-3 bg-white dark:bg-[#0b1329]">
           <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 -mt-10 sm:-mt-12 mb-5">
             {/* Inset Circular Avatar matching course-outline.png */}
             <div className="flex flex-col sm:flex-row sm:items-end gap-3.5 sm:gap-4">
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 xl:w-28 xl:h-28 rounded-full ring-4 ring-white shadow-md bg-white overflow-hidden shrink-0 border border-slate-100">
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 xl:w-28 xl:h-28 rounded-full ring-4 ring-white dark:ring-[#0b1329] shadow-md bg-white dark:bg-[#0b1329] overflow-hidden shrink-0 border border-slate-100 dark:border-slate-800">
                 <img
                   src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&auto=format&fit=crop&q=80"
                   alt="Operating Media Masterclass"
@@ -459,27 +502,27 @@ export const CourseDetailPage = () => {
               </div>
 
               <div className="pb-1 min-w-0">
-                <span className="inline-block bg-blue-50 text-[#3b49df] text-[11px] font-bold px-2.5 py-0.5 rounded-md border border-blue-200/80 mb-1.5">
+                <span className="inline-block bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 text-[11px] font-bold px-2.5 py-0.5 rounded-md border border-blue-200/80 dark:border-blue-800/60 mb-1.5">
                   {course.category}
                 </span>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
                   {course.title}
                 </h1>
               </div>
             </div>
 
             {/* Instructor Credit on Right Side matching course-outline.png */}
-            <div className="flex items-center space-x-3 bg-slate-50/80 border border-slate-200/80 px-4 py-2.5rounded shrink-0 self-start xl:self-auto">
+            <div className="flex items-center space-x-3 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 px-4 py-2.5 rounded-xl shrink-0 self-start xl:self-auto">
               <img
                 src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80"
-                alt="Tony Stark"
-                className="w-10 h-10 rounded-full object-cover ring-2 ring-white shadow-2xs shrink-0"
+                alt="Nilkamal Mukharjee"
+                className="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-800 shadow-2xs shrink-0"
               />
               <div>
-                <p className="text-xs font-bold text-slate-900 leading-snug">
-                  Instructor: Tony Stark
+                <p className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
+                  Instructor: Nilkamal Mukharjee
                 </p>
-                <p className="text-[11px] text-slate-500 font-medium">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                   tonystark@lms.com
                 </p>
               </div>
@@ -487,62 +530,62 @@ export const CourseDetailPage = () => {
           </div>
 
           {/* Clean Stat Chips Row matching course-outline.png */}
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 pt-3 border-t border-slate-100">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
             {/* Chip 1: Total Modules */}
-            <div className="bg-slate-50/80 hover:bg-blue-50/20 border border-slate-200/80 rounded-xl p-3 flex items-center space-x-3 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200/80 text-[#3b49df] flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-blue-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-xl p-3 flex items-center space-x-3 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center shrink-0 shadow-2xs">
                 <Layers size={18} />
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
+                <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
                   Total Modules
                 </span>
-                <span className="text-base font-extrabold text-slate-900 tabular-nums">
+                <span className="text-base font-extrabold text-slate-900 dark:text-white tabular-nums">
                   0{sections.length}
                 </span>
               </div>
             </div>
 
             {/* Chip 2: Activities */}
-            <div className="bg-slate-50/80 hover:bg-emerald-50/20 border border-slate-200/80 rounded-xl p-3 flex items-center space-x-3 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-emerald-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-xl p-3 flex items-center space-x-3 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-2xs">
                 <Play size={18} className="fill-current translate-x-0.5" />
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
+                <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
                   Activities
                 </span>
-                <span className="text-base font-extrabold text-slate-900 tabular-nums">
+                <span className="text-base font-extrabold text-slate-900 dark:text-white tabular-nums">
                   {totalActivitiesCount}
                 </span>
               </div>
             </div>
 
             {/* Chip 3: Course Level */}
-            <div className="bg-slate-50/80 hover:bg-purple-50/20 border border-slate-200/80 rounded-xl p-3 flex items-center space-x-3 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200/80 text-purple-600 flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-purple-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-xl p-3 flex items-center space-x-3 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200/80 dark:border-purple-800/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 shadow-2xs">
                 <Star size={18} className="fill-current" />
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
+                <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
                   Course Level
                 </span>
-                <span className="text-base font-extrabold text-slate-900">
+                <span className="text-base font-extrabold text-slate-900 dark:text-white">
                   Beginner
                 </span>
               </div>
             </div>
 
             {/* Chip 4: Verified Certificate */}
-            <div className="bg-slate-50/80 hover:bg-amber-50/20 border border-slate-200/80 rounded-xl p-3 flex items-center space-x-3 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200/80 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs">
+            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-amber-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-xl p-3 flex items-center space-x-3 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 shadow-2xs">
                 <Award size={18} />
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider block">
+                <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
                   Credential
                 </span>
-                <span className="text-base font-extrabold text-amber-700">
+                <span className="text-base font-extrabold text-amber-700 dark:text-amber-400">
                   Certified
                 </span>
               </div>
@@ -552,12 +595,12 @@ export const CourseDetailPage = () => {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* TABS HEADER: Course Outline | Overview | Notes                */}
+      {/* TABS HEADER: Overview (1st) | Course Outline | Notes          */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white rounded-xl border border-slate-200/80 p-1.5 shadow-2xs flex space-x-1 sm:space-x-2 overflow-x-auto custom-scrollbar">
+      <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 p-1.5 shadow-2xs flex space-x-1 sm:space-x-2 overflow-x-auto custom-scrollbar">
         {[
-          { key: "outline", label: "Course Outline", icon: Layers },
           { key: "overview", label: "Overview", icon: BookOpen },
+          { key: "outline", label: "Course Outline", icon: Layers },
           { key: "notes", label: "Notes", icon: BookMarked },
           ...(isAdmin
             ? [
@@ -578,12 +621,14 @@ export const CourseDetailPage = () => {
               className={`px-4 py-2 text-xs font-bold rounded-lg whitespace-nowrap transition-all flex items-center space-x-2 cursor-pointer ${
                 isActive
                   ? "bg-[#3b49df] text-white shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
               }`}
             >
               <Icon
                 size={14}
-                className={isActive ? "text-white" : "text-slate-400"}
+                className={
+                  isActive ? "text-white" : "text-slate-400 dark:text-slate-500"
+                }
               />
               <span>{t.label}</span>
             </button>
@@ -597,20 +642,20 @@ export const CourseDetailPage = () => {
       {activeTab === "outline" && (
         <div className="space-y-6">
           {/* Progress Summary Banner: Clean Distinct Milestone Card */}
-          <div className="bg-gradient-to-r from-blue-50/80 via-indigo-50/40 to-white border border-blue-200/80 p-4 sm:p-5rounded flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+          <div className="bg-gradient-to-r from-blue-50/80 via-indigo-50/40 to-white dark:from-slate-900 dark:via-blue-950/30 dark:to-[#0b1329] border border-blue-200/80 dark:border-slate-800 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
             <div className="flex items-center space-x-3.5">
               <div className="w-10 h-10 rounded-xl bg-[#3b49df] text-white flex items-center justify-center shrink-0 shadow-xs">
                 <Award size={20} />
               </div>
               <div>
-                <p className="text-xs sm:text-sm font-bold text-slate-900">
+                <p className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
                   Course Progress:{" "}
-                  <span className="text-[#3b49df]">
+                  <span className="text-[#3b49df] dark:text-blue-400">
                     {completedActivitiesCount}
                   </span>{" "}
                   of {totalActivitiesCount} activities completed
                 </p>
-                <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
                   Complete all modules to unlock your official Operating Media
                   certificate.
                 </p>
@@ -618,13 +663,13 @@ export const CourseDetailPage = () => {
             </div>
 
             <div className="w-full sm:w-56 shrink-0">
-              <div className="flex items-center justify-between text-xs font-bold text-slate-600 mb-1.5">
+              <div className="flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-300 mb-1.5">
                 <span>Completion Status</span>
-                <span className="text-[#3b49df] font-black tabular-nums">
+                <span className="text-[#3b49df] dark:text-blue-400 font-black tabular-nums">
                   {progressPercent}%
                 </span>
               </div>
-              <div className="w-full h-2.5 bg-slate-200/80 rounded-full overflow-hidden">
+              <div className="w-full h-2.5 bg-slate-200/80 dark:bg-slate-800 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-[#3b49df] to-[#5068f2] rounded-full transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
@@ -633,10 +678,39 @@ export const CourseDetailPage = () => {
             </div>
           </div>
 
+          {/* Module List Header & Controls */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                Course Outline & Modules ({sections.length})
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Click any module header to expand its lessons and activities.
+              </p>
+            </div>
+            <div className="flex items-center space-x-2 text-xs">
+              <button
+                type="button"
+                onClick={handleExpandAll}
+                className="font-semibold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 px-2.5 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                Expand all
+              </button>
+              <span className="text-slate-300 dark:text-slate-700">|</span>
+              <button
+                type="button"
+                onClick={handleCollapseAll}
+                className="font-semibold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 px-2.5 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                Collapse all
+              </button>
+            </div>
+          </div>
+
           {/* Module List matching course-outline.png */}
           <div className="space-y-4">
             {sections.map((section, sIdx) => {
-              const isExpanded = expandedSections[sIdx] !== false;
+              const isExpanded = Boolean(expandedSections[sIdx]);
               const isInfoHidden = hiddenInfoSections[sIdx] === true;
 
               // Calculate module included activities
@@ -657,12 +731,12 @@ export const CourseDetailPage = () => {
               return (
                 <div
                   key={section.name + sIdx}
-                  className="bg-white rounded border border-slate-200/90 shadow-2xs overflow-hidden transition-all"
+                  className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xs overflow-hidden transition-all"
                 >
                   {/* Module Header Bar matching course-outline.png */}
                   <div
                     onClick={() => toggleSection(sIdx)}
-                    className="p-5 sm:p-6 flex items-center justify-between hover:bg-slate-50/60 cursor-pointer transition-colors border-b border-slate-100"
+                    className="p-5 sm:p-6 flex items-center justify-between hover:bg-slate-50/60 dark:hover:bg-slate-800/40 cursor-pointer transition-colors border-b border-slate-100 dark:border-slate-800"
                   >
                     <div className="flex items-center space-x-3.5">
                       <button
@@ -671,17 +745,20 @@ export const CourseDetailPage = () => {
                           e.stopPropagation();
                           toggleSection(sIdx);
                         }}
-                        className="text-slate-400 hover:text-slate-700 transition-colors p-1 cursor-pointer"
+                        className="text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 transition-colors p-1 cursor-pointer"
                       >
                         {isExpanded ? (
-                          <ChevronUp size={20} className="text-[#3b49df]" />
+                          <ChevronUp
+                            size={20}
+                            className="text-[#3b49df] dark:text-blue-400"
+                          />
                         ) : (
                           <ChevronDown size={20} />
                         )}
                       </button>
 
                       <div className="flex items-center space-x-2.5">
-                        <span className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+                        <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
                           {String(sIdx + 1).padStart(2, "0")} {section.name}
                         </span>
                       </div>
@@ -699,7 +776,7 @@ export const CourseDetailPage = () => {
                               activeMenuIdx === sIdx ? null : sIdx,
                             )
                           }
-                          className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                          className="p-2 rounded-xl text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                           title="Edit section options"
                         >
                           <MoreVertical size={18} />
@@ -707,7 +784,7 @@ export const CourseDetailPage = () => {
 
                         {/* Dropdown Menu matching course-outline.png */}
                         {activeMenuIdx === sIdx && (
-                          <div className="absolute right-0 mt-1 w-48 bg-whiterounded shadow-xl border border-slate-200/90 py-2 z-30 animate-in fade-in">
+                          <div className="absolute right-0 mt-1 w-48 bg-white dark:bg-[#0b1329] rounded-xl shadow-xl border border-slate-200/90 dark:border-slate-800 py-2 z-30 animate-in fade-in">
                             <button
                               onClick={() => {
                                 setActiveMenuIdx(null);
@@ -716,9 +793,12 @@ export const CourseDetailPage = () => {
                                   "info",
                                 );
                               }}
-                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#3b49df] flex items-center space-x-2.5"
+                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-[#3b49df] dark:hover:text-blue-400 flex items-center space-x-2.5"
                             >
-                              <Settings size={14} className="text-slate-400" />
+                              <Settings
+                                size={14}
+                                className="text-slate-400 dark:text-slate-500"
+                              />
                               <span>Edit Section</span>
                             </button>
                             <button
@@ -728,9 +808,12 @@ export const CourseDetailPage = () => {
                                   `/lesson-player?courseId=${course.id}`,
                                 );
                               }}
-                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#3b49df] flex items-center space-x-2.5"
+                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-[#3b49df] dark:hover:text-blue-400 flex items-center space-x-2.5"
                             >
-                              <Play size={14} className="text-slate-400" />
+                              <Play
+                                size={14}
+                                className="text-slate-400 dark:text-slate-500"
+                              />
                               <span>Preview Section</span>
                             </button>
                             <button
@@ -738,9 +821,12 @@ export const CourseDetailPage = () => {
                                 setActiveMenuIdx(null);
                                 showToast(`Add activity dialog opened`, "info");
                               }}
-                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#3b49df] flex items-center space-x-2.5"
+                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-[#3b49df] dark:hover:text-blue-400 flex items-center space-x-2.5"
                             >
-                              <Plus size={14} className="text-slate-400" />
+                              <Plus
+                                size={14}
+                                className="text-slate-400 dark:text-slate-500"
+                              />
                               <span>Add Activity</span>
                             </button>
                             <button
@@ -751,9 +837,12 @@ export const CourseDetailPage = () => {
                                   "info",
                                 );
                               }}
-                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-[#3b49df] flex items-center space-x-2.5"
+                              className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-[#3b49df] dark:hover:text-blue-400 flex items-center space-x-2.5"
                             >
-                              <Upload size={14} className="text-slate-400" />
+                              <Upload
+                                size={14}
+                                className="text-slate-400 dark:text-slate-500"
+                              />
                               <span>Upload Material</span>
                             </button>
                             <button
@@ -761,9 +850,12 @@ export const CourseDetailPage = () => {
                                 setActiveMenuIdx(null);
                                 setShowAiModal(true);
                               }}
-                              className="w-full px-4 py-2 text-left text-xs font-semibold text-purple-700 hover:bg-purple-50 flex items-center space-x-2.5 border-t border-slate-100"
+                              className="w-full px-4 py-2 text-left text-xs font-semibold text-purple-700 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/40 flex items-center space-x-2.5 border-t border-slate-100 dark:border-slate-800"
                             >
-                              <Sparkles size={14} className="text-purple-600" />
+                              <Sparkles
+                                size={14}
+                                className="text-purple-600 dark:text-purple-400"
+                              />
                               <span>Ai Assistant</span>
                             </button>
                           </div>
@@ -777,8 +869,8 @@ export const CourseDetailPage = () => {
                     <div className="p-5 sm:p-6 space-y-4">
                       {/* Description & What's included block matching course-outline.png */}
                       {!isInfoHidden && (
-                        <div className="space-y-3.5 bg-slate-50/90 border border-slate-200/80 p-4 sm:p-5rounded">
-                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                        <div className="space-y-3.5 bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 rounded-2xl">
+                          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
                             In this foundational module, students will be
                             introduced to the core principles and practical
                             frameworks behind {section.name}. The module
@@ -789,32 +881,35 @@ export const CourseDetailPage = () => {
 
                           {/* "What's included" row with icons matching course-outline.png */}
                           <div>
-                            <span className="text-xs font-bold text-slate-900 block mb-2">
+                            <span className="text-xs font-bold text-slate-900 dark:text-white block mb-2">
                               What's included
                             </span>
-                            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-700">
-                              <div className="flex items-center space-x-1.5 bg-white border border-slate-200/80 px-2.5 py-1 rounded-lg shadow-2xs">
-                                <Video size={14} className="text-blue-600" />
+                            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                              <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
+                                <Video
+                                  size={14}
+                                  className="text-blue-600 dark:text-blue-400"
+                                />
                                 <span>{videoCount} videos</span>
                               </div>
-                              <div className="flex items-center space-x-1.5 bg-white border border-slate-200/80 px-2.5 py-1 rounded-lg shadow-2xs">
+                              <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
                                 <BookOpen
                                   size={14}
-                                  className="text-emerald-600"
+                                  className="text-emerald-600 dark:text-emerald-400"
                                 />
                                 <span>{readingCount} readings</span>
                               </div>
-                              <div className="flex items-center space-x-1.5 bg-white border border-slate-200/80 px-2.5 py-1 rounded-lg shadow-2xs">
+                              <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
                                 <FileText
                                   size={14}
-                                  className="text-amber-600"
+                                  className="text-amber-600 dark:text-amber-400"
                                 />
                                 <span>{assignmentCount} assignments</span>
                               </div>
-                              <div className="flex items-center space-x-1.5 bg-white border border-slate-200/80 px-2.5 py-1 rounded-lg shadow-2xs">
+                              <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
                                 <CheckSquare
                                   size={14}
-                                  className="text-purple-600"
+                                  className="text-purple-600 dark:text-purple-400"
                                 />
                                 <span>{quizCount} Quiz</span>
                               </div>
@@ -828,7 +923,7 @@ export const CourseDetailPage = () => {
                         <button
                           type="button"
                           onClick={() => toggleModuleInfo(sIdx)}
-                          className="text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors inline-flex items-center space-x-1 cursor-pointer"
+                          className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors inline-flex items-center space-x-1 cursor-pointer"
                         >
                           <span>
                             {isInfoHidden
@@ -843,7 +938,7 @@ export const CourseDetailPage = () => {
                       </div>
 
                       {/* Module Lessons List */}
-                      <div className="divide-y divide-slate-100 border border-slate-200/80 rounded overflow-hidden bg-white shadow-2xs">
+                      <div className="divide-y divide-slate-100 dark:divide-slate-800 border border-slate-200/80 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-[#0b1329] shadow-2xs">
                         {section.items.map((item, iIdx) => {
                           const isAss = item.type === "assignment";
                           const isQuiz =
@@ -859,19 +954,19 @@ export const CourseDetailPage = () => {
                                   `/lesson-player?courseId=${course.id}&unitId=${item.id}`,
                                 )
                               }
-                              className="p-4 flex items-center justify-between hover:bg-slate-50/80 transition-colors cursor-pointer group"
+                              className="p-4 flex items-center justify-between hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer group"
                             >
                               <div className="flex items-center space-x-3.5 truncate">
                                 {/* Type icon */}
                                 <div
                                   className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border ${
                                     isAss
-                                      ? "bg-amber-50 border-amber-200/80 text-amber-700"
+                                      ? "bg-amber-50 dark:bg-amber-950/60 border-amber-200/80 dark:border-amber-800/60 text-amber-700 dark:text-amber-400"
                                       : isQuiz
-                                        ? "bg-purple-50 border-purple-200/80 text-purple-700"
+                                        ? "bg-purple-50 dark:bg-purple-950/60 border-purple-200/80 dark:border-purple-800/60 text-purple-700 dark:text-purple-400"
                                         : isReading
-                                          ? "bg-emerald-50 border-emerald-200/80 text-emerald-700"
-                                          : "bg-blue-50 border-blue-200/80 text-[#3b49df]"
+                                          ? "bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200/80 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-400"
+                                          : "bg-blue-50 dark:bg-blue-950/60 border-blue-200/80 dark:border-blue-800/60 text-[#3b49df] dark:text-blue-400"
                                   }`}
                                 >
                                   {isAss ? (
@@ -890,21 +985,21 @@ export const CourseDetailPage = () => {
 
                                 <div className="truncate">
                                   <div className="flex items-center space-x-2">
-                                    <span className="text-xs sm:text-sm font-semibold text-slate-900 group-hover:text-[#3b49df] transition-colors truncate">
+                                    <span className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-white group-hover:text-[#3b49df] dark:group-hover:text-blue-400 transition-colors truncate">
                                       {item.title}
                                     </span>
                                     {isAss && (
-                                      <span className="text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200/80 px-2 py-0.5 rounded-full shrink-0">
+                                      <span className="text-[10px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 px-2 py-0.5 rounded-full shrink-0">
                                         Assignment
                                       </span>
                                     )}
                                     {isQuiz && (
-                                      <span className="text-[10px] font-bold bg-purple-50 text-purple-800 border border-purple-200/80 px-2 py-0.5 rounded-full shrink-0">
+                                      <span className="text-[10px] font-bold bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/60 px-2 py-0.5 rounded-full shrink-0">
                                         Quiz
                                       </span>
                                     )}
                                   </div>
-                                  <span className="text-[11px] text-slate-400 font-normal">
+                                  <span className="text-[11px] text-slate-400 dark:text-slate-500 font-normal">
                                     {item.duration || "15:00"} • Practical
                                     walkthrough
                                   </span>
@@ -913,12 +1008,27 @@ export const CourseDetailPage = () => {
 
                               {/* Completion toggle checkmark circle */}
                               <div className="flex items-center space-x-3 shrink-0">
+                                {isAdmin && isAss && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigate(
+                                        `/manage-assignments?title=${encodeURIComponent(item.title)}`,
+                                      );
+                                    }}
+                                    className="text-[11px] font-bold text-amber-700 dark:text-amber-300 hover:text-amber-800 dark:hover:text-amber-200 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/80 transition-colors cursor-pointer shrink-0"
+                                    title="Manage Assignment Portal"
+                                  >
+                                    Manage
+                                  </button>
+                                )}
                                 <button
                                   type="button"
                                   onClick={(e) =>
                                     handleToggleCompletion(item.id, e)
                                   }
-                                  className="p-1 rounded-full hover:bg-slate-100 transition-colors cursor-pointer"
+                                  className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                                   title={
                                     item.isCompleted
                                       ? "Mark as incomplete"
@@ -928,10 +1038,10 @@ export const CourseDetailPage = () => {
                                   {item.isCompleted ? (
                                     <CheckCircle2
                                       size={20}
-                                      className="text-emerald-600 fill-emerald-50"
+                                      className="text-emerald-600 dark:text-emerald-400 fill-emerald-50 dark:fill-emerald-950/60"
                                     />
                                   ) : (
-                                    <div className="w-5 h-5 rounded-full border-2 border-slate-300 group-hover:border-[#3b49df] transition-colors" />
+                                    <div className="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-700 group-hover:border-[#3b49df] dark:group-hover:border-blue-400 transition-colors" />
                                   )}
                                 </button>
                               </div>
@@ -951,7 +1061,7 @@ export const CourseDetailPage = () => {
                                 "info",
                               );
                             }}
-                            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-[#3b49df] text-white text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-xs cursor-pointer"
+                            className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-blue-600 hover:bg-[#3b49df] dark:hover:bg-blue-500 text-white text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-xs cursor-pointer"
                           >
                             <Plus size={14} />
                             <span>Add activity</span>
@@ -961,9 +1071,12 @@ export const CourseDetailPage = () => {
                             onClick={() =>
                               showToast(`Upload module content started`, "info")
                             }
-                            className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-2xs cursor-pointer"
+                            className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-2xs cursor-pointer"
                           >
-                            <Upload size={14} className="text-slate-500" />
+                            <Upload
+                              size={14}
+                              className="text-slate-500 dark:text-slate-400"
+                            />
                             <span>Upload activity</span>
                           </button>
                           <button
@@ -974,17 +1087,23 @@ export const CourseDetailPage = () => {
                                 "info",
                               )
                             }
-                            className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-2xs cursor-pointer"
+                            className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-2xs cursor-pointer"
                           >
-                            <Download size={14} className="text-slate-500" />
+                            <Download
+                              size={14}
+                              className="text-slate-500 dark:text-slate-400"
+                            />
                             <span>Import activity</span>
                           </button>
                           <button
                             type="button"
                             onClick={() => setShowAiModal(true)}
-                            className="px-4 py-2 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-700 text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-2xs ml-auto cursor-pointer"
+                            className="px-4 py-2 rounded-xl bg-purple-50 dark:bg-purple-950/60 hover:bg-purple-100 dark:hover:bg-purple-900/60 border border-purple-200 dark:border-purple-800/60 text-purple-700 dark:text-purple-300 text-xs font-semibold transition-colors flex items-center space-x-1.5 shadow-2xs ml-auto cursor-pointer"
                           >
-                            <Sparkles size={14} className="text-purple-600" />
+                            <Sparkles
+                              size={14}
+                              className="text-purple-600 dark:text-purple-400"
+                            />
                             <span>Create activity with AI</span>
                           </button>
                         </div>
@@ -1003,98 +1122,182 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {activeTab === "overview" && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-white rounded border border-slate-200/80 p-6 md:p-8 shadow-xs space-y-6">
-            <div>
-              <h3 className="font-bold text-slate-900 text-base mb-2">
-                About this Specialization
-              </h3>
-              <p className="text-xs md:text-sm text-slate-600 leading-relaxed font-normal">
-                {course.description} Designed by seasoned industry practitioners
-                at Operating Media, this course delivers complete hands-on
-                proficiency through real brand campaigns, live client scenarios,
-                and rigorous certification prep.
-              </p>
-            </div>
+          <div className="lg:col-span-2 space-y-6">
+            {/* 1. STARTING BRACKET TEXT CALLOUT (Course Introduction) */}
+            {course.bracketText && (
+              <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-purple-50/50 dark:from-blue-950/40 dark:via-indigo-950/30 dark:to-purple-950/20 border border-blue-200/80 dark:border-blue-800/60 rounded-2xl p-6 shadow-xs relative overflow-hidden">
+                <div className="flex items-start space-x-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-md">
+                    <Info size={20} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">
+                      Course Introduction & Focus
+                    </span>
+                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
+                      {course.bracketText}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
-            <div>
-              <h3 className="font-bold text-slate-900 text-base mb-3">
-                Key Skills & Practical Competencies
-              </h3>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-slate-700">
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2
-                    size={16}
-                    className="text-emerald-500 shrink-0 mt-0.5"
-                  />
-                  <span>
-                    Comprehensive framework design and omnichannel campaign
-                    deployment.
-                  </span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2
-                    size={16}
-                    className="text-emerald-500 shrink-0 mt-0.5"
-                  />
-                  <span>
-                    Practical assignments with instructor feedback and portfolio
-                    validation.
-                  </span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2
-                    size={16}
-                    className="text-emerald-500 shrink-0 mt-0.5"
-                  />
-                  <span>
-                    Real-time analytics, conversion optimization, and ROI
-                    tracking models.
-                  </span>
-                </li>
-                <li className="flex items-start space-x-2">
-                  <CheckCircle2
-                    size={16}
-                    className="text-emerald-500 shrink-0 mt-0.5"
-                  />
-                  <span>
-                    Freelance proposal kits, client rate cards, and agreement
-                    templates.
-                  </span>
-                </li>
-              </ul>
+            {/* 2. OVERVIEW GREETING & DETAILS */}
+            <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 md:p-8 shadow-xs space-y-6">
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base md:text-lg mb-2">
+                  About this Specialization
+                </h3>
+                {course.overview?.greeting && (
+                  <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-3">
+                    {course.overview.greeting}
+                  </p>
+                )}
+                <p className="text-xs md:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                  {course.description || course.bracketText}
+                </p>
+              </div>
+
+              {/* 3. KEY HIGHLIGHTS / WHY CHOOSE THIS COURSE (ICONS, NO EMOJIS) */}
+              {course.overview?.highlights &&
+                course.overview.highlights.length > 0 && (
+                  <div>
+                    <h3 className="font-bold text-slate-900 dark:text-white text-base mb-3.5">
+                      {course.overview.whyChooseUsTitle ||
+                        "Key Highlights & Advantages"}
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      {course.overview.highlights.map((h, i) => {
+                        const IconComp =
+                          OVERVIEW_ICONS[h.iconName] || CheckCircle2;
+                        return (
+                          <div
+                            key={i}
+                            className="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800/80 hover:border-blue-300 dark:hover:border-blue-700/60 transition-colors"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
+                              <IconComp size={16} />
+                            </div>
+                            <div className="space-y-0.5 min-w-0">
+                              <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+                                {h.title}
+                              </h4>
+                              <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                                {h.desc}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+              {/* 4. CONSULTATION & CONTACT CTA */}
+              <div className="bg-gradient-to-br from-slate-900 to-blue-950 text-white rounded-2xl p-6 shadow-md space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300 shrink-0">
+                    <Phone size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-white">
+                      Need Career Counseling or a Free Demo Class?
+                    </h4>
+                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                      {course.overview?.callToAction ||
+                        "Schedule a 1:1 consultation or counseling session with our expert trainers."}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap gap-4 pt-2 border-t border-white/10 text-xs">
+                  <div className="flex items-center space-x-2 text-slate-200">
+                    <Phone size={14} className="text-blue-400" />
+                    <span>Call / WhatsApp:</span>
+                    <span className="font-bold text-white tracking-wide">
+                      {course.overview?.contact?.phone ||
+                        "7700022882 / 9326474007"}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-slate-200">
+                    <Globe size={14} className="text-blue-400" />
+                    <span>Official Portal:</span>
+                    <span className="font-bold text-white underline">
+                      {course.overview?.contact?.website ||
+                        "www.operatingmedia.com"}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="bg-white rounded border border-slate-200/80 p-6 shadow-xs space-y-4">
-            <h3 className="font-bold text-slate-900 text-base">
-              Course Credentials
-            </h3>
-            <div className="space-y-3 text-xs">
-              <div className="flex justify-between py-2 border-b border-slate-100">
-                <span className="text-slate-500 font-medium">Instructor</span>
-                <span className="font-semibold text-slate-900">
-                  {course.author}
-                </span>
-              </div>
-              <div className="flex justify-between py-2 border-b border-slate-100">
-                <span className="text-slate-500 font-medium">Duration</span>
-                <span className="font-semibold text-slate-900 tabular-nums">
-                  {course.duration}
-                </span>
-              </div>
-              <div className="flex justify-between py-2 border-b border-slate-100">
-                <span className="text-slate-500 font-medium">
-                  Curriculum Units
-                </span>
-                <span className="font-semibold text-slate-900 tabular-nums">
-                  {units.length} Items
-                </span>
-              </div>
-              <div className="flex justify-between py-2 border-b border-slate-100">
-                <span className="text-slate-500 font-medium">Certificate</span>
-                <span className="font-semibold text-emerald-600">
-                  Official Operating Media Credential
-                </span>
+          {/* RIGHT SIDEBAR: COURSE CREDENTIALS */}
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-xs space-y-4">
+              <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                Course Credentials
+              </h3>
+              <div className="space-y-3 text-xs">
+                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                    Instructor
+                  </span>
+                  <span className="font-semibold text-slate-900 dark:text-white">
+                    {course.author}
+                  </span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                    Duration
+                  </span>
+                  <span className="font-semibold text-slate-900 dark:text-white tabular-nums">
+                    {course.duration}
+                  </span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                    Curriculum Modules
+                  </span>
+                  <span className="font-semibold text-slate-900 dark:text-white tabular-nums">
+                    {sections.length} Modules
+                  </span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                    Total Units / Lessons
+                  </span>
+                  <span className="font-semibold text-slate-900 dark:text-white tabular-nums">
+                    {units.length} Items
+                  </span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                    Rating
+                  </span>
+                  <span className="font-semibold text-amber-500 flex items-center space-x-1">
+                    <Star size={13} className="fill-current" />
+                    <span>
+                      {course.rating} ({course.reviewsCount} reviews)
+                    </span>
+                  </span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                    Enrolled
+                  </span>
+                  <span className="font-semibold text-slate-900 dark:text-white tabular-nums">
+                    {course.studentsCount} Students
+                  </span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">
+                    Certificate
+                  </span>
+                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                    Official Operating Media Credential
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -1107,26 +1310,26 @@ export const CourseDetailPage = () => {
       {activeTab === "notes" && (
         <div className="space-y-6">
           <div>
-            <h3 className="font-bold text-slate-900 text-base">
+            <h3 className="font-bold text-slate-900 dark:text-white text-base">
               My Course Notebook
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Capture personal notes, timestamps, and strategies while learning.
             </p>
           </div>
 
           <form
             onSubmit={handleSaveNote}
-            className="p-5 bg-white rounded border border-slate-200/80 shadow-xs space-y-3"
+            className="p-5 bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3"
           >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <label className="text-xs font-semibold text-slate-700">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 Add a Quick Note
               </label>
               <select
                 value={newNoteTag}
                 onChange={(e) => setNewNoteTag(e.target.value)}
-                className="bg-slate-50/80 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 focus:outline-hidden"
+                className="bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-hidden"
               >
                 {sections.map((s) => (
                   <option key={s.name} value={s.name}>
@@ -1141,7 +1344,7 @@ export const CourseDetailPage = () => {
               value={newNoteText}
               onChange={(e) => setNewNoteText(e.target.value)}
               placeholder="Type your notes here..."
-              className="w-full bg-slate-50/80 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-[#3b49df] focus:bg-white"
+              className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-[#3b49df] focus:bg-white dark:focus:bg-[#0b1329]"
             />
             <div className="flex justify-end">
               <button
@@ -1154,20 +1357,23 @@ export const CourseDetailPage = () => {
           </form>
 
           {/* Course Notebook Search & Filter */}
-          <div className="flex flex-col sm:flex-row gap-2.5 bg-slate-50/80 p-3 rounded-xl border border-slate-200/80">
+          <div className="flex flex-col sm:flex-row gap-2.5 bg-slate-50 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-200/80 dark:border-slate-800">
             <div className="relative flex-1">
-              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <Search
+                size={15}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none"
+              />
               <input
                 type="text"
                 value={courseNotesSearch}
                 onChange={(e) => setCourseNotesSearch(e.target.value)}
                 placeholder="Search notes in this course..."
-                className="w-full pl-9 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df]"
+                className="w-full pl-9 pr-8 py-2 bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df]"
               />
               {courseNotesSearch && (
                 <button
                   onClick={() => setCourseNotesSearch("")}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5"
                 >
                   <X size={13} />
                 </button>
@@ -1178,7 +1384,7 @@ export const CourseDetailPage = () => {
               <select
                 value={courseNotesFilterTag}
                 onChange={(e) => setCourseNotesFilterTag(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] cursor-pointer"
+                className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-700 dark:text-slate-200 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] cursor-pointer"
               >
                 <option value="all">All Modules & Tags</option>
                 {sections.map((s) => (
@@ -1192,16 +1398,20 @@ export const CourseDetailPage = () => {
 
           <div className="space-y-3">
             {filteredCourseNotes.length === 0 ? (
-              <div className="p-8 bg-white rounded-xl border border-slate-200/80 text-center space-y-2">
-                <p className="text-xs font-semibold text-slate-700">No matching notes found</p>
-                <p className="text-[11px] text-slate-400">Try adjusting your search terms or filter.</p>
+              <div className="p-8 bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 text-center space-y-2">
+                <p className="text-xs font-semibold text-slate-700 dark:text-slate-200">
+                  No matching notes found
+                </p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                  Try adjusting your search terms or filter.
+                </p>
                 {(courseNotesSearch || courseNotesFilterTag !== "all") && (
                   <button
                     onClick={() => {
                       setCourseNotesSearch("");
                       setCourseNotesFilterTag("all");
                     }}
-                    className="text-xs text-[#3b49df] hover:underline font-semibold"
+                    className="text-xs text-[#3b49df] dark:text-blue-400 hover:underline font-semibold"
                   >
                     Reset Filter
                   </button>
@@ -1211,18 +1421,18 @@ export const CourseDetailPage = () => {
               filteredCourseNotes.map((note) => (
                 <div
                   key={note.id}
-                  className="p-4 bg-white rounded-xl border border-slate-200/80 shadow-xs flex items-start justify-between gap-4"
+                  className="p-4 bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-start justify-between gap-4"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
-                      <span className="text-[10px] font-bold bg-blue-50 text-[#3b49df] border border-blue-200/80 px-2 py-0.5 rounded-full">
+                      <span className="text-[10px] font-bold bg-blue-50 dark:bg-blue-950/40 text-[#3b49df] dark:text-blue-400 border border-blue-200/80 dark:border-blue-800/60 px-2 py-0.5 rounded-full">
                         {note.lessonTag}
                       </span>
-                      <span className="text-[10px] text-slate-400">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500">
                         {note.date}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-800 leading-relaxed font-normal">
+                    <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-normal">
                       {note.text}
                     </p>
                   </div>
@@ -1233,7 +1443,7 @@ export const CourseDetailPage = () => {
                       );
                       showToast("Note deleted", "info");
                     }}
-                    className="p-1 text-slate-300 hover:text-red-500 rounded transition-colors cursor-pointer"
+                    className="p-1 text-slate-400 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 rounded transition-colors cursor-pointer"
                     title="Delete Note"
                   >
                     <Trash2 size={14} />
@@ -1249,15 +1459,15 @@ export const CourseDetailPage = () => {
       {/* TAB 6 (ADMIN ONLY): ENROLLED STUDENTS                         */}
       {/* ------------------------------------------------------------- */}
       {activeTab === "students" && isAdmin && (
-        <div className="bg-white rounded border border-slate-200/80 p-6 shadow-xs space-y-4">
-          <h3 className="font-bold text-slate-900 text-base">
+        <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-xs space-y-4">
+          <h3 className="font-bold text-slate-900 dark:text-white text-base">
             Enrolled Learners & Performance
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {students.map((s) => (
               <div
                 key={s.id}
-                className="p-3.5 rounded-xl border border-slate-100 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800/80 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
               >
                 <div className="flex items-center space-x-3">
                   <img
@@ -1266,17 +1476,19 @@ export const CourseDetailPage = () => {
                     className="w-10 h-10 rounded-full object-cover"
                   />
                   <div>
-                    <h4 className="text-xs font-bold text-slate-900">
+                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">
                       {s.name}
                     </h4>
-                    <p className="text-[10px] text-slate-400">{s.email}</p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500">
+                      {s.email}
+                    </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-bold tabular-nums text-[#3b49df] block">
+                  <span className="text-xs font-bold tabular-nums text-[#3b49df] dark:text-blue-400 block">
                     {s.overallProgress}%
                   </span>
-                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/60 px-2 py-0.5 rounded-full">
                     {s.status}
                   </span>
                 </div>
@@ -1291,20 +1503,20 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {showCoverModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="text-base font-bold text-slate-900">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 Choose Course Cover Banner
               </h3>
               <button
                 onClick={() => setShowCoverModal(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
               >
                 <X size={16} />
               </button>
             </div>
 
-            <p className="text-xs text-slate-500 font-normal">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-normal">
               Select one of our curated high-resolution covers or enter an image
               URL:
             </p>
@@ -1323,7 +1535,7 @@ export const CourseDetailPage = () => {
                     setShowCoverModal(false);
                     showToast("Course cover updated successfully!", "success");
                   }}
-                  className="h-24 rounded-xl overflow-hidden border-2 border-slate-200 hover:border-[#3b49df] cursor-pointer transition-all relative group shadow-2xs"
+                  className="h-24 rounded-xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 hover:border-[#3b49df] dark:hover:border-blue-500 cursor-pointer transition-all relative group shadow-2xs"
                 >
                   <img
                     src={imgUrl}
@@ -1342,7 +1554,7 @@ export const CourseDetailPage = () => {
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setShowCoverModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold cursor-pointer"
               >
                 Close
               </button>
@@ -1356,23 +1568,23 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {showAiModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center space-x-2 text-purple-700">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center space-x-2 text-purple-700 dark:text-purple-400">
                 <Sparkles size={18} />
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white">
                   AI Curriculum Assistant
                 </h3>
               </div>
               <button
                 onClick={() => setShowAiModal(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
               >
                 <X size={16} />
               </button>
             </div>
 
-            <p className="text-xs text-slate-500 font-normal">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-normal">
               Prompt our AI curriculum engine to draft video outlines, practice
               assignments, or interactive quizzes:
             </p>
@@ -1382,13 +1594,13 @@ export const CourseDetailPage = () => {
               value={aiPrompt}
               onChange={(e) => setAiPrompt(e.target.value)}
               placeholder="e.g. Generate 5 multiple-choice questions on Instagram Reels organic reach algorithm..."
-              className="w-full bg-slate-50/80 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-purple-600"
+              className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-purple-600"
             />
 
             <div className="flex justify-end space-x-2 pt-2">
               <button
                 onClick={() => setShowAiModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold cursor-pointer"
               >
                 Cancel
               </button>

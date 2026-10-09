@@ -16,28 +16,27 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
 
 const getDayBadgeClass = (day = "") => {
   switch (day.toLowerCase()) {
     case "monday":
-      return "bg-blue-100 text-blue-800 border-blue-200/90";
+      return "bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-200/90 dark:border-blue-800/60";
     case "tuesday":
-      return "bg-emerald-100 text-emerald-800 border-emerald-200/90";
+      return "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200/90 dark:border-emerald-800/60";
     case "wednesday":
-      return "bg-purple-100 text-purple-800 border-purple-200/90";
+      return "bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border-purple-200/90 dark:border-purple-800/60";
     case "thursday":
-      return "bg-amber-100 text-amber-800 border-amber-200/90";
+      return "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200/90 dark:border-amber-800/60";
     case "friday":
-      return "bg-rose-100 text-rose-800 border-rose-200/90";
+      return "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200/90 dark:border-rose-800/60";
     default:
-      return "bg-slate-100 text-slate-800 border-slate-200";
+      return "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700";
   }
 };
 
 export const SchedulePage = () => {
   const navigate = useNavigate();
-  const { crmProfile, crmBatch } = useAuth();
+  const { crmProfile, crmBatch, isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState("timetable"); // 1st default view: Weekly Timetable
 
   const upcomingSessions = [
@@ -131,59 +130,62 @@ export const SchedulePage = () => {
       {/* HEADER BANNER - FULLY RESPONSIVE WITH BRANDED BACKGROUND      */}
       {/* ------------------------------------------------------------- */}
       <div 
-        className="relative bg-cover bg-center rounded-2xl border border-blue-100/80 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
-        style={{ backgroundImage: `url(${dashboardHeaderBg})` }}
+        className={
+          isAdmin
+            ? "bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 2xl:p-8.5 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all"
+            : "relative dashboard-hero-banner rounded-2xl border border-blue-100/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
+        }
       >
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2 text-blue-700 text-sm font-extrabold uppercase tracking-wider">
+        <div className="space-y-2 relative z-10 min-w-0">
+          <div className="flex items-center space-x-2 text-blue-600 dark:text-cyan-400 text-xs sm:text-sm font-bold uppercase tracking-wider">
             <Calendar size={17} />
             <span>Academic Calendar & Timetable</span>
-            <span className="inline-flex items-center space-x-1 text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="inline-flex items-center space-x-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-900/85 backdrop-blur-md text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-500/40 shadow-2xs">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <span>Live Batch Sync</span>
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl 2xl:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
             Classroom Schedule & Curriculum
           </h1>
-          <p className="text-slate-900/90 text-sm sm:text-base max-w-2xl leading-relaxed font-semibold">
+          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base 2xl:text-lg max-w-2xl leading-relaxed font-normal">
             Real-time enrolled batch schedule, active lecture timings, and upcoming curriculum sessions.
           </p>
 
           {/* Quick Metrics Bar */}
-          <div className="flex flex-wrap items-center gap-3.5 pt-3 border-t border-slate-200/80 text-sm font-medium">
-            <div className="flex items-center space-x-1.5 text-slate-800">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#3b49df] inline-block"></span>
-              <span className="font-extrabold text-slate-900">4 Modules</span>
-              <span className="text-slate-800 font-semibold">Scheduled</span>
+          <div className="flex flex-wrap items-center gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs sm:text-sm font-medium">
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">4 Modules</span>
+              <span className="font-semibold">Scheduled</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-slate-800">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
-              <span className="font-extrabold text-slate-900">In Session</span>
-              <span className="text-slate-800 font-semibold">Live Hybrid</span>
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">Live Hybrid</span>
+              <span className="font-semibold">In Session</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-slate-800">
-              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span>
-              <span className="font-extrabold text-slate-900">Mon - Fri</span>
-              <span className="text-slate-800 font-semibold">9:00 AM - 10:00 AM</span>
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block shadow-[0_0_8px_rgba(168,85,247,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">Mon - Fri</span>
+              <span className="font-semibold">9:00 AM - 10:00 AM</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-slate-800">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
-              <span className="font-extrabold text-slate-900">Borivali Center</span>
-              <span className="text-slate-800 font-semibold">Main Campus</span>
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_rgba(244,63,94,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">Borivali</span>
+              <span className="font-semibold">Campus</span>
             </div>
           </div>
         </div>
 
         {/* View Toggle Tabs - Timetable 1st View */}
-        <div className="flex items-center space-x-1.5 shrink-0 bg-slate-100/90 p-1.5 rounded-xl border border-slate-200/80 self-start md:self-auto">
+        <div className="flex items-center space-x-1.5 shrink-0 bg-slate-100/90 dark:bg-slate-900/80 p-1.5 rounded-xl border border-slate-200/80 dark:border-slate-750 self-start md:self-auto">
           <button
             type="button"
             onClick={() => setActiveTab("timetable")}
             className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeTab === "timetable"
                 ? "bg-[#3b49df] text-white shadow-xs"
-                : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60"
             }`}
           >
             Weekly Timetable
@@ -194,7 +196,7 @@ export const SchedulePage = () => {
             className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               activeTab === "upcoming"
                 ? "bg-[#3b49df] text-white shadow-xs"
-                : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60"
             }`}
           >
             Curriculum Sessions
@@ -203,24 +205,24 @@ export const SchedulePage = () => {
       </div>
 
       {/* 1. Enrolled Batch & Schedule Card (LATEST UI) */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs space-y-5">
+      <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-2.5">
-            <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-200">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-200 dark:border-blue-800/60">
               <Calendar size={18} />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
                 Enrolled Batch & Schedule
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Official batch registration details from Operating Media CRM
               </p>
             </div>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-purple-50 border border-purple-200 text-xs font-bold text-purple-900 flex items-center space-x-2 self-start sm:self-auto">
-            <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded bg-purple-200/80 text-purple-800 text-[10px] font-black uppercase">
+          <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800/60 text-xs font-bold text-purple-900 dark:text-purple-300 flex items-center space-x-2 self-start sm:self-auto">
+            <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded bg-purple-200/80 dark:bg-purple-900/80 text-purple-800 dark:text-purple-200 text-[10px] font-black uppercase">
               <span className="w-1.5 h-1.5 rounded-full bg-purple-600 animate-pulse" />
               <span>LIVE</span>
             </span>
@@ -232,78 +234,78 @@ export const SchedulePage = () => {
         </div>
 
         {/* 2x2 Meta Grid matching LATEST UI */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-xs">
           <div className="space-y-1">
-            <div className="flex items-center space-x-1.5 text-slate-400 font-bold uppercase text-[10px]">
+            <div className="flex items-center space-x-1.5 text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px]">
               <Clock size={12} />
               <span>TIMING:</span>
             </div>
-            <div className="font-extrabold text-slate-900 text-sm">
+            <div className="font-extrabold text-slate-900 dark:text-white text-sm">
               9:00 AM - 10:00 AM
             </div>
-            <div className="text-[11px] text-slate-500 font-medium">
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
               Daily 1-Hour Lecture
             </div>
           </div>
 
           <div className="space-y-1">
-            <div className="flex items-center space-x-1.5 text-slate-400 font-bold uppercase text-[10px]">
+            <div className="flex items-center space-x-1.5 text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px]">
               <Calendar size={12} />
               <span>DAYS:</span>
             </div>
-            <div className="font-extrabold text-slate-900 text-sm">
+            <div className="font-extrabold text-slate-900 dark:text-white text-sm">
               Monday to Friday
             </div>
-            <div className="text-[11px] text-slate-500 font-medium">
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
               5 Days / Week Schedule
             </div>
           </div>
 
           <div className="space-y-1">
-            <div className="flex items-center space-x-1.5 text-slate-400 font-bold uppercase text-[10px]">
+            <div className="flex items-center space-x-1.5 text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px]">
               <MapPin size={12} />
               <span>BRANCH / CENTER:</span>
             </div>
-            <div className="font-extrabold text-slate-900 text-sm">
+            <div className="font-extrabold text-slate-900 dark:text-white text-sm">
               {crmProfile.branch || "Borivali Center"}
             </div>
-            <div className="text-[11px] text-slate-500 font-medium">
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
               Classroom + Live Zoom Hybrid
             </div>
           </div>
 
           <div className="space-y-1">
-            <div className="flex items-center space-x-1.5 text-slate-400 font-bold uppercase text-[10px]">
+            <div className="flex items-center space-x-1.5 text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px]">
               <User size={12} />
               <span>FACULTY LEAD:</span>
             </div>
-            <div className="font-extrabold text-slate-900 text-sm truncate">
+            <div className="font-extrabold text-slate-900 dark:text-white text-sm truncate">
               Harsh Pareek
             </div>
-            <div className="text-[11px] text-slate-500 font-medium">
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
               Director & Lead Faculty
             </div>
           </div>
         </div>
 
         {/* CURRENT TOPIC IN SESSION */}
-        <div className="p-4 rounded-xl bg-blue-50/70 border border-blue-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="p-4 rounded-xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
               <Sparkles size={18} />
             </div>
             <div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 block">
+              <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 dark:text-blue-400 block">
                 CURRENT TOPIC IN SESSION
               </span>
-              <h4 className="font-black text-slate-900 text-sm sm:text-base mt-0.5">
+              <h4 className="font-black text-slate-900 dark:text-white text-sm sm:text-base mt-0.5">
                 Data Science & Advanced Python for Marketers
               </h4>
             </div>
           </div>
 
           <div className="flex items-center space-x-2">
-            <span className="text-xs font-bold text-blue-700 bg-white border border-blue-200 px-3 py-1.5 rounded-lg shadow-2xs">
+            <span className="text-xs font-bold text-blue-700 dark:text-blue-400 bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-800/60 px-3 py-1.5 rounded-lg shadow-2xs">
               22 Apr 2026 - 24 Apr 2026
             </span>
             <button
@@ -319,17 +321,17 @@ export const SchedulePage = () => {
 
       {/* 2. Upcoming Curriculum Sessions (LATEST UI) */}
       {activeTab === "upcoming" ? (
-        <div className="bg-white border border-slate-200/90 rounded p-6 shadow-2xs space-y-4">
+        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 Upcoming Curriculum Sessions
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Planned module roadmap and chronological class timelines
               </p>
             </div>
-            <span className="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-lg">
               {upcomingSessions.length} Modules Scheduled
             </span>
           </div>
@@ -338,34 +340,34 @@ export const SchedulePage = () => {
             {upcomingSessions.map((session) => (
               <div
                 key={session.id}
-                className="p-4 rounded-xl border border-slate-200/80 hover:border-blue-300 bg-slate-50/50 hover:bg-blue-50/20 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                className="p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-750 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-blue-50/20 dark:hover:bg-slate-800/50 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
               >
                 <div className="flex items-start sm:items-center space-x-3.5 min-w-0">
-                  <span className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 font-black text-xs flex items-center justify-center shrink-0">
+                  <span className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-black text-xs flex items-center justify-center shrink-0">
                     {session.id}
                   </span>
                   <div className="min-w-0">
                     <div className="flex items-center space-x-2">
-                      <h4 className="font-bold text-slate-900 text-sm group-hover:text-blue-600 transition-colors">
+                      <h4 className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                         {session.title}
                       </h4>
                       {session.isLive && (
-                        <span className="text-[9.5px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200 px-1.5 py-0.2 rounded uppercase">
+                        <span className="text-[9.5px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 px-1.5 py-0.2 rounded uppercase">
                           Active
                         </span>
                       )}
                     </div>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 mt-1 font-medium">
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
                       <span>
                         Faculty:{" "}
-                        <strong className="text-slate-700">
+                        <strong className="text-slate-700 dark:text-slate-300">
                           {session.faculty}
                         </strong>
                       </span>
                       <span>•</span>
                       <span>
                         Location:{" "}
-                        <strong className="text-slate-700">
+                        <strong className="text-slate-700 dark:text-slate-300">
                           {session.room}
                         </strong>
                       </span>
@@ -374,12 +376,12 @@ export const SchedulePage = () => {
                 </div>
 
                 <div className="flex items-center space-x-3 shrink-0 self-end md:self-auto">
-                  <span className="text-xs font-bold text-slate-600 bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-2xs">
+                  <span className="text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg shadow-2xs">
                     {session.dates}
                   </span>
                   <button
                     onClick={() => navigate("/enrolled-courses")}
-                    className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 hover:text-slate-900 text-xs font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
+                    className="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
                   >
                     <span>Syllabus</span>
                     <ChevronRight size={13} />
@@ -391,55 +393,55 @@ export const SchedulePage = () => {
         </div>
       ) : (
         /* Weekly Timetable View - Attribute BG color on thead & Distinct row colors below */
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-2xs space-y-4">
+        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+              <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">
                 Weekly Class Timetable
               </h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Daily lecture times, topics, and interactive lab sessions
               </p>
             </div>
-            <span className="text-xs font-extrabold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg">
+            <span className="text-xs font-extrabold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/60 px-2.5 py-1 rounded-lg">
               Mon – Fri Active Batch
             </span>
           </div>
 
-          <div className="overflow-x-auto rounded-xl border border-slate-300/80 shadow-xs">
+          <div className="overflow-x-auto rounded-xl border border-slate-300/80 dark:border-slate-800 shadow-xs">
             <table className="w-full text-left text-xs border-collapse">
               {/* Attribute Background Header */}
-              <thead className="bg-[#1e293b] text-white">
+              <thead className="bg-[#1e293b] dark:bg-slate-950 text-white">
                 <tr>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100">
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200">
                     Day
                   </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100">
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200">
                     Time
                   </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100">
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200">
                     Lecture Subject / Topic
                   </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100">
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200">
                     Format
                   </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100">
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200">
                     Faculty
                   </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 text-right">
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-right">
                     Action
                   </th>
                 </tr>
               </thead>
               {/* Body with distinct alternating colors & styled chips */}
-              <tbody className="divide-y divide-slate-200/80 text-slate-700">
+              <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                 {weeklySchedule.map((row, rIdx) => {
                   const isEven = rIdx % 2 === 0;
                   return (
                     <tr
                       key={rIdx}
                       className={`transition-colors ${
-                        isEven ? "bg-white hover:bg-blue-50/40" : "bg-slate-50/80 hover:bg-blue-50/40"
+                        isEven ? "bg-white dark:bg-[#0b1329] hover:bg-blue-50/40 dark:hover:bg-slate-800/50" : "bg-slate-50/80 dark:bg-slate-900/60 hover:bg-blue-50/40 dark:hover:bg-slate-800/50"
                       }`}
                     >
                       {/* Day Pill with Distinct Category Color */}
@@ -455,22 +457,22 @@ export const SchedulePage = () => {
 
                       {/* Time with Clock Icon */}
                       <td className="py-4 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 font-bold text-slate-700 bg-white border border-slate-200/90 px-2.5 py-1 rounded-md text-[11.5px] shadow-2xs">
-                          <Clock size={12} className="text-blue-600" />
+                        <span className="inline-flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700 px-2.5 py-1 rounded-md text-[11.5px] shadow-2xs">
+                          <Clock size={12} className="text-blue-600 dark:text-blue-400" />
                           <span>{row.time}</span>
                         </span>
                       </td>
 
                       {/* Topic - Bold & High Contrast */}
                       <td className="py-4 px-4 min-w-[220px]">
-                        <span className="font-extrabold text-slate-900 text-xs sm:text-[13px] leading-snug block">
+                        <span className="font-extrabold text-slate-900 dark:text-white text-xs sm:text-[13px] leading-snug block">
                           {row.topic}
                         </span>
                       </td>
 
                       {/* Format Badge with indicator dot */}
                       <td className="py-4 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 bg-blue-50/90 text-blue-700 border border-blue-200/80 px-2.5 py-1 rounded-md font-bold text-[11px]">
+                        <span className="inline-flex items-center gap-1.5 bg-blue-50/90 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 px-2.5 py-1 rounded-md font-bold text-[11px]">
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                           <span>{row.type}</span>
                         </span>
@@ -478,8 +480,8 @@ export const SchedulePage = () => {
 
                       {/* Faculty with User Avatar Icon */}
                       <td className="py-4 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700 text-xs">
-                          <User size={13} className="text-slate-400" />
+                        <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300 text-xs">
+                          <User size={13} className="text-slate-400 dark:text-slate-500" />
                           <span>{row.faculty}</span>
                         </span>
                       </td>

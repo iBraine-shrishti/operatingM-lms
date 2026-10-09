@@ -70,62 +70,66 @@ export const ManageCoursesPage = () => {
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* PROFESSIONAL CATALOG HERO BANNER (In-Progress Accent Style)   */}
-      {/* ------------------------------------------------------------- */}
-      <div className="bg-white border border-slate-200/80 border-l-4 border-l-[#5068f2] p-6 sm:p-7 shadow-2xs relative overflow-hidden transition-all">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
-          <div className="max-w-3xl space-y-2">
-            <div className="inline-flex items-center space-x-2 px-2.5 py-1 bg-blue-50 border border-blue-200/80 text-[#3b49df] text-xs font-bold uppercase tracking-wider">
-              <BookOpen size={13} className="text-[#3b49df]" />
-              <span>Operating Media Masterclass Curriculum</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-              Explore Our <span className="text-[#3b49df]">Courses</span>
-            </h1>
-            <p className="text-slate-600 text-xs sm:text-sm font-normal leading-relaxed max-w-2xl">
-              Comprehensive hands-on digital marketing, SEO, analytics, and development programs with live industry projects and verified credentials.
-            </p>
+      {/* 1. HEADER BANNER - ACTIVITY PAGE STYLE (ADMIN CLEAN THEME)    */}
+      <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 2xl:p-8.5 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] transition-all">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="space-y-2 relative z-10 min-w-0">
+          <div className="flex items-center space-x-2 text-blue-600 dark:text-cyan-400 text-xs sm:text-sm font-bold uppercase tracking-wider">
+            <BookOpen size={17} />
+            <span>Operating Media Masterclass Curriculum</span>
+            <span className="inline-flex items-center space-x-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-900/85 backdrop-blur-md text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-500/40 shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Curriculum Active</span>
+            </span>
           </div>
 
-          {/* Quick Metrics Chips: Colorful In-Progress Style Stat Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 shrink-0 w-full lg:w-auto">
-            {/* Chip 1: Blue Scheme */}
-            <div className="bg-white border border-slate-200/80 border-l-4 border-l-[#5068f2] p-2.5 sm:px-3.5 sm:py-2.5 shadow-2xs flex items-center space-x-2.5 hover:bg-blue-50/20 transition-colors">
-              <div className="w-8 h-8 rounded-full bg-blue-50 border border-blue-200/80 text-[#5068f2] flex items-center justify-center shrink-0">
-                <BookOpen size={15} />
-              </div>
-              <div className="min-w-0">
-                <span className="text-[9px] sm:text-[9.5px] uppercase font-bold text-slate-500 tracking-wider block whitespace-nowrap">Specializations</span>
-                <span className="text-sm sm:text-base font-extrabold text-slate-900 tabular-nums whitespace-nowrap">08 Tracks</span>
-              </div>
-            </div>
+          <h1 className="text-2xl sm:text-3xl 2xl:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+            Explore Our Courses
+          </h1>
 
-            {/* Chip 2: Teal Scheme */}
-            <div className="bg-white border border-slate-200/80 border-l-4 border-l-[#0d9488] p-2.5 sm:px-3.5 sm:py-2.5 shadow-2xs flex items-center space-x-2.5 hover:bg-teal-50/20 transition-colors">
-              <div className="w-8 h-8 rounded-full bg-teal-50 border border-teal-200/80 text-[#0d9488] flex items-center justify-center shrink-0">
-                <CheckCircle2 size={15} />
-              </div>
-              <div className="min-w-0">
-                <span className="text-[9px] sm:text-[9.5px] uppercase font-bold text-slate-500 tracking-wider block whitespace-nowrap">Practical Labs</span>
-                <span className="text-sm sm:text-base font-extrabold text-slate-900 tabular-nums whitespace-nowrap">140+ Labs</span>
-              </div>
-            </div>
+          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base 2xl:text-lg max-w-2xl leading-relaxed font-normal">
+            Comprehensive hands-on digital marketing, SEO, analytics, and development programs with live industry projects and verified credentials.
+          </p>
 
-            {/* Chip 3: Amber Scheme */}
-            <div className="bg-white border border-slate-200/80 border-l-4 border-l-[#fca119] p-2.5 sm:px-3.5 sm:py-2.5 shadow-2xs flex items-center space-x-2.5 hover:bg-amber-50/20 transition-colors">
-              <div className="w-8 h-8 rounded-full bg-amber-50 border border-amber-200/80 text-[#fca119] flex items-center justify-center shrink-0">
-                <Award size={15} />
-              </div>
-              <div className="min-w-0">
-                <span className="text-[9px] sm:text-[9.5px] uppercase font-bold text-slate-500 tracking-wider block whitespace-nowrap">Credentials</span>
-                <span className="text-sm sm:text-base font-extrabold text-[#fca119] whitespace-nowrap">Certified</span>
-              </div>
+          {/* Quick Metrics Bar */}
+          <div className="flex flex-wrap items-center gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs sm:text-sm font-medium">
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">{courses.length} Tracks</span>
+              <span className="font-semibold">Specializations</span>
+            </div>
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">{publishedCount} Published</span>
+              <span className="font-semibold">Live Courses</span>
+            </div>
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block shadow-[0_0_8px_rgba(245,158,11,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">140+ Labs</span>
+              <span className="font-semibold">Practical Hands-on</span>
+            </div>
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block shadow-[0_0_8px_rgba(168,85,247,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">100%</span>
+              <span className="font-semibold">Verified Credentials</span>
             </div>
           </div>
         </div>
 
+        {/* Action Button */}
+        <div className="w-full sm:w-auto shrink-0 relative z-10">
+          <button
+            onClick={() => navigate('/create-course')}
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
+          >
+            <Plus size={16} className="2xl:w-4.5 2xl:h-4.5" />
+            <span>+ Create Course</span>
+          </button>
+        </div>
+      </div>
+
         {/* Category Filter Pills Bar */}
-        <div className="mt-6 pt-5 border-t border-slate-100 flex flex-wrap items-center gap-2">
+        <div className="mt-6 pt-5 border-t border-slate-200/80 dark:border-slate-800/80 flex flex-wrap items-center gap-2 relative z-10">
           {CATEGORIES.map(cat => {
             const isActive = selectedCategory === cat.id;
             return (
@@ -135,7 +139,7 @@ export const ManageCoursesPage = () => {
                 className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                   isActive
                     ? 'bg-[#3b49df] text-white shadow-xs'
-                    : 'bg-white text-slate-700 border border-slate-200/90 hover:border-blue-300 hover:text-[#3b49df] hover:bg-blue-50/40'
+                    : 'bg-white/90 dark:bg-[#0b1329]/90 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-800 hover:border-blue-300 dark:hover:border-slate-700 hover:text-[#3b49df] dark:hover:text-cyan-400 hover:bg-blue-50/40 dark:hover:bg-slate-800/60'
                 }`}
               >
                 {cat.label}
@@ -146,36 +150,36 @@ export const ManageCoursesPage = () => {
       </div>
 
       {/* Controls Bar: Tabs, Search, Sort (Matching the Page Accent Design) */}
-      <div className="bg-white border border-slate-200/80 p-3 sm:p-4 flex flex-col xl:flex-row xl:items-center justify-between gap-3 sm:gap-4 shadow-2xs">
+      <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-xl p-3 sm:p-4 flex flex-col xl:flex-row xl:items-center justify-between gap-3 sm:gap-4 shadow-2xs">
         {/* Admin Tabs / Student Available Count */}
         {isAdmin ? (
-          <div className="flex items-center space-x-1.5 bg-slate-100/90 p-1 border border-slate-200/60 shrink-0">
+          <div className="flex items-center space-x-1.5 bg-slate-100/90 dark:bg-slate-900/90 p-1 border border-slate-200/60 dark:border-slate-800 rounded-lg shrink-0">
             <button
               onClick={() => { setActiveTab('published'); setShowEmptyState(false); }}
-              className={`px-3.5 py-1.5 text-xs font-bold transition-all whitespace-nowrap tabular-nums cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap tabular-nums cursor-pointer ${
                 activeTab === 'published' && !showEmptyState
                   ? 'bg-[#3b49df] text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60'
               }`}
             >
               Published ({publishedCount})
             </button>
             <button
               onClick={() => { setActiveTab('pending'); setShowEmptyState(false); }}
-              className={`px-3.5 py-1.5 text-xs font-bold transition-all whitespace-nowrap tabular-nums cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap tabular-nums cursor-pointer ${
                 activeTab === 'pending' && !showEmptyState
                   ? 'bg-[#3b49df] text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60'
               }`}
             >
               Pending ({pendingCount})
             </button>
             <button
               onClick={() => { setActiveTab('draft'); setShowEmptyState(false); }}
-              className={`px-3.5 py-1.5 text-xs font-bold transition-all whitespace-nowrap tabular-nums cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-md transition-all whitespace-nowrap tabular-nums cursor-pointer ${
                 activeTab === 'draft' && !showEmptyState
                   ? 'bg-[#3b49df] text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60'
               }`}
             >
               Drafts ({draftCount})
@@ -183,14 +187,14 @@ export const ManageCoursesPage = () => {
           </div>
         ) : (
           <div className="flex items-center space-x-2.5">
-            <span className="text-xs font-bold text-[#3b49df] bg-blue-50 border border-blue-200/80 px-3 py-1.5 tabular-nums inline-flex items-center space-x-1.5 shadow-2xs">
-              <BookOpen size={13} className="text-[#3b49df]" />
+            <span className="text-xs font-bold text-[#3b49df] dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 border border-blue-200/80 dark:border-blue-800/60 px-3 py-1.5 rounded-lg tabular-nums inline-flex items-center space-x-1.5 shadow-2xs">
+              <BookOpen size={13} className="text-[#3b49df] dark:text-blue-400" />
               <span>Available Courses ({filteredCourses.length})</span>
             </span>
             {selectedCategory !== 'all' && (
               <button
                 onClick={() => setSelectedCategory('all')}
-                className="text-xs text-[#3b49df] hover:underline font-semibold cursor-pointer"
+                className="text-xs text-[#3b49df] dark:text-blue-400 hover:underline font-semibold cursor-pointer"
               >
                 Clear Category Filter
               </button>
@@ -202,13 +206,13 @@ export const ManageCoursesPage = () => {
         <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3 w-full xl:w-auto">
           {/* Search box */}
           <div className="relative w-full sm:w-64">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search courses..."
-              className="w-full bg-slate-50/80 border border-slate-200/90 pl-9 pr-3 py-1.5 text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-[#3b49df] focus:bg-white focus:ring-1 focus:ring-[#3b49df]/20 transition-all shadow-2xs"
+              className="w-full bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-700/80 rounded-xl pl-9 pr-3 py-1.5 text-xs font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-[#3b49df] focus:bg-white dark:focus:bg-[#0b1329] focus:ring-1 focus:ring-[#3b49df]/20 transition-all shadow-2xs"
             />
           </div>
 
@@ -218,19 +222,19 @@ export const ManageCoursesPage = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="appearance-none bg-slate-50/80 border border-slate-200/90 pl-3 pr-7 py-1.5 text-xs font-bold text-slate-700 cursor-pointer focus:outline-hidden focus:border-[#3b49df] focus:bg-white transition-all shadow-2xs"
+                className="appearance-none bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-700/80 rounded-xl pl-3 pr-7 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-200 cursor-pointer focus:outline-hidden focus:border-[#3b49df] focus:bg-white dark:focus:bg-[#0b1329] transition-all shadow-2xs"
               >
                 <option value="recent">Recent</option>
                 <option value="popular">Most Popular</option>
                 <option value="rating">Highest Rating</option>
               </select>
-              <ChevronDown size={13} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+              <ChevronDown size={13} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" />
             </div>
 
             {isAdmin && (
               <button
                 onClick={() => navigate('/create-course')}
-                className="bg-slate-900 hover:bg-[#3b49df] text-white font-bold text-xs px-3.5 py-1.5 shadow-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
+                className="bg-slate-900 dark:bg-blue-600 hover:bg-[#3b49df] dark:hover:bg-blue-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl shadow-xs transition-colors flex items-center space-x-1.5 cursor-pointer"
               >
                 <Plus size={14} />
                 <span>Create Course</span>
@@ -239,18 +243,18 @@ export const ManageCoursesPage = () => {
 
             {/* Developer / Admin Test Tools */}
             {isAdmin && (
-              <div className="flex items-center space-x-1.5 border-l border-slate-200 pl-2">
+              <div className="flex items-center space-x-1.5 border-l border-slate-200 dark:border-slate-700 pl-2">
                 <button
                   onClick={handleSimulateLoading}
-                  className="text-[11px] font-bold text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200/80 px-2 py-1 transition-colors cursor-pointer"
+                  className="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200/80 dark:hover:bg-slate-700 px-2 py-1 rounded-md transition-colors cursor-pointer"
                   title="Test skeleton loading"
                 >
                   Skeleton
                 </button>
                 <button
                   onClick={() => setShowEmptyState(!showEmptyState)}
-                  className={`text-[11px] font-bold px-2 py-1 transition-colors cursor-pointer ${
-                    showEmptyState ? 'bg-amber-100 text-amber-800' : 'text-slate-500 hover:text-slate-800 bg-slate-100'
+                  className={`text-[11px] font-bold px-2 py-1 rounded-md transition-colors cursor-pointer ${
+                    showEmptyState ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white bg-slate-100 dark:bg-slate-800'
                   }`}
                   title="Toggle empty state view"
                 >
@@ -271,17 +275,17 @@ export const ManageCoursesPage = () => {
           <CourseSkeletonCard />
         </div>
       ) : showEmptyState || filteredCourses.length === 0 ? (
-        <div className="bg-white border border-slate-200 p-12 text-center max-w-md mx-auto my-8">
-          <div className="w-14 h-14 bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3">
+        <div className="bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center max-w-md mx-auto my-8 shadow-xs">
+          <div className="w-14 h-14 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 rounded-2xl flex items-center justify-center mx-auto mb-3">
             <Sparkles size={28} />
           </div>
-          <h3 className="text-base font-semibold text-slate-900">No courses found</h3>
-          <p className="text-slate-500 text-xs mt-1 leading-relaxed font-normal">
+          <h3 className="text-base font-bold text-slate-900 dark:text-white">No courses found</h3>
+          <p className="text-slate-500 dark:text-slate-400 text-xs mt-1 leading-relaxed font-normal">
             There are no courses matching your current filter. Clear your filters or explore other categories.
           </p>
           <button
             onClick={() => { setSelectedCategory('all'); setSearchQuery(''); setShowEmptyState(false); }}
-            className="mt-4 bg-slate-900 hover:bg-[#3b49df] text-white text-xs font-bold px-4 py-2 transition-colors inline-flex items-center space-x-2 cursor-pointer"
+            className="mt-4 bg-slate-900 dark:bg-blue-600 hover:bg-[#3b49df] dark:hover:bg-blue-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors inline-flex items-center space-x-2 cursor-pointer shadow-xs"
           >
             <span>Reset All Filters</span>
           </button>

@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
-import { Users, MoreVertical, Edit, Copy, Trash2, Eye, Clock, BookOpen, ArrowRight, ShieldCheck } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import logo from '../../assets/logo.png';
+import React, { useState } from "react";
+import {
+  Users,
+  MoreVertical,
+  Edit,
+  Copy,
+  Trash2,
+  Eye,
+  Clock,
+  BookOpen,
+  ArrowRight,
+  ShieldCheck,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import logo from "../../assets/logo.png";
 
 export const CourseCard = ({ course, onDelete }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -11,25 +22,25 @@ export const CourseCard = ({ course, onDelete }) => {
 
   const getStatusBadge = () => {
     switch (course.status) {
-      case 'published':
+      case "published":
         return (
-          <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/70 text-[11px] font-medium shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200/70 dark:border-emerald-800/60 text-[11px] font-medium shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400"></span>
             <span>Published</span>
           </span>
         );
-      case 'pending':
+      case "pending":
         return (
-          <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-amber-50 text-amber-700 border border-amber-200/70 text-[11px] font-medium shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+          <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/70 dark:border-amber-800/60 text-[11px] font-medium shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400"></span>
             <span>Pending</span>
           </span>
         );
-      case 'draft':
+      case "draft":
       default:
         return (
-          <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-slate-50 text-slate-600 border border-slate-200 text-[11px] font-medium shadow-2xs">
-            <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+          <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800 text-[11px] font-medium shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500"></span>
             <span>Draft</span>
           </span>
         );
@@ -43,11 +54,11 @@ export const CourseCard = ({ course, onDelete }) => {
   return (
     <div
       onClick={handleCardClick}
-      className="bg-white border border-slate-200/90 shadow-2xs hover:shadow-md hover:border-slate-300 transition-all duration-200 flex flex-col justify-between overflow-hidden group cursor-pointer"
+      className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-xl shadow-2xs hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 flex flex-col justify-between overflow-hidden group cursor-pointer"
     >
       <div>
         {/* Banner / Thumbnail Container */}
-        <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
+        <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-900">
           <img
             src={course.thumbnail}
             alt={course.title}
@@ -59,7 +70,7 @@ export const CourseCard = ({ course, onDelete }) => {
         <div className="p-3 sm:p-4 xl:p-5">
           {/* Category & Status Row */}
           <div className="flex items-center justify-between gap-1.5 mb-1 sm:mb-1.5">
-            <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-teal-700 truncate">
+            <span className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-400 truncate">
               {course.category}
             </span>
             {isAdmin && getStatusBadge()}
@@ -68,7 +79,7 @@ export const CourseCard = ({ course, onDelete }) => {
           {/* Header & Title */}
           <div className="flex items-start justify-between gap-1.5 mb-1 sm:mb-1.5">
             <h3
-              className="font-semibold text-slate-900 text-xs sm:text-sm xl:text-[15px] leading-snug group-hover:text-[#3b49df] transition-colors line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]"
+              className="font-semibold text-slate-900 dark:text-white text-xs sm:text-sm xl:text-[15px] leading-snug group-hover:text-[#3b49df] dark:group-hover:text-blue-400 transition-colors line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem]"
               title={course.title}
             >
               {course.title}
@@ -82,7 +93,7 @@ export const CourseCard = ({ course, onDelete }) => {
                     e.stopPropagation();
                     setMenuOpen(!menuOpen);
                   }}
-                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   aria-label="Course Options"
                 >
                   <MoreVertical size={15} />
@@ -91,33 +102,57 @@ export const CourseCard = ({ course, onDelete }) => {
                 {menuOpen && (
                   <div
                     onClick={(e) => e.stopPropagation()}
-                    className="absolute right-0 mt-1 w-40 bg-white shadow-xl border border-slate-200 py-1.5 z-30 animate-in fade-in"
+                    className="absolute right-0 mt-1 w-40 bg-white dark:bg-[#0e172f] shadow-xl border border-slate-200 dark:border-slate-800 rounded-lg py-1.5 z-30 animate-in fade-in"
                   >
                     <button
-                      onClick={(e) => { e.stopPropagation(); setMenuOpen(false); navigate(`/courses/${course.id}`); }}
-                      className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMenuOpen(false);
+                        navigate(`/courses/${course.id}`);
+                      }}
+                      className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/70 flex items-center space-x-2"
                     >
-                      <Eye size={13} className="text-slate-400" />
+                      <Eye
+                        size={13}
+                        className="text-slate-400 dark:text-slate-500"
+                      />
                       <span>View Outline</span>
                     </button>
                     <button
-                      onClick={(e) => { e.stopPropagation(); setMenuOpen(false); navigate(`/create-course?edit=${course.id}`); }}
-                      className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMenuOpen(false);
+                        navigate(`/create-course?edit=${course.id}`);
+                      }}
+                      className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/70 flex items-center space-x-2"
                     >
-                      <Edit size={13} className="text-slate-400" />
+                      <Edit
+                        size={13}
+                        className="text-slate-400 dark:text-slate-500"
+                      />
                       <span>Edit Course</span>
                     </button>
                     <button
-                      onClick={(e) => { e.stopPropagation(); setMenuOpen(false); }}
-                      className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 hover:bg-slate-50 flex items-center space-x-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMenuOpen(false);
+                      }}
+                      className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/70 flex items-center space-x-2"
                     >
-                      <Copy size={13} className="text-slate-400" />
+                      <Copy
+                        size={13}
+                        className="text-slate-400 dark:text-slate-500"
+                      />
                       <span>Duplicate</span>
                     </button>
                     {onDelete && (
                       <button
-                        onClick={(e) => { e.stopPropagation(); setMenuOpen(false); onDelete(course.id); }}
-                        className="w-full px-3 py-1.5 text-left text-xs font-medium text-red-600 hover:bg-red-50 flex items-center space-x-2 border-t border-slate-100"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setMenuOpen(false);
+                          onDelete(course.id);
+                        }}
+                        className="w-full px-3 py-1.5 text-left text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center space-x-2 border-t border-slate-100 dark:border-slate-800"
                       >
                         <Trash2 size={13} />
                         <span>Delete</span>
@@ -130,31 +165,42 @@ export const CourseCard = ({ course, onDelete }) => {
           </div>
 
           {/* Description */}
-          <p className="text-[11px] sm:text-xs text-slate-500 line-clamp-2 leading-relaxed mb-2 sm:mb-3 font-normal">
+          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-2 sm:mb-3 font-normal">
             {course.description}
           </p>
 
           {/* Instructor Line */}
-          <div className="flex items-center space-x-2 pb-2 mb-2 sm:pb-2.5 sm:mb-3 border-b border-slate-100">
+          <div className="flex items-center space-x-2 pb-2 mb-2 sm:pb-2.5 sm:mb-3 border-b border-slate-100 dark:border-slate-800">
             <img
               src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
               alt="Instructor"
-              className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded-full object-cover ring-1 ring-slate-200"
+              className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700"
             />
-            <span className="text-[11px] sm:text-xs text-slate-600 font-medium truncate">
-              Tony Stark • <span className="text-slate-400 font-normal">Lead</span>
+            <span className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 font-medium truncate">
+              Nilkamal Mukharjee •{" "}
+              <span className="text-slate-400 dark:text-slate-500 font-normal">
+                Lead
+              </span>
             </span>
           </div>
 
           {/* Metadata Row: Duration | Lessons */}
-          <div className="grid grid-cols-2 gap-1.5 text-center text-xs text-slate-600 bg-slate-50/80 p-1.5 sm:p-2 xl:p-2.5 border border-slate-100 mb-2 sm:mb-3.5">
+          <div className="grid grid-cols-2 gap-1.5 text-center text-xs text-slate-600 dark:text-slate-300 bg-slate-50/80 dark:bg-slate-900/60 p-1.5 sm:p-2 xl:p-2.5 border border-slate-100 dark:border-slate-800 rounded-lg mb-2 sm:mb-3.5">
             <div className="flex flex-col items-center justify-center">
-              <span className="text-[8.5px] sm:text-[9px] uppercase font-semibold text-slate-400 tracking-wider">Duration</span>
-              <span className="font-semibold text-slate-800 tabular-nums text-[10px] sm:text-xs truncate">{course.duration}</span>
+              <span className="text-[8.5px] sm:text-[9px] uppercase font-semibold text-slate-400 dark:text-slate-500 tracking-wider">
+                Duration
+              </span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200 tabular-nums text-[10px] sm:text-xs truncate">
+                {course.duration}
+              </span>
             </div>
-            <div className="flex flex-col items-center justify-center border-l border-slate-200/70">
-              <span className="text-[8.5px] sm:text-[9px] uppercase font-semibold text-slate-400 tracking-wider">Lessons</span>
-              <span className="font-semibold text-slate-800 tabular-nums text-[10px] sm:text-xs">{course.lessonsCount || 16}</span>
+            <div className="flex flex-col items-center justify-center border-l border-slate-200/70 dark:border-slate-800">
+              <span className="text-[8.5px] sm:text-[9px] uppercase font-semibold text-slate-400 dark:text-slate-500 tracking-wider">
+                Lessons
+              </span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200 tabular-nums text-[10px] sm:text-xs">
+                {course.lessonsCount || 16}
+              </span>
             </div>
           </div>
         </div>
@@ -167,10 +213,13 @@ export const CourseCard = ({ course, onDelete }) => {
             e.stopPropagation();
             navigate(`/courses/${course.id}`);
           }}
-          className="w-full py-2 sm:py-2.5 px-2.5 sm:px-3 bg-slate-900 group-hover:bg-[#3b49df] text-white font-medium text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-xs group/btn cursor-pointer"
+          className="w-full py-2 sm:py-2.5 px-2.5 sm:px-3 bg-slate-900 dark:bg-blue-600 group-hover:bg-[#3b49df] dark:group-hover:bg-blue-500 text-white font-medium text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-xs group/btn cursor-pointer rounded-lg"
         >
           <span>View Course Outline</span>
-          <ArrowRight size={12} className="group-hover/btn:translate-x-0.5 transition-transform shrink-0" />
+          <ArrowRight
+            size={12}
+            className="group-hover/btn:translate-x-0.5 transition-transform shrink-0"
+          />
         </button>
       </div>
     </div>

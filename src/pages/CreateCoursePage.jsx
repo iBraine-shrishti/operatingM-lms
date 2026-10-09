@@ -38,9 +38,11 @@ import {
   Undo,
   Redo,
   FileUp,
+  BarChart2,
 } from "lucide-react";
 import { lmsService } from "../services/lmsService";
 import { useToast } from "../context/ToastContext";
+import { QuizManagementDetailFlow } from "../components/admin/QuizManagementDetailFlow";
 // Custom reusable toggle component matching the screenshot layout and theme
 const SwitchToggle = ({ checked, onChange }) => (
   <button
@@ -63,6 +65,7 @@ export const CreateCoursePage = () => {
   const mediaFileInputRef = useRef(null);
   // 4 Process Steps (excluding component step)
   const [currentStep, setCurrentStep] = useState(1);
+  const [managingQuizModal, setManagingQuizModal] = useState(null);
   // -------------------------------------------------------------
   // STEP 1 STATE: CREATE COURSE (Start building a course)
   // -------------------------------------------------------------
@@ -475,20 +478,34 @@ export const CreateCoursePage = () => {
         ? selectedSectionIdx
         : 0;
     const updated = [...modules];
+    const newAssignId = `a-${Date.now()}`;
+    const newAssignTitle = assignmentName.trim();
     updated[targetIdx].items.push({
-      id: `a-${Date.now()}`,
-      title: assignmentName.trim(),
+      id: newAssignId,
+      title: newAssignTitle,
       type: "assignment",
       subType: activeAssignmentType,
       duration: assignmentDuration || "10 Days",
-      marks: assignmentMarks || 100,
+      marks: assignmentMarks || 20,
+    });
+    // Register in lmsService so it appears in Manage Assignments immediately
+    lmsService.addAssignment({
+      id: newAssignId,
+      courseId: "course-3",
+      courseTitle: courseName || "New Course",
+      title: newAssignTitle,
+      dueDate: assignmentEndDate || "2026-11-30",
+      maxScore: Number(assignmentMarks) || 20,
+      instructions:
+        assignmentStatement.trim() ||
+        "Submit complete practical project report in PDF.",
     });
     setModules(updated);
     setAssignmentName("");
     setAssignmentStatement("");
     setCurriculumView("overview");
     showToast(
-      `Assignment "${assignmentName.trim()}" added to ${modules[targetIdx].name}!`,
+      `Assignment "${newAssignTitle}" added to ${modules[targetIdx].name}!`,
       "success",
       "Assignment Added",
     );
@@ -685,7 +702,7 @@ export const CreateCoursePage = () => {
       <div className="flex items-center justify-between">
         <button
           onClick={() => navigate("/manage-courses")}
-          className="flex items-center space-x-2 text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors bg-white px-3.5 py-2 rounded-xl border border-slate-200/80 shadow-2xs"
+          className="flex items-center space-x-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-white dark:bg-[#0b1329] px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs"
         >
           <ArrowLeft size={16} />
           <span>Back to Manage Courses</span>
@@ -695,20 +712,20 @@ export const CreateCoursePage = () => {
           <button
             type="button"
             onClick={handleSaveDraft}
-            className="text-xs font-bold text-slate-600 hover:text-slate-900 bg-white px-3.5 py-2 rounded-xl border border-slate-200/80 hover:bg-slate-50 transition-colors"
+            className="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-[#0b1329] px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
           >
             Save Draft
           </button>
-          <span className="text-xs font-medium text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200/60 tabular-nums">
+          <span className="text-xs font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-3 py-1 rounded-full border border-amber-200/60 dark:border-amber-800/60 tabular-nums">
             Process {currentStep} of 4
           </span>
         </div>
       </div>
 
       {/* 4-STEP PROCESS NAVIGATION HEADER (Follows screenshot flow & structure) */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 p-5 md:p-6 shadow-xs relative">
+      <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-5 md:p-6 shadow-xs relative">
         {/* Top Accent Indicator Line */}
-        <div className="hidden md:block absolute top-0 left-8 right-8 h-1 bg-slate-100 rounded-full overflow-hidden">
+        <div className="hidden md:block absolute top-0 left-8 right-8 h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
           <div
             className="h-full bg-amber-500 transition-all duration-300"
             style={{ width: `${((currentStep - 1) / 3) * 100}%` }}
@@ -723,10 +740,10 @@ export const CreateCoursePage = () => {
               <div
                 key={s.num}
                 onClick={() => setCurrentStep(s.num)}
-                className={`cursor-pointerrounded p-3 transition-all flex flex-col items-center md:items-start text-center md:text-left ${
+                className={`cursor-pointer rounded p-3 transition-all flex flex-col items-center md:items-start text-center md:text-left ${
                   isCurrent
-                    ? "bg-amber-50/60 border border-amber-200/80 md:bg-transparent md:border-none"
-                    : "hover:bg-slate-50"
+                    ? "bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 md:bg-transparent md:border-none"
+                    : "hover:bg-slate-50 dark:hover:bg-slate-800/60"
                 }`}
               >
                 {/* Dot Marker with Line Indicator */}
@@ -734,10 +751,10 @@ export const CreateCoursePage = () => {
                   <div
                     className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-semibold transition-all ${
                       isCurrent
-                        ? "bg-amber-500 text-white ring-4 ring-amber-100 shadow-xs"
+                        ? "bg-amber-500 text-white ring-4 ring-amber-100 dark:ring-amber-950/80 shadow-xs"
                         : isCompleted
                           ? "bg-emerald-500 text-white"
-                          : "bg-slate-200 text-slate-500"
+                          : "bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
                     }`}
                   >
                     {isCompleted ? <Check size={10} /> : s.num}
@@ -751,17 +768,17 @@ export const CreateCoursePage = () => {
                 <span
                   className={`text-xs font-semibold tracking-wider uppercase transition-colors ${
                     isCurrent
-                      ? "text-amber-600"
+                      ? "text-amber-600 dark:text-amber-400"
                       : isCompleted
-                        ? "text-slate-800"
-                        : "text-slate-400"
+                        ? "text-slate-800 dark:text-slate-200"
+                        : "text-slate-400 dark:text-slate-500"
                   }`}
                 >
                   {s.title}
                 </span>
 
                 {/* Step Subtitle */}
-                <span className="text-[11px] font-medium text-slate-400 mt-0.5">
+                <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500 mt-0.5">
                   {s.subtitle}
                 </span>
               </div>
@@ -774,12 +791,12 @@ export const CreateCoursePage = () => {
       {/* PROCESS 1: CREATE COURSE (Start building a course)        */}
       {/* ========================================================= */}
       {currentStep === 1 && (
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 md:p-8 shadow-xs space-y-6 animate-in fade-in duration-200">
-          <div className="border-b border-slate-100 pb-4">
-            <h2 className="text-xl font-semibold text-slate-900 tracking-tight">
+        <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 md:p-8 shadow-xs space-y-6 animate-in fade-in duration-200">
+          <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white tracking-tight">
               CREATE COURSE
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Start building your course profile, basic information, thumbnail,
               and duration.
             </p>
@@ -805,7 +822,7 @@ export const CreateCoursePage = () => {
                   const file = e.dataTransfer.files?.[0];
                   if (file) handleProcessImageFile(file);
                 }}
-                className="relative aspect-4/3rounded overflow-hidden bg-slate-100 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center p-2 group transition-all"
+                className="relative aspect-4/3 rounded overflow-hidden bg-slate-100 dark:bg-slate-900/60 border-2 border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center p-2 group transition-all"
               >
                 {courseThumbnail ? (
                   <>
@@ -818,7 +835,7 @@ export const CreateCoursePage = () => {
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="w-full max-w-[210px] bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs py-2 px-3 rounded-xl shadow-md transition-colors flex items-center justify-center space-x-1.5"
+                        className="w-full max-w-[210px] bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs py-2 px-3 rounded-xl shadow-md transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
                       >
                         <Upload size={14} />
                         <span>Upload from Computer</span>
@@ -829,7 +846,7 @@ export const CreateCoursePage = () => {
                           setCustomImageUrl(courseThumbnail);
                           setIsImageModalOpen(true);
                         }}
-                        className="w-full max-w-[210px] bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs py-2 px-3 rounded-xl shadow-md transition-colors flex items-center justify-center space-x-1.5"
+                        className="w-full max-w-[210px] bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-bold text-xs py-2 px-3 rounded-xl shadow-md transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
                       >
                         <ImageIcon size={14} />
                         <span>More Options / Presets</span>
@@ -841,14 +858,14 @@ export const CreateCoursePage = () => {
                     onClick={() => fileInputRef.current?.click()}
                     className="text-center space-y-2 cursor-pointer p-4"
                   >
-                    <div className="w-16 h-16rounded bg-amber-50 text-amber-500 flex items-center justify-center mx-auto border border-amber-200">
+                    <div className="w-16 h-16 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-500 flex items-center justify-center mx-auto border border-amber-200 dark:border-amber-800/60">
                       <Upload size={28} />
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-slate-800 block">
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                         Click to upload course banner
                       </span>
-                      <span className="text-[10px] text-slate-400">
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500">
                         Supports PNG, JPG, WEBP from your computer
                       </span>
                     </div>
@@ -861,7 +878,7 @@ export const CreateCoursePage = () => {
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs py-2.5 px-3 rounded-xl border border-amber-200/80 transition-colors flex items-center justify-center space-x-1.5 shadow-2xs"
+                  className="flex-1 bg-amber-50 dark:bg-amber-950/30 hover:bg-amber-100 dark:hover:bg-amber-900/40 text-amber-800 dark:text-amber-300 font-bold text-xs py-2.5 px-3 rounded-xl border border-amber-200/80 dark:border-amber-800/60 transition-colors flex items-center justify-center space-x-1.5 shadow-2xs cursor-pointer"
                 >
                   <Upload size={14} />
                   <span>Upload Image from PC</span>
@@ -872,7 +889,7 @@ export const CreateCoursePage = () => {
                     setCustomImageUrl(courseThumbnail);
                     setIsImageModalOpen(true);
                   }}
-                  className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-2.5 px-3.5 rounded-xl transition-colors shrink-0"
+                  className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs py-2.5 px-3.5 rounded-xl transition-colors shrink-0 cursor-pointer"
                 >
                   Presets
                 </button>
@@ -880,20 +897,20 @@ export const CreateCoursePage = () => {
 
               {/* Add Course Video Input */}
               <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">
                   Add course video (Trailer / Preview URL)
                 </label>
                 <div className="relative">
                   <Video
                     size={16}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"
                   />
                   <input
                     type="text"
                     value={courseVideoUrl}
                     onChange={(e) => setCourseVideoUrl(e.target.value)}
                     placeholder="https://www.youtube.com/watch?v=..."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-xs font-semibold text-slate-900 focus:outline-hidden focus:border-amber-500"
+                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs font-semibold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500"
                   />
                 </div>
               </div>
@@ -902,25 +919,25 @@ export const CreateCoursePage = () => {
             {/* Right: Category, Title & Short About (7 cols) */}
             <div className="lg:col-span-7 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">
                   Course Category
                 </label>
                 <select
                   value={courseCategory}
                   onChange={(e) => setCourseCategory(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 focus:outline-hidden focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-hidden focus:border-amber-500"
                 >
-                  <option value="Digital Marketing">Digital Marketing</option>
-                  <option value="Web Development">Web Development</option>
-                  <option value="Data & Analytics">Data & Analytics</option>
-                  <option value="Paid Media">Paid Media</option>
-                  <option value="Creative Designing">Creative Designing</option>
-                  <option value="SEO Mastery">SEO Mastery</option>
+                  <option value="Digital Marketing" className="dark:bg-[#0b1329] dark:text-white">Digital Marketing</option>
+                  <option value="Web Development" className="dark:bg-[#0b1329] dark:text-white">Web Development</option>
+                  <option value="Data & Analytics" className="dark:bg-[#0b1329] dark:text-white">Data & Analytics</option>
+                  <option value="Paid Media" className="dark:bg-[#0b1329] dark:text-white">Paid Media</option>
+                  <option value="Creative Designing" className="dark:bg-[#0b1329] dark:text-white">Creative Designing</option>
+                  <option value="SEO Mastery" className="dark:bg-[#0b1329] dark:text-white">SEO Mastery</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">
                   Course Title *
                 </label>
                 <input
@@ -928,12 +945,12 @@ export const CreateCoursePage = () => {
                   value={courseTitle}
                   onChange={(e) => setCourseTitle(e.target.value)}
                   placeholder="e.g. Full Stack Digital Marketing Masterclass"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm md:text-base font-semibold text-slate-900 placeholder-slate-400 focus:outline-hidden focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm md:text-base font-semibold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-600 mb-1">
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">
                   What is the course about
                 </label>
                 <textarea
@@ -941,7 +958,7 @@ export const CreateCoursePage = () => {
                   value={courseShortAbout}
                   onChange={(e) => setCourseShortAbout(e.target.value)}
                   placeholder="Brief synopsis summarizing key learning outcomes..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 text-xs font-medium text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500"
                 />
               </div>
             </div>
@@ -949,7 +966,7 @@ export const CreateCoursePage = () => {
 
           {/* Detailed Description */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
               Detailed Description of the Course
             </label>
             <textarea
@@ -957,15 +974,15 @@ export const CreateCoursePage = () => {
               value={courseDetailedDescription}
               onChange={(e) => setCourseDetailedDescription(e.target.value)}
               placeholder="Comprehensive syllabus overview, target audience requirements, and prerequisites..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs font-medium text-slate-800 focus:outline-hidden focus:border-amber-500"
+              className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-xs font-medium text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500"
             />
           </div>
 
           {/* Bottom 4 Cards Grid (matching screenshot 1) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
             {/* Card 1: Course duration */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 space-y-1">
-              <span className="text-xs font-bold text-slate-700 block">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-1">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                 Course duration
               </span>
               <input
@@ -973,47 +990,47 @@ export const CreateCoursePage = () => {
                 value={courseDuration}
                 onChange={(e) => setCourseDuration(e.target.value)}
                 placeholder="Unlimited Duration"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-hidden"
+                className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white focus:outline-hidden"
               />
             </div>
 
             {/* Card 2: Maximum Seats in Course */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 space-y-1">
-              <span className="text-xs font-bold text-slate-700 block">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-1">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                 Maximum Seats in Course
               </span>
-              <p className="text-[10px] text-slate-400">
+              <p className="text-[10px] text-slate-400 dark:text-slate-500">
                 Maximum students that can join the Course
               </p>
               <input
                 type="number"
                 value={maxSeats}
                 onChange={(e) => setMaxSeats(Number(e.target.value))}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-hidden"
+                className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white focus:outline-hidden"
               />
             </div>
 
             {/* Card 3: Course Start Date */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 space-y-1">
-              <span className="text-xs font-bold text-slate-700 block">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-1">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                 Course Start Date
               </span>
-              <p className="text-[10px] text-slate-400">Start date</p>
+              <p className="text-[10px] text-slate-400 dark:text-slate-500">Start date</p>
               <input
                 type="date"
                 value={courseStartDate}
                 onChange={(e) => setCourseStartDate(e.target.value)}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-hidden"
+                className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white focus:outline-hidden"
               />
             </div>
 
             {/* Card 4: Automatic Evaluation Toggle */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-700 block">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                   Automatic Evaluation
                 </span>
-                <p className="text-[10px] text-slate-400">
+                <p className="text-[10px] text-slate-400 dark:text-slate-500">
                   Course Evaluation Mode
                 </p>
               </div>
@@ -1029,14 +1046,14 @@ export const CreateCoursePage = () => {
             <button
               type="button"
               onClick={handleSaveDraft}
-              className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-5 py-3 transition-colors"
+              className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs px-5 py-3 rounded-xl transition-colors cursor-pointer"
             >
               Save Draft
             </button>
             <button
               type="button"
               onClick={() => setCurrentStep(2)}
-              className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-3 rounded transition-colors shadow-md shadow-amber-200 flex items-center space-x-2"
+              className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-3 rounded-xl transition-colors shadow-md shadow-amber-500/20 flex items-center space-x-2 cursor-pointer"
             >
               <span>Continue to Settings</span>
               <span>→</span>
@@ -1049,12 +1066,12 @@ export const CreateCoursePage = () => {
       {/* PROCESS 2: SETTINGS (Advance settings)                     */}
       {/* ========================================================= */}
       {currentStep === 2 && (
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 md:p-8 shadow-xs space-y-6 animate-in fade-in duration-200">
-          <div className="border-b border-slate-100 pb-4">
-            <h2 className="text-xl font-semibold text-slate-900 tracking-tight">
+        <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 md:p-8 shadow-xs space-y-6 animate-in fade-in duration-200">
+          <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white tracking-tight">
               SETTINGS
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Advance settings: locks, prerequisites, drip feeds, badges, and
               certificates.
             </p>
@@ -1063,12 +1080,12 @@ export const CreateCoursePage = () => {
           {/* Grid of Settings Cards (matching screenshot 2) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* 1. Prerequisites */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 space-y-2">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-2">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   Course Prerequisites
                 </span>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Set prerequisite courses students must finish first
                 </p>
               </div>
@@ -1077,17 +1094,17 @@ export const CreateCoursePage = () => {
                 value={prerequisiteCourse}
                 onChange={(e) => setPrerequisiteCourse(e.target.value)}
                 placeholder="Select or type Course..."
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-hidden"
+                className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white focus:outline-hidden"
               />
             </div>
 
             {/* 2. Locks Unit Quiz */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   Lock Units & Quizzes
                 </span>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Previous unit must be completed
                 </p>
               </div>
@@ -1098,12 +1115,12 @@ export const CreateCoursePage = () => {
             </div>
 
             {/* 3. Offline Course */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   Offline Course
                 </span>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Enable in-classroom attendance
                 </p>
               </div>
@@ -1114,12 +1131,12 @@ export const CreateCoursePage = () => {
             </div>
 
             {/* 4. Drip Feed */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   Drip Feed
                 </span>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Release modules sequentially by date
                 </p>
               </div>
@@ -1127,12 +1144,12 @@ export const CreateCoursePage = () => {
             </div>
 
             {/* 5. Course Certificate */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   Course Certificate
                 </span>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Issue certificate on completion
                 </p>
               </div>
@@ -1143,12 +1160,12 @@ export const CreateCoursePage = () => {
             </div>
 
             {/* 6. Course Badge */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   Course Badge
                 </span>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Award digital skill badge
                 </p>
               </div>
@@ -1156,18 +1173,18 @@ export const CreateCoursePage = () => {
             </div>
 
             {/* 7. Course Retakes */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 space-y-1">
-              <span className="text-xs font-bold text-slate-800 block">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-1">
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                 Course Retakes
               </span>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Student Course Retakes Allowed
               </p>
               <input
                 type="number"
                 value={courseRetakes}
                 onChange={(e) => setCourseRetakes(Number(e.target.value))}
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-hidden"
+                className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white focus:outline-hidden"
               />
             </div>
           </div>
@@ -1175,7 +1192,7 @@ export const CreateCoursePage = () => {
           {/* Instructions and Completion Message Textareas */}
           <div className="space-y-4 pt-2">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Course Instructions
               </label>
               <textarea
@@ -1183,12 +1200,12 @@ export const CreateCoursePage = () => {
                 value={courseInstructions}
                 onChange={(e) => setCourseInstructions(e.target.value)}
                 placeholder="Add Course specific instructions for students..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium text-slate-800 focus:outline-hidden"
+                className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-medium text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Course Completion Message
               </label>
               <textarea
@@ -1196,7 +1213,7 @@ export const CreateCoursePage = () => {
                 value={courseCompletionMessage}
                 onChange={(e) => setCourseCompletionMessage(e.target.value)}
                 placeholder="Completion Message shown after final exam/quiz..."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium text-slate-800 focus:outline-hidden"
+                className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs font-medium text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden"
               />
             </div>
           </div>
@@ -1206,7 +1223,7 @@ export const CreateCoursePage = () => {
             <button
               type="button"
               onClick={() => setCurrentStep(1)}
-              className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-6 py-3 rounded transition-colors"
+              className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs px-6 py-3 rounded-xl transition-colors cursor-pointer"
             >
               ← Back to Create Course
             </button>
@@ -1214,14 +1231,14 @@ export const CreateCoursePage = () => {
               <button
                 type="button"
                 onClick={handleSaveDraft}
-                className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-5 py-3 rounded transition-colors"
+                className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs px-5 py-3 rounded-xl transition-colors cursor-pointer"
               >
                 Save Draft
               </button>
               <button
                 type="button"
                 onClick={() => setCurrentStep(3)}
-                className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-3 rounded transition-colors shadow-md shadow-amber-200 flex items-center space-x-2"
+                className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-3 rounded-xl transition-colors shadow-md shadow-amber-500/20 flex items-center space-x-2 cursor-pointer"
               >
                 <span>Continue to Set Curriculum</span>
                 <span>→</span>
@@ -1235,12 +1252,12 @@ export const CreateCoursePage = () => {
       {/* PROCESS 3: SET CURRICULUM (Add Units and Quizzes)          */}
       {/* ========================================================= */}
       {currentStep === 3 && (
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 md:p-8 shadow-xs space-y-6 animate-in fade-in duration-200">
-          <div className="border-b border-slate-100 pb-4">
-            <h2 className="text-xl font-black text-slate-900 tracking-tight">
+        <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 md:p-8 shadow-xs space-y-6 animate-in fade-in duration-200">
+          <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+            <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
               SET CURRICULUM
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Build your course syllabus: add sections, interactive unit
               lessons, test quizzes, and assignments.
             </p>
@@ -1251,10 +1268,10 @@ export const CreateCoursePage = () => {
             <button
               type="button"
               onClick={() => setCurriculumMode("upload")}
-              className={`p-5 rounded border-2 transition-all text-center flex flex-col items-center justify-center space-y-2 ${
+              className={`p-5 rounded-2xl border-2 transition-all text-center flex flex-col items-center justify-center space-y-2 cursor-pointer ${
                 curriculumMode === "upload"
-                  ? "border-amber-500 bg-amber-50/50 shadow-xs"
-                  : "border-slate-200 hover:border-slate-300 bg-slate-50/50"
+                  ? "border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 shadow-xs"
+                  : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-slate-50/50 dark:bg-slate-900/40"
               }`}
             >
               <Upload
@@ -1262,13 +1279,13 @@ export const CreateCoursePage = () => {
                 className={
                   curriculumMode === "upload"
                     ? "text-amber-500"
-                    : "text-slate-400"
+                    : "text-slate-400 dark:text-slate-500"
                 }
               />
-              <span className="text-sm font-black text-slate-900">
+              <span className="text-sm font-black text-slate-900 dark:text-white">
                 Upload Package
               </span>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-slate-400 dark:text-slate-500">
                 SCORM, xAPI or ZIP course archives
               </p>
             </button>
@@ -1276,10 +1293,10 @@ export const CreateCoursePage = () => {
             <button
               type="button"
               onClick={() => setCurriculumMode("build")}
-              className={`p-5 rounded border-2 transition-all text-center flex flex-col items-center justify-center space-y-2 ${
+              className={`p-5 rounded-2xl border-2 transition-all text-center flex flex-col items-center justify-center space-y-2 cursor-pointer ${
                 curriculumMode === "build"
-                  ? "border-amber-500 bg-amber-50/50 shadow-xs"
-                  : "border-slate-200 hover:border-slate-300 bg-slate-50/50"
+                  ? "border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 shadow-xs"
+                  : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-slate-50/50 dark:bg-slate-900/40"
               }`}
             >
               <Layers
@@ -1287,13 +1304,13 @@ export const CreateCoursePage = () => {
                 className={
                   curriculumMode === "build"
                     ? "text-amber-500"
-                    : "text-slate-400"
+                    : "text-slate-400 dark:text-slate-500"
                 }
               />
-              <span className="text-sm font-black text-slate-900">
+              <span className="text-sm font-black text-slate-900 dark:text-white">
                 Build Curriculum
               </span>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-slate-400 dark:text-slate-500">
                 Interactive module & units builder
               </p>
             </button>
@@ -1301,12 +1318,12 @@ export const CreateCoursePage = () => {
 
           {/* Package Upload View */}
           {curriculumMode === "upload" && (
-            <div className="border-2 border-dashed border-slate-200 rounded-3xl p-8 text-center bg-slate-50 space-y-3">
+            <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-3xl p-8 text-center bg-slate-50 dark:bg-slate-900/50 space-y-3">
               <Upload size={36} className="mx-auto text-amber-500" />
-              <h4 className="font-bold text-slate-900 text-sm">
+              <h4 className="font-bold text-slate-900 dark:text-white text-sm">
                 Upload SCORM or ZIP Package
               </h4>
-              <p className="text-xs text-slate-400 max-w-sm mx-auto">
+              <p className="text-xs text-slate-400 dark:text-slate-500 max-w-sm mx-auto">
                 Drag and drop your standard e-learning archive here, or browse
                 your files.
               </p>
@@ -1319,7 +1336,7 @@ export const CreateCoursePage = () => {
                     "Package Uploaded",
                   )
                 }
-                className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition-colors"
+                className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs transition-colors cursor-pointer"
               >
                 Browse Package File
               </button>
@@ -1330,7 +1347,7 @@ export const CreateCoursePage = () => {
           {curriculumMode === "build" && (
             <div className="space-y-6">
               {/* 4 Main Action Buttons matching BUILD-CURICULUM.png */}
-              <div className="border-2 border-dashed border-slate-200/90 rounded p-4 bg-slate-50/60">
+              <div className="border-2 border-dashed border-slate-200/90 dark:border-slate-700 rounded-2xl p-4 bg-slate-50/60 dark:bg-slate-900/40">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <button
                     type="button"
@@ -1423,20 +1440,20 @@ export const CreateCoursePage = () => {
               {/* SUB-VIEW 1: ADD SECTION FORM                                       */}
               {/* ------------------------------------------------------------------ */}
               {curriculumView === "add_section" && (
-                <div className="bg-slate-50 rounded-3xl border border-slate-200/90 p-6 md:p-8 space-y-4 animate-in fade-in zoom-in-98 duration-150 shadow-xs">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                <div className="bg-slate-50 dark:bg-slate-900/60 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 space-y-4 animate-in fade-in zoom-in-98 duration-150 shadow-xs">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100/80 px-2.5 py-1 rounded-md border border-amber-200/60">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-100/80 dark:bg-amber-950/40 px-2.5 py-1 rounded-md border border-amber-200/60 dark:border-amber-800/60">
                         Section Creator
                       </span>
-                      <h3 className="text-xl font-black text-slate-900 mt-1">
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white mt-1">
                         Add Course Section / Module
                       </h3>
                     </div>
                     <button
                       type="button"
                       onClick={() => setCurriculumView("overview")}
-                      className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-200/60 transition-colors"
+                      className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                     >
                       <X size={18} />
                     </button>
@@ -1444,7 +1461,7 @@ export const CreateCoursePage = () => {
 
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                         Section Name *
                       </label>
                       <input
@@ -1453,7 +1470,7 @@ export const CreateCoursePage = () => {
                         value={newSectionName}
                         onChange={(e) => setNewSectionName(e.target.value)}
                         placeholder="e.g. Module 2: Keyword Strategy & On-Page SEO..."
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500 shadow-2xs"
+                        className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500 shadow-2xs"
                         onKeyDown={(e) => {
                           if (e.key === "Enter") handleAddSection();
                         }}
@@ -1461,7 +1478,7 @@ export const CreateCoursePage = () => {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                         Section Description
                       </label>
                       <textarea
@@ -1469,23 +1486,23 @@ export const CreateCoursePage = () => {
                         value={newSectionDesc}
                         onChange={(e) => setNewSectionDesc(e.target.value)}
                         placeholder="Brief summary of topics covered in this module..."
-                        className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500 shadow-2xs"
+                        className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 focus:ring-1 focus:ring-amber-500 shadow-2xs"
                       />
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-200">
+                  <div className="flex items-center justify-end space-x-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                     <button
                       type="button"
                       onClick={() => setCurriculumView("overview")}
-                      className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors"
+                      className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       type="button"
                       onClick={handleAddSection}
-                      className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition-colors"
+                      className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition-colors cursor-pointer"
                     >
                       Add Section
                     </button>
@@ -1497,20 +1514,20 @@ export const CreateCoursePage = () => {
               {/* SUB-VIEW 2: UNIT TYPES SELECTOR (UNITS.png)                        */}
               {/* ------------------------------------------------------------------ */}
               {curriculumView === "unit_types" && (
-                <div className="bg-slate-50 rounded-3xl border border-slate-200/90 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                <div className="bg-slate-50 dark:bg-slate-900/60 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100/80 px-2.5 py-1 rounded-md border border-amber-200/60">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-100/80 dark:bg-amber-950/40 px-2.5 py-1 rounded-md border border-amber-200/60 dark:border-amber-800/60">
                         Step 1: Choose Unit Format
                       </span>
-                      <h3 className="text-xl font-black text-slate-900 mt-1">
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white mt-1">
                         Select Unit Type
                       </h3>
                     </div>
                     <button
                       type="button"
                       onClick={() => setCurriculumView("overview")}
-                      className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-200/60 transition-colors"
+                      className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                     >
                       <X size={18} />
                     </button>
@@ -1544,12 +1561,12 @@ export const CreateCoursePage = () => {
                             }
                             setCurriculumView("unit_form");
                           }}
-                          className="bg-white hover:bg-amber-50/60 border border-slate-200 hover:border-amber-500 rounded p-5 text-center flex flex-col items-center justify-center space-y-2.5 transition-all group cursor-pointer shadow-2xs hover:shadow-xs"
+                          className="bg-white dark:bg-[#0b1329] hover:bg-amber-50/60 dark:hover:bg-amber-950/30 border border-slate-200 dark:border-slate-700 hover:border-amber-500 rounded-2xl p-5 text-center flex flex-col items-center justify-center space-y-2.5 transition-all group cursor-pointer shadow-2xs hover:shadow-xs"
                         >
-                          <div className="w-12 h-12 rounded-xl bg-slate-100 group-hover:bg-amber-500 group-hover:text-white text-slate-700 flex items-center justify-center transition-colors">
+                          <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 group-hover:bg-amber-500 group-hover:text-white text-slate-700 dark:text-slate-300 flex items-center justify-center transition-colors">
                             <Icon size={22} />
                           </div>
-                          <span className="text-xs font-bold text-slate-800 group-hover:text-amber-900 tracking-wide">
+                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-amber-900 dark:group-hover:text-amber-300 tracking-wide">
                             {u.name}
                           </span>
                         </button>
@@ -1563,22 +1580,22 @@ export const CreateCoursePage = () => {
               {/* SUB-VIEW 3: UNIT CREATION FORM (AFTER-ANY-UNIT-CLICKED.png)         */}
               {/* ------------------------------------------------------------------ */}
               {curriculumView === "unit_form" && (
-                <div className="bg-slate-50 rounded-3xl border border-slate-200/90 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
+                <div className="bg-slate-50 dark:bg-slate-900/60 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
                   {/* Top Search & Section selector */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
                     <div className="flex-1">
-                      <span className="text-[10px] font-bold text-slate-500 block mb-1">
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">
                         Title, type to search...
                       </span>
                       <input
                         type="text"
                         placeholder="Search existing lesson units or type below..."
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+                        className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-1.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
                       />
                     </div>
 
                     <div className="shrink-0 flex items-center space-x-2">
-                      <span className="text-xs font-bold text-slate-600">
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
                         Target Section:
                       </span>
                       <select
@@ -1586,7 +1603,7 @@ export const CreateCoursePage = () => {
                         onChange={(e) =>
                           setSelectedSectionIdx(Number(e.target.value))
                         }
-                        className="bg-white border border-slate-200 text-amber-700 font-bold text-xs rounded-xl px-3 py-1.5 focus:outline-hidden shadow-2xs"
+                        className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-amber-700 dark:text-amber-400 font-bold text-xs rounded-xl px-3 py-1.5 focus:outline-hidden shadow-2xs cursor-pointer"
                       >
                         {modules.map((m, idx) => (
                           <option key={m.id} value={idx}>
@@ -1605,12 +1622,12 @@ export const CreateCoursePage = () => {
                       value={unitTitle}
                       onChange={(e) => setUnitTitle(e.target.value)}
                       placeholder="Unit Name"
-                      className="w-full bg-transparent border-b border-slate-300 text-2xl md:text-3xl font-black text-slate-900 placeholder-slate-400 pb-2 focus:outline-hidden focus:border-amber-500"
+                      className="w-full bg-transparent border-b border-slate-300 dark:border-slate-700 text-2xl md:text-3xl font-black text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 pb-2 focus:outline-hidden focus:border-amber-500"
                     />
 
                     {/* Unit Tag badge */}
                     <div className="flex items-center space-x-2 pt-1">
-                      <span className="bg-white text-slate-700 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-200 shadow-2xs">
+                      <span className="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700 shadow-2xs">
                         {unitTag}
                       </span>
                     </div>
@@ -1620,22 +1637,22 @@ export const CreateCoursePage = () => {
                   {activeUnitType === "text" ? (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <label className="block text-xs font-bold text-slate-700">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
                           Unit Lesson Content (Rich Text Editor)
                         </label>
-                        <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                        <span className="text-[11px] font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-0.5 rounded-full border border-amber-200/80 dark:border-amber-800/80">
                           Interactive Text Editor
                         </span>
                       </div>
 
-                      <div className="border border-slate-200rounded bg-white shadow-2xs overflow-hidden">
+                      <div className="border border-slate-200 dark:border-slate-800 rounded bg-white dark:bg-[#0b1329] shadow-2xs overflow-hidden">
                         {/* Editor Toolbar with color, highlighter, align, bold, italic, hyperlink, font {style[4-5], size}, heading */}
-                        <div className="bg-slate-50 border-b border-slate-200 p-2.5 flex flex-wrap items-center gap-1.5">
+                        <div className="bg-slate-50 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 p-2.5 flex flex-wrap items-center gap-1.5">
                           {/* 1. Heading Selector */}
                           <select
                             value={editorHeading}
                             onChange={(e) => handleApplyHeading(e.target.value)}
-                            className="bg-white border border-slate-200 text-slate-800 text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:border-amber-500 shadow-2xs cursor-pointer"
+                            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:border-amber-500 shadow-2xs cursor-pointer"
                             title="Heading Style"
                           >
                             <option value="p">Normal Paragraph</option>
@@ -1651,7 +1668,7 @@ export const CreateCoursePage = () => {
                             onChange={(e) =>
                               handleApplyFontFamily(e.target.value)
                             }
-                            className="bg-white border border-slate-200 text-slate-800 text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:border-amber-500 shadow-2xs cursor-pointer"
+                            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-xs font-bold rounded-lg px-2.5 py-1.5 focus:outline-hidden focus:border-amber-500 shadow-2xs cursor-pointer"
                             title="Font Style"
                           >
                             <option value="Inter, sans-serif">
@@ -1677,7 +1694,7 @@ export const CreateCoursePage = () => {
                             onChange={(e) =>
                               handleApplyFontSize(e.target.value)
                             }
-                            className="bg-white border border-slate-200 text-slate-800 text-xs font-bold rounded-lg px-2 py-1.5 focus:outline-hidden focus:border-amber-500 shadow-2xs cursor-pointer"
+                            className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-white text-xs font-bold rounded-lg px-2 py-1.5 focus:outline-hidden focus:border-amber-500 shadow-2xs cursor-pointer"
                             title="Font Size"
                           >
                             <option value="1">12px (Small)</option>
@@ -1688,13 +1705,13 @@ export const CreateCoursePage = () => {
                             <option value="6">32px (Huge)</option>
                           </select>
 
-                          <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
+                          <div className="h-5 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block" />
 
                           {/* 4. Bold */}
                           <button
                             type="button"
                             onClick={() => executeEditorCommand("bold")}
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Bold (Ctrl+B)"
                           >
                             <Bold size={16} />
@@ -1704,7 +1721,7 @@ export const CreateCoursePage = () => {
                           <button
                             type="button"
                             onClick={() => executeEditorCommand("italic")}
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Italic (Ctrl+I)"
                           >
                             <Italic size={16} />
@@ -1714,13 +1731,13 @@ export const CreateCoursePage = () => {
                           <button
                             type="button"
                             onClick={() => executeEditorCommand("underline")}
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Underline (Ctrl+U)"
                           >
                             <Underline size={16} />
                           </button>
 
-                          <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
+                          <div className="h-5 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block" />
 
                           {/* 7. Text Color Picker */}
                           <div className="relative">
@@ -1730,7 +1747,7 @@ export const CreateCoursePage = () => {
                                 setShowColorPicker(!showColorPicker);
                                 setShowHighlightPicker(false);
                               }}
-                              className={`p-1.5 rounded-lg transition-colors flex items-center space-x-1 ${showColorPicker ? "bg-amber-100 text-amber-800" : "hover:bg-slate-200/70 text-slate-700"}`}
+                              className={`p-1.5 rounded-lg transition-colors flex items-center space-x-1 ${showColorPicker ? "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300" : "hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"}`}
                               title="Text Color"
                             >
                               <Palette size={16} />
@@ -1738,7 +1755,7 @@ export const CreateCoursePage = () => {
                             </button>
 
                             {showColorPicker && (
-                              <div className="absolute top-full left-0 mt-1 p-2 bg-white rounded-xl shadow-xl border border-slate-200 z-50 flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-100">
+                              <div className="absolute top-full left-0 mt-1 p-2 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-100">
                                 {[
                                   { label: "Dark", val: "#0f172a" },
                                   { label: "Amber", val: "#d97706" },
@@ -1754,7 +1771,7 @@ export const CreateCoursePage = () => {
                                       executeEditorCommand("foreColor", c.val);
                                       setShowColorPicker(false);
                                     }}
-                                    className="w-5 h-5 rounded-full border border-slate-200 hover:scale-110 transition-transform cursor-pointer"
+                                    className="w-5 h-5 rounded-full border border-slate-200 dark:border-slate-600 hover:scale-110 transition-transform cursor-pointer"
                                     style={{ backgroundColor: c.val }}
                                     title={c.label}
                                   />
@@ -1783,7 +1800,7 @@ export const CreateCoursePage = () => {
                                 setShowHighlightPicker(!showHighlightPicker);
                                 setShowColorPicker(false);
                               }}
-                              className={`p-1.5 rounded-lg transition-colors flex items-center space-x-1 ${showHighlightPicker ? "bg-amber-100 text-amber-800" : "hover:bg-slate-200/70 text-slate-700"}`}
+                              className={`p-1.5 rounded-lg transition-colors flex items-center space-x-1 ${showHighlightPicker ? "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300" : "hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"}`}
                               title="Text Highlighter"
                             >
                               <Highlighter size={16} />
@@ -1791,7 +1808,7 @@ export const CreateCoursePage = () => {
                             </button>
 
                             {showHighlightPicker && (
-                              <div className="absolute top-full left-0 mt-1 p-2 bg-white rounded-xl shadow-xl border border-slate-200 z-50 flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-100">
+                              <div className="absolute top-full left-0 mt-1 p-2 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 z-50 flex items-center gap-1.5 animate-in fade-in zoom-in-95 duration-100">
                                 {[
                                   { label: "Yellow", val: "#fef08a" },
                                   { label: "Green", val: "#bbf7d0" },
@@ -1810,7 +1827,7 @@ export const CreateCoursePage = () => {
                                       );
                                       setShowHighlightPicker(false);
                                     }}
-                                    className={`w-5 h-5 rounded-full border border-slate-300 hover:scale-110 transition-transform cursor-pointer ${h.val === "transparent" ? 'relative bg-white after:content-["/"] after:text-[10px] after:text-rose-500 after:font-bold after:flex after:items-center after:justify-center' : ""}`}
+                                    className={`w-5 h-5 rounded-full border border-slate-300 dark:border-slate-600 hover:scale-110 transition-transform cursor-pointer ${h.val === "transparent" ? 'relative bg-white dark:bg-slate-700 after:content-["/"] after:text-[10px] after:text-rose-500 after:font-bold after:flex after:items-center after:justify-center' : ""}`}
                                     style={{ backgroundColor: h.val }}
                                     title={h.label}
                                   />
@@ -1819,13 +1836,13 @@ export const CreateCoursePage = () => {
                             )}
                           </div>
 
-                          <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
+                          <div className="h-5 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block" />
 
                           {/* 9. Alignment Buttons */}
                           <button
                             type="button"
                             onClick={() => executeEditorCommand("justifyLeft")}
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Align Left"
                           >
                             <AlignLeft size={16} />
@@ -1835,7 +1852,7 @@ export const CreateCoursePage = () => {
                             onClick={() =>
                               executeEditorCommand("justifyCenter")
                             }
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Align Center"
                           >
                             <AlignCenter size={16} />
@@ -1843,7 +1860,7 @@ export const CreateCoursePage = () => {
                           <button
                             type="button"
                             onClick={() => executeEditorCommand("justifyRight")}
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Align Right"
                           >
                             <AlignRight size={16} />
@@ -1851,19 +1868,19 @@ export const CreateCoursePage = () => {
                           <button
                             type="button"
                             onClick={() => executeEditorCommand("justifyFull")}
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Justify"
                           >
                             <AlignJustify size={16} />
                           </button>
 
-                          <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
+                          <div className="h-5 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block" />
 
                           {/* 10. Hyperlink */}
                           <button
                             type="button"
                             onClick={() => setShowLinkModal(!showLinkModal)}
-                            className={`p-1.5 rounded-lg transition-colors ${showLinkModal ? "bg-amber-100 text-amber-800" : "hover:bg-slate-200/70 text-slate-700 hover:text-slate-900"}`}
+                            className={`p-1.5 rounded-lg transition-colors cursor-pointer ${showLinkModal ? "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300" : "hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"}`}
                             title="Insert / Edit Hyperlink"
                           >
                             <LinkIcon size={16} />
@@ -1875,7 +1892,7 @@ export const CreateCoursePage = () => {
                             onClick={() =>
                               executeEditorCommand("insertUnorderedList")
                             }
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Bullet List"
                           >
                             <List size={16} />
@@ -1885,7 +1902,7 @@ export const CreateCoursePage = () => {
                             onClick={() =>
                               executeEditorCommand("insertOrderedList")
                             }
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Numbered List"
                           >
                             <ListOrdered size={16} />
@@ -1895,19 +1912,19 @@ export const CreateCoursePage = () => {
                             onClick={() =>
                               executeEditorCommand("formatBlock", "blockquote")
                             }
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Quote"
                           >
                             <Quote size={16} />
                           </button>
 
-                          <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
+                          <div className="h-5 w-px bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block" />
 
                           {/* 12. Undo & Redo */}
                           <button
                             type="button"
                             onClick={() => executeEditorCommand("undo")}
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Undo"
                           >
                             <Undo size={15} />
@@ -1915,7 +1932,7 @@ export const CreateCoursePage = () => {
                           <button
                             type="button"
                             onClick={() => executeEditorCommand("redo")}
-                            className="p-1.5 rounded-lg hover:bg-slate-200/70 text-slate-700 hover:text-slate-900 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-slate-200/70 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                             title="Redo"
                           >
                             <Redo size={15} />
@@ -1924,17 +1941,17 @@ export const CreateCoursePage = () => {
 
                         {/* Inline Hyperlink Bar */}
                         {showLinkModal && (
-                          <div className="bg-amber-50/80 border-b border-amber-200/80 p-2.5 flex items-center space-x-2 animate-in fade-in slide-in-from-top-1">
+                          <div className="bg-amber-50/80 dark:bg-amber-950/40 border-b border-amber-200/80 dark:border-amber-800/80 p-2.5 flex items-center space-x-2 animate-in fade-in slide-in-from-top-1">
                             <LinkIcon
                               size={14}
-                              className="text-amber-600 shrink-0"
+                              className="text-amber-600 dark:text-amber-400 shrink-0"
                             />
                             <input
                               type="text"
                               value={hyperlinkUrl}
                               onChange={(e) => setHyperlinkUrl(e.target.value)}
                               placeholder="Type or paste URL (e.g. https://operatingmedia.com)..."
-                              className="flex-1 bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+                              className="flex-1 bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
                               onKeyDown={(e) => {
                                 if (e.key === "Enter") handleApplyLink();
                               }}
@@ -1942,21 +1959,21 @@ export const CreateCoursePage = () => {
                             <button
                               type="button"
                               onClick={handleApplyLink}
-                              className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition-colors shadow-2xs"
+                              className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-lg transition-colors shadow-2xs cursor-pointer"
                             >
                               Apply
                             </button>
                             <button
                               type="button"
                               onClick={handleRemoveLink}
-                              className="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors"
+                              className="bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-bold text-xs px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                             >
                               Remove Link
                             </button>
                             <button
                               type="button"
                               onClick={() => setShowLinkModal(false)}
-                              className="text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg cursor-pointer"
                             >
                               <X size={15} />
                             </button>
@@ -1972,12 +1989,12 @@ export const CreateCoursePage = () => {
                             setUnitTextContent(e.target.innerHTML)
                           }
                           dangerouslySetInnerHTML={{ __html: unitTextContent }}
-                          className="min-h-[200px] max-h-[450px] overflow-y-auto p-4 text-slate-800 focus:outline-hidden leading-relaxed"
+                          className="min-h-[200px] max-h-[450px] overflow-y-auto p-4 text-slate-800 dark:text-slate-200 focus:outline-hidden leading-relaxed"
                           style={{ fontFamily: editorFontFamily }}
                         />
 
                         {/* Editor Bottom Bar */}
-                        <div className="bg-slate-50 border-t border-slate-100 px-3.5 py-2 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+                        <div className="bg-slate-50 dark:bg-slate-900/60 border-t border-slate-100 dark:border-slate-800 px-3.5 py-2 flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 font-medium">
                           <span>Rich Text Formatter Active</span>
                           <span>
                             {
@@ -1994,7 +2011,7 @@ export const CreateCoursePage = () => {
                     </div>
                   ) : (
                     /* Video / Audio / Multimedia / Package: Includes UPLOAD FROM DEVICE + URL LINK */
-                    <div className="border-2 border-dashed border-slate-300rounded p-6 bg-white space-y-4 shadow-2xs">
+                    <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 bg-white dark:bg-[#0b1329] space-y-4 shadow-2xs">
                       {/* Hidden File Input for Device Upload */}
                       <input
                         ref={unitDeviceFileInputRef}
@@ -2016,9 +2033,9 @@ export const CreateCoursePage = () => {
                       />
 
                       {/* Header Title with Unit Icon */}
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
                         <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                          <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
                             {activeUnitType === "video" && <Video size={20} />}
                             {activeUnitType === "audio" && <Music size={20} />}
                             {activeUnitType === "multimedia" && (
@@ -2032,13 +2049,13 @@ export const CreateCoursePage = () => {
                             )}
                           </div>
                           <div>
-                            <h4 className="text-sm font-bold text-slate-900">
+                            <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                               Unit{" "}
                               {activeUnitType.charAt(0).toUpperCase() +
                                 activeUnitType.slice(1)}{" "}
                               Source
                             </h4>
-                            <p className="text-[11px] text-slate-500">
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400">
                               Upload directly from your device or paste a web
                               URL
                             </p>
@@ -2046,14 +2063,14 @@ export const CreateCoursePage = () => {
                         </div>
 
                         {/* Tab Switcher: Device vs URL */}
-                        <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 shrink-0">
+                        <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shrink-0">
                           <button
                             type="button"
                             onClick={() => setUnitMediaTab("device")}
-                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                               unitMediaTab === "device"
-                                ? "bg-white text-slate-900 shadow-2xs"
-                                : "text-slate-500 hover:text-slate-800"
+                                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs"
+                                : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
                             }`}
                           >
                             <FileUp size={13} />
@@ -2062,10 +2079,10 @@ export const CreateCoursePage = () => {
                           <button
                             type="button"
                             onClick={() => setUnitMediaTab("url")}
-                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                               unitMediaTab === "url"
-                                ? "bg-white text-slate-900 shadow-2xs"
-                                : "text-slate-500 hover:text-slate-800"
+                                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-2xs"
+                                : "text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200"
                             }`}
                           >
                             <LinkIcon size={13} />
@@ -2078,21 +2095,21 @@ export const CreateCoursePage = () => {
                       {unitMediaTab === "device" && (
                         <div className="space-y-3">
                           {unitUploadedFile ? (
-                            <div className="bg-emerald-50/70 border border-emerald-200rounded p-4 flex items-center justify-between">
+                            <div className="bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 rounded-xl p-4 flex items-center justify-between">
                               <div className="flex items-center space-x-3">
-                                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
                                   <Check size={18} />
                                 </div>
                                 <div>
                                   <div className="flex items-center space-x-2">
-                                    <h5 className="text-xs font-bold text-slate-900">
+                                    <h5 className="text-xs font-bold text-slate-900 dark:text-white">
                                       {unitUploadedFile.name}
                                     </h5>
-                                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                                    <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full">
                                       {unitUploadedFile.size}
                                     </span>
                                   </div>
-                                  <p className="text-[11px] text-emerald-700">
+                                  <p className="text-[11px] text-emerald-700 dark:text-emerald-400">
                                     Uploaded from device and ready to attach
                                   </p>
                                 </div>
@@ -2103,14 +2120,14 @@ export const CreateCoursePage = () => {
                                   onClick={() =>
                                     unitDeviceFileInputRef.current?.click()
                                   }
-                                  className="text-xs font-bold text-slate-700 hover:text-slate-900 bg-white border border-slate-200 px-3 py-1.5 rounded-xl hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+                                  className="text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-2xs cursor-pointer"
                                 >
                                   Change File
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => setUnitUploadedFile(null)}
-                                  className="text-slate-400 hover:text-rose-600 p-1.5 rounded-xl hover:bg-rose-50 transition-colors cursor-pointer"
+                                  className="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 p-1.5 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                                   title="Remove"
                                 >
                                   <Trash2 size={15} />
@@ -2128,19 +2145,19 @@ export const CreateCoursePage = () => {
                                 const file = e.dataTransfer.files?.[0];
                                 if (file) handleDeviceFileUpload(file);
                               }}
-                              className="border-2 border-dashed border-amber-300 hover:border-amber-500 bg-amber-50/40 hover:bg-amber-50/70rounded p-6 text-center cursor-pointer transition-all group"
+                              className="border-2 border-dashed border-amber-300 dark:border-amber-700 hover:border-amber-500 bg-amber-50/40 dark:bg-amber-950/20 hover:bg-amber-50/70 dark:hover:bg-amber-950/30 rounded-2xl p-6 text-center cursor-pointer transition-all group"
                             >
-                              <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-2 group-hover:scale-105 transition-transform">
+                              <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto mb-2 group-hover:scale-105 transition-transform">
                                 <FileUp size={24} />
                               </div>
-                              <h5 className="text-xs font-bold text-slate-900">
+                              <h5 className="text-xs font-bold text-slate-900 dark:text-white">
                                 Click to browse {activeUnitType} file or drag
                                 and drop
                               </h5>
-                              <p className="text-[11px] text-slate-500 mt-0.5">
+                              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                                 Upload directly from your computer or device
                               </p>
-                              <span className="inline-block mt-2 text-[10px] font-bold text-amber-800 bg-amber-100/90 px-2.5 py-0.5 rounded-full">
+                              <span className="inline-block mt-2 text-[10px] font-bold text-amber-800 dark:text-amber-400 bg-amber-100/90 dark:bg-amber-950/60 px-2.5 py-0.5 rounded-full">
                                 {activeUnitType === "video" &&
                                   "MP4, MOV, WEBM, MKV, AVI (Max 500MB)"}
                                 {activeUnitType === "audio" &&
@@ -2165,9 +2182,9 @@ export const CreateCoursePage = () => {
                             value={unitMediaUrl}
                             onChange={(e) => setUnitMediaUrl(e.target.value)}
                             placeholder={`Paste ${activeUnitType} URL (YouTube, Vimeo, MP4, MP3, cloud storage)...`}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500"
+                            className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500"
                           />
-                          <p className="text-[10px] text-slate-500">
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400">
                             Supports YouTube, Vimeo, MP4, MP3, embed links or
                             cloud video/audio files
                           </p>
@@ -2178,7 +2195,7 @@ export const CreateCoursePage = () => {
 
                   {/* What is the unit about */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       What is the unit about
                     </label>
                     <textarea
@@ -2186,13 +2203,13 @@ export const CreateCoursePage = () => {
                       value={unitAbout}
                       onChange={(e) => setUnitAbout(e.target.value)}
                       placeholder="Summary of this unit..."
-                      className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+                      className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
                     />
                   </div>
 
                   {/* Unit duration row */}
-                  <div className="bg-white p-3.5 rounded-xl border border-slate-200 flex items-center justify-between shadow-2xs">
-                    <span className="text-xs font-bold text-slate-700">
+                  <div className="bg-white dark:bg-[#0b1329] p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-2xs">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       Unit duration
                     </span>
                     <input
@@ -2200,13 +2217,13 @@ export const CreateCoursePage = () => {
                       value={unitDurationInput}
                       onChange={(e) => setUnitDurationInput(e.target.value)}
                       placeholder="Unlimited Duration"
-                      className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1 text-xs font-bold text-right text-slate-800 w-40 focus:outline-hidden focus:border-amber-500"
+                      className="bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1 text-xs font-bold text-right text-slate-800 dark:text-white w-40 focus:outline-hidden focus:border-amber-500"
                     />
                   </div>
 
                   {/* Free Unit toggle */}
                   <div className="flex items-center justify-between py-1">
-                    <span className="text-xs font-bold text-slate-700">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       Free Unit
                     </span>
                     <SwitchToggle
@@ -2217,7 +2234,7 @@ export const CreateCoursePage = () => {
 
                   {/* Unit Discussion */}
                   <div className="flex items-center justify-between gap-4 py-1">
-                    <span className="text-xs font-bold text-slate-700">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       Unit Discussion
                     </span>
                     <input
@@ -2225,14 +2242,14 @@ export const CreateCoursePage = () => {
                       value={unitDiscussionKeyword}
                       onChange={(e) => setUnitDiscussionKeyword(e.target.value)}
                       placeholder="Type a keyword"
-                      className="bg-white border border-slate-200 rounded-lg px-3 py-1 text-xs text-slate-800 w-44 focus:outline-hidden shadow-2xs"
+                      className="bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1 text-xs text-slate-800 dark:text-white w-44 focus:outline-hidden shadow-2xs"
                     />
                   </div>
 
                   {/* Connect Assignments - with active [Add] button matching user request and screenshot */}
                   <div className="space-y-2 py-1">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-700">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Connect Assignments
                       </span>
                       <button
@@ -2257,11 +2274,11 @@ export const CreateCoursePage = () => {
                         {unitConnectedAssignments.map((asgn, idx) => (
                           <div
                             key={idx}
-                            className="inline-flex items-center space-x-1.5 bg-amber-50 border border-amber-200 text-amber-800 text-xs px-2.5 py-1 rounded-lg font-semibold shadow-2xs"
+                            className="inline-flex items-center space-x-1.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/80 text-amber-800 dark:text-amber-300 text-xs px-2.5 py-1 rounded-lg font-semibold shadow-2xs"
                           >
                             <FileText
                               size={12}
-                              className="text-amber-600 shrink-0"
+                              className="text-amber-600 dark:text-amber-400 shrink-0"
                             />
                             <span className="truncate max-w-xs">{asgn}</span>
                             <button
@@ -2275,7 +2292,7 @@ export const CreateCoursePage = () => {
                                   "info",
                                 );
                               }}
-                              className="text-amber-600 hover:text-amber-900 ml-1 font-bold text-xs cursor-pointer flex items-center"
+                              className="text-amber-600 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-200 ml-1 font-bold text-xs cursor-pointer flex items-center"
                               title="Remove assignment"
                             >
                               <X size={12} />
@@ -2287,15 +2304,15 @@ export const CreateCoursePage = () => {
 
                     {/* Interactive Assignment Connector Panel */}
                     {showConnectAssignmentModal && (
-                      <div className="p-3.5 bg-whiterounded border border-slate-200 shadow-sm space-y-2.5 animate-in fade-in duration-150">
+                      <div className="p-3.5 bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2.5 animate-in fade-in duration-150">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-slate-800">
+                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
                             Select or Add Assignment
                           </span>
                           <button
                             type="button"
                             onClick={() => setShowConnectAssignmentModal(false)}
-                            className="text-slate-400 hover:text-slate-600 text-xs font-bold cursor-pointer"
+                            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs font-bold cursor-pointer"
                           >
                             <X size={14} />
                           </button>
@@ -2336,16 +2353,16 @@ export const CreateCoursePage = () => {
                                 }}
                                 className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center justify-between ${
                                   isConnected
-                                    ? "bg-amber-50 text-amber-800 font-bold border border-amber-200"
-                                    : "hover:bg-slate-50 text-slate-700"
+                                    ? "bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 font-bold border border-amber-200 dark:border-amber-800"
+                                    : "hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
                                 }`}
                               >
                                 <span className="truncate">{item}</span>
                                 <span
                                   className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
                                     isConnected
-                                      ? "bg-amber-200 text-amber-900"
-                                      : "bg-slate-100 text-slate-500"
+                                      ? "bg-amber-200 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200"
+                                      : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
                                   }`}
                                 >
                                   {isConnected ? "Connected" : "+ Connect"}
@@ -2356,7 +2373,7 @@ export const CreateCoursePage = () => {
                         </div>
 
                         {/* Custom assignment input */}
-                        <div className="flex items-center space-x-2 pt-1.5 border-t border-slate-100">
+                        <div className="flex items-center space-x-2 pt-1.5 border-t border-slate-100 dark:border-slate-800">
                           <input
                             type="text"
                             value={customAssignmentInput}
@@ -2364,7 +2381,7 @@ export const CreateCoursePage = () => {
                               setCustomAssignmentInput(e.target.value)
                             }
                             placeholder="Or type custom assignment title..."
-                            className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500"
+                            className="flex-1 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500"
                             onKeyDown={(e) => {
                               if (
                                 e.key === "Enter" &&
@@ -2406,7 +2423,7 @@ export const CreateCoursePage = () => {
                                 setCustomAssignmentInput("");
                               }
                             }}
-                            className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-1 rounded-lg transition-colors shadow-2xs"
+                            className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3 py-1 rounded-lg transition-colors shadow-2xs cursor-pointer"
                           >
                             Add
                           </button>
@@ -2417,15 +2434,15 @@ export const CreateCoursePage = () => {
 
                   {/* Attachments - display only, not action on this */}
                   <div className="space-y-1.5">
-                    <span className="text-xs font-bold text-slate-700 block">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                       Attachments
                     </span>
                     <div className="w-12 h-6 bg-amber-500 rounded-md shadow-2xs cursor-default" />
                   </div>
 
                   {/* Practice Questions box matching AFTER-ANY-UNIT-CLICKED.png */}
-                  <div className="border border-dashed border-slate-300 rounded p-4 bg-white space-y-2 shadow-2xs">
-                    <span className="text-xs font-bold text-slate-700 block">
+                  <div className="border border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-4 bg-white dark:bg-[#0b1329] space-y-2 shadow-2xs">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                       Practice Questions
                     </span>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -2434,7 +2451,7 @@ export const CreateCoursePage = () => {
                         onClick={() =>
                           showToast("Questions filter by tags opened", "info")
                         }
-                        className="py-2.5 px-3 bg-slate-50 hover:bg-amber-50 rounded-xl text-amber-700 hover:text-amber-800 font-bold text-xs text-center border border-slate-200 hover:border-amber-300 transition-colors shadow-2xs"
+                        className="py-2.5 px-3 bg-slate-50 dark:bg-slate-900/60 hover:bg-amber-50 dark:hover:bg-amber-950/30 rounded-xl text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-bold text-xs text-center border border-slate-200 dark:border-slate-700 hover:border-amber-300 dark:hover:border-amber-600 transition-colors shadow-2xs cursor-pointer"
                       >
                         Select Questions from Tags
                       </button>
@@ -2443,7 +2460,7 @@ export const CreateCoursePage = () => {
                         onClick={() => {
                           setCurriculumView("create_question");
                         }}
-                        className="py-2.5 px-3 bg-slate-50 hover:bg-amber-50 rounded-xl text-amber-700 hover:text-amber-800 font-bold text-xs text-center border border-slate-200 hover:border-amber-300 transition-colors shadow-2xs"
+                        className="py-2.5 px-3 bg-slate-50 dark:bg-slate-900/60 hover:bg-amber-50 dark:hover:bg-amber-950/30 rounded-xl text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 font-bold text-xs text-center border border-slate-200 dark:border-slate-700 hover:border-amber-300 dark:hover:border-amber-600 transition-colors shadow-2xs cursor-pointer"
                       >
                         Select/Create Questions
                       </button>
@@ -2451,18 +2468,18 @@ export const CreateCoursePage = () => {
                   </div>
 
                   {/* Bottom Action buttons */}
-                  <div className="flex items-center space-x-3 pt-3 border-t border-slate-200">
+                  <div className="flex items-center space-x-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                     <button
                       type="button"
                       onClick={handleSaveUnit}
-                      className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition-colors"
+                      className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition-colors cursor-pointer"
                     >
                       Add Unit
                     </button>
                     <button
                       type="button"
                       onClick={() => setCurriculumView("overview")}
-                      className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors"
+                      className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -2474,20 +2491,20 @@ export const CreateCoursePage = () => {
               {/* SUB-VIEW 4: QUIZ TYPES SELECTOR (QUIZ.png)                         */}
               {/* ------------------------------------------------------------------ */}
               {curriculumView === "quiz_types" && (
-                <div className="bg-slate-50 rounded-3xl border border-slate-200/90 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                <div className="bg-slate-50 dark:bg-slate-900/60 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100/80 px-2.5 py-1 rounded-md border border-amber-200/60">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-100/80 dark:bg-amber-950/40 px-2.5 py-1 rounded-md border border-amber-200/60 dark:border-amber-800/60">
                         Step 1: Choose Quiz Format
                       </span>
-                      <h3 className="text-xl font-black text-slate-900 mt-1">
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white mt-1">
                         Select Quiz Type
                       </h3>
                     </div>
                     <button
                       type="button"
                       onClick={() => setCurriculumView("overview")}
-                      className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-200/60 transition-colors"
+                      className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                     >
                       <X size={18} />
                     </button>
@@ -2512,9 +2529,9 @@ export const CreateCoursePage = () => {
                             setCurriculumView("quiz_form");
                           }
                         }}
-                        className="bg-white hover:bg-amber-50/60 border border-slate-200 hover:border-amber-500rounded p-6 text-center flex flex-col items-center justify-center space-y-2 transition-all cursor-pointer shadow-2xs hover:shadow-xs group"
+                        className="bg-white dark:bg-[#0b1329] hover:bg-amber-50/60 dark:hover:bg-amber-950/30 border border-slate-200 dark:border-slate-700 hover:border-amber-500 rounded-2xl p-6 text-center flex flex-col items-center justify-center space-y-2 transition-all cursor-pointer shadow-2xs hover:shadow-xs group"
                       >
-                        <span className="text-sm font-bold text-slate-800 group-hover:text-amber-900">
+                        <span className="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-amber-900 dark:group-hover:text-amber-300">
                           {q.name}
                         </span>
                       </button>
@@ -2527,21 +2544,21 @@ export const CreateCoursePage = () => {
               {/* SUB-VIEW 5: SCORM QUIZ FORM (SCROM.png)                            */}
               {/* ------------------------------------------------------------------ */}
               {curriculumView === "scorm_form" && (
-                <div className="bg-slate-50 rounded-3xl border border-slate-200/90 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
+                <div className="bg-slate-50 dark:bg-slate-900/60 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
                   {/* Top Search & Section selector */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
                     <div className="flex-1">
-                      <span className="text-[10px] font-bold text-slate-500 block mb-1">
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">
                         Title, type to search...
                       </span>
                       <input
                         type="text"
                         placeholder="Search existing quizzes..."
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+                        className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-1.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
                       />
                     </div>
                     <div className="shrink-0 flex items-center space-x-2">
-                      <span className="text-xs font-bold text-slate-600">
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
                         Target Section:
                       </span>
                       <select
@@ -2549,7 +2566,7 @@ export const CreateCoursePage = () => {
                         onChange={(e) =>
                           setSelectedSectionIdx(Number(e.target.value))
                         }
-                        className="bg-white border border-slate-200 text-amber-700 font-bold text-xs rounded-xl px-3 py-1.5 focus:outline-hidden shadow-2xs"
+                        className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-amber-700 dark:text-amber-400 font-bold text-xs rounded-xl px-3 py-1.5 focus:outline-hidden shadow-2xs cursor-pointer"
                       >
                         {modules.map((m, idx) => (
                           <option key={m.id} value={idx}>
@@ -2568,10 +2585,10 @@ export const CreateCoursePage = () => {
                       value={quizTitle}
                       onChange={(e) => setQuizTitle(e.target.value)}
                       placeholder="Quiz Title"
-                      className="w-full bg-transparent border-b border-slate-300 text-2xl md:text-3xl font-black text-slate-900 placeholder-slate-400 pb-2 focus:outline-hidden focus:border-amber-500"
+                      className="w-full bg-transparent border-b border-slate-300 dark:border-slate-700 text-2xl md:text-3xl font-black text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 pb-2 focus:outline-hidden focus:border-amber-500"
                     />
                     <div className="flex items-center space-x-2 pt-1">
-                      <span className="bg-white text-slate-700 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-200 shadow-2xs">
+                      <span className="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700 shadow-2xs">
                         Quiz type: Scorm
                       </span>
                     </div>
@@ -2579,10 +2596,10 @@ export const CreateCoursePage = () => {
 
                   {/* Add Quiz Package */}
                   <div className="space-y-2">
-                    <span className="text-xs font-bold text-slate-700 block">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                       Add Quiz Package
                     </span>
-                    <div className="border border-dashed border-slate-300 bg-white p-6rounded flex items-center justify-center shadow-2xs">
+                    <div className="border border-dashed border-slate-300 dark:border-slate-700 bg-white dark:bg-[#0b1329] p-6 rounded-2xl flex items-center justify-center shadow-2xs">
                       <button
                         type="button"
                         onClick={() =>
@@ -2591,7 +2608,7 @@ export const CreateCoursePage = () => {
                             "success",
                           )
                         }
-                        className="bg-slate-50 hover:bg-amber-50 border border-slate-200 hover:border-amber-400 text-slate-800 hover:text-amber-800 font-bold text-xs px-5 py-3 rounded-xl transition-colors shadow-2xs"
+                        className="bg-slate-50 dark:bg-slate-800 hover:bg-amber-50 dark:hover:bg-amber-950/40 border border-slate-200 dark:border-slate-700 hover:border-amber-400 text-slate-800 dark:text-slate-200 hover:text-amber-800 dark:hover:text-amber-300 font-bold text-xs px-5 py-3 rounded-xl transition-colors shadow-2xs cursor-pointer"
                       >
                         SCORM 1.2 Package
                       </button>
@@ -2600,7 +2617,7 @@ export const CreateCoursePage = () => {
 
                   {/* Quiz passing marks */}
                   <div className="space-y-1">
-                    <span className="text-xs font-bold text-slate-700 block">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                       Quiz passing marks/score
                     </span>
                     <input
@@ -2609,13 +2626,13 @@ export const CreateCoursePage = () => {
                       onChange={(e) =>
                         setQuizPassingScore(Number(e.target.value))
                       }
-                      className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 w-32 focus:outline-hidden shadow-2xs"
+                      className="bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-white w-32 focus:outline-hidden shadow-2xs"
                     />
                   </div>
 
                   {/* Connected Course */}
-                  <div className="flex items-center justify-between border-t border-slate-200 pt-3">
-                    <span className="text-xs font-bold text-slate-700">
+                  <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 pt-3">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       Connected Course
                     </span>
                     <input
@@ -2623,31 +2640,31 @@ export const CreateCoursePage = () => {
                       value={quizConnectedCourse}
                       onChange={(e) => setQuizConnectedCourse(e.target.value)}
                       placeholder="Type a keyword"
-                      className="bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 w-48 focus:outline-hidden shadow-2xs"
+                      className="bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-white w-48 focus:outline-hidden shadow-2xs"
                     />
                   </div>
 
                   {/* Attachments in quiz - display only, not action on this */}
                   <div className="space-y-1.5 py-1">
-                    <span className="text-xs font-bold text-slate-700 block">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                       Attachments
                     </span>
                     <div className="w-12 h-6 bg-amber-500 rounded-md shadow-2xs cursor-default" />
                   </div>
 
                   {/* Bottom Action buttons */}
-                  <div className="flex items-center space-x-3 pt-3 border-t border-slate-200">
+                  <div className="flex items-center space-x-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                     <button
                       type="button"
                       onClick={handleSaveQuiz}
-                      className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition-colors"
+                      className="bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-black text-xs px-6 py-2.5 rounded-xl shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)] transition-all cursor-pointer"
                     >
                       Add Quiz
                     </button>
                     <button
                       type="button"
                       onClick={() => setCurriculumView("overview")}
-                      className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors"
+                      className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -2659,21 +2676,21 @@ export const CreateCoursePage = () => {
               {/* SUB-VIEW 6: QUIZ FORM (any-quiz-type-clicked1 & 2.png)             */}
               {/* ------------------------------------------------------------------ */}
               {curriculumView === "quiz_form" && (
-                <div className="bg-slate-50 rounded-3xl border border-slate-200/90 p-6 md:p-8 space-y-4 animate-in fade-in duration-150 shadow-xs">
+                <div className="bg-slate-50 dark:bg-slate-900/60 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 space-y-4 animate-in fade-in duration-150 shadow-xs">
                   {/* Top Search & Section selector */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
                     <div className="flex-1">
-                      <span className="text-[10px] font-bold text-slate-500 block mb-1">
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">
                         Title, type to search...
                       </span>
                       <input
                         type="text"
                         placeholder="Search existing quizzes..."
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+                        className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-1.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
                       />
                     </div>
                     <div className="shrink-0 flex items-center space-x-2">
-                      <span className="text-xs font-bold text-slate-600">
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
                         Target Section:
                       </span>
                       <select
@@ -2681,7 +2698,7 @@ export const CreateCoursePage = () => {
                         onChange={(e) =>
                           setSelectedSectionIdx(Number(e.target.value))
                         }
-                        className="bg-white border border-slate-200 text-amber-700 font-bold text-xs rounded-xl px-3 py-1.5 focus:outline-hidden shadow-2xs"
+                        className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-amber-700 dark:text-amber-400 font-bold text-xs rounded-xl px-3 py-1.5 focus:outline-hidden shadow-2xs cursor-pointer"
                       >
                         {modules.map((m, idx) => (
                           <option key={m.id} value={idx}>
@@ -2700,10 +2717,10 @@ export const CreateCoursePage = () => {
                       value={quizTitle}
                       onChange={(e) => setQuizTitle(e.target.value)}
                       placeholder="Quiz Title"
-                      className="w-full bg-transparent border-b border-slate-300 text-2xl md:text-3xl font-black text-slate-900 placeholder-slate-400 pb-2 focus:outline-hidden focus:border-amber-500"
+                      className="w-full bg-transparent border-b border-slate-300 dark:border-slate-700 text-2xl md:text-3xl font-black text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 pb-2 focus:outline-hidden focus:border-amber-500"
                     />
                     <div className="flex items-center space-x-2 pt-1">
-                      <span className="bg-white text-slate-700 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-200 shadow-2xs uppercase">
+                      <span className="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700 shadow-2xs uppercase">
                         Quiz type: {activeQuizType}
                       </span>
                     </div>
@@ -2711,7 +2728,7 @@ export const CreateCoursePage = () => {
 
                   {/* What is the quiz about */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                       What is the quiz about
                     </label>
                     <textarea
@@ -2719,13 +2736,13 @@ export const CreateCoursePage = () => {
                       value={quizAbout}
                       onChange={(e) => setQuizAbout(e.target.value)}
                       placeholder="Description of quiz goals..."
-                      className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+                      className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
                     />
                   </div>
 
                   {/* Connected Course */}
                   <div className="flex items-center justify-between py-1">
-                    <span className="text-xs font-bold text-slate-700">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       Connected Course
                     </span>
                     <input
@@ -2733,14 +2750,14 @@ export const CreateCoursePage = () => {
                       value={quizConnectedCourse}
                       onChange={(e) => setQuizConnectedCourse(e.target.value)}
                       placeholder="Type a keyword"
-                      className="bg-white border border-slate-200 rounded-lg px-3 py-1 text-xs text-slate-800 w-48 focus:outline-hidden shadow-2xs"
+                      className="bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1 text-xs text-slate-800 dark:text-white w-48 focus:outline-hidden shadow-2xs"
                     />
                   </div>
 
                   {/* Quiz Duration & Question Duration rows */}
                   <div className="space-y-2">
-                    <div className="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between shadow-2xs">
-                      <span className="text-xs font-bold text-slate-700">
+                    <div className="bg-white dark:bg-[#0b1329] p-3 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-2xs">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Quiz Duration
                       </span>
                       <input
@@ -2748,11 +2765,11 @@ export const CreateCoursePage = () => {
                         value={quizDurationInput}
                         onChange={(e) => setQuizDurationInput(e.target.value)}
                         placeholder="5Minutes"
-                        className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1 text-xs text-slate-800 font-bold text-right w-36 focus:outline-hidden"
+                        className="bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1 text-xs text-slate-800 dark:text-white font-bold text-right w-36 focus:outline-hidden"
                       />
                     </div>
-                    <div className="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between shadow-2xs">
-                      <span className="text-xs font-bold text-slate-700">
+                    <div className="bg-white dark:bg-[#0b1329] p-3 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-2xs">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Question Duration
                       </span>
                       <input
@@ -2762,14 +2779,14 @@ export const CreateCoursePage = () => {
                           setQuestionDurationInput(e.target.value)
                         }
                         placeholder="0Minutes"
-                        className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1 text-xs text-slate-800 font-bold text-right w-36 focus:outline-hidden"
+                        className="bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1 text-xs text-slate-800 dark:text-white font-bold text-right w-36 focus:outline-hidden"
                       />
                     </div>
                   </div>
 
                   {/* Auto Evaluate Results toggle */}
                   <div className="flex items-center justify-between py-1">
-                    <span className="text-xs font-bold text-slate-700">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                       Auto Evaluate Results
                     </span>
                     <SwitchToggle
@@ -2780,8 +2797,8 @@ export const CreateCoursePage = () => {
 
                   {/* Number of questions per page & retakes */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 py-1">
-                    <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
-                      <span className="text-xs font-bold text-slate-700">
+                    <div className="flex items-center justify-between bg-white dark:bg-[#0b1329] p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Questions per page
                       </span>
                       <input
@@ -2790,11 +2807,11 @@ export const CreateCoursePage = () => {
                         onChange={(e) =>
                           setQuestionsPerPage(Number(e.target.value))
                         }
-                        className="w-16 bg-slate-50 border border-slate-200 rounded-lg px-2 py-0.5 text-xs text-right text-slate-800 font-bold"
+                        className="w-16 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-0.5 text-xs text-right text-slate-800 dark:text-white font-bold"
                       />
                     </div>
-                    <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
-                      <span className="text-xs font-bold text-slate-700">
+                    <div className="flex items-center justify-between bg-white dark:bg-[#0b1329] p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-2xs">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Extra Quiz Retakes
                       </span>
                       <input
@@ -2803,14 +2820,14 @@ export const CreateCoursePage = () => {
                         onChange={(e) =>
                           setExtraQuizRetakes(Number(e.target.value))
                         }
-                        className="w-16 bg-slate-50 border border-slate-200 rounded-lg px-2 py-0.5 text-xs text-right text-slate-800 font-bold"
+                        className="w-16 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-0.5 text-xs text-right text-slate-800 dark:text-white font-bold"
                       />
                     </div>
                   </div>
 
                   {/* Post Quiz Message */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Post Quiz Message
                     </label>
                     <input
@@ -2818,22 +2835,22 @@ export const CreateCoursePage = () => {
                       value={postQuizMessage}
                       onChange={(e) => setPostQuizMessage(e.target.value)}
                       placeholder="Message displayed when student finishes quiz..."
-                      className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden shadow-2xs"
+                      className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden shadow-2xs"
                     />
                   </div>
 
                   {/* Attachments in quiz - display only, not action on this */}
                   <div className="space-y-1.5 py-1">
-                    <span className="text-xs font-bold text-slate-700 block">
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                       Attachments
                     </span>
                     <div className="w-12 h-6 bg-amber-500 rounded-md shadow-2xs cursor-default" />
                   </div>
 
                   {/* Toggles cluster matching any-quiz-type-clicked1 & 2 */}
-                  <div className="space-y-2 border-t border-slate-200 pt-2">
+                  <div className="space-y-2 border-t border-slate-200 dark:border-slate-800 pt-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-700">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Show results after submission
                       </span>
                       <SwitchToggle
@@ -2842,7 +2859,7 @@ export const CreateCoursePage = () => {
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-700">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Add Check Answer Switch
                       </span>
                       <SwitchToggle
@@ -2851,7 +2868,7 @@ export const CreateCoursePage = () => {
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-700">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Randomize Quiz Questions
                       </span>
                       <SwitchToggle
@@ -2860,7 +2877,7 @@ export const CreateCoursePage = () => {
                       />
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-700">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Minimum No. of Live User to start the Quiz
                       </span>
                       <input
@@ -2869,37 +2886,37 @@ export const CreateCoursePage = () => {
                         onChange={(e) =>
                           setMinLiveUsers(Number(e.target.value))
                         }
-                        className="w-16 bg-white border border-slate-200 rounded-lg px-2 py-0.5 text-xs text-right text-slate-800 font-bold shadow-2xs"
+                        className="w-16 bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-0.5 text-xs text-right text-slate-800 dark:text-white font-bold shadow-2xs"
                       />
                     </div>
                   </div>
 
                   {/* Start Date, End Date, Passing Score */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 border-t border-slate-200 pt-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 border-t border-slate-200 dark:border-slate-800 pt-3">
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
                         Start date
                       </label>
                       <input
                         type="date"
                         value={quizStartDate}
                         onChange={(e) => setQuizStartDate(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 shadow-2xs"
+                        className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-white shadow-2xs"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
                         End date
                       </label>
                       <input
                         type="date"
                         value={quizEndDate}
                         onChange={(e) => setQuizEndDate(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 shadow-2xs"
+                        className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-white shadow-2xs"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
                         Passing score
                       </label>
                       <input
@@ -2908,23 +2925,23 @@ export const CreateCoursePage = () => {
                         onChange={(e) =>
                           setQuizPassingScore(Number(e.target.value))
                         }
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 shadow-2xs"
+                        className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-white shadow-2xs"
                       />
                     </div>
                   </div>
 
                   {/* Questions Section with Total Marks & Create Question Button */}
-                  <div className="border border-dashed border-slate-300rounded p-4 bg-white space-y-3 shadow-2xs">
+                  <div className="border border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-4 bg-white dark:bg-[#0b1329] space-y-3 shadow-2xs">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className="text-xs font-black text-slate-900 uppercase tracking-wider block">
+                        <span className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider block">
                           Questions
                         </span>
-                        <span className="text-[11px] text-slate-500">
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400">
                           Questions set
                         </span>
                       </div>
-                      <span className="text-xs font-black text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                      <span className="text-xs font-black text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-3 py-1 rounded-full border border-amber-200/80 dark:border-amber-800/80">
                         Total marks{" "}
                         {quizQuestions.reduce((acc, q) => acc + q.marks, 0)}
                       </span>
@@ -2935,20 +2952,20 @@ export const CreateCoursePage = () => {
                       {quizQuestions.map((q, qIdx) => (
                         <div
                           key={q.id}
-                          className="flex items-center justify-between bg-slate-50 px-3 py-2 rounded-xl text-xs border border-slate-200"
+                          className="flex items-center justify-between bg-slate-50 dark:bg-slate-900/60 px-3 py-2 rounded-xl text-xs border border-slate-200 dark:border-slate-800"
                         >
                           <div className="flex items-center space-x-2 truncate">
                             <span className="w-5 h-5 rounded-md bg-amber-500 text-white font-bold flex items-center justify-center text-[10px]">
                               {qIdx + 1}
                             </span>
-                            <span className="text-amber-700 font-bold uppercase text-[10px]">
+                            <span className="text-amber-700 dark:text-amber-400 font-bold uppercase text-[10px]">
                               {q.type}
                             </span>
-                            <span className="font-semibold text-slate-800 truncate">
+                            <span className="font-semibold text-slate-800 dark:text-slate-200 truncate">
                               {q.title}
                             </span>
                           </div>
-                          <span className="text-slate-500 font-bold shrink-0">
+                          <span className="text-slate-500 dark:text-slate-400 font-bold shrink-0">
                             {q.marks} pts
                           </span>
                         </div>
@@ -2962,14 +2979,14 @@ export const CreateCoursePage = () => {
                         onClick={() =>
                           showToast("Search existing questions library", "info")
                         }
-                        className="py-2.5 px-3 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 text-center transition-colors shadow-2xs"
+                        className="py-2.5 px-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl border border-slate-200 dark:border-slate-700 text-center transition-colors shadow-2xs cursor-pointer"
                       >
                         Search Question
                       </button>
                       <button
                         type="button"
                         onClick={() => setCurriculumView("create_question")}
-                        className="py-2.5 px-3 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-xs text-center transition-colors"
+                        className="py-2.5 px-3 bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)] text-center transition-all cursor-pointer"
                       >
                         + Create Question
                       </button>
@@ -2977,18 +2994,44 @@ export const CreateCoursePage = () => {
                   </div>
 
                   {/* Bottom Action buttons */}
-                  <div className="flex items-center space-x-3 pt-3 border-t border-slate-200">
+                  <div className="flex items-center space-x-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                     <button
                       type="button"
                       onClick={handleSaveQuiz}
-                      className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition-colors"
+                      className="bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-black text-xs px-6 py-2.5 rounded-xl shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)] transition-all cursor-pointer"
                     >
                       Add Quiz
                     </button>
                     <button
                       type="button"
+                      onClick={() => {
+                        setManagingQuizModal({
+                          id: "q-1",
+                          title:
+                            quizTitle.trim() ||
+                            "Digital Marketing Aptitude Quiz!",
+                          completedDate: "February 25, 2025",
+                          totalQuestions: quizQuestions.length || 20,
+                          totalMarks:
+                            quizQuestions.reduce((a, b) => a + b.marks, 0) ||
+                            20,
+                          durationMinutes: Number(quizDurationInput) || 11,
+                          averageScore: 12.5,
+                          highScore: 25,
+                          lowScore: 0,
+                          totalSubmissions: 2,
+                        });
+                      }}
+                      className="bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)] transition-all flex items-center space-x-1.5 cursor-pointer"
+                      title="Manage Quiz Flow (Statistics, Activity, Submissions, View)"
+                    >
+                      <BarChart2 size={14} />
+                      <span>Manage Quiz Flow</span>
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => setCurriculumView("overview")}
-                      className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors"
+                      className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -3000,27 +3043,27 @@ export const CreateCoursePage = () => {
               {/* SUB-VIEW 7: QUESTION BUILDER (create-qs.png)                       */}
               {/* ------------------------------------------------------------------ */}
               {curriculumView === "create_question" && (
-                <div className="bg-slate-50 rounded-3xl border border-slate-200/90 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                <div className="bg-slate-50 dark:bg-slate-900/60 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100/80 px-2.5 py-1 rounded-md border border-amber-200/60">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-100/80 dark:bg-amber-950/40 px-2.5 py-1 rounded-md border border-amber-200/60 dark:border-amber-800/60">
                         Question Editor
                       </span>
-                      <h3 className="text-xl font-black text-slate-900 mt-1">
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white mt-1">
                         Questions set
                       </h3>
                     </div>
-                    <span className="text-xs font-bold text-slate-600">
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
                       Total marks {questionMarks}
                     </span>
                   </div>
 
                   {/* 9 Question Type Icons with HOVER TOOLTIP matching user request */}
                   <div className="space-y-2">
-                    <label className="block text-xs font-bold text-slate-700">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300">
                       Select Question Type (Hover to see name):
                     </label>
-                    <div className="flex flex-wrap items-center gap-2 p-2.5 bg-whiterounded border border-slate-200 shadow-2xs">
+                    <div className="flex flex-wrap items-center gap-2 p-2.5 bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xs">
                       {QUESTION_TYPES.map((qt) => {
                         const isActive = activeQuestionType === qt.id;
                         return (
@@ -3028,19 +3071,19 @@ export const CreateCoursePage = () => {
                             <button
                               type="button"
                               onClick={() => setActiveQuestionType(qt.id)}
-                              className={`w-11 h-11 rounded-xl flex items-center justify-center border transition-all ${
+                              className={`w-11 h-11 rounded-xl flex items-center justify-center border transition-all cursor-pointer ${
                                 isActive
-                                  ? "bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-200"
-                                  : "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300"
+                                  ? "bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-500/20"
+                                  : "bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
                               }`}
                             >
                               {qt.renderIcon(isActive)}
                             </button>
 
                             {/* HOVER TOOLTIP with the EXACT NAME requested */}
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-slate-900 text-white text-[11px] font-bold rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-lg border border-slate-800">
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2.5 py-1 bg-slate-900 dark:bg-slate-800 text-white text-[11px] font-bold rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-lg border border-slate-800 dark:border-slate-700">
                               {qt.name}
-                              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900" />
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900 dark:border-t-slate-800" />
                             </div>
                           </div>
                         );
@@ -3056,7 +3099,7 @@ export const CreateCoursePage = () => {
                       value={questionTitle}
                       onChange={(e) => setQuestionTitle(e.target.value)}
                       placeholder="Question Title"
-                      className="w-full bg-transparent border-b border-slate-300 text-2xl font-black text-slate-900 placeholder-slate-400 pb-2 focus:outline-hidden focus:border-amber-500"
+                      className="w-full bg-transparent border-b border-slate-300 dark:border-slate-700 text-2xl font-black text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 pb-2 focus:outline-hidden focus:border-amber-500"
                     />
 
                     {/* Question tag */}
@@ -3066,14 +3109,14 @@ export const CreateCoursePage = () => {
                         value={questionTag}
                         onChange={(e) => setQuestionTag(e.target.value)}
                         placeholder="Question tag"
-                        className="bg-white text-slate-700 text-xs font-bold px-3 py-1 rounded-md border border-slate-200 w-36 focus:outline-hidden shadow-2xs"
+                        className="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700 w-36 focus:outline-hidden shadow-2xs"
                       />
                     </div>
                   </div>
 
                   {/* Write the question statement */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Write the question statement
                     </label>
                     <textarea
@@ -3081,30 +3124,30 @@ export const CreateCoursePage = () => {
                       value={questionStatement}
                       onChange={(e) => setQuestionStatement(e.target.value)}
                       placeholder="Enter the full question prompt or problem statement..."
-                      className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+                      className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
                     />
                   </div>
 
                   {/* DYNAMIC ANSWER CONFIGURATION BY QUESTION TYPE */}
-                  <div className="bg-white p-4rounded border border-slate-200 space-y-3 shadow-2xs">
-                    <label className="block text-xs font-bold text-amber-700 uppercase tracking-wide">
+                  <div className="bg-white dark:bg-[#0b1329] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-2xs">
+                    <label className="block text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wide">
                       Correct Answer Configuration ({activeQuestionType})
                     </label>
 
                     {/* 1. true/false (matching create-qs.png) */}
                     {activeQuestionType === "true/false" && (
                       <div className="space-y-2">
-                        <span className="text-xs text-slate-700 block font-medium">
+                        <span className="text-xs text-slate-700 dark:text-slate-300 block font-medium">
                           Enter (1 = True, 0 = False)
                         </span>
                         <div className="flex items-center space-x-3">
                           <button
                             type="button"
                             onClick={() => setTfAnswer("1")}
-                            className={`px-4 py-2 rounded-xl text-xs font-black transition-colors ${
+                            className={`px-4 py-2 rounded-xl text-xs font-black transition-colors cursor-pointer ${
                               tfAnswer === "1"
                                 ? "bg-emerald-600 text-white shadow-xs"
-                                : "bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200"
+                                : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700"
                             }`}
                           >
                             1 = True
@@ -3112,10 +3155,10 @@ export const CreateCoursePage = () => {
                           <button
                             type="button"
                             onClick={() => setTfAnswer("0")}
-                            className={`px-4 py-2 rounded-xl text-xs font-black transition-colors ${
+                            className={`px-4 py-2 rounded-xl text-xs font-black transition-colors cursor-pointer ${
                               tfAnswer === "0"
                                 ? "bg-rose-600 text-white shadow-xs"
-                                : "bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200"
+                                : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700"
                             }`}
                           >
                             0 = False
@@ -3127,7 +3170,7 @@ export const CreateCoursePage = () => {
                     {/* 2. multiplechoce */}
                     {activeQuestionType === "multiplechoce" && (
                       <div className="space-y-2">
-                        <span className="text-xs text-slate-700 block font-medium">
+                        <span className="text-xs text-slate-700 dark:text-slate-300 block font-medium">
                           Select the single correct radio option:
                         </span>
                         {mcOptions.map((opt, idx) => (
@@ -3160,7 +3203,7 @@ export const CreateCoursePage = () => {
                                   ),
                                 );
                               }}
-                              className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-800 focus:outline-hidden focus:border-amber-500"
+                              className="flex-1 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500"
                             />
                           </div>
                         ))}
@@ -3170,7 +3213,7 @@ export const CreateCoursePage = () => {
                     {/* 3. multiple corect */}
                     {activeQuestionType === "multiple corect" && (
                       <div className="space-y-2">
-                        <span className="text-xs text-slate-700 block font-medium">
+                        <span className="text-xs text-slate-700 dark:text-slate-300 block font-medium">
                           Check all options that are correct:
                         </span>
                         {mcOptions.map((opt, idx) => (
@@ -3203,7 +3246,7 @@ export const CreateCoursePage = () => {
                                   ),
                                 );
                               }}
-                              className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-800 focus:outline-hidden focus:border-amber-500"
+                              className="flex-1 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500"
                             />
                           </div>
                         ))}
@@ -3213,7 +3256,7 @@ export const CreateCoursePage = () => {
                     {/* 4. fill in the blank */}
                     {activeQuestionType === "fill in the blank" && (
                       <div className="space-y-1">
-                        <span className="text-xs text-slate-700 block font-medium">
+                        <span className="text-xs text-slate-700 dark:text-slate-300 block font-medium">
                           Expected Blank Word/Phrase
                         </span>
                         <input
@@ -3221,7 +3264,7 @@ export const CreateCoursePage = () => {
                           value={fillBlankAnswer}
                           onChange={(e) => setFillBlankAnswer(e.target.value)}
                           placeholder="e.g. Googlebot"
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-hidden focus:border-amber-500"
+                          className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500"
                         />
                       </div>
                     )}
@@ -3233,7 +3276,7 @@ export const CreateCoursePage = () => {
                       activeQuestionType === "match ans" ||
                       activeQuestionType === "large text") && (
                       <div className="space-y-1">
-                        <span className="text-xs text-slate-700 block font-medium">
+                        <span className="text-xs text-slate-700 dark:text-slate-300 block font-medium">
                           Answer Keys / Options (comma separated)
                         </span>
                         <input
@@ -3241,7 +3284,7 @@ export const CreateCoursePage = () => {
                           value={shortTextAnswer}
                           onChange={(e) => setShortTextAnswer(e.target.value)}
                           placeholder="Option 1, Option 2, Option 3..."
-                          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 focus:outline-hidden focus:border-amber-500"
+                          className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500"
                         />
                       </div>
                     )}
@@ -3249,7 +3292,7 @@ export const CreateCoursePage = () => {
 
                   {/* Answer Hint */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Answer Hint
                     </label>
                     <input
@@ -3257,13 +3300,13 @@ export const CreateCoursePage = () => {
                       value={questionAnswerHint}
                       onChange={(e) => setQuestionAnswerHint(e.target.value)}
                       placeholder="Optional hint for students when taking quiz..."
-                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+                      className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
                     />
                   </div>
 
                   {/* Explain the correct answer */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Explain the correct answer
                     </label>
                     <textarea
@@ -3273,23 +3316,23 @@ export const CreateCoursePage = () => {
                         setQuestionAnswerExplanation(e.target.value)
                       }
                       placeholder="Detailed explanation shown during answer review..."
-                      className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+                      className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
                     />
                   </div>
 
                   {/* Bottom Action buttons matching create-qs.png */}
-                  <div className="flex items-center space-x-3 pt-3 border-t border-slate-200">
+                  <div className="flex items-center space-x-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                     <button
                       type="button"
                       onClick={handleSaveQuestion}
-                      className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition-colors"
+                      className="bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-black text-xs px-6 py-2.5 rounded-xl shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)] transition-all cursor-pointer"
                     >
                       Create Question
                     </button>
                     <button
                       type="button"
                       onClick={() => setCurriculumView("quiz_form")}
-                      className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors"
+                      className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -3301,20 +3344,20 @@ export const CreateCoursePage = () => {
               {/* SUB-VIEW 8: ASSIGNMENT TYPES SELECTOR (ASSIGNMENT.png)             */}
               {/* ------------------------------------------------------------------ */}
               {curriculumView === "assignment_types" && (
-                <div className="bg-slate-50 rounded-3xl border border-slate-200/90 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
-                  <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                <div className="bg-slate-50 dark:bg-slate-900/60 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 space-y-5 animate-in fade-in duration-150 shadow-xs">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100/80 px-2.5 py-1 rounded-md border border-amber-200/60">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-100/80 dark:bg-amber-950/40 px-2.5 py-1 rounded-md border border-amber-200/60 dark:border-amber-800/60">
                         Step 1: Choose Assignment Format
                       </span>
-                      <h3 className="text-xl font-black text-slate-900 mt-1">
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white mt-1">
                         Select Assignment Type
                       </h3>
                     </div>
                     <button
                       type="button"
                       onClick={() => setCurriculumView("overview")}
-                      className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-200/60 transition-colors"
+                      className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                     >
                       <X size={18} />
                     </button>
@@ -3335,12 +3378,12 @@ export const CreateCoursePage = () => {
                             setActiveAssignmentType(a.id);
                             setCurriculumView("assignment_form");
                           }}
-                          className="bg-white hover:bg-amber-50/60 border border-slate-200 hover:border-amber-500rounded p-6 text-center flex flex-col items-center justify-center space-y-2 transition-all cursor-pointer shadow-2xs hover:shadow-xs group"
+                          className="bg-white dark:bg-[#0b1329] hover:bg-amber-50/60 dark:hover:bg-amber-950/30 border border-slate-200 dark:border-slate-700 hover:border-amber-500 rounded-2xl p-6 text-center flex flex-col items-center justify-center space-y-2 transition-all cursor-pointer shadow-2xs hover:shadow-xs group"
                         >
-                          <div className="w-12 h-12 rounded-xl bg-slate-100 group-hover:bg-amber-500 group-hover:text-white text-slate-600 flex items-center justify-center transition-colors">
+                          <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 group-hover:bg-amber-500 group-hover:text-white text-slate-600 dark:text-slate-300 flex items-center justify-center transition-colors">
                             <Icon size={22} />
                           </div>
-                          <span className="text-sm font-bold text-slate-800 group-hover:text-amber-900">
+                          <span className="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-amber-900 dark:group-hover:text-amber-300">
                             {a.name}
                           </span>
                         </button>
@@ -3354,21 +3397,21 @@ export const CreateCoursePage = () => {
               {/* SUB-VIEW 9: ASSIGNMENT FORM (SIMPLE-ASSIGN.png)                    */}
               {/* ------------------------------------------------------------------ */}
               {curriculumView === "assignment_form" && (
-                <div className="bg-slate-50 rounded-3xl border border-slate-200/90 p-6 md:p-8 space-y-4 animate-in fade-in duration-150 shadow-xs">
+                <div className="bg-slate-50 dark:bg-slate-900/60 rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 space-y-4 animate-in fade-in duration-150 shadow-xs">
                   {/* Top Search & Section selector */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
                     <div className="flex-1">
-                      <span className="text-[10px] font-bold text-slate-500 block mb-1">
+                      <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">
                         Title, type to search...
                       </span>
                       <input
                         type="text"
                         placeholder="Search existing assignments..."
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+                        className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-1.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
                       />
                     </div>
                     <div className="shrink-0 flex items-center space-x-2">
-                      <span className="text-xs font-bold text-slate-600">
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
                         Target Section:
                       </span>
                       <select
@@ -3376,7 +3419,7 @@ export const CreateCoursePage = () => {
                         onChange={(e) =>
                           setSelectedSectionIdx(Number(e.target.value))
                         }
-                        className="bg-white border border-slate-200 text-amber-700 font-bold text-xs rounded-xl px-3 py-1.5 focus:outline-hidden shadow-2xs"
+                        className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-amber-700 dark:text-amber-400 font-bold text-xs rounded-xl px-3 py-1.5 focus:outline-hidden shadow-2xs cursor-pointer"
                       >
                         {modules.map((m, idx) => (
                           <option key={m.id} value={idx}>
@@ -3395,10 +3438,10 @@ export const CreateCoursePage = () => {
                       value={assignmentName}
                       onChange={(e) => setAssignmentName(e.target.value)}
                       placeholder="Assignment Name"
-                      className="w-full bg-transparent border-b border-slate-300 text-2xl md:text-3xl font-black text-slate-900 placeholder-slate-400 pb-2 focus:outline-hidden focus:border-amber-500"
+                      className="w-full bg-transparent border-b border-slate-300 dark:border-slate-700 text-2xl md:text-3xl font-black text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 pb-2 focus:outline-hidden focus:border-amber-500"
                     />
                     <div className="flex items-center space-x-2 pt-1">
-                      <span className="bg-white text-slate-700 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-200 shadow-2xs uppercase">
+                      <span className="bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700 shadow-2xs uppercase">
                         Assignment type: {activeAssignmentType}
                       </span>
                     </div>
@@ -3406,12 +3449,12 @@ export const CreateCoursePage = () => {
 
                   {/* Assignment Marks & Duration */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between shadow-2xs">
+                    <div className="bg-white dark:bg-[#0b1329] p-3 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-2xs">
                       <div>
-                        <span className="text-xs font-bold text-slate-700 block">
+                        <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                           Assignment Marks
                         </span>
-                        <span className="text-[10px] text-slate-400">
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500">
                           Set Maximum Score
                         </span>
                       </div>
@@ -3421,11 +3464,11 @@ export const CreateCoursePage = () => {
                         onChange={(e) =>
                           setAssignmentMarks(Number(e.target.value))
                         }
-                        className="w-20 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs text-right text-slate-800 font-bold"
+                        className="w-20 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs text-right text-slate-800 dark:text-white font-bold"
                       />
                     </div>
-                    <div className="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between shadow-2xs">
-                      <span className="text-xs font-bold text-slate-700">
+                    <div className="bg-white dark:bg-[#0b1329] p-3 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-2xs">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Assignment Duration
                       </span>
                       <input
@@ -3433,7 +3476,7 @@ export const CreateCoursePage = () => {
                         value={assignmentDuration}
                         onChange={(e) => setAssignmentDuration(e.target.value)}
                         placeholder="10Days"
-                        className="w-28 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs text-right text-slate-800 font-bold"
+                        className="w-28 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1 text-xs text-right text-slate-800 dark:text-white font-bold"
                       />
                     </div>
                   </div>
@@ -3441,7 +3484,7 @@ export const CreateCoursePage = () => {
                   {/* Include in Course & Evaluation */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between py-1">
-                      <span className="text-xs font-bold text-slate-700">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Include in Course
                       </span>
                       <input
@@ -3451,11 +3494,11 @@ export const CreateCoursePage = () => {
                           setAssignmentCourseKeyword(e.target.value)
                         }
                         placeholder="Type a keyword"
-                        className="bg-white border border-slate-200 rounded-lg px-3 py-1 text-xs text-slate-800 w-48 shadow-2xs"
+                        className="bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1 text-xs text-slate-800 dark:text-white w-48 shadow-2xs"
                       />
                     </div>
                     <div className="flex items-center justify-between py-1">
-                      <span className="text-xs font-bold text-slate-700">
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
                         Include in Evaluation
                       </span>
                       <SwitchToggle
@@ -3467,7 +3510,7 @@ export const CreateCoursePage = () => {
 
                   {/* Assignment statement */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                       Assignment statement
                     </label>
                     <textarea
@@ -3475,49 +3518,49 @@ export const CreateCoursePage = () => {
                       value={assignmentStatement}
                       onChange={(e) => setAssignmentStatement(e.target.value)}
                       placeholder="Enter assignment brief and student guidelines..."
-                      className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500 shadow-2xs"
+                      className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-amber-500 shadow-2xs"
                     />
                   </div>
 
                   {/* Start & End Dates */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
                         Start date
                       </label>
                       <input
                         type="date"
                         value={assignmentStartDate}
                         onChange={(e) => setAssignmentStartDate(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 shadow-2xs"
+                        className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-white shadow-2xs"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-600 mb-1">
+                      <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-400 mb-1">
                         End date
                       </label>
                       <input
                         type="date"
                         value={assignmentEndDate}
                         onChange={(e) => setAssignmentEndDate(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-800 shadow-2xs"
+                        className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-white shadow-2xs"
                       />
                     </div>
                   </div>
 
                   {/* Bottom Action buttons */}
-                  <div className="flex items-center space-x-3 pt-3 border-t border-slate-200">
+                  <div className="flex items-center space-x-3 pt-3 border-t border-slate-200 dark:border-slate-800">
                     <button
                       type="button"
                       onClick={handleSaveAssignment}
-                      className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition-colors"
+                      className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition-colors cursor-pointer"
                     >
                       Add Assignment
                     </button>
                     <button
                       type="button"
                       onClick={() => setCurriculumView("overview")}
-                      className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors"
+                      className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -3530,11 +3573,11 @@ export const CreateCoursePage = () => {
               {/* ------------------------------------------------------------------ */}
               <div className="space-y-4 pt-2">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-semibold text-slate-900 tracking-tight">
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-white tracking-tight">
                     Course Syllabus Structure ({modules.length}{" "}
                     {modules.length === 1 ? "Section" : "Sections"})
                   </h4>
-                  <span className="text-[11px] text-slate-500 font-medium">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                     Total items:{" "}
                     {modules.reduce((acc, m) => acc + m.items.length, 0)}
                   </span>
@@ -3543,7 +3586,7 @@ export const CreateCoursePage = () => {
                 {modules.map((mod, modIdx) => (
                   <div
                     key={mod.id}
-                    className="border border-slate-200/90rounded p-4 bg-slate-50/70 space-y-3"
+                    className="border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 bg-slate-50/70 dark:bg-slate-900/40 space-y-3"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2.5">
@@ -3551,11 +3594,11 @@ export const CreateCoursePage = () => {
                           {modIdx + 1}
                         </span>
                         <div>
-                          <h5 className="font-semibold text-slate-900 text-sm leading-snug">
+                          <h5 className="font-semibold text-slate-900 dark:text-white text-sm leading-snug">
                             {mod.name}
                           </h5>
                           {mod.description && (
-                            <p className="text-[11px] text-slate-400">
+                            <p className="text-[11px] text-slate-400 dark:text-slate-500">
                               {mod.description}
                             </p>
                           )}
@@ -3569,7 +3612,7 @@ export const CreateCoursePage = () => {
                             setSelectedSectionIdx(modIdx);
                             setCurriculumView("unit_types");
                           }}
-                          className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-lg flex items-center space-x-1"
+                          className="bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold px-2.5 py-1.5 rounded-lg flex items-center space-x-1 cursor-pointer"
                         >
                           <Plus size={12} />
                           <span>Unit</span>
@@ -3580,7 +3623,7 @@ export const CreateCoursePage = () => {
                             setSelectedSectionIdx(modIdx);
                             setCurriculumView("quiz_types");
                           }}
-                          className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-lg flex items-center space-x-1"
+                          className="bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold px-2.5 py-1.5 rounded-lg flex items-center space-x-1 cursor-pointer"
                         >
                           <Plus size={12} />
                           <span>Quiz</span>
@@ -3591,7 +3634,7 @@ export const CreateCoursePage = () => {
                             setSelectedSectionIdx(modIdx);
                             setCurriculumView("assignment_types");
                           }}
-                          className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold px-2.5 py-1.5 rounded-lg flex items-center space-x-1"
+                          className="bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold px-2.5 py-1.5 rounded-lg flex items-center space-x-1 cursor-pointer"
                         >
                           <Plus size={12} />
                           <span>Task</span>
@@ -3600,7 +3643,7 @@ export const CreateCoursePage = () => {
                           <button
                             type="button"
                             onClick={() => handleRemoveSection(modIdx)}
-                            className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50"
+                            className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer"
                             title="Delete Section"
                           >
                             <Trash2 size={14} />
@@ -3612,49 +3655,89 @@ export const CreateCoursePage = () => {
                     {/* Section Child Items */}
                     <div className="space-y-1.5 pl-2 sm:pl-8">
                       {mod.items.length === 0 ? (
-                        <p className="text-xs text-slate-400 italic py-1">
+                        <p className="text-xs text-slate-400 dark:text-slate-500 italic py-1">
                           No lessons or quizzes yet. Click buttons above to add.
                         </p>
                       ) : (
                         mod.items.map((item) => (
                           <div
                             key={item.id}
-                            className="flex items-center justify-between bg-white border border-slate-200/80 rounded-xl px-3 py-2 text-xs hover:border-slate-300 transition-colors"
+                            className="flex items-center justify-between bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-xl px-3 py-2 text-xs hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
                           >
                             <div className="flex items-center space-x-2.5 min-w-0">
                               <span
                                 className={`text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0 uppercase ${
                                   item.type === "quiz"
-                                    ? "bg-amber-100 text-amber-800"
+                                    ? "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300"
                                     : item.type === "assignment"
-                                      ? "bg-purple-100 text-purple-800"
-                                      : "bg-blue-100 text-blue-800"
+                                      ? "bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300"
+                                      : "bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300"
                                 }`}
                               >
                                 {item.type}{" "}
                                 {item.subType ? `• ${item.subType}` : ""}
                               </span>
-                              <span className="font-semibold text-slate-800 truncate">
+                              <span className="font-semibold text-slate-800 dark:text-slate-200 truncate">
                                 {item.title}
                               </span>
                             </div>
                             <div className="flex items-center space-x-2 shrink-0">
                               {item.duration && (
-                                <span className="text-[11px] text-slate-400 font-medium">
+                                <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
                                   {item.duration}
                                 </span>
                               )}
                               {item.marks && (
-                                <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
+                                <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
                                   {item.marks} pts
                                 </span>
+                              )}
+                              {item.type === "quiz" && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setManagingQuizModal({
+                                      id: item.id || "q-1",
+                                      title:
+                                        item.title ||
+                                        "Digital Marketing Aptitude Quiz!",
+                                      completedDate: "February 25, 2025",
+                                      totalQuestions: 20,
+                                      totalMarks: item.marks || 20,
+                                      durationMinutes: 11,
+                                      averageScore: 12.5,
+                                      highScore: 25,
+                                      lowScore: 0,
+                                      totalSubmissions: 2,
+                                    })
+                                  }
+                                  className="text-[11px] font-black text-slate-950 px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 active:bg-amber-600 shadow-2xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)] transition-all cursor-pointer flex items-center space-x-1"
+                                  title="Open Quiz Management Flow (Stats, Activity, Submissions, View)"
+                                >
+                                  <BarChart2 size={12} />
+                                  <span>Manage Quiz</span>
+                                </button>
+                              )}
+                              {item.type === "assignment" && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    navigate(
+                                      `/manage-assignments?title=${encodeURIComponent(item.title)}`,
+                                    )
+                                  }
+                                  className="text-[11px] font-bold text-amber-700 dark:text-amber-300 hover:text-amber-800 dark:hover:text-amber-200 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/80 transition-colors cursor-pointer"
+                                  title="Open Assignment Management Hub"
+                                >
+                                  Manage Assignment
+                                </button>
                               )}
                               <button
                                 type="button"
                                 onClick={() =>
                                   handleRemoveItem(modIdx, item.id)
                                 }
-                                className="text-slate-300 hover:text-red-500 p-1 rounded-md transition-colors"
+                                className="text-slate-300 hover:text-red-500 dark:hover:text-red-400 p-1 rounded-md transition-colors cursor-pointer"
                                 title="Remove Item"
                               >
                                 <Trash2 size={13} />
@@ -3675,7 +3758,7 @@ export const CreateCoursePage = () => {
             <button
               type="button"
               onClick={() => setCurrentStep(2)}
-              className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-3 rounded transition-colors shadow-md shadow-amber-200"
+              className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-3 rounded-xl transition-colors shadow-md shadow-amber-500/20 cursor-pointer"
             >
               ← Back to Settings
             </button>
@@ -3683,14 +3766,14 @@ export const CreateCoursePage = () => {
               <button
                 type="button"
                 onClick={handleSaveDraft}
-                className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs px-5 py-3 rounded transition-colors shadow-2xs"
+                className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-bold text-xs px-5 py-3 rounded-xl transition-colors shadow-2xs cursor-pointer"
               >
                 Save Draft
               </button>
               <button
                 type="button"
                 onClick={() => setCurrentStep(4)}
-                className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-3 rounded transition-colors shadow-md shadow-amber-200 flex items-center space-x-2"
+                className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-6 py-3 rounded-xl transition-colors shadow-md shadow-amber-500/20 flex items-center space-x-2 cursor-pointer"
               >
                 <span>Move to Accessibility</span>
                 <span>→</span>
@@ -3704,12 +3787,12 @@ export const CreateCoursePage = () => {
       {/* PROCESS 4: ACCESSIBILITY (Set Price for Course)           */}
       {/* ========================================================= */}
       {currentStep === 4 && (
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 md:p-8 shadow-xs space-y-6 animate-in fade-in duration-200">
-          <div className="border-b border-slate-100 pb-4">
-            <h2 className="text-xl font-black text-slate-900 tracking-tight">
+        <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 md:p-8 shadow-xs space-y-6 animate-in fade-in duration-200">
+          <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
+            <h2 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
               ACCESSIBILITY
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Set Price for Course, accessibility permissions, gamification, and
               enrollments.
             </p>
@@ -3718,12 +3801,12 @@ export const CreateCoursePage = () => {
           {/* Grid of Accessibility Cards (matching screenshot 4) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* 1. Free Course */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   Free Course
                 </span>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Anyone can access this course
                 </p>
               </div>
@@ -3731,30 +3814,30 @@ export const CreateCoursePage = () => {
             </div>
 
             {/* 2. Product / Course Price (No price for now per user instruction & screenshot 4) */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex flex-col justify-between min-h-[90px]">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex flex-col justify-between min-h-[90px]">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-800">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
                   Product
                 </span>
-                <span className="text-xs font-semibold text-slate-500 bg-slate-200/80 px-2.5 py-0.5 rounded-md">
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-200/80 dark:bg-slate-800 px-2.5 py-0.5 rounded-md">
                   No Price
                 </span>
               </div>
               <div className="pt-2">
-                <span className="text-xs font-bold text-slate-700 block">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
                   Course Price
                 </span>
-                <p className="text-[11px] text-slate-400">No price for now</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500">No price for now</p>
               </div>
             </div>
 
             {/* 3. Enable Partial Free Course */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div className="pr-2">
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   Enable Partial Free Course
                 </span>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Allows users to start the course for free, but can only see
                   allowed items for free.
                 </p>
@@ -3766,11 +3849,11 @@ export const CreateCoursePage = () => {
             </div>
 
             {/* 4. MyCred Points */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 space-y-1">
-              <span className="text-xs font-bold text-slate-800 block">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 space-y-1">
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                 MyCred Points
               </span>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Point cost to unlock course
               </p>
               <input
@@ -3778,17 +3861,17 @@ export const CreateCoursePage = () => {
                 value={myCredPoints}
                 onChange={(e) => setMyCredPoints(e.target.value)}
                 placeholder="e.g. 500"
-                className="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 focus:outline-hidden"
+                className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-900 dark:text-white focus:outline-hidden"
               />
             </div>
 
             {/* 5. MyCred Subscription */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   MyCred Subscription
                 </span>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Available in membership plan
                 </p>
               </div>
@@ -3799,12 +3882,12 @@ export const CreateCoursePage = () => {
             </div>
 
             {/* 6. Apply for Course */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div className="pr-2">
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   Apply for Course
                 </span>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Invite Student applications for Course
                 </p>
               </div>
@@ -3815,12 +3898,12 @@ export const CreateCoursePage = () => {
             </div>
 
             {/* 7. Enable Gamification */}
-            <div className="bg-slate-50 p-4 rounded border border-slate-200/80 flex items-center justify-between">
+            <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-800 block">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
                   Enable Gamification
                 </span>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                   Allow Student to earn points and XP
                 </p>
               </div>
@@ -3832,11 +3915,11 @@ export const CreateCoursePage = () => {
           </div>
 
           {/* Bottom Action Bar (matching screenshot 4 buttons) */}
-          <div className="pt-6 border-t border-slate-100 flex items-center justify-between">
+          <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <button
               type="button"
               onClick={() => setCurrentStep(3)}
-              className="bg-amber-500 hover:bg-amber-600 text-white font-medium text-xs px-5 py-2.5 rounded-xl transition-colors shadow-xs flex items-center space-x-2"
+              className="bg-amber-500 hover:bg-amber-600 text-white font-medium text-xs px-5 py-2.5 rounded-xl transition-colors shadow-xs flex items-center space-x-2 cursor-pointer"
             >
               <span>← Back to Curriculum</span>
             </button>
@@ -3845,14 +3928,14 @@ export const CreateCoursePage = () => {
               <button
                 type="button"
                 onClick={handleSaveDraft}
-                className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-medium text-xs px-4 py-2.5 rounded-xl transition-colors shadow-2xs"
+                className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-medium text-xs px-4 py-2.5 rounded-xl transition-colors shadow-2xs cursor-pointer"
               >
                 Save Draft
               </button>
               <button
                 type="button"
                 onClick={handlePublish}
-                className="bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-sm px-6 py-2.5 rounded-xl transition-all shadow-xs flex items-center space-x-2"
+                className="bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-sm px-6 py-2.5 rounded-xl transition-all shadow-xs flex items-center space-x-2 cursor-pointer"
               >
                 <CheckCircle2 size={16} />
                 <span>Publish Course</span>
@@ -3864,21 +3947,21 @@ export const CreateCoursePage = () => {
 
       {/* Change Thumbnail Modal (Supports local computer file upload, URL, and presets) */}
       {isImageModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-200 animate-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
               <div>
-                <h3 className="text-base font-black text-slate-900">
+                <h3 className="text-base font-black text-slate-900 dark:text-white">
                   Change Course Thumbnail
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Upload your own image from computer or enter a URL
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsImageModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 rounded-xl hover:bg-slate-100 transition-colors"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -3903,33 +3986,33 @@ export const CreateCoursePage = () => {
                   const file = e.dataTransfer.files?.[0];
                   if (file) handleProcessImageFile(file);
                 }}
-                className="border-2 border-dashed border-amber-300 hover:border-amber-500 bg-amber-50/40 hover:bg-amber-50/80rounded p-5 text-center cursor-pointer transition-all group"
+                className="border-2 border-dashed border-amber-300 dark:border-amber-700 hover:border-amber-500 bg-amber-50/40 dark:bg-amber-950/20 hover:bg-amber-50/80 dark:hover:bg-amber-950/30 rounded-2xl p-5 text-center cursor-pointer transition-all group"
               >
-                <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto mb-2 group-hover:scale-105 transition-transform">
+                <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto mb-2 group-hover:scale-105 transition-transform">
                   <Upload size={22} />
                 </div>
-                <h4 className="text-xs font-bold text-slate-900">
+                <h4 className="text-xs font-bold text-slate-900 dark:text-white">
                   Upload Image File from Your Computer
                 </h4>
-                <p className="text-[11px] text-slate-500 mt-0.5">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                   Click to browse files or drag and drop image here
                 </p>
-                <span className="inline-block mt-2 text-[10px] font-bold text-amber-700 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+                <span className="inline-block mt-2 text-[10px] font-bold text-amber-700 dark:text-amber-400 bg-amber-100/80 dark:bg-amber-950/60 px-2.5 py-0.5 rounded-full">
                   PNG, JPG, JPEG, WEBP, SVG
                 </span>
               </div>
 
               {/* Divider */}
               <div className="relative flex py-0.5 items-center">
-                <div className="flex-grow border-t border-slate-200"></div>
-                <span className="shrink mx-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
+                <span className="shrink mx-3 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                   Or enter image URL
                 </span>
-                <div className="flex-grow border-t border-slate-200"></div>
+                <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Image URL
                 </label>
                 <input
@@ -3937,26 +4020,26 @@ export const CreateCoursePage = () => {
                   value={customImageUrl}
                   onChange={(e) => setCustomImageUrl(e.target.value)}
                   placeholder="https://images.unsplash.com/..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-800 focus:outline-hidden focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-800 dark:text-slate-200 focus:outline-hidden focus:border-amber-500"
                 />
               </div>
 
               {/* Preview if customImageUrl exists */}
               {customImageUrl && (
-                <div className="flex items-center space-x-3 bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                <div className="flex items-center space-x-3 bg-slate-50 dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800">
                   <img
                     src={customImageUrl}
                     alt="Preview"
-                    className="w-14 h-10 rounded-lg object-cover border border-slate-200 shrink-0"
+                    className="w-14 h-10 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0"
                     onError={(e) => {
                       e.target.style.display = "none";
                     }}
                   />
                   <div className="min-w-0 flex-1">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">
+                    <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide block">
                       Preview
                     </span>
-                    <p className="text-xs font-medium text-slate-800 truncate">
+                    <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">
                       {customImageUrl}
                     </p>
                   </div>
@@ -3964,7 +4047,7 @@ export const CreateCoursePage = () => {
               )}
 
               <div>
-                <label className="block text-xs font-bold text-slate-600 mb-2">
+                <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-2">
                   Or select from presets:
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -3990,10 +4073,10 @@ export const CreateCoursePage = () => {
                       key={idx}
                       type="button"
                       onClick={() => setCustomImageUrl(preset.url)}
-                      className={`p-2 rounded-xl border text-left flex items-center space-x-2 transition-all ${
+                      className={`p-2 rounded-xl border text-left flex items-center space-x-2 transition-all cursor-pointer ${
                         customImageUrl === preset.url
-                          ? "border-amber-500 bg-amber-50/60 ring-2 ring-amber-200"
-                          : "border-slate-200 hover:border-slate-300 bg-slate-50"
+                          ? "border-amber-500 bg-amber-50/60 dark:bg-amber-950/40 ring-2 ring-amber-200 dark:ring-amber-800/60"
+                          : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 bg-slate-50 dark:bg-slate-900/50"
                       }`}
                     >
                       <img
@@ -4001,7 +4084,7 @@ export const CreateCoursePage = () => {
                         alt={preset.label}
                         className="w-10 h-8 rounded-lg object-cover shrink-0"
                       />
-                      <span className="text-[11px] font-bold text-slate-700 truncate">
+                      <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 truncate">
                         {preset.label}
                       </span>
                     </button>
@@ -4010,11 +4093,11 @@ export const CreateCoursePage = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100">
+            <div className="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setIsImageModalOpen(false)}
-                className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -4035,11 +4118,30 @@ export const CreateCoursePage = () => {
                     );
                   }
                 }}
-                className="px-5 py-2 text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 rounded-xl shadow-xs transition-colors"
+                className="px-5 py-2 text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 rounded-xl shadow-xs transition-colors cursor-pointer"
               >
                 Apply Thumbnail
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* QUIZ MANAGEMENT FLOW MODAL (5 Screenshots Flow) */}
+      {managingQuizModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-150">
+          <div className="relative w-full max-w-5xl my-auto max-h-[92vh] overflow-y-auto rounded-2xl shadow-2xl">
+            <button
+              onClick={() => setManagingQuizModal(null)}
+              className="absolute top-4 right-4 z-50 p-2 bg-slate-800/90 hover:bg-slate-700 text-white rounded-full transition-colors cursor-pointer shadow-lg"
+              title="Close Quiz Management"
+            >
+              <X size={18} />
+            </button>
+            <QuizManagementDetailFlow
+              quiz={managingQuizModal}
+              onBack={() => setManagingQuizModal(null)}
+            />
           </div>
         </div>
       )}

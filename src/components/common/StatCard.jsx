@@ -18,29 +18,29 @@ export const StatCard = ({
   // If explicitly neutral variant (e.g. For plain reports)
   if (variant === 'neutral') {
     return (
-      <div className={`bg-white border border-slate-200/90 p-4 sm:p-5 shadow-2xs hover:border-slate-300 transition-all duration-200 flex flex-col justify-between ${className}`}>
+      <div className={`bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-xl p-4 sm:p-5 shadow-2xs hover:border-slate-300 dark:hover:border-slate-700 transition-all duration-200 flex flex-col justify-between ${className}`}>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider truncate">{title}</span>
+          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider truncate">{title}</span>
           {Icon && (
-            <div className={`w-9 h-9 ${iconBg || 'bg-slate-100'} ${iconColor || 'text-slate-700'} flex items-center justify-center shrink-0 border border-slate-200/70`}>
+            <div className={`w-9 h-9 ${iconBg || 'bg-slate-100 dark:bg-slate-800'} ${iconColor || 'text-slate-700 dark:text-slate-300'} rounded-lg flex items-center justify-center shrink-0 border border-slate-200/70 dark:border-slate-700`}>
               <Icon size={16} />
             </div>
           )}
         </div>
 
         <div>
-          <div className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight tabular-nums truncate">{value}</div>
+          <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight tabular-nums truncate">{value}</div>
           {change && (
             <div className="flex items-center space-x-2 mt-2">
-              <span className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200/60">
+              <span className="inline-flex items-center text-xs font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-slate-700">
                 {isPositive ? (
-                  <TrendingUp size={12} className="mr-1 text-slate-800" />
+                  <TrendingUp size={12} className="mr-1 text-emerald-600 dark:text-emerald-400" />
                 ) : (
-                  <TrendingDown size={12} className="mr-1 text-slate-500" />
+                  <TrendingDown size={12} className="mr-1 text-red-500 dark:text-red-400" />
                 )}
                 {change}
               </span>
-              <span className="text-xs text-slate-400 font-normal">vs last period</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500 font-normal">vs last period</span>
             </div>
           )}
         </div>

@@ -3,7 +3,10 @@ import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { GlobalSearchModal } from '../common/GlobalSearchModal';
+import { useAuth } from '../../context/AuthContext';
+
 export const SharedLayout = () => {
+    const { isAdmin } = useAuth();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [searchModalOpen, setSearchModalOpen] = useState(false);
@@ -15,7 +18,7 @@ export const SharedLayout = () => {
             setSidebarCollapsed(!sidebarCollapsed);
         }
     };
-    return (<div className="min-h-screen bg-[#f8fafc] font-sans text-slate-900 overflow-x-hidden">
+    return (<div className={`min-h-screen bg-[#f8fafc] dark:bg-[#0b0f19] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors duration-200 ${isAdmin ? 'role-admin' : 'role-student'}`}>
       {/* Sidebar Desktop */}
       <div className="hidden md:block">
         <Sidebar collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}/>
@@ -23,8 +26,8 @@ export const SharedLayout = () => {
 
       {/* Mobile Drawer */}
       {mobileSidebarOpen && (<div className="fixed inset-0 z-40 md:hidden flex">
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity" onClick={() => setMobileSidebarOpen(false)}/>
-          <div className="relative z-50 w-64 bg-white h-full shadow-2xl">
+          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity" onClick={() => setMobileSidebarOpen(false)}/>
+          <div className="relative z-50 w-64 bg-white dark:bg-[#111827] h-full shadow-2xl">
             <Sidebar collapsed={false} onToggleCollapse={() => setMobileSidebarOpen(false)} onCloseMobile={() => setMobileSidebarOpen(false)}/>
           </div>
         </div>)}
@@ -35,7 +38,7 @@ export const SharedLayout = () => {
         <Topbar onToggleSidebar={toggleSidebar} onOpenSearch={() => setSearchModalOpen(true)}/>
 
         {/* Page Content View - Pure edge-to-edge fluid responsive workspace */}
-        <main className="flex-1 w-full p-4 sm:p-6 lg:p-8 animate-in fade-in duration-200">
+        <main className="flex-1 w-full p-3 sm:p-4 lg:p-4 xl:p-4 2xl:px-6 2xl:py-4 flex flex-col animate-in fade-in duration-200">
           <Outlet />
         </main>
       </div>

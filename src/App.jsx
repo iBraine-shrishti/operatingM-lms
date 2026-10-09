@@ -28,14 +28,17 @@ import { LoginPage } from "./pages/LoginPage.jsx";
 import { CertificateVerificationPage } from "./pages/CertificateVerificationPage.jsx";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
+import { ThemeProvider } from "./context/ThemeContext";
 function RootRedirect() {
     const { isStudent } = useAuth();
     return <Navigate to={isStudent ? "/dashboard" : "/dashboard"} replace/>;
 }
 export function App() {
-    return (<AuthProvider>
-      <ToastProvider>
-        <BrowserRouter>
+    return (
+      <ThemeProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />}/>
             <Route path="/verify-certificate" element={<CertificateVerificationPage />}/>
@@ -70,8 +73,10 @@ export function App() {
             <Route path="gallery" element={<GalleryPage />}/>
           </Route>
         </Routes>
-      </BrowserRouter>
-      </ToastProvider>
-    </AuthProvider>);
+        </BrowserRouter>
+        </ToastProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  );
 }
 export default App;

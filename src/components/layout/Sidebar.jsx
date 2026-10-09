@@ -1,13 +1,31 @@
-import React from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import logoImg from '../../assets/logo.png';
-import { 
-  LayoutDashboard, BookOpen, Activity, User, GraduationCap, 
-  Award, CheckSquare, FileText, BookCheck, Layers, ClipboardList, 
-  FolderCheck, Users, HelpCircle, MessageCircle, BarChart3, LogOut, 
-  ChevronLeft, ChevronRight, Calendar, Images, MessagesSquare 
-} from 'lucide-react';
+import React from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import logoImg from "../../assets/logo.png";
+import {
+  LayoutDashboard,
+  BookOpen,
+  Activity,
+  User,
+  GraduationCap,
+  Award,
+  CheckSquare,
+  FileText,
+  BookCheck,
+  Layers,
+  ClipboardList,
+  FolderCheck,
+  Users,
+  HelpCircle,
+  MessageCircle,
+  BarChart3,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  Images,
+  MessagesSquare,
+} from "lucide-react";
 
 export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const location = useLocation();
@@ -17,94 +35,127 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const sections = isStudent
     ? [
         {
-          title: 'MAIN',
+          title: "MAIN",
           items: [
-            { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-            { name: 'Activity', path: '/activity', icon: Activity },
-            { name: 'Profile', path: '/profile', icon: User }
-          ]
+            { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+            { name: "Activity", path: "/activity", icon: Activity },
+            { name: "Profile", path: "/profile", icon: User },
+          ],
         },
         {
-          title: 'LEARNING',
+          title: "LEARNING",
           items: [
             {
-              name: 'Enrolled Courses',
-              path: '/enrolled-courses',
+              name: "Enrolled Courses",
+              path: "/enrolled-courses",
               icon: GraduationCap,
-              badge: '4'
+              badge: "4",
             },
             {
-              name: 'Achievements',
-              path: '/achievements',
+              name: "Achievements",
+              path: "/achievements",
               icon: Award,
-              badge: '4'
+              badge: "4",
             },
-            { name: 'My Quizzes', path: '/my-quizzes', icon: CheckSquare },
-            { name: 'Notes', path: '/notes', icon: FileText },
-            { name: 'My Assignments', path: '/my-assignments', icon: BookCheck },
-            { name: 'Forums', path: '/forums', icon: MessagesSquare },
+            {
+              name: "My Assignments",
+              path: "/my-assignments",
+              icon: BookCheck,
+            },
+            { name: "My Quizzes", path: "/my-quizzes", icon: CheckSquare },
+            { name: "Notes", path: "/notes", icon: FileText },
+            { name: "Forums", path: "/forums", icon: MessagesSquare },
             // { name: 'Gallery', path: '/gallery', icon: Images },
-            { name: 'Schedule', path: '/schedule', icon: Calendar }
-          ]
-        }
+            { name: "Schedule", path: "/schedule", icon: Calendar },
+          ],
+        },
       ]
     : [
         {
-          title: 'MAIN',
+          title: "MAIN",
           items: [
-            { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-            { name: 'Courses', path: '/courses', icon: BookOpen },
-            { name: 'Activity', path: '/activity', icon: Activity },
-            { name: 'Profile', path: '/profile', icon: User }
-          ]
+            { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+            { name: "Courses", path: "/courses", icon: BookOpen },
+            { name: "Activity", path: "/activity", icon: Activity },
+            { name: "Profile", path: "/profile", icon: User },
+          ],
         },
         {
-          title: 'INSTRUCTOR CONTROLS',
+          title: "INSTRUCTOR CONTROLS",
           items: [
-            { name: 'Manage Courses', path: '/manage-courses', icon: Layers },
-            { name: 'Manage Units', path: '/manage-units', icon: ClipboardList },
-            { name: 'Manage Quizzes', path: '/manage-quizzes', icon: CheckSquare },
-            { name: 'Manage Assignments', path: '/manage-assignments', icon: FolderCheck },
-            { name: 'Manage Students', path: '/manage-students', icon: Users },
-            { name: 'Manage Questions', path: '/manage-questions', icon: HelpCircle },
-            { name: 'Forums', path: '/forums', icon: MessagesSquare },
-            { name: 'Manage Reports', path: '/manage-reports', icon: BarChart3, badge: 'Beta' }
-          ]
-        }
+            { name: "Manage Courses", path: "/manage-courses", icon: Layers },
+            {
+              name: "Manage Units",
+              path: "/manage-units",
+              icon: ClipboardList,
+            },
+            {
+              name: "Manage Quizzes",
+              path: "/manage-quizzes",
+              icon: CheckSquare,
+            },
+            {
+              name: "Manage Assignments",
+              path: "/manage-assignments",
+              icon: FolderCheck,
+            },
+            { name: "Manage Students", path: "/manage-students", icon: Users },
+            {
+              name: "Manage Questions",
+              path: "/manage-questions",
+              icon: HelpCircle,
+            },
+            { name: "Forums", path: "/forums", icon: MessagesSquare },
+            {
+              name: "Manage Reports",
+              path: "/manage-reports",
+              icon: BarChart3,
+              badge: "Beta",
+            },
+          ],
+        },
       ];
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-30 h-screen bg-white border-r border-slate-200/80 transition-all duration-300 flex flex-col text-slate-800 ${
-        collapsed ? 'w-20' : 'w-64'
+      className={`fixed top-0 left-0 z-30 h-screen bg-white dark:bg-[#0b1329] border-r border-slate-200/80 dark:border-slate-800/90 transition-all duration-300 flex flex-col text-slate-800 dark:text-slate-200 ${
+        collapsed ? "w-20" : "w-64"
       }`}
     >
       {/* Sidebar Header / Logo */}
-      <div className={`h-16 flex items-center border-b border-slate-100 shrink-0 ${
-        collapsed ? 'justify-between px-2.5' : 'justify-between px-4'
-      }`}>
+      <div
+        className={`h-16 flex items-center border-b border-slate-100 dark:border-slate-800/90 shrink-0 ${
+          collapsed ? "justify-between px-2.5" : "justify-between px-4"
+        }`}
+      >
         {!collapsed ? (
-          <NavLink to="/dashboard" className="flex items-center overflow-hidden py-1">
+          <NavLink
+            to="/dashboard"
+            className="flex items-center overflow-hidden py-1"
+          >
             <img
               src={logoImg}
               alt="Operating Media"
-              className="h-9 w-auto max-w-[160px] object-contain"
+              className="h-9 w-auto max-w-[160px] object-contain dark:brightness-110"
             />
           </NavLink>
         ) : (
-          <NavLink to="/dashboard" className="w-7 h-7 flex items-center justify-center overflow-hidden shrink-0">
+          <NavLink
+            to="/dashboard"
+            className="w-7 h-7 flex items-center justify-center overflow-hidden shrink-0"
+          >
             <img
               src={logoImg}
               alt="Operating Media"
-              className="h-6 w-auto max-w-[28px] object-cover object-left"
+              className="h-6 w-auto max-w-[28px] object-cover object-left dark:brightness-110"
             />
           </NavLink>
         )}
 
         <button
           onClick={onToggleCollapse}
-          className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors cursor-pointer shrink-0"
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer shrink-0"
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
         </button>
@@ -115,7 +166,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
         {sections.map((section, sIdx) => (
           <div key={sIdx} className="space-y-1">
             {!collapsed && (
-              <h3 className="px-3 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
+              <h3 className="px-3 text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-2">
                 {section.title}
               </h3>
             )}
@@ -123,7 +174,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
               const Icon = item.icon;
               const isActive =
                 location.pathname === item.path ||
-                (item.path === '/manage-courses' && location.pathname === '/');
+                (item.path === "/manage-courses" && location.pathname === "/");
               return (
                 <NavLink
                   key={item.path}
@@ -132,33 +183,38 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
                   className={({ isActive: isLinkActive }) => {
                     const active =
                       isLinkActive ||
-                      (item.path === '/manage-courses' && location.pathname === '/');
+                      (item.path === "/manage-courses" &&
+                        location.pathname === "/");
                     return `group relative flex items-center px-3.5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-150 ${
                       active
-                        ? 'bg-[#eff6ff] text-[#2563eb] shadow-2xs'
-                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                    } ${collapsed ? 'justify-center' : 'justify-between'}`;
+                        ? "bg-[#eff6ff] text-[#2563eb] dark:bg-blue-600/15 dark:text-cyan-400 dark:border dark:border-blue-500/30 dark:shadow-[0_0_12px_rgba(37,99,235,0.25)] shadow-2xs"
+                        : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white"
+                    } ${collapsed ? "justify-center" : "justify-between"}`;
                   }}
                   title={collapsed ? item.name : undefined}
                 >
-                  <div className={`flex items-center space-x-3 ${collapsed ? 'justify-center' : ''}`}>
+                  <div
+                    className={`flex items-center space-x-3 ${collapsed ? "justify-center" : ""}`}
+                  >
                     <Icon
                       size={18}
-                      className={`shrink-0 ${
+                      className={`shrink-0 transition-colors ${
                         isActive
-                          ? 'text-[#2563eb]'
-                          : 'text-slate-400 group-hover:text-slate-700'
+                          ? "text-[#2563eb] dark:text-cyan-400"
+                          : "text-slate-400 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-cyan-300"
                       }`}
                     />
-                    {!collapsed && <span className="truncate">{item.name}</span>}
+                    {!collapsed && (
+                      <span className="truncate">{item.name}</span>
+                    )}
                   </div>
 
                   {!collapsed && item.badge && (
                     <span
                       className={`ml-auto text-xs font-bold px-2 py-0.5 rounded-full ${
                         isActive
-                          ? 'bg-blue-100 text-blue-700'
-                          : 'bg-blue-50 text-blue-600 border border-blue-100/60'
+                          ? "bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-cyan-300 border border-transparent dark:border-blue-500/30"
+                          : "bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-300 border border-blue-100/60 dark:border-blue-900/60"
                       }`}
                     >
                       {item.badge}
@@ -167,7 +223,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
 
                   {/* Tooltip for collapsed mode */}
                   {collapsed && (
-                    <div className="absolute left-full ml-3 px-2.5 py-1 bg-slate-900 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-md">
+                    <div className="absolute left-full ml-3 px-2.5 py-1 bg-slate-900 dark:bg-slate-800 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-md border border-transparent dark:border-slate-700">
                       {item.name}
                     </div>
                   )}
@@ -179,19 +235,24 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
       </div>
 
       {/* Footer / Sign Out (matching DASHBOARD.png) */}
-      <div className="p-3 border-t border-slate-100 shrink-0">
+      <div className="p-3 border-t border-slate-100 dark:border-slate-800/90 shrink-0">
         <button
           onClick={() => {
             logout();
-            navigate('/login');
+            navigate("/login");
           }}
-          className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer ${
-            collapsed ? 'justify-center' : ''
+          className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer ${
+            collapsed ? "justify-center" : ""
           }`}
-          title={collapsed ? 'Logout' : undefined}
+          title={collapsed ? "Logout" : undefined}
         >
-          <LogOut size={18} className="text-slate-400 group-hover:text-slate-700 shrink-0" />
-          {!collapsed && <span className="text-xs sm:text-sm font-semibold">Sign Out</span>}
+          <LogOut
+            size={18}
+            className="text-slate-400 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 shrink-0"
+          />
+          {!collapsed && (
+            <span className="text-xs sm:text-sm font-semibold">Sign Out</span>
+          )}
         </button>
       </div>
     </aside>

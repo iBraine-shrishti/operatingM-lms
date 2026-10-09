@@ -62,18 +62,18 @@ export const PhotoVideoLibraryHub = () => {
         {/* ============================================================== */}
         {/* CARD 1: PHOTO LIBRARY (MATCHING samplw-ui.png)                 */}
         {/* ============================================================== */}
-        <div className="bg-white border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.03)] p-4 sm:p-5 flex flex-col justify-between space-y-3.5 rounded-2xl">
+        <div className="bg-white dark:bg-[#0b1329] border border-slate-100 dark:border-slate-800 shadow-[0_4px_24px_rgba(0,0,0,0.03)] p-4 sm:p-5 flex flex-col justify-between space-y-3.5 rounded-2xl">
           {/* Header */}
           <div className="flex items-center justify-between px-0.5">
             <div className="flex items-center gap-2.5">
-              <div className="text-[#2563eb] flex items-center justify-center shrink-0">
+              <div className="text-[#2563eb] dark:text-blue-400 flex items-center justify-center shrink-0">
                 <ImageIcon size={20} strokeWidth={2.2} />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 text-sm sm:text-base tracking-tight leading-snug">
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base tracking-tight leading-snug">
                   Photo Library
                 </h3>
-                <p className="text-[11px] sm:text-xs text-slate-400 font-normal leading-tight">
+                <p className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-normal leading-tight">
                   Explore moments, event photos, and campus highlights.
                 </p>
               </div>
@@ -82,7 +82,7 @@ export const PhotoVideoLibraryHub = () => {
             <button
               type="button"
               onClick={() => navigate('/gallery?tab=photos')}
-              className="text-xs sm:text-sm font-semibold text-[#2563eb] hover:text-blue-700 flex items-center gap-1 cursor-pointer transition-colors group shrink-0"
+              className="text-xs sm:text-sm font-semibold text-[#2563eb] dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1 cursor-pointer transition-colors group shrink-0"
             >
               <span>View All</span>
               <ArrowRight size={13} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
@@ -91,7 +91,7 @@ export const PhotoVideoLibraryHub = () => {
 
           {/* Photo Content Container with photo-bg.png & Vertical Card */}
           <div
-            className="relative rounded-2xl overflow-hidden bg-cover bg-center h-64 sm:h-72 lg:h-80 flex items-center justify-center p-4 select-none shadow-xs border border-blue-50/80"
+            className="relative rounded-2xl overflow-hidden bg-cover bg-center h-64 sm:h-72 lg:h-80 flex items-center justify-center p-4 select-none shadow-xs border border-blue-50/80 dark:border-slate-800"
             style={{ backgroundImage: `url(${photoBg})` }}
             onMouseEnter={() => setIsPhotoHovered(true)}
             onMouseLeave={() => setIsPhotoHovered(false)}
@@ -100,7 +100,7 @@ export const PhotoVideoLibraryHub = () => {
             <button
               type="button"
               onClick={prevPhoto}
-              className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-[#2563eb] shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100"
+              className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-slate-800 text-[#2563eb] dark:text-blue-400 shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100 dark:border-slate-700"
               title="Previous Photo (Infinite Loop)"
             >
               <ChevronLeft size={16} strokeWidth={2.5} />
@@ -109,7 +109,7 @@ export const PhotoVideoLibraryHub = () => {
             {/* Center Vertical Social Card (matching samplw-ui.png) */}
             <div
               onClick={() => setIsPhotoModalOpen(true)}
-              className="relative w-[155px] sm:w-[185px] md:w-[205px] h-[215px] sm:h-[250px] md:h-[275px] rounded-2xl overflow-hidden border-[3.5px] border-white ring-1 ring-blue-100/70 shadow-[0_16px_40px_rgba(37,99,235,0.18)] cursor-pointer transform -rotate-2 hover:rotate-0 transition-all duration-300 z-10 flex items-center justify-center bg-slate-900 group"
+              className="relative w-[155px] sm:w-[185px] md:w-[205px] h-[215px] sm:h-[250px] md:h-[275px] rounded-2xl overflow-hidden border-[3.5px] border-white dark:border-slate-700 ring-1 ring-blue-100/70 dark:ring-blue-900/40 shadow-[0_16px_40px_rgba(37,99,235,0.18)] cursor-pointer transform -rotate-2 hover:rotate-0 transition-all duration-300 z-10 flex items-center justify-center bg-slate-900 group"
               title="Click to view full photo"
             >
               <img
@@ -130,7 +130,7 @@ export const PhotoVideoLibraryHub = () => {
             <button
               type="button"
               onClick={nextPhoto}
-              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-[#2563eb] shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100"
+              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-slate-800 text-[#2563eb] dark:text-blue-400 shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100 dark:border-slate-700"
               title="Next Photo (Infinite Loop)"
             >
               <ChevronRight size={16} strokeWidth={2.5} />
@@ -141,18 +141,18 @@ export const PhotoVideoLibraryHub = () => {
         {/* ============================================================== */}
         {/* CARD 2: VIDEO LIBRARY (MATCHING samplw-ui.png)                 */}
         {/* ============================================================== */}
-        <div className="bg-white border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.03)] p-4 sm:p-5 flex flex-col justify-between space-y-3.5 rounded-2xl">
+        <div className="bg-white dark:bg-[#0b1329] border border-slate-100 dark:border-slate-800 shadow-[0_4px_24px_rgba(0,0,0,0.03)] p-4 sm:p-5 flex flex-col justify-between space-y-3.5 rounded-2xl">
           {/* Header */}
           <div className="flex items-center justify-between px-0.5">
             <div className="flex items-center gap-2.5">
-              <div className="text-[#2563eb] flex items-center justify-center shrink-0">
+              <div className="text-[#2563eb] dark:text-blue-400 flex items-center justify-center shrink-0">
                 <PlaySquare size={20} strokeWidth={2.2} />
               </div>
               <div>
-                <h3 className="font-bold text-slate-900 text-sm sm:text-base tracking-tight leading-snug">
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base tracking-tight leading-snug">
                   Video Library
                 </h3>
-                <p className="text-[11px] sm:text-xs text-slate-400 font-normal leading-tight">
+                <p className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 font-normal leading-tight">
                   Short videos, lectures, workshops and event highlights.
                 </p>
               </div>
@@ -161,7 +161,7 @@ export const PhotoVideoLibraryHub = () => {
             <button
               type="button"
               onClick={() => navigate('/gallery?tab=videos')}
-              className="text-xs sm:text-sm font-semibold text-[#2563eb] hover:text-blue-700 flex items-center gap-1 cursor-pointer transition-colors group shrink-0"
+              className="text-xs sm:text-sm font-semibold text-[#2563eb] dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1 cursor-pointer transition-colors group shrink-0"
             >
               <span>View All</span>
               <ArrowRight size={13} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
@@ -170,21 +170,21 @@ export const PhotoVideoLibraryHub = () => {
 
           {/* Video Content Container with video-bg.png & Vertical Card */}
           <div
-            className="relative rounded-2xl overflow-hidden bg-cover bg-center h-64 sm:h-72 lg:h-80 flex items-center justify-center p-4 select-none shadow-xs border border-blue-50/80"
+            className="relative rounded-2xl overflow-hidden bg-cover bg-center h-64 sm:h-72 lg:h-80 flex items-center justify-center p-4 select-none shadow-xs border border-blue-50/80 dark:border-slate-800"
             style={{ backgroundImage: `url(${videoBg})` }}
           >
             {/* Left Circular Navigation Button (Infinite loop) */}
             <button
               type="button"
               onClick={prevVideo}
-              className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-[#2563eb] shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100"
+              className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-slate-800 text-[#2563eb] dark:text-blue-400 shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100 dark:border-slate-700"
               title="Previous Video (Infinite Loop)"
             >
               <ChevronLeft size={16} strokeWidth={2.5} />
             </button>
 
             {/* Center Vertical Social Media Video Card (Infinite Loop YouTube Short MVpDf5bariI) */}
-            <div className="relative w-[155px] sm:w-[185px] md:w-[205px] h-[215px] sm:h-[250px] md:h-[275px] rounded-2xl overflow-hidden border-[3.5px] border-white ring-1 ring-blue-100/70 shadow-[0_16px_40px_rgba(37,99,235,0.18)] z-10 flex items-center justify-center bg-black group">
+            <div className="relative w-[155px] sm:w-[185px] md:w-[205px] h-[215px] sm:h-[250px] md:h-[275px] rounded-2xl overflow-hidden border-[3.5px] border-white dark:border-slate-700 ring-1 ring-blue-100/70 dark:ring-blue-900/40 shadow-[0_16px_40px_rgba(37,99,235,0.18)] z-10 flex items-center justify-center bg-black group">
               {/* YouTube Short Player Embed looping infinitely */}
               <iframe
                 key={videoCycleKey}
@@ -210,7 +210,7 @@ export const PhotoVideoLibraryHub = () => {
             <button
               type="button"
               onClick={nextVideo}
-              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-[#2563eb] shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100"
+              className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white dark:bg-slate-800 text-[#2563eb] dark:text-blue-400 shadow-md flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer z-20 border border-slate-100 dark:border-slate-700"
               title="Next Video (Infinite Loop)"
             >
               <ChevronRight size={16} strokeWidth={2.5} />
@@ -238,3 +238,5 @@ export const PhotoVideoLibraryHub = () => {
     </>
   );
 };
+
+export default PhotoVideoLibraryHub;

@@ -15,91 +15,91 @@ const NOTE_CATEGORY_THEMES = {
     name: "SEO",
     tag: "SEO Mastery",
     icon: Search,
-    accent: "text-emerald-600",
-    borderAccent: "border-emerald-200",
-    cardBorder: "border-emerald-200/90 hover:border-emerald-400",
-    badgeBg: "bg-emerald-50 text-emerald-800 border-emerald-200/90",
-    iconBg: "bg-emerald-50 text-emerald-600 border-emerald-200/90",
+    accent: "text-emerald-600 dark:text-emerald-400",
+    borderAccent: "border-emerald-200 dark:border-emerald-800/60",
+    cardBorder: "border-emerald-200/90 hover:border-emerald-400 dark:border-slate-800/80 dark:hover:border-emerald-500/60",
+    badgeBg: "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200/90 dark:border-emerald-800/60",
+    iconBg: "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border-emerald-200/90 dark:border-emerald-800/60",
     topGradient: "from-emerald-500 via-teal-500 to-green-600",
-    contentBg: "bg-emerald-50/30 border-emerald-100/90",
+    contentBg: "bg-emerald-50/30 dark:bg-emerald-950/20 border-emerald-100/90 dark:border-emerald-800/40",
     pillDot: "bg-emerald-500",
   },
   ads: {
     name: "Google Ads",
     tag: "Paid Advertising",
     icon: Target,
-    accent: "text-blue-600",
-    borderAccent: "border-blue-200",
-    cardBorder: "border-blue-200/90 hover:border-blue-400",
-    badgeBg: "bg-blue-50 text-blue-800 border-blue-200/90",
-    iconBg: "bg-blue-50 text-blue-600 border-blue-200/90",
+    accent: "text-blue-600 dark:text-blue-400",
+    borderAccent: "border-blue-200 dark:border-blue-800/60",
+    cardBorder: "border-blue-200/90 hover:border-blue-400 dark:border-slate-800/80 dark:hover:border-blue-500/60",
+    badgeBg: "bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-200/90 dark:border-blue-800/60",
+    iconBg: "bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border-blue-200/90 dark:border-blue-800/60",
     topGradient: "from-blue-600 via-indigo-600 to-cyan-500",
-    contentBg: "bg-blue-50/30 border-blue-100/90",
+    contentBg: "bg-blue-50/30 dark:bg-blue-950/20 border-blue-100/90 dark:border-blue-800/40",
     pillDot: "bg-blue-500",
   },
   social: {
     name: "Social Media",
     tag: "Social Strategy",
     icon: Share2,
-    accent: "text-purple-600",
-    borderAccent: "border-purple-200",
-    cardBorder: "border-purple-200/90 hover:border-purple-400",
-    badgeBg: "bg-purple-50 text-purple-800 border-purple-200/90",
-    iconBg: "bg-purple-50 text-purple-600 border-purple-200/90",
+    accent: "text-purple-600 dark:text-purple-400",
+    borderAccent: "border-purple-200 dark:border-purple-800/60",
+    cardBorder: "border-purple-200/90 hover:border-purple-400 dark:border-slate-800/80 dark:hover:border-purple-500/60",
+    badgeBg: "bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border-purple-200/90 dark:border-purple-800/60",
+    iconBg: "bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 border-purple-200/90 dark:border-purple-800/60",
     topGradient: "from-purple-600 via-fuchsia-600 to-pink-500",
-    contentBg: "bg-purple-50/30 border-purple-100/90",
+    contentBg: "bg-purple-50/30 dark:bg-purple-950/20 border-purple-100/90 dark:border-purple-800/40",
     pillDot: "bg-purple-500",
   },
   analytics: {
     name: "Analytics",
     tag: "Data & Tracking",
     icon: BarChart3,
-    accent: "text-amber-600",
-    borderAccent: "border-amber-200",
-    cardBorder: "border-amber-200/90 hover:border-amber-400",
-    badgeBg: "bg-amber-50 text-amber-800 border-amber-200/90",
-    iconBg: "bg-amber-50 text-amber-600 border-amber-200/90",
+    accent: "text-amber-600 dark:text-amber-400",
+    borderAccent: "border-amber-200 dark:border-amber-800/60",
+    cardBorder: "border-amber-200/90 hover:border-amber-400 dark:border-slate-800/80 dark:hover:border-amber-500/60",
+    badgeBg: "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200/90 dark:border-amber-800/60",
+    iconBg: "bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border-amber-200/90 dark:border-amber-800/60",
     topGradient: "from-amber-500 via-orange-500 to-yellow-500",
-    contentBg: "bg-amber-50/30 border-amber-100/90",
+    contentBg: "bg-amber-50/30 dark:bg-amber-950/20 border-amber-100/90 dark:border-amber-800/40",
     pillDot: "bg-amber-500",
   },
   wordpress: {
     name: "WordPress",
     tag: "CMS & Web Dev",
     icon: Layout,
-    accent: "text-teal-600",
-    borderAccent: "border-teal-200",
-    cardBorder: "border-teal-200/90 hover:border-teal-400",
-    badgeBg: "bg-teal-50 text-teal-800 border-teal-200/90",
-    iconBg: "bg-teal-50 text-teal-600 border-teal-200/90",
+    accent: "text-teal-600 dark:text-teal-400",
+    borderAccent: "border-teal-200 dark:border-teal-800/60",
+    cardBorder: "border-teal-200/90 hover:border-teal-400 dark:border-slate-800/80 dark:hover:border-teal-500/60",
+    badgeBg: "bg-teal-50 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 border-teal-200/90 dark:border-teal-800/60",
+    iconBg: "bg-teal-50 dark:bg-teal-950/50 text-teal-600 dark:text-teal-400 border-teal-200/90 dark:border-teal-800/60",
     topGradient: "from-teal-500 via-emerald-600 to-cyan-600",
-    contentBg: "bg-teal-50/30 border-teal-100/90",
+    contentBg: "bg-teal-50/30 dark:bg-teal-950/20 border-teal-100/90 dark:border-teal-800/40",
     pillDot: "bg-teal-500",
   },
   design: {
     name: "Design",
     tag: "Creative & UI",
     icon: Palette,
-    accent: "text-rose-600",
-    borderAccent: "border-rose-200",
-    cardBorder: "border-rose-200/90 hover:border-rose-400",
-    badgeBg: "bg-rose-50 text-rose-800 border-rose-200/90",
-    iconBg: "bg-rose-50 text-rose-600 border-rose-200/90",
+    accent: "text-rose-600 dark:text-rose-400",
+    borderAccent: "border-rose-200 dark:border-rose-800/60",
+    cardBorder: "border-rose-200/90 hover:border-rose-400 dark:border-slate-800/80 dark:hover:border-rose-500/60",
+    badgeBg: "bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200/90 dark:border-rose-800/60",
+    iconBg: "bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border-rose-200/90 dark:border-rose-800/60",
     topGradient: "from-rose-500 via-pink-500 to-red-500",
-    contentBg: "bg-rose-50/30 border-rose-100/90",
+    contentBg: "bg-rose-50/30 dark:bg-rose-950/20 border-rose-100/90 dark:border-rose-800/40",
     pillDot: "bg-rose-500",
   },
   general: {
     name: "General",
     tag: "Study Notes",
     icon: BookOpen,
-    accent: "text-indigo-600",
-    borderAccent: "border-indigo-200",
-    cardBorder: "border-indigo-200/90 hover:border-indigo-400",
-    badgeBg: "bg-indigo-50 text-indigo-800 border-indigo-200/90",
-    iconBg: "bg-indigo-50 text-indigo-600 border-indigo-200/90",
+    accent: "text-indigo-600 dark:text-indigo-400",
+    borderAccent: "border-indigo-200 dark:border-indigo-800/60",
+    cardBorder: "border-indigo-200/90 hover:border-indigo-400 dark:border-slate-800/80 dark:hover:border-indigo-500/60",
+    badgeBg: "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border-indigo-200/90 dark:border-indigo-800/60",
+    iconBg: "bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border-indigo-200/90 dark:border-indigo-800/60",
     topGradient: "from-indigo-600 via-blue-600 to-violet-600",
-    contentBg: "bg-indigo-50/30 border-indigo-100/90",
+    contentBg: "bg-indigo-50/30 dark:bg-indigo-950/20 border-indigo-100/90 dark:border-indigo-800/40",
     pillDot: "bg-indigo-500",
   },
 };
@@ -273,38 +273,37 @@ export const NotesReviewsPage = () => {
       {/* HEADER BANNER - FULLY RESPONSIVE WITH BRANDED BACKGROUND      */}
       {/* ------------------------------------------------------------- */}
       <div 
-        className="relative bg-cover bg-center rounded-2xl border border-blue-100/80 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
-        style={{ backgroundImage: `url(${dashboardHeaderBg})` }}
+        className="relative dashboard-hero-banner rounded-2xl border border-blue-100/80 dark:border-blue-900/40 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
       >
         <div className="space-y-2">
-          <div className="flex items-center space-x-2 text-blue-700 text-sm font-extrabold uppercase tracking-wider">
+          <div className="flex items-center space-x-2 text-blue-700 dark:text-blue-400 text-sm font-extrabold uppercase tracking-wider">
             <Bookmark size={17} />
             <span>Study Space & Notebook</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Study Notes & Reference Notebook
           </h1>
-          <p className="text-slate-900/90 text-sm sm:text-base max-w-2xl leading-relaxed font-semibold">
+          <p className="text-slate-900/90 dark:text-slate-200 text-sm sm:text-base max-w-2xl leading-relaxed font-semibold">
             Search, filter, and review key formulas, frameworks, definitions, and technical checklists across all your enrolled courses.
           </p>
 
-          <div className="flex flex-wrap items-center gap-3.5 pt-3 border-t border-slate-200/80 text-sm font-medium">
-            <div className="flex items-center space-x-1.5 text-slate-800">
+          <div className="flex flex-wrap items-center gap-3.5 pt-3 border-t border-slate-200/80 dark:border-slate-700/80 text-sm font-medium">
+            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-300">
               <span className="w-2.5 h-2.5 rounded-full bg-[#3b49df] inline-block"></span>
-              <span className="font-extrabold text-slate-900">{notes.length}</span>
-              <span className="text-slate-800 font-semibold">Total Notes</span>
+              <span className="font-extrabold text-slate-900 dark:text-white">{notes.length}</span>
+              <span className="text-slate-800 dark:text-slate-300 font-semibold">Total Notes</span>
             </div>
             {hasActiveFilters && (
-              <div className="flex items-center space-x-1.5 text-slate-800">
+              <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-300">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
-                <span className="font-extrabold text-slate-900">{filteredNotes.length}</span>
-                <span className="text-slate-800 font-semibold">Matching Filter</span>
+                <span className="font-extrabold text-slate-900 dark:text-white">{filteredNotes.length}</span>
+                <span className="text-slate-800 dark:text-slate-300 font-semibold">Matching Filter</span>
               </div>
             )}
-            <div className="flex items-center space-x-1.5 text-slate-800">
+            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-300">
               <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span>
-              <span className="font-extrabold text-slate-900">6 Domains</span>
-              <span className="text-slate-800 font-semibold">Covered</span>
+              <span className="font-extrabold text-slate-900 dark:text-white">6 Domains</span>
+              <span className="text-slate-800 dark:text-slate-300 font-semibold">Covered</span>
             </div>
           </div>
         </div>
@@ -324,23 +323,23 @@ export const NotesReviewsPage = () => {
       {/* ------------------------------------------------------------- */}
       {/* SEARCH & FILTERS BAR - RESPONSIVE STACKED & GRID DESIGN        */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs space-y-4">
+      <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-4 sm:p-5 shadow-xs space-y-4">
         {/* Top Control Row: Search + Course Filter + Sort */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
           {/* Live Search Input */}
           <div className="relative md:col-span-6 lg:col-span-6">
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search notes by keyword, lesson topic, concept..."
-              className="w-full pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] transition-all"
+              className="w-full pl-10 pr-9 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 transition-all"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 cursor-pointer"
                 title="Clear search"
               >
                 <X size={14} />
@@ -353,7 +352,7 @@ export const NotesReviewsPage = () => {
             <select
               value={selectedCourse}
               onChange={(e) => setSelectedCourse(e.target.value)}
-              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] cursor-pointer"
+              className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 cursor-pointer"
             >
               <option value="all">All Enrolled Courses ({notes.length})</option>
               {courses.map((c) => (
@@ -370,7 +369,7 @@ export const NotesReviewsPage = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] cursor-pointer"
+                className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 cursor-pointer"
               >
                 <option value="newest">Sort: Newest Added</option>
                 <option value="oldest">Sort: Oldest Added</option>
@@ -381,9 +380,9 @@ export const NotesReviewsPage = () => {
         </div>
 
         {/* Second Row: Topic/Category Filter Pills (Horizontal Scroll on Mobile) */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
           <div className="flex items-center space-x-1.5 overflow-x-auto custom-scrollbar pb-1.5 sm:pb-0 w-full sm:w-auto">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden sm:inline-block shrink-0">
+            <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mr-1 hidden sm:inline-block shrink-0">
               Categories:
             </span>
             {categories.map((cat) => {
@@ -395,7 +394,7 @@ export const NotesReviewsPage = () => {
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                     isActive
                       ? "bg-[#3b49df] text-white shadow-2xs"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   {cat}
@@ -408,7 +407,7 @@ export const NotesReviewsPage = () => {
           {hasActiveFilters && (
             <button
               onClick={handleClearFilters}
-              className="text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline flex items-center space-x-1 self-start sm:self-auto cursor-pointer shrink-0"
+              className="text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:underline flex items-center space-x-1 self-start sm:self-auto cursor-pointer shrink-0"
             >
               <X size={13} />
               <span>Reset Filters</span>
@@ -421,14 +420,14 @@ export const NotesReviewsPage = () => {
       {/* NOTES GRID - DIFFERENTIATED CARDS WITH RICH DESCRIPTIONS      */}
       {/* ------------------------------------------------------------- */}
       {filteredNotes.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-8 sm:p-12 text-center shadow-xs">
-          <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+        <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-8 sm:p-12 text-center shadow-xs">
+          <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 flex items-center justify-center mx-auto mb-3">
             <FileText size={26} />
           </div>
-          <h3 className="text-base sm:text-lg font-bold text-slate-900">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
             No notes matched your search criteria
           </h3>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-sm mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
             {hasActiveFilters
               ? "Try broadening your keywords or clearing the category and course filters to view more notes."
               : "You haven't created any lecture notes yet. Click the button below to add your first note!"}
@@ -437,7 +436,7 @@ export const NotesReviewsPage = () => {
             {hasActiveFilters && (
               <button
                 onClick={handleClearFilters}
-                className="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
+                className="px-4 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
               >
                 Reset Search Filters
               </button>
@@ -460,7 +459,7 @@ export const NotesReviewsPage = () => {
             return (
               <div
                 key={note.id}
-                className={`bg-white rounded-2xl border shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between overflow-hidden group ${theme.cardBorder}`}
+                className={`bg-white dark:bg-[#0b1329] rounded-2xl border shadow-xs hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(37,99,235,0.15)] transition-all duration-200 flex flex-col justify-between overflow-hidden group ${theme.cardBorder}`}
               >
                 {/* Top Vibrant Accent Bar */}
                 <div className={`h-1.5 w-full bg-gradient-to-r ${theme.topGradient}`} />
@@ -474,7 +473,7 @@ export const NotesReviewsPage = () => {
                         <span>{note.category || theme.name}</span>
                       </span>
 
-                      <span className="flex items-center space-x-1 text-[11px] font-semibold text-slate-400">
+                      <span className="flex items-center space-x-1 text-[11px] font-semibold text-slate-400 dark:text-slate-500">
                         <Calendar size={12} />
                         <span>{note.createdAt}</span>
                       </span>
@@ -482,7 +481,7 @@ export const NotesReviewsPage = () => {
 
                     {/* Course Title Badge */}
                     <div className="pt-0.5">
-                      <span className="text-[11px] font-bold text-slate-600 bg-slate-100/90 border border-slate-200/80 px-2.5 py-0.5 rounded-md inline-block">
+                      <span className="text-[11px] font-bold text-slate-600 dark:text-slate-200 bg-slate-100/90 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-0.5 rounded-md inline-block">
                         {note.courseTitle}
                       </span>
                     </div>
@@ -493,29 +492,29 @@ export const NotesReviewsPage = () => {
                         <CategoryIcon size={20} className={theme.accent} />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-base sm:text-lg font-black text-slate-900 leading-snug group-hover:text-[#3b49df] transition-colors break-words">
+                        <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-snug group-hover:text-[#3b49df] dark:group-hover:text-blue-400 transition-colors break-words">
                           {note.lessonTitle}
                         </h3>
                       </div>
                     </div>
 
                     {/* Note Body Box: Increased Font Size & Rich Description */}
-                    <div className={`text-sm sm:text-[13.5px] text-slate-700 ${theme.contentBg} border p-4 rounded-xl leading-relaxed whitespace-pre-line break-words font-medium`}>
+                    <div className={`text-sm sm:text-[13.5px] text-slate-700 dark:text-slate-300 ${theme.contentBg} border p-4 rounded-xl leading-relaxed whitespace-pre-line break-words font-medium`}>
                       {contentText}
                     </div>
                   </div>
                 </div>
 
                 {/* Action Buttons Footer */}
-                <div className="px-5 py-3.5 bg-slate-50/70 border-t border-slate-100 flex items-center justify-between text-xs">
+                <div className="px-5 py-3.5 bg-slate-50/70 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
                   <button
                     onClick={() => handleCopyNote({ ...note, content: contentText })}
-                    className="flex items-center space-x-1.5 text-slate-700 hover:text-[#3b49df] font-bold py-1.5 px-3 rounded-lg hover:bg-white border border-transparent hover:border-slate-200 transition-all cursor-pointer active:scale-95 shadow-2xs"
+                    className="flex items-center space-x-1.5 text-slate-700 dark:text-slate-200 hover:text-[#3b49df] dark:hover:text-blue-400 font-bold py-1.5 px-3 rounded-lg hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-pointer active:scale-95 shadow-2xs"
                   >
                     {copiedId === note.id ? (
                       <>
-                        <Check size={14} className="text-emerald-600" />
-                        <span className="text-emerald-600 font-bold">Copied!</span>
+                        <Check size={14} className="text-emerald-600 dark:text-emerald-400" />
+                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">Copied!</span>
                       </>
                     ) : (
                       <>
@@ -526,12 +525,12 @@ export const NotesReviewsPage = () => {
                   </button>
 
                   <div className="flex items-center space-x-3">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 hidden sm:inline-block">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 hidden sm:inline-block">
                       {theme.tag}
                     </span>
                     <button
                       onClick={() => handleDeleteNote(note.id, note.lessonTitle)}
-                      className="flex items-center space-x-1 text-slate-400 hover:text-rose-600 font-semibold py-1.5 px-2 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer active:scale-95"
+                      className="flex items-center space-x-1 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 font-semibold py-1.5 px-2 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer active:scale-95"
                       title="Delete note"
                     >
                       <Trash2 size={14} />
@@ -549,21 +548,21 @@ export const NotesReviewsPage = () => {
       {/* ADD NEW NOTE MODAL - FULLY RESPONSIVE                         */}
       {/* ------------------------------------------------------------- */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 sm:p-6 shadow-xl border border-slate-200 space-y-4 animate-in fade-in zoom-in duration-150">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 sm:p-6 shadow-xl border border-slate-200 dark:border-slate-800 space-y-4 animate-in fade-in zoom-in duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#3b49df] flex items-center justify-center shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-[#3b49df] dark:text-blue-400 flex items-center justify-center shrink-0">
                   <Bookmark size={18} />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 text-base">Add New Study Note</h3>
-                  <p className="text-[11px] text-slate-500">Capture important ideas, formulas, or strategies.</p>
+                  <h3 className="font-bold text-slate-900 dark:text-white text-base">Add New Study Note</h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">Capture important ideas, formulas, or strategies.</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -571,13 +570,13 @@ export const NotesReviewsPage = () => {
 
             <form onSubmit={handleCreateNote} className="space-y-3.5 text-xs">
               <div>
-                <label className="font-bold text-slate-700 block mb-1">
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
                   Related Course *
                 </label>
                 <select
                   value={newCourseId}
                   onChange={(e) => setNewCourseId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df]"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500"
                 >
                   {courses.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -589,7 +588,7 @@ export const NotesReviewsPage = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
                     Lesson Topic / Title *
                   </label>
                   <input
@@ -598,18 +597,18 @@ export const NotesReviewsPage = () => {
                     value={newLessonTitle}
                     onChange={(e) => setNewLessonTitle(e.target.value)}
                     placeholder="e.g. 02 Keyword Intent Mapping"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df]"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="font-bold text-slate-700 block mb-1">
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
                     Category Tag
                   </label>
                   <select
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df]"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500"
                   >
                     <option value="General">General</option>
                     <option value="Social Media">Social Media</option>
@@ -623,7 +622,7 @@ export const NotesReviewsPage = () => {
               </div>
 
               <div>
-                <label className="font-bold text-slate-700 block mb-1">
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
                   Note Content / Summary *
                 </label>
                 <textarea
@@ -632,15 +631,15 @@ export const NotesReviewsPage = () => {
                   value={newContent}
                   onChange={(e) => setNewContent(e.target.value)}
                   placeholder="Jot down formulas, framework steps, code snippets, or lecture insights..."
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df]"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500"
                 />
               </div>
 
-              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

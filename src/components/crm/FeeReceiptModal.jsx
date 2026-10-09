@@ -42,14 +42,14 @@ export const FeeReceiptModal = ({ isOpen, onClose, profile }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
         {/* Modal Top Header */}
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/70">
+        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-900/80">
           <div>
-            <h3 className="font-bold text-sm sm:text-base text-slate-900 leading-tight">
+            <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
               Official Fee Receipt & Payment Breakdown
             </h3>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
               Receipt #{admissionNo} • Operating Media Institute of Digital
               Marketing
             </p>
@@ -59,7 +59,7 @@ export const FeeReceiptModal = ({ isOpen, onClose, profile }) => {
             <button
               type="button"
               onClick={handlePrint}
-              className="inline-flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-3 py-1.5 rounded-xl transition-colors cursor-pointer"
+              className="inline-flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs px-3 py-1.5 rounded-xl transition-colors cursor-pointer"
             >
               <Printer size={13} />
               <span className="hidden sm:inline">Print Receipt</span>
@@ -67,7 +67,7 @@ export const FeeReceiptModal = ({ isOpen, onClose, profile }) => {
             <button
               type="button"
               onClick={onClose}
-              className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors cursor-pointer"
+              className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             >
               <X size={18} />
             </button>
@@ -75,16 +75,16 @@ export const FeeReceiptModal = ({ isOpen, onClose, profile }) => {
         </div>
 
         {/* Receipt Content Body */}
-        <div className="p-6 overflow-y-auto flex-1 bg-white space-y-6">
+        <div className="p-6 overflow-y-auto flex-1 bg-white dark:bg-[#0b1329] space-y-6">
           {/* Receipt Top Section: Logo & Prepared For Box */}
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-slate-200">
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
             <div>
               <img
                 src={logo}
                 alt="Operating Media"
-                className="h-10 w-auto object-contain mb-2"
+                className="h-10 w-auto object-contain mb-2 dark:brightness-110"
               />
-              <p className="text-xs text-slate-500 font-normal leading-relaxed max-w-xs">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-normal leading-relaxed max-w-xs">
                 Operating Media Digital Education Pvt. Ltd.
                 <br />
                 {branch}, Mumbai, Maharashtra, India
@@ -93,48 +93,48 @@ export const FeeReceiptModal = ({ isOpen, onClose, profile }) => {
               </p>
             </div>
 
-            <div className="text-left sm:text-right bg-slate-50 p-3.5 rounded border border-slate-100">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">
+            <div className="text-left sm:text-right bg-slate-50 dark:bg-slate-900/80 p-3.5 rounded border border-slate-100 dark:border-slate-800">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
                 RECEIPT REFERENCE
               </span>
-              <span className="text-lg font-black text-slate-900 leading-none">
+              <span className="text-lg font-black text-slate-900 dark:text-white leading-none">
                 {admissionNo}
               </span>
-              <span className="text-xs text-slate-500 block mt-1">
-                Date: <strong className="text-slate-700">{today}</strong>
+              <span className="text-xs text-slate-500 dark:text-slate-400 block mt-1">
+                Date: <strong className="text-slate-700 dark:text-slate-300">{today}</strong>
               </span>
             </div>
           </div>
 
           {/* Student Dossier Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-slate-50/70 border border-slate-200/80 rounded text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-slate-50/70 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 rounded text-xs">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
                 Student Name
               </span>
-              <strong className="text-slate-900 font-bold text-sm block mt-0.5">
+              <strong className="text-slate-900 dark:text-white font-bold text-sm block mt-0.5">
                 {name}
               </strong>
-              <span className="text-slate-500 text-[11px]">{email}</span>
+              <span className="text-slate-500 dark:text-slate-400 text-[11px]">{email}</span>
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
                 Enrolled Program
               </span>
-              <strong className="text-slate-900 font-bold text-sm block mt-0.5">
+              <strong className="text-slate-900 dark:text-white font-bold text-sm block mt-0.5">
                 {course}
               </strong>
-              <span className="text-slate-500 text-[11px]">
+              <span className="text-slate-500 dark:text-slate-400 text-[11px]">
                 {branch} • Phone: {phone}
               </span>
             </div>
           </div>
 
           {/* Itemized Table */}
-          <div className="border border-slate-200 rounded overflow-hidden">
+          <div className="border border-slate-200 dark:border-slate-800 rounded overflow-hidden">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="bg-slate-900 text-white">
+                <tr className="bg-slate-900 dark:bg-slate-800 text-white">
                   <th className="py-2.5 px-4 font-bold">Payment Description</th>
                   <th className="py-2.5 px-4 font-bold text-center">Status</th>
                   <th className="py-2.5 px-4 font-bold text-right">
@@ -142,72 +142,72 @@ export const FeeReceiptModal = ({ isOpen, onClose, profile }) => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
                 {installments.map((inst, idx) => (
                   <tr
                     key={idx}
                     className={
                       inst.status === "Paid"
-                        ? "bg-white"
-                        : "bg-slate-50/50 opacity-75"
+                        ? "bg-white dark:bg-slate-900/50"
+                        : "bg-slate-50/50 dark:bg-slate-900/20 opacity-75"
                     }
                   >
                     <td className="py-2.5 px-4">
-                      <span className="font-semibold text-slate-900 block">
+                      <span className="font-semibold text-slate-900 dark:text-white block">
                         {inst.title}
                       </span>
-                      <span className="text-[10.5px] text-slate-400">
+                      <span className="text-[10.5px] text-slate-400 dark:text-slate-500">
                         Scheduled: {inst.date}
                       </span>
                     </td>
                     <td className="py-2.5 px-4 text-center">
                       {inst.status === "Paid" ? (
-                        <span className="inline-block bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[10px] px-2 py-0.5 rounded-full">
+                        <span className="inline-block bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/30 font-bold text-[10px] px-2 py-0.5 rounded-full">
                           Paid
                         </span>
                       ) : (
-                        <span className="inline-block bg-amber-50 text-amber-700 border border-amber-200 font-bold text-[10px] px-2 py-0.5 rounded-full">
+                        <span className="inline-block bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30 font-bold text-[10px] px-2 py-0.5 rounded-full">
                           Pending
                         </span>
                       )}
                     </td>
-                    <td className="py-2.5 px-4 text-right font-black text-slate-900 tabular-nums">
+                    <td className="py-2.5 px-4 text-right font-black text-slate-900 dark:text-white tabular-nums">
                       ₹{inst.amount.toLocaleString("en-IN")}
                     </td>
                   </tr>
                 ))}
               </tbody>
-              <tfoot className="bg-slate-50 border-t border-slate-200 font-bold">
+              <tfoot className="bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 font-bold">
                 <tr>
                   <td
                     colSpan="2"
-                    className="py-2.5 px-4 text-slate-600 text-right"
+                    className="py-2.5 px-4 text-slate-600 dark:text-slate-400 text-right"
                   >
                     Total Cleared to Date:
                   </td>
-                  <td className="py-2.5 px-4 text-right text-emerald-700 font-black text-sm tabular-nums">
+                  <td className="py-2.5 px-4 text-right text-emerald-700 dark:text-emerald-400 font-black text-sm tabular-nums">
                     ₹{totalPaid.toLocaleString("en-IN")}
                   </td>
                 </tr>
                 <tr>
                   <td
                     colSpan="2"
-                    className="py-2 px-4 text-slate-600 text-right border-t border-slate-200"
+                    className="py-2 px-4 text-slate-600 dark:text-slate-400 text-right border-t border-slate-200 dark:border-slate-800"
                   >
                     Total Course Investment:
                   </td>
-                  <td className="py-2 px-4 text-right text-slate-900 font-black tabular-nums border-t border-slate-200">
+                  <td className="py-2 px-4 text-right text-slate-900 dark:text-white font-black tabular-nums border-t border-slate-200 dark:border-slate-800">
                     ₹{totalFees.toLocaleString("en-IN")}
                   </td>
                 </tr>
                 <tr>
                   <td
                     colSpan="2"
-                    className="py-2 px-4 text-slate-600 text-right"
+                    className="py-2 px-4 text-slate-600 dark:text-slate-400 text-right"
                   >
                     Remaining Balance Due:
                   </td>
-                  <td className="py-2 px-4 text-right text-amber-800 font-black text-sm tabular-nums">
+                  <td className="py-2 px-4 text-right text-amber-800 dark:text-amber-400 font-black text-sm tabular-nums">
                     ₹{balanceDue.toLocaleString("en-IN")}
                   </td>
                 </tr>
@@ -215,32 +215,32 @@ export const FeeReceiptModal = ({ isOpen, onClose, profile }) => {
             </table>
           </div>
 
-          <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
-            <span className="flex items-center gap-1.5 text-emerald-700 font-bold">
-              <CheckCircle2 size={14} className="text-emerald-600" />
+          <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <span className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-bold">
+              <CheckCircle2 size={14} className="text-emerald-600 dark:text-emerald-400" />
               <span>
                 Payment Verified & Stamped by Operating Media Accounts
               </span>
             </span>
-            <span className="text-[11px] text-slate-400">
+            <span className="text-[11px] text-slate-400 dark:text-slate-500">
               Authorized Signatory: OM Accounts
             </span>
           </div>
         </div>
 
         {/* Modal Bottom Actions */}
-        <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-end space-x-2 shrink-0">
+        <div className="px-6 py-3.5 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end space-x-2 shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
+            className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-xl transition-colors cursor-pointer"
           >
             Close
           </button>
           <button
             type="button"
             onClick={handlePrint}
-            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer flex items-center space-x-1.5"
+            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer flex items-center space-x-1.5"
           >
             <Download size={13} />
             <span>Download Invoice PDF</span>

@@ -40,20 +40,27 @@ const STORAGE_KEY = 'om_lms_current_role';
 
 export const AuthProvider = ({ children }) => {
     const [role, setRole] = useState(() => {
+        let initialRole = 'STUDENT';
         try {
             const params = new URLSearchParams(window.location.search);
             const queryRole = params.get('role')?.toUpperCase();
             if (queryRole === 'STUDENT' || queryRole === 'ADMIN') {
-                return queryRole;
-            }
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved === 'STUDENT' || saved === 'ADMIN') {
-                return saved;
+                initialRole = queryRole;
+            } else {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved === 'STUDENT' || saved === 'ADMIN') {
+                    initialRole = saved;
+                }
             }
         } catch {
             // fallback
         }
-        return 'STUDENT'; // Default to STUDENT UI so the user immediately sees the student CRM data on load!
+        if (typeof document !== 'undefined') {
+            document.documentElement.classList.toggle('role-admin', initialRole === 'ADMIN');
+            document.documentElement.classList.toggle('role-student', initialRole !== 'ADMIN');
+            document.documentElement.setAttribute('data-role', initialRole.toLowerCase());
+        }
+        return initialRole;
     });
 
     const [adminUser, setAdminUser] = useState(ADMIN_USER);
@@ -134,6 +141,11 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem(STORAGE_KEY, role);
         } catch (err) {
             console.error('Failed to save role to localStorage', err);
+        }
+        if (typeof document !== 'undefined') {
+            document.documentElement.classList.toggle('role-admin', role === 'ADMIN');
+            document.documentElement.classList.toggle('role-student', role !== 'ADMIN');
+            document.documentElement.setAttribute('data-role', role.toLowerCase());
         }
     }, [role]);
 

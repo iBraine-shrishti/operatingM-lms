@@ -236,27 +236,27 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
   const overallRate = Math.round((totalAttended / totalConducted) * 100);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xs space-y-5">
+    <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] space-y-5">
       {/* ============================================================== */}
       {/* 1. TOP HEADER: DEGREE TIER SELECTOR & DURATION FROM IMAGE      */}
       {/* ============================================================== */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
         <div className="space-y-1">
           <div className="flex items-center space-x-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+            <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
               <span>Attendance 2-Way Comparison Analysis</span>
             </h3>
           </div>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium">
-            Side-by-side comparison of <strong className="text-emerald-700 font-bold">Attended Lectures</strong> vs{" "}
-            <strong className="text-rose-600 font-bold">Missed Lectures</strong> synchronized across degree duration.
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
+            Side-by-side comparison of <strong className="text-emerald-700 dark:text-emerald-400 font-bold">Attended Lectures</strong> vs{" "}
+            <strong className="text-rose-600 dark:text-rose-400 font-bold">Missed Lectures</strong> synchronized across degree duration.
           </p>
         </div>
 
         {/* Degree Program Selector based on DEGREEE-TYPE.png */}
-        <div className="flex flex-wrap items-center gap-1.5 bg-slate-50 p-1.5 rounded-xl border border-slate-200/80">
-          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-500 px-2 hidden sm:inline-block">
+        <div className="flex flex-wrap items-center gap-1.5 bg-slate-50 dark:bg-slate-900/80 p-1.5 rounded-xl border border-slate-200/80 dark:border-slate-800">
+          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 px-2 hidden sm:inline-block">
             Degree Tier:
           </span>
           {DEGREE_PROGRAMS.map((prog) => {
@@ -268,14 +268,14 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
                 onClick={() => setSelectedDegreeId(prog.id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center space-x-1.5 ${
                   isSelected
-                    ? "bg-[#3b49df] text-white shadow-xs"
-                    : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/70"
+                    ? "bg-[#2563eb] text-white shadow-xs"
+                    : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/70 dark:border-slate-700"
                 }`}
               >
                 <span>{prog.shortName}</span>
                 <span
                   className={`text-[10px] px-1.5 py-0.2 rounded font-extrabold ${
-                    isSelected ? "bg-white/20 text-white" : "bg-slate-100 text-slate-600"
+                    isSelected ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
                   }`}
                 >
                   {prog.durationText}
@@ -291,57 +291,57 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
       {/* ============================================================== */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
         {/* Card 1: Degree Duration */}
-        <div className="bg-slate-50/80 border border-slate-200/90 p-3.5 sm:p-4 rounded-xl space-y-1 shadow-2xs">
-          <div className="flex items-center space-x-1.5 text-xs text-slate-500 font-bold uppercase tracking-wider">
-            <Clock size={14} className="text-blue-600 shrink-0" />
+        <div className="bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 p-3.5 sm:p-4 rounded-xl space-y-1 shadow-2xs">
+          <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
+            <Clock size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
             <span>Course Duration</span>
           </div>
-          <div className="text-lg sm:text-xl font-black text-slate-900">
+          <div className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
             {activeProgram.durationText}
           </div>
-          <div className="text-xs text-slate-500 font-medium">
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             {activeProgram.durationWeeks} Weeks Full Cohort
           </div>
         </div>
 
         {/* Card 2: Total Conducted */}
-        <div className="bg-slate-50/80 border border-slate-200/90 p-3.5 sm:p-4 rounded-xl space-y-1 shadow-2xs">
-          <div className="flex items-center space-x-1.5 text-xs text-slate-500 font-bold uppercase tracking-wider">
-            <Calendar size={14} className="text-purple-600 shrink-0" />
+        <div className="bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 p-3.5 sm:p-4 rounded-xl space-y-1 shadow-2xs">
+          <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
+            <Calendar size={14} className="text-purple-600 dark:text-purple-400 shrink-0" />
             <span>Total Lectures</span>
           </div>
-          <div className="text-lg sm:text-xl font-black text-slate-900">
+          <div className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
             {totalConducted} Sessions
           </div>
-          <div className="text-xs text-slate-500 font-medium">
+          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             Scheduled in Curriculum
           </div>
         </div>
 
         {/* Card 3: Attended Lectures */}
-        <div className="bg-emerald-50/70 border border-emerald-200 p-3.5 sm:p-4 rounded-xl space-y-1 shadow-2xs">
-          <div className="flex items-center space-x-1.5 text-xs text-emerald-800 font-black uppercase tracking-wider">
+        <div className="bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 p-3.5 sm:p-4 rounded-xl space-y-1 shadow-2xs">
+          <div className="flex items-center space-x-1.5 text-xs text-emerald-800 dark:text-emerald-300 font-black uppercase tracking-wider">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
             <span>Attended Lectures</span>
           </div>
-          <div className="text-lg sm:text-xl font-black text-emerald-950">
+          <div className="text-lg sm:text-xl font-black text-emerald-950 dark:text-emerald-200">
             {totalAttended} Lectures
           </div>
-          <div className="text-xs font-bold text-emerald-700">
+          <div className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
             {overallRate}% Present Rate
           </div>
         </div>
 
         {/* Card 4: Missed Lectures */}
-        <div className="bg-rose-50/70 border border-rose-200 p-3.5 sm:p-4 rounded-xl space-y-1 shadow-2xs">
-          <div className="flex items-center space-x-1.5 text-xs text-rose-800 font-black uppercase tracking-wider">
+        <div className="bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/60 p-3.5 sm:p-4 rounded-xl space-y-1 shadow-2xs">
+          <div className="flex items-center space-x-1.5 text-xs text-rose-800 dark:text-rose-300 font-black uppercase tracking-wider">
             <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0" />
             <span>Missed Lectures</span>
           </div>
-          <div className="text-lg sm:text-xl font-black text-rose-950">
+          <div className="text-lg sm:text-xl font-black text-rose-950 dark:text-rose-200">
             {totalMissed} Lectures
           </div>
-          <div className="text-xs font-bold text-rose-700">
+          <div className="text-xs font-bold text-rose-700 dark:text-rose-400">
             {Math.round((totalMissed / totalConducted) * 100)}% Absent Rate
           </div>
         </div>
@@ -352,14 +352,14 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
       {/* ============================================================== */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
         {/* Breakdown Mode Tabs: Total / Monthly / Weekly */}
-        <div className="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200/80">
+        <div className="flex items-center space-x-1.5 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-800">
           <button
             type="button"
             onClick={() => setBreakdownMode("monthly")}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer ${
               breakdownMode === "monthly"
-                ? "bg-white text-slate-900 shadow-2xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             Monthly Analysis ({activeProgram.durationMonths} Months)
@@ -369,8 +369,8 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
             onClick={() => setBreakdownMode("weekly")}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer ${
               breakdownMode === "weekly"
-                ? "bg-white text-slate-900 shadow-2xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             Weekly Analysis ({activeProgram.durationWeeks} Weeks)
@@ -380,8 +380,8 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
             onClick={() => setBreakdownMode("total")}
             className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer ${
               breakdownMode === "total"
-                ? "bg-white text-slate-900 shadow-2xs"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             }`}
           >
             Overall Total
@@ -390,11 +390,11 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
 
         {/* 2-WAY COLOR LEGEND */}
         <div className="flex items-center space-x-3 text-xs font-black">
-          <div className="flex items-center space-x-1.5 text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg shadow-2xs">
+          <div className="flex items-center space-x-1.5 text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/40 px-2.5 py-1 rounded-lg shadow-2xs">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
             <span>Attended Lectures</span>
           </div>
-          <div className="flex items-center space-x-1.5 text-rose-800 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-lg shadow-2xs">
+          <div className="flex items-center space-x-1.5 text-rose-800 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-500/40 px-2.5 py-1 rounded-lg shadow-2xs">
             <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
             <span>Missed Lectures</span>
           </div>
@@ -410,18 +410,20 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
             data={chartData}
             margin={{ top: 16, right: 24, left: -15, bottom: 6 }}
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-800/80" />
             <XAxis
               dataKey="period"
-              axisLine={{ stroke: "#e2e8f0" }}
+              axisLine={{ stroke: "#64748b", strokeOpacity: 0.3 }}
               tickLine={false}
-              tick={{ fontSize: 12, fill: "#334155", fontWeight: 700 }}
+              tick={{ fontSize: 12, fill: "currentColor", fontWeight: 700 }}
+              className="text-slate-600 dark:text-slate-400"
               padding={{ left: 32, right: 32 }}
             />
             <YAxis
               axisLine={false}
               tickLine={false}
-              tick={{ fontSize: 11, fill: "#64748b", fontWeight: 600 }}
+              tick={{ fontSize: 11, fill: "currentColor", fontWeight: 600 }}
+              className="text-slate-400 dark:text-slate-500"
               allowDecimals={false}
               domain={[0, "auto"]}
             />
@@ -456,21 +458,21 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
       {/* ============================================================== */}
       {/* 5. SUMMARY FOOTER & EXAM ELIGIBILITY THRESHOLD BENCHMARK       */}
       {/* ============================================================== */}
-      <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-        <div className="flex items-center space-x-2 text-slate-700 font-medium">
+      <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="flex items-center space-x-2 text-slate-700 dark:text-slate-300 font-medium">
           <Sparkles size={16} className="text-amber-500 shrink-0" />
           <span>
             Certification Examination Eligibility Criteria:{" "}
-            <strong className="text-slate-900 font-bold">Minimum 75% Attendance Required</strong>
+            <strong className="text-slate-900 dark:text-white font-bold">Minimum 75% Attendance Required</strong>
           </span>
         </div>
 
         <div className="flex items-center space-x-2">
-          <span className="text-slate-500 font-medium">
+          <span className="text-slate-500 dark:text-slate-400 font-medium">
             Cohort Standing:
           </span>
-          <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-2xs">
-            <CheckCircle2 size={13} className="text-emerald-700" />
+          <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40 shadow-2xs">
+            <CheckCircle2 size={13} className="text-emerald-700 dark:text-emerald-400" />
             <span>Eligible ({overallRate}%)</span>
           </span>
         </div>

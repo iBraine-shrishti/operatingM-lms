@@ -1,6 +1,6 @@
 import { INITIAL_COURSES, COURSE_THUMBNAILS, INITIAL_UNITS, INITIAL_QUIZZES, INITIAL_ASSIGNMENTS, INITIAL_STUDENTS, INITIAL_QUESTIONS, INITIAL_DISCUSSIONS, INITIAL_ACTIVITIES, INITIAL_ACHIEVEMENTS, INITIAL_NOTES, INITIAL_REVIEWS } from '../data/mockData';
 // Helper for persistent local storage mock service
-const STORAGE_PREFIX = 'om_lms_v9_';
+const STORAGE_PREFIX = 'om_lms_v10_';
 const getStored = (key, initial) => {
     try {
         const item = localStorage.getItem(`${STORAGE_PREFIX}${key}`);
@@ -19,15 +19,17 @@ const setStored = (key, value) => {
     }
 };
 export const lmsService = {
-    // Courses
+    // Courses (Total 7 active courses)
     getCourses: () => {
         const stored = getStored('courses', INITIAL_COURSES);
-        return stored.map(course => {
-            if (COURSE_THUMBNAILS && COURSE_THUMBNAILS[course.id] && (!course.thumbnail || course.thumbnail.includes('unsplash.com'))) {
-                return { ...course, thumbnail: COURSE_THUMBNAILS[course.id] };
-            }
-            return course;
-        });
+        return stored
+            .filter(c => c.id !== 'course-2' && !c.title.toLowerCase().includes('counseling'))
+            .map(course => {
+                if (COURSE_THUMBNAILS && COURSE_THUMBNAILS[course.id] && (!course.thumbnail || course.thumbnail.includes('unsplash.com'))) {
+                    return { ...course, thumbnail: COURSE_THUMBNAILS[course.id] };
+                }
+                return course;
+            });
     },
     getCourseById: (id) => {
         return lmsService.getCourses().find(c => c.id === id);
@@ -62,7 +64,10 @@ export const lmsService = {
         return true;
     },
     // Units
-    getUnits: () => getStored('units', INITIAL_UNITS),
+    getUnits: () => {
+        const stored = getStored('units', INITIAL_UNITS);
+        return stored.filter(u => u.courseId !== 'course-2');
+    },
     getUnitsByCourse: (courseId) => {
         return lmsService.getUnits().filter(u => u.courseId === courseId);
     },
@@ -76,11 +81,16 @@ export const lmsService = {
     // Quizzes
     getQuizzes: () => {
         const stored = getStored('quizzes', INITIAL_QUIZZES);
-        if (!stored || stored.length === 0 || !stored[0].category) {
+        let filtered = (stored || []).filter(q => q.courseId !== 'course-2');
+        if (!filtered || filtered.length === 0 || !filtered[0].category) {
             setStored('quizzes', INITIAL_QUIZZES);
             return INITIAL_QUIZZES;
         }
-        return stored;
+        if (!filtered.some(q => q.id === 'q-1')) {
+            filtered = [INITIAL_QUIZZES[0], ...filtered];
+            setStored('quizzes', filtered);
+        }
+        return filtered;
     },
     addQuiz: (quiz) => {
         const quizzes = lmsService.getQuizzes();
@@ -117,11 +127,12 @@ export const lmsService = {
     // Assignments
     getAssignments: () => {
         const stored = getStored('assignments', INITIAL_ASSIGNMENTS);
-        if (!stored || stored.length === 0 || !stored.some(a => a.status)) {
+        const filtered = (stored || []).filter(a => a.courseId !== 'course-2');
+        if (!filtered || filtered.length < 18 || !filtered.some(a => a.status)) {
             setStored('assignments', INITIAL_ASSIGNMENTS);
             return INITIAL_ASSIGNMENTS;
         }
-        return stored.map(a => ({
+        return filtered.map(a => ({
             ...a,
             status: a.status || 'pending'
         }));

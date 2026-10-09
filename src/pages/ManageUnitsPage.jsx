@@ -116,33 +116,72 @@ export const ManageUnitsPage = () => {
   };
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl md:text-[28px] font-semibold text-slate-900 tracking-tight">
-            Manage Units
+      {/* ------------------------------------------------------------- */}
+      {/* 1. HEADER BANNER - ACTIVITY PAGE STYLE (ADMIN CLEAN THEME)    */}
+      {/* ------------------------------------------------------------- */}
+      <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 2xl:p-8.5 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all">
+        <div className="space-y-2 relative z-10 min-w-0">
+          <div className="flex items-center space-x-2 text-blue-600 dark:text-cyan-400 text-xs sm:text-sm font-bold uppercase tracking-wider">
+            <FileText size={17} />
+            <span>Course Curriculum & Learning Units</span>
+            <span className="inline-flex items-center space-x-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-900/85 backdrop-blur-md text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-500/40 shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Curriculum Synchronized</span>
+            </span>
+          </div>
+
+          <h1 className="text-2xl sm:text-3xl 2xl:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+            Manage Learning Units
           </h1>
-          <p className="text-slate-500 text-sm mt-1 font-normal">
-            Categorized by course. Select a course below to view, manage, and
-            create its specific learning units.
+
+          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base 2xl:text-lg max-w-2xl leading-relaxed font-normal">
+            Categorized by course. Organize learning modules, video lessons, reference documentation, and practical exercises.
           </p>
+
+          {/* Quick Metrics Bar */}
+          <div className="flex flex-wrap items-center gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs sm:text-sm font-medium">
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">{units.length}</span>
+              <span className="font-semibold">Total Units</span>
+            </div>
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">{units.filter(u => u.type === 'video').length}</span>
+              <span className="font-semibold">Video Lessons</span>
+            </div>
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block shadow-[0_0_8px_rgba(245,158,11,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">{units.filter(u => u.type === 'doc' || u.type === 'quiz').length}</span>
+              <span className="font-semibold">Interactive & Docs</span>
+            </div>
+            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block shadow-[0_0_8px_rgba(168,85,247,0.4)]" />
+              <span className="font-black text-slate-900 dark:text-white">100%</span>
+              <span className="font-semibold">HD Streaming</span>
+            </div>
+          </div>
         </div>
-        <button
-          onClick={() => handleOpenAddModal()}
-          className="bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs px-4 py-2.5 rounded-xl shadow-xs transition-colors flex items-center space-x-2 shrink-0 self-start sm:self-auto"
-        >
-          <Plus size={16} />
-          <span>Add Unit to Course</span>
-        </button>
+
+        {/* Action Button */}
+        <div className="w-full sm:w-auto shrink-0 relative z-10">
+          <button
+            onClick={() => handleOpenAddModal()}
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
+          >
+            <Plus size={16} className="2xl:w-4.5 2xl:h-4.5" />
+            <span>+ Add Unit to Course</span>
+          </button>
+        </div>
       </div>
 
       {/* SIMPLE COURSE SELECT DROPDOWN & SEARCH FILTERS */}
-      <div className="bg-whiterounded border border-slate-200/80 p-3.5 sm:p-4 shadow-xs space-y-3">
+      <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-3.5 sm:p-4 shadow-xs space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-3 flex-1">
             <label
               htmlFor="unit-course-select"
-              className="text-xs font-semibold uppercase tracking-wider text-slate-500 shrink-0"
+              className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 shrink-0"
             >
               Select Course:
             </label>
@@ -154,7 +193,7 @@ export const ManageUnitsPage = () => {
                   setSelectedCourseId(e.target.value);
                   setSearch("");
                 }}
-                className="w-full bg-slate-50 hover:bg-slate-100 text-slate-900 text-xs sm:text-sm font-medium pl-3 pr-9 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 cursor-pointer appearance-none transition-colors"
+                className="w-full bg-slate-50 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-850 text-slate-900 dark:text-slate-100 text-xs sm:text-sm font-medium pl-3 pr-9 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#3b49df] cursor-pointer appearance-none transition-colors"
               >
                 <option value="all">All Courses ({units.length} Units)</option>
                 {courses.map((course) => {
@@ -168,18 +207,18 @@ export const ManageUnitsPage = () => {
               </select>
               <ChevronDown
                 size={16}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none"
               />
             </div>
           </div>
 
           {selectedCourse && (
             <div className="flex items-center space-x-2 shrink-0 text-xs">
-              <span className="text-slate-500 font-medium">Active:</span>
-              <span className="font-semibold text-slate-800">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Active:</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">
                 {selectedCourse.title}
               </span>
-              <span className="font-medium text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-lg border border-slate-200">
+              <span className="font-medium text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700">
                 {courseUnits.length} Units
               </span>
             </div>
@@ -187,18 +226,18 @@ export const ManageUnitsPage = () => {
         </div>
 
         {/* Search & Type Filters */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-2.5 border-t border-slate-100">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-2.5 border-t border-slate-100 dark:border-slate-800">
           <div className="relative flex-1 max-w-md">
             <Search
               size={16}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"
             />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={`Search units in ${selectedCourse?.title || "all courses"}...`}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-1.5 text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500"
+              className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl pl-9 pr-3 py-1.5 text-xs font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-[#3b49df]"
             />
           </div>
 
@@ -208,10 +247,10 @@ export const ManageUnitsPage = () => {
               <button
                 key={f}
                 onClick={() => setTypeFilter(f)}
-                className={`px-3 py-1.5 rounded-xl capitalize transition-colors ${
+                className={`px-3 py-1.5 rounded-xl capitalize transition-colors cursor-pointer ${
                   typeFilter === f
-                    ? "bg-slate-900 text-white shadow-2xs"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    ? "bg-slate-900 dark:bg-blue-600 text-white shadow-2xs"
+                    : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
                 }`}
               >
                 {f === "all" ? `All (${courseUnits.length})` : f}
@@ -224,7 +263,7 @@ export const ManageUnitsPage = () => {
       {/* CATEGORIZED UNITS BY MODULE / SECTION */}
       <div className="space-y-5">
         {moduleSections.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-slate-200/80 p-12 text-center text-slate-400 text-xs">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-12 text-center text-slate-400 dark:text-slate-500 text-xs shadow-xs">
             No units found for this selection. Click "+ Add Unit to Course"
             above to create one.
           </div>
@@ -232,9 +271,9 @@ export const ManageUnitsPage = () => {
           moduleSections.map((section) => (
             <div key={section.name} className="space-y-2">
               <div className="flex items-center justify-between px-1">
-                <h3 className="font-semibold text-slate-900 text-sm md:text-base flex items-center space-x-2">
+                <h3 className="font-semibold text-slate-900 dark:text-white text-sm md:text-base flex items-center space-x-2">
                   <span>{section.name}</span>
-                  <span className="text-xs font-normal text-slate-400">
+                  <span className="text-xs font-normal text-slate-400 dark:text-slate-500">
                     ({section.items.length})
                   </span>
                 </h3>
@@ -242,21 +281,21 @@ export const ManageUnitsPage = () => {
                   onClick={() =>
                     handleOpenAddModal(selectedCourseId, section.name)
                   }
-                  className="text-xs font-medium text-slate-600 hover:text-slate-900 flex items-center space-x-1"
+                  className="text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1 cursor-pointer"
                 >
                   <Plus size={13} />
                   <span>Add to Section</span>
                 </button>
               </div>
 
-              <div className="bg-whiterounded border border-slate-200/80 divide-y divide-slate-100 shadow-xs overflow-hidden">
+              <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800/80 shadow-xs overflow-hidden">
                 {section.items.map((unit) => (
                   <div
                     key={unit.id}
-                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 transition-colors"
+                    className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 dark:hover:bg-slate-850/50 transition-colors"
                   >
                     <div className="flex items-center space-x-3.5 min-w-0">
-                      <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-medium bg-slate-100 text-slate-700 border border-slate-200/80">
+                      <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-slate-700">
                         {unit.type === "video" ? (
                           <Video size={16} />
                         ) : unit.type === "assignment" ? (
@@ -270,30 +309,30 @@ export const ManageUnitsPage = () => {
 
                       <div className="truncate">
                         <div className="flex items-center space-x-2">
-                          <h4 className="text-sm font-medium text-slate-900 truncate">
+                          <h4 className="text-sm font-medium text-slate-900 dark:text-white truncate">
                             {unit.title}
                           </h4>
-                          <span className="text-[11px] font-medium uppercase px-2 py-0.5 rounded-md shrink-0 bg-slate-100 text-slate-700 border border-slate-200">
+                          <span className="text-[11px] font-medium uppercase px-2 py-0.5 rounded-md shrink-0 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                             {unit.type}
                           </span>
                         </div>
                         {unit.description && (
-                          <p className="text-xs text-slate-400 font-normal truncate max-w-xl mt-0.5">
+                          <p className="text-xs text-slate-400 dark:text-slate-500 font-normal truncate max-w-xl mt-0.5">
                             {unit.description}
                           </p>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-4 shrink-0 justify-between sm:justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100">
-                      <span className="text-xs font-normal text-slate-500">
+                    <div className="flex items-center space-x-4 shrink-0 justify-between sm:justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100 dark:border-slate-800">
+                      <span className="text-xs font-normal text-slate-500 dark:text-slate-400">
                         {unit.duration}
                       </span>
-                      <span className="text-xs font-medium px-2.5 py-0.5 rounded-md border border-slate-200 bg-slate-100 text-slate-700 flex items-center space-x-1">
+                      <span className="text-xs font-medium px-2.5 py-0.5 rounded-md border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center space-x-1">
                         {unit.isCompleted && (
                           <CheckCircle2
                             size={13}
-                            className="inline mr-1 text-slate-800"
+                            className="inline mr-1 text-slate-800 dark:text-slate-200"
                           />
                         )}
                         <span>{unit.isCompleted ? "Completed" : "Active"}</span>
@@ -306,7 +345,7 @@ export const ManageUnitsPage = () => {
                               `/lesson-player?courseId=${unit.courseId}&unitId=${unit.id}`,
                             )
                           }
-                          className="p-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                           title="Preview in Lesson Player"
                         >
                           <Play size={15} />
@@ -315,14 +354,14 @@ export const ManageUnitsPage = () => {
                           onClick={() =>
                             showToast(`Edit modal for "${unit.title}"`, "info")
                           }
-                          className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                           title="Edit Unit"
                         >
                           <Edit size={15} />
                         </button>
                         <button
                           onClick={() => handleDeleteUnit(unit.id, unit.title)}
-                          className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                           title="Delete Unit"
                         >
                           <Trash2 size={15} />
@@ -339,20 +378,20 @@ export const ManageUnitsPage = () => {
 
       {/* ADD UNIT MODAL (Scoped to Course) */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
-          <div className="bg-white rounded-xl p-6 md:p-7 max-w-md w-full shadow-2xl space-y-4 border border-slate-200 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl p-6 md:p-7 max-w-md w-full shadow-2xl space-y-4 border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
-                <h3 className="font-semibold text-slate-900 text-base">
+                <h3 className="font-semibold text-slate-900 dark:text-white text-base">
                   Add New Unit
                 </h3>
-                <p className="text-[11px] text-slate-400 font-normal">
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 font-normal">
                   Attach unit to specific course & module.
                 </p>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -360,13 +399,13 @@ export const ManageUnitsPage = () => {
 
             <form onSubmit={handleAddUnit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Target Course
                 </label>
                 <select
                   value={modalCourseId}
                   onChange={(e) => setModalCourseId(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-hidden"
+                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-hidden"
                 >
                   {courses.map((c) => (
                     <option key={c.id} value={c.id}>
@@ -377,7 +416,7 @@ export const ManageUnitsPage = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Module / Section Name
                 </label>
                 <input
@@ -386,12 +425,12 @@ export const ManageUnitsPage = () => {
                   value={newModuleName}
                   onChange={(e) => setNewModuleName(e.target.value)}
                   placeholder="e.g. Affiliate Marketing or Module 1"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-hidden"
+                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-hidden"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Unit Title
                 </label>
                 <input
@@ -400,19 +439,19 @@ export const ManageUnitsPage = () => {
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   placeholder="e.g. Affiliate Network Integrations"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:border-amber-500"
+                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-[#3b49df]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Unit Type
                   </label>
                   <select
                     value={newType}
                     onChange={(e) => setNewType(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-hidden"
+                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-hidden"
                   >
                     <option value="video">Video Lecture</option>
                     <option value="assignment">Assignment</option>
@@ -421,7 +460,7 @@ export const ManageUnitsPage = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                     Duration
                   </label>
                   <input
@@ -429,22 +468,22 @@ export const ManageUnitsPage = () => {
                     value={newDuration}
                     onChange={(e) => setNewDuration(e.target.value)}
                     placeholder="20:00"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-hidden"
+                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-hidden"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100">
+              <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-slate-100 rounded-xl"
+                  className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 rounded-xl cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 rounded-xl shadow-xs transition-colors"
+                  className="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition-colors cursor-pointer"
                 >
                   Add Unit
                 </button>

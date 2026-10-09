@@ -43,82 +43,82 @@ const QUIZ_ENHANCED_DESCRIPTIONS = {
 const CATEGORY_THEMES = {
   ppc: {
     name: "PPC Advertising",
-    accent: "text-blue-600",
-    borderAccent: "border-blue-200",
-    badgeBg: "bg-blue-50 text-blue-700 border-blue-200/90",
-    iconBg: "bg-blue-50 text-blue-600 border-blue-200/80",
+    accent: "text-blue-600 dark:text-blue-400",
+    borderAccent: "border-blue-200 dark:border-blue-800/60",
+    badgeBg: "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200/90 dark:border-blue-800/60",
+    iconBg: "bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border-blue-200/80 dark:border-blue-800/60",
     topGradient: "from-blue-600 via-indigo-600 to-blue-500",
-    buttonBg: "bg-blue-600 hover:bg-blue-700",
+    buttonBg: "bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500",
     icon: Target,
   },
   seo: {
     name: "SEO Strategy",
-    accent: "text-emerald-600",
-    borderAccent: "border-emerald-200",
-    badgeBg: "bg-emerald-50 text-emerald-700 border-emerald-200/90",
-    iconBg: "bg-emerald-50 text-emerald-600 border-emerald-200/80",
+    accent: "text-emerald-600 dark:text-emerald-400",
+    borderAccent: "border-emerald-200 dark:border-emerald-800/60",
+    badgeBg: "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200/90 dark:border-emerald-800/60",
+    iconBg: "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border-emerald-200/80 dark:border-emerald-800/60",
     topGradient: "from-emerald-600 via-teal-600 to-emerald-500",
-    buttonBg: "bg-emerald-600 hover:bg-emerald-700",
+    buttonBg: "bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-500",
     icon: Search,
   },
   social: {
     name: "Social Media",
-    accent: "text-purple-600",
-    borderAccent: "border-purple-200",
-    badgeBg: "bg-purple-50 text-purple-700 border-purple-200/90",
-    iconBg: "bg-purple-50 text-purple-600 border-purple-200/80",
+    accent: "text-purple-600 dark:text-purple-400",
+    borderAccent: "border-purple-200 dark:border-purple-800/60",
+    badgeBg: "bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200/90 dark:border-purple-800/60",
+    iconBg: "bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 border-purple-200/80 dark:border-purple-800/60",
     topGradient: "from-purple-600 via-fuchsia-600 to-purple-500",
-    buttonBg: "bg-purple-600 hover:bg-purple-700",
+    buttonBg: "bg-purple-600 hover:bg-purple-700 dark:bg-purple-600 dark:hover:bg-purple-500",
     icon: Share2,
   },
   analytics: {
     name: "Analytics & Tracking",
-    accent: "text-amber-600",
-    borderAccent: "border-amber-200",
-    badgeBg: "bg-amber-50 text-amber-800 border-amber-200/90",
-    iconBg: "bg-amber-50 text-amber-600 border-amber-200/80",
+    accent: "text-amber-600 dark:text-amber-400",
+    borderAccent: "border-amber-200 dark:border-amber-800/60",
+    badgeBg: "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200/90 dark:border-amber-800/60",
+    iconBg: "bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border-amber-200/80 dark:border-amber-800/60",
     topGradient: "from-amber-500 via-orange-500 to-amber-600",
-    buttonBg: "bg-amber-600 hover:bg-amber-700",
+    buttonBg: "bg-amber-600 hover:bg-amber-700 dark:bg-amber-600 dark:hover:bg-amber-500",
     icon: BarChart3,
   },
   wordpress: {
     name: "WordPress Architecture",
-    accent: "text-teal-600",
-    borderAccent: "border-teal-200",
-    badgeBg: "bg-teal-50 text-teal-700 border-teal-200/90",
-    iconBg: "bg-teal-50 text-teal-600 border-teal-200/80",
+    accent: "text-teal-600 dark:text-teal-400",
+    borderAccent: "border-teal-200 dark:border-teal-800/60",
+    badgeBg: "bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border-teal-200/90 dark:border-teal-800/60",
+    iconBg: "bg-teal-50 dark:bg-teal-950/50 text-teal-600 dark:text-teal-400 border-teal-200/80 dark:border-teal-800/60",
     topGradient: "from-teal-600 via-cyan-600 to-teal-500",
-    buttonBg: "bg-teal-600 hover:bg-teal-700",
+    buttonBg: "bg-teal-600 hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-500",
     icon: Layout,
   },
   design: {
     name: "Creative Design",
-    accent: "text-rose-600",
-    borderAccent: "border-rose-200",
-    badgeBg: "bg-rose-50 text-rose-700 border-rose-200/90",
-    iconBg: "bg-rose-50 text-rose-600 border-rose-200/80",
+    accent: "text-rose-600 dark:text-rose-400",
+    borderAccent: "border-rose-200 dark:border-rose-800/60",
+    badgeBg: "bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200/90 dark:border-rose-800/60",
+    iconBg: "bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border-rose-200/80 dark:border-rose-800/60",
     topGradient: "from-rose-500 via-pink-500 to-rose-600",
-    buttonBg: "bg-rose-600 hover:bg-rose-700",
+    buttonBg: "bg-rose-600 hover:bg-rose-700 dark:bg-rose-600 dark:hover:bg-rose-500",
     icon: Palette,
   },
   career: {
     name: "Career Orientation",
-    accent: "text-indigo-600",
-    borderAccent: "border-indigo-200",
-    badgeBg: "bg-indigo-50 text-indigo-700 border-indigo-200/90",
-    iconBg: "bg-indigo-50 text-indigo-600 border-indigo-200/80",
+    accent: "text-indigo-600 dark:text-indigo-400",
+    borderAccent: "border-indigo-200 dark:border-indigo-800/60",
+    badgeBg: "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200/90 dark:border-indigo-800/60",
+    iconBg: "bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border-indigo-200/80 dark:border-indigo-800/60",
     topGradient: "from-indigo-600 via-blue-600 to-indigo-500",
-    buttonBg: "bg-indigo-600 hover:bg-indigo-700",
+    buttonBg: "bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500",
     icon: GraduationCap,
   },
   capstone: {
     name: "Capstone Exam",
-    accent: "text-violet-600",
-    borderAccent: "border-violet-200",
-    badgeBg: "bg-violet-50 text-violet-700 border-violet-200/90",
-    iconBg: "bg-violet-50 text-violet-600 border-violet-200/80",
+    accent: "text-violet-600 dark:text-violet-400",
+    borderAccent: "border-violet-200 dark:border-violet-800/60",
+    badgeBg: "bg-violet-50 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border-violet-200/90 dark:border-violet-800/60",
+    iconBg: "bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400 border-violet-200/80 dark:border-violet-800/60",
     topGradient: "from-violet-600 via-purple-600 to-indigo-600",
-    buttonBg: "bg-violet-600 hover:bg-violet-700",
+    buttonBg: "bg-violet-600 hover:bg-violet-700 dark:bg-violet-600 dark:hover:bg-violet-500",
     icon: Award,
   },
 };
@@ -298,42 +298,41 @@ export const MyQuizzesPage = () => {
       {/* HEADER BANNER - FULLY RESPONSIVE WITH BRANDED BACKGROUND      */}
       {/* ------------------------------------------------------------- */}
       <div 
-        className="relative bg-cover bg-center rounded-2xl border border-blue-100/80 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
-        style={{ backgroundImage: `url(${dashboardHeaderBg})` }}
+        className="relative dashboard-hero-banner rounded-2xl border border-blue-100/80 dark:border-blue-900/40 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
       >
         <div className="space-y-2">
-          <div className="flex items-center space-x-2 text-blue-700 text-sm font-extrabold uppercase tracking-wider">
+          <div className="flex items-center space-x-2 text-blue-700 dark:text-blue-400 text-sm font-extrabold uppercase tracking-wider">
             <CheckSquare size={17} />
             <span>Assessment & Certification Hub</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             My Quizzes
           </h1>
-          <p className="text-slate-900/90 text-sm sm:text-base max-w-2xl leading-relaxed font-semibold">
+          <p className="text-slate-900/90 dark:text-slate-200 text-sm sm:text-base max-w-2xl leading-relaxed font-semibold">
             Test your domain mastery across enrolled modules, meet passing criteria, and track your verified certification examination scores.
           </p>
 
           {/* Quick Metrics Bar */}
-          <div className="flex flex-wrap items-center gap-3.5 pt-3 border-t border-slate-200/80 text-sm font-medium">
-            <div className="flex items-center space-x-1.5 text-slate-800">
+          <div className="flex flex-wrap items-center gap-3.5 pt-3 border-t border-slate-200/80 dark:border-slate-700/80 text-sm font-medium">
+            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-300">
               <span className="w-2.5 h-2.5 rounded-full bg-[#3b49df] inline-block"></span>
-              <span className="font-extrabold text-slate-900">{quizzes.length}</span>
-              <span className="text-slate-800 font-semibold">Total Quizzes</span>
+              <span className="font-extrabold text-slate-900 dark:text-white">{quizzes.length}</span>
+              <span className="text-slate-800 dark:text-slate-300 font-semibold">Total Quizzes</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-slate-800">
+            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-300">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
-              <span className="font-extrabold text-slate-900">{passedCount}</span>
-              <span className="text-slate-800 font-semibold">Passed</span>
+              <span className="font-extrabold text-slate-900 dark:text-white">{passedCount}</span>
+              <span className="text-slate-800 dark:text-slate-300 font-semibold">Passed</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-slate-800">
+            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-300">
               <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
-              <span className="font-extrabold text-slate-900">{pendingCount}</span>
-              <span className="text-slate-800 font-semibold">Pending</span>
+              <span className="font-extrabold text-slate-900 dark:text-white">{pendingCount}</span>
+              <span className="text-slate-800 dark:text-slate-300 font-semibold">Pending</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-slate-800">
+            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-300">
               <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span>
-              <span className="font-extrabold text-slate-900">{avgScore}</span>
-              <span className="text-slate-800 font-semibold">Avg. Score</span>
+              <span className="font-extrabold text-slate-900 dark:text-white">{avgScore}</span>
+              <span className="text-slate-800 dark:text-slate-300 font-semibold">Avg. Score</span>
             </div>
           </div>
         </div>
@@ -357,46 +356,46 @@ export const MyQuizzesPage = () => {
       {/* ------------------------------------------------------------- */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* Left Card: Small Continue Courses / Active Quiz (with dotted bar, perc & num of ques left) */}
-        <div className="lg:col-span-7 xl:col-span-8 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition-all">
+        <div className="lg:col-span-7 xl:col-span-8 bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition-all">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 text-[#3b49df] border border-blue-200/70 flex items-center justify-center shrink-0 shadow-2xs">
-                <Play size={16} className="fill-[#3b49df] ml-0.5" />
+              <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-[#3b49df] dark:text-blue-400 border border-blue-200/70 dark:border-blue-800/60 flex items-center justify-center shrink-0 shadow-2xs">
+                <Play size={16} className="fill-[#3b49df] dark:fill-blue-400 ml-0.5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-[#3b49df]">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[#3b49df] dark:text-blue-400">
                     Continue Course Quiz
                   </span>
-                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-blue-50 text-[#3b49df] border border-blue-200/80 text-[10px] font-bold">
+                  <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-[#3b49df] dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 text-[10px] font-bold">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#3b49df] animate-pulse" />
                     <span>In Progress</span>
                   </span>
                 </div>
-                <h3 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight leading-snug">
+                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight leading-snug">
                   {firstPendingQuiz ? firstPendingQuiz.title : "Google Ads (PPC) Campaign Planning Assessment"}
                 </h3>
-                <p className="text-xs text-slate-500 font-medium leading-snug">
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-snug">
                   {firstPendingQuiz ? firstPendingQuiz.courseTitle : "Google Ads (PPC)"} • Passing Req: {firstPendingQuiz ? firstPendingQuiz.passScorePercentage : 85}%
                 </p>
               </div>
             </div>
 
-            <span className="self-start sm:self-auto px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shrink-0">
+            <span className="self-start sm:self-auto px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200/80 dark:border-rose-800/60 shrink-0">
               6 Questions Left
             </span>
           </div>
 
           {/* Dotted Segmented Progress Bar with Percentage */}
-          <div className="space-y-2 bg-slate-50/80 border border-slate-100 rounded-xl p-3 sm:p-3.5">
+          <div className="space-y-2 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 rounded-xl p-3 sm:p-3.5">
             <div className="flex items-center justify-between text-xs font-semibold">
               <div className="flex items-center gap-2">
-                <span className="text-[#3b49df] font-black text-sm tabular-nums">
+                <span className="text-[#3b49df] dark:text-blue-400 font-black text-sm tabular-nums">
                   65%
                 </span>
-                <span className="text-slate-500 font-medium">Completed</span>
+                <span className="text-slate-500 dark:text-slate-400 font-medium">Completed</span>
               </div>
-              <span className="text-slate-600 text-xs font-bold">
+              <span className="text-slate-600 dark:text-slate-300 text-xs font-bold">
                 14 / 20 Answered
               </span>
             </div>
@@ -411,24 +410,24 @@ export const MyQuizzesPage = () => {
                     title={isFilled ? `Question ${i + 1}: Answered` : `Question ${i + 1}: Pending`}
                     className={`h-2.5 rounded-full transition-all duration-300 ${
                       isFilled
-                        ? "bg-[#3b49df] shadow-2xs"
-                        : "bg-slate-200/90"
+                        ? "bg-[#3b49df] shadow-[0_0_8px_rgba(59,73,223,0.5)]"
+                        : "bg-slate-200/90 dark:bg-slate-800"
                     }`}
                   />
                 );
               })}
             </div>
 
-            <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium pt-0.5">
+            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-medium pt-0.5">
               <span>Current Section: Performance & ROAS Metrics</span>
-              <span className="text-rose-600 font-bold">6 questions remaining</span>
+              <span className="text-rose-600 dark:text-rose-400 font-bold">6 questions remaining</span>
             </div>
           </div>
 
           {/* Bottom Action Row */}
           <div className="flex items-center justify-between pt-1">
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <Clock size={13} className="text-slate-400" />
+            <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+              <Clock size={13} className="text-slate-400 dark:text-slate-500" />
               <span>Est. ~8 mins left to complete</span>
             </div>
 
@@ -447,17 +446,17 @@ export const MyQuizzesPage = () => {
         </div>
 
         {/* Right Card: Beside a Label Like for Completed Quizzes */}
-        <div className="lg:col-span-5 xl:col-span-4 bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition-all">
+        <div className="lg:col-span-5 xl:col-span-4 bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md transition-all">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/70 flex items-center justify-center shrink-0 shadow-2xs">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/70 dark:border-emerald-800/60 flex items-center justify-center shrink-0 shadow-2xs">
                 <CheckCircle2 size={18} />
               </div>
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700">
+                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
                   Completed Quizzes
                 </span>
-                <h4 className="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
+                <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight">
                   Passed Assessments
                 </h4>
               </div>
@@ -466,7 +465,7 @@ export const MyQuizzesPage = () => {
             <button
               type="button"
               onClick={() => setShowAllCompletedModal(true)}
-              className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-emerald-100 hover:bg-emerald-200 text-emerald-800 border border-emerald-200 shrink-0 transition-colors cursor-pointer"
+              className="px-2.5 py-1 rounded-full text-xs font-extrabold bg-emerald-100 dark:bg-emerald-950/70 hover:bg-emerald-200 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/80 shrink-0 transition-colors cursor-pointer"
             >
               {passedCount} / {quizzes.length} Passed
             </button>
@@ -481,13 +480,13 @@ export const MyQuizzesPage = () => {
                 <div
                   key={q.id}
                   onClick={() => setScoreReviewModal(q)}
-                  className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/90 hover:bg-emerald-50/40 border border-slate-100/90 hover:border-emerald-200 transition-all cursor-pointer group"
+                  className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/90 dark:bg-slate-900/70 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/30 border border-slate-100/90 dark:border-slate-800 hover:border-emerald-200 dark:hover:border-emerald-800/60 transition-all cursor-pointer group"
                 >
                   <div className="min-w-0 pr-2">
-                    <p className="text-xs font-bold text-slate-800 leading-snug group-hover:text-emerald-700">
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200 leading-snug group-hover:text-emerald-700 dark:group-hover:text-emerald-400">
                       {q.title}
                     </p>
-                    <span className="text-[10.5px] text-slate-400 font-medium">
+                    <span className="text-[10.5px] text-slate-400 dark:text-slate-500 font-medium">
                       Completed {q.completedDate || "Feb 2026"} • {q.timeSpent || "14 mins"}
                     </span>
                   </div>
@@ -495,50 +494,50 @@ export const MyQuizzesPage = () => {
                     <span className="px-2 py-0.5 rounded text-[11px] font-black bg-emerald-600 text-white shadow-2xs">
                       {q.studentScore}%
                     </span>
-                    <ChevronRight size={13} className="text-slate-400 group-hover:text-emerald-600" />
+                    <ChevronRight size={13} className="text-slate-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-400" />
                   </div>
                 </div>
               ))}
           </div>
 
           {/* Performance Summary Footer */}
-          <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1.5 text-slate-600 font-medium">
+          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400 font-medium">
               <Award size={14} className="text-amber-500" />
               <span>Overall Average:</span>
-              <strong className="text-slate-900 font-extrabold">{avgScore}</strong>
+              <strong className="text-slate-900 dark:text-white font-extrabold">{avgScore}</strong>
             </div>
 
             <button
               type="button"
               onClick={() => setShowAllCompletedModal(true)}
-              className="font-bold text-[#3b49df] hover:underline cursor-pointer text-xs"
+              className="font-bold text-[#3b49df] dark:text-blue-400 hover:underline cursor-pointer text-xs"
             >
               View All ({passedCount}) &rarr;
             </button>
           </div>
         </div>
       </div>
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 shadow-xs space-y-4">
+      <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-4 sm:p-5 shadow-xs space-y-4">
         {/* Top Control Row: Search + Course Filter + Sort */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
           {/* Live Search Input */}
           <div className="relative md:col-span-6 lg:col-span-6">
             <Search
               size={16}
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none"
             />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search quizzes by title, course, or category..."
-              className="w-full pl-10 pr-9 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] transition-all"
+              className="w-full pl-10 pr-9 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 transition-all"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 cursor-pointer"
                 title="Clear search"
               >
                 <X size={14} />
@@ -551,7 +550,7 @@ export const MyQuizzesPage = () => {
             <select
               value={selectedCourse}
               onChange={(e) => setSelectedCourse(e.target.value)}
-              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] cursor-pointer"
+              className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 cursor-pointer"
             >
               <option value="all">All Enrolled Courses ({quizzes.length})</option>
               {courses.map((c) => (
@@ -567,7 +566,7 @@ export const MyQuizzesPage = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] cursor-pointer"
+              className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 cursor-pointer"
             >
               <option value="default">Sort: Default Order</option>
               <option value="durationAsc">Sort: Duration (Shortest)</option>
@@ -581,9 +580,9 @@ export const MyQuizzesPage = () => {
         </div>
 
         {/* Second Row: Status Filter Pills + Results Count / Reset Action */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
           <div className="flex items-center space-x-1.5 overflow-x-auto custom-scrollbar pb-1.5 sm:pb-0 w-full sm:w-auto">
-            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-1 hidden sm:inline-block shrink-0">
+            <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mr-1 hidden sm:inline-block shrink-0">
               Status:
             </span>
             {[
@@ -599,7 +598,7 @@ export const MyQuizzesPage = () => {
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
                     isActive
                       ? "bg-[#3b49df] text-white shadow-2xs"
-                      : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
                   {st.label}
@@ -609,9 +608,9 @@ export const MyQuizzesPage = () => {
           </div>
 
           <div className="flex items-center justify-between sm:justify-end space-x-3 w-full sm:w-auto shrink-0 text-xs">
-            <span className="text-slate-400">
+            <span className="text-slate-400 dark:text-slate-500">
               Showing{" "}
-              <strong className="text-slate-700 font-semibold">
+              <strong className="text-slate-700 dark:text-slate-300 font-semibold">
                 {filteredQuizzes.length}
               </strong>{" "}
               of {quizzes.length} tests
@@ -619,7 +618,7 @@ export const MyQuizzesPage = () => {
             {hasActiveFilters && (
               <button
                 onClick={handleClearFilters}
-                className="text-xs font-bold text-[#3b49df] hover:underline flex items-center space-x-1 cursor-pointer"
+                className="text-xs font-bold text-[#3b49df] dark:text-blue-400 hover:underline flex items-center space-x-1 cursor-pointer"
               >
                 <X size={12} />
                 <span>Reset Filters</span>
@@ -643,7 +642,7 @@ export const MyQuizzesPage = () => {
             return (
               <div
                 key={quiz.id}
-                className="bg-white border border-slate-200/90 hover:border-slate-300 rounded-2xl shadow-xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between overflow-hidden group"
+                className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-blue-500/60 rounded-2xl shadow-xs hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(37,99,235,0.15)] transition-all duration-200 flex flex-col justify-between overflow-hidden group"
               >
                 {/* Top Category Vibrant Accent Bar */}
                 <div className={`h-1.5 w-full bg-gradient-to-r ${theme.topGradient}`} />
@@ -660,13 +659,13 @@ export const MyQuizzesPage = () => {
 
                       {/* Prominent Status Badge */}
                       {isPassed ? (
-                        <span className="inline-flex items-center space-x-1.5 text-xs sm:text-sm font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/90 shrink-0 shadow-2xs">
-                          <CheckCircle2 size={14} className="text-emerald-600" />
+                        <span className="inline-flex items-center space-x-1.5 text-xs sm:text-sm font-bold px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/90 dark:border-emerald-800/60 shrink-0 shadow-2xs">
+                          <CheckCircle2 size={14} className="text-emerald-600 dark:text-emerald-400" />
                           <span>{quiz.studentScore}% Passed</span>
                         </span>
                       ) : (
-                        <span className="inline-flex items-center space-x-1.5 text-xs sm:text-sm font-bold px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200/90 shrink-0 shadow-2xs">
-                          <Clock size={14} className="text-amber-600" />
+                        <span className="inline-flex items-center space-x-1.5 text-xs sm:text-sm font-bold px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/90 dark:border-amber-800/60 shrink-0 shadow-2xs">
+                          <Clock size={14} className="text-amber-600 dark:text-amber-400" />
                           <span>Available</span>
                         </span>
                       )}
@@ -682,52 +681,52 @@ export const MyQuizzesPage = () => {
 
                       <div className="space-y-1 min-w-0 flex-1">
                         {/* Course Title - Full width, NEVER truncated into '...' */}
-                        <div className="flex items-start space-x-1.5 text-xs sm:text-sm text-slate-600 font-bold">
+                        <div className="flex items-start space-x-1.5 text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-bold">
                           <BookOpen size={14} className={`shrink-0 mt-0.5 ${theme.accent}`} />
                           <span className="break-words leading-snug">{quiz.courseTitle}</span>
                         </div>
 
                         {/* Larger Title - Full text, NEVER truncated into '...' */}
-                        <h3 className="text-lg sm:text-xl font-black text-slate-900 group-hover:text-[#3b49df] transition-colors leading-snug break-words">
+                        <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white group-hover:text-[#3b49df] dark:group-hover:text-blue-400 transition-colors leading-snug break-words">
                           {quiz.title}
                         </h3>
                       </div>
                     </div>
 
                     {/* Rich Description - Full text, clearly readable font */}
-                    <p className="text-sm sm:text-[15px] text-slate-700 font-medium leading-relaxed break-words pt-1">
+                    <p className="text-sm sm:text-[15px] text-slate-700 dark:text-slate-300 font-medium leading-relaxed break-words pt-1">
                       {desc}
                     </p>
                   </div>
 
                   {/* Specifications Strip with Specific Colored Icons */}
-                  <div className="bg-slate-50/90 border border-slate-100 rounded-xl p-3 grid grid-cols-3 gap-2 text-center mt-3">
-                    <div className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-white/80 border border-slate-100/90 shadow-2xs">
-                      <div className="flex items-center gap-1 text-slate-600 text-xs mb-0.5 font-bold">
-                        <HelpCircle size={13} className="text-blue-500" />
+                  <div className="bg-slate-50/90 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 rounded-xl p-3 grid grid-cols-3 gap-2 text-center mt-3">
+                    <div className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-white/80 dark:bg-slate-800/70 border border-slate-100/90 dark:border-slate-700/60 shadow-2xs">
+                      <div className="flex items-center gap-1 text-slate-600 dark:text-slate-400 text-xs mb-0.5 font-bold">
+                        <HelpCircle size={13} className="text-blue-500 dark:text-blue-400" />
                         <span>Questions</span>
                       </div>
-                      <span className="font-extrabold text-slate-900 text-xs sm:text-sm">
+                      <span className="font-extrabold text-slate-900 dark:text-white text-xs sm:text-sm">
                         {quiz.totalQuestions}
                       </span>
                     </div>
 
-                    <div className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-white/80 border border-slate-100/90 shadow-2xs">
-                      <div className="flex items-center gap-1 text-slate-500 text-[11px] mb-0.5 font-bold">
-                        <Clock size={13} className="text-amber-500" />
+                    <div className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-white/80 dark:bg-slate-800/70 border border-slate-100/90 dark:border-slate-700/60 shadow-2xs">
+                      <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-[11px] mb-0.5 font-bold">
+                        <Clock size={13} className="text-amber-500 dark:text-amber-400" />
                         <span>Duration</span>
                       </div>
-                      <span className="font-extrabold text-slate-900 text-xs sm:text-sm">
+                      <span className="font-extrabold text-slate-900 dark:text-white text-xs sm:text-sm">
                         {quiz.durationMinutes} mins
                       </span>
                     </div>
 
-                    <div className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-white/80 border border-slate-100/90 shadow-2xs">
-                      <div className="flex items-center gap-1 text-slate-500 text-[11px] mb-0.5 font-bold">
-                        <Award size={13} className="text-emerald-500" />
+                    <div className="flex flex-col items-center justify-center p-1.5 rounded-lg bg-white/80 dark:bg-slate-800/70 border border-slate-100/90 dark:border-slate-700/60 shadow-2xs">
+                      <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400 text-[11px] mb-0.5 font-bold">
+                        <Award size={13} className="text-emerald-500 dark:text-emerald-400" />
                         <span>Pass Req.</span>
                       </div>
-                      <span className="font-extrabold text-emerald-700 text-xs sm:text-sm">
+                      <span className="font-extrabold text-emerald-700 dark:text-emerald-400 text-xs sm:text-sm">
                         {quiz.passScorePercentage}%
                       </span>
                     </div>
@@ -735,10 +734,10 @@ export const MyQuizzesPage = () => {
                 </div>
 
                 {/* Card Action Footer */}
-                <div className="p-4 sm:px-6 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between gap-2">
+                <div className="p-4 sm:px-6 bg-slate-50/60 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
                   {isPassed ? (
                     <>
-                      <div className="text-xs text-slate-500 font-medium truncate">
+                      <div className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
                         <span>Passed on {quiz.completedDate || "Recently"}</span>
                         {quiz.timeSpent && (
                           <span className="hidden sm:inline"> • {quiz.timeSpent}</span>
@@ -748,14 +747,14 @@ export const MyQuizzesPage = () => {
                         <button
                           type="button"
                           onClick={() => setScoreReviewModal(quiz)}
-                          className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all shadow-2xs hover:shadow-xs cursor-pointer"
+                          className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all shadow-2xs hover:shadow-xs cursor-pointer"
                         >
                           Review
                         </button>
                         <button
                           type="button"
                           onClick={() => handleStartQuiz(quiz)}
-                          className="px-3 py-1.5 rounded-xl bg-slate-200/80 hover:bg-slate-300 text-slate-800 text-xs font-bold transition-all flex items-center space-x-1 cursor-pointer active:scale-95"
+                          className="px-3 py-1.5 rounded-xl bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all flex items-center space-x-1 cursor-pointer active:scale-95"
                         >
                           <RotateCcw size={12} />
                           <span>Retake</span>
@@ -764,8 +763,8 @@ export const MyQuizzesPage = () => {
                     </>
                   ) : (
                     <>
-                      <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium truncate">
-                        <Calendar size={13} className="text-slate-400 shrink-0" />
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
+                        <Calendar size={13} className="text-slate-400 dark:text-slate-500 shrink-0" />
                         <span className="truncate">{quiz.deadline || "Available Anytime"}</span>
                       </div>
                       <button
@@ -786,14 +785,14 @@ export const MyQuizzesPage = () => {
         </div>
       ) : (
         /* Empty State */
-        <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center shadow-xs">
-          <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400 mb-3">
+        <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-12 text-center shadow-xs">
+          <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto text-slate-400 dark:text-slate-500 mb-3">
             <Search size={22} />
           </div>
-          <h3 className="text-base font-bold text-slate-900">
+          <h3 className="text-base font-bold text-slate-900 dark:text-white">
             No Quizzes Match Your Filter
           </h3>
-          <p className="text-slate-500 text-xs sm:text-sm max-w-sm mx-auto mt-1 mb-4">
+          <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm max-w-sm mx-auto mt-1 mb-4">
             {searchQuery
               ? `No tests match "${searchQuery}". Try searching for another topic or reset your filters.`
               : "No quizzes available for the selected filters."}
@@ -811,37 +810,37 @@ export const MyQuizzesPage = () => {
       {/* START / RETAKE QUIZ MODAL                                     */}
       {/* ------------------------------------------------------------- */}
       {activeQuizModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-lg w-full border border-slate-200 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-blue-50/50 to-indigo-50/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-gradient-to-r from-blue-50/50 dark:from-blue-950/40 to-indigo-50/30 dark:to-indigo-950/20">
               <div>
-                <span className="text-[10px] font-black uppercase text-[#3b49df] tracking-wider block">
+                <span className="text-[10px] font-black uppercase text-[#3b49df] dark:text-blue-400 tracking-wider block">
                   {activeQuizModal.category || "SPECIALIZATION ASSESSMENT"}
                 </span>
-                <h3 className="font-black text-base text-slate-900 mt-0.5">
+                <h3 className="font-black text-base text-slate-900 dark:text-white mt-0.5">
                   {activeQuizModal.title}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveQuizModal(null)}
-                className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                className="text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
             </div>
 
             <div className="p-6 space-y-4">
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3.5 text-xs text-amber-900 flex items-start space-x-2.5">
+              <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl p-3.5 text-xs text-amber-900 dark:text-amber-200 flex items-start space-x-2.5">
                 <AlertCircle
                   size={16}
-                  className="text-amber-600 shrink-0 mt-0.5"
+                  className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5"
                 />
                 <div className="space-y-1">
                   <span className="font-bold block">
                     Important Examination Guidelines:
                   </span>
-                  <ul className="list-disc list-inside space-y-0.5 text-amber-800">
+                  <ul className="list-disc list-inside space-y-0.5 text-amber-800 dark:text-amber-300">
                     <li>
                       Duration is {activeQuizModal.durationMinutes} minutes with{" "}
                       {activeQuizModal.totalQuestions} multiple choice questions.
@@ -858,29 +857,29 @@ export const MyQuizzesPage = () => {
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50">
-                  <span className="text-[10px] font-bold text-slate-400 block uppercase">
+                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">
                     Timer Window
                   </span>
-                  <span className="font-black text-slate-900">
+                  <span className="font-black text-slate-900 dark:text-white">
                     {activeQuizModal.durationMinutes} Minutes
                   </span>
                 </div>
-                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50">
-                  <span className="text-[10px] font-bold text-slate-400 block uppercase">
+                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">
                     Passing Benchmark
                   </span>
-                  <span className="font-black text-emerald-700">
+                  <span className="font-black text-emerald-700 dark:text-emerald-400">
                     {activeQuizModal.passScorePercentage}% Required
                   </span>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2">
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end space-x-2">
                 <button
                   type="button"
                   onClick={() => setActiveQuizModal(null)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-colors cursor-pointer"
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -902,18 +901,18 @@ export const MyQuizzesPage = () => {
       {/* REVIEW RESULT MODAL                                           */}
       {/* ------------------------------------------------------------- */}
       {scoreReviewModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-emerald-50/60 to-teal-50/40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-gradient-to-r from-emerald-50/60 dark:from-emerald-950/40 to-teal-50/40 dark:to-teal-950/20">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold">
                   <CheckCircle2 size={18} />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-sm text-slate-900">
+                  <h3 className="font-extrabold text-sm text-slate-900 dark:text-white">
                     Examination Results
                   </h3>
-                  <span className="text-[10px] text-emerald-700 font-bold uppercase">
+                  <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold uppercase">
                     Verified in Student Ledger
                   </span>
                 </div>
@@ -921,7 +920,7 @@ export const MyQuizzesPage = () => {
               <button
                 type="button"
                 onClick={() => setScoreReviewModal(null)}
-                className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                className="text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -929,53 +928,53 @@ export const MyQuizzesPage = () => {
 
             <div className="p-6 space-y-4">
               <div className="text-center py-2 space-y-1">
-                <div className="inline-block p-4 rounded-full bg-emerald-50 border-4 border-emerald-100 text-3xl font-black text-emerald-700 shadow-inner">
+                <div className="inline-block p-4 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border-4 border-emerald-100 dark:border-emerald-800/60 text-3xl font-black text-emerald-700 dark:text-emerald-300 shadow-inner">
                   {scoreReviewModal.studentScore}%
                 </div>
-                <h4 className="text-base font-bold text-slate-900 mt-2">
+                <h4 className="text-base font-bold text-slate-900 dark:text-white mt-2">
                   {scoreReviewModal.title}
                 </h4>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   {scoreReviewModal.courseTitle}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50">
-                  <span className="text-[10px] font-bold text-slate-400 block uppercase">
+                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">
                     Result Status
                   </span>
-                  <span className="font-extrabold text-emerald-700">
+                  <span className="font-extrabold text-emerald-700 dark:text-emerald-400">
                     PASSED
                   </span>
                 </div>
-                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50">
-                  <span className="text-[10px] font-bold text-slate-400 block uppercase">
+                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">
                     Passing Required
                   </span>
-                  <span className="font-extrabold text-slate-800">
+                  <span className="font-extrabold text-slate-800 dark:text-slate-200">
                     {scoreReviewModal.passScorePercentage}%
                   </span>
                 </div>
-                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50">
-                  <span className="text-[10px] font-bold text-slate-400 block uppercase">
+                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">
                     Time Spent
                   </span>
-                  <span className="font-bold text-slate-800">
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
                     {scoreReviewModal.timeSpent || "14 mins"}
                   </span>
                 </div>
-                <div className="p-3 rounded-xl border border-slate-200 bg-slate-50">
-                  <span className="text-[10px] font-bold text-slate-400 block uppercase">
+                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">
                     Completion Date
                   </span>
-                  <span className="font-bold text-slate-800">
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
                     {scoreReviewModal.completedDate || "18 Feb 2026"}
                   </span>
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <button
                   type="button"
                   onClick={() => {
@@ -983,7 +982,7 @@ export const MyQuizzesPage = () => {
                     setScoreReviewModal(null);
                     handleStartQuiz(target);
                   }}
-                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold transition-colors cursor-pointer flex items-center space-x-1"
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold transition-colors cursor-pointer flex items-center space-x-1"
                 >
                   <RotateCcw size={12} />
                   <span>Retake Test</span>
@@ -991,7 +990,7 @@ export const MyQuizzesPage = () => {
                 <button
                   type="button"
                   onClick={() => setScoreReviewModal(null)}
-                  className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                  className="px-5 py-2 rounded-xl bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
                 >
                   Done
                 </button>
@@ -1005,24 +1004,24 @@ export const MyQuizzesPage = () => {
       {/* ALL COMPLETED QUIZZES POPUP MODAL                             */}
       {/* ------------------------------------------------------------- */}
       {showAllCompletedModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl max-w-2xl w-full border border-slate-200 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[88vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[88vh]">
             {/* Modal Header */}
-            <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-emerald-50/70 via-teal-50/40 to-blue-50/30 shrink-0">
+            <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-gradient-to-r from-emerald-50/70 dark:from-emerald-950/50 via-teal-50/40 dark:via-teal-950/30 to-blue-50/30 dark:to-blue-950/20 shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold shadow-2xs">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold shadow-2xs">
                   <CheckCircle2 size={20} />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black uppercase text-emerald-700 tracking-wider">
+                    <span className="text-[10px] font-black uppercase text-emerald-700 dark:text-emerald-400 tracking-wider">
                       Passed Assessments
                     </span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10.5px] font-extrabold border border-emerald-200">
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[10.5px] font-extrabold border border-emerald-200 dark:border-emerald-800/80">
                       {passedCount} Completed
                     </span>
                   </div>
-                  <h3 className="font-black text-lg text-slate-900 mt-0.5">
+                  <h3 className="font-black text-lg text-slate-900 dark:text-white mt-0.5">
                     Completed Quizzes & Certifications
                   </h3>
                 </div>
@@ -1033,28 +1032,28 @@ export const MyQuizzesPage = () => {
                   setShowAllCompletedModal(false);
                   setCompletedSearchQuery("");
                 }}
-                className="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+                className="text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 <X size={20} />
               </button>
             </div>
 
             {/* Quick Search & Summary Row */}
-            <div className="p-4 sm:px-6 bg-slate-50/80 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+            <div className="p-4 sm:px-6 bg-slate-50/80 dark:bg-slate-900/60 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
               <div className="relative flex-1">
-                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Search completed quizzes by title or course..."
                   value={completedSearchQuery}
                   onChange={(e) => setCompletedSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                  className="w-full pl-9 pr-3 py-1.5 text-xs bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                 />
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-600 font-semibold shrink-0">
+              <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 font-semibold shrink-0">
                 <Award size={14} className="text-amber-500" />
                 <span>
-                  Average Score: <strong className="text-slate-900 font-extrabold">{avgScore}</strong>
+                  Average Score: <strong className="text-slate-900 dark:text-white font-extrabold">{avgScore}</strong>
                 </span>
               </div>
             </div>
@@ -1078,7 +1077,7 @@ export const MyQuizzesPage = () => {
                   return (
                     <div
                       key={quiz.id}
-                      className="bg-white rounded-2xl border border-slate-200/90 hover:border-emerald-300 p-4 transition-all hover:shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
+                      className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/90 dark:border-slate-800/80 hover:border-emerald-300 dark:hover:border-emerald-600/60 p-4 transition-all hover:shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4 group"
                     >
                       <div className="flex items-start gap-3.5 min-w-0">
                         <div
@@ -1093,26 +1092,26 @@ export const MyQuizzesPage = () => {
                             >
                               {quiz.category}
                             </span>
-                            <span className="text-[11px] text-slate-500 font-semibold">
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
                               {quiz.courseTitle}
                             </span>
                           </div>
-                          <h4 className="text-sm sm:text-base font-extrabold text-slate-900 leading-snug group-hover:text-emerald-700 transition-colors">
+                          <h4 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white leading-snug group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
                             {quiz.title}
                           </h4>
-                          <div className="flex items-center gap-3 text-xs text-slate-500 font-medium mt-1.5 flex-wrap">
+                          <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 font-medium mt-1.5 flex-wrap">
                             <span className="flex items-center gap-1">
-                              <Calendar size={12} className="text-slate-400" />
+                              <Calendar size={12} className="text-slate-400 dark:text-slate-500" />
                               Completed on {quiz.completedDate || "Recently"}
                             </span>
                             {quiz.timeSpent && (
                               <span className="flex items-center gap-1">
-                                <Clock size={12} className="text-slate-400" />
+                                <Clock size={12} className="text-slate-400 dark:text-slate-500" />
                                 Time: {quiz.timeSpent}
                               </span>
                             )}
-                            <span className="flex items-center gap-1 text-slate-600">
-                              <HelpCircle size={12} className="text-blue-500" />
+                            <span className="flex items-center gap-1 text-slate-600 dark:text-slate-300">
+                              <HelpCircle size={12} className="text-blue-500 dark:text-blue-400" />
                               {quiz.totalQuestions} Questions
                             </span>
                           </div>
@@ -1120,12 +1119,12 @@ export const MyQuizzesPage = () => {
                       </div>
 
                       {/* Score & Actions */}
-                      <div className="flex items-center sm:flex-col items-end justify-between sm:justify-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                      <div className="flex items-center sm:flex-col items-end justify-between sm:justify-center gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 dark:border-slate-800">
                         <div className="flex items-center gap-2">
                           <span className="px-3 py-1 rounded-xl text-sm font-black bg-emerald-600 text-white shadow-xs">
                             {quiz.studentScore}%
                           </span>
-                          <span className="text-[11px] font-bold text-emerald-700 uppercase hidden sm:inline">
+                          <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 uppercase hidden sm:inline">
                             Passed
                           </span>
                         </div>
@@ -1136,7 +1135,7 @@ export const MyQuizzesPage = () => {
                               setShowAllCompletedModal(false);
                               setScoreReviewModal(quiz);
                             }}
-                            className="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 text-xs font-bold transition-all cursor-pointer"
+                            className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-emerald-300 text-xs font-bold transition-all cursor-pointer"
                           >
                             Review
                           </button>
@@ -1146,7 +1145,7 @@ export const MyQuizzesPage = () => {
                               setShowAllCompletedModal(false);
                               handleStartQuiz(quiz);
                             }}
-                            className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+                            className="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
                             title="Retake Quiz"
                           >
                             <RotateCcw size={12} />
@@ -1160,8 +1159,8 @@ export const MyQuizzesPage = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between shrink-0">
-              <span className="text-xs text-slate-500">
+            <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <span className="text-xs text-slate-500 dark:text-slate-400">
                 Showing <strong>{quizzes.filter((q) => q.studentStatus === "passed").length}</strong> passed assessments
               </span>
               <button
@@ -1170,7 +1169,7 @@ export const MyQuizzesPage = () => {
                   setShowAllCompletedModal(false);
                   setCompletedSearchQuery("");
                 }}
-                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
+                className="px-4 py-2 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
               >
                 Close
               </button>

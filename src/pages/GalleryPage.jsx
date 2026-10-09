@@ -57,22 +57,22 @@ export const GalleryPage = () => {
   return (
     <div className="space-y-6">
       {/* 1. Page Header */}
-      <div className="bg-gradient-to-r from-blue-50/70 via-indigo-50/40 to-blue-50/80 border border-blue-100/90 rounded sm:rounded-3xl p-5 sm:p-7 shadow-2xs relative overflow-hidden">
+      <div className="relative dashboard-hero-banner border border-blue-100/90 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-2xs overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 bg-white border border-blue-200/80 px-2 py-0.5 rounded shadow-2xs">
+              <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 dark:text-blue-400 bg-white/90 dark:bg-slate-900 border border-blue-200/80 dark:border-blue-800/60 px-2 py-0.5 rounded shadow-2xs">
                 CAMPUS ARCHIVES & MEDIA HUB
               </span>
-              <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span>Live Studio Sync</span>
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               Photo & Video Library
             </h1>
-            <p className="text-slate-500 text-xs sm:text-sm">
+            <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm">
               Explore Operating Media classroom sessions, faculty masterclasses, convocation moments, and seminar archives.
             </p>
           </div>
@@ -80,7 +80,7 @@ export const GalleryPage = () => {
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
-            className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-2xs flex items-center space-x-1.5 self-start sm:self-center cursor-pointer active:scale-95"
+            className="bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-2xs flex items-center space-x-1.5 self-start sm:self-center cursor-pointer active:scale-95"
           >
             <ArrowLeft size={14} />
             <span>Back to Dashboard</span>
@@ -89,7 +89,7 @@ export const GalleryPage = () => {
       </div>
 
       {/* 2. Tabs & Controls Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-3">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-3">
         {/* Tab Buttons */}
         <div className="flex items-center space-x-2">
           <button
@@ -97,8 +97,8 @@ export const GalleryPage = () => {
             onClick={() => setSearchParams({})}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2 ${
               activeTab === 'all'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                ? 'bg-slate-900 dark:bg-blue-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
             <Layers size={14} />
@@ -110,8 +110,8 @@ export const GalleryPage = () => {
             onClick={() => setSearchParams({ tab: 'photos' })}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2 ${
               activeTab === 'photos'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                ? 'bg-slate-900 dark:bg-blue-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
             <ImageIcon size={14} />
@@ -123,8 +123,8 @@ export const GalleryPage = () => {
             onClick={() => setSearchParams({ tab: 'videos' })}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center space-x-2 ${
               activeTab === 'videos'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                ? 'bg-slate-900 dark:bg-blue-600 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
             <PlaySquare size={14} />
@@ -134,13 +134,13 @@ export const GalleryPage = () => {
 
         {/* Search Bar */}
         <div className="relative min-w-[240px]">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search photos or videos..."
-            className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 shadow-2xs"
+            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 shadow-2xs"
           />
         </div>
       </div>
@@ -155,7 +155,7 @@ export const GalleryPage = () => {
             className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-all cursor-pointer ${
               selectedCategory === cat
                 ? 'bg-[#2563eb] text-white shadow-xs'
-                : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
             }`}
           >
             {cat}
@@ -171,17 +171,17 @@ export const GalleryPage = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ImageIcon size={18} className="text-[#2563eb]" />
-                <h2 className="text-base sm:text-lg font-bold text-slate-900">
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
                   Photo Library ({filteredPhotos.length})
                 </h2>
               </div>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-slate-400 dark:text-slate-500">
                 Infinite loop slideshow available
               </span>
             </div>
 
             {filteredPhotos.length === 0 ? (
-              <div className="text-center py-10 bg-white border border-slate-100 rounded-2xl text-slate-400 text-xs">
+              <div className="text-center py-10 bg-white dark:bg-[#0b1329] border border-slate-100 dark:border-slate-800 rounded-2xl text-slate-400 dark:text-slate-500 text-xs">
                 No photos found matching your criteria.
               </div>
             ) : (
@@ -190,9 +190,9 @@ export const GalleryPage = () => {
                   <div
                     key={photo.id}
                     onClick={() => handleOpenPhoto(idx)}
-                    className="bg-white border border-slate-200/80 rounded-xl overflow-hidden shadow-2xs hover:shadow-md transition-all duration-200 group cursor-pointer flex flex-col"
+                    className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xs hover:shadow-md dark:hover:shadow-[0_8px_30px_rgba(37,99,235,0.12)] transition-all duration-200 group cursor-pointer flex flex-col"
                   >
-                    <div className="relative aspect-4/3 overflow-hidden bg-slate-100">
+                    <div className="relative aspect-4/3 overflow-hidden bg-slate-100 dark:bg-slate-800">
                       <img
                         src={photo.url}
                         alt={photo.title}
@@ -200,7 +200,7 @@ export const GalleryPage = () => {
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span className="bg-white/90 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5">
+                        <span className="bg-white/90 dark:bg-slate-900/90 text-slate-900 dark:text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md flex items-center gap-1.5">
                           <Camera size={13} /> View Photo
                         </span>
                       </div>
@@ -210,10 +210,10 @@ export const GalleryPage = () => {
                     </div>
 
                     <div className="p-3 flex-1 flex flex-col justify-between">
-                      <h4 className="font-bold text-xs sm:text-sm text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+                      <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
                         {photo.title}
                       </h4>
-                      <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-100">
+                      <div className="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                         <span>{photo.date}</span>
                         <span>{photo.location}</span>
                       </div>
@@ -231,17 +231,17 @@ export const GalleryPage = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <PlaySquare size={18} className="text-[#2563eb]" />
-                <h2 className="text-base sm:text-lg font-bold text-slate-900">
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
                   Video Library ({filteredVideos.length})
                 </h2>
               </div>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-slate-400 dark:text-slate-500">
                 Studio Masterclasses & Lectures
               </span>
             </div>
 
             {filteredVideos.length === 0 ? (
-              <div className="text-center py-10 bg-white border border-slate-100 rounded-2xl text-slate-400 text-xs">
+              <div className="text-center py-10 bg-white dark:bg-[#0b1329] border border-slate-100 dark:border-slate-800 rounded-2xl text-slate-400 dark:text-slate-500 text-xs">
                 No videos found matching your criteria.
               </div>
             ) : (
@@ -250,7 +250,7 @@ export const GalleryPage = () => {
                   <div
                     key={video.id}
                     onClick={() => handleOpenVideo(idx)}
-                    className="bg-white border border-slate-200/80 rounded-xl overflow-hidden shadow-2xs hover:shadow-md transition-all duration-200 group cursor-pointer flex flex-col"
+                    className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xs hover:shadow-md dark:hover:shadow-[0_8px_30px_rgba(37,99,235,0.12)] transition-all duration-200 group cursor-pointer flex flex-col"
                   >
                     <div className="relative aspect-video overflow-hidden bg-slate-950 flex items-center justify-center">
                       <img
@@ -275,23 +275,23 @@ export const GalleryPage = () => {
 
                     <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
                       <div>
-                        <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
-                          <span className="font-semibold text-blue-600 uppercase tracking-wider text-[10px]">
+                        <div className="flex items-center justify-between text-[11px] text-slate-400 dark:text-slate-500 mb-1">
+                          <span className="font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider text-[10px]">
                             {video.category}
                           </span>
                           <span>{video.views}</span>
                         </div>
-                        <h4 className="font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
+                        <h4 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 leading-snug">
                           {video.title}
                         </h4>
                       </div>
 
-                      <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100">
+                      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800">
                         <span className="flex items-center gap-1 font-medium">
-                          <User size={12} className="text-slate-400" />
+                          <User size={12} className="text-slate-400 dark:text-slate-500" />
                           <span className="truncate max-w-[180px]">{video.instructor}</span>
                         </span>
-                        <span className="text-blue-600 font-bold group-hover:underline">
+                        <span className="text-blue-600 dark:text-blue-400 font-bold group-hover:underline">
                           Watch &rarr;
                         </span>
                       </div>

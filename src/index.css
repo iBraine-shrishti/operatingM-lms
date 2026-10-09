@@ -23,7 +23,7 @@
    GLOBAL CUSTOM SCROLLBAR (All over the project)
    ========================================================================== */
 
-/* Modern Standard CSS (Firefox, modern standards) */
+/* Modern Standard CSS */
 html,
 body,
 * {
@@ -31,7 +31,7 @@ body,
   scrollbar-color: #cbd5e1 transparent;
 }
 
-/* WebKit & Blink Browsers (Chrome, Edge, Safari, Opera, Electron) */
+/* WebKit & Blink Browsers */
 *::-webkit-scrollbar,
 ::-webkit-scrollbar {
   width: 6px;
@@ -72,16 +72,354 @@ body,
   width: 6px;
   height: 6px;
 }
-
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background-color: #cbd5e1;
   border-radius: 9999px;
 }
-
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #94a3b8;
+}
+
+/* ==========================================================================
+   COMPREHENSIVE DARK THEME ENGINE THROUGHOUT THE PROJECT
+   ========================================================================== */
+
+html.dark,
+html.dark body {
+  background-color: #0b0f19 !important;
+  color: #f1f5f9 !important;
+}
+
+/* Base Card Surfaces */
+html.dark .bg-white {
+  background-color: #111827 !important;
+}
+
+html.dark .bg-\[\#f8fafc\] {
+  background-color: #0b0f19 !important;
+}
+
+/* Nested Containers, Strips, Table Headers, Sub-cards */
+html.dark .bg-slate-50,
+html.dark .bg-slate-50\/40,
+html.dark .bg-slate-50\/50,
+html.dark .bg-slate-50\/60,
+html.dark .bg-slate-50\/70,
+html.dark .bg-slate-50\/80,
+html.dark .bg-slate-50\/90 {
+  background-color: #172136 !important;
+}
+
+html.dark .bg-slate-100 {
+  background-color: #1c273e !important;
+}
+
+html.dark .bg-slate-200 {
+  background-color: #273652 !important;
+}
+
+html.dark .bg-white\/80,
+html.dark .bg-white\/90,
+html.dark .bg-white\/95 {
+  background-color: #172136 !important;
+  border-color: #24314c !important;
+}
+
+/* Note card content backgrounds in dark mode */
+html.dark .bg-blue-50\/30 {
+  background-color: rgba(30, 58, 138, 0.18) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+html.dark .bg-purple-50\/30 {
+  background-color: rgba(88, 28, 135, 0.18) !important;
+  border-color: rgba(168, 85, 247, 0.3) !important;
+}
+html.dark .bg-amber-50\/30 {
+  background-color: rgba(120, 53, 15, 0.18) !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+html.dark .bg-rose-50\/30 {
+  background-color: rgba(136, 19, 55, 0.18) !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
+}
+html.dark .bg-emerald-50\/30 {
+  background-color: rgba(6, 78, 59, 0.18) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+html.dark .bg-teal-50\/30 {
+  background-color: rgba(19, 78, 74, 0.18) !important;
+  border-color: rgba(20, 184, 166, 0.3) !important;
+}
+
+/* Borders */
+html.dark .border-slate-50,
+html.dark .border-slate-100,
+html.dark .border-slate-200,
+html.dark .border-slate-200\/60,
+html.dark .border-slate-200\/70,
+html.dark .border-slate-200\/80,
+html.dark .border-slate-200\/90,
+html.dark .border-slate-300 {
+  border-color: #222f48 !important;
+}
+
+/* Typography & Contrast */
+html.dark .text-slate-900,
+html.dark .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+html.dark .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+html.dark .text-slate-400 {
+  color: #7888a3 !important;
+}
+
+/* Topbar & Header */
+html.dark header {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+}
+
+/* Sidebar */
+html.dark aside {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+}
+
+html.dark aside a.text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+html.dark aside a.text-slate-600:hover {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark aside .border-slate-100 {
+  border-color: #1e293b !important;
+}
+
+/* Forms, Inputs, Search, Textareas */
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #162035 !important;
+  border-color: #24314c !important;
+  color: #f8fafc !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+html.dark input:focus,
+html.dark textarea:focus,
+html.dark select:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 1px #3b82f6 !important;
+}
+
+/* Hero Welcome Banner Image Switching (Synchronous via CSS) */
+.dashboard-hero-banner {
+  background-image: url("./assets/header-bg/dashboard-header.png");
+}
+html.dark .dashboard-hero-banner {
+  background-image: url("./assets/header-bg/dashboard-header-dark.png") !important;
+}
+
+/* Ensure no header bg image for admin in light or dark theme */
+html.role-admin .dashboard-hero-banner,
+.role-admin .dashboard-hero-banner {
+  background-image: none !important;
+}
+
+/* High Contrast Colored Status Badges in Dark Mode */
+html.dark .bg-emerald-50,
+html.dark .bg-emerald-50\/40,
+html.dark .bg-emerald-50\/70 {
+  background-color: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+}
+html.dark .text-emerald-700,
+html.dark .text-emerald-800,
+html.dark .text-emerald-950 {
+  color: #34d399 !important;
+}
+
+html.dark .bg-rose-50,
+html.dark .bg-rose-50\/40,
+html.dark .bg-rose-50\/70 {
+  background-color: rgba(244, 63, 94, 0.16) !important;
+  color: #fb7185 !important;
+  border-color: rgba(244, 63, 94, 0.35) !important;
+}
+html.dark .text-rose-700,
+html.dark .text-rose-800,
+html.dark .text-rose-950 {
+  color: #fb7185 !important;
+}
+
+html.dark .bg-amber-50,
+html.dark .bg-amber-50\/40,
+html.dark .bg-amber-50\/50 {
+  background-color: rgba(245, 158, 11, 0.16) !important;
+  color: #fbbf24 !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+}
+html.dark .text-amber-800,
+html.dark .text-amber-900 {
+  color: #fbbf24 !important;
+}
+
+html.dark .bg-blue-50,
+html.dark .bg-blue-50\/40 {
+  background-color: rgba(59, 130, 246, 0.16) !important;
+  color: #60a5fa !important;
+  border-color: rgba(59, 130, 246, 0.35) !important;
+}
+html.dark .text-blue-700,
+html.dark .text-blue-800 {
+  color: #60a5fa !important;
+}
+
+html.dark .bg-purple-50,
+html.dark .bg-purple-50\/40 {
+  background-color: rgba(168, 85, 247, 0.16) !important;
+  color: #c084fc !important;
+  border-color: rgba(168, 85, 247, 0.35) !important;
+}
+html.dark .text-purple-700,
+html.dark .text-purple-800 {
+  color: #c084fc !important;
+}
+
+html.dark .bg-teal-50,
+html.dark .bg-teal-50\/40 {
+  background-color: rgba(20, 184, 166, 0.16) !important;
+  color: #2dd4bf !important;
+  border-color: rgba(20, 184, 166, 0.35) !important;
+}
+html.dark .text-teal-700,
+html.dark .text-teal-800 {
+  color: #2dd4bf !important;
+}
+
+/* Primary Action Buttons */
+html.dark button.bg-slate-900 {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+html.dark button.bg-slate-900:hover {
+  background-color: #1d4ed8 !important;
+}
+
+/* Modals & Dropdown Popovers in Dark Mode */
+html.dark .shadow-xl,
+html.dark .shadow-2xl,
+html.dark .shadow-lg {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Recharts Dark Styles */
+html.dark .recharts-cartesian-grid line {
+  stroke: #1e293b !important;
+}
+html.dark .recharts-text,
+html.dark text.recharts-label {
+  fill: #94a3b8 !important;
+}
+html.dark .recharts-cartesian-axis-line {
+  stroke: #24314c !important;
+}
+
+/* Dark Mode Scrollbars */
+html.dark,
+html.dark body,
+html.dark * {
+  scrollbar-color: #334155 transparent;
+}
+html.dark *::-webkit-scrollbar-thumb {
+  background-color: #334155;
+}
+html.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: #475569;
+}
+html.dark *::-webkit-scrollbar-thumb:active {
+  background-color: #64748b;
+}
+
+/* Dashboard 4 Overview Gradient Metric Cards in Dark Mode */
+html.dark .from-blue-50\/95 {
+  --tw-gradient-from: #132242 !important;
+  --tw-gradient-to: #1a2c54 !important;
+  --tw-gradient-stops: #132242, #17274b, #1a2c54 !important;
+  border-color: #254077 !important;
+}
+html.dark .from-teal-50\/95 {
+  --tw-gradient-from: #0d2e2b !important;
+  --tw-gradient-to: #123e39 !important;
+  --tw-gradient-stops: #0d2e2b, #103733, #123e39 !important;
+  border-color: #17524b !important;
+}
+html.dark .from-purple-50\/95 {
+  --tw-gradient-from: #261642 !important;
+  --tw-gradient-to: #331d59 !important;
+  --tw-gradient-stops: #261642, #2d1a4e, #331d59 !important;
+  border-color: #432675 !important;
+}
+html.dark .from-amber-50\/95 {
+  --tw-gradient-from: #362208 !important;
+  --tw-gradient-to: #482e0a !important;
+  --tw-gradient-stops: #362208, #3f2809, #482e0a !important;
+  border-color: #5c3b0d !important;
+}
+
+html.dark .text-\[\#1e3a8a\],
+html.dark .text-\[\#042f2e\],
+html.dark .text-\[\#4c1d95\],
+html.dark .text-\[\#78350f\],
+html.dark .text-\[\#0c1e3d\] {
+  color: #f8fafc !important;
+}
+
+html.dark .text-blue-900\/70,
+html.dark .text-teal-900\/70,
+html.dark .text-purple-900\/70,
+html.dark .text-amber-900\/70 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .bg-\[\#f8fafd\] {
+  background-color: #172136 !important;
+  border-color: #222f48 !important;
+}
+
+html.dark circle.text-slate-100 {
+  color: #1e293b !important;
+}
+
+html.dark circle.text-slate-300 {
+  color: #334155 !important;
+}
+
+/* Hover effects for cards in dark mode */
+html.dark .hover\:border-slate-300:hover {
+  border-color: #3b82f6 !important;
 }
