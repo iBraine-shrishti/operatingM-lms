@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import {
   Upload,
@@ -28,6 +28,7 @@ import {
 } from "../data/assessmentDataConfig";
 
 export const MyAssignmentsPage = () => {
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const [assignments, setAssignments] = useState(() =>
     lmsService.getAssignments(),
@@ -116,11 +117,11 @@ export const MyAssignmentsPage = () => {
       assignment ||
       assignments.find((a) => a.status === "pending") ||
       assignments[0];
-    setActiveAssignment(target);
-    setSubmissionLink("");
-    setSubmissionNotes("");
-    setFileName("");
-    setIsSubmitModalOpen(true);
+    if (target?.id) {
+      navigate(`/take-assignment/${target.id}`);
+    } else {
+      navigate("/take-assignment");
+    }
   };
 
   const handleSubmitAssignment = (e) => {
@@ -223,8 +224,8 @@ export const MyAssignmentsPage = () => {
               key={a.id}
               type="assignment"
               data={a}
-              onAction={openSubmitModal}
-              onSecondaryAction={setFeedbackModalAssignment}
+              onAction={(item) => navigate(`/take-assignment/${item.id}`)}
+              onSecondaryAction={(item) => navigate(`/take-assignment/${item.id}`)}
             />
           ))}
         </div>
@@ -265,10 +266,7 @@ export const MyAssignmentsPage = () => {
                       {/* Assignment Title & Brief */}
                       <td className="py-5 px-6 max-w-md">
                         <div
-                          onClick={() => {
-                            if (isGraded) setFeedbackModalAssignment(a);
-                            else openSubmitModal(a);
-                          }}
+                          onClick={() => navigate(`/take-assignment/${a.id}`)}
                           className="font-bold text-sm text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors cursor-pointer"
                         >
                           {a.title}
@@ -338,14 +336,11 @@ export const MyAssignmentsPage = () => {
                       {/* Actions */}
                       <td className="py-5 px-6 text-right whitespace-nowrap">
                         <button
-                          onClick={() => {
-                            if (isGraded) setFeedbackModalAssignment(a);
-                            else openSubmitModal(a);
-                          }}
+                          onClick={() => navigate(`/take-assignment/${a.id}`)}
                           className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer shadow-2xs group-hover:border-blue-300 dark:group-hover:border-blue-700"
                         >
                           <Eye size={13} />
-                          <span>View Details</span>
+                          <span>{isGraded ? "Feedback" : "Submit Work"}</span>
                           <ChevronRight size={13} className="text-slate-400" />
                         </button>
                       </td>

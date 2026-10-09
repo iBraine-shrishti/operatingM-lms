@@ -102,27 +102,14 @@ export const MyQuizzesPage = () => {
   };
 
   const handleStartQuiz = (quiz) => {
-    setActiveQuizModal(quiz);
+    navigate(`/take-quiz/${quiz.id}`);
   };
 
   const handleBeginExamination = () => {
     if (!activeQuizModal) return;
-
-    // Simulate examination submission with high pass grade
-    const randomizedScore = Math.floor(Math.random() * 12) + 85; // 85% - 96%
-    lmsService.submitQuizAttempt(activeQuizModal.id, randomizedScore);
-
-    // Refresh state
-    setQuizzes(lmsService.getQuizzes());
-
-    const title = activeQuizModal.title;
+    const targetId = activeQuizModal.id;
     setActiveQuizModal(null);
-
-    showToast(
-      `Congratulations! You passed "${title}" with an exceptional score of ${randomizedScore}%!`,
-      "success",
-      "Assessment Completed Successfully"
-    );
+    navigate(`/take-quiz/${targetId}`);
   };
 
   return (
