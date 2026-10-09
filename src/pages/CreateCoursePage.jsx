@@ -43,6 +43,7 @@ import {
 import { lmsService } from "../services/lmsService";
 import { useToast } from "../context/ToastContext";
 import { QuizManagementDetailFlow } from "../components/admin/QuizManagementDetailFlow";
+import { PublishSuccessModal } from "../components/common/PublishSuccessModal";
 // Custom reusable toggle component matching the screenshot layout and theme
 const SwitchToggle = ({ checked, onChange }) => (
   <button
@@ -70,6 +71,10 @@ export const CreateCoursePage = () => {
   // 4 Process Steps (excluding component step)
   const [currentStep, setCurrentStep] = useState(1);
   const [managingQuizModal, setManagingQuizModal] = useState(null);
+
+  // Step 4 Publish Confirmation Modal State
+  const [showPublishSuccessModal, setShowPublishSuccessModal] = useState(false);
+  const [publishedCourseSummary, setPublishedCourseSummary] = useState(null);
   // -------------------------------------------------------------
   // STEP 1 STATE: CREATE COURSE (Start building a course)
   // -------------------------------------------------------------
@@ -742,21 +747,43 @@ export const CreateCoursePage = () => {
     if (editCourseId) {
       lmsService.updateCourse(editCourseId, coursePayload);
       showToast(
-        `Course "${courseTitle}" updated successfully! Redirecting...`,
+        `Course "${courseTitle}" updated successfully!`,
         "success",
         "Course Updated",
       );
     } else {
       lmsService.addCourse(coursePayload);
       showToast(
-        "Course created and published successfully! Redirecting...",
+        "Course created and published successfully!",
         "success",
         "Course Published",
       );
     }
-    setTimeout(() => {
-      navigate("/manage-courses");
-    }, 1200);
+
+    setPublishedCourseSummary({
+      title: courseTitle.trim(),
+      category: courseCategory,
+      metadata: [
+        { label: "Category", value: courseCategory },
+        { label: "Lessons", value: `${totalLessons > 0 ? totalLessons : 12}` },
+        { label: "Price", value: isFreeCourse ? "Free" : `Rs. ${coursePrice}` },
+        { label: "Duration", value: courseDuration },
+      ],
+    });
+    setShowPublishSuccessModal(true);
+  };
+
+  const handleCreateAnotherCourse = () => {
+    setShowPublishSuccessModal(false);
+    if (isEditing) {
+      navigate("/create-course");
+    } else {
+      setCourseTitle("");
+      setCourseShortAbout("");
+      setCourseDetailedDescription("");
+      setCourseVideoUrl("");
+      setCurrentStep(1);
+    }
   };
   // Steps definition (4 process steps as requested, excluding component)
   const PROCESS_STEPS = [
@@ -4343,6 +4370,23 @@ export const CreateCoursePage = () => {
           </div>
         </div>
       )}
+
+      {/* Step 4 Publish Confirmation Popup */}
+      <PublishSuccessModal
+        isOpen={showPublishSuccessModal}
+        onClose={() => {
+          setShowPublishSuccessModal(false);
+          navigate("/manage-courses");
+        }}
+        type="Course"
+        isEdit={isEditing}
+        itemTitle={publishedCourseSummary?.title || courseTitle}
+        courseTitle=""
+        metadata={publishedCourseSummary?.metadata || []}
+        onCreateNew={handleCreateAnotherCourse}
+        onGoToPage={() => navigate("/manage-courses")}
+        pageName="Manage Courses"
+      />
     </div>
   );
 };

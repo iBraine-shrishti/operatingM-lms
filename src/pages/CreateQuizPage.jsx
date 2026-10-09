@@ -33,6 +33,7 @@ import {
 import { lmsService } from "../services/lmsService";
 import { useToast } from "../context/ToastContext";
 import { DEFAULT_QUIZ_QUESTIONS } from "../components/admin/QuizManagementDetailFlow";
+import { PublishSuccessModal } from "../components/common/PublishSuccessModal";
 
 // Modern Switch Toggle in Theme Blue
 const SwitchToggle = ({ checked, onChange }) => (
@@ -64,6 +65,10 @@ export const CreateQuizPage = () => {
 
   // Stepper State (4 Process Steps matching Create Course Flow)
   const [currentStep, setCurrentStep] = useState(1);
+
+  // Step 4 Publish Success Confirmation Modal State
+  const [showPublishSuccessModal, setShowPublishSuccessModal] = useState(false);
+  const [publishedQuizSummary, setPublishedQuizSummary] = useState(null);
 
   // Existing quiz data if in edit mode
   const existingQuiz = useMemo(() => {
@@ -414,22 +419,42 @@ export const CreateQuizPage = () => {
     if (isEditMode && editId) {
       lmsService.updateQuiz(editId, payload);
       showToast(
-        `Quiz "${quizTitle}" updated successfully! Redirecting...`,
+        `Quiz "${quizTitle}" updated successfully!`,
         "success",
         "Quiz Updated",
       );
     } else {
       lmsService.addQuiz(payload);
       showToast(
-        `Quiz "${quizTitle}" published successfully! Redirecting...`,
+        `Quiz "${quizTitle}" published successfully!`,
         "success",
         "Quiz Created",
       );
     }
 
-    setTimeout(() => {
-      navigate("/manage-quizzes");
-    }, 900);
+    setPublishedQuizSummary({
+      title: quizTitle.trim(),
+      courseTitle: selectedCourse?.title || "Digital Marketing",
+      metadata: [
+        { label: "Questions", value: `${questions.length}` },
+        { label: "Duration", value: `${durationMinutes}m` },
+        { label: "Benchmark", value: `${passScorePercentage}%` },
+        { label: "Category", value: quizCategory },
+      ],
+    });
+    setShowPublishSuccessModal(true);
+  };
+
+  const handleCreateAnotherQuiz = () => {
+    setShowPublishSuccessModal(false);
+    if (isEditMode) {
+      navigate("/create-quiz");
+    } else {
+      setQuizTitle("");
+      setQuizDescription("");
+      setQuestions([]);
+      setCurrentStep(1);
+    }
   };
 
   return (
@@ -1401,6 +1426,23 @@ export const CreateQuizPage = () => {
           </div>
         </div>
       )}
+
+      {/* Step 4 Publish Confirmation Popup */}
+      <PublishSuccessModal
+        isOpen={showPublishSuccessModal}
+        onClose={() => {
+          setShowPublishSuccessModal(false);
+          navigate("/manage-quizzes");
+        }}
+        type="Quiz"
+        isEdit={isEditMode}
+        itemTitle={publishedQuizSummary?.title || quizTitle}
+        courseTitle={publishedQuizSummary?.courseTitle || selectedCourse?.title}
+        metadata={publishedQuizSummary?.metadata || []}
+        onCreateNew={handleCreateAnotherQuiz}
+        onGoToPage={() => navigate("/manage-quizzes")}
+        pageName="Manage Quizzes"
+      />
     </div>
   );
 };

@@ -41,6 +41,7 @@ import {
 } from "lucide-react";
 import { lmsService } from "../services/lmsService";
 import { useToast } from "../context/ToastContext";
+import { PublishSuccessModal } from "../components/common/PublishSuccessModal";
 
 // Modern Switch Toggle
 const SwitchToggle = ({ checked, onChange }) => (
@@ -118,6 +119,10 @@ export const CreateAssignmentPage = () => {
 
   // 4 Process Stepper matching Create Course / Create Quiz Flow
   const [currentStep, setCurrentStep] = useState(1);
+
+  // Step 4 Publish Confirmation Modal State
+  const [showPublishSuccessModal, setShowPublishSuccessModal] = useState(false);
+  const [publishedAssignmentSummary, setPublishedAssignmentSummary] = useState(null);
 
   // -------------------------------------------------------------
   // STEP 1 STATE: ASSIGNMENT SCOPE & PROBLEM BRIEF
@@ -439,22 +444,43 @@ export const CreateAssignmentPage = () => {
     if (isEditMode) {
       lmsService.updateAssignment(editId, payload);
       showToast(
-        `Assignment "${assignmentTitle}" updated and saved successfully! Redirecting...`,
+        `Assignment "${assignmentTitle}" updated and saved successfully!`,
         "success",
         "Assignment Updated"
       );
     } else {
       const created = lmsService.addAssignment(payload);
       showToast(
-        `Assignment "${created.title}" published for ${selectedCourse.title}! Redirecting...`,
+        `Assignment "${created.title}" published for ${selectedCourse.title}!`,
         "success",
         "Assignment Published"
       );
     }
 
-    setTimeout(() => {
-      navigate("/manage-assignments");
-    }, 1200);
+    setPublishedAssignmentSummary({
+      title: assignmentTitle.trim(),
+      courseTitle: selectedCourse?.title || "Digital Marketing",
+      metadata: [
+        { label: "Due Date", value: dueDate },
+        { label: "Max Score", value: `${maxScore} pts` },
+        { label: "Pass Benchmark", value: `${passingScore} pts` },
+        { label: "Module", value: associatedModule },
+      ],
+    });
+    setShowPublishSuccessModal(true);
+  };
+
+  const handleCreateAnotherAssignment = () => {
+    setShowPublishSuccessModal(false);
+    if (isEditMode) {
+      navigate("/create-assignment");
+    } else {
+      setAssignmentTitle("");
+      setShortStatement("");
+      setDetailedInstructions("");
+      setUploadedMaterials([]);
+      setCurrentStep(1);
+    }
   };
 
   return (
@@ -1555,6 +1581,23 @@ export const CreateAssignmentPage = () => {
           </div>
         </div>
       )}
+
+      {/* Step 4 Publish Confirmation Popup */}
+      <PublishSuccessModal
+        isOpen={showPublishSuccessModal}
+        onClose={() => {
+          setShowPublishSuccessModal(false);
+          navigate("/manage-assignments");
+        }}
+        type="Assignment"
+        isEdit={isEditMode}
+        itemTitle={publishedAssignmentSummary?.title || assignmentTitle}
+        courseTitle={publishedAssignmentSummary?.courseTitle || selectedCourse?.title}
+        metadata={publishedAssignmentSummary?.metadata || []}
+        onCreateNew={handleCreateAnotherAssignment}
+        onGoToPage={() => navigate("/manage-assignments")}
+        pageName="Manage Assignments"
+      />
     </div>
   );
 };
