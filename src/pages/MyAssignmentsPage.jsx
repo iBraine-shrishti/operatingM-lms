@@ -29,7 +29,9 @@ import {
 
 export const MyAssignmentsPage = () => {
   const { showToast } = useToast();
-  const [assignments, setAssignments] = useState(() => lmsService.getAssignments());
+  const [assignments, setAssignments] = useState(() =>
+    lmsService.getAssignments(),
+  );
   const courses = lmsService.getCourses();
 
   const [searchParams] = useSearchParams();
@@ -63,12 +65,12 @@ export const MyAssignmentsPage = () => {
   // Derived filter & status options mapped from data file
   const statusOptions = useMemo(
     () => getAssignmentStatusOptions(assignments),
-    [assignments]
+    [assignments],
   );
 
   const metrics = useMemo(
     () => calculateAssignmentMetrics(assignments),
-    [assignments]
+    [assignments],
   );
 
   // Filtered & Sorted Assignments mapped through centralized engine
@@ -82,9 +84,17 @@ export const MyAssignmentsPage = () => {
         selectedStatus,
         sortBy,
       },
-      courses
+      courses,
     );
-  }, [assignments, searchQuery, selectedCourse, selectedCategory, selectedStatus, sortBy, courses]);
+  }, [
+    assignments,
+    searchQuery,
+    selectedCourse,
+    selectedCategory,
+    selectedStatus,
+    sortBy,
+    courses,
+  ]);
 
   const hasActiveFilters =
     searchQuery.trim() !== "" ||
@@ -102,7 +112,10 @@ export const MyAssignmentsPage = () => {
   };
 
   const openSubmitModal = (assignment = null) => {
-    const target = assignment || assignments.find((a) => a.status === "pending") || assignments[0];
+    const target =
+      assignment ||
+      assignments.find((a) => a.status === "pending") ||
+      assignments[0];
     setActiveAssignment(target);
     setSubmissionLink("");
     setSubmissionNotes("");
@@ -118,7 +131,7 @@ export const MyAssignmentsPage = () => {
       showToast(
         "Please provide a project link or select a file to submit.",
         "warning",
-        "Submission Required"
+        "Submission Required",
       );
       return;
     }
@@ -134,7 +147,7 @@ export const MyAssignmentsPage = () => {
     showToast(
       `Assignment "${activeAssignment.title}" submitted successfully!`,
       "success",
-      "Work Submitted"
+      "Work Submitted",
     );
   };
 
@@ -152,7 +165,7 @@ export const MyAssignmentsPage = () => {
             className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
           >
             <Upload size={16} className="2xl:w-4.5 2xl:h-4.5" />
-            <span>+ Submit Assignment</span>
+            <span>Submit Assignment</span>
           </button>
         }
       />
@@ -230,7 +243,9 @@ export const MyAssignmentsPage = () => {
                   <th className="py-4 px-6 min-w-[130px]">Submissions</th>
                   <th className="py-4 px-6 min-w-[140px]">Status</th>
                   <th className="py-4 px-6 min-w-[110px]">Score</th>
-                  <th className="py-4 px-6 min-w-[140px] text-right">Actions</th>
+                  <th className="py-4 px-6 min-w-[140px] text-right">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
@@ -275,7 +290,10 @@ export const MyAssignmentsPage = () => {
                       {/* Due Date */}
                       <td className="py-5 px-6 whitespace-nowrap">
                         <div className="flex items-center space-x-2">
-                          <Calendar size={14} className="text-slate-400 dark:text-slate-500 shrink-0" />
+                          <Calendar
+                            size={14}
+                            className="text-slate-400 dark:text-slate-500 shrink-0"
+                          />
                           <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
                             {a.dueDate}
                           </span>
@@ -368,7 +386,10 @@ export const MyAssignmentsPage = () => {
               </button>
             </div>
 
-            <form onSubmit={handleSubmitAssignment} className="space-y-4 text-xs">
+            <form
+              onSubmit={handleSubmitAssignment}
+              className="space-y-4 text-xs"
+            >
               <div>
                 <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
                   Select Assignment *
@@ -376,7 +397,9 @@ export const MyAssignmentsPage = () => {
                 <select
                   value={activeAssignment?.id || ""}
                   onChange={(e) => {
-                    const found = assignments.find((a) => a.id === e.target.value);
+                    const found = assignments.find(
+                      (a) => a.id === e.target.value,
+                    );
                     if (found) setActiveAssignment(found);
                   }}
                   className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-[#2563eb] dark:focus:border-blue-500"
@@ -415,15 +438,22 @@ export const MyAssignmentsPage = () => {
 
               <div>
                 <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Or Attach File (Any format: PDF, ZIP, DOCX, Media, Figma, Code - Max 50MB)
+                  Or Attach File (Any format: PDF, ZIP, DOCX, Media, Figma, Code
+                  - Max 50MB)
                 </label>
                 <label className="border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-[#2563eb] dark:hover:border-blue-500 rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-slate-50/50 dark:bg-slate-900/40 hover:bg-blue-50/20 dark:hover:bg-blue-950/30">
-                  <Upload size={20} className="text-slate-400 dark:text-slate-500 mb-1.5" />
+                  <Upload
+                    size={20}
+                    className="text-slate-400 dark:text-slate-500 mb-1.5"
+                  />
                   <span className="font-semibold text-slate-700 dark:text-slate-300 text-xs">
-                    {fileName ? fileName : "Click to select or drag and drop your file here"}
+                    {fileName
+                      ? fileName
+                      : "Click to select or drag and drop your file here"}
                   </span>
                   <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
-                    Supports ANY format (PDF, DOCX, ZIP, MP4, PNG, Figma, code, etc. up to 50MB)
+                    Supports ANY format (PDF, DOCX, ZIP, MP4, PNG, Figma, code,
+                    etc. up to 50MB)
                   </span>
                   <input
                     type="file"

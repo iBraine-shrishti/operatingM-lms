@@ -19,6 +19,8 @@ import { EnrolledCoursesPage } from "./pages/EnrolledCoursesPage";
 import { LessonPlayerPage } from "./pages/LessonPlayerPage";
 import { MyQuizzesPage } from "./pages/MyQuizzesPage";
 import { MyAssignmentsPage } from "./pages/MyAssignmentsPage";
+import { TakeQuizPage } from "./pages/TakeQuizPage";
+import { TakeAssignmentPage } from "./pages/TakeAssignmentPage";
 import { AchievementsPage } from "./pages/AchievementsPage";
 import { NotesReviewsPage } from "./pages/NotesReviewsPage";
 import { ActivityPage } from "./pages/ActivityPage";
@@ -70,7 +72,11 @@ export function App() {
             <Route path="enrolled-courses" element={<EnrolledCoursesPage />}/>
             <Route path="lesson-player" element={<LessonPlayerPage />}/>
             <Route path="my-quizzes" element={<MyQuizzesPage />}/>
+            <Route path="take-quiz/:id" element={<TakeQuizPage />}/>
+            <Route path="take-quiz" element={<TakeQuizPage />}/>
             <Route path="my-assignments" element={<MyAssignmentsPage />}/>
+            <Route path="take-assignment/:id" element={<TakeAssignmentPage />}/>
+            <Route path="take-assignment" element={<TakeAssignmentPage />}/>
             <Route path="achievements" element={<AchievementsPage />}/>
             <Route path="notes-reviews" element={<NotesReviewsPage />}/>
             <Route path="notes" element={<NotesReviewsPage />}/>

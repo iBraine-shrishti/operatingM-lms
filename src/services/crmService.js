@@ -12,41 +12,65 @@
 const CRM_BASE_URL = 'https://crm.dmsoi.org/api';
 const CRM_STORAGE_KEY_STUDENT_ID = 'om_lms_selected_crm_student_id';
 
-// Default Student Profile Fallback (matching CRM schema)
+// Default Student Profile Fallback (matching CRM schema & profile.png)
 export const DEFAULT_CRM_PROFILE = {
-  id: 265,
-  admissionNo: 'OMC-0266',
-  name: 'Hiteshpuri Goswami',
-  firstName: 'Hiteshpuri',
-  lastName: 'Goswami',
-  email: 'hiteshpuri.g@gmail.com',
-  phone: '+91 74001 23992',
+  id: 375,
+  admissionNo: 'OMC-0375',
+  name: 'Sahil Hasolkar',
+  fullName: 'Sahil Nilesh Hasolkar',
+  firstName: 'Sahil',
+  lastName: 'Hasolkar',
+  email: 'hasolkarsahil@gmail.com',
+  phone: '+91 91937 20173',
+  mobile: '919372017331',
+  dob: '28 Nov 2006',
+  gender: 'Male',
+  maritalStatus: 'Single',
   branch: 'Borivali Center',
-  course: 'Diploma in Digital Marketing',
-  batchName: 'Weekday Morning (WD-M2, 10:00 AM - 12:00 PM)',
-  joiningDate: '2026-02-10',
-  photo: '/profile-pic.png', // Official CRM uploaded student photograph
-  // Financial Overview matching LASTEST UI
-  totalFees: 45000,
-  regAmount: 3000,
+  center: 'Borivali Center',
+  course: 'Masters in Digital Marketing',
+  batchName: 'WD-M1',
+  batchCode: 'WD-M1',
+  admissionDate: '22 Apr 2026',
+  registrationDate: '18 Apr 2026',
+  joiningDate: '2026-04-22',
+  courseEnd: '20 Apr 2027',
+  daysLeft: 360,
+  facultyLead: 'Harsh Pareek',
+  facultyLeadRole: 'Director & Lead Faculty',
+  photo: '/sahil-avatar-card.png',
+  // Financial Overview matching profile.png (Fees Pending)
+  totalFees: 90000,
+  regAmount: 5000,
   refundAmount: 0,
-  totalPaid: 55000,
-  balanceDue: 0,
-  paidPercentage: 122.2,
-  paymentStatus: 'Fully Cleared',
-  nextDueDate: 'None (Cleared)',
-  nextDueAmount: 0,
+  totalPaid: 5000,
+  balanceDue: 85000,
+  paidPercentage: 5.6,
+  paymentStatus: 'Fees Pending',
+  nextDueDate: '01 Oct 2026',
+  nextDueAmount: 17000,
   installments: [
-    { number: 0, title: 'Registration Fee', amount: 3000, status: 'Paid', date: 'Admission Day', mode: 'UPI / Online' },
-    { number: 1, title: 'Installment 1', amount: 52000, status: 'Paid', date: '25 Feb 2026', mode: 'Bank Transfer' }
+    { id: 'inst-0', number: 0, title: 'Registration Fee', amount: 5000, status: 'PAID', date: '30 Sep 2026', mode: 'GPay', action: 'view' },
+    { id: 'inst-1', number: 1, title: 'Inst 1', amount: 17000, status: 'UNPAID', date: '01 Oct 2026', mode: 'Bank Transfer', action: 'pay' },
+    { id: 'inst-2', number: 2, title: 'Inst 2', amount: 17000, status: 'UNPAID', date: '01 Nov 2026', mode: 'Bank Transfer', action: 'pay' },
+    { id: 'inst-3', number: 3, title: 'Inst 3', amount: 17000, status: 'UNPAID', date: '01 Dec 2026', mode: 'Bank Transfer', action: 'pay' },
+    { id: 'inst-4', number: 4, title: 'Inst 4', amount: 17000, status: 'UNPAID', date: '01 Jan 2027', mode: 'Bank Transfer', action: 'pay' },
+    { id: 'inst-5', number: 5, title: 'Inst 5', amount: 17000, status: 'UNPAID', date: '01 Feb 2027', mode: 'Bank Transfer', action: 'pay' }
+  ],
+  courseChangeHistory: [
+    {
+      date: '01 Oct 2026',
+      title: 'Upgraded: Masters Only (₹0.00) -> Masters in Digital Marketing (₹90,000)',
+      description: 'Course upgraded by admin. Payment adjusted.'
+    }
   ]
 };
 
 // Default Attendance Data Fallback
 export const DEFAULT_CRM_ATTENDANCE = {
-  studentId: 265,
-  studentName: 'Hiteshpuri Goswami',
-  course: 'Diploma in Digital Marketing',
+  studentId: 375,
+  studentName: 'Sahil Hasolkar',
+  course: 'Masters in Digital Marketing',
   totalLectures: 28,
   presentCount: 25,
   absentCount: 3,
@@ -172,9 +196,9 @@ class CrmService {
   getSelectedStudentId() {
     try {
       const saved = localStorage.getItem(CRM_STORAGE_KEY_STUDENT_ID);
-      return saved ? parseInt(saved, 10) : 265; // default to Hiteshpuri Goswami (admission 265 / OMC-0266) matching LASTEST UI
+      return saved ? parseInt(saved, 10) : 375; // default to Sahil Hasolkar (admission 375 / OMC-0375) matching profile.png
     } catch {
-      return 265;
+      return 375;
     }
   }
 

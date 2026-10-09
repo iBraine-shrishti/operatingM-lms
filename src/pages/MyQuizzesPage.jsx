@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import { useToast } from "../context/ToastContext";
 import {
@@ -34,6 +35,7 @@ import {
 } from "../data/assessmentDataConfig";
 
 export const MyQuizzesPage = () => {
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const [quizzes, setQuizzes] = useState(() => lmsService.getQuizzes());
   const courses = lmsService.getCourses();

@@ -2,9 +2,10 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import boyAvatar from '../assets/Boy.png';
 import girlAvatar from '../assets/Girl.png';
 import profilePic from '../assets/profile-pic.png';
+import sahilProfilePic from '../assets/sahil-profile.png';
 import { crmService, DEFAULT_CRM_PROFILE, DEFAULT_CRM_ATTENDANCE, DEFAULT_CRM_BATCH, DEFAULT_CRM_CERTIFICATES } from '../services/crmService';
 
-export { boyAvatar, girlAvatar, profilePic };
+export { boyAvatar, girlAvatar, profilePic, sahilProfilePic };
 
 export const ADMIN_USER = {
     id: 'admin-1',
@@ -17,22 +18,33 @@ export const ADMIN_USER = {
 };
 
 export const STUDENT_USER = {
-    id: 'std-265',
-    crmAdmissionId: 265,
-    admissionNo: 'OMC-0266',
-    name: 'Hiteshpuri Goswami',
-    email: 'hiteshpuri.g@gmail.com',
+    id: 'std-375',
+    crmAdmissionId: 375,
+    admissionNo: 'OMC-0375',
+    name: 'Sahil Hasolkar',
+    fullName: 'Sahil Nilesh Hasolkar',
+    email: 'hasolkarsahil@gmail.com',
+    phone: '919372017331',
+    dob: '28 Nov 2006',
+    gender: 'Male',
+    maritalStatus: 'Single',
+    admissionDate: '22 Apr 2026',
+    registrationDate: '18 Apr 2026',
+    facultyLead: 'Harsh Pareek',
+    facultyLeadRole: 'Director & Lead Faculty',
     role: 'STUDENT',
     roleLabel: 'STUDENT',
-    avatar: profilePic, // Official CRM uploaded student photograph from profile-pic.png
-    designation: 'Diploma in Digital Marketing Student',
-    course: 'Diploma in Digital Marketing',
+    avatar: sahilProfilePic, // Sahil Hasolkar photo
+    designation: 'Masters in Digital Marketing Student',
+    course: 'Masters in Digital Marketing',
     center: 'Borivali Center',
     branch: 'Borivali Center',
+    batchCode: 'WD-M1',
+    batchName: 'WD-M1',
     enrolledCoursesCount: 4,
     completedCoursesCount: 2,
     overallProgress: 65,
-    joinedDate: '2026-02-10'
+    joinedDate: '2026-04-22'
 };
 
 const AuthContext = createContext(undefined);
@@ -71,10 +83,10 @@ export const AuthProvider = ({ children }) => {
             if (savedAvatar === boyAvatar || savedAvatar === girlAvatar) {
                 initial.avatar = savedAvatar;
             } else {
-                initial.avatar = profilePic;
+                initial.avatar = sahilProfilePic;
             }
         } catch {
-            initial.avatar = profilePic;
+            initial.avatar = sahilProfilePic;
         }
         return initial;
     });
@@ -116,7 +128,7 @@ export const AuthProvider = ({ children }) => {
                         email: profile.email || prev.email,
                         course: profile.course || prev.course,
                         designation: `${profile.course || 'Digital Marketing'} Student`,
-                        avatar: profilePic
+                        avatar: sahilProfilePic
                     };
                 });
             }
