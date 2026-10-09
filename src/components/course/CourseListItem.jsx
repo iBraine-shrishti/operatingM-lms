@@ -57,30 +57,31 @@ export const CourseListItem = ({ course, onDelete }) => {
             >
               <Eye size={17}/>
             </button>
-            {isAdmin && (<>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/create-course?edit=${course.id}`);
-                  }}
-                  className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors cursor-pointer"
-                  title="Edit Course"
-                >
-                  <Edit size={17}/>
-                </button>
-                {onDelete && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDelete(course.id);
-                    }}
-                    className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
-                    title="Delete Course"
-                  >
-                    <Trash2 size={17}/>
-                  </button>
-                )}
-              </>)}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/create-course?edit=${course.id}`);
+              }}
+              className="flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 border border-amber-300/80 dark:border-amber-700/80 text-amber-900 dark:text-amber-300 font-bold text-xs transition-colors cursor-pointer shadow-2xs"
+              title="Edit Course in Course Builder"
+            >
+              <Edit size={14}/>
+              <span>Edit</span>
+            </button>
+            {isAdmin && onDelete && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete(course.id);
+                }}
+                className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
+                title="Delete Course"
+              >
+                <Trash2 size={17}/>
+              </button>
+            )}
           </div>
         </div>
       </div>

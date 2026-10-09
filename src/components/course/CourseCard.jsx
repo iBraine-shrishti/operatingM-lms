@@ -206,16 +206,29 @@ export const CourseCard = ({ course, onDelete }) => {
         </div>
       </div>
 
-      {/* Card Footer: Action Button */}
-      <div className="px-3 pb-3 sm:px-4 sm:pb-4 xl:px-5 xl:pb-5 pt-0">
+      {/* Card Footer: Action Buttons (Edit Course & View Outline) */}
+      <div className="px-3 pb-3 sm:px-4 sm:pb-4 xl:px-5 xl:pb-5 pt-0 flex items-center gap-2">
         <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/create-course?edit=${course.id}`);
+          }}
+          className="flex-1 py-2 sm:py-2.5 px-2 sm:px-2.5 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 border border-amber-300/80 dark:border-amber-700/80 text-amber-900 dark:text-amber-300 font-bold text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-2xs hover:shadow-xs rounded-lg cursor-pointer active:scale-[0.98]"
+          title="Edit Course in Course Builder"
+        >
+          <Edit size={12} className="shrink-0" />
+          <span>Edit</span>
+        </button>
+        <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             navigate(`/courses/${course.id}`);
           }}
-          className="w-full py-2 sm:py-2.5 px-2.5 sm:px-3 bg-slate-900 dark:bg-blue-600 group-hover:bg-[#3b49df] dark:group-hover:bg-blue-500 text-white font-medium text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-xs group/btn cursor-pointer rounded-lg"
+          className="flex-1 py-2 sm:py-2.5 px-2 sm:px-2.5 bg-slate-900 dark:bg-blue-600 hover:bg-[#3b49df] dark:hover:bg-blue-500 text-white font-medium text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-xs group/btn cursor-pointer rounded-lg active:scale-[0.98]"
         >
-          <span>View Course Outline</span>
+          <span className="truncate">Outline</span>
           <ArrowRight
             size={12}
             className="group-hover/btn:translate-x-0.5 transition-transform shrink-0"

@@ -29,11 +29,12 @@ import {
   Sparkles,
   Play,
   Share2,
+  Edit,
 } from "lucide-react";
 import { useToast } from "../../context/ToastContext";
 
 // Comprehensive 20 questions for Digital Marketing Aptitude Quiz
-const DEFAULT_QUESTIONS = [
+export const DEFAULT_QUIZ_QUESTIONS = [
   {
     id: 1,
     title: "What is Digital Marketing?",
@@ -604,6 +605,7 @@ export const QuizManagementDetailFlow = ({
     totalSubmissions: 2,
   },
   onBack,
+  onEditQuiz,
 }) => {
   const { showToast } = useToast();
 
@@ -749,7 +751,12 @@ export const QuizManagementDetailFlow = ({
     setAssignOpen(false);
   };
 
-  const currentQ = DEFAULT_QUESTIONS[activeQuestionIdx] || DEFAULT_QUESTIONS[0];
+  const activeQuestions = useMemo(() => {
+    if (quiz.questions && quiz.questions.length > 0) return quiz.questions;
+    return DEFAULT_QUIZ_QUESTIONS;
+  }, [quiz.questions]);
+
+  const currentQ = activeQuestions[activeQuestionIdx] || activeQuestions[0];
 
   return (
     <div className="space-y-6 select-none animate-in fade-in duration-200">
@@ -809,6 +816,17 @@ export const QuizManagementDetailFlow = ({
 
         {/* Header Right Actions & Duration Badges */}
         <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          {onEditQuiz && (
+            <button
+              onClick={() => onEditQuiz(quiz)}
+              className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-750 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-bold text-xs px-3.5 py-2.5 rounded-xl transition-all shadow-2xs flex items-center space-x-1.5 cursor-pointer whitespace-nowrap"
+              title="Edit Quiz details, rules, and questions"
+            >
+              <Edit size={14} className="text-blue-600 dark:text-cyan-400" />
+              <span>Edit Quiz</span>
+            </button>
+          )}
+
           <button
             onClick={() => {
               setActiveTab("Statistics");
@@ -1645,10 +1663,10 @@ export const QuizManagementDetailFlow = ({
           <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs">
             <div className="bg-slate-100 dark:bg-slate-900/80 px-5 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-slate-700 dark:text-slate-200">
               <span>
-                Question {activeQuestionIdx + 1} of {DEFAULT_QUESTIONS.length}
+                Question {activeQuestionIdx + 1} of {activeQuestions.length}
               </span>
               <span className="text-blue-600 dark:text-cyan-400 font-semibold">
-                1 Mark
+                {currentQ.marks || 1} {currentQ.marks === 1 ? "Mark" : "Marks"}
               </span>
             </div>
 
@@ -1706,11 +1724,11 @@ export const QuizManagementDetailFlow = ({
 
               {/* Pagination Bar: [ 1 ] [ 2 ] ... [ 20 ] */}
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center space-x-1.5 overflow-x-auto scrollbar-none">
-                {DEFAULT_QUESTIONS.map((q, idx) => {
+                {activeQuestions.map((q, idx) => {
                   const isActive = activeQuestionIdx === idx;
                   return (
                     <button
-                      key={q.id}
+                      key={q.id || idx}
                       onClick={() => setActiveQuestionIdx(idx)}
                       className={`min-w-8 h-8 px-2 rounded-xl font-bold text-xs flex items-center justify-center transition-all cursor-pointer ${
                         isActive

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import {
   Plus,
@@ -112,6 +112,7 @@ const getCourseTheme = (courseId, courseTitle = "") => {
 };
 
 export const ManageQuizzesPage = () => {
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const courses = lmsService.getCourses();
@@ -139,14 +140,6 @@ export const ManageQuizzesPage = () => {
   const [sortBy, setSortBy] = useState("questionsDesc");
   const [selectedFilter, setSelectedFilter] = useState("all"); // 'all' | 'highPass' | 'active'
   const [viewMode, setViewMode] = useState("table"); // 'table' | 'cards'
-
-  // Modal form states
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [modalCourseId, setModalCourseId] = useState(courses[0]?.id || "course-3");
-  const [newTitle, setNewTitle] = useState("");
-  const [newQuestions, setNewQuestions] = useState(15);
-  const [newDuration, setNewDuration] = useState(25);
-  const [newPassScore, setNewPassScore] = useState(80);
 
   // Compute quiz count per course
   const courseQuizCounts = useMemo(() => {
@@ -202,40 +195,10 @@ export const ManageQuizzesPage = () => {
     setSortBy("questionsDesc");
   };
 
-  const handleOpenAddModal = (courseId) => {
-    setModalCourseId(courseId || (selectedCourseId !== "all" ? selectedCourseId : courses[0]?.id || "course-3"));
-    setShowAddModal(true);
-  };
-
-  const handleCreateQuiz = (e) => {
-    e.preventDefault();
-    if (!newTitle.trim()) {
-      showToast("Please enter a quiz title", "warning");
-      return;
-    }
-    const targetCourse =
-      courses.find((c) => c.id === modalCourseId) || courses[0];
-    const created = lmsService.addQuiz({
-      courseId: targetCourse.id,
-      courseTitle: targetCourse.title,
-      title: newTitle.trim(),
-      totalQuestions: Number(newQuestions) || 15,
-      durationMinutes: Number(newDuration) || 20,
-      passScorePercentage: Number(newPassScore) || 80,
-      status: "active",
-    });
-    setQuizzes(lmsService.getQuizzes());
-    setNewTitle("");
-    setShowAddModal(false);
-    showToast(
-      `Quiz "${created.title}" created for ${targetCourse.title}!`,
-      "success",
-    );
-  };
-
   const handleDeleteQuiz = (id, title) => {
     if (confirm(`Delete quiz "${title}"?`)) {
-      setQuizzes((prev) => prev.filter((q) => q.id !== id));
+      lmsService.deleteQuiz(id);
+      setQuizzes(lmsService.getQuizzes());
       showToast(`Quiz "${title}" deleted`, "info");
     }
   };
@@ -255,6 +218,7 @@ export const ManageQuizzesPage = () => {
             setSelectedQuizForDetail(null);
             setSearchParams({});
           }}
+          onEditQuiz={(q) => navigate(`/create-quiz?edit=${q.id}`)}
         />
       </div>
     );
@@ -314,7 +278,7 @@ export const ManageQuizzesPage = () => {
         {/* Action Button - Compact and Right-Aligned */}
         <div className="w-full sm:w-auto shrink-0 relative z-10">
           <button
-            onClick={() => handleOpenAddModal()}
+            onClick={() => navigate("/create-quiz")}
             className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
           >
             <Plus size={16} className="2xl:w-4.5 2xl:h-4.5" />
@@ -506,7 +470,7 @@ export const ManageQuizzesPage = () => {
               </button>
             )}
             <button
-              onClick={() => handleOpenAddModal()}
+              onClick={() => navigate("/create-quiz")}
               className="px-4 py-2 text-xs font-semibold rounded-xl bg-blue-600 text-white hover:bg-blue-500 transition-colors cursor-pointer shadow-xs"
             >
               + Create Quiz
@@ -630,11 +594,9 @@ export const ManageQuizzesPage = () => {
                           </button>
 
                           <button
-                            onClick={() =>
-                              showToast(`Edit quiz settings for "${quiz.title}"`, "info")
-                            }
-                            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-                            title="Edit Quiz"
+                            onClick={() => navigate(`/create-quiz?edit=${quiz.id}`)}
+                            className="p-1.5 text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                            title="Edit Quiz details, settings, and questions"
                           >
                             <Edit size={15} />
                           </button>
@@ -736,9 +698,7 @@ export const ManageQuizzesPage = () => {
                     </button>
 
                     <button
-                      onClick={() =>
-                        showToast(`Edit quiz "${quiz.title}"`, "info")
-                      }
+                      onClick={() => navigate(`/create-quiz?edit=${quiz.id}`)}
                       className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                       title="Edit Quiz"
                     >
@@ -757,117 +717,6 @@ export const ManageQuizzesPage = () => {
               </div>
             );
           })}
-        </div>
-      )}
-
-      {/* ------------------------------------------------------------- */}
-      {/* 4. CREATE QUIZ MODAL (Course-scoped, Theme Aligned)           */}
-      {/* ------------------------------------------------------------- */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#0b1329] rounded-2xl p-6 md:p-7 max-w-md w-full shadow-2xl space-y-4 border border-slate-200 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <div>
-                <h3 className="font-bold text-slate-900 dark:text-white text-base">
-                  Create New Quiz
-                </h3>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                  Target assessment to a specific curriculum course.
-                </p>
-              </div>
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateQuiz} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Target Course
-                </label>
-                <select
-                  value={modalCourseId}
-                  onChange={(e) => setModalCourseId(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
-                >
-                  {courses.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Quiz Title
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="e.g. Campaign Optimization & Audit Exam"
-                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 font-medium"
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Questions
-                  </label>
-                  <input
-                    type="number"
-                    value={newQuestions}
-                    onChange={(e) => setNewQuestions(Number(e.target.value))}
-                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Duration (m)
-                  </label>
-                  <input
-                    type="number"
-                    value={newDuration}
-                    onChange={(e) => setNewDuration(Number(e.target.value))}
-                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    Pass %
-                  </label>
-                  <input
-                    type="number"
-                    value={newPassScore}
-                    onChange={(e) => setNewPassScore(Number(e.target.value))}
-                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600"
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 rounded-xl cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-xl shadow-xs hover:shadow-md transition-all cursor-pointer"
-                >
-                  Create Quiz
-                </button>
-              </div>
-            </form>
-          </div>
         </div>
       )}
     </div>

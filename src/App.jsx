@@ -5,6 +5,7 @@ import { SharedLayout } from "./components/layout/SharedLayout";
 import { ManageCoursesPage } from "./pages/ManageCoursesPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { CreateCoursePage } from "./pages/CreateCoursePage";
+import { CreateQuizPage } from "./pages/CreateQuizPage";
 import { CourseDetailPage } from "./pages/CourseDetailPage";
 import { ManageUnitsPage } from "./pages/ManageUnitsPage";
 import { ManageQuizzesPage } from "./pages/ManageQuizzesPage";
@@ -51,6 +52,8 @@ export function App() {
             <Route path="courses/:id" element={<CourseDetailPage />}/>
             <Route path="dashboard" element={<DashboardPage />}/>
             <Route path="create-course" element={<CreateCoursePage />}/>
+            <Route path="edit-course/:id" element={<CreateCoursePage />}/>
+            <Route path="create-quiz" element={<CreateQuizPage />}/>
             <Route path="manage-units" element={<ManageUnitsPage />}/>
             <Route path="manage-quizzes" element={<ManageQuizzesPage />}/>
             <Route path="manage-assignments" element={<ManageAssignmentsPage />}/>

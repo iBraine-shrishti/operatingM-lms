@@ -12,6 +12,7 @@ import {
   Users,
   Check,
   X,
+  Edit,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
@@ -493,9 +494,22 @@ export const EnrolledCoursesPage = () => {
                   </div>
                 </div>
 
-                {/* Card Footer: Action Buttons (Outline & Continue) */}
+                {/* Card Footer: Action Buttons (Edit, Outline & Continue) */}
                 <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0 flex items-center gap-2">
                   <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/create-course?edit=${course.id}`);
+                    }}
+                    className="py-2 sm:py-2.5 px-3 rounded-xl border border-amber-300/80 dark:border-amber-700/80 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 font-bold text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-2xs cursor-pointer active:scale-[0.98]"
+                    title="Edit Course in Course Builder"
+                  >
+                    <Edit size={13} />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate(`/courses/${course.id}`);
@@ -506,6 +520,7 @@ export const EnrolledCoursesPage = () => {
                     <span>Outline</span>
                   </button>
                   <button
+                    type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       navigate(`/lesson-player?courseId=${course.id}`);

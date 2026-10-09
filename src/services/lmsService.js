@@ -124,6 +124,28 @@ export const lmsService = {
         setStored('quizzes', quizzes);
         return quizzes[index];
     },
+    getQuizById: (quizId) => {
+        const quizzes = lmsService.getQuizzes();
+        return quizzes.find(q => q.id === quizId);
+    },
+    updateQuiz: (quizId, updatedData) => {
+        const quizzes = lmsService.getQuizzes();
+        const index = quizzes.findIndex(q => q.id === quizId);
+        if (index === -1) return undefined;
+        quizzes[index] = {
+            ...quizzes[index],
+            ...updatedData,
+            id: quizId
+        };
+        setStored('quizzes', quizzes);
+        return quizzes[index];
+    },
+    deleteQuiz: (quizId) => {
+        const quizzes = lmsService.getQuizzes();
+        const filtered = quizzes.filter(q => q.id !== quizId);
+        setStored('quizzes', filtered);
+        return true;
+    },
     // Assignments
     getAssignments: () => {
         const stored = getStored('assignments', INITIAL_ASSIGNMENTS);

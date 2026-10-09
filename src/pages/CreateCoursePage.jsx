@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 import {
   ArrowLeft,
   Check,
@@ -59,6 +59,10 @@ const SwitchToggle = ({ checked, onChange }) => (
 );
 export const CreateCoursePage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { id: routeCourseId } = useParams();
+  const editCourseId = searchParams.get("edit") || searchParams.get("id") || routeCourseId;
+  const isEditing = Boolean(editCourseId);
   const { showToast } = useToast();
   const fileInputRef = useRef(null);
   const modalFileInputRef = useRef(null);
@@ -289,6 +293,127 @@ export const CreateCoursePage = () => {
   const [myCredSubscription, setMyCredSubscription] = useState(false);
   const [applyForCourse, setApplyForCourse] = useState(false);
   const [enableGamification, setEnableGamification] = useState(true);
+
+  // Preload course data if in edit mode
+  useEffect(() => {
+    if (editCourseId) {
+      const existingCourse = lmsService.getCourseById(editCourseId);
+      if (existingCourse) {
+        setCourseTitle(existingCourse.title || "");
+        setCourseCategory(existingCourse.category || "Digital Marketing");
+        setCourseShortAbout(
+          existingCourse.bracketText || existingCourse.description || ""
+        );
+        setCourseDetailedDescription(
+          existingCourse.detailedDescription || existingCourse.description || ""
+        );
+        if (existingCourse.thumbnail) {
+          setCourseThumbnail(existingCourse.thumbnail);
+          setCustomImageUrl(existingCourse.thumbnail);
+        }
+        if (existingCourse.videoUrl) {
+          setCourseVideoUrl(existingCourse.videoUrl);
+        }
+        if (existingCourse.duration) {
+          setCourseDuration(existingCourse.duration);
+        }
+        if (existingCourse.maxSeats) {
+          setMaxSeats(existingCourse.maxSeats);
+        }
+        if (existingCourse.startDate) {
+          setCourseStartDate(existingCourse.startDate);
+        }
+        if (existingCourse.autoEvaluation !== undefined) {
+          setAutoEvaluation(existingCourse.autoEvaluation);
+        }
+        if (existingCourse.prerequisiteCourse) {
+          setPrerequisiteCourse(existingCourse.prerequisiteCourse);
+        }
+        if (existingCourse.certificate !== undefined) {
+          setCourseCertificate(existingCourse.certificate);
+        }
+        if (existingCourse.badge !== undefined) {
+          setCourseBadge(existingCourse.badge);
+        }
+        if (existingCourse.retakes !== undefined) {
+          setCourseRetakes(existingCourse.retakes);
+        }
+        if (existingCourse.instructions) {
+          setCourseInstructions(existingCourse.instructions);
+        }
+        if (existingCourse.completionMessage) {
+          setCourseCompletionMessage(existingCourse.completionMessage);
+        }
+        if (existingCourse.price !== undefined) {
+          setCoursePrice(existingCourse.price);
+          setIsFreeCourse(existingCourse.price === 0);
+        }
+
+        // Hydrate curriculum modules
+        if (existingCourse.modules && existingCourse.modules.length > 0) {
+          setModules(existingCourse.modules);
+        } else {
+          // If no custom modules stored, check if units exist in lmsService for this course
+          const existingUnits = lmsService.getUnitsByCourse(editCourseId);
+          if (existingUnits && existingUnits.length > 0) {
+            const moduleMap = {};
+            existingUnits.forEach((u) => {
+              const modName = u.moduleName || "Module 1: Foundations & Core Concepts";
+              if (!moduleMap[modName]) {
+                moduleMap[modName] = [];
+              }
+              moduleMap[modName].push({
+                id: u.id,
+                title: u.title,
+                type: u.type || "unit",
+                subType: u.subType || "video",
+                duration: u.duration || "15:00",
+                description: u.description || "",
+                videoUrl: u.videoUrl || "",
+              });
+            });
+
+            const hydratedModules = Object.keys(moduleMap).map((modName, idx) => ({
+              id: `mod-${idx + 1}`,
+              name: modName,
+              description: `Curriculum units for ${modName}`,
+              items: moduleMap[modName],
+            }));
+
+            if (hydratedModules.length > 0) {
+              setModules(hydratedModules);
+            }
+          } else if (existingCourse.overview?.curriculumSummary) {
+            const summaryModules = existingCourse.overview.curriculumSummary.map(
+              (summaryItem, idx) => ({
+                id: `mod-${idx + 1}`,
+                name: `Module ${idx + 1}: ${summaryItem}`,
+                description: `Curriculum and practical lessons for ${summaryItem}`,
+                items: [
+                  {
+                    id: `u-${idx + 1}-1`,
+                    title: `${summaryItem} - Core Lecture`,
+                    type: "unit",
+                    subType: "video",
+                    duration: "25:00",
+                  },
+                  {
+                    id: `q-${idx + 1}-1`,
+                    title: `${summaryItem} Quiz Checkpoint`,
+                    type: "quiz",
+                    subType: "simple",
+                    duration: "15:00",
+                    marks: 20,
+                  },
+                ],
+              })
+            );
+            setModules(summaryModules);
+          }
+        }
+      }
+    }
+  }, [editCourseId]);
   // -------------------------------------------------------------
   // CURRICULUM HANDLERS
   // -------------------------------------------------------------
@@ -540,26 +665,45 @@ export const CreateCoursePage = () => {
       return;
     }
     const totalLessons = modules.reduce((acc, m) => acc + m.items.length, 0);
-    lmsService.addCourse({
+    const draftPayload = {
       title: courseTitle,
       category: courseCategory,
       description:
         courseShortAbout || courseDetailedDescription || "Draft course",
+      detailedDescription: courseDetailedDescription,
       status: "draft",
       thumbnail: courseThumbnail,
       author: "OPERATING MEDIA",
-      price: 0,
+      price: isFreeCourse ? 0 : Number(coursePrice) || 0,
       duration: courseDuration,
       lessonsCount: totalLessons > 0 ? totalLessons : 1,
+      modules: modules,
+      videoUrl: courseVideoUrl,
+      maxSeats,
+      startDate: courseStartDate,
+      autoEvaluation,
+      prerequisiteCourse,
+      certificate: courseCertificate,
+      badge: courseBadge,
+      retakes: courseRetakes,
+      instructions: courseInstructions,
+      completionMessage: courseCompletionMessage,
       updatedAt: "Just now",
-    });
-    showToast("Course draft saved successfully!", "info", "Draft Saved");
+    };
+
+    if (editCourseId) {
+      lmsService.updateCourse(editCourseId, draftPayload);
+      showToast("Course draft changes updated successfully!", "info", "Draft Saved");
+    } else {
+      lmsService.addCourse(draftPayload);
+      showToast("Course draft saved successfully!", "info", "Draft Saved");
+    }
   };
   // Final Publish Handler
   const handlePublish = () => {
     if (!courseTitle.trim()) {
       showToast(
-        "Please enter a course title in Step 1 (Create Course)",
+        `Please enter a course title in Step 1 (${isEditing ? "Edit Course" : "Create Course"})`,
         "error",
         "Title Required",
       );
@@ -567,33 +711,60 @@ export const CreateCoursePage = () => {
       return;
     }
     const totalLessons = modules.reduce((acc, m) => acc + m.items.length, 0);
-    lmsService.addCourse({
+    const coursePayload = {
       title: courseTitle,
       category: courseCategory,
       description:
         courseShortAbout ||
         courseDetailedDescription ||
         "Complete certified training course.",
+      detailedDescription: courseDetailedDescription,
       status: "published",
       thumbnail: courseThumbnail,
       author: "OPERATING MEDIA",
-      price: 0,
+      price: isFreeCourse ? 0 : Number(coursePrice) || 0,
       duration: courseDuration,
       lessonsCount: totalLessons > 0 ? totalLessons : 12,
+      modules: modules,
+      videoUrl: courseVideoUrl,
+      maxSeats,
+      startDate: courseStartDate,
+      autoEvaluation,
+      prerequisiteCourse,
+      certificate: courseCertificate,
+      badge: courseBadge,
+      retakes: courseRetakes,
+      instructions: courseInstructions,
+      completionMessage: courseCompletionMessage,
       updatedAt: "Just now",
-    });
-    showToast(
-      "Course created and published successfully! Redirecting...",
-      "success",
-      "Course Published",
-    );
+    };
+
+    if (editCourseId) {
+      lmsService.updateCourse(editCourseId, coursePayload);
+      showToast(
+        `Course "${courseTitle}" updated successfully! Redirecting...`,
+        "success",
+        "Course Updated",
+      );
+    } else {
+      lmsService.addCourse(coursePayload);
+      showToast(
+        "Course created and published successfully! Redirecting...",
+        "success",
+        "Course Published",
+      );
+    }
     setTimeout(() => {
       navigate("/manage-courses");
     }, 1200);
   };
   // Steps definition (4 process steps as requested, excluding component)
   const PROCESS_STEPS = [
-    { num: 1, title: "CREATE COURSE", subtitle: "Start building a course" },
+    {
+      num: 1,
+      title: isEditing ? "EDIT COURSE" : "CREATE COURSE",
+      subtitle: isEditing ? "Update course details" : "Start building a course",
+    },
     { num: 2, title: "SETTINGS", subtitle: "Advance settings" },
     { num: 3, title: "SET CURRICULUM", subtitle: "Add Units and Quizzes" },
     { num: 4, title: "ACCESSIBILITY", subtitle: "Set Price for Course" },
@@ -699,22 +870,43 @@ export const CreateCoursePage = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-12">
       {/* Top Bar Header */}
-      <div className="flex items-center justify-between">
-        <button
-          onClick={() => navigate("/manage-courses")}
-          className="flex items-center space-x-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-white dark:bg-[#0b1329] px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs"
-        >
-          <ArrowLeft size={16} />
-          <span>Back to Manage Courses</span>
-        </button>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={() => navigate("/manage-courses")}
+            className="flex items-center space-x-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-white dark:bg-[#0b1329] px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs cursor-pointer"
+          >
+            <ArrowLeft size={16} />
+            <span>Back to Courses</span>
+          </button>
+          {isEditing && (
+            <div className="flex items-center space-x-2">
+              <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 flex items-center space-x-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                <span>Editing Course:</span>
+                <span className="max-w-[200px] truncate underline font-semibold">
+                  {courseTitle || editCourseId}
+                </span>
+              </span>
+              <button
+                type="button"
+                onClick={() => navigate("/create-course")}
+                className="text-xs font-semibold text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                title="Create a brand new course instead"
+              >
+                + Create New Course
+              </button>
+            </div>
+          )}
+        </div>
 
         <div className="flex items-center space-x-3">
           <button
             type="button"
             onClick={handleSaveDraft}
-            className="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-[#0b1329] px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
+            className="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-[#0b1329] px-3.5 py-2 rounded-xl border border-slate-200/80 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
           >
-            Save Draft
+            {isEditing ? "Save Draft Changes" : "Save Draft"}
           </button>
           <span className="text-xs font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-3 py-1 rounded-full border border-amber-200/60 dark:border-amber-800/60 tabular-nums">
             Process {currentStep} of 4
@@ -793,12 +985,18 @@ export const CreateCoursePage = () => {
       {currentStep === 1 && (
         <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 md:p-8 shadow-xs space-y-6 animate-in fade-in duration-200">
           <div className="border-b border-slate-100 dark:border-slate-800 pb-4">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white tracking-tight">
-              CREATE COURSE
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2">
+              <span>{isEditing ? "EDIT COURSE" : "CREATE COURSE"}</span>
+              {isEditing && (
+                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                  Editing
+                </span>
+              )}
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Start building your course profile, basic information, thumbnail,
-              and duration.
+              {isEditing
+                ? `Update course profile, basic information, thumbnail, and duration for "${courseTitle || editCourseId}".`
+                : "Start building your course profile, basic information, thumbnail, and duration."}
             </p>
           </div>
 
@@ -1048,7 +1246,7 @@ export const CreateCoursePage = () => {
               onClick={handleSaveDraft}
               className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs px-5 py-3 rounded-xl transition-colors cursor-pointer"
             >
-              Save Draft
+              {isEditing ? "Save Draft Changes" : "Save Draft"}
             </button>
             <button
               type="button"
@@ -1225,7 +1423,7 @@ export const CreateCoursePage = () => {
               onClick={() => setCurrentStep(1)}
               className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs px-6 py-3 rounded-xl transition-colors cursor-pointer"
             >
-              ← Back to Create Course
+              ← Back to {isEditing ? "Edit Course" : "Create Course"}
             </button>
             <div className="flex items-center space-x-3">
               <button
@@ -1233,7 +1431,7 @@ export const CreateCoursePage = () => {
                 onClick={handleSaveDraft}
                 className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs px-5 py-3 rounded-xl transition-colors cursor-pointer"
               >
-                Save Draft
+                {isEditing ? "Save Draft Changes" : "Save Draft"}
               </button>
               <button
                 type="button"
@@ -3768,7 +3966,7 @@ export const CreateCoursePage = () => {
                 onClick={handleSaveDraft}
                 className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-bold text-xs px-5 py-3 rounded-xl transition-colors shadow-2xs cursor-pointer"
               >
-                Save Draft
+                {isEditing ? "Save Draft Changes" : "Save Draft"}
               </button>
               <button
                 type="button"
@@ -3930,7 +4128,7 @@ export const CreateCoursePage = () => {
                 onClick={handleSaveDraft}
                 className="bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-medium text-xs px-4 py-2.5 rounded-xl transition-colors shadow-2xs cursor-pointer"
               >
-                Save Draft
+                {isEditing ? "Save Draft Changes" : "Save Draft"}
               </button>
               <button
                 type="button"
@@ -3938,7 +4136,7 @@ export const CreateCoursePage = () => {
                 className="bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-sm px-6 py-2.5 rounded-xl transition-all shadow-xs flex items-center space-x-2 cursor-pointer"
               >
                 <CheckCircle2 size={16} />
-                <span>Publish Course</span>
+                <span>{isEditing ? "Update & Save Course" : "Publish Course"}</span>
               </button>
             </div>
           </div>

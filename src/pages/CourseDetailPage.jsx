@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   Trash2,
   Camera,
+  Edit,
   BookOpen,
   Video,
   FileText,
@@ -476,16 +477,26 @@ export const CourseDetailPage = () => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent pointer-events-none" />
 
-          {/* Change Cover Pill Button (Admin only) */}
-          {isAdmin && (
+          {/* Action buttons (Edit Course & Change Cover) */}
+          <div className="absolute top-4 right-4 flex items-center space-x-2 z-10">
             <button
-              onClick={() => setShowCoverModal(true)}
-              className="absolute top-4 right-4 bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3.5 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700 shadow-xs backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer z-10"
+              onClick={() => navigate(`/create-course?edit=${course.id}`)}
+              className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-3.5 py-1.5 rounded-xl border border-amber-400 shadow-md backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer"
+              title="Edit course in Course Builder"
             >
-              <Camera size={14} className="text-[#3b49df] dark:text-blue-400" />
-              <span>Change Cover</span>
+              <Edit size={13} />
+              <span>Edit Course</span>
             </button>
-          )}
+            {isAdmin && (
+              <button
+                onClick={() => setShowCoverModal(true)}
+                className="bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3.5 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700 shadow-xs backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer"
+              >
+                <Camera size={14} className="text-[#3b49df] dark:text-blue-400" />
+                <span>Change Cover</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Header Body: Inset Circular Badge + Title + Instructor + Stat Chips */}
