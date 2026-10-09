@@ -17,6 +17,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
+import { StudentPageHeader } from "../components/student/StudentPageHeader";
+import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 
 // Enrollment progress data for student courses
 const ENROLLMENT_DATA = {
@@ -142,75 +144,26 @@ export const EnrolledCoursesPage = () => {
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* HEADER BANNER - FULLY RESPONSIVE WITH BRANDED BACKGROUND      */}
+      {/* HEADER BANNER - STANDARDIZED WITH STUDENTPAGEHEADER           */}
       {/* ------------------------------------------------------------- */}
-      <div className="relative bg-cover bg-center dashboard-hero-banner rounded-2xl border border-blue-100/80 dark:border-blue-500/30 p-5 sm:p-6 md:p-8 shadow-xs dark:shadow-[0_4px_30px_rgba(2,6,23,0.7)] flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden">
-        <div className="space-y-2 relative z-10">
-          <div className="flex items-center space-x-2 text-blue-900 dark:text-cyan-400 text-xs sm:text-sm font-black uppercase tracking-wider drop-shadow-[0_0_8px_rgba(6,182,212,0.3)]">
-            <BookOpen size={17} />
-            <span>Operating Media Masterclass Curriculum</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-            My Enrolled Courses
-          </h1>
-          <p className="text-slate-800 dark:text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed font-medium">
-            Comprehensive hands-on digital marketing, SEO, analytics, and
-            development programs with live industry projects and verified
-            credentials.
-          </p>
-
-          {/* Quick Metrics Bar */}
-          <div className="flex flex-wrap items-center gap-3.5 pt-3 border-t border-slate-200/80 dark:border-slate-800 text-sm font-medium">
-            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-200">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#2563eb] inline-block shadow-[0_0_8px_rgba(37,99,235,0.6)]"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">
-                {totalCount}
-              </span>
-              <span className="text-slate-700 dark:text-slate-300 font-semibold">
-                Enrolled Courses
-              </span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-200">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">
-                {inProgressCount}
-              </span>
-              <span className="text-slate-700 dark:text-slate-300 font-semibold">
-                In Progress
-              </span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-200">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">
-                {completedCount}
-              </span>
-              <span className="text-slate-700 dark:text-slate-300 font-semibold">
-                Completed
-              </span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-200">
-              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block shadow-[0_0_8px_rgba(168,85,247,0.6)]"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">
-                65%
-              </span>
-              <span className="text-slate-700 dark:text-slate-300 font-semibold">
-                Avg. Progress
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Action Button */}
-        <div className="w-full sm:w-auto shrink-0 relative z-10">
+      <StudentPageHeader
+        {...STUDENT_HEADERS_CONFIG.enrolledCourses}
+        metrics={[
+          { value: totalCount, label: "Enrolled Courses", dotColor: "bg-blue-600" },
+          { value: inProgressCount, label: "In Progress", dotColor: "bg-rose-500" },
+          { value: completedCount, label: "Completed", dotColor: "bg-emerald-500" },
+          { value: "65%", label: "Avg. Progress", dotColor: "bg-purple-500" },
+        ]}
+        action={
           <button
             onClick={() => navigate("/lesson-player")}
-            className="w-full sm:w-auto bg-[#2563eb] hover:bg-blue-600 text-white text-xs sm:text-sm font-bold px-5 py-3 rounded-xl shadow-xs hover:shadow-md dark:shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.98]"
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
           >
-            <Play size={16} className="fill-white" />
+            <Play size={16} className="fill-white 2xl:w-4.5 2xl:h-4.5" />
             <span>Resume Active Lesson</span>
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* ------------------------------------------------------------- */}
       {/* SEARCH & FILTERS BAR - MATCHING MY QUIZZES & FORUMS            */}

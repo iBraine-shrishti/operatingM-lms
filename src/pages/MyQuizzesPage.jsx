@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { lmsService } from "../services/lmsService";
+import { StudentPageHeader } from "../components/student/StudentPageHeader";
+import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 import {
   CheckSquare,
   ArrowRight,
@@ -295,61 +297,28 @@ export const MyQuizzesPage = () => {
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* HEADER BANNER - FULLY RESPONSIVE WITH BRANDED BACKGROUND      */}
+      {/* HEADER BANNER - STANDARDIZED WITH STUDENTPAGEHEADER           */}
       {/* ------------------------------------------------------------- */}
-      <div 
-        className="relative dashboard-hero-banner rounded-2xl border border-blue-100/80 dark:border-blue-900/40 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
-      >
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2 text-blue-700 dark:text-blue-400 text-sm font-extrabold uppercase tracking-wider">
-            <CheckSquare size={17} />
-            <span>Assessment & Certification Hub</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            My Quizzes
-          </h1>
-          <p className="text-slate-900/90 dark:text-slate-200 text-sm sm:text-base max-w-2xl leading-relaxed font-semibold">
-            Test your domain mastery across enrolled modules, meet passing criteria, and track your verified certification examination scores.
-          </p>
-
-          {/* Quick Metrics Bar */}
-          <div className="flex flex-wrap items-center gap-3.5 pt-3 border-t border-slate-200/80 dark:border-slate-700/80 text-sm font-medium">
-            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-300">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#3b49df] inline-block"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">{quizzes.length}</span>
-              <span className="text-slate-800 dark:text-slate-300 font-semibold">Total Quizzes</span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-300">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">{passedCount}</span>
-              <span className="text-slate-800 dark:text-slate-300 font-semibold">Passed</span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-300">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">{pendingCount}</span>
-              <span className="text-slate-800 dark:text-slate-300 font-semibold">Pending</span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-300">
-              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">{avgScore}</span>
-              <span className="text-slate-800 dark:text-slate-300 font-semibold">Avg. Score</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Action Button */}
-        {firstPendingQuiz && (
-          <div className="w-full sm:w-auto shrink-0">
+      <StudentPageHeader
+        {...STUDENT_HEADERS_CONFIG.myQuizzes}
+        metrics={[
+          { value: quizzes.length, label: "Total Quizzes", dotColor: "bg-blue-600" },
+          { value: passedCount, label: "Passed", dotColor: "bg-emerald-500" },
+          { value: pendingCount, label: "Pending", dotColor: "bg-rose-500" },
+          { value: avgScore, label: "Avg. Score", dotColor: "bg-purple-500" },
+        ]}
+        action={
+          firstPendingQuiz ? (
             <button
               onClick={() => handleStartQuiz(firstPendingQuiz)}
-              className="w-full sm:w-auto bg-[#3b49df] hover:bg-[#2f3cb3] text-white text-xs sm:text-sm font-semibold px-5 py-3 rounded-xl shadow-xs hover:shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.98]"
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
             >
-              <Play size={16} className="fill-white" />
+              <Play size={16} className="fill-white 2xl:w-4.5 2xl:h-4.5" />
               <span>Take Next Quiz</span>
             </button>
-          </div>
-        )}
-      </div>
+          ) : null
+        }
+      />
 
       {/* ------------------------------------------------------------- */}
       {/* CONTINUE COURSE QUIZ & COMPLETED QUIZZES (ABOVE SEARCH)       */}

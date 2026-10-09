@@ -7,6 +7,8 @@ import {
 import { galleryPhotos, galleryVideos } from '../data/galleryData';
 import { PhotoLightboxModal } from '../components/common/PhotoLightboxModal';
 import { VideoPlayerModal } from '../components/common/VideoPlayerModal';
+import { StudentPageHeader } from '../components/student/StudentPageHeader';
+import { STUDENT_HEADERS_CONFIG } from '../config/studentHeadersConfig';
 
 export const GalleryPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -57,36 +59,24 @@ export const GalleryPage = () => {
   return (
     <div className="space-y-6">
       {/* 1. Page Header */}
-      <div className="relative dashboard-hero-banner border border-blue-100/90 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-2xs overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-wider text-blue-700 dark:text-blue-400 bg-white/90 dark:bg-slate-900 border border-blue-200/80 dark:border-blue-800/60 px-2 py-0.5 rounded shadow-2xs">
-                CAMPUS ARCHIVES & MEDIA HUB
-              </span>
-              <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>Live Studio Sync</span>
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
-              Photo & Video Library
-            </h1>
-            <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm">
-              Explore Operating Media classroom sessions, faculty masterclasses, convocation moments, and seminar archives.
-            </p>
-          </div>
-
+      <StudentPageHeader
+        {...STUDENT_HEADERS_CONFIG.gallery}
+        metrics={[
+          { value: galleryPhotos.length, label: "Campus Photos", dotColor: "bg-blue-600" },
+          { value: galleryVideos.length, label: "Masterclass Videos", dotColor: "bg-purple-500" },
+          { value: "6 Tracks", label: "Event Categories", dotColor: "bg-emerald-500" },
+        ]}
+        action={
           <button
             type="button"
             onClick={() => navigate('/dashboard')}
-            className="bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-2xs flex items-center space-x-1.5 self-start sm:self-center cursor-pointer active:scale-95"
+            className="w-full sm:w-auto bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl transition-all shadow-2xs flex items-center justify-center space-x-1.5 cursor-pointer whitespace-nowrap active:scale-95"
           >
             <ArrowLeft size={14} />
             <span>Back to Dashboard</span>
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* 2. Tabs & Controls Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-3">

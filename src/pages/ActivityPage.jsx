@@ -8,6 +8,8 @@ import {
 import { lmsService } from "../services/lmsService";
 import { useAuth } from "../context/AuthContext";
 import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
+import { StudentPageHeader } from "../components/student/StudentPageHeader";
+import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 
 export const ActivityPage = () => {
   const { isAdmin } = useAuth();
@@ -131,69 +133,82 @@ export const ActivityPage = () => {
   return (
     <div className="space-y-4 sm:space-y-5 2xl:space-y-6">
       {/* ============================================================== */}
-      {/* 1. HEADER BANNER - FULLY BRANDED WITH HIGH-CONTRAST TYPOGRAPHY */}
+      {/* 1. HEADER BANNER - STANDARDIZED WITH STUDENTPAGEHEADER         */}
       {/* ============================================================== */}
-      <div
-        className={
-          isAdmin
-            ? "bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 2xl:p-8.5 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all"
-            : "relative bg-cover bg-center dashboard-hero-banner rounded-2xl border border-blue-100/70 dark:border-blue-500/30 p-5 sm:p-6 md:p-8 2xl:p-8.5 shadow-xs hover:shadow-md dark:shadow-[0_4px_30px_rgba(2,6,23,0.7)] hover:border-blue-300 dark:hover:border-blue-400/60 dark:hover:shadow-[0_8px_36px_rgba(37,99,235,0.2)] flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
-        }
-      >
-        <div className="space-y-2 relative z-10 min-w-0">
-          <div className="flex items-center space-x-2 text-blue-600 dark:text-cyan-400 text-xs sm:text-sm font-bold uppercase tracking-wider">
-            <Activity size={17} />
-            <span>Audit Trail & Activity Log</span>
-            <span className="inline-flex items-center space-x-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-900/85 backdrop-blur-md text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-500/40 shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Real-Time Live</span>
-            </span>
-          </div>
-
-          <h1 className="text-2xl sm:text-3xl 2xl:text-4xl font-black text-[#0c1e3d] dark:text-white tracking-tight leading-tight drop-shadow-md">
-            System Activity Audit Log
-          </h1>
-
-          <p className="text-slate-900 dark:text-blue-100 text-sm sm:text-base 2xl:text-lg max-w-2xl leading-relaxed font-semibold">
-            Real-time tracking of student enrollments, exam submissions, certifications, and live classroom interactions.
-          </p>
-
-          {/* Quick Metrics Bar */}
-          <div className="flex flex-wrap items-center gap-2.5 pt-3 border-t border-slate-200/80 dark:border-blue-500/20 text-xs sm:text-sm font-medium">
-            <div className="flex items-center space-x-2 bg-white/95 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/80 dark:border-blue-500/35 rounded-full px-3 py-1 text-slate-700 dark:text-blue-100 shadow-2xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_rgba(244,63,94,0.4)]" />
-              <span className="font-black text-slate-900 dark:text-white">{activitiesList.length}</span>
-              <span className="font-semibold">Logged Events</span>
+      {isAdmin ? (
+        <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 2xl:p-8.5 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all">
+          <div className="space-y-2 relative z-10 min-w-0">
+            <div className="flex items-center space-x-2 text-blue-600 dark:text-cyan-400 text-xs sm:text-sm font-bold uppercase tracking-wider">
+              <Activity size={17} />
+              <span>Audit Trail & Activity Log</span>
+              <span className="inline-flex items-center space-x-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-900/85 backdrop-blur-md text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-500/40 shadow-2xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>Real-Time Live</span>
+              </span>
             </div>
-            <div className="flex items-center space-x-2 bg-white/95 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/80 dark:border-blue-500/35 rounded-full px-3 py-1 text-slate-700 dark:text-blue-100 shadow-2xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-blue-600 dark:bg-blue-400 inline-block shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
-              <span className="font-black text-slate-900 dark:text-white">{counts.enrollment}</span>
-              <span className="font-semibold">Enrollments</span>
-            </div>
-            <div className="flex items-center space-x-2 bg-white/95 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/80 dark:border-blue-500/35 rounded-full px-3 py-1 text-slate-700 dark:text-blue-100 shadow-2xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-              <span className="font-black text-slate-900 dark:text-white">{counts.certificate + counts.quiz}</span>
-              <span className="font-semibold">Certificates & Quizzes</span>
-            </div>
-            <div className="flex items-center space-x-2 bg-white/95 dark:bg-slate-900/85 backdrop-blur-md border border-slate-200/80 dark:border-blue-500/35 rounded-full px-3 py-1 text-slate-700 dark:text-blue-100 shadow-2xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block shadow-[0_0_8px_rgba(168,85,247,0.4)]" />
-              <span className="font-black text-slate-900 dark:text-white">100%</span>
-              <span className="font-semibold">Synchronized</span>
+
+            <h1 className="text-2xl sm:text-3xl 2xl:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+              System Activity Audit Log
+            </h1>
+
+            <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base 2xl:text-lg max-w-2xl leading-relaxed font-normal">
+              Real-time tracking of student enrollments, exam submissions, certifications, and live classroom interactions.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs sm:text-sm font-medium">
+              <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_rgba(244,63,94,0.4)]" />
+                <span className="font-black text-slate-900 dark:text-white">{activitiesList.length}</span>
+                <span className="font-semibold">Logged Events</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
+                <span className="font-black text-slate-900 dark:text-white">{counts.enrollment}</span>
+                <span className="font-semibold">Enrollments</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+                <span className="font-black text-slate-900 dark:text-white">{counts.certificate + counts.quiz}</span>
+                <span className="font-semibold">Certificates & Quizzes</span>
+              </div>
+              <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
+                <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block shadow-[0_0_8px_rgba(168,85,247,0.4)]" />
+                <span className="font-black text-slate-900 dark:text-white">100%</span>
+                <span className="font-semibold">Synchronized</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Action Button: Refresh Logs */}
-        <div className="w-full sm:w-auto shrink-0 relative z-10">
-          <button
-            onClick={() => setActivitiesList(lmsService.getActivities())}
-            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
-          >
-            <RefreshCw size={16} className="2xl:w-4.5 2xl:h-4.5" />
-            <span>Refresh Activity</span>
-          </button>
+          <div className="w-full sm:w-auto shrink-0 relative z-10">
+            <button
+              onClick={() => setActivitiesList(lmsService.getActivities())}
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
+            >
+              <RefreshCw size={16} className="2xl:w-4.5 2xl:h-4.5" />
+              <span>Refresh Activity</span>
+            </button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <StudentPageHeader
+          {...STUDENT_HEADERS_CONFIG.activity}
+          metrics={[
+            { value: activitiesList.length, label: "Total Events", dotColor: "bg-blue-600" },
+            { value: counts.enrollment, label: "Enrollments", dotColor: "bg-emerald-500" },
+            { value: counts.quiz + counts.certificate, label: "Quizzes & Certs", dotColor: "bg-purple-500" },
+            { value: counts.assignment, label: "Submissions", dotColor: "bg-rose-500" },
+          ]}
+          action={
+            <button
+              onClick={() => setActivitiesList(lmsService.getActivities())}
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
+            >
+              <RefreshCw size={16} className="2xl:w-4.5 2xl:h-4.5" />
+              <span>Refresh Activity</span>
+            </button>
+          }
+        />
+      )}
 
       {/* ============================================================== */}
       {/* 2. SEARCH & FILTER TABS BAR                                    */}
@@ -332,7 +347,78 @@ export const ActivityPage = () => {
             </button>
           </div>
         </div>
+      ) : !isAdmin ? (
+        /* ============================================================== */
+        /* STUDENT VIEW: DEDICATED TIMELINE FORMAT                       */
+        /* ============================================================== */
+        <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-7 2xl:p-8 shadow-xs">
+          <div className="relative pl-6 sm:pl-10 before:absolute before:top-3 before:bottom-3 before:left-[17px] sm:before:left-[21px] before:w-0.5 before:bg-gradient-to-b before:from-blue-600 before:via-blue-300 dark:before:via-blue-800 before:to-slate-200 dark:before:to-slate-800 space-y-6 sm:space-y-8">
+            {filteredActivities.map((act) => {
+              const theme = getActivityTheme(act.type);
+              const TypeIcon = theme.icon;
+
+              return (
+                <div key={act.id} className="relative flex items-start group">
+                  {/* Timeline Node Marker on the continuous line */}
+                  <div className="absolute -left-[17px] sm:-left-[21px] -translate-x-1/2 top-1.5 flex items-center justify-center">
+                    <div
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-white dark:border-[#0b1329] shadow-sm flex items-center justify-center ${theme.iconBg} ring-2 ring-slate-100 dark:ring-slate-800 group-hover:scale-110 group-hover:ring-blue-300 dark:group-hover:ring-blue-500/70 transition-all duration-200`}
+                    >
+                      <TypeIcon size={16} />
+                    </div>
+                  </div>
+
+                  {/* Timeline Event Card */}
+                  <div className="flex-1 ml-6 sm:ml-7 bg-slate-50/70 dark:bg-slate-900/60 hover:bg-white dark:hover:bg-slate-850 border border-slate-200/70 dark:border-slate-800/80 hover:border-blue-300 dark:hover:border-blue-500/60 rounded-2xl p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all duration-200">
+                    {/* Top Row: Time & Category Badge */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-200/60 dark:border-slate-800/60 text-xs">
+                      <span className="flex items-center space-x-1.5 text-slate-500 dark:text-slate-400 font-semibold">
+                        <Clock size={12} className="text-slate-400 dark:text-slate-500" />
+                        <span>{act.timeAgo}</span>
+                      </span>
+
+                      <span
+                        className={`inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full border text-xs font-bold ${theme.badgeBg}`}
+                      >
+                        <TypeIcon size={12} />
+                        <span>{theme.label}</span>
+                      </span>
+                    </div>
+
+                    {/* Middle Row: User Details, Action, and Target */}
+                    <div className="flex items-start sm:items-center space-x-3.5 pt-3">
+                      <img
+                        src={act.user.avatar}
+                        alt={act.user.name}
+                        className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700 shrink-0 mt-0.5 sm:mt-0"
+                      />
+                      <div className="min-w-0 flex-1 space-y-1">
+                        <div className="flex flex-wrap items-center gap-1.5 text-sm sm:text-base">
+                          <span className="font-extrabold text-slate-900 dark:text-white">
+                            {act.user.name}
+                          </span>
+                          <span className="text-slate-600 dark:text-slate-300 font-medium">
+                            {act.action}
+                          </span>
+                          <span className="font-extrabold text-blue-600 dark:text-cyan-400 break-words">
+                            {act.target}
+                          </span>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400 dark:text-slate-500 font-medium">
+                          <span>Live Timeline Milestone</span>
+                          <span>•</span>
+                          <span>Synchronized with Operating Media Student Engine</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       ) : (
+        /* ADMIN VIEW: KEPT ORIGINAL CARDS FORMAT */
         <div className="bg-white dark:bg-[#0b1329]/95 rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-slate-800/80 p-4 sm:p-6 2xl:p-7 shadow-xs dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] space-y-3 sm:space-y-3.5 2xl:space-y-4 transition-colors duration-200">
           {filteredActivities.map((act) => {
             const theme = getActivityTheme(act.type);

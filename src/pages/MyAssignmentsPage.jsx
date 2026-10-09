@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
+import { StudentPageHeader } from "../components/student/StudentPageHeader";
+import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 
 // Color themes & icons for distinct course identities (matching screenshot pills)
 const COURSE_THEMES = {
@@ -231,62 +233,26 @@ export const MyAssignmentsPage = () => {
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* HEADER BANNER - FULLY RESPONSIVE WITH BRANDED BACKGROUND      */}
+      {/* HEADER BANNER - STANDARDIZED WITH STUDENTPAGEHEADER           */}
       {/* ------------------------------------------------------------- */}
-      {/* ------------------------------------------------------------- */}
-      {/* HEADER BANNER - FULLY RESPONSIVE WITH BRANDED BACKGROUND      */}
-      {/* ------------------------------------------------------------- */}
-      <div 
-        className="relative bg-cover bg-center dashboard-hero-banner rounded-2xl border border-blue-100/80 dark:border-blue-900/40 p-6 sm:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden"
-      >
-        <div className="space-y-3 z-10">
-          <div className="flex items-center space-x-2 text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-extrabold uppercase tracking-wider">
-            <CheckSquare size={16} />
-            <span>PRACTICAL ASSESSMENT & CAPSTONE</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            My Assignments
-          </h1>
-          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base max-w-2xl leading-relaxed font-medium">
-            Submit your live client audits, campaign spreadsheets, Figma design decks, and tracking implementations.
-          </p>
-
-          {/* Quick Metrics Dots */}
-          <div className="flex flex-wrap items-center gap-4 pt-2 text-xs sm:text-sm font-semibold">
-            <div className="flex items-center space-x-2 text-slate-700 dark:text-slate-200">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#3b82f6] inline-block shadow-[0_0_8px_rgba(59,130,246,0.6)]"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">{assignments.length}</span>
-              <span>Total</span>
-            </div>
-            <div className="flex items-center space-x-2 text-slate-700 dark:text-slate-200">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#f43f5e] inline-block shadow-[0_0_8px_rgba(244,63,94,0.6)]"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">{pendingCount}</span>
-              <span>Pending</span>
-            </div>
-            <div className="flex items-center space-x-2 text-slate-700 dark:text-slate-200">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] inline-block shadow-[0_0_8px_rgba(139,92,246,0.6)]"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">{submittedCount}</span>
-              <span>Submitted</span>
-            </div>
-            <div className="flex items-center space-x-2 text-slate-700 dark:text-slate-200">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#10b981] inline-block shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span>
-              <span className="font-extrabold text-slate-900 dark:text-white">{gradedCount}</span>
-              <span>Graded</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Button */}
-        <div className="shrink-0 z-10 w-full sm:w-auto">
+      <StudentPageHeader
+        {...STUDENT_HEADERS_CONFIG.myAssignments}
+        metrics={[
+          { value: assignments.length, label: "Total Tasks", dotColor: "bg-blue-600" },
+          { value: pendingCount, label: "Pending", dotColor: "bg-rose-500" },
+          { value: submittedCount, label: "Submitted", dotColor: "bg-purple-500" },
+          { value: gradedCount, label: "Graded", dotColor: "bg-emerald-500" },
+        ]}
+        action={
           <button
             onClick={() => openSubmitModal()}
-            className="w-full sm:w-auto bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-sm font-bold px-6 py-3.5 rounded-xl shadow-[0_0_24px_rgba(37,99,235,0.45)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-95"
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
           >
-            <Upload size={18} />
-            <span>Submit Assignment</span>
+            <Upload size={16} className="2xl:w-4.5 2xl:h-4.5" />
+            <span>+ Submit Assignment</span>
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* ------------------------------------------------------------- */}
       {/* SEARCH & FILTERS BAR - MATCHING EXACT REFERENCE DESIGN         */}
@@ -660,7 +626,7 @@ export const MyAssignmentsPage = () => {
               {/* File Attachment Drag/Drop Mock */}
               <div>
                 <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Or Attach File (PDF, ZIP, DOCX, XLSX - Max 50MB)
+                  Or Attach File (Any format: PDF, ZIP, DOCX, Media, Figma, Code - Max 50MB)
                 </label>
                 <label className="border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-[#3b49df] dark:hover:border-blue-500 rounded-xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-slate-50/50 dark:bg-slate-900/40 hover:bg-blue-50/20 dark:hover:bg-blue-950/30">
                   <Upload size={20} className="text-slate-400 dark:text-slate-500 mb-1.5" />
@@ -668,10 +634,11 @@ export const MyAssignmentsPage = () => {
                     {fileName ? fileName : "Click to select or drag and drop your file here"}
                   </span>
                   <span className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
-                    Supports .pdf, .zip, .docx up to 50MB
+                    Supports ANY format (PDF, DOCX, ZIP, MP4, PNG, Figma, code, etc. up to 50MB)
                   </span>
                   <input
                     type="file"
+                    accept="*/*"
                     className="hidden"
                     onChange={(e) => {
                       if (e.target.files && e.target.files[0]) {

@@ -6,6 +6,7 @@ import { ManageCoursesPage } from "./pages/ManageCoursesPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { CreateCoursePage } from "./pages/CreateCoursePage";
 import { CreateQuizPage } from "./pages/CreateQuizPage";
+import { CreateAssignmentPage } from "./pages/CreateAssignmentPage";
 import { CourseDetailPage } from "./pages/CourseDetailPage";
 import { ManageUnitsPage } from "./pages/ManageUnitsPage";
 import { ManageQuizzesPage } from "./pages/ManageQuizzesPage";
@@ -57,6 +58,8 @@ export function App() {
             <Route path="manage-units" element={<ManageUnitsPage />}/>
             <Route path="manage-quizzes" element={<ManageQuizzesPage />}/>
             <Route path="manage-assignments" element={<ManageAssignmentsPage />}/>
+            <Route path="create-assignment" element={<CreateAssignmentPage />}/>
+            <Route path="edit-assignment/:id" element={<CreateAssignmentPage />}/>
             <Route path="manage-students" element={<ManageStudentsPage />}/>
             <Route path="manage-questions" element={<ManageQuestionsPage />}/>
             <Route path="question-discussions" element={<QuestionDiscussionsPage />}/>

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import {
   CheckSquare,
@@ -128,6 +128,7 @@ const getDaysLeftText = (dueDate) => {
 };
 
 export const ManageAssignmentsPage = () => {
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const courses = lmsService.getCourses();
@@ -392,13 +393,13 @@ export const ManageAssignmentsPage = () => {
         </div>
 
         {/* Action Button */}
-        <div className="w-full sm:w-auto shrink-0 relative z-10">
+        <div className="w-full sm:w-auto shrink-0 relative z-10 flex items-center space-x-2">
           <button
-            onClick={() => handleOpenAddModal()}
+            onClick={() => navigate("/create-assignment")}
             className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
           >
             <Plus size={16} className="2xl:w-4.5 2xl:h-4.5" />
-            <span>+ New Assignment</span>
+            <span>Create Assignment</span>
           </button>
         </div>
       </div>
@@ -710,24 +711,20 @@ export const ManageAssignmentsPage = () => {
                         <div className="flex items-center justify-end space-x-2">
                           <button
                             onClick={() => handleOpenManageAssignment(a)}
-                            className="bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow-xs cursor-pointer flex items-center space-x-1.5 active:scale-95"
+                            className="bg-slate-900 dark:bg-blue-600 hover:bg-[#3b49df] dark:hover:bg-blue-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow-xs cursor-pointer flex items-center space-x-1.5 active:scale-95"
+                            title="Manage Assignment Submissions & Statistics"
                           >
                             <BarChart3 size={13} />
-                            <span>Manage Assignment</span>
+                            <span>Manage</span>
                             <ChevronRight size={13} />
                           </button>
                           <button
-                            onClick={() => handleOpenManageAssignment(a)}
-                            className="bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white text-xs font-semibold px-3 py-1.5 rounded-xl transition-colors shadow-2xs cursor-pointer"
+                            onClick={() => navigate(`/create-assignment?edit=${a.id}`)}
+                            className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs px-3.5 py-1.5 rounded-xl transition-all shadow-xs cursor-pointer flex items-center space-x-1 active:scale-95"
+                            title="Edit Assignment in Builder Flow"
                           >
-                            Grade
-                          </button>
-                          <button
-                            onClick={() => handleOpenEditModal(a)}
-                            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-                            title="Edit Assignment"
-                          >
-                            <Edit size={14} />
+                            <Edit size={13} />
+                            <span>Edit</span>
                           </button>
                           <button
                             onClick={() =>

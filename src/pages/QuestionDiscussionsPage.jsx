@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 import { useAuth } from "../context/AuthContext";
+import { StudentPageHeader } from "../components/student/StudentPageHeader";
+import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 
 // Helper to render comments with Instagram-style highlighted @mentions
 const renderCommentContent = (content = "") => {
@@ -245,21 +247,11 @@ export const QuestionDiscussionsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [activeFilterTab, setActiveFilterTab] = useState("all"); // 'all' | 'my' | 'answered'
   
-  // Track open replies section per discussion
-  const [expandedThreads, setExpandedThreads] = useState(() => {
-    const init = {};
-    discussions.slice(0, 2).forEach(d => { init[d.id] = true; });
-    return init;
-  });
+  // Track open replies section per discussion (closed by default)
+  const [expandedThreads, setExpandedThreads] = useState({});
 
-  // Track expanded replies per comment (default top comments with replies expanded)
-  const [expandedReplies, setExpandedReplies] = useState({
-    'rep-1-1': true,
-    'rep-1-2': true,
-    'rep-2-1': true,
-    'rep-2-2': true,
-    'rep-3-1': true
-  });
+  // Track expanded replies per comment (closed by default)
+  const [expandedReplies, setExpandedReplies] = useState({});
 
   const toggleReplies = (replyId) => {
     setExpandedReplies(prev => ({
@@ -536,55 +528,17 @@ export const QuestionDiscussionsPage = () => {
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* 1. HEADER BANNER - ACTIVITY PAGE STYLE                        */}
+      {/* 1. HEADER BANNER - STANDARDIZED WITH STUDENTPAGEHEADER        */}
       {/* ------------------------------------------------------------- */}
-      <div 
-        className={
-          isAdmin
-            ? "bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 2xl:p-8.5 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all"
-            : "relative dashboard-hero-banner rounded-2xl border border-blue-100/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all overflow-hidden"
-        }
-      >
-        <div className="space-y-2 relative z-10 min-w-0">
-          <div className="flex items-center space-x-2 text-blue-600 dark:text-cyan-400 text-xs sm:text-sm font-bold uppercase tracking-wider">
-            <MessagesSquare size={17} />
-            <span>Community Knowledge Hub</span>
-            <span className="inline-flex items-center space-x-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-900/85 backdrop-blur-md text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-500/40 shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Active Discussions</span>
-            </span>
-          </div>
-
-          <h1 className="text-2xl sm:text-3xl 2xl:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-            Forums & Discussions
-          </h1>
-
-          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base 2xl:text-lg max-w-2xl leading-relaxed font-normal">
-            Collaborate with peers, ask tricky digital marketing & coding doubts, and receive answers directly from Operating Media mentors and instructors.
-          </p>
-
-          {/* Quick Metrics Bar */}
-          <div className="flex flex-wrap items-center gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs sm:text-sm font-medium">
-            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
-              <span className="font-black text-slate-900 dark:text-white">{discussions.length}</span>
-              <span className="font-semibold">Total Topics</span>
-            </div>
-            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-              <span className="font-black text-slate-900 dark:text-white">{totalAnsweredCount}</span>
-              <span className="font-semibold">Resolved Discussions</span>
-            </div>
-            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block shadow-[0_0_8px_rgba(168,85,247,0.4)]" />
-              <span className="font-black text-slate-900 dark:text-white">100%</span>
-              <span className="font-semibold">Instructor Response Rate</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Action Button */}
-        <div className="w-full sm:w-auto shrink-0 relative z-10">
+      <StudentPageHeader
+        {...STUDENT_HEADERS_CONFIG.forums}
+        isAdmin={isAdmin}
+        metrics={[
+          { value: discussions.length, label: "Total Topics", dotColor: "bg-blue-600" },
+          { value: totalAnsweredCount, label: "Resolved Discussions", dotColor: "bg-emerald-500" },
+          { value: "100%", label: "Instructor Response Rate", dotColor: "bg-purple-500" },
+        ]}
+        action={
           <button
             onClick={() => setIsModalOpen(true)}
             className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
@@ -592,8 +546,8 @@ export const QuestionDiscussionsPage = () => {
             <Plus size={16} className="2xl:w-4.5 2xl:h-4.5" />
             <span>+ Ask a Question</span>
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* ------------------------------------------------------------- */}
       {/* SEARCH & FILTERS BAR - LARGER SIZE & SPACIOUS DESIGN          */}

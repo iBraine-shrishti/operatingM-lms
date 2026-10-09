@@ -172,11 +172,47 @@ export const lmsService = {
         setStored('assignments', items);
         return items[index];
     },
+    getAssignmentById: (id) => {
+        const items = lmsService.getAssignments();
+        return items.find(a => a.id === id);
+    },
     addAssignment: (assign) => {
         const items = lmsService.getAssignments();
-        const newItem = { ...assign, id: `a-${Date.now()}`, totalSubmissions: 0, pendingGrading: 0, status: 'pending' };
+        const newItem = { 
+            ...assign, 
+            id: `a-${Date.now()}`, 
+            totalSubmissions: 0, 
+            pendingGrading: 0, 
+            status: assign.status || 'pending',
+            attachments: assign.attachments || [],
+            allowAnyFormat: assign.allowAnyFormat !== undefined ? assign.allowAnyFormat : true,
+            allowedFormats: assign.allowedFormats || ['ANY', 'PDF', 'DOC', 'DOCX', 'PPT', 'PPTX', 'ZIP', 'MP4', 'FIGMA', 'PNG', 'XLSX'],
+            rubric: assign.rubric || [
+                { id: 1, title: 'Strategic Approach & Planning', maxPoints: Math.round((Number(assign.maxScore) || 100) * 0.3) },
+                { id: 2, title: 'Execution Quality & Practical Output', maxPoints: Math.round((Number(assign.maxScore) || 100) * 0.4) },
+                { id: 3, title: 'Analysis, Data & Documentation', maxPoints: Math.round((Number(assign.maxScore) || 100) * 0.3) }
+            ]
+        };
         setStored('assignments', [newItem, ...items]);
         return newItem;
+    },
+    updateAssignment: (id, updates) => {
+        const items = lmsService.getAssignments();
+        const index = items.findIndex(a => a.id === id);
+        if (index === -1) return undefined;
+        items[index] = { 
+            ...items[index], 
+            ...updates, 
+            id 
+        };
+        setStored('assignments', items);
+        return items[index];
+    },
+    deleteAssignment: (id) => {
+        const items = lmsService.getAssignments();
+        const filtered = items.filter(a => a.id !== id);
+        setStored('assignments', filtered);
+        return true;
     },
     // Students
     getStudents: () => {

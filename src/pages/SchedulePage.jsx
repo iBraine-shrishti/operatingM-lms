@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { StudentPageHeader } from "../components/student/StudentPageHeader";
+import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 
 const getDayBadgeClass = (day = "") => {
   switch (day.toLowerCase()) {
@@ -127,82 +129,44 @@ export const SchedulePage = () => {
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* HEADER BANNER - FULLY RESPONSIVE WITH BRANDED BACKGROUND      */}
+      {/* HEADER BANNER - STANDARDIZED WITH STUDENTPAGEHEADER           */}
       {/* ------------------------------------------------------------- */}
-      <div 
-        className={
-          isAdmin
-            ? "bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 2xl:p-8.5 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all"
-            : "relative dashboard-hero-banner rounded-2xl border border-blue-100/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all overflow-hidden"
+      <StudentPageHeader
+        {...STUDENT_HEADERS_CONFIG.schedule}
+        isAdmin={isAdmin}
+        metrics={[
+          { value: "4 Modules", label: "Scheduled", dotColor: "bg-blue-600" },
+          { value: "Live Hybrid", label: "In Session", dotColor: "bg-emerald-500" },
+          { value: "Mon - Fri", label: "9:00 AM - 10:00 AM", dotColor: "bg-purple-500" },
+          { value: "Borivali", label: "Campus", dotColor: "bg-rose-500" },
+        ]}
+        action={
+          <div className="flex items-center space-x-1.5 shrink-0 bg-slate-100/90 dark:bg-slate-900/80 p-1.5 rounded-xl border border-slate-200/80 dark:border-slate-750 self-start md:self-auto">
+            <button
+              type="button"
+              onClick={() => setActiveTab("timetable")}
+              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeTab === "timetable"
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60"
+              }`}
+            >
+              Weekly Timetable
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("upcoming")}
+              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeTab === "upcoming"
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60"
+              }`}
+            >
+              Curriculum Sessions
+            </button>
+          </div>
         }
-      >
-        <div className="space-y-2 relative z-10 min-w-0">
-          <div className="flex items-center space-x-2 text-blue-600 dark:text-cyan-400 text-xs sm:text-sm font-bold uppercase tracking-wider">
-            <Calendar size={17} />
-            <span>Academic Calendar & Timetable</span>
-            <span className="inline-flex items-center space-x-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-900/85 backdrop-blur-md text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-500/40 shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Live Batch Sync</span>
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl 2xl:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-            Classroom Schedule & Curriculum
-          </h1>
-          <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base 2xl:text-lg max-w-2xl leading-relaxed font-normal">
-            Real-time enrolled batch schedule, active lecture timings, and upcoming curriculum sessions.
-          </p>
-
-          {/* Quick Metrics Bar */}
-          <div className="flex flex-wrap items-center gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs sm:text-sm font-medium">
-            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block shadow-[0_0_8px_rgba(37,99,235,0.4)]" />
-              <span className="font-black text-slate-900 dark:text-white">4 Modules</span>
-              <span className="font-semibold">Scheduled</span>
-            </div>
-            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-              <span className="font-black text-slate-900 dark:text-white">Live Hybrid</span>
-              <span className="font-semibold">In Session</span>
-            </div>
-            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block shadow-[0_0_8px_rgba(168,85,247,0.4)]" />
-              <span className="font-black text-slate-900 dark:text-white">Mon - Fri</span>
-              <span className="font-semibold">9:00 AM - 10:00 AM</span>
-            </div>
-            <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_rgba(244,63,94,0.4)]" />
-              <span className="font-black text-slate-900 dark:text-white">Borivali</span>
-              <span className="font-semibold">Campus</span>
-            </div>
-          </div>
-        </div>
-
-        {/* View Toggle Tabs - Timetable 1st View */}
-        <div className="flex items-center space-x-1.5 shrink-0 bg-slate-100/90 dark:bg-slate-900/80 p-1.5 rounded-xl border border-slate-200/80 dark:border-slate-750 self-start md:self-auto">
-          <button
-            type="button"
-            onClick={() => setActiveTab("timetable")}
-            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              activeTab === "timetable"
-                ? "bg-[#3b49df] text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60"
-            }`}
-          >
-            Weekly Timetable
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("upcoming")}
-            className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-              activeTab === "upcoming"
-                ? "bg-[#3b49df] text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60"
-            }`}
-          >
-            Curriculum Sessions
-          </button>
-        </div>
-      </div>
+      />
 
       {/* 1. Enrolled Batch & Schedule Card (LATEST UI) */}
       <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-5">

@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
   Upload,
@@ -23,6 +24,8 @@ import {
   RefreshCw,
   ExternalLink,
   CheckSquare,
+  Edit,
+  FileUp,
 } from "lucide-react";
 import { useToast } from "../../context/ToastContext";
 import { lmsService } from "../../services/lmsService";
@@ -32,7 +35,10 @@ export const AdminAssignmentDetailHub = ({
   onBack,
   onUpdateAssignment,
 }) => {
+  const navigate = useNavigate();
   const { showToast } = useToast();
+  const uploadInputRef = useRef(null);
+  const [selectedUploadFile, setSelectedUploadFile] = useState(null);
 
   // Active top-level tab: 'statistics', 'activity', 'submissions', 'view'
   const [activeTab, setActiveTab] = useState("statistics");
@@ -232,9 +238,12 @@ export const AdminAssignmentDetailHub = ({
 
   // Document view states
   const [viewCurrentPage, setViewCurrentPage] = useState(1);
-  const [uploadedFiles, setUploadedFiles] = useState([
-    "Operating-Media-Privacy-Policy-1",
-  ]);
+  const [uploadedFiles, setUploadedFiles] = useState(() => {
+    if (assignment.attachments && assignment.attachments.length > 0) {
+      return assignment.attachments.map((a) => a.name);
+    }
+    return ["Operating-Media-Privacy-Policy-1"];
+  });
 
   // Derived counts
   const totalSubmissionsCount = submissions.filter(
@@ -399,9 +408,20 @@ export const AdminAssignmentDetailHub = ({
         </div>
 
         {/* Center action & Right Badges matching screenshot */}
-        <div className="flex items-center space-x-3 sm:space-x-4">
+        <div className="flex items-center space-x-2.5 sm:space-x-3">
           <button
-            onClick={() => setShowUploadModal(true)}
+            onClick={() => navigate(`/create-assignment?edit=${assignment.id}`)}
+            className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold inline-flex items-center space-x-1.5 transition-all cursor-pointer shadow-xs active:scale-95"
+            title="Edit this assignment in builder flow"
+          >
+            <Edit size={14} />
+            <span>Edit Assignment</span>
+          </button>
+          <button
+            onClick={() => {
+              setSelectedUploadFile(null);
+              setShowUploadModal(true);
+            }}
             className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 inline-flex items-center space-x-2 transition-all cursor-pointer shadow-2xs"
           >
             <Upload size={15} className="text-slate-500 dark:text-slate-400" />
@@ -1149,10 +1169,15 @@ export const AdminAssignmentDetailHub = ({
               </div>
             </div>
 
-            {/* Allowed file extensions text matching screenshot */}
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium pt-2">
-              Allowed File Extensions PDF DOC DOCX PPT PPTX ZIP
-            </p>
+            {/* Allowed file extensions text matching screenshot with ANY FORMAT support */}
+            <div className="flex items-center space-x-2 pt-2">
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                Allowed File Extensions:
+              </span>
+              <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md border border-emerald-200/80 dark:border-emerald-800/60">
+                ANY FORMAT (PDF, DOC, DOCX, PPT, PPTX, ZIP, XLS, MP4, PNG, FIGMA, etc.)
+              </span>
+            </div>
 
             {/* Uploaded Files Section matching screenshot */}
             <div className="space-y-2 pt-1">
@@ -1348,43 +1373,107 @@ export const AdminAssignmentDetailHub = ({
       {/* MODAL 3: UPLOAD ASSIGNMENT MATERIAL                                */}
       {/* ------------------------------------------------------------------ */}
       {showUploadModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h3 className="font-bold text-slate-900 dark:text-white text-base">
-                Upload Assignment Material
-              </h3>
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white text-base">
+                  Upload Assignment Material
+                </h3>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Accepts any file format (PDF, DOCX, ZIP, PPTX, MP4, etc.)
+                </p>
+              </div>
               <button
                 onClick={() => setShowUploadModal(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
               >
                 <X size={16} />
               </button>
             </div>
 
-            <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-2xl p-6 text-center space-y-2 bg-slate-50/50 dark:bg-slate-900/40">
-              <Upload size={28} className="mx-auto text-amber-500" />
-              <p className="text-xs text-slate-700 dark:text-slate-300 font-semibold">
-                Drag and drop files here, or browse
-              </p>
-              <p className="text-[10px] text-slate-400 dark:text-slate-500">
-                PDF, DOC, DOCX, PPT, PPTX, ZIP (Max 50MB)
-              </p>
+            {/* Hidden native input with ANY format support */}
+            <input
+              ref={uploadInputRef}
+              type="file"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) setSelectedUploadFile(file);
+                e.target.value = "";
+              }}
+              className="hidden"
+            />
+
+            <div
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const file = e.dataTransfer.files?.[0];
+                if (file) setSelectedUploadFile(file);
+              }}
+              onClick={() => uploadInputRef.current?.click()}
+              className="border-2 border-dashed border-blue-300 dark:border-blue-800/80 hover:border-blue-500 rounded-2xl p-6 text-center space-y-2 bg-blue-50/40 dark:bg-blue-950/20 hover:bg-blue-50/70 transition-all cursor-pointer group"
+            >
+              <div className="w-12 h-12 rounded-xl bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto shadow-2xs group-hover:scale-105 transition-transform">
+                <FileUp size={24} />
+              </div>
+              <div>
+                <p className="text-xs text-slate-800 dark:text-slate-200 font-bold">
+                  {selectedUploadFile ? selectedUploadFile.name : "Drag & drop file here, or click to browse"}
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  {selectedUploadFile
+                    ? `${(selectedUploadFile.size / 1024 / 1024).toFixed(2)} MB • Ready to upload`
+                    : "ANY FORMAT SUPPORTED (PDF, Word, Excel, PPT, ZIP, Video, Code, Figma, etc.)"}
+                </p>
+              </div>
+              <span className="inline-block px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold border border-emerald-200/80 dark:border-emerald-800/60">
+                Any Format Allowed • Up to 500MB
+              </span>
             </div>
 
             <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
               <button
-                onClick={() => setShowUploadModal(false)}
+                type="button"
+                onClick={() => {
+                  setSelectedUploadFile(null);
+                  setShowUploadModal(false);
+                }}
                 className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
               >
                 Cancel
               </button>
               <button
+                type="button"
                 onClick={() => {
-                  showToast("Material uploaded successfully!", "success");
+                  if (selectedUploadFile) {
+                    const newMat = {
+                      id: `mat-${Date.now()}`,
+                      name: selectedUploadFile.name,
+                      size: selectedUploadFile.size,
+                      type: selectedUploadFile.type || "application/octet-stream",
+                      uploadedAt: "Just now",
+                      isCustom: true,
+                    };
+                    const currentMats = assignment.attachments || [];
+                    const updatedAttachments = [newMat, ...currentMats];
+                    lmsService.updateAssignment(assignment.id, { attachments: updatedAttachments });
+                    if (onUpdateAssignment) {
+                      onUpdateAssignment({ ...assignment, attachments: updatedAttachments });
+                    }
+                    showToast(
+                      `Uploaded "${selectedUploadFile.name}" with any format successfully!`,
+                      "success",
+                      "Material Attached"
+                    );
+                  } else {
+                    showToast("Please choose or drop a file to upload", "warning");
+                    return;
+                  }
+                  setSelectedUploadFile(null);
                   setShowUploadModal(false);
                 }}
-                className="px-5 py-2 rounded-xl bg-[#2563eb] hover:bg-[#d97706] text-white text-xs font-bold shadow-xs cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-[#2563eb] hover:bg-blue-600 text-white text-xs font-bold shadow-xs cursor-pointer"
               >
                 Upload File
               </button>

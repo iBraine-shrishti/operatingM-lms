@@ -15,6 +15,8 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { CertificateViewerModal } from "../components/crm/CertificateViewerModal";
 import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
+import { StudentPageHeader } from "../components/student/StudentPageHeader";
+import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 
 // Imported Badges
 import achivementBatchImg from "../assets/achivement-batch.png";
@@ -179,55 +181,27 @@ export const AchievementsPage = () => {
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* HEADER HERO BANNER                                            */}
+      {/* HEADER HERO BANNER - STANDARDIZED WITH STUDENTPAGEHEADER      */}
       {/* ------------------------------------------------------------- */}
-      <div
-        className="relative bg-cover bg-center dashboard-hero-banner rounded-2xl border border-blue-100/70 dark:border-blue-500/30 p-5 sm:p-6 md:p-7 shadow-xs dark:shadow-[0_4px_30px_rgba(2,6,23,0.7)] overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all"
-      >
-        <div className="space-y-2 relative z-10">
-          <div className="flex items-center space-x-2 text-blue-600 dark:text-cyan-400 text-xs sm:text-sm font-black uppercase tracking-wider">
-            <Award size={16} />
-            <span>Official Credentials & Honor Hub</span>
-          </div>
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-            Student Certifications & Honor Badges
-          </h1>
-          <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed font-medium">
-            Verified course completion batches, diplomas, and milestone badges synchronized with Operating Media CRM.
-          </p>
-
-          {/* Quick Metrics Bar */}
-          <div className="flex flex-wrap items-center gap-3 pt-2 text-xs font-medium">
-            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-200">
-              <span className="w-2 h-2 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
-              <span className="font-black text-slate-900 dark:text-white">{COURSE_BATCHES_DATA.length}</span>
-              <span className="text-slate-600 dark:text-slate-400 font-semibold">Course Batches</span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-200">
-              <span className="w-2 h-2 rounded-full bg-amber-500 inline-block shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
-              <span className="font-black text-slate-900 dark:text-white">{achievements.length}</span>
-              <span className="text-slate-600 dark:text-slate-400 font-semibold">Milestone Badges</span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-slate-800 dark:text-slate-200">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
-              <span className="font-black text-slate-900 dark:text-white">{totalEarned} / {totalCredentials}</span>
-              <span className="text-slate-600 dark:text-slate-400 font-semibold">Earned</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Action Button */}
-        <div className="shrink-0 relative z-10 self-start md:self-center">
+      <StudentPageHeader
+        {...STUDENT_HEADERS_CONFIG.achievements}
+        metrics={[
+          { value: COURSE_BATCHES_DATA.length, label: "Course Batches", dotColor: "bg-blue-600" },
+          { value: achievements.length, label: "Milestone Badges", dotColor: "bg-amber-500" },
+          { value: `${totalEarned} / ${totalCredentials}`, label: "Earned", dotColor: "bg-emerald-500" },
+          { value: "100%", label: "Verified Credentials", dotColor: "bg-purple-500" },
+        ]}
+        action={
           <button
             type="button"
             onClick={() => handleOpenCertificate(COURSE_BATCHES_DATA[0])}
-            className="bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-black text-xs sm:text-sm px-4.5 py-2.5 rounded-xl shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)] transition-all flex items-center space-x-2 cursor-pointer"
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
           >
-            <Award size={15} />
+            <Award size={16} className="2xl:w-4.5 2xl:h-4.5" />
             <span>View Verified Certificate</span>
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* ------------------------------------------------------------- */}
       {/* FILTER TABS & SEARCH BAR                                      */}
