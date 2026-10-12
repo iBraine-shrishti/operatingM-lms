@@ -499,8 +499,8 @@ export const CreateAssignmentPage = () => {
           </button>
           {isEditMode && (
             <div className="flex items-center space-x-2">
-              <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 flex items-center space-x-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-blue-500/15 text-blue-700 dark:text-cyan-400 border border-blue-500/30 flex items-center space-x-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
                 <span>Editing:</span>
                 <span className="max-w-[200px] truncate underline font-semibold">
                   {assignmentTitle || editId}
@@ -526,7 +526,7 @@ export const CreateAssignmentPage = () => {
           >
             {isEditMode ? "Save Draft Changes" : "Save Draft"}
           </button>
-          <span className="text-xs font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-3 py-1 rounded-full border border-amber-200/60 dark:border-amber-800/60 tabular-nums">
+          <span className="text-xs font-medium text-blue-700 dark:text-cyan-300 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full border border-blue-200/60 dark:border-blue-800/60 tabular-nums">
             Process {currentStep} of 4
           </span>
         </div>
@@ -608,7 +608,7 @@ export const CreateAssignmentPage = () => {
             <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight flex items-center space-x-2">
               <span>{isEditMode ? "EDIT ASSIGNMENT" : "CREATE ASSIGNMENT"}</span>
               {isEditMode && (
-                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-cyan-300 border border-blue-200 dark:border-blue-800">
                   Editing
                 </span>
               )}
@@ -1532,7 +1532,7 @@ export const CreateAssignmentPage = () => {
               </div>
               <div className="p-3 rounded-xl bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800">
                 <span className="text-[10px] text-slate-400 font-bold block uppercase">Max Points</span>
-                <span className="font-bold text-amber-600 dark:text-amber-400 block">
+                <span className="font-bold text-blue-600 dark:text-cyan-400 block">
                   {maxScore} pts ({rubricItems.length} criteria)
                 </span>
               </div>
