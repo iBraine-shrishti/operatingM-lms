@@ -82,9 +82,26 @@ export const lmsService = {
     // Quizzes
     getQuizzes: () => {
         const stored = getStored('quizzes', null);
-        let list = stored ? [...stored] : [...INITIAL_QUIZZES];
+        let list = stored ? [...stored] : [...IMPORTED_LMS_QUIZZES];
 
-        // Ensure all 7 imported LMS quizzes from d:\operating-media\lms-quiz are seamlessly merged
+        // Explicitly filter out any old sample / dummy quizzes
+        const SAMPLE_QUIZ_IDS = new Set([
+            'q-1', 'q-2', 'q-3', 'q-4', 'q-5', 'q-6', 'q-7', 'q-8'
+        ]);
+        const SAMPLE_QUIZ_TITLES = new Set([
+            'Digital Marketing Aptitude Quiz!',
+            'SEO Fundamentals & Keyword Strategy Assessment',
+            'WordPress Core Architecture & Elementor Layout Test',
+            'GA4 Event Tracking & Funnel Analysis Quiz',
+            'Google Ads Search & Bidding Strategies Quiz',
+            'Social Media Growth Tactics & Viral Algorithms Quiz',
+            'Graphic Design Principles & Typography Assessment',
+            'Advanced Digital Marketing Strategy Comprehensive Exam'
+        ]);
+
+        list = list.filter((q) => !SAMPLE_QUIZ_IDS.has(q.id) && !SAMPLE_QUIZ_TITLES.has(q.title));
+
+        // Ensure all 7 given quizzes from d:\operating-media\lms-quiz are present with full data
         IMPORTED_LMS_QUIZZES.forEach((imported) => {
             const existingIdx = list.findIndex((q) => q.id === imported.id);
             if (existingIdx === -1) {

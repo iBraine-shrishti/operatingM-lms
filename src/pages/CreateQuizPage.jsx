@@ -145,7 +145,7 @@ export const CreateQuizPage = () => {
       // Load questions
       if (existingQuiz.questions && existingQuiz.questions.length > 0) {
         setQuestions(existingQuiz.questions);
-      } else if (existingQuiz.id === "q-1" && DEFAULT_QUIZ_QUESTIONS) {
+      } else if (DEFAULT_QUIZ_QUESTIONS && DEFAULT_QUIZ_QUESTIONS.length > 0) {
         setQuestions(DEFAULT_QUIZ_QUESTIONS);
       } else {
         // Generate sensible questions for editing
@@ -584,7 +584,7 @@ export const CreateQuizPage = () => {
                   required
                   value={quizTitle}
                   onChange={(e) => setQuizTitle(e.target.value)}
-                  placeholder="e.g. Digital Marketing Aptitude Quiz! or SEO Optimization Exam"
+                  placeholder="e.g. Google Ads Intermediate Test or SEO Optimization Exam"
                   className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700/80 rounded-2xl text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-hidden focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 font-medium"
                 />
               </div>

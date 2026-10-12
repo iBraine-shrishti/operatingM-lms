@@ -4,22 +4,20 @@ import { getCourseTheme } from "../config/courseThemesConfig";
  * Enhanced descriptions for quizzes to enrich student guidance
  */
 export const QUIZ_ENHANCED_DESCRIPTIONS = {
-  "q-1":
-    "Comprehensive evaluation assessing core channel competencies across search, social, display, email, and content marketing. Measures conversion funnel analysis, customer journey mapping, and foundational return on ad spend (ROAS) calculations.",
-  "q-2":
-    "In-depth technical and strategic examination covering keyword intent analysis, search volume clustering, on-page meta tag architecture, crawler HTTP status codes, robots.txt directives, XML sitemaps, and core web vitals optimization.",
-  "q-3":
-    "Hands-on architectural assessment testing WordPress database relationships, custom post types, responsive page-builder styling with Elementor Pro, theme hierarchy customization, caching strategies, and security configurations.",
-  "q-4":
-    "Mastery test evaluating Google Analytics 4 event schema implementation, custom dimensions & metrics, conversion path attribution modeling, Google Tag Manager dataLayer triggers, and real-time debug view workflows.",
-  "q-5":
-    "Advanced scenario-based examination covering Target CPA, Target ROAS, Quality Score mechanics, negative keyword match types, auction insights analysis, responsive search ads optimization, and conversion tracking tags.",
-  "q-6":
-    "Strategic assessment covering Meta Advantage+ campaigns, TikTok algorithmic engagement triggers, LinkedIn B2B lead generation funnels, influencer barter deliverables, and Aggregated Event Measurement (AEM) privacy protocols.",
-  "q-7":
-    "Practical creative examination testing visual hierarchy, complementary color harmonies, vector layout grids, typography kerning and pairing, brand identity guidelines, and high-impact digital advertising banner composition.",
-  "q-8":
-    "Rigorous capstone certification assessment covering multi-touch attribution, omnichannel marketing strategies, programmatic DSP ad buying, CRM automation workflows, client pitching frameworks, and live audit case studies.",
+  "q-gads-inter":
+    "Intermediate examination testing Google Ads campaign structures, Quality Score, ad extensions, bidding strategies, match types, conversion tracking, remarketing, and performance optimization.",
+  "q-ga4-inter":
+    "Mastery assessment evaluating Google Analytics 4 event schema implementation, custom dimensions & metrics, conversion path attribution modeling, Google Tag Manager dataLayer triggers, and real-time debug view workflows.",
+  "q-adsense-inter":
+    "Google AdSense examination covering publisher monetization policies, ad placements, RPM calculations, viewability optimization, and ad unit management.",
+  "q-gsc-inter":
+    "Google Search Console evaluation covering performance report analysis, indexing coverage, URL inspection, sitemap submission, and core web vitals diagnostics.",
+  "q-gtm-inter":
+    "Hands-on examination covering Google Tag Manager container setup, dataLayer triggers, custom variables, GA4 tag firing, and preview debug workflow.",
+  "q-local-seo-inter":
+    "Local SEO examination covering Google Business Profile optimization, local citations, NAP consistency, local pack ranking factors, and customer review velocity.",
+  "q-on-off-seo-inter":
+    "In-depth technical and strategic examination covering keyword intent analysis, on-page meta tag architecture, crawler HTTP status codes, XML sitemaps, and core web vitals optimization.",
 };
 
 /**

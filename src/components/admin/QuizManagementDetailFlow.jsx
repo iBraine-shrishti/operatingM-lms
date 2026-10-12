@@ -34,446 +34,20 @@ import {
   ShieldAlert,
 } from "lucide-react";
 import { useToast } from "../../context/ToastContext";
+import { IMPORTED_LMS_QUIZZES } from "../../data/importedLmsQuizzes";
 
-// Comprehensive 20 questions for Digital Marketing Aptitude Quiz
-export const DEFAULT_QUIZ_QUESTIONS = [
-  {
-    id: 1,
-    title: "What is Digital Marketing?",
-    options: [
-      {
-        id: "a",
-        text: "Marketing through digital channels such as search engines, social media, email, and websites",
-        isCorrect: true,
-      },
-      {
-        id: "b",
-        text: "Traditional print advertising and billboards in physical locations",
-        isCorrect: false,
-      },
-      {
-        id: "c",
-        text: "Physical door-to-door sales marketing and telemarketing without internet",
-        isCorrect: false,
-      },
-      {
-        id: "d",
-        text: "Radio broadcasts only with no online web component",
-        isCorrect: false,
-      },
-    ],
-    explanation:
-      "Digital marketing encompasses all marketing efforts that use an electronic device or the internet to connect with current and prospective customers.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 2,
-    title: "Which channel is considered an inbound marketing channel?",
-    options: [
-      {
-        id: "a",
-        text: "Search Engine Optimization (SEO) and high-value educational content",
-        isCorrect: true,
-      },
-      { id: "b", text: "Cold unsolicited telephone calls", isCorrect: false },
-      { id: "c", text: "Mass spam promotional emails", isCorrect: false },
-      { id: "d", text: "TV commercial interruptions", isCorrect: false },
-    ],
-    explanation:
-      "Inbound marketing focuses on attracting customers through helpful content, SEO, and organic social media.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 3,
-    title: "What does CTR stand for in online advertising?",
-    options: [
-      { id: "a", text: "Click-Through Rate", isCorrect: true },
-      { id: "b", text: "Customer Timing Ratio", isCorrect: false },
-      { id: "c", text: "Cost Targeting Reach", isCorrect: false },
-      { id: "d", text: "Content Transaction Return", isCorrect: false },
-    ],
-    explanation:
-      "CTR (Click-Through Rate) is the ratio of users who click on a specific link to the number of total users who view a page, email, or advertisement.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 4,
-    title: "What is the primary objective of Search Engine Optimization (SEO)?",
-    options: [
-      {
-        id: "a",
-        text: "Increasing visibility and organic ranking on search engine result pages (SERPs)",
-        isCorrect: true,
-      },
-      {
-        id: "b",
-        text: "Paying for top sponsor banners on search pages",
-        isCorrect: false,
-      },
-      {
-        id: "c",
-        text: "Sending bulk newsletters to unverified subscribers",
-        isCorrect: false,
-      },
-      {
-        id: "d",
-        text: "Hosting webinars exclusively on LinkedIn",
-        isCorrect: false,
-      },
-    ],
-    explanation:
-      "SEO optimizes websites to rank organically without paid placement fees on search engines.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 5,
-    title:
-      "Which metric measures the cost of generating one conversion or lead?",
-    options: [
-      { id: "a", text: "CPA (Cost Per Acquisition / Action)", isCorrect: true },
-      { id: "b", text: "CPM (Cost Per Mille / Thousand)", isCorrect: false },
-      { id: "c", text: "Bounce Rate", isCorrect: false },
-      { id: "d", text: "Impression Share", isCorrect: false },
-    ],
-    explanation:
-      "CPA calculates total advertising spend divided by total conversions generated.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 6,
-    title:
-      "In Google Ads, what factor determines Ad Rank alongside the bid amount?",
-    options: [
-      {
-        id: "a",
-        text: "Quality Score (ad relevance, expected CTR, and landing page experience)",
-        isCorrect: true,
-      },
-      {
-        id: "b",
-        text: "The number of followers on the advertiser's Twitter account",
-        isCorrect: false,
-      },
-      {
-        id: "c",
-        text: "The physical distance between headquarters and Silicon Valley",
-        isCorrect: false,
-      },
-      {
-        id: "d",
-        text: "How many total employees work at the company",
-        isCorrect: false,
-      },
-    ],
-    explanation:
-      "Ad Rank is determined by max CPC bid multiplied by Quality Score and ad extensions impact.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 7,
-    title:
-      "What is the recommended character length for an SEO Meta Title tag?",
-    options: [
-      { id: "a", text: "50 to 60 characters", isCorrect: true },
-      { id: "b", text: "150 to 200 characters", isCorrect: false },
-      { id: "c", text: "10 to 15 characters", isCorrect: false },
-      { id: "d", text: "Unlimited characters", isCorrect: false },
-    ],
-    explanation:
-      "Search engines typically truncate titles longer than 60 characters in desktop SERPs.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 8,
-    title:
-      "Which Google Analytics 4 (GA4) feature records specific user interactions like clicks, scrolls, and video plays?",
-    options: [
-      { id: "a", text: "Events and Parameters", isCorrect: true },
-      { id: "b", text: "Hit Counter Widgets", isCorrect: false },
-      { id: "c", text: "Pageview sessions only", isCorrect: false },
-      { id: "d", text: "Cookie Banners", isCorrect: false },
-    ],
-    explanation:
-      "GA4 is completely event-driven, capturing all web actions as distinct events with custom parameters.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 9,
-    title:
-      "What type of marketing involves partnering with influential creators to endorse products?",
-    options: [
-      { id: "a", text: "Influencer Marketing", isCorrect: true },
-      { id: "b", text: "Guerrilla Print Marketing", isCorrect: false },
-      { id: "c", text: "Affiliate Link Cloaking", isCorrect: false },
-      { id: "d", text: "Telemarketing Outreach", isCorrect: false },
-    ],
-    explanation:
-      "Influencer marketing leverages established social media creators to reach dedicated niche audiences.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 10,
-    title: "Which HTTP status code signifies a permanent URL redirect?",
-    options: [
-      { id: "a", text: "301 Moved Permanently", isCorrect: true },
-      { id: "b", text: "404 Not Found", isCorrect: false },
-      { id: "c", text: "500 Internal Server Error", isCorrect: false },
-      { id: "d", text: "200 OK", isCorrect: false },
-    ],
-    explanation:
-      "A 301 status tells search engine crawlers that link equity and traffic should be passed permanently to the new target URL.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 11,
-    title:
-      "What does 'ROAS' stand for in paid campaign performance evaluation?",
-    options: [
-      { id: "a", text: "Return On Ad Spend", isCorrect: true },
-      { id: "b", text: "Rate Of Audience Shift", isCorrect: false },
-      { id: "c", text: "Return On Organic Search", isCorrect: false },
-      { id: "d", text: "Ratio Of Active Subscribers", isCorrect: false },
-    ],
-    explanation:
-      "ROAS measures gross revenue generated for every dollar invested into digital advertising.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 12,
-    title:
-      "Which tool is primarily used for keyword research, backlink analysis, and competitor audits?",
-    options: [
-      { id: "a", text: "Semrush / Ahrefs", isCorrect: true },
-      { id: "b", text: "Adobe Photoshop", isCorrect: false },
-      { id: "c", text: "Visual Studio Code", isCorrect: false },
-      { id: "d", text: "Microsoft Excel only", isCorrect: false },
-    ],
-    explanation:
-      "Semrush and Ahrefs are industry-standard enterprise suites for search intelligence, domain authority, and rank tracking.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 13,
-    title:
-      "In email marketing, what is the best practice before sending marketing emails under GDPR?",
-    options: [
-      {
-        id: "a",
-        text: "Obtaining explicit opt-in consent and offering a one-click unsubscribe mechanism",
-        isCorrect: true,
-      },
-      {
-        id: "b",
-        text: "Scraping email addresses from random public LinkedIn groups",
-        isCorrect: false,
-      },
-      {
-        id: "c",
-        text: "Purchasing third-party cold email lists with no consent",
-        isCorrect: false,
-      },
-      {
-        id: "d",
-        text: "Hiding company physical address in the footer",
-        isCorrect: false,
-      },
-    ],
-    explanation:
-      "GDPR and CAN-SPAM require explicit permission and clear opt-out options for commercial messaging.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 14,
-    title: "What is an A/B split test in landing page optimization?",
-    options: [
-      {
-        id: "a",
-        text: "Comparing two variants (A and B) with one single variable changed to see which converts better",
-        isCorrect: true,
-      },
-      {
-        id: "b",
-        text: "Testing two completely different websites built on different domains simultaneously",
-        isCorrect: false,
-      },
-      {
-        id: "c",
-        text: "Running Facebook Ads on Monday and Google Ads on Tuesday",
-        isCorrect: false,
-      },
-      {
-        id: "d",
-        text: "Deleting old pages without creating 301 redirects",
-        isCorrect: false,
-      },
-    ],
-    explanation:
-      "A/B testing isolates a single hypothesis (e.g. headline or CTA button color) to optimize conversion rate scientifically.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 15,
-    title:
-      "Which social media platform is most effective for B2B lead generation?",
-    options: [
-      { id: "a", text: "LinkedIn", isCorrect: true },
-      { id: "b", text: "Snapchat", isCorrect: false },
-      { id: "c", text: "Pinterest", isCorrect: false },
-      { id: "d", text: "Twitch", isCorrect: false },
-    ],
-    explanation:
-      "LinkedIn is the premier global business network where decision makers and enterprise buyers connect.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 16,
-    title: "What does remarketing / retargeting refer to in paid advertising?",
-    options: [
-      {
-        id: "a",
-        text: "Serving targeted ads to users who previously visited your website or engaged with your brand",
-        isCorrect: true,
-      },
-      {
-        id: "b",
-        text: "Targeting people who have never heard of your company before",
-        isCorrect: false,
-      },
-      {
-        id: "c",
-        text: "Changing your brand logo every quarter",
-        isCorrect: false,
-      },
-      {
-        id: "d",
-        text: "Sending text messages at 2 AM automatically",
-        isCorrect: false,
-      },
-    ],
-    explanation:
-      "Retargeting re-engages warm prospects who already demonstrated intent on your website.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 17,
-    title: "Which tag informs search bots not to index a specific web page?",
-    options: [
-      {
-        id: "a",
-        text: '<meta name="robots" content="noindex, follow">',
-        isCorrect: true,
-      },
-      { id: "b", text: "<script defer>", isCorrect: false },
-      { id: "c", text: "<link rel='canonical'>", isCorrect: false },
-      { id: "d", text: "<title>Hide</title>", isCorrect: false },
-    ],
-    explanation:
-      "The noindex directive instructs crawlers like Googlebot to exclude the page from public search indexes.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 18,
-    title: "What is 'evergreen content' in digital content marketing?",
-    options: [
-      {
-        id: "a",
-        text: "Content that remains relevant, valuable, and fresh to readers over a sustained period",
-        isCorrect: true,
-      },
-      {
-        id: "b",
-        text: "News articles that become irrelevant in 24 hours",
-        isCorrect: false,
-      },
-      {
-        id: "c",
-        text: "Seasonal holiday gift guide promotions only",
-        isCorrect: false,
-      },
-      {
-        id: "d",
-        text: "Content about forestry and botany exclusively",
-        isCorrect: false,
-      },
-    ],
-    explanation:
-      "Evergreen content continues driving traffic and authority months or years after initial publication.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 19,
-    title: "What is the purpose of UTM parameters in marketing URLs?",
-    options: [
-      {
-        id: "a",
-        text: "Tracking traffic source, medium, campaign name, and content in analytics",
-        isCorrect: true,
-      },
-      {
-        id: "b",
-        text: "Protecting links from hacker malware attacks",
-        isCorrect: false,
-      },
-      {
-        id: "c",
-        text: "Automatically translating web copy into multiple languages",
-        isCorrect: false,
-      },
-      {
-        id: "d",
-        text: "Compressing web page server transfer payloads",
-        isCorrect: false,
-      },
-    ],
-    explanation:
-      "UTM (Urchin Tracking Module) codes allow analytics suites to accurately track precise marketing referral channels.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-  {
-    id: 20,
-    title:
-      "Which Google tool is specifically used to monitor search engine index status and crawl errors?",
-    options: [
-      { id: "a", text: "Google Search Console (GSC)", isCorrect: true },
-      { id: "b", text: "Google AdSense", isCorrect: false },
-      { id: "c", text: "Google Drive", isCorrect: false },
-      { id: "d", text: "Google Merchant Center", isCorrect: false },
-    ],
-    explanation:
-      "Google Search Console helps webmasters verify index coverage, submit sitemaps, and fix crawl issues.",
-    correctRate: 0,
-    unattempted: 100,
-  },
-];
+// Default questions fallback sourced from the given LMS quizzes
+export const DEFAULT_QUIZ_QUESTIONS = IMPORTED_LMS_QUIZZES[0]?.questions || [];
 
 // Activity Feed matching MANAGE-QUIZ2Activity.png
-const INITIAL_ACTIVITIES = [
+const getQuizActivityLogs = (quizTitle = "Assessment Quiz") => [
   {
     id: "act-1",
     type: "evaluated",
     subtitle: "Instructor evaluated Quiz for student",
     studentName: "admin",
     textPrefix: "Student ",
-    textSuffix: " got 0 out of 20 in Quiz Digital Marketing Aptitude Quiz!",
+    textSuffix: ` scored 28 out of 30 in Quiz ${quizTitle}`,
     timestamp: "2 hours ago",
     date: "Feb 25, 2025",
   },
@@ -482,8 +56,7 @@ const INITIAL_ACTIVITIES = [
     type: "submitted",
     subtitle: "Student submitted the Quiz",
     studentName: "admin",
-    textPrefix:
-      "Quiz Digital Marketing Aptitude Quiz! was submitted by student ",
+    textPrefix: `Quiz ${quizTitle} was submitted by student `,
     textSuffix: "",
     timestamp: "3 hours ago",
     date: "Feb 25, 2025",
@@ -494,7 +67,7 @@ const INITIAL_ACTIVITIES = [
     subtitle: "Instructor evaluated Quiz for student",
     studentName: "User User",
     textPrefix: "Student ",
-    textSuffix: " got 5 out of 20 in Quiz Digital Marketing Aptitude Quiz!",
+    textSuffix: ` scored 22 out of 30 in Quiz ${quizTitle}`,
     timestamp: "5 hours ago",
     date: "Feb 25, 2025",
   },
@@ -503,8 +76,7 @@ const INITIAL_ACTIVITIES = [
     type: "submitted",
     subtitle: "Student submitted the Quiz",
     studentName: "User User",
-    textPrefix:
-      "Quiz Digital Marketing Aptitude Quiz! was submitted by student ",
+    textPrefix: `Quiz ${quizTitle} was submitted by student `,
     textSuffix: "",
     timestamp: "6 hours ago",
     date: "Feb 25, 2025",
@@ -515,7 +87,7 @@ const INITIAL_ACTIVITIES = [
     subtitle: "Student started a quiz",
     studentName: "User User",
     textPrefix: "Student ",
-    textSuffix: " started the quiz Digital Marketing Aptitude Quiz!",
+    textSuffix: ` started the quiz ${quizTitle}`,
     timestamp: "6 hours ago",
     date: "Feb 25, 2025",
   },
@@ -525,7 +97,7 @@ const INITIAL_ACTIVITIES = [
     subtitle: "Quiz retake by Student",
     studentName: "User User",
     textPrefix: "Student ",
-    textSuffix: " initiated retake for quiz Digital Marketing Aptitude Quiz!",
+    textSuffix: ` initiated retake for quiz ${quizTitle}`,
     timestamp: "7 hours ago",
     date: "Feb 25, 2025",
   },
@@ -533,9 +105,9 @@ const INITIAL_ACTIVITIES = [
     id: "act-7",
     type: "evaluated",
     subtitle: "Instructor evaluated Quiz for student",
-    studentName: "User User",
+    studentName: "Priya Sharma",
     textPrefix: "Student ",
-    textSuffix: " got 0 out of 20 in Quiz Digital Marketing Aptitude Quiz!",
+    textSuffix: ` scored 26 out of 30 in Quiz ${quizTitle}`,
     timestamp: "8 hours ago",
     date: "Feb 25, 2025",
   },
@@ -543,9 +115,8 @@ const INITIAL_ACTIVITIES = [
     id: "act-8",
     type: "submitted",
     subtitle: "Student submitted the Quiz",
-    studentName: "User User",
-    textPrefix:
-      "Quiz Digital Marketing Aptitude Quiz! was submitted by student ",
+    studentName: "Priya Sharma",
+    textPrefix: `Quiz ${quizTitle} was submitted by student `,
     textSuffix: "",
     timestamp: "9 hours ago",
     date: "Feb 25, 2025",
@@ -554,15 +125,14 @@ const INITIAL_ACTIVITIES = [
     id: "act-9",
     type: "started",
     subtitle: "Student started a quiz",
-    studentName: "User User",
+    studentName: "Priya Sharma",
     textPrefix: "Student ",
-    textSuffix: " started the quiz Digital Marketing Aptitude Quiz!",
+    textSuffix: ` started the quiz ${quizTitle}`,
     timestamp: "9 hours ago",
     date: "Feb 25, 2025",
   },
 ];
 
-// Student avatar component matching theme blue/indigo
 const StudentAvatar = ({ name, size = 32 }) => {
   return (
     <div
@@ -594,17 +164,20 @@ const StudentAvatar = ({ name, size = 32 }) => {
 };
 
 export const QuizManagementDetailFlow = ({
-  quiz = {
-    id: "q-1",
-    title: "Digital Marketing Aptitude Quiz!",
+  quiz = IMPORTED_LMS_QUIZZES[0] || {
+    id: "q-gads-inter",
+    title: "Google Ads Intermediate Test",
+    courseId: "course-6",
+    courseTitle: "Google Ads",
     completedDate: "February 25, 2025",
-    totalQuestions: 20,
-    totalMarks: 20,
-    durationMinutes: 11,
-    averageScore: 12.5,
-    highScore: 25,
-    lowScore: 0,
-    totalSubmissions: 2,
+    totalQuestions: 30,
+    totalMarks: 30,
+    durationMinutes: 23,
+    perQuestionTimerSeconds: 45,
+    averageScore: 78.5,
+    highScore: 100,
+    lowScore: 40,
+    totalSubmissions: 24,
   },
   onBack,
   onEditQuiz,
@@ -707,7 +280,7 @@ export const QuizManagementDetailFlow = ({
 
   // Filter activities
   const filteredActivities = useMemo(() => {
-    return INITIAL_ACTIVITIES.filter((act) => {
+    return getQuizActivityLogs(quiz?.title || "Assessment Quiz").filter((act) => {
       const matchesSearch =
         act.studentName.toLowerCase().includes(activitySearch.toLowerCase()) ||
         act.subtitle.toLowerCase().includes(activitySearch.toLowerCase()) ||
@@ -720,7 +293,7 @@ export const QuizManagementDetailFlow = ({
         (activityTypeFilter === "Retakes" && act.type === "retake");
       return matchesSearch && matchesType;
     });
-  }, [activitySearch, activityTypeFilter]);
+  }, [activitySearch, activityTypeFilter, quiz?.title]);
 
   // Handlers
   const handleGenerateStats = () => {
@@ -925,7 +498,7 @@ export const QuizManagementDetailFlow = ({
       <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5">
         <div>
           <h1 className="text-2xl sm:text-3xl md:text-[30px] font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-            {quiz.title || "Digital Marketing Aptitude Quiz!"}
+            {quiz.title || "Assessment Quiz"}
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm mt-1 font-medium flex items-center space-x-2">
             <span>{quiz.completedDate || "February 25, 2025"}</span>
@@ -2385,7 +1958,7 @@ export const QuizManagementDetailFlow = ({
 
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 This will automatically add "
-                {quiz.title || "Digital Marketing Aptitude Quiz!"}" to the
+                {quiz.title || "Assessment Quiz"}" to the
                 enrolled curriculum for all students in this cohort.
               </p>
 

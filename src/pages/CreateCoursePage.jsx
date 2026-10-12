@@ -168,12 +168,12 @@ export const CreateCoursePage = () => {
           duration: "20:00",
         },
         {
-          id: "q-1",
-          title: "Assessment Quiz 1: SEO Mechanics",
+          id: "q-on-off-seo-inter",
+          title: "On-Page and Off-Page SEO Intermediate Test",
           type: "quiz",
           subType: "simple",
-          duration: "15:00",
-          marks: 20,
+          duration: "25:00",
+          marks: 30,
         },
         {
           id: "a-1",
@@ -3231,10 +3231,10 @@ export const CreateCoursePage = () => {
                       type="button"
                       onClick={() => {
                         setManagingQuizModal({
-                          id: "q-1",
+                          id: "q-gads-inter",
                           title:
                             quizTitle.trim() ||
-                            "Digital Marketing Aptitude Quiz!",
+                            "Course Module Assessment Quiz",
                           completedDate: "February 25, 2025",
                           totalQuestions: quizQuestions.length || 20,
                           totalMarks:
@@ -3922,10 +3922,10 @@ export const CreateCoursePage = () => {
                                   type="button"
                                   onClick={() =>
                                     setManagingQuizModal({
-                                      id: item.id || "q-1",
+                                      id: item.id || "q-gads-inter",
                                       title:
                                         item.title ||
-                                        "Digital Marketing Aptitude Quiz!",
+                                        "Course Module Assessment Quiz",
                                       completedDate: "February 25, 2025",
                                       totalQuestions: 20,
                                       totalMarks: item.marks || 20,
