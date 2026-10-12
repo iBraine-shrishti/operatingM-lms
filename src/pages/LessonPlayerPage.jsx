@@ -1,166 +1,717 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import {
   Play,
-  CheckCircle,
+  Pause,
+  CheckCircle2,
   Lock,
   ArrowLeft,
   FileText,
   Download,
   Send,
+  RotateCcw,
+  SkipBack,
+  SkipForward,
+  Maximize2,
+  Minimize2,
+  Share2,
+  Bookmark,
+  Volume2,
+  Sparkles,
+  MessagesSquare,
+  Clock,
+  BookOpen,
+  Award,
+  Search,
+  ChevronDown,
+  ChevronRight,
+  ExternalLink,
+  Layers,
+  ThumbsUp,
+  MessageCircle,
+  Check,
+  Video,
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
+import { StudentPageHeader } from "../components/student/StudentPageHeader";
+
 export const LessonPlayerPage = () => {
   const { showToast } = useToast();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const courseId = searchParams.get("courseId") || "course-1";
-  const course =
-    lmsService.getCourseById(courseId) || lmsService.getCourses()[0];
-  const units = lmsService.getUnitsByCourse(course.id);
-  const [activeLessonIdx, setActiveLessonIdx] = useState(0);
-  const [activeTab, setActiveTab] = useState("overview");
+  const videoRef = useRef(null);
+
+  const courses = useMemo(() => lmsService.getCourses(), []);
+  const courseIdParam = searchParams.get("courseId");
+  const unitIdParam = searchParams.get("unitId");
+
+  // Determine current course
+  const currentCourse = useMemo(() => {
+    if (courseIdParam) {
+      return courses.find((c) => c.id === courseIdParam) || courses[0];
+    }
+    return courses.find((c) => c.id === "course-8") || courses[0];
+  }, [courses, courseIdParam]);
+
+  // Load units for current course
+  const [units, setUnits] = useState(() =>
+    lmsService.getUnitsByCourse(currentCourse.id),
+  );
+
+  useEffect(() => {
+    setUnits(lmsService.getUnitsByCourse(currentCourse.id));
+  }, [currentCourse.id]);
+
+  // Determine active lesson index
+  const [activeLessonIdx, setActiveLessonIdx] = useState(() => {
+    if (unitIdParam && units.length > 0) {
+      const foundIdx = units.findIndex((u) => u.id === unitIdParam);
+      return foundIdx !== -1 ? foundIdx : 0;
+    }
+    return 0;
+  });
+
+  // Keep URL in sync when active lesson changes
+  const currentLesson = units[activeLessonIdx] || units[0] || {
+    id: "default-unit",
+    title: "Lesson Lecture",
+    duration: "20:00",
+    videoUrl: "",
+    moduleName: "Core Curriculum",
+    description: "Lecture material.",
+  };
+
+  useEffect(() => {
+    if (currentLesson && currentLesson.id) {
+      setSearchParams(
+        { courseId: currentCourse.id, unitId: currentLesson.id },
+        { replace: true },
+      );
+    }
+  }, [currentLesson?.id, currentCourse.id]);
+
+  // Player feature states
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const [autoPlayNext, setAutoPlayNext] = useState(true);
+  const [theaterMode, setTheaterMode] = useState(false);
+  const [resumePrompt, setResumePrompt] = useState(null); // { time: seconds, formatted: "04:32" }
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+
+  // Tab & Notes states
+  const [activeTab, setActiveTab] = useState("overview"); // overview | notes | resources | discussion
   const [noteContent, setNoteContent] = useState("");
   const [userNotes, setUserNotes] = useState(() => lmsService.getNotes());
-  const currentLesson = units[activeLessonIdx] || {
-    id: "u-1",
-    title: "1.1 How Search Engines Crawl & Index Websites",
-    duration: "14:20",
-    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
-    moduleName: "Module 1: SEO Foundations",
-    description:
-      "Learn how Googlebot operates, rendering budgets, indexing queues, and canonicalization fundamentals.",
+  const [playlistSearch, setPlaylistSearch] = useState("");
+
+  // Storage key for video progress
+  const progressStorageKey = `om_video_progress_${currentCourse.id}_${currentLesson?.id}`;
+
+  // Format seconds to mm:ss
+  const formatTime = (secs) => {
+    if (!secs || isNaN(secs)) return "00:00";
+    const minutes = Math.floor(secs / 60);
+    const seconds = Math.floor(secs % 60);
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}`;
   };
+
+  // -------------------------------------------------------------
+  // RESUME PLAYBACK FEATURE: Load saved timestamp when video mounts
+  // -------------------------------------------------------------
+  const handleLoadedMetadata = () => {
+    if (!videoRef.current) return;
+    const vidDuration = videoRef.current.duration;
+    setDuration(vidDuration);
+
+    try {
+      const savedProgress = localStorage.getItem(progressStorageKey);
+      if (savedProgress) {
+        const savedSecs = parseFloat(savedProgress);
+        // Only resume if watched between 5s and near end
+        if (savedSecs > 5 && savedSecs < vidDuration - 10) {
+          videoRef.current.currentTime = savedSecs;
+          setResumePrompt({
+            time: savedSecs,
+            formatted: formatTime(savedSecs),
+          });
+          // Auto hide resume banner after 8s
+          setTimeout(() => setResumePrompt(null), 8000);
+        }
+      }
+    } catch (e) {
+      console.warn("Failed reading video progress", e);
+    }
+  };
+
+  // -------------------------------------------------------------
+  // TIME UPDATE: Save current timestamp & track completion
+  // -------------------------------------------------------------
+  const handleTimeUpdate = () => {
+    if (!videoRef.current) return;
+    const now = videoRef.current.currentTime;
+    const dur = videoRef.current.duration;
+    setCurrentTime(now);
+
+    // Save to localStorage every 2 seconds
+    if (Math.floor(now) % 2 === 0) {
+      try {
+        localStorage.setItem(progressStorageKey, now.toString());
+      } catch (e) {
+        // storage quota fallback
+      }
+    }
+
+    // Auto mark completion if watched > 90%
+    if (dur > 0 && now / dur > 0.9 && !currentLesson.isCompleted) {
+      handleMarkCompleted(true, true);
+    }
+  };
+
+  // Reset to 0:00
+  const handleRestartVideo = () => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      setResumePrompt(null);
+      showToast("Restarted video from 00:00", "info");
+    }
+  };
+
+  // Handle video ended
+  const handleVideoEnded = () => {
+    handleMarkCompleted(true, true);
+    if (autoPlayNext && activeLessonIdx < units.length - 1) {
+      showToast("Lesson completed! Autoplaying next lesson...", "success");
+      setTimeout(() => {
+        setActiveLessonIdx((prev) => prev + 1);
+      }, 1500);
+    }
+  };
+
+  // Toggle speed
+  const cyclePlaybackSpeed = () => {
+    const speeds = [1, 1.25, 1.5, 1.75, 2];
+    const nextIdx = (speeds.indexOf(playbackSpeed) + 1) % speeds.length;
+    const nextSpeed = speeds[nextIdx];
+    setPlaybackSpeed(nextSpeed);
+    if (videoRef.current) {
+      videoRef.current.playbackRate = nextSpeed;
+    }
+    showToast(`Speed set to ${nextSpeed}x`, "info");
+  };
+
+  // Mark Completed Toggle
+  const handleMarkCompleted = (status = !currentLesson.isCompleted, silent = false) => {
+    lmsService.updateUnit(currentLesson.id, { isCompleted: status });
+    const updatedUnits = lmsService.getUnitsByCourse(currentCourse.id);
+    setUnits(updatedUnits);
+    if (!silent) {
+      showToast(
+        status ? "Lesson marked as completed!" : "Lesson marked as incomplete",
+        status ? "success" : "info",
+      );
+    }
+  };
+
+  // Save Note with Timestamp
   const handleSaveNote = () => {
-    if (!noteContent.trim()) return;
+    if (!noteContent.trim()) {
+      showToast("Please enter some note content first", "warning");
+      return;
+    }
+    const timestampStr = formatTime(currentTime);
     lmsService.addNote({
-      courseId: course.id,
-      courseTitle: course.title,
+      courseId: currentCourse.id,
+      courseTitle: currentCourse.title,
       lessonTitle: currentLesson.title,
+      timestamp: timestampStr,
       content: noteContent,
     });
     setUserNotes(lmsService.getNotes());
     setNoteContent("");
-    showToast("Note saved to your profile notes!", "success", "Note Saved");
+    showToast(`Note saved with timestamp [${timestampStr}]!`, "success");
   };
+
+  // Insert current timestamp into note textarea
+  const handleInsertTimestamp = () => {
+    const stamp = `[${formatTime(currentTime)}] `;
+    setNoteContent((prev) => stamp + prev);
+    showToast(`Timestamp ${formatTime(currentTime)} attached to note!`, "info");
+  };
+
+  // Share Lesson
+  const handleShareLesson = () => {
+    const fullUrl = window.location.href;
+    navigator.clipboard?.writeText(fullUrl);
+    showToast("Lesson link copied to clipboard!", "success");
+  };
+
+  // Filtered playlist units
+  const filteredPlaylist = useMemo(() => {
+    if (!playlistSearch.trim()) return units;
+    return units.filter(
+      (u) =>
+        u.title.toLowerCase().includes(playlistSearch.toLowerCase()) ||
+        u.moduleName?.toLowerCase().includes(playlistSearch.toLowerCase()),
+    );
+  }, [units, playlistSearch]);
+
+  // Overall course progress
+  const completedCount = units.filter((u) => u.isCompleted).length;
+  const progressPercent =
+    units.length > 0 ? Math.round((completedCount / units.length) * 100) : 0;
+
   return (
     <div className="space-y-6">
-      {/* Navigation Top Bar */}
-      <div className="flex items-center justify-between bg-white dark:bg-[#0b1329] p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
-        <div className="flex items-center space-x-3">
+      {/* ------------------------------------------------------------- */}
+      {/* 1. STANDARDIZED STUDENT PAGE HERO BANNER                     */}
+      {/* ------------------------------------------------------------- */}
+      <StudentPageHeader
+        category="Interactive Video Lecture Room"
+        badgeText="HD Video Streaming"
+        title={currentLesson.title}
+        description={`Enrolled in ${currentCourse.title}. Study with step-by-step video instructions, timestamp bookmarks, auto-resume, and downloadable resources.`}
+        metrics={[
+          {
+            label: "Lesson",
+            value: `${activeLessonIdx + 1} of ${units.length}`,
+            color: "text-blue-600 dark:text-cyan-400",
+          },
+          {
+            label: "Course Progress",
+            value: `${progressPercent}%`,
+            color: "text-emerald-600 dark:text-emerald-400",
+          },
+          {
+            label: "Duration",
+            value: currentLesson.duration || "20:00",
+            color: "text-purple-600 dark:text-purple-400",
+          },
+          {
+            label: "Speed",
+            value: `${playbackSpeed}x`,
+            color: "text-amber-600 dark:text-amber-400",
+          },
+        ]}
+      />
+
+      {/* ------------------------------------------------------------- */}
+      {/* 2. TOP ACTION CONTROL BAR & COURSE SWITCHER                   */}
+      {/* ------------------------------------------------------------- */}
+      <div className="bg-white dark:bg-[#0b1329] p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+        <div className="flex items-center space-x-3 min-w-0">
           <button
-            onClick={() => navigate(`/courses/${course.id}`)}
-            className="p-1.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            onClick={() => navigate(`/courses/${currentCourse.id}`)}
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+            title="Back to Course Details"
           >
             <ArrowLeft size={18} />
           </button>
-          <div>
-            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">
-              {course.title}
+
+          <div className="min-w-0">
+            <span className="text-[11px] font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-wider block truncate">
+              {currentLesson.moduleName || "Curriculum Track"}
             </span>
-            <h1 className="text-sm font-bold text-slate-900 dark:text-white">
+            <h2 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white truncate">
               {currentLesson.title}
-            </h1>
+            </h2>
           </div>
         </div>
 
-        <button
-          onClick={() => navigate("/manage-courses")}
-          className="bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-colors cursor-pointer"
-        >
-          Exit Player
-        </button>
+        {/* Right Action Buttons */}
+        <div className="flex items-center space-x-2 shrink-0 justify-end">
+          {/* Previous Lesson */}
+          <button
+            disabled={activeLessonIdx <= 0}
+            onClick={() => setActiveLessonIdx((prev) => Math.max(0, prev - 1))}
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            title="Previous Lesson"
+          >
+            <SkipBack size={17} />
+          </button>
+
+          {/* Next Lesson */}
+          <button
+            disabled={activeLessonIdx >= units.length - 1}
+            onClick={() =>
+              setActiveLessonIdx((prev) =>
+                Math.min(units.length - 1, prev + 1),
+              )
+            }
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            title="Next Lesson"
+          >
+            <SkipForward size={17} />
+          </button>
+
+          {/* Mark Complete Button */}
+          <button
+            onClick={() => handleMarkCompleted()}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer ${
+              currentLesson.isCompleted
+                ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
+                : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
+            }`}
+          >
+            <CheckCircle2
+              size={14}
+              className={
+                currentLesson.isCompleted
+                  ? "text-emerald-600"
+                  : "text-slate-400"
+              }
+            />
+            <span>
+              {currentLesson.isCompleted ? "Completed" : "Mark as Done"}
+            </span>
+          </button>
+
+          {/* Speed Selector */}
+          <button
+            onClick={cyclePlaybackSpeed}
+            className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition-colors cursor-pointer"
+            title="Playback Speed"
+          >
+            {playbackSpeed}x
+          </button>
+
+          {/* Theater Mode Toggle */}
+          <button
+            onClick={() => setTheaterMode(!theaterMode)}
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer hidden md:flex"
+            title={theaterMode ? "Exit Theater Mode" : "Theater Mode"}
+          >
+            {theaterMode ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
+          </button>
+
+          {/* Share Link */}
+          <button
+            onClick={handleShareLesson}
+            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            title="Share Lesson"
+          >
+            <Share2 size={17} />
+          </button>
+        </div>
       </div>
 
-      {/* Main Grid: Player on left (2 cols), Syllabus on right (1 col) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Video & Tabs */}
-        <div className="lg:col-span-2 space-y-4">
-          {/* Video Container */}
-          <div className="bg-black rounded-3xl overflow-hidden shadow-xl aspect-video relative group">
+      {/* ------------------------------------------------------------- */}
+      {/* 3. MAIN WORKSPACE (Video Player & Syllabus Playlist)          */}
+      {/* ------------------------------------------------------------- */}
+      <div
+        className={`grid gap-6 ${
+          theaterMode ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-3"
+        }`}
+      >
+        {/* LEFT / CENTER COLUMN: Video Player & Tabs */}
+        <div className={theaterMode ? "col-span-1" : "lg:col-span-2 space-y-4"}>
+          {/* VIDEO CONTAINER */}
+          <div className="bg-slate-950 rounded-3xl overflow-hidden shadow-2xl aspect-video relative group border border-slate-800">
+            {/* RESUME PLAYBACK NOTIFICATION BANNER */}
+            {resumePrompt && (
+              <div className="absolute top-4 left-4 right-4 z-30 bg-slate-900/90 backdrop-blur-md border border-blue-500/50 text-white rounded-2xl p-3 flex items-center justify-between shadow-2xl animate-in fade-in slide-in-from-top-2">
+                <div className="flex items-center space-x-2 text-xs">
+                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
+                  <span className="font-semibold">
+                    Resumed from where you left off at{" "}
+                    <strong className="text-blue-400">
+                      {resumePrompt.formatted}
+                    </strong>
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleRestartVideo}
+                    className="text-xs font-bold text-slate-300 hover:text-white px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors flex items-center space-x-1 cursor-pointer"
+                  >
+                    <RotateCcw size={12} />
+                    <span>Start from 0:00</span>
+                  </button>
+                  <button
+                    onClick={() => setResumePrompt(null)}
+                    className="text-slate-400 hover:text-white text-xs px-1 cursor-pointer"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* HTML5 VIDEO PLAYER */}
             <video
+              ref={videoRef}
               key={currentLesson.videoUrl || currentLesson.id}
               controls
               autoPlay={false}
-              className="w-full h-full object-contain"
-              poster={course.thumbnail}
+              className="w-full h-full object-contain bg-black"
+              poster={currentCourse.thumbnail}
+              onLoadedMetadata={handleLoadedMetadata}
+              onTimeUpdate={handleTimeUpdate}
+              onEnded={handleVideoEnded}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
             >
-              <source
-                src={
-                  currentLesson.videoUrl ||
-                  "https://www.w3schools.com/html/mov_bbb.mp4"
-                }
-                type="video/mp4"
-              />
-              Your browser does not support the video tag.
+              {currentLesson.videoUrl ? (
+                <source src={currentLesson.videoUrl} type="video/mp4" />
+              ) : null}
+              Your browser does not support HTML5 video streaming.
             </video>
           </div>
 
-          {/* Tabbed Info Panel below Video */}
-          <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-xs space-y-4">
-            <div className="border-b border-slate-100 dark:border-slate-800 flex space-x-6 pb-2">
-              <button
-                onClick={() => setActiveTab("overview")}
-                className={`text-xs font-bold pb-2 border-b-2 transition-colors cursor-pointer ${activeTab === "overview" ? "border-amber-500 text-amber-600 dark:text-amber-400" : "border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
-              >
-                Lesson Overview
-              </button>
-              <button
-                onClick={() => setActiveTab("notes")}
-                className={`text-xs font-bold pb-2 border-b-2 transition-colors cursor-pointer ${activeTab === "notes" ? "border-amber-500 text-amber-600 dark:text-amber-400" : "border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
-              >
-                Take Personal Notes ({userNotes.length})
-              </button>
-              <button
-                onClick={() => setActiveTab("resources")}
-                className={`text-xs font-bold pb-2 border-b-2 transition-colors cursor-pointer ${activeTab === "resources" ? "border-amber-500 text-amber-600 dark:text-amber-400" : "border-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"}`}
-              >
-                Download Resources
-              </button>
+          {/* LOWER ACTIONS STRIP */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
+            <div className="flex items-center space-x-3">
+              <span className="flex items-center space-x-1 text-slate-500 font-mono">
+                <Clock size={13} className="text-blue-500" />
+                <span>
+                  {formatTime(currentTime)} / {formatTime(duration)}
+                </span>
+              </span>
+              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <label className="flex items-center space-x-1.5 cursor-pointer font-semibold text-slate-700 dark:text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={autoPlayNext}
+                  onChange={(e) => setAutoPlayNext(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded-md text-blue-600"
+                />
+                <span>Autoplay Next Lesson</span>
+              </label>
             </div>
 
-            {activeTab === "overview" && (
-              <div className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
-                <h3 className="font-bold text-slate-900 dark:text-white text-sm">
-                  {currentLesson.title}
-                </h3>
-                <p className="leading-relaxed">
-                  {currentLesson.description ||
-                    "In this lecture we cover essential strategies and practical execution steps."}
-                </p>
-              </div>
-            )}
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => {
+                  setActiveTab("notes");
+                  handleInsertTimestamp();
+                }}
+                className="px-3 py-1.5 rounded-xl font-bold text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 transition-colors flex items-center space-x-1 cursor-pointer"
+                title="Add Note at Current Timestamp"
+              >
+                <Bookmark size={13} />
+                <span>Take Note at {formatTime(currentTime)}</span>
+              </button>
+            </div>
+          </div>
 
-            {activeTab === "notes" && (
-              <div className="space-y-3">
-                <textarea
-                  rows={3}
-                  value={noteContent}
-                  onChange={(e) => setNoteContent(e.target.value)}
-                  placeholder="Type your notes for this timestamp..."
-                  className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:focus:border-amber-500"
-                />
+          {/* ------------------------------------------------------------- */}
+          {/* TABBED INTERACTIVE CONTENT PANEL                             */}
+          {/* ------------------------------------------------------------- */}
+          <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-xs space-y-4">
+            {/* Tab navigation */}
+            <div className="border-b border-slate-100 dark:border-slate-800 flex space-x-6 pb-2 text-xs font-bold">
+              {[
+                { key: "overview", label: "Lesson Overview" },
+                {
+                  key: "notes",
+                  label: `Personal Notes (${
+                    userNotes.filter(
+                      (n) => n.courseId === currentCourse.id,
+                    ).length
+                  })`,
+                },
+                { key: "resources", label: "Resources & Cheat Sheet" },
+                { key: "discussion", label: "Student Q&A & Forums" },
+              ].map((tab) => (
                 <button
-                  onClick={handleSaveNote}
-                  className="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors flex items-center space-x-1 cursor-pointer"
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key)}
+                  className={`pb-2.5 border-b-2 transition-all cursor-pointer whitespace-nowrap ${
+                    activeTab === tab.key
+                      ? "border-blue-600 text-blue-600 dark:text-cyan-400"
+                      : "border-transparent text-slate-400 hover:text-slate-700 dark:hover:text-slate-300"
+                  }`}
                 >
-                  <Send size={14} />
-                  <span>Save Note</span>
+                  {tab.label}
                 </button>
+              ))}
+            </div>
+
+            {/* TAB 1: OVERVIEW */}
+            {activeTab === "overview" && (
+              <div className="space-y-4 text-xs text-slate-700 dark:text-slate-300">
+                <div>
+                  <h3 className="font-extrabold text-slate-900 dark:text-white text-base">
+                    {currentLesson.title}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                    {currentLesson.moduleName} • Course: {currentCourse.title}
+                  </p>
+                </div>
+
+                <p className="leading-relaxed text-slate-600 dark:text-slate-300 text-xs sm:text-sm">
+                  {currentLesson.description ||
+                    "In this lecture we cover essential strategies and practical execution steps with step-by-step screen recording and instructor commentary."}
+                </p>
+
+                {/* Key Takeaways Card */}
+                <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-2">
+                  <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <Sparkles size={14} className="text-blue-600" />
+                    <span>Learning Objectives Covered in this Lesson:</span>
+                  </h4>
+                  <ul className="space-y-1.5 list-disc list-inside text-slate-600 dark:text-slate-300">
+                    <li>Core technical foundations & best practices.</li>
+                    <li>Industry tool workflows and practical configuration.</li>
+                    <li>Avoiding common optimization mistakes & penalties.</li>
+                    <li>Actionable implementation checklist for live projects.</li>
+                  </ul>
+                </div>
+
+                {/* Forum Action Banner */}
+                <div className="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <MessagesSquare size={16} className="text-blue-600 dark:text-cyan-400" />
+                    <span className="font-semibold text-blue-900 dark:text-blue-300">
+                      Have questions about this lesson?
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => navigate("/forums")}
+                    className="font-bold text-blue-600 dark:text-cyan-400 hover:underline flex items-center space-x-1 cursor-pointer"
+                  >
+                    <span>Open Community Forums</span>
+                    <ExternalLink size={12} />
+                  </button>
+                </div>
               </div>
             )}
 
-            {activeTab === "resources" && (
-              <div className="space-y-2">
-                <div className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/60">
-                  <div className="flex items-center space-x-2 text-xs font-bold text-slate-800 dark:text-slate-200">
-                    <FileText size={16} className="text-amber-500" />
-                    <span>SEO_Audit_Checklist_2026.pdf</span>
+            {/* TAB 2: NOTES */}
+            {activeTab === "notes" && (
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Scratchpad Note for this Lesson
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleInsertTimestamp}
+                      className="text-[11px] font-bold text-blue-600 dark:text-cyan-400 hover:underline flex items-center space-x-1 cursor-pointer"
+                    >
+                      <Bookmark size={12} />
+                      <span>Attach current time [{formatTime(currentTime)}]</span>
+                    </button>
                   </div>
-                  <button className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center space-x-1 cursor-pointer">
+                  <textarea
+                    rows={3}
+                    value={noteContent}
+                    onChange={(e) => setNoteContent(e.target.value)}
+                    placeholder="Write key concepts, formulas, or reminders for this timestamp..."
+                    className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  />
+                  <div className="flex justify-end">
+                    <button
+                      onClick={handleSaveNote}
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-colors flex items-center space-x-1 cursor-pointer"
+                    >
+                      <Send size={13} />
+                      <span>Save Note to Notebook</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* List of saved notes */}
+                <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs">
+                    Your Saved Notes ({userNotes.filter((n) => n.courseId === currentCourse.id).length})
+                  </h4>
+                  {userNotes
+                    .filter((n) => n.courseId === currentCourse.id)
+                    .slice(0, 5)
+                    .map((note) => (
+                      <div
+                        key={note.id}
+                        className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 text-xs space-y-1"
+                      >
+                        <div className="flex items-center justify-between text-slate-400 text-[10px]">
+                          <span className="font-bold text-blue-600 dark:text-cyan-400">
+                            {note.lessonTitle || currentLesson.title}
+                          </span>
+                          <span>{note.createdAt || "Recently"}</span>
+                        </div>
+                        <p className="text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
+                          {note.content}
+                        </p>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: RESOURCES */}
+            {activeTab === "resources" && (
+              <div className="space-y-3">
+                <div className="p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100/70 transition-colors">
+                  <div className="flex items-center space-x-3 text-xs font-bold text-slate-800 dark:text-slate-200">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 flex items-center justify-center shrink-0">
+                      <FileText size={16} />
+                    </div>
+                    <div>
+                      <span className="block">{currentLesson.title}_CheatSheet.pdf</span>
+                      <span className="text-[10px] text-slate-400 font-normal">2.4 MB • PDF Reference Guide</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => showToast("Downloading resource...", "info")}
+                    className="text-xs font-bold text-blue-600 dark:text-cyan-400 hover:underline flex items-center space-x-1 cursor-pointer"
+                  >
                     <Download size={14} />
                     <span>Download</span>
+                  </button>
+                </div>
+
+                <div className="p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100/70 transition-colors">
+                  <div className="flex items-center space-x-3 text-xs font-bold text-slate-800 dark:text-slate-200">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 flex items-center justify-center shrink-0">
+                      <ExternalLink size={16} />
+                    </div>
+                    <div>
+                      <span className="block">Official Documentation & Tool Guidelines</span>
+                      <span className="text-[10px] text-slate-400 font-normal">Web Resource Link</span>
+                    </div>
+                  </div>
+                  <a
+                    href="https://developers.google.com/search/docs"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-bold text-blue-600 dark:text-cyan-400 hover:underline flex items-center space-x-1 cursor-pointer"
+                  >
+                    <span>View Docs</span>
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 4: DISCUSSION */}
+            {activeTab === "discussion" && (
+              <div className="space-y-4 text-xs">
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 space-y-3">
+                  <h4 className="font-bold text-slate-900 dark:text-white">
+                    Questions & Discussion for this Lesson
+                  </h4>
+                  <div className="space-y-2">
+                    <div className="p-3 bg-white dark:bg-[#0b1329] rounded-xl border border-slate-100 dark:border-slate-800 space-y-1.5">
+                      <div className="flex items-center justify-between text-slate-400 text-[10px]">
+                        <span className="font-bold text-slate-800 dark:text-slate-200">
+                          Harsh Pareek (Faculty Lead)
+                        </span>
+                        <span>Pinned Answer</span>
+                      </div>
+                      <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
+                        Remember to always verify the crawl budget directives in robots.txt before deploying large e-commerce catalogs.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => navigate("/forums")}
+                    className="w-full py-2 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors cursor-pointer"
+                  >
+                    Join Discussion on Forums
                   </button>
                 </div>
               </div>
@@ -168,65 +719,110 @@ export const LessonPlayerPage = () => {
           </div>
         </div>
 
-        {/* Right Column: Course Syllabus Playlist */}
+        {/* RIGHT COLUMN: COURSE SYLLABUS PLAYLIST */}
         <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-            <h3 className="font-bold text-slate-900 dark:text-white text-sm">
-              Course Syllabus
-            </h3>
-            <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500">
-              {units.length} Lessons
-            </span>
+          <div className="border-b border-slate-100 dark:border-slate-800 pb-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-slate-900 dark:text-white text-sm">
+                Course Syllabus
+              </h3>
+              <span className="text-[11px] font-bold text-blue-600 dark:text-cyan-400">
+                {completedCount} / {units.length} Done ({progressPercent}%)
+              </span>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
+              <div
+                className="bg-gradient-to-r from-blue-600 to-emerald-500 h-1.5 rounded-full transition-all duration-300"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+
+            {/* Playlist search */}
+            <div className="relative pt-1">
+              <Search
+                size={13}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              />
+              <input
+                type="text"
+                placeholder="Search lessons in this course..."
+                value={playlistSearch}
+                onChange={(e) => setPlaylistSearch(e.target.value)}
+                className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-hidden"
+              />
+            </div>
           </div>
 
-          <div className="space-y-2 max-h-[520px] overflow-y-auto pr-1">
-            {units.map((unit, idx) => {
-              const isActive = idx === activeLessonIdx;
+          {/* Playlist Scroll Area */}
+          <div className="space-y-2 max-h-[560px] overflow-y-auto pr-1">
+            {filteredPlaylist.map((unit, idx) => {
+              const isActive = unit.id === currentLesson.id;
               return (
                 <div
                   key={unit.id}
-                  onClick={() => setActiveLessonIdx(idx)}
-                  className={`p-3 rounded-xl border transition-all cursor-pointer ${
+                  onClick={() => {
+                    const targetIdx = units.findIndex((u) => u.id === unit.id);
+                    if (targetIdx !== -1) {
+                      setActiveLessonIdx(targetIdx);
+                    }
+                  }}
+                  className={`p-3 rounded-2xl border transition-all cursor-pointer ${
                     isActive
-                      ? "bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-900/60 shadow-xs"
-                      : "bg-white dark:bg-[#0b1329] border-slate-100 dark:border-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-800/40"
+                      ? "bg-blue-50 dark:bg-blue-950/40 border-blue-500/80 shadow-xs"
+                      : "bg-white dark:bg-[#0b1329] border-slate-100 dark:border-slate-800 hover:bg-slate-50/80 dark:hover:bg-slate-800/40"
                   }`}
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-start space-x-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start space-x-2.5 min-w-0">
                       <div
-                        className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${isActive ? "bg-blue-600 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"}`}
+                        className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${
+                          isActive
+                            ? "bg-blue-600 text-white shadow-xs"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                        }`}
                       >
                         {idx + 1}
                       </div>
-                      <div>
+
+                      <div className="min-w-0">
                         <h4
-                          className={`text-xs font-bold leading-snug ${isActive ? "text-blue-900 dark:text-blue-300" : "text-slate-800 dark:text-slate-200"}`}
+                          className={`text-xs font-bold leading-snug truncate ${
+                            isActive
+                              ? "text-blue-900 dark:text-blue-200"
+                              : "text-slate-800 dark:text-slate-200"
+                          }`}
                         >
                           {unit.title}
                         </h4>
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium block mt-0.5">
-                          {unit.duration}
-                        </span>
+                        <div className="flex items-center space-x-2 mt-0.5 text-[10px] text-slate-400">
+                          <span className="truncate max-w-[130px]">
+                            {unit.moduleName || "General"}
+                          </span>
+                          <span>•</span>
+                          <span>{unit.duration}</span>
+                        </div>
                       </div>
                     </div>
-                    {unit.isCompleted ? (
-                      <CheckCircle
-                        size={16}
-                        className="text-emerald-500 shrink-0"
-                      />
-                    ) : unit.isLocked ? (
-                      <Lock size={14} className="text-slate-300 dark:text-slate-600 shrink-0" />
-                    ) : (
-                      <Play
-                        size={14}
-                        className={
-                          isActive
-                            ? "text-blue-600 dark:text-blue-400 fill-blue-600 dark:fill-blue-400 shrink-0"
-                            : "text-slate-300 dark:text-slate-600 shrink-0"
-                        }
-                      />
-                    )}
+
+                    <div className="shrink-0 pt-0.5">
+                      {unit.isCompleted ? (
+                        <CheckCircle2
+                          size={16}
+                          className="text-emerald-500 shrink-0"
+                        />
+                      ) : (
+                        <Play
+                          size={14}
+                          className={
+                            isActive
+                              ? "text-blue-600 dark:text-cyan-400 fill-blue-600 dark:fill-cyan-400 shrink-0 animate-pulse"
+                              : "text-slate-300 dark:text-slate-600 shrink-0"
+                          }
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -237,3 +833,5 @@ export const LessonPlayerPage = () => {
     </div>
   );
 };
+
+export default LessonPlayerPage;
