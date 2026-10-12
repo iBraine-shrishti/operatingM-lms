@@ -32,89 +32,42 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const navigate = useNavigate();
   const { isStudent, logout } = useAuth();
 
-  const sections = isStudent
-    ? [
+  const sections = [
+    {
+      title: "MAIN",
+      items: [
+        { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+        { name: "Activity", path: "/activity", icon: Activity },
+        { name: "Profile", path: "/profile", icon: User },
+      ],
+    },
+    {
+      title: "LEARNING",
+      items: [
         {
-          title: "MAIN",
-          items: [
-            { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-            { name: "Activity", path: "/activity", icon: Activity },
-            { name: "Profile", path: "/profile", icon: User },
-          ],
+          name: "Enrolled Courses",
+          path: "/enrolled-courses",
+          icon: GraduationCap,
+          badge: "4",
         },
         {
-          title: "LEARNING",
-          items: [
-            {
-              name: "Enrolled Courses",
-              path: "/enrolled-courses",
-              icon: GraduationCap,
-              badge: "4",
-            },
-            {
-              name: "Achievements",
-              path: "/achievements",
-              icon: Award,
-              badge: "4",
-            },
-            {
-              name: "My Assignments",
-              path: "/my-assignments",
-              icon: BookCheck,
-            },
-            { name: "My Quizzes", path: "/my-quizzes", icon: CheckSquare },
-            { name: "Notes", path: "/notes", icon: FileText },
-            { name: "Forums", path: "/forums", icon: MessagesSquare },
-            // { name: 'Gallery', path: '/gallery', icon: Images },
-            { name: "Schedule", path: "/schedule", icon: Calendar },
-          ],
-        },
-      ]
-    : [
-        {
-          title: "MAIN",
-          items: [
-            { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-            { name: "Courses", path: "/courses", icon: BookOpen },
-            { name: "Activity", path: "/activity", icon: Activity },
-            { name: "Profile", path: "/profile", icon: User },
-          ],
+          name: "Achievements",
+          path: "/achievements",
+          icon: Award,
+          badge: "4",
         },
         {
-          title: "INSTRUCTOR CONTROLS",
-          items: [
-            { name: "Manage Courses", path: "/manage-courses", icon: Layers },
-            {
-              name: "Manage Units",
-              path: "/manage-units",
-              icon: ClipboardList,
-            },
-            {
-              name: "Manage Quizzes",
-              path: "/manage-quizzes",
-              icon: CheckSquare,
-            },
-            {
-              name: "Manage Assignments",
-              path: "/manage-assignments",
-              icon: FolderCheck,
-            },
-            { name: "Manage Students", path: "/manage-students", icon: Users },
-            {
-              name: "Manage Questions",
-              path: "/manage-questions",
-              icon: HelpCircle,
-            },
-            { name: "Forums", path: "/forums", icon: MessagesSquare },
-            {
-              name: "Manage Reports",
-              path: "/manage-reports",
-              icon: BarChart3,
-              badge: "Beta",
-            },
-          ],
+          name: "My Assignments",
+          path: "/my-assignments",
+          icon: BookCheck,
         },
-      ];
+        { name: "My Quizzes", path: "/my-quizzes", icon: CheckSquare },
+        { name: "Notes", path: "/notes", icon: FileText },
+        { name: "Forums", path: "/forums", icon: MessagesSquare },
+        { name: "Schedule", path: "/schedule", icon: Calendar },
+      ],
+    },
+  ];
 
   return (
     <aside

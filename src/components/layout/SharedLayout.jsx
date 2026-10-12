@@ -18,7 +18,7 @@ export const SharedLayout = () => {
             setSidebarCollapsed(!sidebarCollapsed);
         }
     };
-    return (<div className={`min-h-screen bg-[#f8fafc] dark:bg-[#0b0f19] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors duration-200 ${isAdmin ? 'role-admin' : 'role-student'}`}>
+    return (<div className={`min-h-screen bg-[#f8fafc] dark:bg-[#0b0f19] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors duration-200 role-student`}>
       {/* Sidebar Desktop */}
       <div className="hidden md:block">
         <Sidebar collapsed={sidebarCollapsed} onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}/>

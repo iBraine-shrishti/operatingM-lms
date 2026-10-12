@@ -51,29 +51,12 @@ const AuthContext = createContext(undefined);
 const STORAGE_KEY = 'om_lms_current_role';
 
 export const AuthProvider = ({ children }) => {
-    const [role, setRole] = useState(() => {
-        let initialRole = 'STUDENT';
-        try {
-            const params = new URLSearchParams(window.location.search);
-            const queryRole = params.get('role')?.toUpperCase();
-            if (queryRole === 'STUDENT' || queryRole === 'ADMIN') {
-                initialRole = queryRole;
-            } else {
-                const saved = localStorage.getItem(STORAGE_KEY);
-                if (saved === 'STUDENT' || saved === 'ADMIN') {
-                    initialRole = saved;
-                }
-            }
-        } catch {
-            // fallback
-        }
-        if (typeof document !== 'undefined') {
-            document.documentElement.classList.toggle('role-admin', initialRole === 'ADMIN');
-            document.documentElement.classList.toggle('role-student', initialRole !== 'ADMIN');
-            document.documentElement.setAttribute('data-role', initialRole.toLowerCase());
-        }
-        return initialRole;
-    });
+    const [role, setRole] = useState('STUDENT');
+    if (typeof document !== 'undefined') {
+        document.documentElement.classList.add('role-student');
+        document.documentElement.classList.remove('role-admin');
+        document.documentElement.setAttribute('data-role', 'student');
+    }
 
     const [adminUser, setAdminUser] = useState(ADMIN_USER);
     const [studentUser, setStudentUser] = useState(() => {

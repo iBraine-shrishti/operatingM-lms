@@ -20,7 +20,9 @@ import {
   X,
 } from "lucide-react";
 import { CourseBadge } from "../components/common/CourseBadge";
-import { DEFAULT_QUIZ_QUESTIONS } from "../components/admin/QuizManagementDetailFlow";
+import { IMPORTED_LMS_QUIZZES } from "../data/importedLmsQuizzes";
+
+const DEFAULT_QUIZ_QUESTIONS = IMPORTED_LMS_QUIZZES[0]?.questions || [];
 
 export const TakeQuizPage = () => {
   const { id } = useParams();

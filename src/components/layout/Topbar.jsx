@@ -69,50 +69,7 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
           <Search size={19} />
         </button>
 
-        {/* Quick Role Switcher Pill */}
-        <div className="flex items-center bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200 dark:border-slate-800 shrink-0">
-          <button
-            onClick={() => {
-              if (!isAdmin) {
-                switchRole("ADMIN");
-                navigate("/dashboard");
-              }
-            }}
-            className={`flex items-center space-x-1.5 px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-              isAdmin
-                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
-            title="Switch to Admin UI"
-          >
-            <Shield
-              size={14}
-              className={isAdmin ? "text-slate-900 dark:text-white" : "text-slate-400"}
-            />
-            <span className="hidden xl:inline">Admin UI</span>
-          </button>
 
-          <button
-            onClick={() => {
-              if (!isStudent) {
-                switchRole("STUDENT");
-                navigate("/dashboard");
-              }
-            }}
-            className={`flex items-center space-x-1.5 px-2.5 lg:px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-              isStudent
-                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
-            title="Switch to Student UI"
-          >
-            <GraduationCap
-              size={15}
-              className={isStudent ? "text-slate-900 dark:text-white" : "text-slate-400"}
-            />
-            <span className="hidden xl:inline">Student UI</span>
-          </button>
-        </div>
 
         {/* Notifications Dropdown Container */}
         <div className="relative">
