@@ -99,10 +99,18 @@ export const lmsService = {
             'Advanced Digital Marketing Strategy Comprehensive Exam'
         ]);
 
-        list = list.filter((q) => !SAMPLE_QUIZ_IDS.has(q.id) && !SAMPLE_QUIZ_TITLES.has(q.title));
+        const deletedIds = new Set(getStored('deleted_quiz_ids', []));
 
-        // Ensure all 7 given quizzes from d:\operating-media\lms-quiz are present with full data
+        list = list.filter((q) => 
+            !SAMPLE_QUIZ_IDS.has(q.id) && 
+            !SAMPLE_QUIZ_TITLES.has(q.title) &&
+            !deletedIds.has(q.id)
+        );
+
+        // Ensure given quizzes from d:\operating-media\lms-quiz are present only if NOT deleted by user
         IMPORTED_LMS_QUIZZES.forEach((imported) => {
+            if (deletedIds.has(imported.id)) return; // Never resurrect user-deleted quiz
+
             const existingIdx = list.findIndex((q) => q.id === imported.id);
             if (existingIdx === -1) {
                 list.push(imported);
@@ -116,7 +124,7 @@ export const lmsService = {
             }
         });
 
-        list = list.filter((q) => q.courseId !== 'course-2');
+        list = list.filter((q) => q.courseId !== 'course-2' && !deletedIds.has(q.id));
         setStored('quizzes', list);
         return list;
     },
@@ -156,12 +164,11 @@ export const lmsService = {
         return quizzes[index];
     },
     getQuizById: (quizId) => {
+        const deletedIds = new Set(getStored('deleted_quiz_ids', []));
+        if (deletedIds.has(quizId)) return null;
+
         const quizzes = lmsService.getQuizzes();
-        let found = quizzes.find(q => q.id === quizId);
-        if (!found) {
-            found = IMPORTED_LMS_QUIZZES.find(q => q.id === quizId);
-        }
-        return found;
+        return quizzes.find(q => q.id === quizId) || null;
     },
     updateQuiz: (quizId, updatedData) => {
         const quizzes = lmsService.getQuizzes();
@@ -176,8 +183,16 @@ export const lmsService = {
         return quizzes[index];
     },
     deleteQuiz: (quizId) => {
-        const quizzes = lmsService.getQuizzes();
-        const filtered = quizzes.filter(q => q.id !== quizId);
+        // Track as deleted so seed data doesn't restore it on next reload
+        const deletedIds = getStored('deleted_quiz_ids', []);
+        if (!deletedIds.includes(quizId)) {
+            deletedIds.push(quizId);
+            setStored('deleted_quiz_ids', deletedIds);
+        }
+
+        const stored = getStored('quizzes', null);
+        const currentList = stored ? [...stored] : [...IMPORTED_LMS_QUIZZES];
+        const filtered = currentList.filter(q => q.id !== quizId);
         setStored('quizzes', filtered);
         return true;
     },
