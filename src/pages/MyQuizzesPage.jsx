@@ -383,35 +383,45 @@ export const MyQuizzesPage = () => {
                   </span>
                   <ul className="list-disc list-inside space-y-0.5 text-blue-900 dark:text-blue-300">
                     <li>
-                      Duration is {activeQuizModal.durationMinutes} minutes with{" "}
-                      {activeQuizModal.totalQuestions} multiple choice questions.
+                      Total assessment has {activeQuizModal.totalQuestions} questions ({activeQuizModal.durationMinutes} mins total window).
+                    </li>
+                    <li>
+                      <strong>45-Second Question Timer</strong>: Each question has an active 45s timer with auto-advancement.
                     </li>
                     <li>
                       Requires a minimum benchmark of{" "}
                       {activeQuizModal.passScorePercentage}% to achieve certification.
                     </li>
                     <li>
-                      Questions evaluate real-world campaign metrics and case problems.
+                      Instant answer evaluation and concept explanations provided upon completion.
                     </li>
                   </ul>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60">
+              <div className="grid grid-cols-3 gap-2.5 text-xs">
+                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60 text-center">
                   <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">
-                    Timer Window
+                    Per Question
                   </span>
-                  <span className="font-black text-slate-900 dark:text-white">
-                    {activeQuizModal.durationMinutes} Minutes
+                  <span className="font-black text-blue-600 dark:text-blue-400">
+                    45 Seconds
                   </span>
                 </div>
-                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60">
+                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60 text-center">
                   <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">
-                    Passing Benchmark
+                    Total Window
+                  </span>
+                  <span className="font-black text-slate-900 dark:text-white">
+                    {activeQuizModal.durationMinutes} Mins
+                  </span>
+                </div>
+                <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60 text-center">
+                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 block uppercase">
+                    Passing Mark
                   </span>
                   <span className="font-black text-emerald-700 dark:text-emerald-400">
-                    {activeQuizModal.passScorePercentage}% Required
+                    {activeQuizModal.passScorePercentage}%
                   </span>
                 </div>
               </div>

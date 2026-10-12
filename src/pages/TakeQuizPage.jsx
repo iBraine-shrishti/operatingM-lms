@@ -43,32 +43,67 @@ export const TakeQuizPage = () => {
     return DEFAULT_QUIZ_QUESTIONS;
   }, [quiz]);
 
+  const perQuestionTimerSeconds = quiz?.perQuestionTimerSeconds || 45;
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [flaggedQuestions, setFlaggedQuestions] = useState({});
+  const [questionSecondsLeft, setQuestionSecondsLeft] = useState(perQuestionTimerSeconds);
   const [timeRemaining, setTimeRemaining] = useState(() => (quiz?.durationMinutes || 20) * 60);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
   const [examResult, setExamResult] = useState(null);
   const [showReviewAnswers, setShowReviewAnswers] = useState(false);
 
-  // Timer countdown
+  // Overall examination timer countdown
   useEffect(() => {
     if (isSubmitted) return;
 
-    const timer = setInterval(() => {
+    const overallTimer = setInterval(() => {
       setTimeRemaining((prev) => {
         if (prev <= 1) {
-          clearInterval(timer);
-          handleSubmitExam(true); // Auto submit on timeout
+          clearInterval(overallTimer);
+          handleSubmitExam(true); // Auto submit on total exam timeout
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(overallTimer);
   }, [isSubmitted]);
+
+  // Per-question 45s countdown timer (resets whenever current question changes)
+  useEffect(() => {
+    if (isSubmitted) return;
+
+    // Reset question timer to 45s whenever question index changes
+    setQuestionSecondsLeft(perQuestionTimerSeconds);
+
+    const questionTimer = setInterval(() => {
+      setQuestionSecondsLeft((prev) => {
+        if (prev <= 1) {
+          // 45 seconds expired for this question
+          if (currentQuestionIdx < questions.length - 1) {
+            setCurrentQuestionIdx((curr) => curr + 1);
+            showToast(
+              `45s time limit reached for Question ${currentQuestionIdx + 1}. Auto-advancing.`,
+              "warning",
+              "Time's Up",
+            );
+            return perQuestionTimerSeconds;
+          } else {
+            // Last question timeout: auto-submit examination
+            clearInterval(questionTimer);
+            handleSubmitExam(true);
+            return 0;
+          }
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(questionTimer);
+  }, [currentQuestionIdx, isSubmitted, questions.length, perQuestionTimerSeconds]);
 
   const formatTimer = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -137,7 +172,16 @@ export const TakeQuizPage = () => {
     setIsSubmitted(true);
 
     // Save to lmsService
-    lmsService.submitQuizAttempt(quiz.id, calculatedPercentage);
+    lmsService.submitQuizAttempt(quiz.id, calculatedPercentage, {
+      scorePercentage: calculatedPercentage,
+      isPassed,
+      correctCount,
+      totalCount: questions.length,
+      wrongCount: questions.length - correctCount,
+      unansweredCount,
+      selectedAnswers,
+      timeSpent: `${Math.max(1, Math.round(((quiz?.durationMinutes || 20) * 60 - timeRemaining) / 60))} mins`,
+    });
 
     if (isAutoTimeout) {
       showToast("Time expired! Your examination was automatically submitted.", "warning", "Time's Up");
@@ -246,6 +290,7 @@ export const TakeQuizPage = () => {
                 setIsSubmitted(false);
                 setSelectedAnswers({});
                 setFlaggedQuestions({});
+                setQuestionSecondsLeft(perQuestionTimerSeconds);
                 setTimeRemaining((quiz?.durationMinutes || 20) * 60);
                 setCurrentQuestionIdx(0);
               }}
@@ -356,11 +401,11 @@ export const TakeQuizPage = () => {
   // -------------------------------------------------------------
   // ACTIVE EXAMINATION RUNNER
   // -------------------------------------------------------------
-  const isTimeCritical = timeRemaining < 300; // < 5 mins
+  const isTotalTimeCritical = timeRemaining < 300; // < 5 mins
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-16 select-none animate-in fade-in duration-200">
-      {/* Top Bar: Breadcrumb + Course + Timer + Submit CTA */}
+      {/* Top Bar: Breadcrumb + Course + Timers + Submit CTA */}
       <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-3">
           <button
@@ -388,17 +433,37 @@ export const TakeQuizPage = () => {
           </div>
         </div>
 
-        {/* Live Timer & Finish Button */}
-        <div className="flex items-center justify-between sm:justify-end space-x-3">
+        {/* Live Question Timer (45s per QS) & Total Exam Timer & Finish Button */}
+        <div className="flex items-center justify-between sm:justify-end space-x-2 sm:space-x-3">
+          {/* Prominent 45s Per-Question Countdown Pill */}
           <div
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl border font-mono font-bold text-sm shadow-2xs ${
-              isTimeCritical
-                ? "bg-rose-50 text-rose-600 border-rose-300 dark:bg-rose-950/60 dark:text-rose-400 dark:border-rose-800 animate-pulse"
-                : "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-800/80"
+            className={`flex items-center space-x-2 px-3.5 py-2 rounded-xl border font-mono font-bold text-xs sm:text-sm shadow-2xs transition-all ${
+              questionSecondsLeft <= 10
+                ? "bg-rose-50 text-rose-600 border-rose-300 dark:bg-rose-950/60 dark:text-rose-400 dark:border-rose-800 animate-pulse ring-2 ring-rose-500/20"
+                : questionSecondsLeft <= 20
+                ? "bg-amber-50 text-amber-700 border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-800"
+                : "bg-emerald-50 text-emerald-700 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800"
             }`}
+            title="Active 45s per-question timer. Question auto-advances at 0s."
           >
-            <Clock size={16} />
-            <span>{formatTimer(timeRemaining)}</span>
+            <Clock size={16} className={questionSecondsLeft <= 10 ? "text-rose-600 animate-spin" : ""} />
+            <span>{String(questionSecondsLeft).padStart(2, "0")}s</span>
+            <span className="text-[10px] font-sans font-semibold uppercase tracking-wider text-slate-500 hidden sm:inline">
+              / QS
+            </span>
+          </div>
+
+          {/* Overall Quiz Timer */}
+          <div
+            className={`hidden md:flex items-center space-x-1.5 px-3 py-2 rounded-xl border font-mono text-xs shadow-2xs ${
+              isTotalTimeCritical
+                ? "bg-rose-50 text-rose-600 border-rose-300 dark:bg-rose-950/60 dark:text-rose-400 dark:border-rose-800"
+                : "bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-800"
+            }`}
+            title="Total examination duration timer"
+          >
+            <span className="text-slate-400">Total:</span>
+            <span className="font-bold">{formatTimer(timeRemaining)}</span>
           </div>
 
           <button
@@ -413,7 +478,7 @@ export const TakeQuizPage = () => {
       {/* Main Grid: Question Card & Question Palette Sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Left Column: Current Question */}
-        <div className="lg:col-span-8 bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-6">
+        <div className="lg:col-span-8 bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-xs space-y-5">
           {/* Question Header */}
           <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center space-x-2">
@@ -436,8 +501,64 @@ export const TakeQuizPage = () => {
             </button>
           </div>
 
+          {/* Dedicated 45-Second Question Progress Bar */}
+          <div className="space-y-1.5 bg-slate-50 dark:bg-slate-900/40 p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-between text-xs">
+              <span className="font-bold flex items-center space-x-1.5 text-slate-700 dark:text-slate-200">
+                <Clock
+                  size={14}
+                  className={
+                    questionSecondsLeft <= 10
+                      ? "text-rose-600 animate-pulse"
+                      : questionSecondsLeft <= 20
+                      ? "text-amber-500"
+                      : "text-emerald-600"
+                  }
+                />
+                <span>
+                  Question Timer:{" "}
+                  <strong
+                    className={
+                      questionSecondsLeft <= 10
+                        ? "text-rose-600 dark:text-rose-400 font-black animate-pulse"
+                        : questionSecondsLeft <= 20
+                        ? "text-amber-600 dark:text-amber-400 font-bold"
+                        : "text-emerald-600 dark:text-emerald-400 font-bold"
+                    }
+                  >
+                    {questionSecondsLeft}s remaining
+                  </strong>{" "}
+                  (45s limit)
+                </span>
+              </span>
+              <span className="text-[11px] font-semibold text-slate-400">
+                Auto-advances at 0s
+              </span>
+            </div>
+            <div className="w-full h-2.5 rounded-full bg-slate-200/80 dark:bg-slate-800 overflow-hidden">
+              <div
+                className={`h-full transition-all duration-1000 ease-linear rounded-full ${
+                  questionSecondsLeft <= 10
+                    ? "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"
+                    : questionSecondsLeft <= 20
+                    ? "bg-amber-500"
+                    : "bg-emerald-500"
+                }`}
+                style={{
+                  width: `${Math.max(0, Math.min(100, (questionSecondsLeft / perQuestionTimerSeconds) * 100))}%`,
+                }}
+              />
+            </div>
+            {questionSecondsLeft <= 10 && (
+              <div className="text-[11px] font-bold text-rose-600 dark:text-rose-400 flex items-center space-x-1 animate-pulse pt-0.5">
+                <AlertCircle size={12} />
+                <span>Urgent: Less than 10 seconds remaining! Select your answer now.</span>
+              </div>
+            )}
+          </div>
+
           {/* Question Title */}
-          <div className="space-y-2">
+          <div className="space-y-2 pt-1">
             <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-relaxed">
               {currentQ.title}
             </h3>

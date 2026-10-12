@@ -1,4 +1,5 @@
 import { INITIAL_COURSES, COURSE_THUMBNAILS, INITIAL_UNITS, INITIAL_QUIZZES, INITIAL_ASSIGNMENTS, INITIAL_STUDENTS, INITIAL_QUESTIONS, INITIAL_DISCUSSIONS, INITIAL_ACTIVITIES, INITIAL_ACHIEVEMENTS, INITIAL_NOTES, INITIAL_REVIEWS } from '../data/mockData';
+import { IMPORTED_LMS_QUIZZES } from '../data/importedLmsQuizzes';
 // Helper for persistent local storage mock service
 const STORAGE_PREFIX = 'om_lms_v10_';
 const getStored = (key, initial) => {
@@ -80,17 +81,27 @@ export const lmsService = {
     },
     // Quizzes
     getQuizzes: () => {
-        const stored = getStored('quizzes', INITIAL_QUIZZES);
-        let filtered = (stored || []).filter(q => q.courseId !== 'course-2');
-        if (!filtered || filtered.length === 0 || !filtered[0].category) {
-            setStored('quizzes', INITIAL_QUIZZES);
-            return INITIAL_QUIZZES;
-        }
-        if (!filtered.some(q => q.id === 'q-1')) {
-            filtered = [INITIAL_QUIZZES[0], ...filtered];
-            setStored('quizzes', filtered);
-        }
-        return filtered;
+        const stored = getStored('quizzes', null);
+        let list = stored ? [...stored] : [...INITIAL_QUIZZES];
+
+        // Ensure all 7 imported LMS quizzes from d:\operating-media\lms-quiz are seamlessly merged
+        IMPORTED_LMS_QUIZZES.forEach((imported) => {
+            const existingIdx = list.findIndex((q) => q.id === imported.id);
+            if (existingIdx === -1) {
+                list.push(imported);
+            } else {
+                if (!list[existingIdx].questions || list[existingIdx].questions.length === 0) {
+                    list[existingIdx].questions = imported.questions;
+                }
+                if (!list[existingIdx].perQuestionTimerSeconds) {
+                    list[existingIdx].perQuestionTimerSeconds = 45;
+                }
+            }
+        });
+
+        list = list.filter((q) => q.courseId !== 'course-2');
+        setStored('quizzes', list);
+        return list;
     },
     addQuiz: (quiz) => {
         const quizzes = lmsService.getQuizzes();
@@ -104,29 +115,36 @@ export const lmsService = {
             completedDate: null,
             timeSpent: null,
             deadline: 'Available Anytime',
-            status: 'active'
+            status: 'active',
+            perQuestionTimerSeconds: quiz.perQuestionTimerSeconds || 45
         };
         setStored('quizzes', [newQuiz, ...quizzes]);
         return newQuiz;
     },
-    submitQuizAttempt: (quizId, score = 90) => {
+    submitQuizAttempt: (quizId, score = 90, resultsDetail = null) => {
         const quizzes = lmsService.getQuizzes();
         const index = quizzes.findIndex(q => q.id === quizId);
         if (index === -1) return undefined;
+        const isPassed = score >= (quizzes[index].passScorePercentage || 75);
         quizzes[index] = {
             ...quizzes[index],
-            studentStatus: 'passed',
+            studentStatus: isPassed ? 'passed' : 'failed',
             studentScore: score,
             completedDate: new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' }),
-            timeSpent: `${Math.max(8, (quizzes[index].durationMinutes || 20) - 5)} mins`,
-            attemptsCount: (quizzes[index].attemptsCount || 0) + 1
+            timeSpent: resultsDetail?.timeSpent || `${Math.max(5, (quizzes[index].durationMinutes || 20) - 5)} mins`,
+            attemptsCount: (quizzes[index].attemptsCount || 0) + 1,
+            lastAttemptResults: resultsDetail || null
         };
         setStored('quizzes', quizzes);
         return quizzes[index];
     },
     getQuizById: (quizId) => {
         const quizzes = lmsService.getQuizzes();
-        return quizzes.find(q => q.id === quizId);
+        let found = quizzes.find(q => q.id === quizId);
+        if (!found) {
+            found = IMPORTED_LMS_QUIZZES.find(q => q.id === quizId);
+        }
+        return found;
     },
     updateQuiz: (quizId, updatedData) => {
         const quizzes = lmsService.getQuizzes();

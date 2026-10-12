@@ -57,6 +57,7 @@ export function App() {
             <Route path="create-course" element={<CreateCoursePage />}/>
             <Route path="edit-course/:id" element={<CreateCoursePage />}/>
             <Route path="create-quiz" element={<CreateQuizPage />}/>
+            <Route path="edit-quiz/:id" element={<CreateQuizPage />}/>
             <Route path="manage-units" element={<ManageUnitsPage />}/>
             <Route path="manage-quizzes" element={<ManageQuizzesPage />}/>
             <Route path="manage-assignments" element={<ManageAssignmentsPage />}/>

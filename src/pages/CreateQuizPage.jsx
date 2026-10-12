@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useParams } from "react-router-dom";
 import {
   ArrowLeft,
   Check,
@@ -60,7 +60,8 @@ export const CreateQuizPage = () => {
   const { showToast } = useToast();
 
   const courses = lmsService.getCourses();
-  const editId = searchParams.get("edit");
+  const { id: routeId } = useParams();
+  const editId = searchParams.get("edit") || routeId;
   const isEditMode = Boolean(editId);
 
   // Stepper State (4 Process Steps matching Create Course Flow)
@@ -97,7 +98,7 @@ export const CreateQuizPage = () => {
   const [showResultsImmediately, setShowResultsImmediately] = useState(true);
   const [showQuestionExplanation, setShowQuestionExplanation] = useState(true);
   const [allowInstantCheck, setAllowInstantCheck] = useState(false);
-  const [timeLimitPerQuestion, setTimeLimitPerQuestion] = useState(0);
+  const [timeLimitPerQuestion, setTimeLimitPerQuestion] = useState(45);
   const [postQuizMessage, setPostQuizMessage] = useState(
     "Congratulations on completing your assessment! Review your evaluation breakdown below.",
   );
@@ -139,6 +140,7 @@ export const CreateQuizPage = () => {
       setDurationMinutes(existingQuiz.durationMinutes || 20);
       setPassScorePercentage(existingQuiz.passScorePercentage || 80);
       setPublicationStatus(existingQuiz.status || "active");
+      setTimeLimitPerQuestion(existingQuiz.perQuestionTimerSeconds || existingQuiz.timeLimitPerQuestion || 45);
 
       // Load questions
       if (existingQuiz.questions && existingQuiz.questions.length > 0) {
@@ -368,6 +370,7 @@ export const CreateQuizPage = () => {
       autoEvaluation: autoEvaluateResults,
       randomizeQuestions: randomizeQuestions,
       showResultsImmediately: showResultsImmediately,
+      perQuestionTimerSeconds: Number(timeLimitPerQuestion) || 45,
       questions: questions,
       status: "draft",
     };
@@ -412,6 +415,7 @@ export const CreateQuizPage = () => {
       autoEvaluation: autoEvaluateResults,
       randomizeQuestions: randomizeQuestions,
       showResultsImmediately: showResultsImmediately,
+      perQuestionTimerSeconds: Number(timeLimitPerQuestion) || 45,
       questions: questions,
       status: publicationStatus,
     };
