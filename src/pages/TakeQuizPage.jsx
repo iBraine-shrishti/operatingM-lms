@@ -18,6 +18,8 @@ import {
   Sparkles,
   ShieldAlert,
   X,
+  AlertTriangle,
+  LogOut,
 } from "lucide-react";
 import { CourseBadge } from "../components/common/CourseBadge";
 import { IMPORTED_LMS_QUIZZES } from "../data/importedLmsQuizzes";
@@ -53,6 +55,7 @@ export const TakeQuizPage = () => {
   const [timeRemaining, setTimeRemaining] = useState(() => (quiz?.durationMinutes || 20) * 60);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [examResult, setExamResult] = useState(null);
   const [showReviewAnswers, setShowReviewAnswers] = useState(false);
 
@@ -411,11 +414,7 @@ export const TakeQuizPage = () => {
       <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-3">
           <button
-            onClick={() => {
-              if (window.confirm("Are you sure you want to exit the quiz? Unsaved answers will be lost.")) {
-                navigate("/my-quizzes");
-              }
-            }}
+            onClick={() => setShowExitConfirm(true)}
             className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             title="Exit Quiz"
           >
@@ -723,6 +722,84 @@ export const TakeQuizPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Exit Quiz Confirmation Modal */}
+      {showExitConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-md w-full p-6 space-y-4 border border-slate-200 dark:border-slate-800 shadow-2xl animate-in zoom-in-95 duration-150">
+            <div className="flex items-start justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-11 h-11 rounded-2xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center border border-rose-200/80 dark:border-rose-800/60 shrink-0">
+                  <AlertTriangle size={22} />
+                </div>
+                <div>
+                  <h3 className="font-black text-base sm:text-lg text-slate-900 dark:text-white leading-tight">
+                    Exit Quiz Assessment?
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                    Are you sure you want to exit the quiz? Unsaved answers will be lost.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowExitConfirm(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200/70 dark:border-rose-900/50 text-xs space-y-2">
+              <div className="flex justify-between items-center text-slate-600 dark:text-slate-300">
+                <span className="font-semibold">Quiz:</span>
+                <strong className="text-slate-900 dark:text-white font-bold max-w-[200px] truncate text-right">
+                  {quiz.title}
+                </strong>
+              </div>
+              <div className="flex justify-between items-center text-slate-600 dark:text-slate-300">
+                <span className="font-semibold">Questions Answered:</span>
+                <strong className="text-emerald-600 dark:text-emerald-400 font-bold">
+                  {answeredCount} of {questions.length}
+                </strong>
+              </div>
+              <div className="flex justify-between items-center text-slate-600 dark:text-slate-300">
+                <span className="font-semibold">Time Remaining:</span>
+                <strong className="text-slate-900 dark:text-white font-bold font-mono">
+                  {formatTimer(timeRemaining)}
+                </strong>
+              </div>
+              <div className="pt-2 border-t border-rose-200/70 dark:border-rose-900/50 flex items-start space-x-2 text-[11.5px] text-rose-900 dark:text-rose-300 leading-relaxed font-medium">
+                <AlertCircle size={14} className="text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+                <span>
+                  Exiting now will cancel this attempt. Any answers you have chosen will not be submitted or saved.
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end space-x-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowExitConfirm(false)}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                Keep Taking Quiz
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowExitConfirm(false);
+                  navigate("/my-quizzes");
+                }}
+                className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer flex items-center space-x-1.5"
+              >
+                <LogOut size={14} />
+                <span>Exit Quiz</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Submit Confirmation Modal */}
       {showSubmitConfirm && (
