@@ -68,7 +68,7 @@ const AadhaarDocView = ({ studentData, sahilProfilePic, isCard = false }) => (
     className={`bg-white rounded-xl border border-slate-300 shadow-md select-none overflow-hidden flex flex-col justify-between font-sans transition-transform ${
       isCard
         ? "w-full h-full p-2.5 max-w-[320px]"
-        : "w-full max-w-2xl p-6 border-2 border-slate-300 shadow-xl"
+        : "w-full max-w-3xl p-6 sm:p-8 border-2 border-slate-300 shadow-2xl"
     }`}
   >
     {/* Top Header */}
@@ -222,7 +222,7 @@ const TenthMarksheetDocView = ({ studentData, isCard = false }) => (
     className={`bg-[#fffef8] rounded-xl border-2 border-red-900/80 shadow-md select-none overflow-hidden flex flex-col justify-between font-serif transition-transform ${
       isCard
         ? "w-full h-full p-2.5 max-w-[320px]"
-        : "w-full max-w-2xl p-6 border-4 shadow-xl"
+        : "w-full max-w-3xl p-6 sm:p-8 border-4 border-red-900/80 shadow-2xl"
     }`}
   >
     <div className="text-center border-b border-red-900/30 pb-1">
@@ -346,7 +346,7 @@ const TwelfthMarksheetDocView = ({ studentData, isCard = false }) => (
     className={`bg-[#fafffb] rounded-xl border-2 border-emerald-800/80 shadow-md select-none overflow-hidden flex flex-col justify-between font-serif transition-transform ${
       isCard
         ? "w-full h-full p-2.5 max-w-[320px]"
-        : "w-full max-w-2xl p-6 border-4 shadow-xl"
+        : "w-full max-w-3xl p-6 sm:p-8 border-4 border-emerald-800/80 shadow-2xl"
     }`}
   >
     <div className="text-center border-b border-emerald-800/30 pb-1">
@@ -1724,21 +1724,31 @@ export const ProfilePage = () => {
             {studentDocuments.map((doc) => (
               <div
                 key={doc.id}
-                onClick={() => setPreviewDoc(doc)}
+                onClick={() => handleOpenDocPreview(doc)}
                 className="group p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-3"
               >
-                {/* Spacious, uncropped thumbnail container */}
-                <div className="w-full h-28 sm:h-32 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 p-2.5 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform shadow-2xs">
-                  <img
-                    src={doc.thumb}
-                    alt={doc.title}
-                    className="max-h-full max-w-full object-contain rounded drop-shadow-xs"
-                  />
-                  {/* Subtle hover eye preview overlay */}
-                  <div className="absolute inset-0 bg-slate-950/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-1 backdrop-blur-[1px]">
-                    <span className="px-2.5 py-1 rounded-lg bg-blue-600 text-white font-bold text-[11px] shadow-sm flex items-center space-x-1">
-                      <Eye size={12} />
-                      <span>Preview</span>
+                {/* Zoomed HD document card preview container */}
+                <div className="w-full h-44 sm:h-48 rounded-xl bg-slate-100/70 dark:bg-[#070c1a] border border-slate-200/80 dark:border-slate-700/80 p-1.5 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-all">
+                  <div className="w-full h-full flex items-center justify-center transform group-hover:scale-[1.02] transition-transform">
+                    <DocumentVisualizer
+                      doc={doc}
+                      studentData={studentData}
+                      sahilProfilePic={sahilProfilePic}
+                      isCard={true}
+                    />
+                  </div>
+
+                  {/* Top-right HD badge */}
+                  <span className="absolute top-2 right-2 z-10 text-[9px] font-bold bg-white/95 dark:bg-slate-900/95 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded shadow-xs border border-blue-200/60 dark:border-blue-800 flex items-center space-x-1 backdrop-blur-xs">
+                    <ZoomIn size={10} />
+                    <span>HD Doc</span>
+                  </span>
+
+                  {/* Hover zoom & inspect overlay */}
+                  <div className="absolute inset-0 z-20 bg-slate-950/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1.5px]">
+                    <span className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md flex items-center space-x-1.5 transform group-hover:scale-105 transition-transform">
+                      <Maximize2 size={13} />
+                      <span>Click to Zoom & View</span>
                     </span>
                   </div>
                 </div>
@@ -2092,73 +2102,188 @@ export const ProfilePage = () => {
         </div>
       )}
 
-      {/* Document Lightbox Modal */}
+      {/* Document Lightbox Modal - Expansive H x W with Interactive Zoom */}
       {previewDoc && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center space-x-2">
-                <FileCheck size={18} className="text-emerald-500" />
-                <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                  {previewDoc.title}
-                </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-slate-950/85 backdrop-blur-sm animate-in fade-in duration-150">
+          <div className="bg-white dark:bg-[#0b1329] rounded-3xl w-[96vw] max-w-6xl h-[92vh] max-h-[920px] border border-slate-200/90 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden">
+            {/* Modal Header */}
+            <div className="px-5 py-3.5 sm:px-6 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/40">
+              <div className="flex items-center space-x-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-2xs">
+                  <FileCheck size={20} />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center space-x-2">
+                    <h3 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white truncate">
+                      {previewDoc.title}
+                    </h3>
+                    <span className="hidden sm:inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                      <Check size={11} className="stroke-[3]" />
+                      <span>Verified</span>
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                    {studentData.fullName} • Ref: {previewDoc.docNo}
+                  </p>
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setPreviewDoc(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-              >
-                <X size={18} />
-              </button>
+
+              {/* Center / Right Toolbar Controls */}
+              <div className="flex items-center space-x-2 shrink-0">
+                {/* View Switcher: HD Vector vs Scanned Original */}
+                <div className="hidden md:flex items-center bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => setDocModalView("digital")}
+                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center space-x-1.5 ${
+                      docModalView === "digital"
+                        ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs font-bold"
+                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <FileCheck size={13} />
+                    <span>HD Document</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDocModalView("scanned")}
+                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center space-x-1.5 ${
+                      docModalView === "scanned"
+                        ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs font-bold"
+                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <FileText size={13} />
+                    <span>Scanned Original</span>
+                  </button>
+                </div>
+
+                {/* Zoom Controls */}
+                <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={handleZoomOut}
+                    disabled={docZoomLevel <= 0.75}
+                    className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 disabled:opacity-40 cursor-pointer transition-colors"
+                    title="Zoom Out (-)"
+                  >
+                    <ZoomOut size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleResetZoom}
+                    className="px-2.5 py-1 text-xs font-mono font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800 rounded-lg cursor-pointer transition-colors"
+                    title="Click to reset zoom (100%)"
+                  >
+                    {Math.round(docZoomLevel * 100)}%
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleZoomIn}
+                    disabled={docZoomLevel >= 2.5}
+                    className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 disabled:opacity-40 cursor-pointer transition-colors"
+                    title="Zoom In (+)"
+                  >
+                    <ZoomIn size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleResetZoom}
+                    className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 cursor-pointer transition-colors"
+                    title="Reset Zoom"
+                  >
+                    <RotateCcw size={14} />
+                  </button>
+                </div>
+
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreviewDoc(null);
+                    setDocZoomLevel(1);
+                  }}
+                  className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer ml-1"
+                  title="Close Modal"
+                >
+                  <X size={20} />
+                </button>
+              </div>
             </div>
 
-            {/* Document display card */}
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center border border-slate-200/80 dark:border-slate-800 space-y-3">
-              <div className="max-h-72 w-full flex items-center justify-center p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 shadow-xs">
-                <img
-                  src={previewDoc.thumb}
-                  alt={previewDoc.title}
-                  className="max-h-60 max-w-full object-contain rounded-md drop-shadow-xs"
-                />
+            {/* Expansive Canvas (takes maximum H x W with smooth zoom & scroll) */}
+            <div className="flex-1 min-h-0 w-full overflow-auto bg-slate-100/90 dark:bg-[#060b17] p-4 sm:p-10 flex items-center justify-center relative">
+              <div
+                className="transition-transform duration-150 ease-out flex items-center justify-center my-auto"
+                style={{
+                  transform: `scale(${docZoomLevel})`,
+                  transformOrigin: "center center",
+                }}
+              >
+                {docModalView === "digital" ? (
+                  <div className="w-full max-w-3xl flex justify-center drop-shadow-2xl">
+                    <DocumentVisualizer
+                      doc={previewDoc}
+                      studentData={studentData}
+                      sahilProfilePic={sahilProfilePic}
+                      isCard={false}
+                    />
+                  </div>
+                ) : (
+                  <div className="max-w-2xl flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800">
+                    <img
+                      src={previewDoc.thumb}
+                      alt={previewDoc.title}
+                      className="max-h-[66vh] max-w-full object-contain rounded-lg drop-shadow-md"
+                    />
+                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-2">
+                      Archived Physical Scanned Copy
+                    </span>
+                  </div>
+                )}
               </div>
-              <div className="w-full bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/80 rounded-xl px-3.5 py-2 flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300">
-                <span className="flex items-center space-x-1.5 font-bold">
-                  <CheckCircle2 size={14} className="text-emerald-600 dark:text-emerald-400" />
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-5 py-3 sm:px-6 sm:py-3.5 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 bg-white dark:bg-[#0b1329]">
+              <div className="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-400">
+                <span className="inline-flex items-center space-x-1.5 font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-200/60 dark:border-emerald-800/60">
+                  <CheckCircle2 size={13} className="text-emerald-600 dark:text-emerald-400" />
                   <span>Authenticated & Verified</span>
                 </span>
-                <span className="text-[11px] font-semibold text-emerald-700/80 dark:text-emerald-400/80">
+                <span className="text-slate-500 dark:text-slate-400 hidden sm:inline">
                   Uploaded on {previewDoc.uploadedOn}
                 </span>
               </div>
-            </div>
 
-            <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-50/70 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
-              <div>
-                <span className="text-[10px] text-slate-400 block">Candidate Name</span>
-                <strong className="text-slate-900 dark:text-white font-bold block">{studentData.fullName}</strong>
+              <div className="flex items-center justify-end space-x-2">
+                {/* Mobile view switch toggle button */}
+                <button
+                  type="button"
+                  onClick={() => setDocModalView((v) => (v === "digital" ? "scanned" : "digital"))}
+                  className="sm:hidden px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                >
+                  {docModalView === "digital" ? "Show Scanned" : "Show HD Doc"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreviewDoc(null);
+                    setDocZoomLevel(1);
+                  }}
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={() => showToast(`Downloaded official copy: ${previewDoc.title}`)}
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center space-x-1.5 cursor-pointer shadow-xs transition-colors"
+                >
+                  <Download size={14} />
+                  <span>Download Official Copy</span>
+                </button>
               </div>
-              <div>
-                <span className="text-[10px] text-slate-400 block">Document Identifier</span>
-                <strong className="text-slate-900 dark:text-white font-bold block">{previewDoc.docNo}</strong>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-              <button
-                type="button"
-                onClick={() => setPreviewDoc(null)}
-                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 cursor-pointer"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                onClick={() => showToast(`Downloaded official copy: ${previewDoc.title}`)}
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center space-x-1.5 cursor-pointer shadow-xs"
-              >
-                <Download size={14} />
-                <span>Download Official Copy</span>
-              </button>
             </div>
           </div>
         </div>
