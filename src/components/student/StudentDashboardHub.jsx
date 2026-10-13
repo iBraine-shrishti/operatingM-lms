@@ -23,6 +23,7 @@ export const StudentDashboardHub = ({
   crmCertificates = [],
   courses = [],
   quizzes = [],
+  assignments = [],
   achievements = [],
   onUpdateCurrentUser,
 }) => {
@@ -37,26 +38,21 @@ export const StudentDashboardHub = ({
     studentDashboardService.getStoredReminderSnooze()
   );
 
-  // Dashboard data fetched from studentDashboardService (.js)
-  const [dashboardData, setDashboardData] = useState({
-    notifications: studentDashboardService.getNotifications(
-      studentDashboardService.getStoredReminderSnooze()
-    ),
-    pendingAssignments: studentDashboardService.getPendingAssignments(),
-    continueLearning: studentDashboardService.getContinueLearningData(),
-    reminderOptions: studentDashboardService.getReminderOptions(),
-    quickActions: studentDashboardService.getQuickActions(),
-    paymentInfo: studentDashboardService.getPaymentInfo(),
-    stats: studentDashboardService.getStudentStats({
-      coursesCount: courses.length > 0 ? courses.length : undefined,
-      quizzesCount: quizzes.length > 0 ? quizzes.length : undefined,
-    }),
-    notificationsSummary: {
-      fullText: "1 Overdue • 1 Due Today • 1 Fee Notice",
-    },
-  });
+  // Dashboard data dynamically initialized and fetched via studentDashboardService
+  const [dashboardData, setDashboardData] = useState(() =>
+    studentDashboardService.fetchStudentDashboardDataSync({
+      reminderSnoozedInfo: studentDashboardService.getStoredReminderSnooze(),
+      currentUser,
+      crmProfile,
+      crmAttendance,
+      crmBatch,
+      courses,
+      quizzes,
+      assignments,
+    })
+  );
 
-  // Fetch / update dashboard data on mount or when props / snooze change
+  // Fetch / update dashboard data on mount or when props / profile / snooze change
   useEffect(() => {
     let isMounted = true;
 
@@ -64,8 +60,13 @@ export const StudentDashboardHub = ({
       try {
         const data = await studentDashboardService.fetchStudentDashboardData({
           reminderSnoozedInfo,
+          currentUser,
+          crmProfile,
+          crmAttendance,
+          crmBatch,
           courses,
           quizzes,
+          assignments,
         });
         if (isMounted) {
           setDashboardData(data);
@@ -83,7 +84,20 @@ export const StudentDashboardHub = ({
     return () => {
       isMounted = false;
     };
-  }, [reminderSnoozedInfo, courses.length, quizzes.length]);
+  }, [
+    reminderSnoozedInfo,
+    crmProfile?.id,
+    crmProfile?.balanceDue,
+    crmProfile?.totalPaid,
+    crmProfile?.totalFees,
+    crmProfile?.course,
+    currentUser?.id,
+    currentUser?.overallProgress,
+    crmBatch?.currentTopic,
+    courses.length,
+    quizzes.length,
+    assignments.length,
+  ]);
 
   // Handler for scheduling payment reminder snooze
   const handleSetReminder = (days, dateStr) => {

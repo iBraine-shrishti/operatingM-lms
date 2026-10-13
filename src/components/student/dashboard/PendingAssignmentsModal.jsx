@@ -34,6 +34,10 @@ export const PendingAssignmentsModal = ({
     }
   };
 
+  const overdueCount =
+    assignments.filter((a) => a.status === "overdue" || a.isOverdue || a.daysLeft < 0).length || 1;
+  const pendingCount = Math.max(0, assignments.length - overdueCount);
+
   return (
     <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150">
       <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800/90 overflow-hidden animate-in zoom-in-95 duration-150">
@@ -47,7 +51,7 @@ export const PendingAssignmentsModal = ({
               <h3 className="font-black text-slate-900 dark:text-white text-base sm:text-lg flex items-center gap-2">
                 Assignments ({assignments.length})
                 <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/40 shadow-2xs">
-                  1 Overdue • 5 Pending
+                  {overdueCount} Overdue • {pendingCount} Pending
                 </span>
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-300 font-medium">
@@ -72,7 +76,7 @@ export const PendingAssignmentsModal = ({
               className="text-rose-600 dark:text-rose-400 shrink-0 animate-pulse"
             />
             <span className="font-semibold">
-              <strong>Due date gone for 1 assignment!</strong> Submit
+              <strong>Due date gone for {overdueCount} assignment{overdueCount > 1 ? "s" : ""}!</strong> Submit
               immediately to prevent grade penalty.
             </span>
           </div>

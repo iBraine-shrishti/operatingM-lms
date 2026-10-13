@@ -101,17 +101,19 @@ export const AuthProvider = ({ children }) => {
 
             if (profile) {
                 setCrmProfile(profile);
-                // Directly integrate and bind uploaded photograph if available, defaulting to profilePic
                 setStudentUser((prev) => {
                     return {
                         ...prev,
                         crmAdmissionId: profile.id,
                         admissionNo: profile.admissionNo,
                         name: profile.name || prev.name,
+                        fullName: profile.fullName || profile.name || prev.fullName,
                         email: profile.email || prev.email,
                         course: profile.course || prev.course,
+                        branch: profile.branch || prev.branch,
+                        center: profile.center || profile.branch || prev.center,
                         designation: `${profile.course || 'Digital Marketing'} Student`,
-                        avatar: sahilProfilePic
+                        avatar: profile.photo || prev.avatar || sahilProfilePic
                     };
                 });
             }

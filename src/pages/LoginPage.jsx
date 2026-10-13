@@ -13,11 +13,12 @@ import {
   BookOpen,
 } from "lucide-react";
 import { useAuth, STUDENT_USER } from "../context/AuthContext";
+import { crmService } from "../services/crmService";
 import logo from "../assets/logo.png";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, switchCrmStudent, updateCurrentUser } = useAuth();
 
   const [email, setEmail] = useState("student@operatingmedia.com");
   const [password, setPassword] = useState("password123");
@@ -43,15 +44,15 @@ export const LoginPage = () => {
     navigate("/dashboard");
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
-    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedLogin = email.trim();
     const trimmedPass = password.trim();
 
-    if (!trimmedEmail) {
-      setError("Please enter your registered student email address.");
+    if (!trimmedLogin) {
+      setError("Please enter your registered student email or login ID.");
       return;
     }
 
@@ -60,19 +61,55 @@ export const LoginPage = () => {
       return;
     }
 
+    try {
+      // 1. Authenticate with real CRM student credentials
+      const student = await crmService.studentLogin(trimmedLogin, trimmedPass);
+      if (student) {
+        login("STUDENT");
+        if (updateCurrentUser) {
+          updateCurrentUser({
+            id: `std-${student.id}`,
+            crmAdmissionId: student.id,
+            admissionNo: student.admissionNo,
+            name: student.name,
+            fullName: student.fullName || student.name,
+            email: student.email,
+            course: student.course,
+            branch: student.branch,
+            center: student.center,
+            designation: student.designation,
+            avatar: student.photo || undefined,
+          });
+        }
+        if (student.id) {
+          await switchCrmStudent(student.id);
+        }
+        navigate("/dashboard");
+        return;
+      }
+    } catch (err) {
+      if (err.message && !err.message.includes("fetch") && !err.message.includes("token") && !err.message.includes("JSON") && !err.message.includes("<")) {
+        setError(err.message);
+        return;
+      }
+    }
+
+    // 2. Demo fallback credentials
+    const lower = trimmedLogin.toLowerCase();
     const isValidEmail =
-      validStudentEmails.includes(trimmedEmail) ||
-      trimmedEmail.includes("student") ||
-      trimmedEmail.includes("sahil");
+      validStudentEmails.includes(lower) ||
+      lower.includes("student") ||
+      lower.includes("sahil");
 
     const isValidPassword = validPasswords.includes(trimmedPass);
 
     if (isValidEmail && isValidPassword) {
       login("STUDENT");
       navigate("/dashboard");
-    } else {
-      setError("Invalid student credentials. Please verify your email and password.");
+      return;
     }
+
+    setError("Invalid student credentials. Please verify your email and password.");
   };
 
   return (

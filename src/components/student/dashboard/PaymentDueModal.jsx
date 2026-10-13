@@ -43,6 +43,9 @@ export const PaymentDueModal = ({
   const handlePay = () => {
     if (onPayNow) {
       onPayNow();
+    } else if (paymentInfo.isCleared) {
+      alert("All fees are fully cleared. Official fee receipts are verified by accounts.");
+      if (onClose) onClose();
     } else {
       alert("Redirecting to Razorpay / UPI Secure Payment Gateway (Demo)...");
       if (onClose) onClose();
@@ -60,7 +63,7 @@ export const PaymentDueModal = ({
             </div>
             <div>
               <h3 className="font-black text-slate-900 dark:text-white text-base sm:text-lg">
-                Fee Installment Due
+                {paymentInfo.isCleared ? "Fee Summary & Receipts" : "Fee Installment Due"}
               </h3>
               <p className="text-xs text-amber-800 dark:text-amber-300 font-semibold">
                 {daysRemainingText}
@@ -81,7 +84,7 @@ export const PaymentDueModal = ({
           {/* Amount Highlight Card */}
           <div className="bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-white dark:from-amber-950/40 dark:via-slate-900 dark:to-[#0f172a] border border-amber-200 dark:border-amber-500/40 rounded-xl p-4 text-center space-y-1">
             <span className="text-[11px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 block">
-              Outstanding Installment
+              {paymentInfo.isCleared ? "Fee Status" : "Outstanding Installment"}
             </span>
             <div className="text-3xl font-black text-slate-900 dark:text-white">
               {installmentAmount}
@@ -127,53 +130,65 @@ export const PaymentDueModal = ({
             </div>
           </div>
 
-          {/* Remind Me Later Options (2 to 5 Days) */}
-          <div className="bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/90 dark:border-amber-500/30 rounded-xl p-3 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                <Clock size={13} className="text-amber-700 dark:text-amber-400" />
-                <span>Remind Me Later Options:</span>
+          {/* Remind Me Later Options (2 to 5 Days) or Cleared Status */}
+          {paymentInfo.isCleared ? (
+            <div className="bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200/90 dark:border-emerald-500/30 rounded-xl p-3 space-y-1.5 text-center">
+              <span className="text-xs font-bold text-emerald-800 dark:text-emerald-200 flex items-center justify-center gap-1.5">
+                <Check size={13} className="text-emerald-600 dark:text-emerald-400" />
+                <span>All Installments Cleared & Verified</span>
               </span>
-              <span className="text-[10px] font-bold text-amber-900 dark:text-amber-300 bg-amber-200/80 dark:bg-amber-950/60 px-2 py-0.5 rounded">
-                2 to 5 Days
-              </span>
+              <p className="text-[10.5px] text-emerald-700 dark:text-emerald-300 font-medium leading-tight">
+                Account is in good standing with zero pending dues.
+              </p>
             </div>
+          ) : (
+            <div className="bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/90 dark:border-amber-500/30 rounded-xl p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <Clock size={13} className="text-amber-700 dark:text-amber-400" />
+                  <span>Remind Me Later Options:</span>
+                </span>
+                <span className="text-[10px] font-bold text-amber-900 dark:text-amber-300 bg-amber-200/80 dark:bg-amber-950/60 px-2 py-0.5 rounded">
+                  2 to 5 Days
+                </span>
+              </div>
 
-            <div className="grid grid-cols-4 gap-2">
-              {reminderOptions.map((opt) => {
-                const isSelected = selectedReminderDays === opt.days;
-                return (
-                  <button
-                    key={opt.days}
-                    type="button"
-                    onClick={() => onSelectReminderDays && onSelectReminderDays(opt.days)}
-                    className={`py-2 px-1 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
-                      isSelected
-                        ? "bg-amber-500 border-amber-600 text-slate-950 font-black shadow-xs ring-2 ring-amber-300 dark:ring-amber-500"
-                        : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-amber-400 dark:hover:border-amber-500 hover:bg-amber-50/50 dark:hover:bg-amber-950/40 font-bold"
-                    }`}
-                  >
-                    <span className="text-xs leading-none">
-                      {opt.days} Days
-                    </span>
-                    <span
-                      className={`text-[9.5px] leading-tight ${
+              <div className="grid grid-cols-4 gap-2">
+                {reminderOptions.map((opt) => {
+                  const isSelected = selectedReminderDays === opt.days;
+                  return (
+                    <button
+                      key={opt.days}
+                      type="button"
+                      onClick={() => onSelectReminderDays && onSelectReminderDays(opt.days)}
+                      className={`py-2 px-1 rounded-lg border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
                         isSelected
-                          ? "text-slate-950 font-extrabold"
-                          : "text-slate-400 font-medium"
+                          ? "bg-amber-500 border-amber-600 text-slate-950 font-black shadow-xs ring-2 ring-amber-300 dark:ring-amber-500"
+                          : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-amber-400 dark:hover:border-amber-500 hover:bg-amber-50/50 dark:hover:bg-amber-950/40 font-bold"
                       }`}
                     >
-                      {opt.date.split(",")[0]}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+                      <span className="text-xs leading-none">
+                        {opt.days} Days
+                      </span>
+                      <span
+                        className={`text-[9.5px] leading-tight ${
+                          isSelected
+                            ? "text-slate-950 font-extrabold"
+                            : "text-slate-400 font-medium"
+                        }`}
+                      >
+                        {opt.date.split(",")[0]}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
 
-            <p className="text-[10.5px] text-amber-800 dark:text-amber-300 font-medium leading-tight text-center pt-0.5">
-              {selectedOpt?.desc}
-            </p>
-          </div>
+              <p className="text-[10.5px] text-amber-800 dark:text-amber-300 font-medium leading-tight text-center pt-0.5">
+                {selectedOpt?.desc}
+              </p>
+            </div>
+          )}
 
           {/* Advisory note */}
           <p className="text-[11px] text-slate-500 dark:text-slate-300 leading-relaxed bg-blue-50/60 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/60 rounded-lg p-2 text-center">
@@ -253,14 +268,14 @@ export const PaymentDueModal = ({
             )}
           </div>
 
-          {/* Pay Now Button */}
+          {/* Pay Now or View Receipts Button */}
           <button
             type="button"
             onClick={handlePay}
             className="px-4 sm:px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
           >
             <CreditCard size={14} />
-            <span>Pay {installmentAmount} Online</span>
+            <span>{paymentInfo.isCleared ? "View Fee Receipts" : `Pay ${installmentAmount} Online`}</span>
           </button>
         </div>
       </div>

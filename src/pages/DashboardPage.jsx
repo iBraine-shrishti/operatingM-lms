@@ -16,6 +16,7 @@ export const DashboardPage = () => {
   const courses = lmsService.getCourses();
   const quizzes = lmsService.getQuizzes();
   const achievements = lmsService.getAchievements().filter(a => a.unlocked);
+  const assignments = lmsService.getAssignments();
 
   return (
     <StudentDashboardHub
@@ -26,6 +27,7 @@ export const DashboardPage = () => {
       crmCertificates={crmCertificates}
       courses={courses}
       quizzes={quizzes}
+      assignments={assignments}
       achievements={achievements}
       onUpdateCurrentUser={updateCurrentUser}
     />

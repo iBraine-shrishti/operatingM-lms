@@ -144,7 +144,7 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
                   Completed
                 </span>
                 <strong className="text-slate-900 dark:text-blue-300 font-bold">
-                  150m (50%)
+                  {data.segments?.[0]?.minutes || "150m (50%)"}
                 </strong>
               </div>
               <div className="flex items-center justify-between">
@@ -153,7 +153,7 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
                   Current
                 </span>
                 <strong className="text-slate-900 dark:text-cyan-300 font-bold">
-                  45m (15%)
+                  {data.segments?.[1]?.minutes || "45m (15%)"}
                 </strong>
               </div>
               <div className="flex items-center justify-between">
@@ -162,7 +162,7 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
                   Remaining
                 </span>
                 <strong className="text-slate-900 dark:text-slate-300 font-bold">
-                  105m (35%)
+                  {data.segments?.[2]?.minutes || "105m (35%)"}
                 </strong>
               </div>
             </div>
@@ -215,13 +215,13 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
                 <p className="text-[11px] 2xl:text-xs font-bold text-slate-800 dark:text-slate-200 truncate">
                   Just{" "}
                   <strong className="text-[#2563eb] dark:text-cyan-400">
-                    105m
+                    {data.timeStats?.remainingMinutes !== undefined ? `${data.timeStats.remainingMinutes}m` : "105m"}
                   </strong>{" "}
                   remain! Goal on track
                 </p>
               </div>
               <span className="text-[10px] 2xl:text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-200/60 dark:border-emerald-500/30 px-2 py-0.5 rounded-full shrink-0">
-                195m watched
+                {data.timeStats?.watchedMinutes !== undefined ? `${data.timeStats.watchedMinutes}m watched` : "195m watched"}
               </span>
             </div>
 
@@ -231,10 +231,10 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
                   Status
                 </span>
                 <strong className="text-xs sm:text-sm 2xl:text-base font-black text-[#2563eb] dark:text-blue-400 block leading-tight">
-                  65% Done
+                  {data.comparativeMetrics?.[0]?.main || `${progressPercent}% Done`}
                 </strong>
                 <p className="text-[9.5px] 2xl:text-[11px] text-slate-500 dark:text-slate-300 truncate">
-                  35% Left
+                  {data.comparativeMetrics?.[0]?.sub || `${100 - progressPercent}% Left`}
                 </p>
               </div>
 
@@ -243,10 +243,10 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
                   Position
                 </span>
                 <strong className="text-xs sm:text-sm 2xl:text-base font-black text-[#0c1e3d] dark:text-cyan-400 block leading-tight">
-                  Module 2
+                  {data.comparativeMetrics?.[1]?.main || "Module 2"}
                 </strong>
                 <p className="text-[9.5px] 2xl:text-[11px] text-slate-500 dark:text-slate-300 truncate">
-                  Lesson 2.2
+                  {data.comparativeMetrics?.[1]?.sub || "Lesson 2.2"}
                 </p>
               </div>
 
@@ -255,10 +255,10 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
                   Remaining
                 </span>
                 <strong className="text-xs sm:text-sm 2xl:text-base font-black text-purple-600 dark:text-purple-400 block leading-tight">
-                  2 Modules
+                  {data.comparativeMetrics?.[2]?.main || "2 Modules"}
                 </strong>
                 <p className="text-[9.5px] 2xl:text-[11px] text-slate-500 dark:text-slate-300 truncate">
-                  Mod 3 & 4
+                  {data.comparativeMetrics?.[2]?.sub || "Mod 3 & 4"}
                 </p>
               </div>
             </div>

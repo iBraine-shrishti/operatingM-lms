@@ -90,6 +90,22 @@ const SEVERITY_CONFIGS = {
     icon: Award,
     iconClass: "text-emerald-600 dark:text-emerald-400 group-hover:scale-125",
   },
+  payment_cleared: {
+    itemBorderHover: "hover:border-emerald-400 dark:hover:border-emerald-500/80",
+    itemShadowHover:
+      "hover:shadow-[0_6px_20px_rgba(16,185,129,0.18)] dark:hover:shadow-[0_6px_20px_rgba(16,185,129,0.3)]",
+    stripBg:
+      "bg-emerald-50 text-emerald-700 border-emerald-500 dark:bg-emerald-950/80 dark:text-emerald-300 dark:border-emerald-500",
+    badgeBg:
+      "bg-emerald-600 text-white shadow-[0_0_8px_rgba(16,185,129,0.3)]",
+    clockColor: "text-emerald-500 dark:text-emerald-400",
+    btnStyle:
+      "bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600 shadow-[0_2px_8px_rgba(16,185,129,0.3)] dark:shadow-[0_0_12px_rgba(16,185,129,0.4)] group-hover:brightness-110 group-hover:border-emerald-500",
+    stripText: "PAID",
+    titleHover: "group-hover:text-emerald-600 dark:group-hover:text-emerald-400",
+    icon: Award,
+    iconClass: "text-emerald-600 dark:text-emerald-400 group-hover:scale-125",
+  },
 };
 
 /**
@@ -224,10 +240,16 @@ export const NotificationsDeadlinesHub = ({
           className="text-amber-500 shrink-0 animate-pulse 2xl:w-4 2xl:h-4"
         />
         <span className="font-semibold">
-          <strong className="text-slate-900 dark:text-white font-black">
-            1 Overdue
-          </strong>{" "}
-          • 1 Due Today • 1 Fee Notice
+          {summaryText ? (
+            <span>{summaryText}</span>
+          ) : (
+            <>
+              <strong className="text-slate-900 dark:text-white font-black">
+                1 Overdue
+              </strong>{" "}
+              • 1 Due Today • 1 Fee Notice
+            </>
+          )}
         </span>
       </div>
     </div>
