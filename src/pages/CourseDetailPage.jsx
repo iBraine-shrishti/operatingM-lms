@@ -1205,43 +1205,6 @@ export const CourseDetailPage = () => {
                     </div>
                   </div>
                 )}
-
-              {/* 4. CONSULTATION & CONTACT CTA */}
-              <div className="bg-gradient-to-br from-slate-900 to-blue-950 text-white rounded-2xl p-6 shadow-md space-y-4">
-                <div className="flex items-start space-x-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-300 shrink-0">
-                    <Phone size={18} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-sm text-white">
-                      Need Career Counseling or a Free Demo Class?
-                    </h4>
-                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                      {course.overview?.callToAction ||
-                        "Schedule a 1:1 consultation or counseling session with our expert trainers."}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-4 pt-2 border-t border-white/10 text-xs">
-                  <div className="flex items-center space-x-2 text-slate-200">
-                    <Phone size={14} className="text-blue-400" />
-                    <span>Call / WhatsApp:</span>
-                    <span className="font-bold text-white tracking-wide">
-                      {course.overview?.contact?.phone ||
-                        "7700022882 / 9326474007"}
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-slate-200">
-                    <Globe size={14} className="text-blue-400" />
-                    <span>Official Portal:</span>
-                    <span className="font-bold text-white underline">
-                      {course.overview?.contact?.website ||
-                        "www.operatingmedia.com"}
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
