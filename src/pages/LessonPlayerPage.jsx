@@ -75,14 +75,15 @@ export const LessonPlayerPage = () => {
   });
 
   // Keep URL in sync when active lesson changes
-  const currentLesson = units[activeLessonIdx] || units[0] || {
-    id: "default-unit",
-    title: "Lesson Lecture",
-    duration: "20:00",
-    videoUrl: "",
-    moduleName: "Core Curriculum",
-    description: "Lecture material.",
-  };
+  const currentLesson = units[activeLessonIdx] ||
+    units[0] || {
+      id: "default-unit",
+      title: "Lesson Lecture",
+      duration: "20:00",
+      videoUrl: "",
+      moduleName: "Core Curriculum",
+      description: "Lecture material.",
+    };
 
   useEffect(() => {
     if (currentLesson && currentLesson.id) {
@@ -234,7 +235,10 @@ export const LessonPlayerPage = () => {
   };
 
   // Mark Completed Toggle
-  const handleMarkCompleted = (status = !currentLesson.isCompleted, silent = false) => {
+  const handleMarkCompleted = (
+    status = !currentLesson.isCompleted,
+    silent = false,
+  ) => {
     lmsService.updateUnit(currentLesson.id, { isCompleted: status });
     const updatedUnits = lmsService.getUnitsByCourse(currentCourse.id);
     setUnits(updatedUnits);
@@ -435,9 +439,7 @@ export const LessonPlayerPage = () => {
           <button
             disabled={activeLessonIdx >= units.length - 1}
             onClick={() =>
-              setActiveLessonIdx((prev) =>
-                Math.min(units.length - 1, prev + 1),
-              )
+              setActiveLessonIdx((prev) => Math.min(units.length - 1, prev + 1))
             }
             className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
             title="Next Lesson"
@@ -597,9 +599,8 @@ export const LessonPlayerPage = () => {
                 {
                   key: "notes",
                   label: `Personal Notes (${
-                    userNotes.filter(
-                      (n) => n.courseId === currentCourse.id,
-                    ).length
+                    userNotes.filter((n) => n.courseId === currentCourse.id)
+                      .length
                   })`,
                 },
                 { key: "resources", label: "Resources & Cheat Sheet" },
@@ -644,16 +645,23 @@ export const LessonPlayerPage = () => {
                   </h4>
                   <ul className="space-y-1.5 list-disc list-inside text-slate-600 dark:text-slate-300">
                     <li>Core technical foundations & best practices.</li>
-                    <li>Industry tool workflows and practical configuration.</li>
+                    <li>
+                      Industry tool workflows and practical configuration.
+                    </li>
                     <li>Avoiding common optimization mistakes & penalties.</li>
-                    <li>Actionable implementation checklist for live projects.</li>
+                    <li>
+                      Actionable implementation checklist for live projects.
+                    </li>
                   </ul>
                 </div>
 
                 {/* Forum Action Banner */}
                 <div className="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <MessagesSquare size={16} className="text-blue-600 dark:text-cyan-400" />
+                    <MessagesSquare
+                      size={16}
+                      className="text-blue-600 dark:text-cyan-400"
+                    />
                     <span className="font-semibold text-blue-900 dark:text-blue-300">
                       Have questions about this lesson?
                     </span>
@@ -683,7 +691,9 @@ export const LessonPlayerPage = () => {
                       className="text-[11px] font-bold text-blue-600 dark:text-cyan-400 hover:underline flex items-center space-x-1 cursor-pointer"
                     >
                       <Bookmark size={12} />
-                      <span>Attach current time [{formatTime(currentTime)}]</span>
+                      <span>
+                        Attach current time [{formatTime(currentTime)}]
+                      </span>
                     </button>
                   </div>
                   <textarea
@@ -707,7 +717,12 @@ export const LessonPlayerPage = () => {
                 {/* List of saved notes */}
                 <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                   <h4 className="font-bold text-slate-900 dark:text-white text-xs">
-                    Your Saved Notes ({userNotes.filter((n) => n.courseId === currentCourse.id).length})
+                    Your Saved Notes (
+                    {
+                      userNotes.filter((n) => n.courseId === currentCourse.id)
+                        .length
+                    }
+                    )
                   </h4>
                   {userNotes
                     .filter((n) => n.courseId === currentCourse.id)
@@ -741,8 +756,12 @@ export const LessonPlayerPage = () => {
                       <FileText size={16} />
                     </div>
                     <div>
-                      <span className="block">{currentLesson.title}_CheatSheet.pdf</span>
-                      <span className="text-[10px] text-slate-400 font-normal">2.4 MB • PDF Reference Guide</span>
+                      <span className="block">
+                        {currentLesson.title}_CheatSheet.pdf
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-normal">
+                        2.4 MB • PDF Reference Guide
+                      </span>
                     </div>
                   </div>
                   <button
@@ -760,8 +779,12 @@ export const LessonPlayerPage = () => {
                       <ExternalLink size={16} />
                     </div>
                     <div>
-                      <span className="block">Official Documentation & Tool Guidelines</span>
-                      <span className="text-[10px] text-slate-400 font-normal">Web Resource Link</span>
+                      <span className="block">
+                        Official Documentation & Tool Guidelines
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-normal">
+                        Web Resource Link
+                      </span>
                     </div>
                   </div>
                   <a
@@ -792,7 +815,8 @@ export const LessonPlayerPage = () => {
                         <span>Pinned Answer</span>
                       </div>
                       <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
-                        Remember to always verify the crawl budget directives in robots.txt before deploying large e-commerce catalogs.
+                        Remember to always verify the crawl budget directives in
+                        robots.txt before deploying large e-commerce catalogs.
                       </p>
                     </div>
                   </div>
@@ -810,7 +834,6 @@ export const LessonPlayerPage = () => {
 
         {/* RIGHT COLUMN: COURSE SYLLABUS PLAYLIST WITH FOLDER & SECTION ACCORDIONS */}
         <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs space-y-4">
-          
           {/* ========================================================= */}
           {/* LEVEL 1: ACTUAL MASTER COURSE CARD & SELECTOR DROPDOWN   */}
           {/* ========================================================= */}
@@ -818,7 +841,10 @@ export const LessonPlayerPage = () => {
             <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50/90 via-indigo-50/50 to-white dark:from-blue-950 dark:via-indigo-950 dark:to-slate-900 text-slate-900 dark:text-white shadow-xs border border-blue-200/80 dark:border-blue-600/40 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-100 text-blue-700 dark:bg-blue-500/25 dark:text-blue-200 border border-blue-200/90 dark:border-blue-400/40 shadow-2xs">
-                  <GraduationCap size={13} className="text-blue-600 dark:text-blue-300" />
+                  <GraduationCap
+                    size={13}
+                    className="text-blue-600 dark:text-blue-300"
+                  />
                   <span>Enrolled Course</span>
                 </span>
                 <span className="text-[10px] font-bold text-slate-500 dark:text-blue-300/80">
@@ -849,7 +875,8 @@ export const LessonPlayerPage = () => {
                       {currentCourse.title}
                     </h4>
                     <p className="text-[10px] text-slate-500 dark:text-blue-200 font-medium truncate mt-0.5">
-                      {currentCourse.category || "Certification"} • {units.length} Total Lessons • {sections.length} Modules
+                      {currentCourse.category || "Certification"} •{" "}
+                      {units.length} Total Lessons • {sections.length} Modules
                     </p>
                   </div>
                 </div>
@@ -871,7 +898,8 @@ export const LessonPlayerPage = () => {
                 <div className="flex items-center justify-between text-[10px] font-bold text-slate-600 dark:text-blue-200">
                   <span>Overall Course Progress</span>
                   <span className="text-blue-600 dark:text-cyan-300 tabular-nums">
-                    {completedCount} / {units.length} Lessons ({progressPercent}%)
+                    {completedCount} / {units.length} Lessons ({progressPercent}
+                    %)
                   </span>
                 </div>
                 <div className="w-full bg-slate-200/80 dark:bg-black/40 rounded-full h-1.5 overflow-hidden">
@@ -922,7 +950,9 @@ export const LessonPlayerPage = () => {
                           </div>
                         )}
                         <div className="min-w-0">
-                          <p className="text-xs font-bold truncate">{c.title}</p>
+                          <p className="text-xs font-bold truncate">
+                            {c.title}
+                          </p>
                           <p className="text-[10px] text-slate-400 truncate">
                             {cUnits.length} video lessons • {c.category}
                           </p>
@@ -950,7 +980,10 @@ export const LessonPlayerPage = () => {
           <div className="border-b border-slate-100 dark:border-slate-800 pb-3 space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <FolderOpen size={16} className="text-blue-600 dark:text-indigo-400" />
+                <FolderOpen
+                  size={16}
+                  className="text-blue-600 dark:text-indigo-400"
+                />
                 <h3 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider">
                   Course Modules ({sections.length})
                 </h3>
@@ -1019,12 +1052,12 @@ export const LessonPlayerPage = () => {
                     <button
                       type="button"
                       onClick={() => toggleSection(sec.name)}
-                      className={`w-full p-3 sm:p-3.5 flex items-center justify-between transition-colors text-left cursor-pointer border-l-4 ${
+                      className={`w-full p-3 sm:p-3.5 flex items-center justify-between transition-colors text-left cursor-pointer ${
                         sec.isCompleted
-                          ? "border-l-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20"
+                          ? "bg-emerald-50/60 dark:bg-emerald-950/30 hover:bg-emerald-100/60 dark:hover:bg-emerald-950/50"
                           : containsActive
-                          ? "border-l-blue-600 bg-blue-50/70 dark:border-l-indigo-600 dark:bg-indigo-950/40 hover:bg-blue-100/70"
-                          : "border-l-slate-300 dark:border-l-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                            ? "bg-blue-100/70 dark:bg-indigo-950/50 hover:bg-blue-100 dark:hover:bg-indigo-950/70"
+                            : "bg-slate-100 dark:bg-slate-800/70 hover:bg-slate-200/70 dark:hover:bg-slate-800"
                       }`}
                     >
                       <div className="flex items-center space-x-3 min-w-0 pr-2">
@@ -1033,8 +1066,8 @@ export const LessonPlayerPage = () => {
                             sec.isCompleted
                               ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400"
                               : containsActive
-                              ? "bg-blue-600 text-white shadow-xs"
-                              : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                                ? "bg-blue-600 text-white shadow-xs"
+                                : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
                           }`}
                         >
                           {sec.isCompleted ? (
@@ -1049,7 +1082,7 @@ export const LessonPlayerPage = () => {
                         <div className="min-w-0">
                           <div className="flex items-center space-x-1.5">
                             <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-blue-100 dark:bg-indigo-950/80 text-blue-700 dark:text-indigo-300">
-                              📂 Module {sec.index}
+                              Module {sec.index}
                             </span>
                             {containsActive && (
                               <span className="px-1.5 py-0.5 bg-blue-600 text-white text-[9px] font-bold rounded-sm uppercase tracking-wide">

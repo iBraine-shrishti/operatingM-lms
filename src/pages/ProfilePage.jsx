@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Save,
   Award,
@@ -59,6 +59,421 @@ import continueLearningLaptop from "../assets/continue-learning-laptop.png";
 import docAadhaarImg from "../assets/doc-aadhaar.png";
 import doc10thImg from "../assets/doc-10th.png";
 import doc12thImg from "../assets/doc-12th.png";
+
+// ==============================================================
+// HIGH-FIDELITY DOCUMENT RENDERERS (ZOOMABLE & CRISP)
+// ==============================================================
+const AadhaarDocView = ({ studentData, sahilProfilePic, isCard = false }) => (
+  <div
+    className={`bg-white rounded-xl border border-slate-300 shadow-md select-none overflow-hidden flex flex-col justify-between font-sans transition-transform ${
+      isCard
+        ? "w-full h-full p-2.5 max-w-[320px]"
+        : "w-full max-w-2xl p-6 border-2 border-slate-300 shadow-xl"
+    }`}
+  >
+    {/* Top Header */}
+    <div>
+      <div className="h-1.5 w-full bg-gradient-to-r from-orange-500 via-white to-green-600 rounded-xs mb-1" />
+      <div className="flex items-center justify-between pb-1 border-b border-slate-200">
+        <div className="flex items-center space-x-1.5">
+          <div
+            className={`rounded-full bg-amber-50 border border-amber-300 flex items-center justify-center font-serif font-black text-amber-800 ${
+              isCard ? "w-4 h-4 text-[7px]" : "w-7 h-7 text-xs"
+            }`}
+          >
+            🏛️
+          </div>
+          <div className="text-left">
+            <span
+              className={`font-black text-slate-800 tracking-tight block leading-tight ${
+                isCard ? "text-[8px]" : "text-xs"
+              }`}
+            >
+              भारत सरकार / Government of India
+            </span>
+            <span
+              className={`text-slate-500 font-semibold block leading-tight ${
+                isCard ? "text-[6.5px]" : "text-[10px]"
+              }`}
+            >
+              भारतीय विशिष्ट पहचान प्राधिकरण / UIDAI
+            </span>
+          </div>
+        </div>
+        <div className={`text-right ${isCard ? "text-[7px]" : "text-[10px]"}`}>
+          <span className="font-bold text-red-600 block">आधार</span>
+          <span className="text-slate-500 text-[6px]">AADHAAR</span>
+        </div>
+      </div>
+    </div>
+
+    {/* Middle: Photo & Details */}
+    <div className={`flex items-start gap-2.5 ${isCard ? "my-1" : "my-4 gap-4"}`}>
+      <div
+        className={`relative shrink-0 rounded-md overflow-hidden border border-slate-300 shadow-xs bg-slate-100 ${
+          isCard ? "w-12 h-14" : "w-28 h-32"
+        }`}
+      >
+        <img
+          src={sahilProfilePic}
+          alt="Sahil Hasolkar"
+          className="w-full h-full object-cover"
+        />
+        <div
+          className={`absolute bottom-0 inset-x-0 bg-blue-600/90 text-white font-bold text-center ${
+            isCard ? "text-[5px] py-0.2" : "text-[9px] py-0.5"
+          }`}
+        >
+          UIDAI
+        </div>
+      </div>
+
+      <div className="flex-1 min-w-0 space-y-0.5 text-left">
+        <div>
+          <span className={`text-slate-400 block ${isCard ? "text-[6.5px]" : "text-[10px]"}`}>
+            नाम / Name:
+          </span>
+          <strong
+            className={`font-black text-slate-900 block truncate ${
+              isCard ? "text-[9.5px]" : "text-base"
+            }`}
+          >
+            {studentData.fullName || "Sahil Nilesh Hasolkar"}
+          </strong>
+        </div>
+        <div className={`text-slate-600 ${isCard ? "text-[7.5px]" : "text-xs"}`}>
+          <span>DOB: </span>
+          <strong className="text-slate-900 font-bold">
+            {studentData.dob || "28/11/2006"}
+          </strong>
+        </div>
+        <div className={`text-slate-600 ${isCard ? "text-[7.5px]" : "text-xs"}`}>
+          <span>लिंग / Gender: </span>
+          <strong className="text-slate-900 font-bold">
+            {studentData.gender || "Male"}
+          </strong>
+        </div>
+        {!isCard && (
+          <div className="text-[11px] text-slate-600 pt-1 leading-snug">
+            <span>Address: </span>
+            <span className="text-slate-800 font-medium">
+              Flat 402, Sai Shraddha Apt, Borivali West, Mumbai, Maharashtra - 400092
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div
+        className={`shrink-0 border border-slate-200 rounded p-1 bg-white flex flex-col items-center justify-center ${
+          isCard ? "w-11 h-13" : "w-24 h-28"
+        }`}
+      >
+        <div className="grid grid-cols-4 gap-0.5 w-full h-full p-0.5 bg-slate-50 border border-slate-100">
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-200 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-200 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-200 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-200 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-200 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+        </div>
+        <span
+          className={`text-slate-400 font-bold uppercase mt-0.5 ${
+            isCard ? "text-[4.5px]" : "text-[8px]"
+          }`}
+        >
+          SECURE QR
+        </span>
+      </div>
+    </div>
+
+    {/* Bottom: Bold Number & Strip */}
+    <div className="border-t border-slate-200 pt-1">
+      <div
+        className={`font-mono font-black text-center tracking-widest text-red-600 ${
+          isCard ? "text-[11.5px]" : "text-xl py-1.5"
+        }`}
+      >
+        XXXX&nbsp;&nbsp;XXXX&nbsp;&nbsp;8921
+      </div>
+      <div
+        className={`flex items-center justify-between text-slate-500 font-medium ${
+          isCard ? "text-[6px]" : "text-[10px]"
+        }`}
+      >
+        <span>मेरा आधार, मेरी पहचान</span>
+        <span>Help: 1947 • help@uidai.gov.in</span>
+      </div>
+    </div>
+  </div>
+);
+
+const TenthMarksheetDocView = ({ studentData, isCard = false }) => (
+  <div
+    className={`bg-[#fffef8] rounded-xl border-2 border-red-900/80 shadow-md select-none overflow-hidden flex flex-col justify-between font-serif transition-transform ${
+      isCard
+        ? "w-full h-full p-2.5 max-w-[320px]"
+        : "w-full max-w-2xl p-6 border-4 shadow-xl"
+    }`}
+  >
+    <div className="text-center border-b border-red-900/30 pb-1">
+      <span
+        className={`font-black text-red-950 uppercase tracking-tight block ${
+          isCard ? "text-[7.5px]" : "text-xs"
+        }`}
+      >
+        MAHARASHTRA STATE BOARD OF SECONDARY & HIGHER SECONDARY EDUCATION
+      </span>
+      <span
+        className={`font-bold text-red-800 tracking-wider block ${
+          isCard ? "text-[6.5px]" : "text-[10px]"
+        }`}
+      >
+        STATEMENT OF MARKS - S.S.C. EXAMINATION - MARCH 2022
+      </span>
+    </div>
+
+    <div
+      className={`grid grid-cols-3 gap-1 bg-white/80 rounded p-1 border border-red-900/20 font-sans text-left ${
+        isCard ? "text-[6.5px] my-1" : "text-xs my-2.5 p-2"
+      }`}
+    >
+      <div>
+        <span className="text-slate-400 block text-[6px]">SEAT NO.</span>
+        <strong className="text-slate-900 font-black">B084921</strong>
+      </div>
+      <div>
+        <span className="text-slate-400 block text-[6px]">CANDIDATE NAME</span>
+        <strong className="text-slate-900 font-black truncate block">
+          {studentData.fullName || "HASOLKAR SAHIL NILESH"}
+        </strong>
+      </div>
+      <div>
+        <span className="text-slate-400 block text-[6px]">CENTER</span>
+        <strong className="text-slate-900 font-black">0375 (BORIVALI)</strong>
+      </div>
+    </div>
+
+    {isCard ? (
+      <div className="bg-white/90 rounded border border-red-900/20 p-1.5 font-sans text-[6.5px] space-y-0.5 text-left">
+        <div className="flex justify-between font-bold text-slate-800">
+          <span>ENG: 86 | MATH: 88 | SCI: 85</span>
+          <span className="text-emerald-700 font-black">PASS (84.67%)</span>
+        </div>
+        <div className="text-slate-500 text-[6px]">
+          Total: 508 / 600 • First Class with Distinction
+        </div>
+      </div>
+    ) : (
+      <div className="bg-white rounded border border-red-900/30 font-sans text-xs overflow-hidden my-2">
+        <table className="w-full text-left text-xs">
+          <thead className="bg-red-950 text-white text-[10px]">
+            <tr>
+              <th className="p-1.5">SUB CODE & SUBJECT</th>
+              <th className="p-1.5 text-center">MAX</th>
+              <th className="p-1.5 text-center">MARKS OBTAINED</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200 text-slate-800 text-[11px]">
+            <tr>
+              <td className="p-1 font-semibold">01 MARATHI</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">082</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">02 HINDI</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">080</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">03 ENGLISH</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">086</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">71 MATHEMATICS</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">088</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">72 SCIENCE & TECHNOLOGY</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">085</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">73 SOCIAL SCIENCES</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">087</td>
+            </tr>
+          </tbody>
+          <tfoot className="bg-amber-100/70 border-t border-red-900/30 font-bold text-[11px]">
+            <tr>
+              <td className="p-1.5">TOTAL / PERCENTAGE</td>
+              <td className="p-1.5 text-center">600</td>
+              <td className="p-1.5 text-center text-emerald-800 font-black">
+                508 (84.67%) • PASS
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    )}
+
+    <div
+      className={`flex items-center justify-between border-t border-red-900/20 pt-1 font-sans ${
+        isCard ? "text-[6px]" : "text-[10px]"
+      }`}
+    >
+      <span className="text-slate-600 font-semibold">Ref: MSBSHSE / SSC 2022</span>
+      <span className="text-emerald-700 font-black bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-300">
+        ✓ OFFICIALLY VERIFIED
+      </span>
+    </div>
+  </div>
+);
+
+const TwelfthMarksheetDocView = ({ studentData, isCard = false }) => (
+  <div
+    className={`bg-[#fafffb] rounded-xl border-2 border-emerald-800/80 shadow-md select-none overflow-hidden flex flex-col justify-between font-serif transition-transform ${
+      isCard
+        ? "w-full h-full p-2.5 max-w-[320px]"
+        : "w-full max-w-2xl p-6 border-4 shadow-xl"
+    }`}
+  >
+    <div className="text-center border-b border-emerald-800/30 pb-1">
+      <span
+        className={`font-black text-emerald-950 uppercase tracking-tight block ${
+          isCard ? "text-[7.5px]" : "text-xs"
+        }`}
+      >
+        MAHARASHTRA STATE BOARD OF SECONDARY & HIGHER SECONDARY EDUCATION
+      </span>
+      <span
+        className={`font-bold text-emerald-800 tracking-wider block ${
+          isCard ? "text-[6.5px]" : "text-[10px]"
+        }`}
+      >
+        HIGHER SECONDARY CERTIFICATE EXAMINATION - FEBRUARY 2024
+      </span>
+    </div>
+
+    <div
+      className={`grid grid-cols-3 gap-1 bg-white/80 rounded p-1 border border-emerald-800/20 font-sans text-left ${
+        isCard ? "text-[6.5px] my-1" : "text-xs my-2.5 p-2"
+      }`}
+    >
+      <div>
+        <span className="text-slate-400 block text-[6px]">SEAT NO.</span>
+        <strong className="text-slate-900 font-black">H049182</strong>
+      </div>
+      <div>
+        <span className="text-slate-400 block text-[6px]">CANDIDATE NAME</span>
+        <strong className="text-slate-900 font-black truncate block">
+          {studentData.fullName || "HASOLKAR SAHIL NILESH"}
+        </strong>
+      </div>
+      <div>
+        <span className="text-slate-400 block text-[6px]">STREAM</span>
+        <strong className="text-slate-900 font-black">COMMERCE</strong>
+      </div>
+    </div>
+
+    {isCard ? (
+      <div className="bg-white/90 rounded border border-emerald-800/20 p-1.5 font-sans text-[6.5px] space-y-0.5 text-left">
+        <div className="flex justify-between font-bold text-slate-800">
+          <span>BK: 86 | IT: 90 | ENG: 84</span>
+          <span className="text-emerald-700 font-black">PASS (84.55%)</span>
+        </div>
+        <div className="text-slate-500 text-[6px]">
+          Total: 465 / 550 • First Class with Distinction
+        </div>
+      </div>
+    ) : (
+      <div className="bg-white rounded border border-emerald-800/30 font-sans text-xs overflow-hidden my-2">
+        <table className="w-full text-left text-xs">
+          <thead className="bg-emerald-950 text-white text-[10px]">
+            <tr>
+              <th className="p-1.5">SUB CODE & SUBJECT</th>
+              <th className="p-1.5 text-center">MAX</th>
+              <th className="p-1.5 text-center">MARKS OBTAINED</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200 text-slate-800 text-[11px]">
+            <tr>
+              <td className="p-1 font-semibold">01 ENGLISH</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">084</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">49 BOOK KEEPING & ACCOUNTANCY</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">086</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">50 ECONOMICS</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">078</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">51 ORGANIZATION OF COMMERCE</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">082</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">97 INFORMATION TECHNOLOGY</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">090</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">31 ENVIRONMENTAL EDUCATION</td>
+              <td className="p-1 text-center">050</td>
+              <td className="p-1 text-center font-bold">045</td>
+            </tr>
+          </tbody>
+          <tfoot className="bg-emerald-100/70 border-t border-emerald-800/30 font-bold text-[11px]">
+            <tr>
+              <td className="p-1.5">TOTAL / PERCENTAGE</td>
+              <td className="p-1.5 text-center">550</td>
+              <td className="p-1.5 text-center text-emerald-800 font-black">
+                465 (84.55%) • FIRST CLASS
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    )}
+
+    <div
+      className={`flex items-center justify-between border-t border-emerald-800/20 pt-1 font-sans ${
+        isCard ? "text-[6px]" : "text-[10px]"
+      }`}
+    >
+      <span className="text-slate-600 font-semibold">Ref: MSBSHSE / HSC 2024</span>
+      <span className="text-emerald-700 font-black bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-300">
+        ✓ OFFICIALLY VERIFIED
+      </span>
+    </div>
+  </div>
+);
+
+const DocumentVisualizer = ({ doc, studentData, sahilProfilePic, isCard = false }) => {
+  if (doc?.id === "aadhaar") {
+    return <AadhaarDocView studentData={studentData} sahilProfilePic={sahilProfilePic} isCard={isCard} />;
+  }
+  if (doc?.id === "10th") {
+    return <TenthMarksheetDocView studentData={studentData} isCard={isCard} />;
+  }
+  return <TwelfthMarksheetDocView studentData={studentData} isCard={isCard} />;
+};
 
 export const ProfilePage = () => {
   const {
@@ -1375,14 +1790,9 @@ export const ProfilePage = () => {
                 Course Change History
               </h3>
             </div>
-            <button
-              type="button"
-              onClick={() => handleTabChange("history")}
-              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center space-x-1 cursor-pointer"
-            >
-              <span>View All</span>
-              <ArrowRight size={13} />
-            </button>
+            <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-800">
+              1 Logged Event
+            </span>
           </div>
 
           {/* Timeline entry */}
