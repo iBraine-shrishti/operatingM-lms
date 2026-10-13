@@ -926,9 +926,10 @@ export const ProfilePage = () => {
       </div>
 
       {/* ============================================================== */}
-      {/* 5. FULL WIDTH PAYMENT SCHEDULE TABLE                           */}
+      {/* 5. ATTENDANCE & FEES (PAYMENT SCHEDULE & CLASSROOM ANALYTICS)  */}
       {/* ============================================================== */}
-      <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden">
+      <div id="section-attendance-fees" className="space-y-5">
+        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden">
         {/* Table Header Bar */}
         <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-2.5">
@@ -1074,12 +1075,96 @@ export const ProfilePage = () => {
         </div>
       </div>
 
+      {/* Classroom Attendance & Lecture Analytics */}
+      <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div>
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+              Classroom Attendance & Lecture Analytics
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Attendance compliance tracked automatically via Operating Media CRM
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              onClick={() => setAttendanceView("graph")}
+              className={`text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+                attendanceView === "graph"
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+              }`}
+            >
+              <TrendingUp size={13} />
+              <span>Trend Graph</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setAttendanceView("logs")}
+              className={`text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+                attendanceView === "logs"
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+              }`}
+            >
+              <Calendar size={13} />
+              <span>Class Logs (8)</span>
+            </button>
+          </div>
+        </div>
+
+        {attendanceView === "graph" ? (
+          <div className="pt-2">
+            <AttendanceComparisonChart
+              enrolledCourseTitle={studentData.course}
+            />
+          </div>
+        ) : (
+          <div className="space-y-2 pt-1">
+            {(crmAttendance.logs || []).slice(0, 8).map((log, lIdx) => (
+              <div
+                key={lIdx}
+                className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-xs"
+              >
+                <div className="flex items-center space-x-3">
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full ${
+                      log.status === "PRESENT" ? "bg-emerald-500" : "bg-rose-500"
+                    }`}
+                  />
+                  <div>
+                    <span className="font-bold text-slate-900 dark:text-white block">
+                      {log.topic}
+                    </span>
+                    <span className="text-slate-400 dark:text-slate-500 text-[11px]">
+                      {log.date} • {log.batch_name || studentData.batch} • Faculty: {log.trainer_name || studentData.facultyLead}
+                    </span>
+                  </div>
+                </div>
+                <span
+                  className={`font-bold px-2.5 py-1 rounded text-xs ${
+                    log.status === "PRESENT"
+                      ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300"
+                      : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300"
+                  }`}
+                >
+                  {log.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+
       {/* ============================================================== */}
       {/* 6. LOWER TWO-COLUMN SECTION: PERSONAL INFO & DOCUMENTS          */}
       {/* ============================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* LEFT: Personal Information */}
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+        <div id="section-personal-info" className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center space-x-2">
               <User size={18} className="text-blue-600 dark:text-blue-400" />
@@ -1212,7 +1297,7 @@ export const ProfilePage = () => {
         </div>
 
         {/* RIGHT: Student Documents */}
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+        <div id="section-documents" className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center space-x-2">
               <FileText size={18} className="text-blue-600 dark:text-blue-400" />
@@ -1220,39 +1305,64 @@ export const ProfilePage = () => {
                 Student Documents
               </h3>
             </div>
-            <button
-              type="button"
-              onClick={() => handleTabChange("documents")}
-              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center space-x-1 cursor-pointer"
-            >
-              <span>View All</span>
-              <ArrowRight size={13} />
-            </button>
+            {/* View All removed as requested - exactly 3 documents */}
+            <span className="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 px-2.5 py-1 rounded-full">
+              <Check size={11} className="stroke-[3]" />
+              <span>3 Verified Documents</span>
+            </span>
           </div>
 
           {/* 3 Document Cards side by side */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
             {studentDocuments.map((doc) => (
               <div
                 key={doc.id}
                 onClick={() => setPreviewDoc(doc)}
-                className="group p-3 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 hover:border-blue-500 hover:shadow-xs transition-all cursor-pointer flex flex-col items-center text-center space-y-2"
+                className="group p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-3"
               >
-                <div className="w-16 h-20 rounded-lg overflow-hidden bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 p-1 flex items-center justify-center group-hover:scale-105 transition-transform">
+                {/* Spacious, uncropped thumbnail container */}
+                <div className="w-full h-28 sm:h-32 rounded-xl bg-white dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700/80 p-2.5 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform shadow-2xs">
                   <img
                     src={doc.thumb}
                     alt={doc.title}
-                    className="w-full h-full object-contain"
+                    className="max-h-full max-w-full object-contain rounded drop-shadow-xs"
                   />
+                  {/* Subtle hover eye preview overlay */}
+                  <div className="absolute inset-0 bg-slate-950/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center space-x-1 backdrop-blur-[1px]">
+                    <span className="px-2.5 py-1 rounded-lg bg-blue-600 text-white font-bold text-[11px] shadow-sm flex items-center space-x-1">
+                      <Eye size={12} />
+                      <span>Preview</span>
+                    </span>
+                  </div>
                 </div>
-                <div className="w-full">
-                  <strong className="text-[11px] font-bold text-slate-900 dark:text-white truncate block">
+
+                {/* Details */}
+                <div className="space-y-0.5">
+                  <strong className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate block">
                     {doc.title}
                   </strong>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center justify-center space-x-1 mt-0.5">
-                    <Check size={10} className="stroke-[3]" />
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium truncate block">
+                    {doc.docNo}
+                  </span>
+                </div>
+
+                {/* Footer status & quick download */}
+                <div className="flex items-center justify-between pt-1.5 border-t border-slate-200/60 dark:border-slate-800">
+                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center space-x-1">
+                    <Check size={11} className="stroke-[3]" />
                     <span>{doc.status}</span>
                   </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showToast(`Downloading official copy: ${doc.title}`);
+                    }}
+                    className="p-1 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+                    title="Download Copy"
+                  >
+                    <Download size={12} />
+                  </button>
                 </div>
               </div>
             ))}
@@ -1263,7 +1373,7 @@ export const ProfilePage = () => {
       {/* ============================================================== */}
       {/* 7. BOTTOM ROW: COURSE CHANGE HISTORY & QUICK ACTIONS           */}
       {/* ============================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div id="section-course-history" className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* LEFT (~60%): Course Change History */}
         <div className="lg:col-span-7 bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -1600,17 +1710,35 @@ export const ProfilePage = () => {
               </button>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center border border-slate-200 dark:border-slate-800">
-              <img
-                src={previewDoc.thumb}
-                alt={previewDoc.title}
-                className="max-h-72 object-contain rounded-lg shadow-xs"
-              />
+            {/* Document display card */}
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center border border-slate-200/80 dark:border-slate-800 space-y-3">
+              <div className="max-h-72 w-full flex items-center justify-center p-3 rounded-xl bg-white dark:bg-slate-800/80 border border-slate-200/60 dark:border-slate-700/60 shadow-xs">
+                <img
+                  src={previewDoc.thumb}
+                  alt={previewDoc.title}
+                  className="max-h-60 max-w-full object-contain rounded-md drop-shadow-xs"
+                />
+              </div>
+              <div className="w-full bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/80 rounded-xl px-3.5 py-2 flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300">
+                <span className="flex items-center space-x-1.5 font-bold">
+                  <CheckCircle2 size={14} className="text-emerald-600 dark:text-emerald-400" />
+                  <span>Authenticated & Verified</span>
+                </span>
+                <span className="text-[11px] font-semibold text-emerald-700/80 dark:text-emerald-400/80">
+                  Uploaded on {previewDoc.uploadedOn}
+                </span>
+              </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-              <span>Status: <strong className="text-emerald-600 font-bold">{previewDoc.status}</strong></span>
-              <span>Doc Ref: {previewDoc.docNo}</span>
+            <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 dark:text-slate-400 bg-slate-50/70 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+              <div>
+                <span className="text-[10px] text-slate-400 block">Candidate Name</span>
+                <strong className="text-slate-900 dark:text-white font-bold block">{studentData.fullName}</strong>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-400 block">Document Identifier</span>
+                <strong className="text-slate-900 dark:text-white font-bold block">{previewDoc.docNo}</strong>
+              </div>
             </div>
 
             <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
@@ -1623,11 +1751,11 @@ export const ProfilePage = () => {
               </button>
               <button
                 type="button"
-                onClick={() => showToast(`Downloaded ${previewDoc.title}`)}
+                onClick={() => showToast(`Downloaded official copy: ${previewDoc.title}`)}
                 className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center space-x-1.5 cursor-pointer shadow-xs"
               >
                 <Download size={14} />
-                <span>Download Copy</span>
+                <span>Download Official Copy</span>
               </button>
             </div>
           </div>
