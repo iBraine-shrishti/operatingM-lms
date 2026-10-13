@@ -429,7 +429,16 @@ export const lmsService = {
         return newReply;
     },
     // Activities
-    getActivities: () => getStored('activities', INITIAL_ACTIVITIES),
+    getActivities: () => {
+        const stored = getStored('activities', null);
+        const hasSahil = stored && stored.some(a => a.studentId === 'std-375' || a.id?.startsWith('act-sahil-') || a.user?.name === 'Sahil Hasolkar');
+        const hasOldFaculty = stored && stored.some(a => a.user?.name === 'Harsh Pareek' || a.user?.name === 'Vikram Malhotra' || a.user?.name === 'Hiteshpuri Goswami');
+        if (!stored || !hasSahil || hasOldFaculty || stored.length < INITIAL_ACTIVITIES.length) {
+            setStored('activities', INITIAL_ACTIVITIES);
+            return INITIAL_ACTIVITIES;
+        }
+        return stored;
+    },
     // Achievements
     getAchievements: () => getStored('achievements', INITIAL_ACHIEVEMENTS),
     // Notes

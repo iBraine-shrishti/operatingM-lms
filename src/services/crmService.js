@@ -1,3 +1,5 @@
+import sahilProfilePic from '../assets/sahil-profile.png';
+
 /**
  * Operating Media LMS - CRM Integration Service
  * Connects directly to Operating Media CRM API (https://crm.dmsoi.org/api)
@@ -42,7 +44,7 @@ export const DEFAULT_CRM_PROFILE = {
   daysLeft: 360,
   facultyLead: 'Harsh Pareek',
   facultyLeadRole: 'Director & Lead Faculty',
-  photo: '/sahil-avatar-card.png',
+  photo: sahilProfilePic,
   // Financial Overview matching profile.png (Fees Pending)
   totalFees: 90000,
   regAmount: 5000,

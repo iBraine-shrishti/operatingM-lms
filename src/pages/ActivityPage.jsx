@@ -8,12 +8,15 @@ import {
 import { lmsService } from "../services/lmsService";
 import { useAuth } from "../context/AuthContext";
 import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
+import sahilProfilePic from "../assets/sahil-profile.png";
+import profilePic from "../assets/profile-pic.png";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
 import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 
 export const ActivityPage = () => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, currentUser } = useAuth();
   const [activitiesList, setActivitiesList] = useState(() => lmsService.getActivities());
+  const [viewScope, setViewScope] = useState("mine"); // "mine" | "students"
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest"); // "newest" | "oldest"
@@ -88,12 +91,84 @@ export const ActivityPage = () => {
     }
   };
 
+  // Student Profile bindings
+  const currentStudentName = currentUser?.name || "Sahil Hasolkar";
+  const currentStudentAvatar =
+    currentUser?.avatar && !currentUser?.avatar?.includes("avatar-card")
+      ? currentUser.avatar
+      : sahilProfilePic || profilePic;
+
+  // Filter activities by viewScope (My Learning Activity vs All Enrolled Students)
+  const scopedActivities = useMemo(() => {
+    if (isAdmin) {
+      return activitiesList;
+    }
+
+    if (viewScope === "mine") {
+      return activitiesList
+        .filter(
+          (act) =>
+            act.studentId === "std-375" ||
+            act.id?.startsWith("act-sahil-") ||
+            act.user?.name?.toLowerCase().includes("sahil") ||
+            !act.id?.startsWith("act-peer-")
+        )
+        .map((act) => ({
+          ...act,
+          user: {
+            ...act.user,
+            name: currentStudentName,
+            avatar: currentStudentAvatar || act.user?.avatar,
+          },
+        }));
+    }
+
+    // "students" view (all enrolled students, strictly no admin/faculty)
+    return activitiesList
+      .filter((act) => act.isStudent !== false)
+      .map((act) => {
+        if (
+          act.studentId === "std-375" ||
+          act.id?.startsWith("act-sahil-") ||
+          act.user?.name?.toLowerCase().includes("sahil")
+        ) {
+          return {
+            ...act,
+            user: {
+              ...act.user,
+              name: currentStudentName,
+              avatar: currentStudentAvatar || act.user?.avatar,
+            },
+          };
+        }
+        return act;
+      });
+  }, [activitiesList, viewScope, isAdmin, currentStudentName, currentStudentAvatar]);
+
+  // Counts for filter pills
+  const counts = useMemo(() => {
+    return {
+      all: scopedActivities.length,
+      enrollment: scopedActivities.filter((a) => a.type === "enrollment").length,
+      quiz: scopedActivities.filter((a) => a.type === "quiz").length,
+      certificate: scopedActivities.filter((a) => a.type === "certificate" || a.type === "completion").length,
+      assignment: scopedActivities.filter((a) => a.type === "assignment" || a.type === "grading").length,
+      discussion: scopedActivities.filter((a) => a.type === "discussion").length,
+    };
+  }, [scopedActivities]);
+
   // Filter and search logic
   const filteredActivities = useMemo(() => {
-    let list = activitiesList.filter((act) => {
+    let list = scopedActivities.filter((act) => {
       // Type filter
-      if (selectedFilter !== "all" && act.type !== selectedFilter) {
-        return false;
+      if (selectedFilter !== "all") {
+        if (selectedFilter === "certificate") {
+          if (act.type !== "certificate" && act.type !== "completion") return false;
+        } else if (selectedFilter === "assignment") {
+          if (act.type !== "assignment" && act.type !== "grading") return false;
+        } else if (act.type !== selectedFilter) {
+          return false;
+        }
       }
       // Search filter
       if (searchQuery.trim() !== "") {
@@ -116,19 +191,7 @@ export const ActivityPage = () => {
       return [...list].reverse();
     }
     return list;
-  }, [activitiesList, selectedFilter, searchQuery, sortBy]);
-
-  // Counts for filter pills
-  const counts = useMemo(() => {
-    return {
-      all: activitiesList.length,
-      enrollment: activitiesList.filter((a) => a.type === "enrollment").length,
-      quiz: activitiesList.filter((a) => a.type === "quiz").length,
-      certificate: activitiesList.filter((a) => a.type === "certificate" || a.type === "completion").length,
-      assignment: activitiesList.filter((a) => a.type === "assignment" || a.type === "grading").length,
-      discussion: activitiesList.filter((a) => a.type === "discussion").length,
-    };
-  }, [activitiesList]);
+  }, [scopedActivities, selectedFilter, searchQuery, sortBy]);
 
   return (
     <div className="space-y-4 sm:space-y-5 2xl:space-y-6">
@@ -193,7 +256,7 @@ export const ActivityPage = () => {
         <StudentPageHeader
           {...STUDENT_HEADERS_CONFIG.activity}
           metrics={[
-            { value: activitiesList.length, label: "Total Events", dotColor: "bg-blue-600" },
+            { value: scopedActivities.length, label: "Total Milestones", dotColor: "bg-blue-600" },
             { value: counts.enrollment, label: "Enrollments", dotColor: "bg-emerald-500" },
             { value: counts.quiz + counts.certificate, label: "Quizzes & Certs", dotColor: "bg-purple-500" },
             { value: counts.assignment, label: "Submissions", dotColor: "bg-rose-500" },
@@ -214,6 +277,72 @@ export const ActivityPage = () => {
       {/* 2. SEARCH & FILTER TABS BAR                                    */}
       {/* ============================================================== */}
       <div className="bg-white dark:bg-[#0b1329]/95 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-4 sm:p-5 2xl:p-6 shadow-xs dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] space-y-4 transition-colors duration-200">
+        {/* Scope Toggle for Students */}
+        {!isAdmin && (
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800/80">
+            <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setViewScope("mine")}
+                className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
+                  viewScope === "mine"
+                    ? "bg-[#2563eb] text-white shadow-xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                }`}
+              >
+                <UserCheck size={14} />
+                <span>My Learning Activity</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
+                    viewScope === "mine"
+                      ? "bg-white/20 text-white"
+                      : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                  }`}
+                >
+                  {
+                    activitiesList.filter(
+                      (a) =>
+                        a.studentId === "std-375" ||
+                        a.id?.startsWith("act-sahil-") ||
+                        a.user?.name?.toLowerCase().includes("sahil") ||
+                        !a.id?.startsWith("act-peer-")
+                    ).length
+                  }
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setViewScope("students")}
+                className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
+                  viewScope === "students"
+                    ? "bg-[#2563eb] text-white shadow-xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                }`}
+              >
+                <GraduationCap size={14} />
+                <span>All Enrolled Students</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
+                    viewScope === "students"
+                      ? "bg-white/20 text-white"
+                      : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                  }`}
+                >
+                  {activitiesList.filter((a) => a.isStudent !== false).length}
+                </span>
+              </button>
+            </div>
+
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+              {viewScope === "mine" ? (
+                <span>Showing verified student activity for <strong>{currentStudentName}</strong></span>
+              ) : (
+                <span>Showing peer activities from enrolled students in your cohort</span>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Search Input */}
           <div className="relative flex-1">
@@ -225,7 +354,11 @@ export const ActivityPage = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by student name, course, action, or keyword..."
+              placeholder={
+                viewScope === "mine"
+                  ? "Search your milestones, courses, exams, or actions..."
+                  : "Search student milestones by name, course, exam, or action..."
+              }
               className="w-full pl-10 pr-10 py-2.5 2xl:py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/90 text-sm 2xl:text-base text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium focus:bg-white dark:focus:bg-slate-850 focus:border-[#2563eb] dark:focus:border-blue-500 transition-all shadow-2xs"
             />
             {searchQuery && (
@@ -318,7 +451,7 @@ export const ActivityPage = () => {
           </div>
 
           <div className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
-            Showing <strong className="text-slate-900 dark:text-white font-bold">{filteredActivities.length}</strong> of {activitiesList.length} logs
+            Showing <strong className="text-slate-900 dark:text-white font-bold">{filteredActivities.length}</strong> of {scopedActivities.length} logs
           </div>
         </div>
       </div>
@@ -388,14 +521,21 @@ export const ActivityPage = () => {
                     {/* Middle Row: User Details, Action, and Target */}
                     <div className="flex items-start sm:items-center space-x-3.5 pt-3">
                       <img
-                        src={act.user.avatar}
+                        src={act.user.avatar || currentStudentAvatar}
                         alt={act.user.name}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = sahilProfilePic || profilePic;
+                        }}
                         className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700 shrink-0 mt-0.5 sm:mt-0"
                       />
                       <div className="min-w-0 flex-1 space-y-1">
                         <div className="flex flex-wrap items-center gap-1.5 text-sm sm:text-base">
                           <span className="font-extrabold text-slate-900 dark:text-white">
                             {act.user.name}
+                          </span>
+                          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/70 dark:border-blue-800/60">
+                            Student
                           </span>
                           <span className="text-slate-600 dark:text-slate-300 font-medium">
                             {act.action}
@@ -405,7 +545,7 @@ export const ActivityPage = () => {
                           </span>
                         </div>
                         <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400 dark:text-slate-500 font-medium">
-                          <span>Live Timeline Milestone</span>
+                          <span>Live Student Milestone</span>
                           <span>•</span>
                           <span>Synchronized with Operating Media Student Engine</span>
                         </div>
@@ -434,8 +574,12 @@ export const ActivityPage = () => {
                   {/* Avatar with relative pulse indicator */}
                   <div className="relative shrink-0">
                     <img
-                      src={act.user.avatar}
+                      src={act.user.avatar || (sahilProfilePic || profilePic)}
                       alt={act.user.name}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = sahilProfilePic || profilePic;
+                      }}
                       className="w-12 h-12 sm:w-14 sm:h-14 2xl:w-15 2xl:h-15 rounded-full object-cover ring-2 ring-slate-100 dark:ring-slate-800 group-hover:ring-blue-300 dark:group-hover:ring-blue-500/70 transition-all"
                     />
                     <span
