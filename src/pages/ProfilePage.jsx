@@ -40,11 +40,16 @@ import {
   Building,
   ArrowRight,
   Filter,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  Maximize2,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FeeReceiptModal } from "../components/crm/FeeReceiptModal";
 import { AttendanceComparisonChart } from "../components/crm/AttendanceComparisonChart";
+import { lmsService } from "../services/lmsService";
 
 // Visual assets
 import profilePic from "../assets/profile-pic.png";
@@ -253,10 +258,11 @@ export const ProfilePage = () => {
   const [activePayingInstallment, setActivePayingInstallment] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [previewDoc, setPreviewDoc] = useState(null);
+  const [docZoomLevel, setDocZoomLevel] = useState(1);
+  const [docModalView, setDocModalView] = useState("digital"); // 'digital' | 'scanned'
   const [toastMessage, setToastMessage] = useState(null);
 
   // Table selection & bulk action
-  const [selectedInstallments, setSelectedInstallments] = useState([]);
   const [bulkAction, setBulkAction] = useState("");
 
   const showToast = (msg) => {
@@ -264,29 +270,41 @@ export const ProfilePage = () => {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // Checkbox handlers
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedInstallments(studentData.installments.map((i) => i.id));
-    } else {
-      setSelectedInstallments([]);
+  // Open Document Lightbox Modal with zoom reset
+  const handleOpenDocPreview = (doc) => {
+    setPreviewDoc(doc);
+    setDocZoomLevel(1);
+    setDocModalView("digital");
+  };
+
+  // Zoom handlers for modal
+  const handleZoomIn = () => setDocZoomLevel((z) => Math.min(2.5, +(z + 0.25).toFixed(2)));
+  const handleZoomOut = () => setDocZoomLevel((z) => Math.max(0.75, +(z - 0.25).toFixed(2)));
+  const handleResetZoom = () => setDocZoomLevel(1);
+
+  // Respective course id for "View Course Details" navigation
+  const respectiveCourseId = useMemo(() => {
+    try {
+      const courses = lmsService.getCourses();
+      const courseTitle = (studentData.course || "").toLowerCase();
+      const matched = courses.find(
+        (c) =>
+          c.title.toLowerCase() === courseTitle ||
+          courseTitle.includes(c.title.toLowerCase()) ||
+          c.title.toLowerCase().includes(courseTitle) ||
+          (c.description && c.description.toLowerCase().includes("masters")) ||
+          (c.overview?.greeting && c.overview.greeting.toLowerCase().includes("masters"))
+      );
+      return matched ? matched.id : "course-3";
+    } catch {
+      return "course-3";
     }
-  };
+  }, [studentData.course]);
 
-  const handleToggleSelect = (id) => {
-    setSelectedInstallments((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
-
-  // Bulk action handler
+  // Bulk action handler (applies to installments without tickboxes)
   const handleApplyBulkAction = () => {
     if (!bulkAction) {
-      showToast("Please choose a bulk action to apply");
-      return;
-    }
-    if (selectedInstallments.length === 0) {
-      showToast("Please select at least one installment row");
+      showToast("Please choose an action to apply");
       return;
     }
 
@@ -294,7 +312,7 @@ export const ProfilePage = () => {
       setStudentData((prev) => {
         let addedPaid = 0;
         const updated = prev.installments.map((inst) => {
-          if (selectedInstallments.includes(inst.id) && inst.status !== "PAID") {
+          if (inst.status !== "PAID") {
             addedPaid += inst.amount;
             return { ...inst, status: "PAID", isOverdue: false };
           }
@@ -306,16 +324,15 @@ export const ProfilePage = () => {
           ...prev,
           amountPaid: newPaid,
           balanceDue: newBal,
-          feesClearedPercent: Math.round((newPaid / prev.totalFees) * 100),
+          feesClearedPercent: 100,
           installments: updated,
         };
       });
-      showToast(`Selected installments marked as PAID successfully!`);
-      setSelectedInstallments([]);
+      showToast("All pending installments marked as PAID successfully!");
+      setBulkAction("");
     } else if (bulkAction === "download-receipts") {
-      showToast(`Generating consolidated fee receipts for selected items...`);
-    } else if (bulkAction === "send-reminder") {
-      showToast(`Payment reminder dispatch queued for registered contact!`);
+      showToast("Generating consolidated fee receipts for all installments...");
+      setBulkAction("");
     }
   };
 
@@ -755,7 +772,7 @@ export const ProfilePage = () => {
               </div>
               <button
                 type="button"
-                onClick={() => navigate("/enrolled-courses")}
+                onClick={() => navigate(`/courses/${respectiveCourseId}`)}
                 className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center space-x-1 cursor-pointer"
               >
                 <span>View Course Details</span>

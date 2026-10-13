@@ -67,7 +67,12 @@ export const lmsService = {
     // Units
     getUnits: () => {
         const stored = getStored('units', INITIAL_UNITS);
-        return stored.filter(u => u.courseId !== 'course-2');
+        return stored
+            .filter(u => u.courseId !== 'course-2')
+            .map(u => ({
+                ...u,
+                videoUrl: u.videoUrl ? u.videoUrl.replace('LMS_COURSES-vidoes', 'LMS_COURSES-videos') : u.videoUrl
+            }));
     },
     getUnitsByCourse: (courseId) => {
         return lmsService.getUnits().filter(u => u.courseId === courseId);

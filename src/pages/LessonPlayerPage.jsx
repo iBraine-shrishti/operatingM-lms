@@ -15,7 +15,6 @@ import {
   SkipForward,
   Maximize2,
   Minimize2,
-  Share2,
   Bookmark,
   Volume2,
   Sparkles,
@@ -273,14 +272,7 @@ export const LessonPlayerPage = () => {
     showToast(`Timestamp ${formatTime(currentTime)} attached to note!`, "info");
   };
 
-  // Share Lesson
-  const handleShareLesson = () => {
-    const fullUrl = window.location.href;
-    navigator.clipboard?.writeText(fullUrl);
-    showToast("Lesson link copied to clipboard!", "success");
-  };
-
-  // Group units by moduleName / sub-course
+  // Group units by moduleName / module
   const sections = useMemo(() => {
     const map = new Map();
     units.forEach((unit) => {
@@ -491,15 +483,6 @@ export const LessonPlayerPage = () => {
             title={theaterMode ? "Exit Theater Mode" : "Theater Mode"}
           >
             {theaterMode ? <Minimize2 size={17} /> : <Maximize2 size={17} />}
-          </button>
-
-          {/* Share Link */}
-          <button
-            onClick={handleShareLesson}
-            className="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-            title="Share Lesson"
-          >
-            <Share2 size={17} />
           </button>
         </div>
       </div>
@@ -832,13 +815,13 @@ export const LessonPlayerPage = () => {
           {/* LEVEL 1: ACTUAL MASTER COURSE CARD & SELECTOR DROPDOWN   */}
           {/* ========================================================= */}
           <div className="relative" ref={courseDropdownRef}>
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-950 via-indigo-950 to-slate-900 text-white shadow-md border border-blue-600/40 space-y-3">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50/90 via-indigo-50/50 to-white dark:from-blue-950 dark:via-indigo-950 dark:to-slate-900 text-slate-900 dark:text-white shadow-xs border border-blue-200/80 dark:border-blue-600/40 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/25 text-blue-200 border border-blue-400/40 shadow-xs">
-                  <GraduationCap size={13} className="text-blue-300" />
-                  <span>Enrolled Master Course</span>
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-100 text-blue-700 dark:bg-blue-500/25 dark:text-blue-200 border border-blue-200/90 dark:border-blue-400/40 shadow-2xs">
+                  <GraduationCap size={13} className="text-blue-600 dark:text-blue-300" />
+                  <span>Enrolled Course</span>
                 </span>
-                <span className="text-[10px] font-bold text-blue-300/80">
+                <span className="text-[10px] font-bold text-slate-500 dark:text-blue-300/80">
                   Click below to switch
                 </span>
               </div>
@@ -847,14 +830,14 @@ export const LessonPlayerPage = () => {
               <button
                 type="button"
                 onClick={() => setIsCourseDropdownOpen(!isCourseDropdownOpen)}
-                className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 transition-all text-left cursor-pointer group shadow-inner"
+                className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white dark:bg-white/10 hover:bg-slate-50 dark:hover:bg-white/15 border border-slate-200/80 dark:border-white/15 transition-all text-left cursor-pointer group shadow-2xs dark:shadow-inner"
               >
                 <div className="flex items-center space-x-3 min-w-0">
                   {currentCourse.thumbnail ? (
                     <img
                       src={currentCourse.thumbnail}
                       alt={currentCourse.title}
-                      className="w-10 h-10 rounded-lg object-cover border border-white/20 shrink-0 shadow-xs"
+                      className="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-white/20 shrink-0 shadow-2xs"
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white shrink-0">
@@ -862,21 +845,21 @@ export const LessonPlayerPage = () => {
                     </div>
                   )}
                   <div className="min-w-0">
-                    <h4 className="text-xs sm:text-sm font-extrabold text-white truncate group-hover:text-cyan-300 transition-colors">
+                    <h4 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-cyan-300 transition-colors">
                       {currentCourse.title}
                     </h4>
-                    <p className="text-[10px] text-blue-200 font-medium truncate mt-0.5">
-                      {currentCourse.category || "Certification"} • {units.length} Total Lessons • {sections.length} Sub-Courses
+                    <p className="text-[10px] text-slate-500 dark:text-blue-200 font-medium truncate mt-0.5">
+                      {currentCourse.category || "Certification"} • {units.length} Total Lessons • {sections.length} Modules
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-1 shrink-0 ml-2">
-                  <span className="text-[10px] font-bold text-blue-300 hidden sm:inline">
+                  <span className="text-[10px] font-bold text-blue-600 dark:text-blue-300 hidden sm:inline">
                     Switch
                   </span>
                   <ChevronDown
                     size={16}
-                    className={`text-blue-300 transition-transform duration-200 ${
+                    className={`text-blue-600 dark:text-blue-300 transition-transform duration-200 ${
                       isCourseDropdownOpen ? "rotate-180" : ""
                     }`}
                   />
@@ -885,15 +868,15 @@ export const LessonPlayerPage = () => {
 
               {/* Master Course Progress */}
               <div className="space-y-1.5 pt-1">
-                <div className="flex items-center justify-between text-[10px] font-bold text-blue-200">
+                <div className="flex items-center justify-between text-[10px] font-bold text-slate-600 dark:text-blue-200">
                   <span>Overall Course Progress</span>
-                  <span className="text-cyan-300 tabular-nums">
+                  <span className="text-blue-600 dark:text-cyan-300 tabular-nums">
                     {completedCount} / {units.length} Lessons ({progressPercent}%)
                   </span>
                 </div>
-                <div className="w-full bg-black/40 rounded-full h-1.5 overflow-hidden">
+                <div className="w-full bg-slate-200/80 dark:bg-black/40 rounded-full h-1.5 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-blue-400 to-emerald-400 h-1.5 rounded-full transition-all duration-300"
+                    className="bg-gradient-to-r from-blue-500 to-emerald-500 h-1.5 rounded-full transition-all duration-300"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
@@ -962,21 +945,21 @@ export const LessonPlayerPage = () => {
           </div>
 
           {/* ========================================================= */}
-          {/* LEVEL 2: SUB-COURSES / MODULES SECTION HEADER             */}
+          {/* LEVEL 2: COURSE MODULES SECTION HEADER                    */}
           {/* ========================================================= */}
           <div className="border-b border-slate-100 dark:border-slate-800 pb-3 space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <FolderOpen size={16} className="text-indigo-600 dark:text-indigo-400" />
+                <FolderOpen size={16} className="text-blue-600 dark:text-indigo-400" />
                 <h3 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider">
-                  Sub-Courses & Modules ({sections.length})
+                  Course Modules ({sections.length})
                 </h3>
               </div>
               <div className="flex items-center space-x-2 text-[11px]">
                 <button
                   type="button"
                   onClick={expandAllSections}
-                  className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                  className="font-bold text-blue-600 dark:text-indigo-400 hover:underline cursor-pointer"
                 >
                   Expand all
                 </button>
@@ -999,7 +982,7 @@ export const LessonPlayerPage = () => {
               />
               <input
                 type="text"
-                placeholder="Search sub-courses or lessons..."
+                placeholder="Search modules or lessons..."
                 value={playlistSearch}
                 onChange={(e) => setPlaylistSearch(e.target.value)}
                 className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-hidden"
@@ -1008,12 +991,12 @@ export const LessonPlayerPage = () => {
           </div>
 
           {/* ========================================================= */}
-          {/* LEVEL 2: SUB-COURSES / SECTIONS ACCORDION LIST            */}
+          {/* LEVEL 2: MODULES ACCORDION LIST                           */}
           {/* ========================================================= */}
           <div className="space-y-3 max-h-[520px] overflow-y-auto pr-1">
             {filteredSections.length === 0 ? (
               <div className="text-center py-8 text-xs text-slate-400 space-y-1">
-                <p className="font-semibold">No matching sub-courses found</p>
+                <p className="font-semibold">No matching modules found</p>
                 <p className="text-[11px]">Try adjusting your search query</p>
               </div>
             ) : (
@@ -1028,11 +1011,11 @@ export const LessonPlayerPage = () => {
                     key={sec.name}
                     className={`rounded-2xl border transition-all overflow-hidden ${
                       containsActive
-                        ? "border-indigo-400 dark:border-indigo-600 bg-indigo-50/15 dark:bg-indigo-950/20 shadow-xs"
+                        ? "border-blue-400 dark:border-indigo-600 bg-blue-50/20 dark:bg-indigo-950/20 shadow-xs"
                         : "border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-[#0b1329]"
                     }`}
                   >
-                    {/* SUB-COURSE ACCORDION HEADER (Unmistakable styling) */}
+                    {/* MODULE ACCORDION HEADER */}
                     <button
                       type="button"
                       onClick={() => toggleSection(sec.name)}
@@ -1040,8 +1023,8 @@ export const LessonPlayerPage = () => {
                         sec.isCompleted
                           ? "border-l-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20"
                           : containsActive
-                          ? "border-l-indigo-600 bg-indigo-50/70 dark:bg-indigo-950/40 hover:bg-indigo-100/70"
-                          : "border-l-slate-400 dark:border-l-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                          ? "border-l-blue-600 bg-blue-50/70 dark:border-l-indigo-600 dark:bg-indigo-950/40 hover:bg-blue-100/70"
+                          : "border-l-slate-300 dark:border-l-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/50"
                       }`}
                     >
                       <div className="flex items-center space-x-3 min-w-0 pr-2">
@@ -1050,7 +1033,7 @@ export const LessonPlayerPage = () => {
                             sec.isCompleted
                               ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400"
                               : containsActive
-                              ? "bg-indigo-600 text-white shadow-xs"
+                              ? "bg-blue-600 text-white shadow-xs"
                               : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
                           }`}
                         >
@@ -1065,12 +1048,12 @@ export const LessonPlayerPage = () => {
 
                         <div className="min-w-0">
                           <div className="flex items-center space-x-1.5">
-                            <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300">
-                              📂 Sub-Course {sec.index}
+                            <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-blue-100 dark:bg-indigo-950/80 text-blue-700 dark:text-indigo-300">
+                              📂 Module {sec.index}
                             </span>
                             {containsActive && (
                               <span className="px-1.5 py-0.5 bg-blue-600 text-white text-[9px] font-bold rounded-sm uppercase tracking-wide">
-                                Active Lesson Inside
+                                Active Lesson
                               </span>
                             )}
                           </div>
@@ -1081,7 +1064,7 @@ export const LessonPlayerPage = () => {
                       </div>
 
                       <div className="flex items-center space-x-2 shrink-0">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 tabular-nums">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-slate-600 dark:text-slate-300 tabular-nums">
                           {sec.completedCount}/{sec.totalCount}
                         </span>
                         <ChevronDown
@@ -1098,7 +1081,7 @@ export const LessonPlayerPage = () => {
                     {/* ========================================================= */}
                     {isExpanded && (
                       <div className="p-2.5 space-y-1.5 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40">
-                        <div className="ml-2 pl-3 border-l-2 border-indigo-200 dark:border-indigo-900/60 space-y-1.5">
+                        <div className="ml-2 pl-3 border-l-2 border-blue-200 dark:border-indigo-900/60 space-y-1.5">
                           {sec.items.map((unit, uIdx) => {
                             const isActive = unit.id === currentLesson.id;
                             const savedProgress = localStorage.getItem(
