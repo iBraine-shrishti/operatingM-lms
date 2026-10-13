@@ -54,6 +54,9 @@ import { lmsService } from "../services/lmsService";
 // Visual assets
 import profilePic from "../assets/profile-pic.png";
 import sahilProfilePic from "../assets/sahil-profile.png";
+import premPhotoImg from "../assets/Prem_Photo.jpg";
+import premAadharFrontImg from "../assets/Prem_Aadhar Front.jpg";
+import premAadharBackImg from "../assets/Prem_Aadhar Back.jpg";
 import dashboardHat from "../assets/header-bg/dashboard-hat.png";
 import continueLearningLaptop from "../assets/continue-learning-laptop.png";
 import docAadhaarImg from "../assets/doc-aadhaar.png";
@@ -619,10 +622,11 @@ export const ProfilePage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Student Profile State (seeded from crmProfile with Sahil Hasolkar default & pending fees)
+  // Student Profile State (seeded from crmProfile with Prem Suthar default & pending fees)
   const [studentData, setStudentData] = useState(() => ({
-    name: crmProfile?.name || "Sahil Hasolkar",
-    fullName: crmProfile?.fullName || "Sahil Nilesh Hasolkar",
+    name: crmProfile?.name || "Prem Suthar",
+    fullName: crmProfile?.fullName || "Prem Suthar",
+    avatar: crmProfile?.avatar || premPhotoImg,
     studentId: crmProfile?.admissionNo || "OMC-0375",
     numericId: "#375",
     course: crmProfile?.course || "Masters in Digital Marketing",
@@ -632,17 +636,17 @@ export const ProfilePage = () => {
     batch: crmProfile?.batchName || "WD-M1",
     admissionDate: crmProfile?.admissionDate || "22 Apr 2026",
     registrationDate: crmProfile?.registrationDate || "18 Apr 2026",
-    dob: crmProfile?.dob || "28 Nov 2006",
+    dob: crmProfile?.dob || "16 May 2008",
     gender: crmProfile?.gender || "Male",
     maritalStatus: crmProfile?.maritalStatus || "Single",
-    email: crmProfile?.email || "hasolkarsahil@gmail.com",
-    mobile: crmProfile?.mobile || crmProfile?.phone || "919372017331",
+    email: crmProfile?.email || "premsuthar@gmail.com",
+    mobile: crmProfile?.mobile || crmProfile?.phone || "8955573859",
     address:
       crmProfile?.address ||
-      "Flat 402, Sai Shraddha Apt, SV Road, Borivali West",
-    city: crmProfile?.city || "Mumbai",
-    state: crmProfile?.state || "Maharashtra",
-    pincode: crmProfile?.pincode || "400092",
+      "S/O: Jayanti Lal, Mundara, PO: Mundara, DIST: Pali",
+    city: crmProfile?.city || "Pali",
+    state: crmProfile?.state || "Rajasthan",
+    pincode: crmProfile?.pincode || "306705",
     country: "India",
     facultyLead: crmProfile?.facultyLead || "Harsh Pareek",
     facultyLeadRole: crmProfile?.facultyLeadRole || "Director & Lead Faculty",
@@ -728,9 +732,7 @@ export const ProfilePage = () => {
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [previewDoc, setPreviewDoc] = useState(null);
   const [docZoomLevel, setDocZoomLevel] = useState(1);
-  const [docModalView, setDocModalView] = useState("digital"); // 'digital' | 'scanned'
   const [toastMessage, setToastMessage] = useState(null);
-
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -741,7 +743,6 @@ export const ProfilePage = () => {
   const handleOpenDocPreview = (doc) => {
     setPreviewDoc(doc);
     setDocZoomLevel(1);
-    setDocModalView("digital");
   };
 
   // Zoom handlers for modal
@@ -832,31 +833,34 @@ export const ProfilePage = () => {
     showToast("Student details updated successfully!");
   };
 
-  // Document item list
+  // Document item list (Actual student verified records)
   const studentDocuments = [
     {
-      id: "aadhaar",
-      title: "Aadhaar Card",
+      id: "prem-photo",
+      title: "Student Photo",
+      type: "Passport Photograph",
       status: "Verified",
-      thumb: docAadhaarImg,
-      uploadedOn: "22 Apr 2026",
-      docNo: "XXXX-XXXX-8921",
+      image: premPhotoImg,
+      uploadedOn: "13 Oct 2026",
+      docNo: "OMC-PREM-PHOTO",
     },
     {
-      id: "10th",
-      title: "10th Marksheet",
+      id: "prem-aadhar-front",
+      title: "Aadhaar Card (Front)",
+      type: "UIDAI Official ID",
       status: "Verified",
-      thumb: doc10thImg,
-      uploadedOn: "22 Apr 2026",
-      docNo: "MSBSHSE / SSC 2022",
+      image: premAadharFrontImg,
+      uploadedOn: "13 Oct 2026",
+      docNo: "9218 7859 8578",
     },
     {
-      id: "12th",
-      title: "12th Marksheet",
+      id: "prem-aadhar-back",
+      title: "Aadhaar Card (Back)",
+      type: "UIDAI Address Record",
       status: "Verified",
-      thumb: doc12thImg,
-      uploadedOn: "22 Apr 2026",
-      docNo: "MSBSHSE / HSC 2024",
+      image: premAadharBackImg,
+      uploadedOn: "13 Oct 2026",
+      docNo: "9218 7859 8578",
     },
   ];
 
@@ -927,9 +931,9 @@ export const ProfilePage = () => {
             <div className="relative shrink-0">
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-white dark:border-slate-700 shadow-md bg-white dark:bg-slate-800 p-0.5">
                 <img
-                  src={sahilProfilePic}
+                  src={studentData.avatar || premPhotoImg}
                   alt={studentData.name}
-                  className="w-full h-full object-cover rounded-xl"
+                  className="w-full h-full object-cover object-top rounded-xl"
                 />
               </div>
               {/* Online Green Indicator Dot on Top Right */}
@@ -1837,21 +1841,18 @@ export const ProfilePage = () => {
                 onClick={() => handleOpenDocPreview(doc)}
                 className="group p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-2.5"
               >
-                {/* Zoomed HD document card preview container */}
-                <div className="w-full h-32 sm:h-36 rounded-lg bg-slate-100/70 dark:bg-[#070c1a] border border-slate-200/80 dark:border-slate-700/80 p-1 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-all">
-                  <div className="w-full h-full flex items-center justify-center transform group-hover:scale-[1.02] transition-transform">
-                    <DocumentVisualizer
-                      doc={doc}
-                      studentData={studentData}
-                      sahilProfilePic={sahilProfilePic}
-                      isCard={true}
-                    />
-                  </div>
+                {/* Clear document image preview container utilizing parent container */}
+                <div className="w-full h-36 sm:h-40 rounded-lg bg-slate-950/90 dark:bg-[#070c1a] border border-slate-200/80 dark:border-slate-700/80 p-1 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-all">
+                  <img
+                    src={doc.image}
+                    alt={doc.title}
+                    className="w-full h-full object-contain rounded-md transform group-hover:scale-[1.03] transition-transform duration-300"
+                  />
 
                   {/* Top-right HD badge */}
                   <span className="absolute top-1.5 right-1.5 z-10 text-[8px] font-bold bg-white/95 dark:bg-slate-900/95 text-blue-600 dark:text-blue-400 px-1 py-0.2 rounded shadow-xs border border-blue-200/60 dark:border-blue-800 flex items-center space-x-0.5 backdrop-blur-xs">
                     <ZoomIn size={9} />
-                    <span>HD</span>
+                    <span>Clear Doc</span>
                   </span>
 
                   {/* Hover zoom & inspect overlay */}
@@ -1883,6 +1884,10 @@ export const ProfilePage = () => {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
+                      const link = document.createElement("a");
+                      link.href = doc.image;
+                      link.download = `${doc.title}.jpg`;
+                      link.click();
                       showToast(`Downloading official copy: ${doc.title}`);
                     }}
                     className="p-1 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
@@ -2304,34 +2309,6 @@ export const ProfilePage = () => {
 
               {/* Center / Right Toolbar Controls */}
               <div className="flex items-center space-x-2 shrink-0">
-                {/* View Switcher: HD Vector vs Scanned Original */}
-                <div className="hidden md:flex items-center bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs font-semibold">
-                  <button
-                    type="button"
-                    onClick={() => setDocModalView("digital")}
-                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center space-x-1.5 ${
-                      docModalView === "digital"
-                        ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs font-bold"
-                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                    }`}
-                  >
-                    <FileCheck size={13} />
-                    <span>HD Document</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setDocModalView("scanned")}
-                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center space-x-1.5 ${
-                      docModalView === "scanned"
-                        ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs font-bold"
-                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                    }`}
-                  >
-                    <FileText size={13} />
-                    <span>Scanned Original</span>
-                  </button>
-                </div>
-
                 {/* Zoom Controls */}
                 <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-800">
                   <button
@@ -2385,8 +2362,8 @@ export const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Expansive Canvas (takes maximum H x W with smooth zoom & scroll) */}
-            <div className="flex-1 min-h-0 w-full overflow-auto bg-slate-100/90 dark:bg-[#060b17] p-4 sm:p-10 flex items-center justify-center relative">
+            {/* Expansive Canvas (renders the CLEAR High-Resolution Image) */}
+            <div className="flex-1 min-h-0 w-full overflow-auto bg-slate-950 p-4 sm:p-8 flex items-center justify-center relative">
               <div
                 className="transition-transform duration-150 ease-out flex items-center justify-center my-auto"
                 style={{
@@ -2394,27 +2371,11 @@ export const ProfilePage = () => {
                   transformOrigin: "center center",
                 }}
               >
-                {docModalView === "digital" ? (
-                  <div className="w-full max-w-3xl flex justify-center drop-shadow-2xl">
-                    <DocumentVisualizer
-                      doc={previewDoc}
-                      studentData={studentData}
-                      sahilProfilePic={sahilProfilePic}
-                      isCard={false}
-                    />
-                  </div>
-                ) : (
-                  <div className="max-w-2xl flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800">
-                    <img
-                      src={previewDoc.thumb}
-                      alt={previewDoc.title}
-                      className="max-h-[66vh] max-w-full object-contain rounded-lg drop-shadow-md"
-                    />
-                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-2">
-                      Archived Physical Scanned Copy
-                    </span>
-                  </div>
-                )}
+                <img
+                  src={previewDoc.image}
+                  alt={previewDoc.title}
+                  className="max-h-[74vh] max-w-full object-contain rounded-2xl shadow-2xl border border-slate-800/80"
+                />
               </div>
             </div>
 
@@ -2431,14 +2392,6 @@ export const ProfilePage = () => {
               </div>
 
               <div className="flex items-center justify-end space-x-2">
-                {/* Mobile view switch toggle button */}
-                <button
-                  type="button"
-                  onClick={() => setDocModalView((v) => (v === "digital" ? "scanned" : "digital"))}
-                  className="sm:hidden px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
-                >
-                  {docModalView === "digital" ? "Show Scanned" : "Show HD Doc"}
-                </button>
                 <button
                   type="button"
                   onClick={() => {
@@ -2451,7 +2404,13 @@ export const ProfilePage = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => showToast(`Downloaded official copy: ${previewDoc.title}`)}
+                  onClick={() => {
+                    const link = document.createElement("a");
+                    link.href = previewDoc.image;
+                    link.download = `${previewDoc.title}.jpg`;
+                    link.click();
+                    showToast(`Downloaded official copy: ${previewDoc.title}`);
+                  }}
                   className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center space-x-1.5 cursor-pointer shadow-xs transition-colors"
                 >
                   <Download size={14} />
