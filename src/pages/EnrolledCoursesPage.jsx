@@ -13,6 +13,7 @@ import {
   Check,
   X,
   Edit,
+  RotateCcw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth, profilePic } from "../context/AuthContext";
@@ -92,12 +93,14 @@ export const EnrolledCoursesPage = () => {
 
   // Metrics counts
   const totalCount = courses.length;
-  const inProgressCount = courses.filter(
-    (c) => (ENROLLMENT_DATA[c.id]?.status || "in-progress") === "in-progress",
-  ).length;
-  const completedCount = courses.filter(
-    (c) => ENROLLMENT_DATA[c.id]?.status === "completed",
-  ).length;
+  const inProgressCount = courses.filter((c) => {
+    const info = ENROLLMENT_DATA[c.id];
+    return (info?.status || "in-progress") !== "completed" && (info?.progress || 0) < 100;
+  }).length;
+  const completedCount = courses.filter((c) => {
+    const info = ENROLLMENT_DATA[c.id];
+    return info?.status === "completed" || (info?.progress || 0) >= 100;
+  }).length;
 
   // Filtered & Sorted Courses
   const filteredCourses = useMemo(() => {
@@ -105,13 +108,14 @@ export const EnrolledCoursesPage = () => {
       .filter((course) => {
         const enrollInfo = ENROLLMENT_DATA[course.id] || {
           status: "in-progress",
+          progress: 50,
         };
+        const isDone =
+          enrollInfo.status === "completed" || (enrollInfo.progress || 0) >= 100;
 
         // Tab Filter
-        if (activeTab === "in-progress" && enrollInfo.status !== "in-progress")
-          return false;
-        if (activeTab === "completed" && enrollInfo.status !== "completed")
-          return false;
+        if (activeTab === "in-progress" && isDone) return false;
+        if (activeTab === "completed" && !isDone) return false;
 
         // Search Filter
         const matchesSearch =
@@ -329,7 +333,8 @@ export const EnrolledCoursesPage = () => {
               totalLessons: 20,
               status: "in-progress",
             };
-            const isCompleted = enroll.status === "completed";
+            const isCompleted =
+              enroll.status === "completed" || (enroll.progress || 0) >= 100;
 
             return (
               <div
@@ -348,11 +353,18 @@ export const EnrolledCoursesPage = () => {
 
                     {/* Progress Badge overlay */}
                     <span
-                      className={`absolute top-2.5 right-2.5 backdrop-blur-md text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-xs ${
+                      className={`absolute top-2.5 right-2.5 backdrop-blur-md text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-xs flex items-center space-x-1 ${
                         isCompleted ? "bg-emerald-600/90" : "bg-slate-900/85"
                       }`}
                     >
-                      {isCompleted ? "Completed" : `${enroll.progress}% Done`}
+                      {isCompleted ? (
+                        <>
+                          <RotateCcw size={11} strokeWidth={2.5} />
+                          <span>100% • Rewatch</span>
+                        </>
+                      ) : (
+                        <span>{enroll.progress}% Done</span>
+                      )}
                     </span>
                   </div>
 
@@ -366,7 +378,7 @@ export const EnrolledCoursesPage = () => {
                       {isCompleted ? (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/70 dark:border-emerald-500/40 text-xs font-bold shadow-2xs">
                           <Check size={12} strokeWidth={2.5} />
-                          <span>Finished</span>
+                          <span>Completed</span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/60 text-[#2563eb] dark:text-blue-300 border border-blue-200/70 dark:border-blue-500/40 text-xs font-bold shadow-2xs">
@@ -413,8 +425,14 @@ export const EnrolledCoursesPage = () => {
                           {enroll.completedLessons} of {enroll.totalLessons}{" "}
                           Lessons
                         </span>
-                        <span className="text-[#2563eb] dark:text-blue-400 font-bold">
-                          {enroll.progress}%
+                        <span
+                          className={`font-bold ${
+                            isCompleted
+                              ? "text-emerald-600 dark:text-emerald-400"
+                              : "text-[#2563eb] dark:text-blue-400"
+                          }`}
+                        >
+                          {isCompleted ? "100% Completed" : `${enroll.progress}%`}
                         </span>
                       </div>
                       <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -449,7 +467,7 @@ export const EnrolledCoursesPage = () => {
                   </div>
                 </div>
 
-                {/* Card Footer: Action Buttons (Edit, Outline & Continue) */}
+                {/* Card Footer: Action Buttons (Edit, Outline & Continue/Rewatch) */}
                 <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0 flex items-center gap-2">
                   {isAdmin && (
                     <button
@@ -482,10 +500,24 @@ export const EnrolledCoursesPage = () => {
                       e.stopPropagation();
                       navigate(`/lesson-player?courseId=${course.id}`);
                     }}
-                    className="flex-1 py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl bg-[#2563eb] hover:bg-blue-600 text-white font-medium text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-xs cursor-pointer active:scale-[0.98]"
+                    className={`flex-1 py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl text-white font-bold text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-xs cursor-pointer active:scale-[0.98] ${
+                      isCompleted
+                        ? "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20"
+                        : "bg-[#2563eb] hover:bg-blue-600 shadow-blue-500/20"
+                    }`}
+                    title={isCompleted ? "Rewatch course lessons" : "Continue course lessons"}
                   >
-                    <Play size={12} className="fill-white" />
-                    <span>Continue</span>
+                    {isCompleted ? (
+                      <>
+                        <RotateCcw size={12} strokeWidth={2.5} />
+                        <span>Rewatch</span>
+                      </>
+                    ) : (
+                      <>
+                        <Play size={12} className="fill-white" />
+                        <span>Continue</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

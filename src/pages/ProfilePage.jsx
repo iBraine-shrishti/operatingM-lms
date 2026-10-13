@@ -582,20 +582,35 @@ export const ProfilePage = () => {
         return;
       }
 
-      // Check which section is currently at/under the sticky navigation bar (topOffset ~140px)
       const targetY = 140;
-      let matchedTab = "overview";
 
-      for (const sec of sections) {
-        const el = document.getElementById(sec.id);
-        if (!el) continue;
-        const rect = el.getBoundingClientRect();
-        if (rect.top <= targetY) {
-          matchedTab = sec.tab;
-        }
+      // 1. Check Course History
+      const histEl = document.getElementById("section-course-history");
+      if (histEl && histEl.getBoundingClientRect().top <= targetY) {
+        setActiveTab("history");
+        return;
       }
 
-      setActiveTab(matchedTab);
+      // 2. Check 2-column row: Personal Info & Documents
+      const personalEl = document.getElementById("section-personal-info");
+      const docsEl = document.getElementById("section-documents");
+      const pTop = personalEl ? personalEl.getBoundingClientRect().top : 9999;
+      const dTop = docsEl ? docsEl.getBoundingClientRect().top : 9999;
+      const rowTop = Math.min(pTop, dTop);
+
+      if (rowTop <= targetY) {
+        setActiveTab((prev) => (prev === "documents" ? "documents" : "personal"));
+        return;
+      }
+
+      // 3. Check Attendance & Fees
+      const attEl = document.getElementById("section-attendance-fees");
+      if (attEl && attEl.getBoundingClientRect().top <= targetY) {
+        setActiveTab("attendance");
+        return;
+      }
+
+      setActiveTab("overview");
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -1622,246 +1637,247 @@ export const ProfilePage = () => {
     </div>
 
       {/* ============================================================== */}
-      {/* 6. PERSONAL INFORMATION                                         */}
+      {/* 6. LOWER TWO-COLUMN SECTION: PERSONAL INFO & DOCUMENTS          */}
       {/* ============================================================== */}
-      <div
-        id="section-personal-info"
-        className={`bg-white dark:bg-[#0b1329] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 transition-all duration-500 scroll-mt-20 ${
-          activeTab === "personal"
-            ? "border-2 border-blue-500 dark:border-blue-500 ring-4 ring-blue-500/15 shadow-xl shadow-blue-500/10"
-            : "border border-slate-200/80 dark:border-slate-800"
-        }`}
-      >
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-          <div className="flex items-center space-x-2">
-            <User size={18} className="text-blue-600 dark:text-blue-400" />
-            <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-              Personal Information
-            </h3>
-          </div>
-          <div className="flex items-center space-x-2">
-            {activeTab === "personal" && (
-              <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/80 px-2.5 py-0.5 rounded-full border border-blue-200/80 dark:border-blue-800 animate-in fade-in duration-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
-                <span>Active Section</span>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* LEFT: Personal Information */}
+        <div
+          id="section-personal-info"
+          className={`bg-white dark:bg-[#0b1329] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 transition-all duration-500 scroll-mt-20 ${
+            activeTab === "personal"
+              ? "border-2 border-blue-500 dark:border-blue-500 ring-4 ring-blue-500/15 shadow-xl shadow-blue-500/10"
+              : "border border-slate-200/80 dark:border-slate-800"
+          }`}
+        >
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center space-x-2">
+              <User size={18} className="text-blue-600 dark:text-blue-400" />
+              <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
+                Personal Information
+              </h3>
+            </div>
+            <div className="flex items-center space-x-2">
+              {activeTab === "personal" && (
+                <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/80 px-2 py-0.5 rounded-full border border-blue-200/80 dark:border-blue-800 animate-in fade-in duration-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
+                  <span>Active Section</span>
+                </span>
+              )}
+              <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-800">
+                Student Details
               </span>
-            )}
-            <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-800">
-              Student Details
-            </span>
-          </div>
-        </div>
-
-        {/* Grid of details */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 text-xs">
-          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
-            <User size={15} className="text-slate-400 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block">Full Name</span>
-              <strong className="text-slate-900 dark:text-white font-bold truncate block">
-                {studentData.fullName}
-              </strong>
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
-            <Calendar size={15} className="text-slate-400 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block">Date of Birth</span>
-              <strong className="text-slate-900 dark:text-white font-bold block">
-                {studentData.dob}
-              </strong>
+          {/* Grid of details */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+            <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
+              <User size={15} className="text-slate-400 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] text-slate-400 block">Full Name</span>
+                <strong className="text-slate-900 dark:text-white font-bold truncate block">
+                  {studentData.fullName}
+                </strong>
+              </div>
             </div>
-          </div>
 
-          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
-            <User size={15} className="text-slate-400 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block">Gender</span>
-              <strong className="text-slate-900 dark:text-white font-bold block">
-                {studentData.gender}
-              </strong>
+            <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
+              <Calendar size={15} className="text-slate-400 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] text-slate-400 block">Date of Birth</span>
+                <strong className="text-slate-900 dark:text-white font-bold block">
+                  {studentData.dob}
+                </strong>
+              </div>
             </div>
-          </div>
 
-          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
-            <Heart size={15} className="text-slate-400 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block">Marital Status</span>
-              <strong className="text-slate-900 dark:text-white font-bold block">
-                {studentData.maritalStatus}
-              </strong>
+            <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
+              <User size={15} className="text-slate-400 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] text-slate-400 block">Gender</span>
+                <strong className="text-slate-900 dark:text-white font-bold block">
+                  {studentData.gender}
+                </strong>
+              </div>
             </div>
-          </div>
 
-          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5 sm:col-span-2">
-            <Mail size={15} className="text-slate-400 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block">Email</span>
-              <strong className="text-slate-900 dark:text-white font-bold truncate block">
-                {studentData.email}
-              </strong>
+            <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
+              <Heart size={15} className="text-slate-400 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] text-slate-400 block">Marital Status</span>
+                <strong className="text-slate-900 dark:text-white font-bold block">
+                  {studentData.maritalStatus}
+                </strong>
+              </div>
             </div>
-          </div>
 
-          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
-            <Phone size={15} className="text-slate-400 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block">Mobile</span>
-              <strong className="text-slate-900 dark:text-white font-bold block">
-                {studentData.mobile}
-              </strong>
+            <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5 sm:col-span-2">
+              <Mail size={15} className="text-slate-400 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] text-slate-400 block">Email</span>
+                <strong className="text-slate-900 dark:text-white font-bold truncate block">
+                  {studentData.email}
+                </strong>
+              </div>
             </div>
-          </div>
 
-          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
-            <Calendar size={15} className="text-slate-400 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block">Admission Date</span>
-              <strong className="text-slate-900 dark:text-white font-bold block">
-                {studentData.admissionDate}
-              </strong>
+            <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
+              <Phone size={15} className="text-slate-400 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] text-slate-400 block">Mobile</span>
+                <strong className="text-slate-900 dark:text-white font-bold block">
+                  {studentData.mobile}
+                </strong>
+              </div>
             </div>
-          </div>
 
-          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
-            <Calendar size={15} className="text-slate-400 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block">Registration Date</span>
-              <strong className="text-slate-900 dark:text-white font-bold block">
-                {studentData.registrationDate}
-              </strong>
+            <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
+              <Calendar size={15} className="text-slate-400 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] text-slate-400 block">Admission Date</span>
+                <strong className="text-slate-900 dark:text-white font-bold block">
+                  {studentData.admissionDate}
+                </strong>
+              </div>
             </div>
-          </div>
 
-          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
-            <Building size={15} className="text-slate-400 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block">Branch / Center</span>
-              <strong className="text-slate-900 dark:text-white font-bold block">
-                {studentData.center}
-              </strong>
+            <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
+              <Calendar size={15} className="text-slate-400 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] text-slate-400 block">Registration Date</span>
+                <strong className="text-slate-900 dark:text-white font-bold block">
+                  {studentData.registrationDate}
+                </strong>
+              </div>
             </div>
-          </div>
 
-          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
-            <BookOpen size={15} className="text-slate-400 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block">Course</span>
-              <strong className="text-slate-900 dark:text-white font-bold truncate block">
-                {studentData.course}
-              </strong>
+            <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
+              <Building size={15} className="text-slate-400 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] text-slate-400 block">Branch / Center</span>
+                <strong className="text-slate-900 dark:text-white font-bold block">
+                  {studentData.center}
+                </strong>
+              </div>
             </div>
-          </div>
 
-          <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
-            <User size={15} className="text-slate-400 shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-slate-400 block">Faculty Lead</span>
-              <strong className="text-slate-900 dark:text-white font-bold block">
-                {studentData.facultyLead}
-              </strong>
+            <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
+              <BookOpen size={15} className="text-slate-400 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] text-slate-400 block">Course</span>
+                <strong className="text-slate-900 dark:text-white font-bold truncate block">
+                  {studentData.course}
+                </strong>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 flex items-center space-x-2.5">
+              <User size={15} className="text-slate-400 shrink-0" />
+              <div className="min-w-0">
+                <span className="text-[10px] text-slate-400 block">Faculty Lead</span>
+                <strong className="text-slate-900 dark:text-white font-bold block">
+                  {studentData.facultyLead}
+                </strong>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* ============================================================== */}
-      {/* 7. STUDENT DOCUMENTS SECTION                                    */}
-      {/* ============================================================== */}
-      <div
-        id="section-documents"
-        className={`bg-white dark:bg-[#0b1329] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 transition-all duration-500 scroll-mt-20 ${
-          activeTab === "documents"
-            ? "border-2 border-blue-500 dark:border-blue-500 ring-4 ring-blue-500/15 shadow-xl shadow-blue-500/10"
-            : "border border-slate-200/80 dark:border-slate-800"
-        }`}
-      >
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-          <div className="flex items-center space-x-2">
-            <FileText size={18} className="text-blue-600 dark:text-blue-400" />
-            <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-              Student Documents
-            </h3>
-          </div>
-          <div className="flex items-center space-x-2">
-            {activeTab === "documents" && (
-              <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/80 px-2.5 py-0.5 rounded-full border border-blue-200/80 dark:border-blue-800 animate-in fade-in duration-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
-                <span>Active Section</span>
+        {/* RIGHT: Student Documents */}
+        <div
+          id="section-documents"
+          className={`bg-white dark:bg-[#0b1329] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 transition-all duration-500 scroll-mt-20 flex flex-col justify-between ${
+            activeTab === "documents"
+              ? "border-2 border-blue-500 dark:border-blue-500 ring-4 ring-blue-500/15 shadow-xl shadow-blue-500/10"
+              : "border border-slate-200/80 dark:border-slate-800"
+          }`}
+        >
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center space-x-2">
+              <FileText size={18} className="text-blue-600 dark:text-blue-400" />
+              <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
+                Student Documents
+              </h3>
+            </div>
+            <div className="flex items-center space-x-2">
+              {activeTab === "documents" && (
+                <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/80 px-2 py-0.5 rounded-full border border-blue-200/80 dark:border-blue-800 animate-in fade-in duration-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
+                  <span>Active Section</span>
+                </span>
+              )}
+              <span className="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 px-2.5 py-1 rounded-full">
+                <Check size={11} className="stroke-[3]" />
+                <span>3 Verified Documents</span>
               </span>
-            )}
-            <span className="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 px-2.5 py-1 rounded-full">
-              <Check size={11} className="stroke-[3]" />
-              <span>3 Verified Documents</span>
-            </span>
+            </div>
           </div>
-        </div>
 
-        {/* 3 Document Cards side by side */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {studentDocuments.map((doc) => (
-            <div
-              key={doc.id}
-              onClick={() => handleOpenDocPreview(doc)}
-              className="group p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-3"
-            >
-              {/* Zoomed HD document card preview container */}
-              <div className="w-full h-44 sm:h-48 rounded-xl bg-slate-100/70 dark:bg-[#070c1a] border border-slate-200/80 dark:border-slate-700/80 p-1.5 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-all">
-                <div className="w-full h-full flex items-center justify-center transform group-hover:scale-[1.02] transition-transform">
-                  <DocumentVisualizer
-                    doc={doc}
-                    studentData={studentData}
-                    sahilProfilePic={sahilProfilePic}
-                    isCard={true}
-                  />
+          {/* 3 Document Cards side by side */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {studentDocuments.map((doc) => (
+              <div
+                key={doc.id}
+                onClick={() => handleOpenDocPreview(doc)}
+                className="group p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-2.5"
+              >
+                {/* Zoomed HD document card preview container */}
+                <div className="w-full h-32 sm:h-36 rounded-lg bg-slate-100/70 dark:bg-[#070c1a] border border-slate-200/80 dark:border-slate-700/80 p-1 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-all">
+                  <div className="w-full h-full flex items-center justify-center transform group-hover:scale-[1.02] transition-transform">
+                    <DocumentVisualizer
+                      doc={doc}
+                      studentData={studentData}
+                      sahilProfilePic={sahilProfilePic}
+                      isCard={true}
+                    />
+                  </div>
+
+                  {/* Top-right HD badge */}
+                  <span className="absolute top-1.5 right-1.5 z-10 text-[8px] font-bold bg-white/95 dark:bg-slate-900/95 text-blue-600 dark:text-blue-400 px-1 py-0.2 rounded shadow-xs border border-blue-200/60 dark:border-blue-800 flex items-center space-x-0.5 backdrop-blur-xs">
+                    <ZoomIn size={9} />
+                    <span>HD</span>
+                  </span>
+
+                  {/* Hover zoom & inspect overlay */}
+                  <div className="absolute inset-0 z-20 bg-slate-950/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1.5px]">
+                    <span className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] shadow-md flex items-center space-x-1 transform group-hover:scale-105 transition-transform">
+                      <Maximize2 size={11} />
+                      <span>Zoom View</span>
+                    </span>
+                  </div>
                 </div>
 
-                {/* Top-right HD badge */}
-                <span className="absolute top-2 right-2 z-10 text-[9px] font-bold bg-white/95 dark:bg-slate-900/95 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded shadow-xs border border-blue-200/60 dark:border-blue-800 flex items-center space-x-1 backdrop-blur-xs">
-                  <ZoomIn size={10} />
-                  <span>HD Doc</span>
-                </span>
-
-                {/* Hover zoom & inspect overlay */}
-                <div className="absolute inset-0 z-20 bg-slate-950/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1.5px]">
-                  <span className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md flex items-center space-x-1.5 transform group-hover:scale-105 transition-transform">
-                    <Maximize2 size={13} />
-                    <span>Click to Zoom & View</span>
+                {/* Details */}
+                <div className="space-y-0.5">
+                  <strong className="text-xs font-bold text-slate-900 dark:text-white truncate block">
+                    {doc.title}
+                  </strong>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium truncate block">
+                    {doc.docNo}
                   </span>
                 </div>
-              </div>
 
-              {/* Details */}
-              <div className="space-y-0.5">
-                <strong className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white truncate block">
-                  {doc.title}
-                </strong>
-                <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium truncate block">
-                  {doc.docNo}
-                </span>
+                {/* Footer status & quick download */}
+                <div className="flex items-center justify-between pt-1.5 border-t border-slate-200/60 dark:border-slate-800">
+                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center space-x-1">
+                    <Check size={11} className="stroke-[3]" />
+                    <span>{doc.status}</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showToast(`Downloading official copy: ${doc.title}`);
+                    }}
+                    className="p-1 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+                    title="Download Copy"
+                  >
+                    <Download size={12} />
+                  </button>
+                </div>
               </div>
-
-              {/* Footer status & quick download */}
-              <div className="flex items-center justify-between pt-1.5 border-t border-slate-200/60 dark:border-slate-800">
-                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center space-x-1">
-                  <Check size={11} className="stroke-[3]" />
-                  <span>{doc.status}</span>
-                </span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    showToast(`Downloading official copy: ${doc.title}`);
-                  }}
-                  className="p-1 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
-                  title="Download Copy"
-                >
-                  <Download size={12} />
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
