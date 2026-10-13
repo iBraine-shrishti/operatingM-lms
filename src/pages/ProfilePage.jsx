@@ -20,7 +20,6 @@ import {
   Mail,
   Edit3,
   GraduationCap,
-  CreditCard,
   Wallet,
   LayoutGrid,
   Bookmark,
@@ -727,9 +726,6 @@ export const ProfilePage = () => {
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
   const [receiptInstallment, setReceiptInstallment] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isPayModalOpen, setIsPayModalOpen] = useState(false);
-  const [activePayingInstallment, setActivePayingInstallment] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState("upi");
   const [previewDoc, setPreviewDoc] = useState(null);
   const [docZoomLevel, setDocZoomLevel] = useState(1);
   const [toastMessage, setToastMessage] = useState(null);
@@ -771,37 +767,7 @@ export const ProfilePage = () => {
 
 
 
-  // Pay single installment handler
-  const handleOpenPayModal = (installment) => {
-    setActivePayingInstallment(installment);
-    setIsPayModalOpen(true);
-  };
 
-  const handleConfirmPayment = () => {
-    if (!activePayingInstallment) return;
-
-    setStudentData((prev) => {
-      const updated = prev.installments.map((inst) =>
-        inst.id === activePayingInstallment.id
-          ? { ...inst, status: "PAID", isOverdue: false, mode: paymentMethod.toUpperCase() }
-          : inst
-      );
-      const newPaid = prev.amountPaid + activePayingInstallment.amount;
-      const newBal = Math.max(0, prev.totalFees - newPaid);
-      return {
-        ...prev,
-        amountPaid: newPaid,
-        balanceDue: newBal,
-        feesClearedPercent: Math.round((newPaid / prev.totalFees) * 100),
-        installments: updated,
-      };
-    });
-
-    setIsPayModalOpen(false);
-    showToast(
-      `Payment of ₹${activePayingInstallment.amount.toLocaleString()} for ${activePayingInstallment.title} confirmed successfully!`
-    );
-  };
 
   // Open receipt for specific installment or total
   const handleOpenReceipt = (inst = null) => {
@@ -1370,22 +1336,20 @@ export const ProfilePage = () => {
             )}
           </div>
 
-          {/* Bottom Action Button (Dotted button matching profile.png) */}
-          <div className="pt-2">
-            <button
-              type="button"
-              onClick={() => {
-                const firstUnpaid = studentData.installments.find((i) => i.status !== "PAID");
-                if (firstUnpaid) {
-                  handleOpenPayModal(firstUnpaid);
-                } else {
-                  showToast("All tuition fees are fully cleared!");
-                }
-              }}
-              className="w-full py-2.5 rounded-xl border-2 border-dashed border-blue-300 dark:border-blue-700/80 hover:border-blue-600 hover:bg-blue-50/50 dark:hover:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
+          {/* Fee Account Status Strip */}
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+            <span className="text-slate-500 dark:text-slate-400 font-medium">
+              Account Status:
+            </span>
+            <span
+              className={`font-bold px-2.5 py-0.5 rounded-full text-[11px] ${
+                studentData.balanceDue <= 0
+                  ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+                  : "bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"
+              }`}
             >
-              <span>+ Pay Installment</span>
-            </button>
+              {studentData.balanceDue <= 0 ? "Fully Cleared ✓" : studentData.paymentStatus || "Fees Pending"}
+            </span>
           </div>
         </div>
       </div>
@@ -1486,24 +1450,15 @@ export const ProfilePage = () => {
                           type="button"
                           onClick={() => handleOpenReceipt(inst)}
                           className="px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                          title="View Official Receipt"
                         >
-                          View
+                          Receipt
                         </button>
                       ) : (
-                        <button
-                          type="button"
-                          onClick={() => handleOpenPayModal(inst)}
-                          className="px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold transition-colors cursor-pointer shadow-2xs"
-                        >
-                          Pay Now
-                        </button>
+                        <span className="text-slate-400 dark:text-slate-500 font-medium text-xs px-2">
+                          —
+                        </span>
                       )}
-                      <button
-                        type="button"
-                        className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded cursor-pointer"
-                      >
-                        <MoreVertical size={14} />
-                      </button>
                     </div>
                   </td>
                 </tr>
@@ -2094,88 +2049,7 @@ export const ProfilePage = () => {
         }}
       />
 
-      {/* Pay Installment Modal */}
-      {isPayModalOpen && activePayingInstallment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-                  <CreditCard size={18} />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                    Pay Tuition Installment
-                  </h3>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    {activePayingInstallment.title} • Operating Media LMS
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsPayModalOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-              >
-                <X size={18} />
-              </button>
-            </div>
 
-            <div className="p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 space-y-1">
-              <span className="text-xs text-blue-700 dark:text-blue-300 font-semibold block">
-                Amount Payable
-              </span>
-              <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums">
-                ₹{activePayingInstallment.amount.toLocaleString()}
-              </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 block">
-                Due Date: {activePayingInstallment.dueDate}
-              </span>
-            </div>
-
-            {/* Payment Method Selector */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block">
-                Select Payment Mode
-              </label>
-              <div className="grid grid-cols-3 gap-2 text-xs">
-                {["upi", "bank", "card"].map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setPaymentMethod(mode)}
-                    className={`py-2 px-3 rounded-xl border text-center font-bold capitalize transition-all cursor-pointer ${
-                      paymentMethod === mode
-                        ? "border-blue-600 bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400"
-                        : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50"
-                    }`}
-                  >
-                    {mode === "upi" ? "UPI / GPay" : mode === "bank" ? "Net Banking" : "Card"}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className="pt-2 flex items-center justify-end space-x-2">
-              <button
-                type="button"
-                onClick={() => setIsPayModalOpen(false)}
-                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmPayment}
-                className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-xs font-bold text-white shadow-xs cursor-pointer flex items-center space-x-1.5"
-              >
-                <CheckCircle2 size={14} />
-                <span>Confirm & Pay ₹{activePayingInstallment.amount.toLocaleString()}</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Edit Student Details Modal */}
       {isEditModalOpen && (

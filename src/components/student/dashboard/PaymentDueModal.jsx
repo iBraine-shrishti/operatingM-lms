@@ -268,14 +268,13 @@ export const PaymentDueModal = ({
             )}
           </div>
 
-          {/* Pay Now or View Receipts Button */}
+          {/* View Fee Status Button */}
           <button
             type="button"
-            onClick={handlePay}
-            className="px-4 sm:px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+            onClick={onClose}
+            className="px-4 sm:px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
           >
-            <CreditCard size={14} />
-            <span>{paymentInfo.isCleared ? "View Fee Receipts" : `Pay ${installmentAmount} Online`}</span>
+            <span>Close</span>
           </button>
         </div>
       </div>
