@@ -341,6 +341,14 @@ export const QuestionDiscussionsPage = () => {
   const [newCategory, setNewCategory] = useState("General");
   const [newContent, setNewContent] = useState("");
 
+  const handleOpenModal = (presetCourseId = null) => {
+    const targetCourse =
+      presetCourseId ||
+      (selectedCourse !== "all" ? selectedCourse : courses[0]?.id || "course-1");
+    setNewCourseId(targetCourse);
+    setIsModalOpen(true);
+  };
+
   // Categories list derived from discussions + popular digital marketing topics
   const categories = useMemo(() => {
     const cats = new Set(["All Topics"]);
@@ -546,6 +554,7 @@ export const QuestionDiscussionsPage = () => {
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80";
 
     const created = lmsService.addDiscussion({
+      courseId: newCourseId,
       courseTitle,
       authorName,
       authorRole,
@@ -570,6 +579,37 @@ export const QuestionDiscussionsPage = () => {
     );
   };
 
+  // Helper to match discussion to selected course
+  const isDiscussionInCourse = (disc, targetCourseId) => {
+    if (!targetCourseId || targetCourseId === "all") return true;
+    if (disc.courseId && disc.courseId === targetCourseId) return true;
+
+    const courseObj = courses.find((c) => c.id === targetCourseId);
+    if (!courseObj) return false;
+
+    const dTitle = (disc.courseTitle || "").toLowerCase().trim();
+    const cTitle = (courseObj.title || "").toLowerCase().trim();
+
+    if (dTitle === cTitle) return true;
+    if (dTitle.includes(cTitle) || cTitle.includes(dTitle)) return true;
+
+    // Course ID specific aliases
+    if (targetCourseId === "course-1" && (dTitle.includes("social") || dTitle.includes("smo"))) return true;
+    if (targetCourseId === "course-3" && (dTitle.includes("advanced") || dTitle.includes("masters"))) return true;
+    if (targetCourseId === "course-4" && (dTitle.includes("design") || dTitle.includes("creative"))) return true;
+    if (targetCourseId === "course-5" && (dTitle.includes("analytics") || dTitle.includes("ga4"))) return true;
+    if (targetCourseId === "course-6" && (dTitle.includes("ads") || dTitle.includes("adwords") || dTitle.includes("ppc"))) return true;
+    if (targetCourseId === "course-7" && (dTitle.includes("wordpress") || dTitle.includes("wp") || dTitle.includes("web dev"))) return true;
+    if (targetCourseId === "course-8" && (dTitle.includes("seo") || dTitle.includes("search engine"))) return true;
+
+    return false;
+  };
+
+  const getCourseDiscussionCount = (courseId) => {
+    if (courseId === "all") return discussions.length;
+    return discussions.filter((d) => isDiscussionInCourse(d, courseId)).length;
+  };
+
   // Filtered discussions
   const filteredDiscussions = useMemo(() => {
     return discussions.filter((disc) => {
@@ -592,8 +632,7 @@ export const QuestionDiscussionsPage = () => {
 
       // Course filter
       if (selectedCourse !== "all") {
-        const courseObj = courses.find((c) => c.id === selectedCourse);
-        if (courseObj && disc.courseTitle !== courseObj.title) {
+        if (!isDiscussionInCourse(disc, selectedCourse)) {
           return false;
         }
       }
@@ -662,7 +701,7 @@ export const QuestionDiscussionsPage = () => {
         ]}
         action={
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => handleOpenModal()}
             className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
           >
             <Plus size={16} className="2xl:w-4.5 2xl:h-4.5" />
@@ -699,15 +738,15 @@ export const QuestionDiscussionsPage = () => {
             )}
           </div>
 
-          {/* Course Selector */}
+          {/* Course Selector Dropdown */}
           <div className="w-full md:w-72 shrink-0">
             <select
               value={selectedCourse}
               onChange={(e) => setSelectedCourse(e.target.value)}
-              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm sm:text-base font-medium text-slate-900 dark:text-white outline-none focus:outline-none focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:border-blue-500 cursor-pointer transition-all"
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-medium text-slate-900 dark:text-white outline-none focus:outline-none focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:border-blue-500 cursor-pointer transition-all"
             >
               <option value="all" className="dark:bg-slate-900 dark:text-white">
-                All Enrolled Courses
+                All Enrolled Courses ({discussions.length})
               </option>
               {courses.map((c) => (
                 <option
@@ -715,15 +754,63 @@ export const QuestionDiscussionsPage = () => {
                   value={c.id}
                   className="dark:bg-slate-900 dark:text-white"
                 >
-                  {c.title}
+                  {c.title} ({getCourseDiscussionCount(c.id)})
                 </option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* Tab pills row */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+        {/* 2. DEDICATED COURSE-WISE FILTER ROW */}
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1.5">
+            <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider shrink-0 mr-1">
+              <BookOpen size={14} className="text-[#3b49df] dark:text-blue-400" />
+              <span>COURSES:</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setSelectedCourse("all")}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                selectedCourse === "all"
+                  ? "bg-[#3b49df] text-white shadow-xs"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              All Courses ({discussions.length})
+            </button>
+            {courses.map((c) => {
+              const count = getCourseDiscussionCount(c.id);
+              const isSelected = selectedCourse === c.id;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setSelectedCourse(c.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer flex items-center space-x-1.5 ${
+                    isSelected
+                      ? "bg-[#3b49df] text-white shadow-xs"
+                      : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  <span>{c.title}</span>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
+                      isSelected
+                        ? "bg-white/20 text-white"
+                        : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 3. TAB PILLS & CATEGORIES ROW */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
           {/* View filter tabs */}
           <div className="flex items-center space-x-2 overflow-x-auto custom-scrollbar pb-1">
             {[
@@ -769,6 +856,32 @@ export const QuestionDiscussionsPage = () => {
             })}
           </div>
         </div>
+
+        {/* 4. ACTIVE FILTER SUMMARY & RESET */}
+        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100 dark:border-slate-800/60">
+          <div>
+            Showing <strong className="text-slate-900 dark:text-white font-bold">{filteredDiscussions.length}</strong> of {discussions.length} discussions
+            {selectedCourse !== "all" && (
+              <span className="ml-2 font-semibold text-blue-600 dark:text-blue-400">
+                • Course: {courses.find((c) => c.id === selectedCourse)?.title || selectedCourse}
+              </span>
+            )}
+          </div>
+          {(selectedCourse !== "all" || selectedCategory !== "all" || searchQuery.trim() || activeFilterTab !== "all") && (
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCourse("all");
+                setSelectedCategory("all");
+                setSearchQuery("");
+                setActiveFilterTab("all");
+              }}
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+            >
+              Reset All Filters
+            </button>
+          )}
+        </div>
       </div>
 
       {/* ------------------------------------------------------------- */}
@@ -800,7 +913,7 @@ export const QuestionDiscussionsPage = () => {
                 Clear Filters
               </button>
               <button
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => handleOpenModal()}
                 className="px-4 py-2 text-xs sm:text-sm font-bold rounded-xl bg-[#3b49df] text-white hover:bg-[#2f3cb3] transition-colors cursor-pointer"
               >
                 + Ask Question
@@ -843,12 +956,30 @@ export const QuestionDiscussionsPage = () => {
                           {disc.authorRole || "Student"}
                         </span>
                       </div>
-                      <p className="text-xs sm:text-[13px] text-slate-500 dark:text-slate-400 mt-1 font-medium">
-                        {disc.courseTitle} •{" "}
-                        <span className="text-slate-400 dark:text-slate-500">
-                          {disc.createdAt}
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (disc.courseId) {
+                              setSelectedCourse(disc.courseId);
+                            } else {
+                              const match = courses.find((c) =>
+                                isDiscussionInCourse(disc, c.id),
+                              );
+                              if (match) setSelectedCourse(match.id);
+                            }
+                          }}
+                          className="inline-flex items-center space-x-1 text-xs font-bold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/70 dark:border-blue-800/60 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors cursor-pointer"
+                          title={`Filter by course: ${disc.courseTitle}`}
+                        >
+                          <BookOpen size={11} />
+                          <span>{disc.courseTitle}</span>
+                        </button>
+                        <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">
+                          • {disc.createdAt}
                         </span>
-                      </p>
+                      </div>
                     </div>
                   </div>
 

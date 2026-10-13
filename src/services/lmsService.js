@@ -325,20 +325,51 @@ export const lmsService = {
     },
     // Discussions
     getDiscussions: () => {
-        const stored = getStored('discussions', INITIAL_DISCUSSIONS);
-        const disc1 = stored?.find(d => d.id === 'disc-1');
-        const disc1HasDeepNesting = disc1?.replies?.[0]?.replies?.[0]?.replies?.[0]?.replies;
-        if (!stored || !disc1HasDeepNesting) {
+        const stored = getStored('discussions', null);
+        if (!stored || stored.length < INITIAL_DISCUSSIONS.length) {
             setStored('discussions', INITIAL_DISCUSSIONS);
             return INITIAL_DISCUSSIONS;
         }
-        return stored;
+
+        // Backfill courseId if any discussion lacks it
+        let modified = false;
+        const normalized = stored.map(d => {
+            if (!d.courseId) {
+                modified = true;
+                const match = INITIAL_DISCUSSIONS.find(init => init.id === d.id);
+                if (match?.courseId) return { ...d, courseId: match.courseId };
+                const t = (d.courseTitle || '').toLowerCase();
+                if (t.includes('seo')) return { ...d, courseId: 'course-8' };
+                if (t.includes('ads')) return { ...d, courseId: 'course-6' };
+                if (t.includes('social')) return { ...d, courseId: 'course-1' };
+                if (t.includes('analytics')) return { ...d, courseId: 'course-5' };
+                if (t.includes('wordpress')) return { ...d, courseId: 'course-7' };
+                if (t.includes('design')) return { ...d, courseId: 'course-4' };
+                if (t.includes('advanced')) return { ...d, courseId: 'course-3' };
+            }
+            return d;
+        });
+
+        // Ensure newly added initial discussions are present
+        const storedIds = new Set(normalized.map(d => d.id));
+        const missing = INITIAL_DISCUSSIONS.filter(d => !storedIds.has(d.id));
+        if (missing.length > 0) {
+            const merged = [...normalized, ...missing];
+            setStored('discussions', merged);
+            return merged;
+        }
+
+        if (modified) {
+            setStored('discussions', normalized);
+        }
+        return normalized;
     },
     addDiscussion: (disc) => {
         const items = lmsService.getDiscussions();
         const newItem = {
             ...disc,
             id: `disc-${Date.now()}`,
+            courseId: disc.courseId || 'course-1',
             repliesCount: 0,
             replies: [],
             createdAt: 'Just now'

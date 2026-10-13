@@ -882,6 +882,7 @@ export const INITIAL_QUESTIONS = [
 export const INITIAL_DISCUSSIONS = [
     {
         id: 'disc-1',
+        courseId: 'course-8',
         courseTitle: 'Search Engine Optimization (SEO)',
         authorName: 'Sneha Roy',
         authorRole: 'Student',
@@ -955,7 +956,8 @@ export const INITIAL_DISCUSSIONS = [
     },
     {
         id: 'disc-2',
-        courseTitle: 'Google Ads Masterclass',
+        courseId: 'course-6',
+        courseTitle: 'Google Ads',
         authorName: 'Vikram Malhotra',
         authorRole: 'Instructor',
         authorAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
@@ -1002,6 +1004,7 @@ export const INITIAL_DISCUSSIONS = [
     },
     {
         id: 'disc-3',
+        courseId: 'course-1',
         courseTitle: 'Social Media Marketing',
         authorName: 'Ananya Gupta',
         authorRole: 'Student',
@@ -1039,6 +1042,7 @@ export const INITIAL_DISCUSSIONS = [
     },
     {
         id: 'disc-4',
+        courseId: 'course-5',
         courseTitle: 'Google Analytics Course',
         authorName: 'Aarav Patel',
         authorRole: 'Student',
@@ -1059,6 +1063,99 @@ export const INITIAL_DISCUSSIONS = [
                 createdAt: '2 days ago',
                 isOfficial: true,
                 likesCount: 3,
+                replies: []
+            }
+        ]
+    },
+    {
+        id: 'disc-5',
+        courseId: 'course-7',
+        courseTitle: 'Website Development With WordPress',
+        authorName: 'Rohan Mehta',
+        authorRole: 'Student',
+        authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+        title: 'Elementor Pro vs Gutenberg Blocks: Best setup for sub-2s mobile loading speeds?',
+        content: 'When developing responsive WordPress sites for local business clients, what is the best practice to keep DOM elements minimal while retaining custom design flexibility? Are you combining lightweight theme frameworks with specific caching plugins?',
+        repliesCount: 2,
+        createdAt: '4 hours ago',
+        category: 'WordPress',
+        isPinned: false,
+        replies: [
+            {
+                id: 'rep-5-1',
+                authorName: 'Vikram Malhotra',
+                authorRole: 'Instructor',
+                authorAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
+                content: 'Great question Rohan! Use Hello Elementor or Astra with containers mode enabled. Pair it with LiteSpeed Cache or WP Rocket and disable unused Elementor widget experiments.',
+                createdAt: '3 hours ago',
+                isOfficial: true,
+                likesCount: 5,
+                replies: [
+                    {
+                        id: 'rep-5-2',
+                        authorName: 'Sneha Roy',
+                        authorRole: 'Student',
+                        authorAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+                        content: '@Vikram Malhotra Enabling the new Flexbox Container experiment reduced our DOM depth from 32 levels down to 9! Huge boost on Google Lighthouse.',
+                        createdAt: '1 hour ago',
+                        isOfficial: false,
+                        likesCount: 3,
+                        replies: []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        id: 'disc-6',
+        courseId: 'course-4',
+        courseTitle: 'Creative Designing',
+        authorName: 'Priya Sharma',
+        authorRole: 'Student',
+        authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+        title: 'Figma to Social Media Assets: Proper color space and compression for high-CTR ads',
+        content: 'What export settings do you recommend in Figma or Photoshop to ensure crisp typography on Instagram and Facebook without color banding in high-contrast gradients? Does sRGB vs Display P3 make a difference?',
+        repliesCount: 2,
+        createdAt: '1 day ago',
+        category: 'Creative Design',
+        isPinned: false,
+        replies: [
+            {
+                id: 'rep-6-1',
+                authorName: 'Pooja Bhatt',
+                authorRole: 'Instructor',
+                authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+                content: 'Always export in standard sRGB at 2x resolution (2160x2700 for 4:5 portrait posts). Social platforms compress aggressively; 2x ensures rasterized fonts stay razor sharp on Retina screens.',
+                createdAt: '20 hours ago',
+                isOfficial: true,
+                likesCount: 6,
+                replies: []
+            }
+        ]
+    },
+    {
+        id: 'disc-7',
+        courseId: 'course-3',
+        courseTitle: 'Advanced Topics',
+        authorName: 'Aarav Patel',
+        authorRole: 'Student',
+        authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+        title: 'Data-driven attribution models in cookieless marketing: Server-side GTM vs S2S postbacks',
+        content: 'In our advanced marketing mix modeling, how are you handling conversion deduplication between Meta Conversions API and Google Ads enhanced conversions when tracking multi-touch customer journeys?',
+        repliesCount: 2,
+        createdAt: '2 days ago',
+        category: 'Advanced Topics',
+        isPinned: false,
+        replies: [
+            {
+                id: 'rep-7-1',
+                authorName: 'Harsh Pareek',
+                authorRole: 'Instructor',
+                authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+                content: 'Use unique transaction_id or event_id parameters passed simultaneously to both browser pixels and the server container. Meta deduplicates within a 48h rolling window if both receive the exact same ID.',
+                createdAt: '1 day ago',
+                isOfficial: true,
+                likesCount: 9,
                 replies: []
             }
         ]
