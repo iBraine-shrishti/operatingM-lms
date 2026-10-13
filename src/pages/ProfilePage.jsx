@@ -77,12 +77,80 @@ export const ProfilePage = () => {
     return "overview";
   });
 
-  // Keep search params in sync
+  // Keep search params in sync and smoothly scroll to the corresponding section
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    if (tab === "overview") setSearchParams({});
-    else setSearchParams({ tab });
+    if (tab === "overview") {
+      setSearchParams({});
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      setSearchParams({ tab });
+      const targetMap = {
+        attendance: "section-attendance-fees",
+        personal: "section-personal-info",
+        documents: "section-documents",
+        history: "section-course-history",
+      };
+      const elemId = targetMap[tab];
+      if (elemId) {
+        const el = document.getElementById(elemId);
+        if (el) {
+          const yOffset = -90;
+          const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }
+      }
+    }
   };
+
+  // Scroll to section when tab query parameter is provided on mount or route update
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam && tabParam !== "overview") {
+      const targetMap = {
+        attendance: "section-attendance-fees",
+        details: "section-personal-info",
+        personal: "section-personal-info",
+        documents: "section-documents",
+        history: "section-course-history",
+      };
+      const elemId = targetMap[tabParam];
+      if (elemId) {
+        const timer = setTimeout(() => {
+          const el = document.getElementById(elemId);
+          if (el) {
+            const yOffset = -90;
+            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: "smooth" });
+          }
+        }, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [searchParams]);
+
+  // Synchronize active tab highlight based on current scroll position
+  useEffect(() => {
+    const sections = [
+      { id: "section-overview", tab: "overview" },
+      { id: "section-attendance-fees", tab: "attendance" },
+      { id: "section-personal-info", tab: "personal" },
+      { id: "section-documents", tab: "documents" },
+      { id: "section-course-history", tab: "history" },
+    ];
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + 160;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const el = document.getElementById(sections[i].id);
+        if (el && el.offsetTop <= scrollPos) {
+          setActiveTab(sections[i].tab);
+          break;
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Student Profile State (seeded from crmProfile with Sahil Hasolkar default & pending fees)
   const [studentData, setStudentData] = useState(() => ({
@@ -527,7 +595,7 @@ export const ProfilePage = () => {
       {/* ============================================================== */}
       {/* 2. TAB NAVIGATION BAR                                          */}
       {/* ============================================================== */}
-      <div className="flex items-center space-x-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto">
+      <div className="flex items-center space-x-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto sticky top-0 bg-slate-50/90 dark:bg-[#070d1e]/90 backdrop-blur-md z-20 pt-2 -mt-2">
         <button
           type="button"
           onClick={() => handleTabChange("overview")}
@@ -597,7 +665,7 @@ export const ProfilePage = () => {
       {/* ============================================================== */}
       {/* 3. FOUR METRIC CARDS ROW                                       */}
       {/* ============================================================== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div id="section-overview" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Admission Date */}
         <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 flex items-center space-x-3.5 shadow-xs">
           <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
@@ -1294,92 +1362,7 @@ export const ProfilePage = () => {
         </div>
       </div>
 
-      {/* ============================================================== */}
-      {/* 8. ATTENDANCE SUB-TAB VIEW (WHEN ACTIVE)                       */}
-      {/* ============================================================== */}
-      {activeTab === "attendance" && (
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-5 animate-in fade-in duration-150">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
-            <div>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                Classroom Attendance & Lecture Analytics
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Attendance compliance tracked automatically via Operating Media CRM
-              </p>
-            </div>
 
-            <div className="flex items-center space-x-2">
-              <button
-                type="button"
-                onClick={() => setAttendanceView("graph")}
-                className={`text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
-                  attendanceView === "graph"
-                    ? "bg-blue-600 text-white shadow-xs"
-                    : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
-                }`}
-              >
-                <TrendingUp size={13} />
-                <span>Trend Graph</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setAttendanceView("logs")}
-                className={`text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
-                  attendanceView === "logs"
-                    ? "bg-blue-600 text-white shadow-xs"
-                    : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
-                }`}
-              >
-                <Calendar size={13} />
-                <span>Class Logs (8)</span>
-              </button>
-            </div>
-          </div>
-
-          {attendanceView === "graph" ? (
-            <div className="pt-2">
-              <AttendanceComparisonChart
-                enrolledCourseTitle={studentData.course}
-              />
-            </div>
-          ) : (
-            <div className="space-y-2 pt-1">
-              {(crmAttendance.logs || []).slice(0, 8).map((log, lIdx) => (
-                <div
-                  key={lIdx}
-                  className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-xs"
-                >
-                  <div className="flex items-center space-x-3">
-                    <span
-                      className={`w-2.5 h-2.5 rounded-full ${
-                        log.status === "PRESENT" ? "bg-emerald-500" : "bg-rose-500"
-                      }`}
-                    />
-                    <div>
-                      <span className="font-bold text-slate-900 dark:text-white block">
-                        {log.topic}
-                      </span>
-                      <span className="text-slate-400 dark:text-slate-500 text-[11px]">
-                        {log.date} • {log.batch_name || studentData.batch} • Faculty: {log.trainer_name || studentData.facultyLead}
-                      </span>
-                    </div>
-                  </div>
-                  <span
-                    className={`font-bold px-2.5 py-1 rounded text-xs ${
-                      log.status === "PRESENT"
-                        ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300"
-                        : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300"
-                    }`}
-                  >
-                    {log.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
 
       {/* ============================================================== */}
       {/* 9. MODALS                                                      */}

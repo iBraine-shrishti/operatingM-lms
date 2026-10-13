@@ -32,6 +32,9 @@ import {
   MessageCircle,
   Check,
   Video,
+  Folder,
+  FolderOpen,
+  GraduationCap,
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
@@ -105,6 +108,34 @@ export const LessonPlayerPage = () => {
   const [noteContent, setNoteContent] = useState("");
   const [userNotes, setUserNotes] = useState(() => lmsService.getNotes());
   const [playlistSearch, setPlaylistSearch] = useState("");
+
+  // Course selector dropdown state
+  const [isCourseDropdownOpen, setIsCourseDropdownOpen] = useState(false);
+  const courseDropdownRef = useRef(null);
+
+  // Close course dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        courseDropdownRef.current &&
+        !courseDropdownRef.current.contains(e.target)
+      ) {
+        setIsCourseDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Handle switching actual course
+  const handleSelectCourse = (newCourse) => {
+    setIsCourseDropdownOpen(false);
+    navigate(`/lesson-player?courseId=${newCourse.id}`);
+    const newUnits = lmsService.getUnitsByCourse(newCourse.id);
+    setUnits(newUnits);
+    setActiveLessonIdx(0);
+    showToast(`Switched to "${newCourse.title}"`, "info");
+  };
 
   // Storage key for video progress
   const progressStorageKey = `om_video_progress_${currentCourse.id}_${currentLesson?.id}`;
@@ -249,15 +280,90 @@ export const LessonPlayerPage = () => {
     showToast("Lesson link copied to clipboard!", "success");
   };
 
-  // Filtered playlist units
-  const filteredPlaylist = useMemo(() => {
-    if (!playlistSearch.trim()) return units;
-    return units.filter(
-      (u) =>
-        u.title.toLowerCase().includes(playlistSearch.toLowerCase()) ||
-        u.moduleName?.toLowerCase().includes(playlistSearch.toLowerCase()),
-    );
-  }, [units, playlistSearch]);
+  // Group units by moduleName / sub-course
+  const sections = useMemo(() => {
+    const map = new Map();
+    units.forEach((unit) => {
+      const mod = unit.moduleName || "General Lessons";
+      if (!map.has(mod)) {
+        map.set(mod, []);
+      }
+      map.get(mod).push(unit);
+    });
+    return Array.from(map.entries()).map(([name, items], idx) => {
+      const completed = items.filter((u) => u.isCompleted).length;
+      return {
+        name,
+        index: idx + 1,
+        items,
+        completedCount: completed,
+        totalCount: items.length,
+        isCompleted: completed === items.length && items.length > 0,
+      };
+    });
+  }, [units]);
+
+  // Section accordion expand/collapse state
+  const [expandedSections, setExpandedSections] = useState({});
+
+  // Auto-expand the section containing current active lesson
+  useEffect(() => {
+    if (currentLesson?.moduleName) {
+      setExpandedSections((prev) => ({
+        ...prev,
+        [currentLesson.moduleName]: true,
+      }));
+    }
+  }, [currentLesson?.id, currentLesson?.moduleName]);
+
+  // Expand all sections when search query is entered
+  useEffect(() => {
+    if (playlistSearch.trim()) {
+      const openAll = {};
+      sections.forEach((s) => {
+        openAll[s.name] = true;
+      });
+      setExpandedSections(openAll);
+    }
+  }, [playlistSearch, sections]);
+
+  const toggleSection = (secName) => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [secName]: !prev[secName],
+    }));
+  };
+
+  const expandAllSections = () => {
+    const all = {};
+    sections.forEach((s) => (all[s.name] = true));
+    setExpandedSections(all);
+  };
+
+  const collapseAllSections = () => {
+    setExpandedSections({});
+  };
+
+  // Filtered sections and items by search
+  const filteredSections = useMemo(() => {
+    if (!playlistSearch.trim()) return sections;
+    const q = playlistSearch.toLowerCase();
+    return sections
+      .map((sec) => {
+        const matchesSection = sec.name.toLowerCase().includes(q);
+        const matchingItems = sec.items.filter(
+          (u) =>
+            u.title.toLowerCase().includes(q) ||
+            u.description?.toLowerCase().includes(q) ||
+            matchesSection,
+        );
+        return {
+          ...sec,
+          items: matchingItems,
+        };
+      })
+      .filter((sec) => sec.items.length > 0);
+  }, [sections, playlistSearch]);
 
   // Overall course progress
   const completedCount = units.filter((u) => u.isCompleted).length;
@@ -719,35 +825,181 @@ export const LessonPlayerPage = () => {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: COURSE SYLLABUS PLAYLIST */}
+        {/* RIGHT COLUMN: COURSE SYLLABUS PLAYLIST WITH FOLDER & SECTION ACCORDIONS */}
         <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs space-y-4">
-          <div className="border-b border-slate-100 dark:border-slate-800 pb-3 space-y-2">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-slate-900 dark:text-white text-sm">
-                Course Syllabus
-              </h3>
-              <span className="text-[11px] font-bold text-blue-600 dark:text-cyan-400">
-                {completedCount} / {units.length} Done ({progressPercent}%)
-              </span>
+          
+          {/* ========================================================= */}
+          {/* LEVEL 1: ACTUAL MASTER COURSE CARD & SELECTOR DROPDOWN   */}
+          {/* ========================================================= */}
+          <div className="relative" ref={courseDropdownRef}>
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-950 via-indigo-950 to-slate-900 text-white shadow-md border border-blue-600/40 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/25 text-blue-200 border border-blue-400/40 shadow-xs">
+                  <GraduationCap size={13} className="text-blue-300" />
+                  <span>Enrolled Master Course</span>
+                </span>
+                <span className="text-[10px] font-bold text-blue-300/80">
+                  Click below to switch
+                </span>
+              </div>
+
+              {/* Master Course Display & Switcher Trigger */}
+              <button
+                type="button"
+                onClick={() => setIsCourseDropdownOpen(!isCourseDropdownOpen)}
+                className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 transition-all text-left cursor-pointer group shadow-inner"
+              >
+                <div className="flex items-center space-x-3 min-w-0">
+                  {currentCourse.thumbnail ? (
+                    <img
+                      src={currentCourse.thumbnail}
+                      alt={currentCourse.title}
+                      className="w-10 h-10 rounded-lg object-cover border border-white/20 shrink-0 shadow-xs"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white shrink-0">
+                      {currentCourse.title?.charAt(0)}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <h4 className="text-xs sm:text-sm font-extrabold text-white truncate group-hover:text-cyan-300 transition-colors">
+                      {currentCourse.title}
+                    </h4>
+                    <p className="text-[10px] text-blue-200 font-medium truncate mt-0.5">
+                      {currentCourse.category || "Certification"} • {units.length} Total Lessons • {sections.length} Sub-Courses
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-1 shrink-0 ml-2">
+                  <span className="text-[10px] font-bold text-blue-300 hidden sm:inline">
+                    Switch
+                  </span>
+                  <ChevronDown
+                    size={16}
+                    className={`text-blue-300 transition-transform duration-200 ${
+                      isCourseDropdownOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </div>
+              </button>
+
+              {/* Master Course Progress */}
+              <div className="space-y-1.5 pt-1">
+                <div className="flex items-center justify-between text-[10px] font-bold text-blue-200">
+                  <span>Overall Course Progress</span>
+                  <span className="text-cyan-300 tabular-nums">
+                    {completedCount} / {units.length} Lessons ({progressPercent}%)
+                  </span>
+                </div>
+                <div className="w-full bg-black/40 rounded-full h-1.5 overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-blue-400 to-emerald-400 h-1.5 rounded-full transition-all duration-300"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Progress Bar */}
-            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
-              <div
-                className="bg-gradient-to-r from-blue-600 to-emerald-500 h-1.5 rounded-full transition-all duration-300"
-                style={{ width: `${progressPercent}%` }}
-              />
+            {/* ACTUAL COURSES DROPDOWN POPOVER */}
+            {isCourseDropdownOpen && (
+              <div className="absolute top-full left-0 right-0 mt-2 z-50 bg-white dark:bg-[#0b1329] rounded-2xl shadow-2xl border-2 border-blue-500/50 p-2 space-y-1.5 max-h-72 overflow-y-auto custom-scrollbar animate-in fade-in slide-in-from-top-2">
+                <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                  <span className="flex items-center gap-1.5">
+                    <GraduationCap size={13} className="text-blue-600" />
+                    <span>Select an Actual Course</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400">
+                    {courses.length} Courses
+                  </span>
+                </div>
+                {courses.map((c) => {
+                  const isSelected = c.id === currentCourse.id;
+                  const cUnits = lmsService.getUnitsByCourse(c.id);
+                  return (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => handleSelectCourse(c)}
+                      className={`w-full p-2.5 rounded-xl flex items-center justify-between text-left transition-all cursor-pointer ${
+                        isSelected
+                          ? "bg-blue-50 dark:bg-blue-950/60 border border-blue-500/50 text-blue-900 dark:text-blue-100 shadow-2xs"
+                          : "hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200"
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2.5 min-w-0">
+                        {c.thumbnail ? (
+                          <img
+                            src={c.thumbnail}
+                            alt={c.title}
+                            className="w-8 h-8 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0"
+                          />
+                        ) : (
+                          <div className="w-8 h-8 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                            {c.title?.charAt(0)}
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold truncate">{c.title}</p>
+                          <p className="text-[10px] text-slate-400 truncate">
+                            {cUnits.length} video lessons • {c.category}
+                          </p>
+                        </div>
+                      </div>
+                      {isSelected ? (
+                        <span className="px-2 py-0.5 rounded-md text-[9px] font-bold bg-blue-600 text-white shrink-0 ml-1">
+                          Current
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-slate-400 shrink-0 ml-1">
+                          Switch →
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* ========================================================= */}
+          {/* LEVEL 2: SUB-COURSES / MODULES SECTION HEADER             */}
+          {/* ========================================================= */}
+          <div className="border-b border-slate-100 dark:border-slate-800 pb-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <FolderOpen size={16} className="text-indigo-600 dark:text-indigo-400" />
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-xs uppercase tracking-wider">
+                  Sub-Courses & Modules ({sections.length})
+                </h3>
+              </div>
+              <div className="flex items-center space-x-2 text-[11px]">
+                <button
+                  type="button"
+                  onClick={expandAllSections}
+                  className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
+                >
+                  Expand all
+                </button>
+                <span className="text-slate-300 dark:text-slate-700">|</span>
+                <button
+                  type="button"
+                  onClick={collapseAllSections}
+                  className="font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer"
+                >
+                  Collapse all
+                </button>
+              </div>
             </div>
 
             {/* Playlist search */}
-            <div className="relative pt-1">
+            <div className="relative pt-0.5">
               <Search
                 size={13}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
               />
               <input
                 type="text"
-                placeholder="Search lessons in this course..."
+                placeholder="Search sub-courses or lessons..."
                 value={playlistSearch}
                 onChange={(e) => setPlaylistSearch(e.target.value)}
                 className="w-full bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700 rounded-xl pl-8 pr-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-hidden"
@@ -755,78 +1007,214 @@ export const LessonPlayerPage = () => {
             </div>
           </div>
 
-          {/* Playlist Scroll Area */}
-          <div className="space-y-2 max-h-[560px] overflow-y-auto pr-1">
-            {filteredPlaylist.map((unit, idx) => {
-              const isActive = unit.id === currentLesson.id;
-              return (
-                <div
-                  key={unit.id}
-                  onClick={() => {
-                    const targetIdx = units.findIndex((u) => u.id === unit.id);
-                    if (targetIdx !== -1) {
-                      setActiveLessonIdx(targetIdx);
-                    }
-                  }}
-                  className={`p-3 rounded-2xl border transition-all cursor-pointer ${
-                    isActive
-                      ? "bg-blue-50 dark:bg-blue-950/40 border-blue-500/80 shadow-xs"
-                      : "bg-white dark:bg-[#0b1329] border-slate-100 dark:border-slate-800 hover:bg-slate-50/80 dark:hover:bg-slate-800/40"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-start space-x-2.5 min-w-0">
-                      <div
-                        className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${
-                          isActive
-                            ? "bg-blue-600 text-white shadow-xs"
-                            : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
-                        }`}
-                      >
-                        {idx + 1}
-                      </div>
+          {/* ========================================================= */}
+          {/* LEVEL 2: SUB-COURSES / SECTIONS ACCORDION LIST            */}
+          {/* ========================================================= */}
+          <div className="space-y-3 max-h-[520px] overflow-y-auto pr-1">
+            {filteredSections.length === 0 ? (
+              <div className="text-center py-8 text-xs text-slate-400 space-y-1">
+                <p className="font-semibold">No matching sub-courses found</p>
+                <p className="text-[11px]">Try adjusting your search query</p>
+              </div>
+            ) : (
+              filteredSections.map((sec) => {
+                const isExpanded = expandedSections[sec.name] !== false;
+                const containsActive = sec.items.some(
+                  (u) => u.id === currentLesson.id,
+                );
 
-                      <div className="min-w-0">
-                        <h4
-                          className={`text-xs font-bold leading-snug truncate ${
-                            isActive
-                              ? "text-blue-900 dark:text-blue-200"
-                              : "text-slate-800 dark:text-slate-200"
+                return (
+                  <div
+                    key={sec.name}
+                    className={`rounded-2xl border transition-all overflow-hidden ${
+                      containsActive
+                        ? "border-indigo-400 dark:border-indigo-600 bg-indigo-50/15 dark:bg-indigo-950/20 shadow-xs"
+                        : "border-slate-200/90 dark:border-slate-800/80 bg-white dark:bg-[#0b1329]"
+                    }`}
+                  >
+                    {/* SUB-COURSE ACCORDION HEADER (Unmistakable styling) */}
+                    <button
+                      type="button"
+                      onClick={() => toggleSection(sec.name)}
+                      className={`w-full p-3 sm:p-3.5 flex items-center justify-between transition-colors text-left cursor-pointer border-l-4 ${
+                        sec.isCompleted
+                          ? "border-l-emerald-500 bg-emerald-50/30 dark:bg-emerald-950/20"
+                          : containsActive
+                          ? "border-l-indigo-600 bg-indigo-50/70 dark:bg-indigo-950/40 hover:bg-indigo-100/70"
+                          : "border-l-slate-400 dark:border-l-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3 min-w-0 pr-2">
+                        <div
+                          className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                            sec.isCompleted
+                              ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400"
+                              : containsActive
+                              ? "bg-indigo-600 text-white shadow-xs"
+                              : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
                           }`}
                         >
-                          {unit.title}
-                        </h4>
-                        <div className="flex items-center space-x-2 mt-0.5 text-[10px] text-slate-400">
-                          <span className="truncate max-w-[130px]">
-                            {unit.moduleName || "General"}
-                          </span>
-                          <span>•</span>
-                          <span>{unit.duration}</span>
+                          {sec.isCompleted ? (
+                            <CheckCircle2 size={16} />
+                          ) : isExpanded ? (
+                            <FolderOpen size={16} />
+                          ) : (
+                            <Folder size={16} />
+                          )}
+                        </div>
+
+                        <div className="min-w-0">
+                          <div className="flex items-center space-x-1.5">
+                            <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300">
+                              📂 Sub-Course {sec.index}
+                            </span>
+                            {containsActive && (
+                              <span className="px-1.5 py-0.5 bg-blue-600 text-white text-[9px] font-bold rounded-sm uppercase tracking-wide">
+                                Active Lesson Inside
+                              </span>
+                            )}
+                          </div>
+                          <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate mt-0.5">
+                            {sec.name}
+                          </h4>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="shrink-0 pt-0.5">
-                      {unit.isCompleted ? (
-                        <CheckCircle2
-                          size={16}
-                          className="text-emerald-500 shrink-0"
+                      <div className="flex items-center space-x-2 shrink-0">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 tabular-nums">
+                          {sec.completedCount}/{sec.totalCount}
+                        </span>
+                        <ChevronDown
+                          size={15}
+                          className={`text-slate-400 transition-transform duration-200 ${
+                            isExpanded ? "rotate-180" : ""
+                          }`}
                         />
-                      ) : (
-                        <Play
-                          size={14}
-                          className={
-                            isActive
-                              ? "text-blue-600 dark:text-cyan-400 fill-blue-600 dark:fill-cyan-400 shrink-0 animate-pulse"
-                              : "text-slate-300 dark:text-slate-600 shrink-0"
-                          }
-                        />
-                      )}
-                    </div>
+                      </div>
+                    </button>
+
+                    {/* ========================================================= */}
+                    {/* LEVEL 3: INDENTED VIDEO LESSONS LIST                      */}
+                    {/* ========================================================= */}
+                    {isExpanded && (
+                      <div className="p-2.5 space-y-1.5 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40">
+                        <div className="ml-2 pl-3 border-l-2 border-indigo-200 dark:border-indigo-900/60 space-y-1.5">
+                          {sec.items.map((unit, uIdx) => {
+                            const isActive = unit.id === currentLesson.id;
+                            const savedProgress = localStorage.getItem(
+                              `om_video_progress_${currentCourse.id}_${unit.id}`,
+                            );
+                            const savedSecs = savedProgress
+                              ? parseFloat(savedProgress)
+                              : 0;
+                            const hasResume = savedSecs > 5;
+
+                            return (
+                              <div
+                                key={unit.id}
+                                onClick={() => {
+                                  const targetIdx = units.findIndex(
+                                    (u) => u.id === unit.id,
+                                  );
+                                  if (targetIdx !== -1) {
+                                    setActiveLessonIdx(targetIdx);
+                                  }
+                                }}
+                                className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+                                  isActive
+                                    ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                                    : "bg-white dark:bg-[#0b1329] border-slate-200/80 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-800 dark:text-slate-200"
+                                }`}
+                              >
+                                <div className="flex items-start justify-between gap-2">
+                                  <div className="flex items-start space-x-2.5 min-w-0">
+                                    <div
+                                      className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${
+                                        isActive
+                                          ? "bg-white/20 text-white"
+                                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                                      }`}
+                                    >
+                                      {isActive ? (
+                                        <Play
+                                          size={11}
+                                          className="fill-current translate-x-0.5"
+                                        />
+                                      ) : (
+                                        <span>
+                                          {sec.index}.{uIdx + 1}
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    <div className="min-w-0">
+                                      <h5
+                                        className={`text-xs font-bold leading-snug truncate ${
+                                          isActive
+                                            ? "text-white"
+                                            : "text-slate-800 dark:text-slate-200"
+                                        }`}
+                                      >
+                                        {unit.title}
+                                      </h5>
+                                      <div
+                                        className={`flex items-center space-x-1.5 mt-0.5 text-[10px] ${
+                                          isActive
+                                            ? "text-blue-100"
+                                            : "text-slate-400"
+                                        }`}
+                                      >
+                                        <span>{unit.duration}</span>
+                                        {hasResume && !unit.isCompleted && (
+                                          <>
+                                            <span>•</span>
+                                            <span
+                                              className={
+                                                isActive
+                                                  ? "text-cyan-200 font-semibold"
+                                                  : "text-blue-500 font-semibold"
+                                              }
+                                            >
+                                              Resume at {formatTime(savedSecs)}
+                                            </span>
+                                          </>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="shrink-0 pt-0.5">
+                                    {unit.isCompleted ? (
+                                      <CheckCircle2
+                                        size={16}
+                                        className={
+                                          isActive
+                                            ? "text-white"
+                                            : "text-emerald-500"
+                                        }
+                                      />
+                                    ) : (
+                                      <Play
+                                        size={13}
+                                        className={
+                                          isActive
+                                            ? "text-white fill-white animate-pulse"
+                                            : "text-slate-300 dark:text-slate-600"
+                                        }
+                                      />
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
         </div>
       </div>

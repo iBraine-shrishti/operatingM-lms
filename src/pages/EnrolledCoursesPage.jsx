@@ -15,6 +15,7 @@ import {
   Edit,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth, profilePic } from "../context/AuthContext";
 import { lmsService } from "../services/lmsService";
 import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
@@ -80,6 +81,7 @@ const CATEGORIES = [
 
 export const EnrolledCoursesPage = () => {
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [courses] = useState(() =>
     lmsService.getCourses().filter((c) => c.status === "published"),
   );
@@ -392,7 +394,7 @@ export const EnrolledCoursesPage = () => {
                     {/* Instructor Line */}
                     <div className="flex items-center space-x-2 pb-2.5 mb-3 border-t border-slate-100 dark:border-slate-800 pt-2.5">
                       <img
-                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
+                        src={profilePic}
                         alt="Instructor"
                         className="w-6 h-6 shrink-0 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700"
                       />
@@ -449,18 +451,20 @@ export const EnrolledCoursesPage = () => {
 
                 {/* Card Footer: Action Buttons (Edit, Outline & Continue) */}
                 <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0 flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/create-course?edit=${course.id}`);
-                    }}
-                    className="py-2 sm:py-2.5 px-3 rounded-xl border border-amber-300/80 dark:border-amber-700/80 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 font-bold text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-2xs cursor-pointer active:scale-[0.98]"
-                    title="Edit Course in Course Builder"
-                  >
-                    <Edit size={13} />
-                    <span>Edit</span>
-                  </button>
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/create-course?edit=${course.id}`);
+                      }}
+                      className="py-2 sm:py-2.5 px-3 rounded-xl border border-amber-300/80 dark:border-amber-700/80 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-300 font-bold text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-2xs cursor-pointer active:scale-[0.98]"
+                      title="Edit Course in Course Builder"
+                    >
+                      <Edit size={13} />
+                      <span>Edit</span>
+                    </button>
+                  )}
                   <button
                     type="button"
                     onClick={(e) => {

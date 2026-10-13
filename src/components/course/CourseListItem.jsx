@@ -57,18 +57,20 @@ export const CourseListItem = ({ course, onDelete }) => {
             >
               <Eye size={17}/>
             </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigate(`/create-course?edit=${course.id}`);
-              }}
-              className="flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 border border-amber-300/80 dark:border-amber-700/80 text-amber-900 dark:text-amber-300 font-bold text-xs transition-colors cursor-pointer shadow-2xs"
-              title="Edit Course in Course Builder"
-            >
-              <Edit size={14}/>
-              <span>Edit</span>
-            </button>
+            {isAdmin && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/create-course?edit=${course.id}`);
+                }}
+                className="flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 border border-amber-300/80 dark:border-amber-700/80 text-amber-900 dark:text-amber-300 font-bold text-xs transition-colors cursor-pointer shadow-2xs"
+                title="Edit Course in Course Builder"
+              >
+                <Edit size={14}/>
+                <span>Edit</span>
+              </button>
+            )}
             {isAdmin && onDelete && (
               <button
                 type="button"

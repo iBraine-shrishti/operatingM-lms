@@ -12,7 +12,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth, profilePic } from "../../context/AuthContext";
 import logo from "../../assets/logo.png";
 
 export const CourseCard = ({ course, onDelete }) => {
@@ -118,20 +118,22 @@ export const CourseCard = ({ course, onDelete }) => {
                       />
                       <span>View Outline</span>
                     </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setMenuOpen(false);
-                        navigate(`/create-course?edit=${course.id}`);
-                      }}
-                      className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/70 flex items-center space-x-2"
-                    >
-                      <Edit
-                        size={13}
-                        className="text-slate-400 dark:text-slate-500"
-                      />
-                      <span>Edit Course</span>
-                    </button>
+                    {isAdmin && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setMenuOpen(false);
+                          navigate(`/create-course?edit=${course.id}`);
+                        }}
+                        className="w-full px-3 py-1.5 text-left text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/70 flex items-center space-x-2"
+                      >
+                        <Edit
+                          size={13}
+                          className="text-slate-400 dark:text-slate-500"
+                        />
+                        <span>Edit Course</span>
+                      </button>
+                    )}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -172,7 +174,7 @@ export const CourseCard = ({ course, onDelete }) => {
           {/* Instructor Line */}
           <div className="flex items-center space-x-2 pb-2 mb-2 sm:pb-2.5 sm:mb-3 border-b border-slate-100 dark:border-slate-800">
             <img
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
+              src={profilePic}
               alt="Instructor"
               className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700"
             />
@@ -208,18 +210,20 @@ export const CourseCard = ({ course, onDelete }) => {
 
       {/* Card Footer: Action Buttons (Edit Course & View Outline) */}
       <div className="px-3 pb-3 sm:px-4 sm:pb-4 xl:px-5 xl:pb-5 pt-0 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate(`/create-course?edit=${course.id}`);
-          }}
-          className="flex-1 py-2 sm:py-2.5 px-2 sm:px-2.5 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 border border-amber-300/80 dark:border-amber-700/80 text-amber-900 dark:text-amber-300 font-bold text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-2xs hover:shadow-xs rounded-lg cursor-pointer active:scale-[0.98]"
-          title="Edit Course in Course Builder"
-        >
-          <Edit size={12} className="shrink-0" />
-          <span>Edit</span>
-        </button>
+        {isAdmin && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(`/create-course?edit=${course.id}`);
+            }}
+            className="flex-1 py-2 sm:py-2.5 px-2 sm:px-2.5 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/40 dark:hover:bg-amber-900/60 border border-amber-300/80 dark:border-amber-700/80 text-amber-900 dark:text-amber-300 font-bold text-[11px] sm:text-xs flex items-center justify-center space-x-1.5 transition-all shadow-2xs hover:shadow-xs rounded-lg cursor-pointer active:scale-[0.98]"
+            title="Edit Course in Course Builder"
+          >
+            <Edit size={12} className="shrink-0" />
+            <span>Edit</span>
+          </button>
+        )}
         <button
           type="button"
           onClick={(e) => {
