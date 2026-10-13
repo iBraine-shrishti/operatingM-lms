@@ -55,11 +55,8 @@ import { lmsService } from "../services/lmsService";
 import profilePic from "../assets/profile-pic.png";
 import sahilProfilePic from "../assets/sahil-profile.png";
 import premPhotoImg from "../assets/Prem_Photo.jpg";
-import premPhotoPassportImg from "../assets/Prem_Photo_Passport.png";
 import premAadharFrontImg from "../assets/Prem_Aadhar Front.jpg";
-import premAadharFrontCroppedImg from "../assets/Prem_Aadhar_Front_Cropped.png";
 import premAadharBackImg from "../assets/Prem_Aadhar Back.jpg";
-import premAadharBackCroppedImg from "../assets/Prem_Aadhar_Back_Cropped.png";
 import dashboardHat from "../assets/header-bg/dashboard-hat.png";
 import continueLearningLaptop from "../assets/continue-learning-laptop.png";
 import docAadhaarImg from "../assets/doc-aadhaar.png";
@@ -735,7 +732,6 @@ export const ProfilePage = () => {
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [previewDoc, setPreviewDoc] = useState(null);
   const [docZoomLevel, setDocZoomLevel] = useState(1);
-  const [docViewMode, setDocViewMode] = useState("cropped"); // 'cropped' | 'full'
   const [toastMessage, setToastMessage] = useState(null);
 
   const showToast = (msg) => {
@@ -747,7 +743,6 @@ export const ProfilePage = () => {
   const handleOpenDocPreview = (doc) => {
     setPreviewDoc(doc);
     setDocZoomLevel(1);
-    setDocViewMode("cropped");
   };
 
   // Zoom handlers for modal
@@ -845,7 +840,7 @@ export const ProfilePage = () => {
       title: "Student Photo",
       type: "Passport Photograph",
       status: "Verified",
-      image: premPhotoPassportImg,
+      image: premPhotoImg,
       fullImage: premPhotoImg,
       uploadedOn: "13 Oct 2026",
       docNo: "OMC-PREM-PHOTO",
@@ -856,7 +851,7 @@ export const ProfilePage = () => {
       title: "Aadhaar Card (Front)",
       type: "UIDAI Official ID",
       status: "Verified",
-      image: premAadharFrontCroppedImg,
+      image: premAadharFrontImg,
       fullImage: premAadharFrontImg,
       uploadedOn: "13 Oct 2026",
       docNo: "9218 7859 8578",
@@ -867,7 +862,7 @@ export const ProfilePage = () => {
       title: "Aadhaar Card (Back)",
       type: "UIDAI Address Record",
       status: "Verified",
-      image: premAadharBackCroppedImg,
+      image: premAadharBackImg,
       fullImage: premAadharBackImg,
       uploadedOn: "13 Oct 2026",
       docNo: "9218 7859 8578",
@@ -1884,32 +1879,32 @@ export const ProfilePage = () => {
             </div>
           </div>
 
-          {/* Strictly 3 Document Cards side by side */}
-          <div className="grid grid-cols-3 gap-3 sm:gap-3.5 flex-1">
+          {/* Responsive Document Cards: 3 on desktop -> 2-1 on medium -> 1-1-1 on mobile */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5 sm:gap-4 flex-1">
             {studentDocuments.map((doc) => (
               <div
                 key={doc.id}
                 onClick={() => handleOpenDocPreview(doc)}
-                className="group p-2.5 sm:p-3 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/40 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-2 h-full"
+                className="group p-2.5 sm:p-3 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/40 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-2 h-full sm:last:col-span-2 sm:last:max-w-[calc(50%-0.5rem)] sm:last:mx-auto xl:last:max-w-none xl:last:col-span-1 w-full"
               >
-                {/* Clear document image preview container utilizing parent container */}
-                <div className="w-full flex-1 min-h-[175px] sm:min-h-[195px] rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800 p-1.5 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-all">
+                {/* Clear original uncropped document image preview container */}
+                <div className="w-full flex-1 min-h-[240px] sm:min-h-[270px] rounded-xl bg-slate-950 dark:bg-black border border-slate-800/80 p-2 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-all">
                   <img
                     src={doc.image}
                     alt={doc.title}
-                    className="w-full h-full object-contain rounded-md drop-shadow-2xs transform group-hover:scale-[1.03] transition-transform duration-300"
+                    className="w-full h-full max-h-[320px] object-contain rounded-lg drop-shadow-sm transform group-hover:scale-[1.02] transition-transform duration-300"
                   />
 
                   {/* Top-right HD badge */}
-                  <span className="absolute top-1.5 right-1.5 z-10 text-[8px] sm:text-[9px] font-bold bg-white/95 dark:bg-slate-900/95 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded shadow-2xs border border-blue-200/60 dark:border-blue-800 flex items-center space-x-0.5 backdrop-blur-xs">
-                    <ZoomIn size={9} />
-                    <span>Clear Doc</span>
+                  <span className="absolute top-2 right-2 z-10 text-[9px] sm:text-[10px] font-bold bg-white/95 dark:bg-slate-900/95 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded shadow-2xs border border-blue-200/60 dark:border-blue-800 flex items-center space-x-1 backdrop-blur-xs">
+                    <ZoomIn size={10} />
+                    <span>Original Doc</span>
                   </span>
 
                   {/* Hover zoom & inspect overlay */}
                   <div className="absolute inset-0 z-20 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
-                    <span className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] sm:text-xs shadow-md flex items-center space-x-1 transform group-hover:scale-105 transition-transform">
-                      <Maximize2 size={11} />
+                    <span className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md flex items-center space-x-1.5 transform group-hover:scale-105 transition-transform">
+                      <Maximize2 size={12} />
                       <span>Zoom View</span>
                     </span>
                   </div>
@@ -1935,9 +1930,10 @@ export const ProfilePage = () => {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
+                      const ext = (doc.image || "").endsWith(".png") ? "png" : "jpg";
                       const link = document.createElement("a");
                       link.href = doc.image;
-                      link.download = `${doc.title}.png`;
+                      link.download = `${doc.title}.${ext}`;
                       link.click();
                       showToast(`Downloading official copy: ${doc.title}`);
                     }}
@@ -2360,34 +2356,6 @@ export const ProfilePage = () => {
 
               {/* Center / Right Toolbar Controls */}
               <div className="flex items-center space-x-2 shrink-0">
-                {/* View switcher between Cropped Clear Card and Full Original */}
-                {previewDoc.fullImage && previewDoc.fullImage !== previewDoc.image && (
-                  <div className="flex items-center bg-slate-100 dark:bg-slate-900/90 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-800 text-[11px] font-bold mr-1">
-                    <button
-                      type="button"
-                      onClick={() => setDocViewMode("cropped")}
-                      className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
-                        docViewMode === "cropped"
-                          ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-2xs font-extrabold"
-                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-                      }`}
-                    >
-                      Clear Card
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDocViewMode("full")}
-                      className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
-                        docViewMode === "full"
-                          ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-2xs font-extrabold"
-                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
-                      }`}
-                    >
-                      Full Document
-                    </button>
-                  </div>
-                )}
-
                 {/* Zoom Controls */}
                 <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-800">
                   <button
@@ -2441,8 +2409,8 @@ export const ProfilePage = () => {
               </div>
             </div>
 
-            {/* Expansive Canvas (renders the CLEAR High-Resolution Image) */}
-            <div className="flex-1 min-h-0 w-full overflow-auto bg-slate-900/95 dark:bg-slate-950 p-4 sm:p-8 flex items-center justify-center relative">
+            {/* Expansive Canvas (renders the CLEAR High-Resolution Original Image) */}
+            <div className="flex-1 min-h-0 w-full overflow-auto bg-slate-950 p-4 sm:p-8 flex items-center justify-center relative">
               <div
                 className="transition-transform duration-150 ease-out flex items-center justify-center my-auto"
                 style={{
@@ -2451,9 +2419,9 @@ export const ProfilePage = () => {
                 }}
               >
                 <img
-                  src={docViewMode === "full" && previewDoc.fullImage ? previewDoc.fullImage : previewDoc.image}
+                  src={previewDoc.image}
                   alt={previewDoc.title}
-                  className="max-h-[74vh] max-w-full object-contain rounded-2xl shadow-2xl border border-slate-700/80 bg-white"
+                  className="max-h-[75vh] max-w-full object-contain rounded-2xl shadow-2xl border border-slate-800"
                 />
               </div>
             </div>
@@ -2484,10 +2452,10 @@ export const ProfilePage = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    const activeSrc = docViewMode === "full" && previewDoc.fullImage ? previewDoc.fullImage : previewDoc.image;
+                    const ext = (previewDoc.image || "").endsWith(".png") ? "png" : "jpg";
                     const link = document.createElement("a");
-                    link.href = activeSrc;
-                    link.download = `${previewDoc.title}.png`;
+                    link.href = previewDoc.image;
+                    link.download = `${previewDoc.title}.${ext}`;
                     link.click();
                     showToast(`Downloaded official copy: ${previewDoc.title}`);
                   }}
