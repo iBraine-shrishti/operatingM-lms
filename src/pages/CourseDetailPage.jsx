@@ -44,7 +44,7 @@ import {
   Phone,
   Globe,
 } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth, profilePic } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
 const OVERVIEW_ICONS = {
@@ -479,14 +479,16 @@ export const CourseDetailPage = () => {
 
           {/* Action buttons (Edit Course & Change Cover) */}
           <div className="absolute top-4 right-4 flex items-center space-x-2 z-10">
-            <button
-              onClick={() => navigate(`/create-course?edit=${course.id}`)}
-              className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-3.5 py-1.5 rounded-xl border border-amber-400 shadow-md backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer"
-              title="Edit course in Course Builder"
-            >
-              <Edit size={13} />
-              <span>Edit Course</span>
-            </button>
+            {isAdmin && (
+              <button
+                onClick={() => navigate(`/create-course?edit=${course.id}`)}
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-3.5 py-1.5 rounded-xl border border-amber-400 shadow-md backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer"
+                title="Edit course in Course Builder"
+              >
+                <Edit size={13} />
+                <span>Edit Course</span>
+              </button>
+            )}
             {isAdmin && (
               <button
                 onClick={() => setShowCoverModal(true)}
@@ -525,7 +527,7 @@ export const CourseDetailPage = () => {
             {/* Instructor Credit on Right Side matching course-outline.png */}
             <div className="flex items-center space-x-3 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 px-4 py-2.5 rounded-xl shrink-0 self-start xl:self-auto">
               <img
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80"
+                src={profilePic}
                 alt="Nilkamal Mukharjee"
                 className="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-800 shadow-2xs shrink-0"
               />
@@ -534,7 +536,7 @@ export const CourseDetailPage = () => {
                   Instructor: Nilkamal Mukharjee
                 </p>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                  tonystark@lms.com
+                  instructor@operatingmedia.com
                 </p>
               </div>
             </div>

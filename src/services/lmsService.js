@@ -1,7 +1,7 @@
 import { INITIAL_COURSES, COURSE_THUMBNAILS, INITIAL_UNITS, INITIAL_QUIZZES, INITIAL_ASSIGNMENTS, INITIAL_STUDENTS, INITIAL_QUESTIONS, INITIAL_DISCUSSIONS, INITIAL_ACTIVITIES, INITIAL_ACHIEVEMENTS, INITIAL_NOTES, INITIAL_REVIEWS } from '../data/mockData';
 import { IMPORTED_LMS_QUIZZES } from '../data/importedLmsQuizzes';
 // Helper for persistent local storage mock service
-const STORAGE_PREFIX = 'om_lms_v11_';
+const STORAGE_PREFIX = 'om_lms_v12_';
 const getStored = (key, initial) => {
     try {
         const item = localStorage.getItem(`${STORAGE_PREFIX}${key}`);
@@ -67,7 +67,12 @@ export const lmsService = {
     // Units
     getUnits: () => {
         const stored = getStored('units', INITIAL_UNITS);
-        return stored.filter(u => u.courseId !== 'course-2');
+        return stored
+            .filter(u => u.courseId !== 'course-2')
+            .map(u => ({
+                ...u,
+                videoUrl: u.videoUrl ? u.videoUrl.replace('LMS_COURSES-vidoes', 'LMS_COURSES-videos') : u.videoUrl
+            }));
     },
     getUnitsByCourse: (courseId) => {
         return lmsService.getUnits().filter(u => u.courseId === courseId);

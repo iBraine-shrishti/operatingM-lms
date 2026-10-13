@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 
 # Media & Videos
+public/LMS_COURSES-videos/
 public/LMS_COURSES-vidoes/
 *.mp4
 *.mov

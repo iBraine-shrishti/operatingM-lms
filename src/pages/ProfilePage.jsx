@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   Save,
   Award,
@@ -40,11 +40,16 @@ import {
   Building,
   ArrowRight,
   Filter,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  Maximize2,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { FeeReceiptModal } from "../components/crm/FeeReceiptModal";
 import { AttendanceComparisonChart } from "../components/crm/AttendanceComparisonChart";
+import { lmsService } from "../services/lmsService";
 
 // Visual assets
 import profilePic from "../assets/profile-pic.png";
@@ -54,6 +59,421 @@ import continueLearningLaptop from "../assets/continue-learning-laptop.png";
 import docAadhaarImg from "../assets/doc-aadhaar.png";
 import doc10thImg from "../assets/doc-10th.png";
 import doc12thImg from "../assets/doc-12th.png";
+
+// ==============================================================
+// HIGH-FIDELITY DOCUMENT RENDERERS (ZOOMABLE & CRISP)
+// ==============================================================
+const AadhaarDocView = ({ studentData, sahilProfilePic, isCard = false }) => (
+  <div
+    className={`bg-white rounded-xl border border-slate-300 shadow-md select-none overflow-hidden flex flex-col justify-between font-sans transition-transform ${
+      isCard
+        ? "w-full h-full p-2.5 max-w-[320px]"
+        : "w-full max-w-3xl p-6 sm:p-8 border-2 border-slate-300 shadow-2xl"
+    }`}
+  >
+    {/* Top Header */}
+    <div>
+      <div className="h-1.5 w-full bg-gradient-to-r from-orange-500 via-white to-green-600 rounded-xs mb-1" />
+      <div className="flex items-center justify-between pb-1 border-b border-slate-200">
+        <div className="flex items-center space-x-1.5">
+          <div
+            className={`rounded-full bg-amber-50 border border-amber-300 flex items-center justify-center font-serif font-black text-amber-800 ${
+              isCard ? "w-4 h-4 text-[7px]" : "w-7 h-7 text-xs"
+            }`}
+          >
+            🏛️
+          </div>
+          <div className="text-left">
+            <span
+              className={`font-black text-slate-800 tracking-tight block leading-tight ${
+                isCard ? "text-[8px]" : "text-xs"
+              }`}
+            >
+              भारत सरकार / Government of India
+            </span>
+            <span
+              className={`text-slate-500 font-semibold block leading-tight ${
+                isCard ? "text-[6.5px]" : "text-[10px]"
+              }`}
+            >
+              भारतीय विशिष्ट पहचान प्राधिकरण / UIDAI
+            </span>
+          </div>
+        </div>
+        <div className={`text-right ${isCard ? "text-[7px]" : "text-[10px]"}`}>
+          <span className="font-bold text-red-600 block">आधार</span>
+          <span className="text-slate-500 text-[6px]">AADHAAR</span>
+        </div>
+      </div>
+    </div>
+
+    {/* Middle: Photo & Details */}
+    <div className={`flex items-start gap-2.5 ${isCard ? "my-1" : "my-4 gap-4"}`}>
+      <div
+        className={`relative shrink-0 rounded-md overflow-hidden border border-slate-300 shadow-xs bg-slate-100 ${
+          isCard ? "w-12 h-14" : "w-28 h-32"
+        }`}
+      >
+        <img
+          src={sahilProfilePic}
+          alt="Sahil Hasolkar"
+          className="w-full h-full object-cover"
+        />
+        <div
+          className={`absolute bottom-0 inset-x-0 bg-blue-600/90 text-white font-bold text-center ${
+            isCard ? "text-[5px] py-0.2" : "text-[9px] py-0.5"
+          }`}
+        >
+          UIDAI
+        </div>
+      </div>
+
+      <div className="flex-1 min-w-0 space-y-0.5 text-left">
+        <div>
+          <span className={`text-slate-400 block ${isCard ? "text-[6.5px]" : "text-[10px]"}`}>
+            नाम / Name:
+          </span>
+          <strong
+            className={`font-black text-slate-900 block truncate ${
+              isCard ? "text-[9.5px]" : "text-base"
+            }`}
+          >
+            {studentData.fullName || "Sahil Nilesh Hasolkar"}
+          </strong>
+        </div>
+        <div className={`text-slate-600 ${isCard ? "text-[7.5px]" : "text-xs"}`}>
+          <span>DOB: </span>
+          <strong className="text-slate-900 font-bold">
+            {studentData.dob || "28/11/2006"}
+          </strong>
+        </div>
+        <div className={`text-slate-600 ${isCard ? "text-[7.5px]" : "text-xs"}`}>
+          <span>लिंग / Gender: </span>
+          <strong className="text-slate-900 font-bold">
+            {studentData.gender || "Male"}
+          </strong>
+        </div>
+        {!isCard && (
+          <div className="text-[11px] text-slate-600 pt-1 leading-snug">
+            <span>Address: </span>
+            <span className="text-slate-800 font-medium">
+              Flat 402, Sai Shraddha Apt, Borivali West, Mumbai, Maharashtra - 400092
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div
+        className={`shrink-0 border border-slate-200 rounded p-1 bg-white flex flex-col items-center justify-center ${
+          isCard ? "w-11 h-13" : "w-24 h-28"
+        }`}
+      >
+        <div className="grid grid-cols-4 gap-0.5 w-full h-full p-0.5 bg-slate-50 border border-slate-100">
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-200 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-200 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-200 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-200 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+          <div className="bg-slate-200 rounded-xs" />
+          <div className="bg-slate-900 rounded-xs" />
+        </div>
+        <span
+          className={`text-slate-400 font-bold uppercase mt-0.5 ${
+            isCard ? "text-[4.5px]" : "text-[8px]"
+          }`}
+        >
+          SECURE QR
+        </span>
+      </div>
+    </div>
+
+    {/* Bottom: Bold Number & Strip */}
+    <div className="border-t border-slate-200 pt-1">
+      <div
+        className={`font-mono font-black text-center tracking-widest text-red-600 ${
+          isCard ? "text-[11.5px]" : "text-xl py-1.5"
+        }`}
+      >
+        XXXX&nbsp;&nbsp;XXXX&nbsp;&nbsp;8921
+      </div>
+      <div
+        className={`flex items-center justify-between text-slate-500 font-medium ${
+          isCard ? "text-[6px]" : "text-[10px]"
+        }`}
+      >
+        <span>मेरा आधार, मेरी पहचान</span>
+        <span>Help: 1947 • help@uidai.gov.in</span>
+      </div>
+    </div>
+  </div>
+);
+
+const TenthMarksheetDocView = ({ studentData, isCard = false }) => (
+  <div
+    className={`bg-[#fffef8] rounded-xl border-2 border-red-900/80 shadow-md select-none overflow-hidden flex flex-col justify-between font-serif transition-transform ${
+      isCard
+        ? "w-full h-full p-2.5 max-w-[320px]"
+        : "w-full max-w-3xl p-6 sm:p-8 border-4 border-red-900/80 shadow-2xl"
+    }`}
+  >
+    <div className="text-center border-b border-red-900/30 pb-1">
+      <span
+        className={`font-black text-red-950 uppercase tracking-tight block ${
+          isCard ? "text-[7.5px]" : "text-xs"
+        }`}
+      >
+        MAHARASHTRA STATE BOARD OF SECONDARY & HIGHER SECONDARY EDUCATION
+      </span>
+      <span
+        className={`font-bold text-red-800 tracking-wider block ${
+          isCard ? "text-[6.5px]" : "text-[10px]"
+        }`}
+      >
+        STATEMENT OF MARKS - S.S.C. EXAMINATION - MARCH 2022
+      </span>
+    </div>
+
+    <div
+      className={`grid grid-cols-3 gap-1 bg-white/80 rounded p-1 border border-red-900/20 font-sans text-left ${
+        isCard ? "text-[6.5px] my-1" : "text-xs my-2.5 p-2"
+      }`}
+    >
+      <div>
+        <span className="text-slate-400 block text-[6px]">SEAT NO.</span>
+        <strong className="text-slate-900 font-black">B084921</strong>
+      </div>
+      <div>
+        <span className="text-slate-400 block text-[6px]">CANDIDATE NAME</span>
+        <strong className="text-slate-900 font-black truncate block">
+          {studentData.fullName || "HASOLKAR SAHIL NILESH"}
+        </strong>
+      </div>
+      <div>
+        <span className="text-slate-400 block text-[6px]">CENTER</span>
+        <strong className="text-slate-900 font-black">0375 (BORIVALI)</strong>
+      </div>
+    </div>
+
+    {isCard ? (
+      <div className="bg-white/90 rounded border border-red-900/20 p-1.5 font-sans text-[6.5px] space-y-0.5 text-left">
+        <div className="flex justify-between font-bold text-slate-800">
+          <span>ENG: 86 | MATH: 88 | SCI: 85</span>
+          <span className="text-emerald-700 font-black">PASS (84.67%)</span>
+        </div>
+        <div className="text-slate-500 text-[6px]">
+          Total: 508 / 600 • First Class with Distinction
+        </div>
+      </div>
+    ) : (
+      <div className="bg-white rounded border border-red-900/30 font-sans text-xs overflow-hidden my-2">
+        <table className="w-full text-left text-xs">
+          <thead className="bg-red-950 text-white text-[10px]">
+            <tr>
+              <th className="p-1.5">SUB CODE & SUBJECT</th>
+              <th className="p-1.5 text-center">MAX</th>
+              <th className="p-1.5 text-center">MARKS OBTAINED</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200 text-slate-800 text-[11px]">
+            <tr>
+              <td className="p-1 font-semibold">01 MARATHI</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">082</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">02 HINDI</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">080</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">03 ENGLISH</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">086</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">71 MATHEMATICS</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">088</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">72 SCIENCE & TECHNOLOGY</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">085</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">73 SOCIAL SCIENCES</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">087</td>
+            </tr>
+          </tbody>
+          <tfoot className="bg-amber-100/70 border-t border-red-900/30 font-bold text-[11px]">
+            <tr>
+              <td className="p-1.5">TOTAL / PERCENTAGE</td>
+              <td className="p-1.5 text-center">600</td>
+              <td className="p-1.5 text-center text-emerald-800 font-black">
+                508 (84.67%) • PASS
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    )}
+
+    <div
+      className={`flex items-center justify-between border-t border-red-900/20 pt-1 font-sans ${
+        isCard ? "text-[6px]" : "text-[10px]"
+      }`}
+    >
+      <span className="text-slate-600 font-semibold">Ref: MSBSHSE / SSC 2022</span>
+      <span className="text-emerald-700 font-black bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-300">
+        ✓ OFFICIALLY VERIFIED
+      </span>
+    </div>
+  </div>
+);
+
+const TwelfthMarksheetDocView = ({ studentData, isCard = false }) => (
+  <div
+    className={`bg-[#fafffb] rounded-xl border-2 border-emerald-800/80 shadow-md select-none overflow-hidden flex flex-col justify-between font-serif transition-transform ${
+      isCard
+        ? "w-full h-full p-2.5 max-w-[320px]"
+        : "w-full max-w-3xl p-6 sm:p-8 border-4 border-emerald-800/80 shadow-2xl"
+    }`}
+  >
+    <div className="text-center border-b border-emerald-800/30 pb-1">
+      <span
+        className={`font-black text-emerald-950 uppercase tracking-tight block ${
+          isCard ? "text-[7.5px]" : "text-xs"
+        }`}
+      >
+        MAHARASHTRA STATE BOARD OF SECONDARY & HIGHER SECONDARY EDUCATION
+      </span>
+      <span
+        className={`font-bold text-emerald-800 tracking-wider block ${
+          isCard ? "text-[6.5px]" : "text-[10px]"
+        }`}
+      >
+        HIGHER SECONDARY CERTIFICATE EXAMINATION - FEBRUARY 2024
+      </span>
+    </div>
+
+    <div
+      className={`grid grid-cols-3 gap-1 bg-white/80 rounded p-1 border border-emerald-800/20 font-sans text-left ${
+        isCard ? "text-[6.5px] my-1" : "text-xs my-2.5 p-2"
+      }`}
+    >
+      <div>
+        <span className="text-slate-400 block text-[6px]">SEAT NO.</span>
+        <strong className="text-slate-900 font-black">H049182</strong>
+      </div>
+      <div>
+        <span className="text-slate-400 block text-[6px]">CANDIDATE NAME</span>
+        <strong className="text-slate-900 font-black truncate block">
+          {studentData.fullName || "HASOLKAR SAHIL NILESH"}
+        </strong>
+      </div>
+      <div>
+        <span className="text-slate-400 block text-[6px]">STREAM</span>
+        <strong className="text-slate-900 font-black">COMMERCE</strong>
+      </div>
+    </div>
+
+    {isCard ? (
+      <div className="bg-white/90 rounded border border-emerald-800/20 p-1.5 font-sans text-[6.5px] space-y-0.5 text-left">
+        <div className="flex justify-between font-bold text-slate-800">
+          <span>BK: 86 | IT: 90 | ENG: 84</span>
+          <span className="text-emerald-700 font-black">PASS (84.55%)</span>
+        </div>
+        <div className="text-slate-500 text-[6px]">
+          Total: 465 / 550 • First Class with Distinction
+        </div>
+      </div>
+    ) : (
+      <div className="bg-white rounded border border-emerald-800/30 font-sans text-xs overflow-hidden my-2">
+        <table className="w-full text-left text-xs">
+          <thead className="bg-emerald-950 text-white text-[10px]">
+            <tr>
+              <th className="p-1.5">SUB CODE & SUBJECT</th>
+              <th className="p-1.5 text-center">MAX</th>
+              <th className="p-1.5 text-center">MARKS OBTAINED</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200 text-slate-800 text-[11px]">
+            <tr>
+              <td className="p-1 font-semibold">01 ENGLISH</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">084</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">49 BOOK KEEPING & ACCOUNTANCY</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">086</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">50 ECONOMICS</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">078</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">51 ORGANIZATION OF COMMERCE</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">082</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">97 INFORMATION TECHNOLOGY</td>
+              <td className="p-1 text-center">100</td>
+              <td className="p-1 text-center font-bold">090</td>
+            </tr>
+            <tr>
+              <td className="p-1 font-semibold">31 ENVIRONMENTAL EDUCATION</td>
+              <td className="p-1 text-center">050</td>
+              <td className="p-1 text-center font-bold">045</td>
+            </tr>
+          </tbody>
+          <tfoot className="bg-emerald-100/70 border-t border-emerald-800/30 font-bold text-[11px]">
+            <tr>
+              <td className="p-1.5">TOTAL / PERCENTAGE</td>
+              <td className="p-1.5 text-center">550</td>
+              <td className="p-1.5 text-center text-emerald-800 font-black">
+                465 (84.55%) • FIRST CLASS
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    )}
+
+    <div
+      className={`flex items-center justify-between border-t border-emerald-800/20 pt-1 font-sans ${
+        isCard ? "text-[6px]" : "text-[10px]"
+      }`}
+    >
+      <span className="text-slate-600 font-semibold">Ref: MSBSHSE / HSC 2024</span>
+      <span className="text-emerald-700 font-black bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-300">
+        ✓ OFFICIALLY VERIFIED
+      </span>
+    </div>
+  </div>
+);
+
+const DocumentVisualizer = ({ doc, studentData, sahilProfilePic, isCard = false }) => {
+  if (doc?.id === "aadhaar") {
+    return <AadhaarDocView studentData={studentData} sahilProfilePic={sahilProfilePic} isCard={isCard} />;
+  }
+  if (doc?.id === "10th") {
+    return <TenthMarksheetDocView studentData={studentData} isCard={isCard} />;
+  }
+  return <TwelfthMarksheetDocView studentData={studentData} isCard={isCard} />;
+};
 
 export const ProfilePage = () => {
   const {
@@ -77,12 +497,125 @@ export const ProfilePage = () => {
     return "overview";
   });
 
-  // Keep search params in sync
+  const isProgrammaticScrollRef = useRef(false);
+  const programmaticScrollTimerRef = useRef(null);
+
+  // Keep search params in sync and smoothly scroll to the corresponding section
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-    if (tab === "overview") setSearchParams({});
-    else setSearchParams({ tab });
+    isProgrammaticScrollRef.current = true;
+    if (programmaticScrollTimerRef.current) {
+      clearTimeout(programmaticScrollTimerRef.current);
+    }
+    programmaticScrollTimerRef.current = setTimeout(() => {
+      isProgrammaticScrollRef.current = false;
+    }, 700);
+
+    if (tab === "overview") {
+      setSearchParams({});
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      setSearchParams({ tab });
+      const targetMap = {
+        attendance: "section-attendance-fees",
+        personal: "section-personal-info",
+        documents: "section-documents",
+        history: "section-course-history",
+      };
+      const elemId = targetMap[tab];
+      if (elemId) {
+        const el = document.getElementById(elemId);
+        if (el) {
+          const yOffset = -70;
+          const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }
+      }
+    }
   };
+
+  // Scroll to section when tab query parameter is provided on mount or route update
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam && tabParam !== "overview") {
+      const targetMap = {
+        attendance: "section-attendance-fees",
+        details: "section-personal-info",
+        personal: "section-personal-info",
+        documents: "section-documents",
+        history: "section-course-history",
+      };
+      const elemId = targetMap[tabParam];
+      if (elemId) {
+        const timer = setTimeout(() => {
+          const el = document.getElementById(elemId);
+          if (el) {
+            const yOffset = -70;
+            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: "smooth" });
+          }
+        }, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [searchParams]);
+
+  // Synchronize active tab highlight based on current scroll position
+  useEffect(() => {
+    const sections = [
+      { id: "section-overview", tab: "overview" },
+      { id: "section-attendance-fees", tab: "attendance" },
+      { id: "section-personal-info", tab: "personal" },
+      { id: "section-documents", tab: "documents" },
+      { id: "section-course-history", tab: "history" },
+    ];
+
+    const handleScroll = () => {
+      if (isProgrammaticScrollRef.current) return;
+
+      // Bottom of page check - activate last section
+      const atBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 60;
+      if (atBottom) {
+        setActiveTab("history");
+        return;
+      }
+
+      const targetY = 140;
+
+      // 1. Check Course History
+      const histEl = document.getElementById("section-course-history");
+      if (histEl && histEl.getBoundingClientRect().top <= targetY) {
+        setActiveTab("history");
+        return;
+      }
+
+      // 2. Check 2-column row: Personal Info & Documents
+      const personalEl = document.getElementById("section-personal-info");
+      const docsEl = document.getElementById("section-documents");
+      const pTop = personalEl ? personalEl.getBoundingClientRect().top : 9999;
+      const dTop = docsEl ? docsEl.getBoundingClientRect().top : 9999;
+      const rowTop = Math.min(pTop, dTop);
+
+      if (rowTop <= targetY) {
+        setActiveTab((prev) => (prev === "documents" ? "documents" : "personal"));
+        return;
+      }
+
+      // 3. Check Attendance & Fees
+      const attEl = document.getElementById("section-attendance-fees");
+      if (attEl && attEl.getBoundingClientRect().top <= targetY) {
+        setActiveTab("attendance");
+        return;
+      }
+
+      setActiveTab("overview");
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Student Profile State (seeded from crmProfile with Sahil Hasolkar default & pending fees)
   const [studentData, setStudentData] = useState(() => ({
@@ -185,10 +718,11 @@ export const ProfilePage = () => {
   const [activePayingInstallment, setActivePayingInstallment] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [previewDoc, setPreviewDoc] = useState(null);
+  const [docZoomLevel, setDocZoomLevel] = useState(1);
+  const [docModalView, setDocModalView] = useState("digital"); // 'digital' | 'scanned'
   const [toastMessage, setToastMessage] = useState(null);
 
   // Table selection & bulk action
-  const [selectedInstallments, setSelectedInstallments] = useState([]);
   const [bulkAction, setBulkAction] = useState("");
 
   const showToast = (msg) => {
@@ -196,29 +730,41 @@ export const ProfilePage = () => {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // Checkbox handlers
-  const handleSelectAll = (e) => {
-    if (e.target.checked) {
-      setSelectedInstallments(studentData.installments.map((i) => i.id));
-    } else {
-      setSelectedInstallments([]);
+  // Open Document Lightbox Modal with zoom reset
+  const handleOpenDocPreview = (doc) => {
+    setPreviewDoc(doc);
+    setDocZoomLevel(1);
+    setDocModalView("digital");
+  };
+
+  // Zoom handlers for modal
+  const handleZoomIn = () => setDocZoomLevel((z) => Math.min(2.5, +(z + 0.25).toFixed(2)));
+  const handleZoomOut = () => setDocZoomLevel((z) => Math.max(0.75, +(z - 0.25).toFixed(2)));
+  const handleResetZoom = () => setDocZoomLevel(1);
+
+  // Respective course id for "View Course Details" navigation
+  const respectiveCourseId = useMemo(() => {
+    try {
+      const courses = lmsService.getCourses();
+      const courseTitle = (studentData.course || "").toLowerCase();
+      const matched = courses.find(
+        (c) =>
+          c.title.toLowerCase() === courseTitle ||
+          courseTitle.includes(c.title.toLowerCase()) ||
+          c.title.toLowerCase().includes(courseTitle) ||
+          (c.description && c.description.toLowerCase().includes("masters")) ||
+          (c.overview?.greeting && c.overview.greeting.toLowerCase().includes("masters"))
+      );
+      return matched ? matched.id : "course-3";
+    } catch {
+      return "course-3";
     }
-  };
+  }, [studentData.course]);
 
-  const handleToggleSelect = (id) => {
-    setSelectedInstallments((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
-
-  // Bulk action handler
+  // Bulk action handler (applies to installments without tickboxes)
   const handleApplyBulkAction = () => {
     if (!bulkAction) {
-      showToast("Please choose a bulk action to apply");
-      return;
-    }
-    if (selectedInstallments.length === 0) {
-      showToast("Please select at least one installment row");
+      showToast("Please choose an action to apply");
       return;
     }
 
@@ -226,7 +772,7 @@ export const ProfilePage = () => {
       setStudentData((prev) => {
         let addedPaid = 0;
         const updated = prev.installments.map((inst) => {
-          if (selectedInstallments.includes(inst.id) && inst.status !== "PAID") {
+          if (inst.status !== "PAID") {
             addedPaid += inst.amount;
             return { ...inst, status: "PAID", isOverdue: false };
           }
@@ -238,16 +784,15 @@ export const ProfilePage = () => {
           ...prev,
           amountPaid: newPaid,
           balanceDue: newBal,
-          feesClearedPercent: Math.round((newPaid / prev.totalFees) * 100),
+          feesClearedPercent: 100,
           installments: updated,
         };
       });
-      showToast(`Selected installments marked as PAID successfully!`);
-      setSelectedInstallments([]);
+      showToast("All pending installments marked as PAID successfully!");
+      setBulkAction("");
     } else if (bulkAction === "download-receipts") {
-      showToast(`Generating consolidated fee receipts for selected items...`);
-    } else if (bulkAction === "send-reminder") {
-      showToast(`Payment reminder dispatch queued for registered contact!`);
+      showToast("Generating consolidated fee receipts for all installments...");
+      setBulkAction("");
     }
   };
 
@@ -527,7 +1072,7 @@ export const ProfilePage = () => {
       {/* ============================================================== */}
       {/* 2. TAB NAVIGATION BAR                                          */}
       {/* ============================================================== */}
-      <div className="flex items-center space-x-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto">
+      <div className="flex items-center space-x-2 border-b border-slate-200 dark:border-slate-800 pb-2 overflow-x-auto sticky top-0 bg-slate-50/90 dark:bg-[#070d1e]/90 backdrop-blur-md z-20 pt-2 -mt-2">
         <button
           type="button"
           onClick={() => handleTabChange("overview")}
@@ -597,7 +1142,7 @@ export const ProfilePage = () => {
       {/* ============================================================== */}
       {/* 3. FOUR METRIC CARDS ROW                                       */}
       {/* ============================================================== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div id="section-overview" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 scroll-mt-20">
         {/* Card 1: Admission Date */}
         <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 flex items-center space-x-3.5 shadow-xs">
           <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
@@ -687,7 +1232,7 @@ export const ProfilePage = () => {
               </div>
               <button
                 type="button"
-                onClick={() => navigate("/enrolled-courses")}
+                onClick={() => navigate(`/courses/${respectiveCourseId}`)}
                 className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center space-x-1 cursor-pointer"
               >
                 <span>View Course Details</span>
@@ -851,16 +1396,23 @@ export const ProfilePage = () => {
               }}
               className="w-full py-2.5 rounded-xl border-2 border-dashed border-blue-300 dark:border-blue-700/80 hover:border-blue-600 hover:bg-blue-50/50 dark:hover:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
             >
-              <span>+ Issue Refund / Pay Installment</span>
+              <span>+ Pay Installment</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* ============================================================== */}
-      {/* 5. FULL WIDTH PAYMENT SCHEDULE TABLE                           */}
+      {/* 5. ATTENDANCE & FEES (PAYMENT SCHEDULE & CLASSROOM ANALYTICS)  */}
       {/* ============================================================== */}
-      <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden">
+      <div id="section-attendance-fees" className="space-y-5 scroll-mt-20">
+        <div
+          className={`bg-white dark:bg-[#0b1329] rounded-2xl shadow-xs overflow-hidden transition-all duration-500 ${
+            activeTab === "attendance"
+              ? "border-2 border-blue-500 dark:border-blue-500 ring-4 ring-blue-500/15 shadow-xl shadow-blue-500/10"
+              : "border border-slate-200/80 dark:border-slate-800"
+          }`}
+        >
         {/* Table Header Bar */}
         <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-2.5">
@@ -868,9 +1420,17 @@ export const ProfilePage = () => {
               <Calendar size={16} />
             </div>
             <div>
-              <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                Payment Schedule
-              </h3>
+              <div className="flex items-center space-x-2">
+                <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
+                  Payment Schedule
+                </h3>
+                {activeTab === "attendance" && (
+                  <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/80 px-2 py-0.5 rounded-full border border-blue-200/80 dark:border-blue-800 animate-in fade-in duration-300">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
+                    <span>Active Section</span>
+                  </span>
+                )}
+              </div>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Installment breakdown, due dates, and verified payment vouchers
               </p>
@@ -885,10 +1445,9 @@ export const ProfilePage = () => {
               onChange={(e) => setBulkAction(e.target.value)}
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 focus:outline-hidden"
             >
-              <option value="">Change to...</option>
-              <option value="mark-paid">Mark as Paid</option>
-              <option value="download-receipts">Download Receipts</option>
-              <option value="send-reminder">Send Reminder</option>
+              <option value="">Action...</option>
+              <option value="mark-paid">Mark All as Paid</option>
+              <option value="download-receipts">Download All Receipts</option>
             </select>
             <button
               type="button"
@@ -905,17 +1464,6 @@ export const ProfilePage = () => {
           <table className="w-full text-xs text-left">
             <thead className="bg-slate-50/80 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
               <tr>
-                <th className="py-3 px-4 w-10">
-                  <input
-                    type="checkbox"
-                    checked={
-                      selectedInstallments.length > 0 &&
-                      selectedInstallments.length === studentData.installments.length
-                    }
-                    onChange={handleSelectAll}
-                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                  />
-                </th>
                 <th className="py-3 px-4 font-bold">Installment</th>
                 <th className="py-3 px-4 font-bold">Due Date</th>
                 <th className="py-3 px-4 font-bold">Amount</th>
@@ -932,14 +1480,6 @@ export const ProfilePage = () => {
                     inst.isOverdue ? "bg-rose-50/20 dark:bg-rose-950/10" : ""
                   }`}
                 >
-                  <td className="py-3 px-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedInstallments.includes(inst.id)}
-                      onChange={() => handleToggleSelect(inst.id)}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                    />
-                  </td>
                   <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white">
                     {inst.title}
                   </td>
@@ -1006,12 +1546,109 @@ export const ProfilePage = () => {
         </div>
       </div>
 
+      {/* Classroom Attendance & Lecture Analytics */}
+      <div
+        className={`bg-white dark:bg-[#0b1329] rounded-2xl p-6 shadow-xs space-y-5 transition-all duration-500 ${
+          activeTab === "attendance"
+            ? "border-2 border-blue-500 dark:border-blue-500 ring-4 ring-blue-500/15 shadow-xl shadow-blue-500/10"
+            : "border border-slate-200/90 dark:border-slate-800"
+        }`}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+          <div>
+            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+              Classroom Attendance & Lecture Analytics
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Attendance compliance tracked automatically via Operating Media CRM
+            </p>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              onClick={() => setAttendanceView("graph")}
+              className={`text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+                attendanceView === "graph"
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+              }`}
+            >
+              <TrendingUp size={13} />
+              <span>Trend Graph</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setAttendanceView("logs")}
+              className={`text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
+                attendanceView === "logs"
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+              }`}
+            >
+              <Calendar size={13} />
+              <span>Class Logs (8)</span>
+            </button>
+          </div>
+        </div>
+
+        {attendanceView === "graph" ? (
+          <div className="pt-2">
+            <AttendanceComparisonChart
+              enrolledCourseTitle={studentData.course}
+            />
+          </div>
+        ) : (
+          <div className="space-y-2 pt-1">
+            {(crmAttendance.logs || []).slice(0, 8).map((log, lIdx) => (
+              <div
+                key={lIdx}
+                className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-xs"
+              >
+                <div className="flex items-center space-x-3">
+                  <span
+                    className={`w-2.5 h-2.5 rounded-full ${
+                      log.status === "PRESENT" ? "bg-emerald-500" : "bg-rose-500"
+                    }`}
+                  />
+                  <div>
+                    <span className="font-bold text-slate-900 dark:text-white block">
+                      {log.topic}
+                    </span>
+                    <span className="text-slate-400 dark:text-slate-500 text-[11px]">
+                      {log.date} • {log.batch_name || studentData.batch} • Faculty: {log.trainer_name || studentData.facultyLead}
+                    </span>
+                  </div>
+                </div>
+                <span
+                  className={`font-bold px-2.5 py-1 rounded text-xs ${
+                    log.status === "PRESENT"
+                      ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300"
+                      : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300"
+                  }`}
+                >
+                  {log.status}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+
       {/* ============================================================== */}
       {/* 6. LOWER TWO-COLUMN SECTION: PERSONAL INFO & DOCUMENTS          */}
       {/* ============================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* LEFT: Personal Information */}
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+        <div
+          id="section-personal-info"
+          className={`bg-white dark:bg-[#0b1329] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 transition-all duration-500 scroll-mt-20 ${
+            activeTab === "personal"
+              ? "border-2 border-blue-500 dark:border-blue-500 ring-4 ring-blue-500/15 shadow-xl shadow-blue-500/10"
+              : "border border-slate-200/80 dark:border-slate-800"
+          }`}
+        >
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center space-x-2">
               <User size={18} className="text-blue-600 dark:text-blue-400" />
@@ -1019,14 +1656,17 @@ export const ProfilePage = () => {
                 Personal Information
               </h3>
             </div>
-            <button
-              type="button"
-              onClick={() => setIsEditModalOpen(true)}
-              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center space-x-1 cursor-pointer"
-            >
-              <Edit3 size={12} />
-              <span>Edit Details</span>
-            </button>
+            <div className="flex items-center space-x-2">
+              {activeTab === "personal" && (
+                <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/80 px-2 py-0.5 rounded-full border border-blue-200/80 dark:border-blue-800 animate-in fade-in duration-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
+                  <span>Active Section</span>
+                </span>
+              )}
+              <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-800">
+                Student Details
+              </span>
+            </div>
           </div>
 
           {/* Grid of details */}
@@ -1144,7 +1784,14 @@ export const ProfilePage = () => {
         </div>
 
         {/* RIGHT: Student Documents */}
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+        <div
+          id="section-documents"
+          className={`bg-white dark:bg-[#0b1329] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 transition-all duration-500 scroll-mt-20 flex flex-col justify-between ${
+            activeTab === "documents"
+              ? "border-2 border-blue-500 dark:border-blue-500 ring-4 ring-blue-500/15 shadow-xl shadow-blue-500/10"
+              : "border border-slate-200/80 dark:border-slate-800"
+          }`}
+        >
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center space-x-2">
               <FileText size={18} className="text-blue-600 dark:text-blue-400" />
@@ -1152,39 +1799,81 @@ export const ProfilePage = () => {
                 Student Documents
               </h3>
             </div>
-            <button
-              type="button"
-              onClick={() => handleTabChange("documents")}
-              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center space-x-1 cursor-pointer"
-            >
-              <span>View All</span>
-              <ArrowRight size={13} />
-            </button>
+            <div className="flex items-center space-x-2">
+              {activeTab === "documents" && (
+                <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/80 px-2 py-0.5 rounded-full border border-blue-200/80 dark:border-blue-800 animate-in fade-in duration-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
+                  <span>Active Section</span>
+                </span>
+              )}
+              <span className="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 px-2.5 py-1 rounded-full">
+                <Check size={11} className="stroke-[3]" />
+                <span>3 Verified Documents</span>
+              </span>
+            </div>
           </div>
 
           {/* 3 Document Cards side by side */}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {studentDocuments.map((doc) => (
               <div
                 key={doc.id}
-                onClick={() => setPreviewDoc(doc)}
-                className="group p-3 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/60 hover:border-blue-500 hover:shadow-xs transition-all cursor-pointer flex flex-col items-center text-center space-y-2"
+                onClick={() => handleOpenDocPreview(doc)}
+                className="group p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-2.5"
               >
-                <div className="w-16 h-20 rounded-lg overflow-hidden bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 p-1 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <img
-                    src={doc.thumb}
-                    alt={doc.title}
-                    className="w-full h-full object-contain"
-                  />
+                {/* Zoomed HD document card preview container */}
+                <div className="w-full h-32 sm:h-36 rounded-lg bg-slate-100/70 dark:bg-[#070c1a] border border-slate-200/80 dark:border-slate-700/80 p-1 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-all">
+                  <div className="w-full h-full flex items-center justify-center transform group-hover:scale-[1.02] transition-transform">
+                    <DocumentVisualizer
+                      doc={doc}
+                      studentData={studentData}
+                      sahilProfilePic={sahilProfilePic}
+                      isCard={true}
+                    />
+                  </div>
+
+                  {/* Top-right HD badge */}
+                  <span className="absolute top-1.5 right-1.5 z-10 text-[8px] font-bold bg-white/95 dark:bg-slate-900/95 text-blue-600 dark:text-blue-400 px-1 py-0.2 rounded shadow-xs border border-blue-200/60 dark:border-blue-800 flex items-center space-x-0.5 backdrop-blur-xs">
+                    <ZoomIn size={9} />
+                    <span>HD</span>
+                  </span>
+
+                  {/* Hover zoom & inspect overlay */}
+                  <div className="absolute inset-0 z-20 bg-slate-950/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1.5px]">
+                    <span className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] shadow-md flex items-center space-x-1 transform group-hover:scale-105 transition-transform">
+                      <Maximize2 size={11} />
+                      <span>Zoom View</span>
+                    </span>
+                  </div>
                 </div>
-                <div className="w-full">
-                  <strong className="text-[11px] font-bold text-slate-900 dark:text-white truncate block">
+
+                {/* Details */}
+                <div className="space-y-0.5">
+                  <strong className="text-xs font-bold text-slate-900 dark:text-white truncate block">
                     {doc.title}
                   </strong>
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center justify-center space-x-1 mt-0.5">
-                    <Check size={10} className="stroke-[3]" />
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium truncate block">
+                    {doc.docNo}
+                  </span>
+                </div>
+
+                {/* Footer status & quick download */}
+                <div className="flex items-center justify-between pt-1.5 border-t border-slate-200/60 dark:border-slate-800">
+                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center space-x-1">
+                    <Check size={11} className="stroke-[3]" />
                     <span>{doc.status}</span>
                   </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      showToast(`Downloading official copy: ${doc.title}`);
+                    }}
+                    className="p-1 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+                    title="Download Copy"
+                  >
+                    <Download size={12} />
+                  </button>
                 </div>
               </div>
             ))}
@@ -1193,11 +1882,17 @@ export const ProfilePage = () => {
       </div>
 
       {/* ============================================================== */}
-      {/* 7. BOTTOM ROW: COURSE CHANGE HISTORY & QUICK ACTIONS           */}
+      {/* 8. BOTTOM ROW: COURSE CHANGE HISTORY & QUICK ACTIONS           */}
       {/* ============================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      <div id="section-course-history" className="grid grid-cols-1 lg:grid-cols-12 gap-5 scroll-mt-20">
         {/* LEFT (~60%): Course Change History */}
-        <div className="lg:col-span-7 bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+        <div
+          className={`lg:col-span-7 bg-white dark:bg-[#0b1329] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 transition-all duration-500 ${
+            activeTab === "history"
+              ? "border-2 border-blue-500 dark:border-blue-500 ring-4 ring-blue-500/15 shadow-xl shadow-blue-500/10"
+              : "border border-slate-200/80 dark:border-slate-800"
+          }`}
+        >
           <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center space-x-2">
               <History size={18} className="text-blue-600 dark:text-blue-400" />
@@ -1205,14 +1900,17 @@ export const ProfilePage = () => {
                 Course Change History
               </h3>
             </div>
-            <button
-              type="button"
-              onClick={() => handleTabChange("history")}
-              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center space-x-1 cursor-pointer"
-            >
-              <span>View All</span>
-              <ArrowRight size={13} />
-            </button>
+            <div className="flex items-center space-x-2">
+              {activeTab === "history" && (
+                <span className="inline-flex items-center space-x-1 text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/80 px-2.5 py-0.5 rounded-full border border-blue-200/80 dark:border-blue-800 animate-in fade-in duration-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400 animate-pulse" />
+                  <span>Active Section</span>
+                </span>
+              )}
+              <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-800">
+                1 Logged Event
+              </span>
+            </div>
           </div>
 
           {/* Timeline entry */}
@@ -1239,7 +1937,13 @@ export const ProfilePage = () => {
         </div>
 
         {/* RIGHT (~40%): Quick Actions */}
-        <div className="lg:col-span-5 bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+        <div
+          className={`lg:col-span-5 bg-white dark:bg-[#0b1329] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 transition-all duration-500 ${
+            activeTab === "history"
+              ? "border-2 border-blue-500/80 dark:border-blue-500/80 ring-4 ring-blue-500/15 shadow-xl shadow-blue-500/10"
+              : "border border-slate-200/80 dark:border-slate-800"
+          }`}
+        >
           <div className="flex items-center space-x-2 pb-3 border-b border-slate-100 dark:border-slate-800">
             <Zap size={18} className="text-blue-600 dark:text-blue-400" />
             <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
@@ -1294,92 +1998,7 @@ export const ProfilePage = () => {
         </div>
       </div>
 
-      {/* ============================================================== */}
-      {/* 8. ATTENDANCE SUB-TAB VIEW (WHEN ACTIVE)                       */}
-      {/* ============================================================== */}
-      {activeTab === "attendance" && (
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-5 animate-in fade-in duration-150">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
-            <div>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                Classroom Attendance & Lecture Analytics
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Attendance compliance tracked automatically via Operating Media CRM
-              </p>
-            </div>
 
-            <div className="flex items-center space-x-2">
-              <button
-                type="button"
-                onClick={() => setAttendanceView("graph")}
-                className={`text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
-                  attendanceView === "graph"
-                    ? "bg-blue-600 text-white shadow-xs"
-                    : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
-                }`}
-              >
-                <TrendingUp size={13} />
-                <span>Trend Graph</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setAttendanceView("logs")}
-                className={`text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all flex items-center space-x-1.5 cursor-pointer ${
-                  attendanceView === "logs"
-                    ? "bg-blue-600 text-white shadow-xs"
-                    : "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300"
-                }`}
-              >
-                <Calendar size={13} />
-                <span>Class Logs (8)</span>
-              </button>
-            </div>
-          </div>
-
-          {attendanceView === "graph" ? (
-            <div className="pt-2">
-              <AttendanceComparisonChart
-                enrolledCourseTitle={studentData.course}
-              />
-            </div>
-          ) : (
-            <div className="space-y-2 pt-1">
-              {(crmAttendance.logs || []).slice(0, 8).map((log, lIdx) => (
-                <div
-                  key={lIdx}
-                  className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-xs"
-                >
-                  <div className="flex items-center space-x-3">
-                    <span
-                      className={`w-2.5 h-2.5 rounded-full ${
-                        log.status === "PRESENT" ? "bg-emerald-500" : "bg-rose-500"
-                      }`}
-                    />
-                    <div>
-                      <span className="font-bold text-slate-900 dark:text-white block">
-                        {log.topic}
-                      </span>
-                      <span className="text-slate-400 dark:text-slate-500 text-[11px]">
-                        {log.date} • {log.batch_name || studentData.batch} • Faculty: {log.trainer_name || studentData.facultyLead}
-                      </span>
-                    </div>
-                  </div>
-                  <span
-                    className={`font-bold px-2.5 py-1 rounded text-xs ${
-                      log.status === "PRESENT"
-                        ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300"
-                        : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300"
-                    }`}
-                  >
-                    {log.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
 
       {/* ============================================================== */}
       {/* 9. MODALS                                                      */}
@@ -1597,55 +2216,188 @@ export const ProfilePage = () => {
         </div>
       )}
 
-      {/* Document Lightbox Modal */}
+      {/* Document Lightbox Modal - Expansive H x W with Interactive Zoom */}
       {previewDoc && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center space-x-2">
-                <FileCheck size={18} className="text-emerald-500" />
-                <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                  {previewDoc.title}
-                </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-slate-950/85 backdrop-blur-sm animate-in fade-in duration-150">
+          <div className="bg-white dark:bg-[#0b1329] rounded-3xl w-[96vw] max-w-6xl h-[92vh] max-h-[920px] border border-slate-200/90 dark:border-slate-800 shadow-2xl flex flex-col overflow-hidden">
+            {/* Modal Header */}
+            <div className="px-5 py-3.5 sm:px-6 sm:py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/40">
+              <div className="flex items-center space-x-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-2xs">
+                  <FileCheck size={20} />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center space-x-2">
+                    <h3 className="font-bold text-base sm:text-lg text-slate-900 dark:text-white truncate">
+                      {previewDoc.title}
+                    </h3>
+                    <span className="hidden sm:inline-flex items-center space-x-1 text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                      <Check size={11} className="stroke-[3]" />
+                      <span>Verified</span>
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                    {studentData.fullName} • Ref: {previewDoc.docNo}
+                  </p>
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setPreviewDoc(null)}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-              >
-                <X size={18} />
-              </button>
+
+              {/* Center / Right Toolbar Controls */}
+              <div className="flex items-center space-x-2 shrink-0">
+                {/* View Switcher: HD Vector vs Scanned Original */}
+                <div className="hidden md:flex items-center bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => setDocModalView("digital")}
+                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center space-x-1.5 ${
+                      docModalView === "digital"
+                        ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs font-bold"
+                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <FileCheck size={13} />
+                    <span>HD Document</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDocModalView("scanned")}
+                    className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center space-x-1.5 ${
+                      docModalView === "scanned"
+                        ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs font-bold"
+                        : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <FileText size={13} />
+                    <span>Scanned Original</span>
+                  </button>
+                </div>
+
+                {/* Zoom Controls */}
+                <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={handleZoomOut}
+                    disabled={docZoomLevel <= 0.75}
+                    className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 disabled:opacity-40 cursor-pointer transition-colors"
+                    title="Zoom Out (-)"
+                  >
+                    <ZoomOut size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleResetZoom}
+                    className="px-2.5 py-1 text-xs font-mono font-bold text-slate-700 dark:text-slate-200 hover:bg-white dark:hover:bg-slate-800 rounded-lg cursor-pointer transition-colors"
+                    title="Click to reset zoom (100%)"
+                  >
+                    {Math.round(docZoomLevel * 100)}%
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleZoomIn}
+                    disabled={docZoomLevel >= 2.5}
+                    className="p-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 disabled:opacity-40 cursor-pointer transition-colors"
+                    title="Zoom In (+)"
+                  >
+                    <ZoomIn size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleResetZoom}
+                    className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 cursor-pointer transition-colors"
+                    title="Reset Zoom"
+                  >
+                    <RotateCcw size={14} />
+                  </button>
+                </div>
+
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreviewDoc(null);
+                    setDocZoomLevel(1);
+                  }}
+                  className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer ml-1"
+                  title="Close Modal"
+                >
+                  <X size={20} />
+                </button>
+              </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center border border-slate-200 dark:border-slate-800">
-              <img
-                src={previewDoc.thumb}
-                alt={previewDoc.title}
-                className="max-h-72 object-contain rounded-lg shadow-xs"
-              />
+            {/* Expansive Canvas (takes maximum H x W with smooth zoom & scroll) */}
+            <div className="flex-1 min-h-0 w-full overflow-auto bg-slate-100/90 dark:bg-[#060b17] p-4 sm:p-10 flex items-center justify-center relative">
+              <div
+                className="transition-transform duration-150 ease-out flex items-center justify-center my-auto"
+                style={{
+                  transform: `scale(${docZoomLevel})`,
+                  transformOrigin: "center center",
+                }}
+              >
+                {docModalView === "digital" ? (
+                  <div className="w-full max-w-3xl flex justify-center drop-shadow-2xl">
+                    <DocumentVisualizer
+                      doc={previewDoc}
+                      studentData={studentData}
+                      sahilProfilePic={sahilProfilePic}
+                      isCard={false}
+                    />
+                  </div>
+                ) : (
+                  <div className="max-w-2xl flex flex-col items-center justify-center p-4 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800">
+                    <img
+                      src={previewDoc.thumb}
+                      alt={previewDoc.title}
+                      className="max-h-[66vh] max-w-full object-contain rounded-lg drop-shadow-md"
+                    />
+                    <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-2">
+                      Archived Physical Scanned Copy
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-              <span>Status: <strong className="text-emerald-600 font-bold">{previewDoc.status}</strong></span>
-              <span>Doc Ref: {previewDoc.docNo}</span>
-            </div>
+            {/* Modal Footer */}
+            <div className="px-5 py-3 sm:px-6 sm:py-3.5 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 bg-white dark:bg-[#0b1329]">
+              <div className="flex items-center space-x-3 text-xs text-slate-600 dark:text-slate-400">
+                <span className="inline-flex items-center space-x-1.5 font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-lg border border-emerald-200/60 dark:border-emerald-800/60">
+                  <CheckCircle2 size={13} className="text-emerald-600 dark:text-emerald-400" />
+                  <span>Authenticated & Verified</span>
+                </span>
+                <span className="text-slate-500 dark:text-slate-400 hidden sm:inline">
+                  Uploaded on {previewDoc.uploadedOn}
+                </span>
+              </div>
 
-            <div className="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-              <button
-                type="button"
-                onClick={() => setPreviewDoc(null)}
-                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 cursor-pointer"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                onClick={() => showToast(`Downloaded ${previewDoc.title}`)}
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center space-x-1.5 cursor-pointer shadow-xs"
-              >
-                <Download size={14} />
-                <span>Download Copy</span>
-              </button>
+              <div className="flex items-center justify-end space-x-2">
+                {/* Mobile view switch toggle button */}
+                <button
+                  type="button"
+                  onClick={() => setDocModalView((v) => (v === "digital" ? "scanned" : "digital"))}
+                  className="sm:hidden px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                >
+                  {docModalView === "digital" ? "Show Scanned" : "Show HD Doc"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPreviewDoc(null);
+                    setDocZoomLevel(1);
+                  }}
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  onClick={() => showToast(`Downloaded official copy: ${previewDoc.title}`)}
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center space-x-1.5 cursor-pointer shadow-xs transition-colors"
+                >
+                  <Download size={14} />
+                  <span>Download Official Copy</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
