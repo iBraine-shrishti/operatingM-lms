@@ -769,6 +769,11 @@ export const ProfilePage = () => {
 
 
 
+  // Only display the Action column if there are actionable items in the table
+  const hasInstallmentActions = useMemo(() => {
+    return studentData.installments?.some((inst) => Boolean(inst.action));
+  }, [studentData.installments]);
+
   // Open receipt for specific installment or total
   const handleOpenReceipt = (inst = null) => {
     setReceiptInstallment(inst);
@@ -1400,7 +1405,9 @@ export const ProfilePage = () => {
                 <th className="py-3 px-4 font-bold">Amount</th>
                 <th className="py-3 px-4 font-bold">Mode</th>
                 <th className="py-3 px-4 font-bold">Status</th>
-                <th className="py-3 px-4 font-bold text-right">Action</th>
+                {hasInstallmentActions && (
+                  <th className="py-3 px-4 font-bold text-right">Action</th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-200">
@@ -1434,33 +1441,38 @@ export const ProfilePage = () => {
                   </td>
                   <td className="py-3 px-4">
                     {inst.status === "PAID" ? (
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                        PAID
-                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleOpenReceipt(inst)}
+                        className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-colors cursor-pointer"
+                        title="Click to view verified official receipt"
+                      >
+                        <span>PAID</span>
+                        <Check size={11} className="stroke-[3]" />
+                      </button>
                     ) : (
-                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-black bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
                         UNPAID
                       </span>
                     )}
                   </td>
-                  <td className="py-3 px-4 text-right">
-                    <div className="flex items-center justify-end space-x-1.5">
-                      {inst.status === "PAID" ? (
+                  {hasInstallmentActions && (
+                    <td className="py-3 px-4 text-right">
+                      {inst.action ? (
                         <button
                           type="button"
-                          onClick={() => handleOpenReceipt(inst)}
+                          onClick={() => inst.onAction && inst.onAction()}
                           className="px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                          title="View Official Receipt"
                         >
-                          Receipt
+                          {inst.action}
                         </button>
                       ) : (
                         <span className="text-slate-400 dark:text-slate-500 font-medium text-xs px-2">
                           —
                         </span>
                       )}
-                    </div>
-                  </td>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
