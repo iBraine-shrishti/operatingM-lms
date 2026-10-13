@@ -936,7 +936,7 @@ export const ProfilePage = () => {
               }}
               className="w-full py-2.5 rounded-xl border-2 border-dashed border-blue-300 dark:border-blue-700/80 hover:border-blue-600 hover:bg-blue-50/50 dark:hover:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center space-x-1.5 transition-all cursor-pointer"
             >
-              <span>+ Issue Refund / Pay Installment</span>
+              <span>+ Pay Installment</span>
             </button>
           </div>
         </div>
