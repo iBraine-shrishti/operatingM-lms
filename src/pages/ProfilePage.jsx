@@ -971,10 +971,9 @@ export const ProfilePage = () => {
               onChange={(e) => setBulkAction(e.target.value)}
               className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 focus:outline-hidden"
             >
-              <option value="">Change to...</option>
-              <option value="mark-paid">Mark as Paid</option>
-              <option value="download-receipts">Download Receipts</option>
-              <option value="send-reminder">Send Reminder</option>
+              <option value="">Action...</option>
+              <option value="mark-paid">Mark All as Paid</option>
+              <option value="download-receipts">Download All Receipts</option>
             </select>
             <button
               type="button"
@@ -991,17 +990,6 @@ export const ProfilePage = () => {
           <table className="w-full text-xs text-left">
             <thead className="bg-slate-50/80 dark:bg-slate-900/60 text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
               <tr>
-                <th className="py-3 px-4 w-10">
-                  <input
-                    type="checkbox"
-                    checked={
-                      selectedInstallments.length > 0 &&
-                      selectedInstallments.length === studentData.installments.length
-                    }
-                    onChange={handleSelectAll}
-                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                  />
-                </th>
                 <th className="py-3 px-4 font-bold">Installment</th>
                 <th className="py-3 px-4 font-bold">Due Date</th>
                 <th className="py-3 px-4 font-bold">Amount</th>
@@ -1018,14 +1006,6 @@ export const ProfilePage = () => {
                     inst.isOverdue ? "bg-rose-50/20 dark:bg-rose-950/10" : ""
                   }`}
                 >
-                  <td className="py-3 px-4">
-                    <input
-                      type="checkbox"
-                      checked={selectedInstallments.includes(inst.id)}
-                      onChange={() => handleToggleSelect(inst.id)}
-                      className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                    />
-                  </td>
                   <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white">
                     {inst.title}
                   </td>
@@ -1189,14 +1169,9 @@ export const ProfilePage = () => {
                 Personal Information
               </h3>
             </div>
-            <button
-              type="button"
-              onClick={() => setIsEditModalOpen(true)}
-              className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center space-x-1 cursor-pointer"
-            >
-              <Edit3 size={12} />
-              <span>Edit Details</span>
-            </button>
+            <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-800">
+              Student Details
+            </span>
           </div>
 
           {/* Grid of details */}
