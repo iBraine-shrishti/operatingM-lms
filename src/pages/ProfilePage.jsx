@@ -157,7 +157,9 @@ const AadhaarDocView = ({ studentData, sahilProfilePic, isCard = false }) => (
           <div className="text-[11px] text-slate-600 pt-1 leading-snug">
             <span>Address: </span>
             <span className="text-slate-800 font-medium">
-              Flat 402, Sai Shraddha Apt, Borivali West, Mumbai, Maharashtra - 400092
+              {studentData.address
+                ? `${studentData.address}, ${studentData.city || "Mumbai"}, ${studentData.state || "Maharashtra"} - ${studentData.pincode || "400092"}`
+                : "Flat 402, Sai Shraddha Apt, Borivali West, Mumbai, Maharashtra - 400092"}
             </span>
           </div>
         )}
@@ -635,6 +637,13 @@ export const ProfilePage = () => {
     maritalStatus: crmProfile?.maritalStatus || "Single",
     email: crmProfile?.email || "hasolkarsahil@gmail.com",
     mobile: crmProfile?.mobile || crmProfile?.phone || "919372017331",
+    address:
+      crmProfile?.address ||
+      "Flat 402, Sai Shraddha Apt, SV Road, Borivali West",
+    city: crmProfile?.city || "Mumbai",
+    state: crmProfile?.state || "Maharashtra",
+    pincode: crmProfile?.pincode || "400092",
+    country: "India",
     facultyLead: crmProfile?.facultyLead || "Harsh Pareek",
     facultyLeadRole: crmProfile?.facultyLeadRole || "Director & Lead Faculty",
     courseDuration: "12 Months",
@@ -844,6 +853,10 @@ export const ProfilePage = () => {
       mobile: formData.get("mobile") || studentData.mobile,
       gender: formData.get("gender") || studentData.gender,
       maritalStatus: formData.get("maritalStatus") || studentData.maritalStatus,
+      address: formData.get("address") || studentData.address,
+      city: formData.get("city") || studentData.city,
+      state: formData.get("state") || studentData.state,
+      pincode: formData.get("pincode") || studentData.pincode,
     };
     setStudentData((prev) => ({ ...prev, ...updated }));
     updateCurrentUser({
@@ -1781,6 +1794,65 @@ export const ProfilePage = () => {
               </div>
             </div>
           </div>
+
+          {/* Address Details Section */}
+          <div className="pt-3.5 border-t border-slate-100 dark:border-slate-800/80 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <MapPin size={16} className="text-blue-600 dark:text-blue-400 shrink-0" />
+                <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                  Address Details
+                </h4>
+              </div>
+              <span className="inline-flex items-center space-x-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 px-2 py-0.5 rounded-full">
+                <Check size={10} className="stroke-[3]" />
+                <span>Verified via Aadhaar</span>
+              </span>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 space-y-2.5">
+              <div className="flex items-start space-x-2.5">
+                <div className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <MapPin size={14} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <span className="text-[10px] text-slate-400 block font-medium">
+                    Residential / Permanent Address
+                  </span>
+                  <strong className="text-slate-900 dark:text-white font-bold text-xs sm:text-sm leading-relaxed block mt-0.5">
+                    {studentData.address}
+                  </strong>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2.5 border-t border-slate-200/60 dark:border-slate-800 text-xs">
+                <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+                  <span className="text-[10px] text-slate-400 block font-medium">City</span>
+                  <strong className="text-slate-800 dark:text-slate-200 font-bold block truncate">
+                    {studentData.city}
+                  </strong>
+                </div>
+                <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+                  <span className="text-[10px] text-slate-400 block font-medium">State</span>
+                  <strong className="text-slate-800 dark:text-slate-200 font-bold block truncate">
+                    {studentData.state}
+                  </strong>
+                </div>
+                <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+                  <span className="text-[10px] text-slate-400 block font-medium">Pincode</span>
+                  <strong className="text-slate-800 dark:text-slate-200 font-bold block truncate">
+                    {studentData.pincode}
+                  </strong>
+                </div>
+                <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+                  <span className="text-[10px] text-slate-400 block font-medium">Country</span>
+                  <strong className="text-slate-800 dark:text-slate-200 font-bold block truncate">
+                    {studentData.country || "India"}
+                  </strong>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* RIGHT: Student Documents */}
@@ -2192,6 +2264,50 @@ export const ProfilePage = () => {
                     <option value="Single">Single</option>
                     <option value="Married">Married</option>
                   </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Residential Address
+                </label>
+                <input
+                  name="address"
+                  defaultValue={studentData.address}
+                  className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-slate-900 dark:text-white font-semibold focus:outline-hidden focus:border-blue-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    City
+                  </label>
+                  <input
+                    name="city"
+                    defaultValue={studentData.city}
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-slate-900 dark:text-white font-semibold focus:outline-hidden focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    State
+                  </label>
+                  <input
+                    name="state"
+                    defaultValue={studentData.state}
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-slate-900 dark:text-white font-semibold focus:outline-hidden focus:border-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Pincode
+                  </label>
+                  <input
+                    name="pincode"
+                    defaultValue={studentData.pincode}
+                    className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3.5 py-2 text-slate-900 dark:text-white font-semibold focus:outline-hidden focus:border-blue-500"
+                  />
                 </div>
               </div>
 
