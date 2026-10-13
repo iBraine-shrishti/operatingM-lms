@@ -731,8 +731,6 @@ export const ProfilePage = () => {
   const [docModalView, setDocModalView] = useState("digital"); // 'digital' | 'scanned'
   const [toastMessage, setToastMessage] = useState(null);
 
-  // Table selection & bulk action
-  const [bulkAction, setBulkAction] = useState("");
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -770,40 +768,7 @@ export const ProfilePage = () => {
     }
   }, [studentData.course]);
 
-  // Bulk action handler (applies to installments without tickboxes)
-  const handleApplyBulkAction = () => {
-    if (!bulkAction) {
-      showToast("Please choose an action to apply");
-      return;
-    }
 
-    if (bulkAction === "mark-paid") {
-      setStudentData((prev) => {
-        let addedPaid = 0;
-        const updated = prev.installments.map((inst) => {
-          if (inst.status !== "PAID") {
-            addedPaid += inst.amount;
-            return { ...inst, status: "PAID", isOverdue: false };
-          }
-          return inst;
-        });
-        const newPaid = prev.amountPaid + addedPaid;
-        const newBal = Math.max(0, prev.totalFees - newPaid);
-        return {
-          ...prev,
-          amountPaid: newPaid,
-          balanceDue: newBal,
-          feesClearedPercent: 100,
-          installments: updated,
-        };
-      });
-      showToast("All pending installments marked as PAID successfully!");
-      setBulkAction("");
-    } else if (bulkAction === "download-receipts") {
-      showToast("Generating consolidated fee receipts for all installments...");
-      setBulkAction("");
-    }
-  };
 
   // Pay single installment handler
   const handleOpenPayModal = (installment) => {
@@ -1448,27 +1413,6 @@ export const ProfilePage = () => {
                 Installment breakdown, due dates, and verified payment vouchers
               </p>
             </div>
-          </div>
-
-          {/* Bulk Actions Controls */}
-          <div className="flex items-center space-x-2 text-xs">
-            <span className="text-slate-500 dark:text-slate-400 font-medium">Bulk Action:</span>
-            <select
-              value={bulkAction}
-              onChange={(e) => setBulkAction(e.target.value)}
-              className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 focus:outline-hidden"
-            >
-              <option value="">Action...</option>
-              <option value="mark-paid">Mark All as Paid</option>
-              <option value="download-receipts">Download All Receipts</option>
-            </select>
-            <button
-              type="button"
-              onClick={handleApplyBulkAction}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
-            >
-              Apply
-            </button>
           </div>
         </div>
 
