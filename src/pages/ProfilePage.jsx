@@ -55,8 +55,11 @@ import { lmsService } from "../services/lmsService";
 import profilePic from "../assets/profile-pic.png";
 import sahilProfilePic from "../assets/sahil-profile.png";
 import premPhotoImg from "../assets/Prem_Photo.jpg";
+import premPhotoPassportImg from "../assets/Prem_Photo_Passport.png";
 import premAadharFrontImg from "../assets/Prem_Aadhar Front.jpg";
+import premAadharFrontCroppedImg from "../assets/Prem_Aadhar_Front_Cropped.png";
 import premAadharBackImg from "../assets/Prem_Aadhar Back.jpg";
+import premAadharBackCroppedImg from "../assets/Prem_Aadhar_Back_Cropped.png";
 import dashboardHat from "../assets/header-bg/dashboard-hat.png";
 import continueLearningLaptop from "../assets/continue-learning-laptop.png";
 import docAadhaarImg from "../assets/doc-aadhaar.png";
@@ -732,6 +735,7 @@ export const ProfilePage = () => {
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [previewDoc, setPreviewDoc] = useState(null);
   const [docZoomLevel, setDocZoomLevel] = useState(1);
+  const [docViewMode, setDocViewMode] = useState("cropped"); // 'cropped' | 'full'
   const [toastMessage, setToastMessage] = useState(null);
 
   const showToast = (msg) => {
@@ -743,6 +747,7 @@ export const ProfilePage = () => {
   const handleOpenDocPreview = (doc) => {
     setPreviewDoc(doc);
     setDocZoomLevel(1);
+    setDocViewMode("cropped");
   };
 
   // Zoom handlers for modal
@@ -840,27 +845,33 @@ export const ProfilePage = () => {
       title: "Student Photo",
       type: "Passport Photograph",
       status: "Verified",
-      image: premPhotoImg,
+      image: premPhotoPassportImg,
+      fullImage: premPhotoImg,
       uploadedOn: "13 Oct 2026",
       docNo: "OMC-PREM-PHOTO",
+      desc: "Official Student Identity Photograph",
     },
     {
       id: "prem-aadhar-front",
       title: "Aadhaar Card (Front)",
       type: "UIDAI Official ID",
       status: "Verified",
-      image: premAadharFrontImg,
+      image: premAadharFrontCroppedImg,
+      fullImage: premAadharFrontImg,
       uploadedOn: "13 Oct 2026",
       docNo: "9218 7859 8578",
+      desc: "UIDAI Government Aadhaar • Front Side",
     },
     {
       id: "prem-aadhar-back",
       title: "Aadhaar Card (Back)",
       type: "UIDAI Address Record",
       status: "Verified",
-      image: premAadharBackImg,
+      image: premAadharBackCroppedImg,
+      fullImage: premAadharBackImg,
       uploadedOn: "13 Oct 2026",
       docNo: "9218 7859 8578",
+      desc: "UIDAI Government Aadhaar • Back Side (Address)",
     },
   ];
 
@@ -1806,13 +1817,14 @@ export const ProfilePage = () => {
         {/* RIGHT: Student Documents */}
         <div
           id="section-documents"
-          className={`bg-white dark:bg-[#0b1329] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 transition-all duration-500 scroll-mt-20 flex flex-col justify-between ${
+          className={`bg-white dark:bg-[#0b1329] rounded-2xl p-5 sm:p-6 shadow-xs space-y-4 transition-all duration-500 scroll-mt-20 flex flex-col justify-start ${
             activeTab === "documents"
               ? "border-2 border-blue-500 dark:border-blue-500 ring-4 ring-blue-500/15 shadow-xl shadow-blue-500/10"
               : "border border-slate-200/80 dark:border-slate-800"
           }`}
         >
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
             <div className="flex items-center space-x-2">
               <FileText size={18} className="text-blue-600 dark:text-blue-400" />
               <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
@@ -1833,31 +1845,70 @@ export const ProfilePage = () => {
             </div>
           </div>
 
-          {/* 3 Document Cards side by side */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Identity & Verification Status Record Strip */}
+          <div className="p-3.5 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 shrink-0 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                  <ShieldCheck size={14} />
+                </div>
+                <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                  UIDAI & KYC Verification Record
+                </h4>
+              </div>
+              <span className="inline-flex items-center space-x-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 px-2 py-0.5 rounded-full">
+                <Check size={10} className="stroke-[3]" />
+                <span>100% Verified</span>
+              </span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+                <span className="text-[10px] text-slate-400 block font-medium">Aadhaar No.</span>
+                <strong className="text-slate-800 dark:text-slate-200 font-mono font-bold block truncate">
+                  9218 7859 8578
+                </strong>
+              </div>
+              <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+                <span className="text-[10px] text-slate-400 block font-medium">Doc Proof</span>
+                <strong className="text-slate-800 dark:text-slate-200 font-bold block truncate">
+                  Govt UIDAI Card
+                </strong>
+              </div>
+              <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
+                <span className="text-[10px] text-slate-400 block font-medium">Verified On</span>
+                <strong className="text-slate-800 dark:text-slate-200 font-bold block truncate">
+                  13 Oct 2026
+                </strong>
+              </div>
+            </div>
+          </div>
+
+          {/* Strictly 3 Document Cards side by side */}
+          <div className="grid grid-cols-3 gap-3 sm:gap-3.5 flex-1">
             {studentDocuments.map((doc) => (
               <div
                 key={doc.id}
                 onClick={() => handleOpenDocPreview(doc)}
-                className="group p-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-2.5"
+                className="group p-2.5 sm:p-3 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/40 hover:border-blue-500 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-2 h-full"
               >
                 {/* Clear document image preview container utilizing parent container */}
-                <div className="w-full h-36 sm:h-40 rounded-lg bg-slate-950/90 dark:bg-[#070c1a] border border-slate-200/80 dark:border-slate-700/80 p-1 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-all">
+                <div className="w-full flex-1 min-h-[175px] sm:min-h-[195px] rounded-lg bg-slate-50 dark:bg-slate-950/70 border border-slate-200/70 dark:border-slate-800 p-1.5 flex items-center justify-center relative overflow-hidden group-hover:shadow-md transition-all">
                   <img
                     src={doc.image}
                     alt={doc.title}
-                    className="w-full h-full object-contain rounded-md transform group-hover:scale-[1.03] transition-transform duration-300"
+                    className="w-full h-full object-contain rounded-md drop-shadow-2xs transform group-hover:scale-[1.03] transition-transform duration-300"
                   />
 
                   {/* Top-right HD badge */}
-                  <span className="absolute top-1.5 right-1.5 z-10 text-[8px] font-bold bg-white/95 dark:bg-slate-900/95 text-blue-600 dark:text-blue-400 px-1 py-0.2 rounded shadow-xs border border-blue-200/60 dark:border-blue-800 flex items-center space-x-0.5 backdrop-blur-xs">
+                  <span className="absolute top-1.5 right-1.5 z-10 text-[8px] sm:text-[9px] font-bold bg-white/95 dark:bg-slate-900/95 text-blue-600 dark:text-blue-400 px-1.5 py-0.5 rounded shadow-2xs border border-blue-200/60 dark:border-blue-800 flex items-center space-x-0.5 backdrop-blur-xs">
                     <ZoomIn size={9} />
                     <span>Clear Doc</span>
                   </span>
 
                   {/* Hover zoom & inspect overlay */}
-                  <div className="absolute inset-0 z-20 bg-slate-950/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1.5px]">
-                    <span className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] shadow-md flex items-center space-x-1 transform group-hover:scale-105 transition-transform">
+                  <div className="absolute inset-0 z-20 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[1px]">
+                    <span className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-[10px] sm:text-xs shadow-md flex items-center space-x-1 transform group-hover:scale-105 transition-transform">
                       <Maximize2 size={11} />
                       <span>Zoom View</span>
                     </span>
@@ -1869,14 +1920,14 @@ export const ProfilePage = () => {
                   <strong className="text-xs font-bold text-slate-900 dark:text-white truncate block">
                     {doc.title}
                   </strong>
-                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium truncate block">
+                  <span className="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-mono font-medium truncate block">
                     {doc.docNo}
                   </span>
                 </div>
 
                 {/* Footer status & quick download */}
-                <div className="flex items-center justify-between pt-1.5 border-t border-slate-200/60 dark:border-slate-800">
-                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center space-x-1">
+                <div className="flex items-center justify-between pt-1.5 border-t border-slate-100 dark:border-slate-800">
+                  <span className="text-[10px] sm:text-[11px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center space-x-1">
                     <Check size={11} className="stroke-[3]" />
                     <span>{doc.status}</span>
                   </span>
@@ -1886,11 +1937,11 @@ export const ProfilePage = () => {
                       e.stopPropagation();
                       const link = document.createElement("a");
                       link.href = doc.image;
-                      link.download = `${doc.title}.jpg`;
+                      link.download = `${doc.title}.png`;
                       link.click();
                       showToast(`Downloading official copy: ${doc.title}`);
                     }}
-                    className="p-1 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+                    className="p-1 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                     title="Download Copy"
                   >
                     <Download size={12} />
@@ -2309,6 +2360,34 @@ export const ProfilePage = () => {
 
               {/* Center / Right Toolbar Controls */}
               <div className="flex items-center space-x-2 shrink-0">
+                {/* View switcher between Cropped Clear Card and Full Original */}
+                {previewDoc.fullImage && previewDoc.fullImage !== previewDoc.image && (
+                  <div className="flex items-center bg-slate-100 dark:bg-slate-900/90 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-800 text-[11px] font-bold mr-1">
+                    <button
+                      type="button"
+                      onClick={() => setDocViewMode("cropped")}
+                      className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+                        docViewMode === "cropped"
+                          ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-2xs font-extrabold"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                      }`}
+                    >
+                      Clear Card
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDocViewMode("full")}
+                      className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+                        docViewMode === "full"
+                          ? "bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-2xs font-extrabold"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                      }`}
+                    >
+                      Full Document
+                    </button>
+                  </div>
+                )}
+
                 {/* Zoom Controls */}
                 <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-800">
                   <button
@@ -2363,7 +2442,7 @@ export const ProfilePage = () => {
             </div>
 
             {/* Expansive Canvas (renders the CLEAR High-Resolution Image) */}
-            <div className="flex-1 min-h-0 w-full overflow-auto bg-slate-950 p-4 sm:p-8 flex items-center justify-center relative">
+            <div className="flex-1 min-h-0 w-full overflow-auto bg-slate-900/95 dark:bg-slate-950 p-4 sm:p-8 flex items-center justify-center relative">
               <div
                 className="transition-transform duration-150 ease-out flex items-center justify-center my-auto"
                 style={{
@@ -2372,9 +2451,9 @@ export const ProfilePage = () => {
                 }}
               >
                 <img
-                  src={previewDoc.image}
+                  src={docViewMode === "full" && previewDoc.fullImage ? previewDoc.fullImage : previewDoc.image}
                   alt={previewDoc.title}
-                  className="max-h-[74vh] max-w-full object-contain rounded-2xl shadow-2xl border border-slate-800/80"
+                  className="max-h-[74vh] max-w-full object-contain rounded-2xl shadow-2xl border border-slate-700/80 bg-white"
                 />
               </div>
             </div>
@@ -2405,9 +2484,10 @@ export const ProfilePage = () => {
                 <button
                   type="button"
                   onClick={() => {
+                    const activeSrc = docViewMode === "full" && previewDoc.fullImage ? previewDoc.fullImage : previewDoc.image;
                     const link = document.createElement("a");
-                    link.href = previewDoc.image;
-                    link.download = `${previewDoc.title}.jpg`;
+                    link.href = activeSrc;
+                    link.download = `${previewDoc.title}.png`;
                     link.click();
                     showToast(`Downloaded official copy: ${previewDoc.title}`);
                   }}
