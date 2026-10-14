@@ -6,7 +6,6 @@ import {
   GraduationCap,
   CheckSquare,
   FileText,
-  ShieldAlert,
 } from "lucide-react";
 import dashboardHeaderBg from "../../../assets/header-bg/dashboard-header.png";
 import dashboardHeaderDarkBg from "../../../assets/header-bg/dashboard-header-dark.png";
@@ -126,14 +125,6 @@ export const StudentWelcomeBanner = ({
             title="Assignments"
           >
             <FileText size={14} />
-          </button>
-          <button
-            type="button"
-            onClick={() => handleNav("/exam")}
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-rose-50 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-500/40 shadow-2xs flex items-center justify-center transition-all hover:bg-rose-100 dark:hover:bg-rose-500 dark:hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
-            title="Official Exam"
-          >
-            <ShieldAlert size={14} />
           </button>
         </div>
       </div>
