@@ -2158,10 +2158,10 @@ export const IMPORTED_LMS_QUIZZES = [
   },
   {
     id: "q-ga4-inter",
-    courseId: "course-5",
-    courseTitle: "Google Analytics",
+    courseId: "course-6",
+    courseTitle: "Google Ads",
     title: "GA4 Intermediate Test",
-    category: "Google Analytics",
+    category: "Google Ads",
     totalQuestions: 29,
     durationMinutes: 22,
     perQuestionTimerSeconds: 45,

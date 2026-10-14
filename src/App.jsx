@@ -20,6 +20,7 @@ import { SchedulePage } from "./pages/SchedulePage";
 import { QuestionDiscussionsPage } from "./pages/QuestionDiscussionsPage";
 import { LoginPage } from "./pages/LoginPage.jsx";
 import { CertificateVerificationPage } from "./pages/CertificateVerificationPage.jsx";
+import { OfficialExamPage } from "./pages/OfficialExamPage.jsx";
 
 import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
@@ -58,6 +59,7 @@ export function App() {
                 <Route path="schedule" element={<SchedulePage />} />
                 <Route path="attendance-fees" element={<Navigate to="/profile?tab=attendance" replace />} />
                 <Route path="gallery" element={<GalleryPage />} />
+                <Route path="exam" element={<OfficialExamPage />} />
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Route>
             </Routes>

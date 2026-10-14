@@ -161,8 +161,8 @@ export const INITIAL_NOTIFICATIONS = [
     daysLeft: 4,
     badgeText: "Exam in 4 Days",
     severity: "exam", // GREEN
-    link: "/my-quizzes",
-    btnText: "Exam Details",
+    link: "/exam",
+    btnText: "Enter Exam Hall",
   },
 ];
 
@@ -274,6 +274,14 @@ export const QUICK_ACTIONS_DATA = [
     link: "/my-assignments",
     color: "emerald",
     iconName: "FileText",
+  },
+  {
+    id: "action-exam",
+    title: "Official Exam",
+    subtitle: "Timed Proctored",
+    link: "/exam",
+    color: "rose",
+    iconName: "ShieldAlert",
   },
 ];
 

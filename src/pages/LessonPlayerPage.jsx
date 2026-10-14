@@ -34,6 +34,7 @@ import {
   Folder,
   FolderOpen,
   GraduationCap,
+  HelpCircle,
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
@@ -280,13 +281,14 @@ export const LessonPlayerPage = () => {
   const sections = useMemo(() => {
     const map = new Map();
     units.forEach((unit) => {
+      if (unit.type === "quiz" || unit.type === "assignment") return;
       const mod = unit.moduleName || "General Lessons";
       if (!map.has(mod)) {
         map.set(mod, []);
       }
       map.get(mod).push(unit);
     });
-    return Array.from(map.entries()).map(([name, items], idx) => {
+    const result = Array.from(map.entries()).map(([name, items], idx) => {
       const completed = items.filter((u) => u.isCompleted).length;
       return {
         name,
@@ -297,7 +299,24 @@ export const LessonPlayerPage = () => {
         isCompleted: completed === items.length && items.length > 0,
       };
     });
-  }, [units]);
+
+    // Dynamic combined Tests & Assignments module as last module
+    const assessmentsModule = lmsService.getCourseAssessmentsModule(currentCourse.id);
+    if (assessmentsModule && assessmentsModule.items && assessmentsModule.items.length > 0) {
+      const completedAssessments = assessmentsModule.items.filter((i) => i.isCompleted).length;
+      result.push({
+        name: assessmentsModule.name,
+        index: result.length + 1,
+        items: assessmentsModule.items,
+        completedCount: completedAssessments,
+        totalCount: assessmentsModule.items.length,
+        isCompleted: completedAssessments === assessmentsModule.items.length && assessmentsModule.items.length > 0,
+        isAssessmentModule: true,
+      });
+    }
+
+    return result;
+  }, [units, currentCourse.id]);
 
   // Section accordion expand/collapse state
   const [expandedSections, setExpandedSections] = useState({});
@@ -361,10 +380,15 @@ export const LessonPlayerPage = () => {
       .filter((sec) => sec.items.length > 0);
   }, [sections, playlistSearch]);
 
-  // Overall course progress
-  const completedCount = units.filter((u) => u.isCompleted).length;
+  // Overall course progress across all modules & assessment activities
+  const allPlayerItems = useMemo(() => {
+    return sections.flatMap((s) => s.items || []);
+  }, [sections]);
+  const completedCount = allPlayerItems.filter((u) => u.isCompleted).length;
   const progressPercent =
-    units.length > 0 ? Math.round((completedCount / units.length) * 100) : 0;
+    allPlayerItems.length > 0
+      ? Math.round((completedCount / allPlayerItems.length) * 100)
+      : 0;
 
   return (
     <div className="space-y-6">
@@ -876,7 +900,7 @@ export const LessonPlayerPage = () => {
                     </h4>
                     <p className="text-[10px] text-slate-500 dark:text-blue-200 font-medium truncate mt-0.5">
                       {currentCourse.category || "Certification"} •{" "}
-                      {units.length} Total Lessons • {sections.length} Modules
+                      {allPlayerItems.length} Lessons & Activities • {sections.length} Modules
                     </p>
                   </div>
                 </div>
@@ -898,7 +922,7 @@ export const LessonPlayerPage = () => {
                 <div className="flex items-center justify-between text-[10px] font-bold text-slate-600 dark:text-blue-200">
                   <span>Overall Course Progress</span>
                   <span className="text-blue-600 dark:text-cyan-300 tabular-nums">
-                    {completedCount} / {units.length} Lessons ({progressPercent}
+                    {completedCount} / {allPlayerItems.length} Activities ({progressPercent}
                     %)
                   </span>
                 </div>
@@ -1084,6 +1108,11 @@ export const LessonPlayerPage = () => {
                             <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-blue-100 dark:bg-indigo-950/80 text-blue-700 dark:text-indigo-300">
                               Module {sec.index}
                             </span>
+                            {sec.isAssessmentModule && (
+                              <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300">
+                                Final Module
+                              </span>
+                            )}
                             {containsActive && (
                               <span className="px-1.5 py-0.5 bg-blue-600 text-white text-[9px] font-bold rounded-sm uppercase tracking-wide">
                                 Active Lesson
@@ -1116,7 +1145,12 @@ export const LessonPlayerPage = () => {
                       <div className="p-2.5 space-y-1.5 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/40">
                         <div className="ml-2 pl-3 border-l-2 border-blue-200 dark:border-indigo-900/60 space-y-1.5">
                           {sec.items.map((unit, uIdx) => {
-                            const isActive = unit.id === currentLesson.id;
+                            const isAss = unit.type === "assignment";
+                            const isQuiz =
+                              unit.type === "quiz" ||
+                              unit.title.toLowerCase().includes("quiz") ||
+                              unit.title.toLowerCase().includes("test");
+                            const isActive = unit.id === currentLesson.id && !isAss && !isQuiz;
                             const savedProgress = localStorage.getItem(
                               `om_video_progress_${currentCourse.id}_${unit.id}`,
                             );
@@ -1129,11 +1163,17 @@ export const LessonPlayerPage = () => {
                               <div
                                 key={unit.id}
                                 onClick={() => {
-                                  const targetIdx = units.findIndex(
-                                    (u) => u.id === unit.id,
-                                  );
-                                  if (targetIdx !== -1) {
-                                    setActiveLessonIdx(targetIdx);
+                                  if (isQuiz) {
+                                    navigate(`/take-quiz/${unit.quizId || unit.id}`);
+                                  } else if (isAss) {
+                                    navigate(`/take-assignment/${unit.assignmentId || unit.id}`);
+                                  } else {
+                                    const targetIdx = units.findIndex(
+                                      (u) => u.id === unit.id,
+                                    );
+                                    if (targetIdx !== -1) {
+                                      setActiveLessonIdx(targetIdx);
+                                    }
                                   }
                                 }}
                                 className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
@@ -1148,7 +1188,11 @@ export const LessonPlayerPage = () => {
                                       className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 ${
                                         isActive
                                           ? "bg-white/20 text-white"
-                                          : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                                          : isQuiz
+                                            ? "bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300"
+                                            : isAss
+                                              ? "bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300"
+                                              : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
                                       }`}
                                     >
                                       {isActive ? (
@@ -1156,6 +1200,10 @@ export const LessonPlayerPage = () => {
                                           size={11}
                                           className="fill-current translate-x-0.5"
                                         />
+                                      ) : isQuiz ? (
+                                        <HelpCircle size={13} />
+                                      ) : isAss ? (
+                                        <FileText size={13} />
                                       ) : (
                                         <span>
                                           {sec.index}.{uIdx + 1}
@@ -1164,15 +1212,27 @@ export const LessonPlayerPage = () => {
                                     </div>
 
                                     <div className="min-w-0">
-                                      <h5
-                                        className={`text-xs font-bold leading-snug truncate ${
-                                          isActive
-                                            ? "text-white"
-                                            : "text-slate-800 dark:text-slate-200"
-                                        }`}
-                                      >
-                                        {unit.title}
-                                      </h5>
+                                      <div className="flex items-center space-x-1.5">
+                                        <h5
+                                          className={`text-xs font-bold leading-snug truncate ${
+                                            isActive
+                                              ? "text-white"
+                                              : "text-slate-800 dark:text-slate-200"
+                                          }`}
+                                        >
+                                          {unit.title}
+                                        </h5>
+                                        {isQuiz && (
+                                          <span className="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 shrink-0">
+                                            Test
+                                          </span>
+                                        )}
+                                        {isAss && (
+                                          <span className="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 shrink-0">
+                                            Assignment
+                                          </span>
+                                        )}
+                                      </div>
                                       <div
                                         className={`flex items-center space-x-1.5 mt-0.5 text-[10px] ${
                                           isActive
@@ -1181,7 +1241,13 @@ export const LessonPlayerPage = () => {
                                         }`}
                                       >
                                         <span>{unit.duration}</span>
-                                        {hasResume && !unit.isCompleted && (
+                                        {isQuiz && unit.totalQuestions && (
+                                          <>
+                                            <span>•</span>
+                                            <span>{unit.totalQuestions} Questions</span>
+                                          </>
+                                        )}
+                                        {hasResume && !unit.isCompleted && !isQuiz && !isAss && (
                                           <>
                                             <span>•</span>
                                             <span
@@ -1209,6 +1275,14 @@ export const LessonPlayerPage = () => {
                                             : "text-emerald-500"
                                         }
                                       />
+                                    ) : isQuiz ? (
+                                      <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 hover:underline">
+                                        Start →
+                                      </span>
+                                    ) : isAss ? (
+                                      <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:underline">
+                                        Open →
+                                      </span>
                                     ) : (
                                       <Play
                                         size={13}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { GlobalSearchModal } from '../common/GlobalSearchModal';
@@ -7,9 +7,13 @@ import { useAuth } from '../../context/AuthContext';
 
 export const SharedLayout = () => {
     const { isAdmin } = useAuth();
+    const location = useLocation();
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [searchModalOpen, setSearchModalOpen] = useState(false);
+
+    const isExamPage = location.pathname.startsWith('/exam');
+
     const toggleSidebar = () => {
         if (window.innerWidth < 768) {
             setMobileSidebarOpen(!mobileSidebarOpen);
@@ -18,6 +22,18 @@ export const SharedLayout = () => {
             setSidebarCollapsed(!sidebarCollapsed);
         }
     };
+
+    // Lockdown Mode for Proctored Examination: completely hide regular sidebar and topbar
+    if (isExamPage) {
+        return (
+            <div className="min-h-screen w-full bg-[#f8fafc] dark:bg-[#070b14] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden">
+                <main className="w-full min-h-screen flex flex-col p-0 m-0">
+                    <Outlet />
+                </main>
+            </div>
+        );
+    }
+
     return (<div className={`min-h-screen bg-[#f8fafc] dark:bg-[#0b0f19] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors duration-200 role-student`}>
       {/* Sidebar Desktop */}
       <div className="hidden md:block">

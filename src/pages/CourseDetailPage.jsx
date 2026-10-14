@@ -221,17 +221,21 @@ export const CourseDetailPage = () => {
     });
   }, [notesList, courseNotesSearch, courseNotesFilterTag]);
 
+  const [assessmentsVersion, setAssessmentsVersion] = useState(0);
+
   // Group units by moduleName for Course Outline
   const sections = useMemo(() => {
     const map = new Map();
     units.forEach((u) => {
+      if (u.type === "quiz" || u.type === "assignment") return;
       const list = map.get(u.moduleName) || [];
       list.push(u);
       map.set(u.moduleName, list);
     });
 
+    let result = [];
     if (map.size === 0) {
-      return [
+      result = [
         {
           name: "Introduction & Core Strategy Framework",
           items: [
@@ -249,13 +253,6 @@ export const CourseDetailPage = () => {
               type: "reading",
               isCompleted: false,
             },
-            {
-              id: "u-3",
-              title: "03 Hands-on Strategy Plan & Pillar Creation",
-              duration: "45:00",
-              type: "assignment",
-              isCompleted: false,
-            },
           ],
         },
         {
@@ -268,39 +265,87 @@ export const CourseDetailPage = () => {
               type: "video",
               isCompleted: false,
             },
-            {
-              id: "u-5",
-              title: "02 Optimization Checklist & Analytics Audit",
-              duration: "18:00",
-              type: "quiz",
-              isCompleted: false,
-            },
           ],
         },
       ];
+    } else {
+      result = Array.from(map.entries()).map(([name, items]) => ({ name, items }));
     }
 
-    return Array.from(map.entries()).map(([name, items]) => ({ name, items }));
-  }, [units]);
+    // Dynamic combined Tests & Assignments module as last module
+    const assessmentsModule = lmsService.getCourseAssessmentsModule(course.id);
+    if (assessmentsModule && assessmentsModule.items && assessmentsModule.items.length > 0) {
+      result = result.filter(
+        (sec) =>
+          sec.name !== "Tests & Assignments" &&
+          sec.name !== "Tests" &&
+          sec.name !== "Assignments" &&
+          sec.name !== assessmentsModule.name,
+      );
+      result.push(assessmentsModule);
+    }
 
-  // Toggle completion of a unit
-  const handleToggleCompletion = (unitId, e) => {
+    return result;
+  }, [units, course.id, assessmentsVersion]);
+
+  // Toggle completion of a unit, test, or assignment
+  const handleToggleCompletion = (itemId, e) => {
     e.stopPropagation();
-    setUnits((prev) =>
-      prev.map((u) => {
-        if (u.id === unitId) {
-          const updated = !u.isCompleted;
-          showToast(
-            updated
-              ? `Marked "${u.title}" as completed!`
-              : `Marked "${u.title}" as incomplete`,
-            "info",
-          );
-          return { ...u, isCompleted: updated };
-        }
-        return u;
-      }),
-    );
+    const unitExists = units.some((u) => u.id === itemId);
+    if (unitExists) {
+      setUnits((prev) =>
+        prev.map((u) => {
+          if (u.id === itemId) {
+            const updated = !u.isCompleted;
+            showToast(
+              updated
+                ? `Marked "${u.title}" as completed!`
+                : `Marked "${u.title}" as incomplete`,
+              "info",
+            );
+            return { ...u, isCompleted: updated };
+          }
+          return u;
+        }),
+      );
+      return;
+    }
+
+    const quiz = lmsService.getQuizById(itemId);
+    if (quiz) {
+      const isPassed = quiz.studentStatus === "passed";
+      const newStatus = isPassed ? "pending" : "passed";
+      lmsService.updateQuiz(itemId, {
+        studentStatus: newStatus,
+        studentScore: newStatus === "passed" ? 100 : null,
+      });
+      setAssessmentsVersion((v) => v + 1);
+      showToast(
+        !isPassed
+          ? `Marked test "${quiz.title}" as completed!`
+          : `Marked test "${quiz.title}" as incomplete`,
+        "info",
+      );
+      return;
+    }
+
+    const assignments = lmsService.getAssignments();
+    const assignment = assignments.find((a) => a.id === itemId);
+    if (assignment) {
+      const isDone = assignment.status === "submitted" || assignment.status === "graded";
+      const newStatus = isDone ? "pending" : "submitted";
+      lmsService.updateAssignment(itemId, {
+        status: newStatus,
+      });
+      setAssessmentsVersion((v) => v + 1);
+      showToast(
+        !isDone
+          ? `Marked assignment "${assignment.title}" as completed!`
+          : `Marked assignment "${assignment.title}" as incomplete`,
+        "info",
+      );
+      return;
+    }
   };
 
   const handlePostAnnouncement = (e) => {
@@ -406,8 +451,12 @@ export const CourseDetailPage = () => {
     setHiddenInfoSections((prev) => ({ ...prev, [idx]: !prev[idx] }));
   };
 
-  const totalActivitiesCount = units.length || 16;
-  const completedActivitiesCount = units.filter((u) => u.isCompleted).length;
+  const allActivities = useMemo(() => {
+    return sections.flatMap((sec) => sec.items || []);
+  }, [sections]);
+
+  const totalActivitiesCount = allActivities.length || units.length || 16;
+  const completedActivitiesCount = allActivities.filter((u) => u.isCompleted).length;
   const progressPercent = Math.round(
     (completedActivitiesCount / (totalActivitiesCount || 1)) * 100,
   );
@@ -554,7 +603,7 @@ export const CourseDetailPage = () => {
                   Total Modules
                 </span>
                 <span className="text-base font-extrabold text-slate-900 dark:text-white tabular-nums">
-                  0{sections.length}
+                  {String(sections.length).padStart(2, "0")}
                 </span>
               </div>
             </div>
@@ -725,21 +774,22 @@ export const CourseDetailPage = () => {
             {sections.map((section, sIdx) => {
               const isExpanded = Boolean(expandedSections[sIdx]);
               const isInfoHidden = hiddenInfoSections[sIdx] === true;
+              const isAssModule = section.isAssessmentModule;
 
               // Calculate module included activities
-              const videoCount =
-                section.items.filter(
-                  (i) =>
-                    i.type === "video" ||
-                    (!i.type && !i.duration?.includes("Quiz")),
-                ).length || 2;
-              const readingCount =
-                section.items.filter((i) => i.type === "reading").length || 1;
-              const assignmentCount =
-                section.items.filter((i) => i.type === "assignment").length ||
-                1;
-              const quizCount =
-                section.items.filter((i) => i.type === "quiz").length || 1;
+              const videoCount = section.items.filter(
+                (i) =>
+                  i.type === "video" ||
+                  (!i.type && !i.duration?.includes("Quiz") && i.type !== "quiz" && i.type !== "assignment"),
+              ).length;
+              const readingCount = section.items.filter((i) => i.type === "reading").length;
+              const assignmentCount = section.items.filter((i) => i.type === "assignment").length;
+              const quizCount = section.items.filter(
+                (i) =>
+                  i.type === "quiz" ||
+                  i.title.toLowerCase().includes("quiz") ||
+                  i.title.toLowerCase().includes("test"),
+              ).length;
 
               return (
                 <div
@@ -774,6 +824,11 @@ export const CourseDetailPage = () => {
                         <span className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug">
                           {String(sIdx + 1).padStart(2, "0")} {section.name}
                         </span>
+                        {isAssModule && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-50 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/60 shrink-0">
+                            Final Module
+                          </span>
+                        )}
                       </div>
                     </div>
 
@@ -884,12 +939,9 @@ export const CourseDetailPage = () => {
                       {!isInfoHidden && (
                         <div className="space-y-3.5 bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 rounded-2xl">
                           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                            In this foundational module, students will be
-                            introduced to the core principles and practical
-                            frameworks behind {section.name}. The module
-                            explores comprehensive step-by-step execution,
-                            industry standard metrics, and practical campaign
-                            creation.
+                            {isAssModule
+                              ? `Comprehensive examinations, tests, and practical assignment deliverables for ${section.name}. Complete these assessments to validate your mastery and qualify for course certification.`
+                              : `In this foundational module, students will be introduced to the core principles and practical frameworks behind ${section.name}. The module explores comprehensive step-by-step execution, industry standard metrics, and practical campaign creation.`}
                           </p>
 
                           {/* "What's included" row with icons matching course-outline.png */}
@@ -898,34 +950,48 @@ export const CourseDetailPage = () => {
                               What's included
                             </span>
                             <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                              <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
-                                <Video
-                                  size={14}
-                                  className="text-blue-600 dark:text-blue-400"
-                                />
-                                <span>{videoCount} videos</span>
-                              </div>
-                              <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
-                                <BookOpen
-                                  size={14}
-                                  className="text-emerald-600 dark:text-emerald-400"
-                                />
-                                <span>{readingCount} readings</span>
-                              </div>
-                              <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
-                                <FileText
-                                  size={14}
-                                  className="text-amber-600 dark:text-amber-400"
-                                />
-                                <span>{assignmentCount} assignments</span>
-                              </div>
-                              <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
-                                <CheckSquare
-                                  size={14}
-                                  className="text-purple-600 dark:text-purple-400"
-                                />
-                                <span>{quizCount} Quiz</span>
-                              </div>
+                              {videoCount > 0 && (
+                                <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
+                                  <Video
+                                    size={14}
+                                    className="text-blue-600 dark:text-blue-400"
+                                  />
+                                  <span>{videoCount} {videoCount === 1 ? "video" : "videos"}</span>
+                                </div>
+                              )}
+                              {readingCount > 0 && (
+                                <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
+                                  <BookOpen
+                                    size={14}
+                                    className="text-emerald-600 dark:text-emerald-400"
+                                  />
+                                  <span>{readingCount} {readingCount === 1 ? "reading" : "readings"}</span>
+                                </div>
+                              )}
+                              {quizCount > 0 && (
+                                <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
+                                  <CheckSquare
+                                    size={14}
+                                    className="text-purple-600 dark:text-purple-400"
+                                  />
+                                  <span>{quizCount} {quizCount === 1 ? "Test / Quiz" : "Tests"}</span>
+                                </div>
+                              )}
+                              {assignmentCount > 0 && (
+                                <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
+                                  <FileText
+                                    size={14}
+                                    className="text-amber-600 dark:text-amber-400"
+                                  />
+                                  <span>{assignmentCount} {assignmentCount === 1 ? "assignment" : "assignments"}</span>
+                                </div>
+                              )}
+                              {videoCount === 0 && readingCount === 0 && quizCount === 0 && assignmentCount === 0 && (
+                                <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
+                                  <Play size={14} className="text-blue-600" />
+                                  <span>{section.items.length} lessons</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -956,17 +1022,24 @@ export const CourseDetailPage = () => {
                           const isAss = item.type === "assignment";
                           const isQuiz =
                             item.type === "quiz" ||
-                            item.title.toLowerCase().includes("quiz");
+                            item.title.toLowerCase().includes("quiz") ||
+                            item.title.toLowerCase().includes("test");
                           const isReading = item.type === "reading";
 
                           return (
                             <div
                               key={item.id}
-                              onClick={() =>
-                                navigate(
-                                  `/lesson-player?courseId=${course.id}&unitId=${item.id}`,
-                                )
-                              }
+                              onClick={() => {
+                                if (isQuiz) {
+                                  navigate(`/take-quiz/${item.quizId || item.id}`);
+                                } else if (isAss) {
+                                  navigate(`/take-assignment/${item.assignmentId || item.id}`);
+                                } else {
+                                  navigate(
+                                    `/lesson-player?courseId=${course.id}&unitId=${item.id}`,
+                                  );
+                                }
+                              }}
                               className="p-4 flex items-center justify-between hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors cursor-pointer group"
                             >
                               <div className="flex items-center space-x-3.5 truncate">
@@ -1008,13 +1081,16 @@ export const CourseDetailPage = () => {
                                     )}
                                     {isQuiz && (
                                       <span className="text-[10px] font-bold bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border border-purple-200/80 dark:border-purple-800/60 px-2 py-0.5 rounded-full shrink-0">
-                                        Quiz
+                                        Test / Quiz
                                       </span>
                                     )}
                                   </div>
                                   <span className="text-[11px] text-slate-400 dark:text-slate-500 font-normal">
-                                    {item.duration || "15:00"} • Practical
-                                    walkthrough
+                                    {isQuiz
+                                      ? `${item.duration || "20 mins"} • ${item.totalQuestions ? item.totalQuestions + " Questions" : "Assessment test"}`
+                                      : isAss
+                                        ? `${item.duration || (item.dueDate ? "Due: " + item.dueDate : "Practical submission")} • Practical project`
+                                        : `${item.duration || "15:00"} • Practical walkthrough`}
                                   </span>
                                 </div>
                               </div>
@@ -1027,13 +1103,28 @@ export const CourseDetailPage = () => {
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       navigate(
-                                        `/manage-assignments?title=${encodeURIComponent(item.title)}`,
+                                        `/take-assignment/${item.assignmentId || item.id}`,
                                       );
                                     }}
                                     className="text-[11px] font-bold text-amber-700 dark:text-amber-300 hover:text-amber-800 dark:hover:text-amber-200 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/80 transition-colors cursor-pointer shrink-0"
-                                    title="Manage Assignment Portal"
+                                    title="Open Assignment"
                                   >
-                                    Manage
+                                    Open
+                                  </button>
+                                )}
+                                {isAdmin && isQuiz && (
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      navigate(
+                                        `/take-quiz/${item.quizId || item.id}`,
+                                      );
+                                    }}
+                                    className="text-[11px] font-bold text-purple-700 dark:text-purple-300 hover:text-purple-800 dark:hover:text-purple-200 px-2.5 py-1 rounded-lg bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800/80 transition-colors cursor-pointer shrink-0"
+                                    title="Start Test"
+                                  >
+                                    Start
                                   </button>
                                 )}
                                 <button

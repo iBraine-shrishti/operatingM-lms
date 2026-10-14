@@ -256,8 +256,8 @@ export const studentDashboardService = {
       daysLeft: 4,
       badgeText: "Exam in 4 Days",
       severity: "exam", // GREEN
-      link: "/my-quizzes",
-      btnText: "Exam Details",
+      link: "/exam",
+      btnText: "Enter Exam Hall",
     };
 
     return [itemToday, itemAssignmentsGroup, itemPayment, itemQuiz, itemExam];

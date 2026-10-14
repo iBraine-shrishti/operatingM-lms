@@ -1,6 +1,20 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Zap, GraduationCap, CheckSquare, FileText, ArrowRight } from "lucide-react";
+import {
+  Zap,
+  GraduationCap,
+  CheckSquare,
+  FileText,
+  ArrowRight,
+  ShieldAlert,
+} from "lucide-react";
+
+const ICON_MAP = {
+  GraduationCap,
+  CheckSquare,
+  FileText,
+  ShieldAlert,
+};
 
 const DEFAULT_ACTIONS = [
   {
@@ -27,6 +41,14 @@ const DEFAULT_ACTIONS = [
     color: "emerald",
     icon: FileText,
   },
+  {
+    id: "action-exam",
+    title: "Official Exam",
+    subtitle: "Timed Proctored",
+    link: "/exam",
+    color: "rose",
+    icon: ShieldAlert,
+  },
 ];
 
 const COLOR_STYLES = {
@@ -50,6 +72,13 @@ const COLOR_STYLES = {
     arrowBox: "bg-emerald-100/80 dark:bg-emerald-900/60 border-emerald-200 dark:border-emerald-600/60 text-emerald-600 dark:text-emerald-300 group-hover:bg-emerald-600 dark:group-hover:bg-emerald-500 group-hover:text-white group-hover:border-emerald-600 dark:group-hover:border-emerald-400",
     title: "text-emerald-700 dark:text-emerald-100 group-hover:text-emerald-800 dark:group-hover:text-white",
     subtitle: "text-emerald-600/75 dark:text-emerald-300/80 group-hover:dark:text-emerald-200",
+  },
+  rose: {
+    card: "bg-rose-50/60 hover:bg-rose-100/60 dark:bg-gradient-to-br dark:from-rose-950/60 dark:via-slate-900 dark:to-rose-900/20 dark:hover:from-rose-900/60 dark:hover:to-rose-800/30 border-rose-200/90 hover:border-rose-300 dark:border-rose-500/30 dark:hover:border-rose-400/80 dark:hover:shadow-[0_4px_20px_rgba(244,63,94,0.3)]",
+    iconBox: "bg-rose-100 dark:bg-rose-500/20 dark:border-rose-500/40 text-rose-600 dark:text-rose-300 group-hover:bg-rose-600 dark:group-hover:bg-rose-500 group-hover:text-white dark:shadow-[0_0_12px_rgba(244,63,94,0.3)]",
+    arrowBox: "bg-rose-100/80 dark:bg-rose-900/60 border-rose-200 dark:border-rose-600/60 text-rose-600 dark:text-rose-300 group-hover:bg-rose-600 dark:group-hover:bg-rose-500 group-hover:text-white group-hover:border-rose-600 dark:group-hover:border-rose-400",
+    title: "text-rose-700 dark:text-rose-100 group-hover:text-rose-800 dark:group-hover:text-white",
+    subtitle: "text-rose-600/75 dark:text-rose-300/80 group-hover:dark:text-rose-200",
   },
 };
 
@@ -82,12 +111,12 @@ export const StudentQuickActions = ({
         </h3>
       </div>
 
-      {/* Actions: 3 distinct styled responsive items */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 xl:gap-2.5 2xl:gap-3.5 w-full flex-1">
+      {/* Actions: distinct styled responsive items */}
+      <div className={`grid ${actions.length >= 4 ? "grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 2xl:grid-cols-4" : "grid-cols-1 sm:grid-cols-3"} gap-2 xl:gap-2.5 2xl:gap-3.5 w-full flex-1`}>
         {actions.map((act) => {
           const colorKey = act.color || "blue";
           const styles = COLOR_STYLES[colorKey] || COLOR_STYLES.blue;
-          const IconComp = act.icon || GraduationCap;
+          const IconComp = act.icon || (act.iconName ? ICON_MAP[act.iconName] : null) || GraduationCap;
 
           return (
             <div

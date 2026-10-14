@@ -134,6 +134,9 @@ export const lmsService = {
             if (existingIdx === -1) {
                 list.push(imported);
             } else {
+                list[existingIdx].courseId = imported.courseId;
+                list[existingIdx].courseTitle = imported.courseTitle;
+                list[existingIdx].category = imported.category;
                 if (!list[existingIdx].questions || list[existingIdx].questions.length === 0) {
                     list[existingIdx].questions = imported.questions;
                 }
@@ -282,6 +285,64 @@ export const lmsService = {
         const filtered = items.filter(a => a.id !== id);
         setStored('assignments', filtered);
         return true;
+    },
+    // Course Assessments Module (Dynamic combined Tests & Assignments module for curriculum)
+    getCourseAssessmentsModule: (courseId) => {
+        if (!courseId) return null;
+        const quizzes = lmsService.getQuizzes().filter(q => q.courseId === courseId);
+        const assignments = lmsService.getAssignments().filter(a => a.courseId === courseId);
+
+        const hasQuizzes = quizzes.length > 0;
+        const hasAssignments = assignments.length > 0;
+
+        if (!hasQuizzes && !hasAssignments) {
+            return null;
+        }
+
+        let moduleName = "Tests & Assignments";
+        if (hasQuizzes && !hasAssignments) {
+            moduleName = "Tests";
+        } else if (!hasQuizzes && hasAssignments) {
+            moduleName = "Assignments";
+        }
+
+        const quizItems = quizzes.map((q) => ({
+            id: q.id,
+            quizId: q.id,
+            title: q.title,
+            type: 'quiz',
+            moduleName,
+            duration: `${q.durationMinutes || 20} mins`,
+            totalQuestions: q.totalQuestions || q.questions?.length || 30,
+            isCompleted: q.studentStatus === 'passed',
+            status: q.studentStatus || 'pending',
+            score: q.studentScore,
+            link: `/take-quiz/${q.id}`,
+            description: q.description || `Assessment examination containing ${q.totalQuestions || q.questions?.length || 30} questions.`
+        }));
+
+        const assignmentItems = assignments.map((a) => ({
+            id: a.id,
+            assignmentId: a.id,
+            title: a.title,
+            type: 'assignment',
+            moduleName,
+            duration: a.dueDate ? `Due: ${a.dueDate}` : 'Practical Project',
+            dueDate: a.dueDate,
+            isCompleted: a.status === 'submitted' || a.status === 'graded',
+            status: a.status || 'pending',
+            score: a.score,
+            link: `/take-assignment/${a.id}`,
+            description: a.instructions || 'Practical assignment submission.'
+        }));
+
+        return {
+            name: moduleName,
+            items: [...quizItems, ...assignmentItems],
+            quizzesCount: quizzes.length,
+            assignmentsCount: assignments.length,
+            isAssessmentModule: true
+        };
     },
     // Students
     getStudents: () => {
