@@ -275,14 +275,6 @@ export const QUICK_ACTIONS_DATA = [
     color: "emerald",
     iconName: "FileText",
   },
-  {
-    id: "action-exam",
-    title: "Official Exam",
-    subtitle: "Timed Proctored",
-    link: "/exam",
-    color: "rose",
-    iconName: "ShieldAlert",
-  },
 ];
 
 export const PAYMENT_MODAL_INFO = {
