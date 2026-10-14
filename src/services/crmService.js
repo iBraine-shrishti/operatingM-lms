@@ -268,6 +268,26 @@ class CrmService {
         const regAmount = parseFloat(d.registration_amount) || 0;
         const refundAmount = parseFloat(d.refund_amount) || 0;
 
+        const isDiploma = (d.course || '').toLowerCase().includes('diploma');
+        const courseDuration = isDiploma ? '6 Months' : '12 Months';
+        const admissionDateStr = d.submission_time ? this.formatDate(d.submission_time) : '09 Mar 2026';
+        const registrationDateStr = d.registration_date ? this.formatDate(d.registration_date) : admissionDateStr;
+
+        let courseEndStr = isDiploma ? '09 Sep 2026' : '20 Apr 2027';
+        let daysLeft = 180;
+        try {
+          if (d.submission_time) {
+            const startDt = new Date(d.submission_time);
+            if (!isNaN(startDt.getTime())) {
+              const endDt = new Date(startDt);
+              endDt.setMonth(endDt.getMonth() + (isDiploma ? 6 : 12));
+              courseEndStr = endDt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+              const diffMs = endDt.getTime() - Date.now();
+              daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+            }
+          }
+        } catch (e) {}
+
         const installments = [];
         let totalInstallmentsPaid = 0;
         let nextDueDate = '';
@@ -280,21 +300,35 @@ class CrmService {
           const date = d[`inst_${i}_date`] || '';
 
           if (amt > 0 || i <= maxInst) {
-            const isPaid = status === 'Paid';
+            const isPaid = status === 'Paid' || status === 'PAID';
             if (isPaid) {
               totalInstallmentsPaid += amt;
             } else if (!nextDueDate && amt > 0) {
-              nextDueDate = date || 'Upcoming';
+              nextDueDate = date ? this.formatDate(date) : 'Upcoming';
               nextDueAmount = amt;
             }
 
+            const formattedDate = date ? this.formatDate(date) : 'Pending Schedule';
+            let isOverdue = false;
+            if (!isPaid && date) {
+              try {
+                const dueDateObj = new Date(date);
+                if (!isNaN(dueDateObj.getTime()) && dueDateObj < new Date()) {
+                  isOverdue = true;
+                }
+              } catch (e) {}
+            }
+
             installments.push({
+              id: `inst-${i}`,
               number: i,
               title: `Installment ${i}`,
               amount: amt,
-              status: isPaid ? 'Paid' : 'Unpaid',
-              date: date ? this.formatDate(date) : 'Pending Schedule',
-              mode: isPaid ? 'Verified Payment' : 'Pending'
+              status: isPaid ? 'PAID' : 'UNPAID',
+              dueDate: formattedDate,
+              date: formattedDate,
+              mode: d[`inst_${i}_mode`] || (isPaid ? 'Verified Payment' : 'Pending'),
+              isOverdue
             });
           }
         }
@@ -302,32 +336,73 @@ class CrmService {
         const effectivePaid = regAmount + totalInstallmentsPaid - refundAmount;
         const balanceDue = Math.max(0, totalFees - effectivePaid);
         const paidPercentage = totalFees > 0 ? Math.round((effectivePaid / totalFees) * 1000) / 10 : 0;
+        const addressCombined = [d.address1, d.address2].filter(Boolean).join(', ') || '';
 
         const profile = {
           id: d.id,
           admissionNo: `OMC-${String(d.id).padStart(4, '0')}`,
           name: `${d.first_name} ${d.last_name || ''}`.trim(),
+          fullName: `${d.first_name} ${d.middle_name ? d.middle_name + ' ' : ''}${d.last_name || ''}`.trim(),
           firstName: d.first_name,
+          middleName: d.middle_name || '',
           lastName: d.last_name || '',
           email: d.email || 'student@operatingmedia.com',
           phone: d.phone ? this.formatPhoneNumber(d.phone) : '+91 98765 43210',
+          mobile: d.phone ? this.formatPhoneNumber(d.phone) : '+91 98765 43210',
           branch: d.branch ? `${d.branch} Center` : 'Andheri Center',
-          course: d.course || 'Masters in Digital Marketing',
-          batchName: d.course ? `${d.course} (WD-M1)` : 'Weekday Morning Masters',
-          joiningDate: d.submission_time || '2026-01-15',
-          photo: d.photo || null, // Real uploaded photo (base64 or URL)
+          center: d.branch ? `${d.branch} Center` : 'Andheri Center',
+          course: d.course || 'Diploma in Digital Marketing',
+          batchName: d.course ? `${d.course} (${isDiploma ? 'DDM-A1' : 'WD-M1'})` : 'Weekday Batch',
+          batchCode: isDiploma ? 'DDM-A1' : 'WD-M1',
+          joiningDate: d.submission_time || '2026-03-09',
+          admissionDate: admissionDateStr,
+          registrationDate: registrationDateStr,
+          dob: d.dob ? this.formatDate(d.dob) : '25 Jun 1994',
+          gender: d.gender || 'Male',
+          maritalStatus: d.status || d.marital_status || 'Single',
+          employedStatus: d.employed_status || 'Employed',
+          organization: d.organization || '',
+          address: addressCombined || 'Pawar Chawl Kadam wadi Marol Pipeline Andheri E',
+          city: d.city || 'Mumbai',
+          state: d.state || 'Maharashtra',
+          pincode: d.pincode || '400059',
+          country: d.country || 'India',
+          emergencyName: d.emergency_name || '',
+          emergencyPhone: d.emergency_phone ? this.formatPhoneNumber(d.emergency_phone) : '',
+          counsellor: d.counsellor || '',
+          facultyLead: 'Harsh Pareek',
+          facultyLeadRole: 'Director & Lead Faculty',
+          courseDuration,
+          courseStart: admissionDateStr,
+          courseEnd: courseEndStr,
+          daysLeft,
+          photo: d.photo || null,
+          avatar: d.photo || null,
           aadharFront: d.aadhar_card_front || null,
+          aadharBack: d.aadhar_card_back || null,
+          courseHistoryRaw: d.course_history || '',
           totalFees,
           regAmount,
           refundAmount,
           totalPaid: effectivePaid,
           balanceDue,
           paidPercentage,
+          feesClearedPercent: paidPercentage,
           paymentStatus: balanceDue <= 0 ? 'Fully Cleared' : effectivePaid > 0 ? 'Partial Due' : 'Unpaid',
-          nextDueDate: nextDueDate ? this.formatDate(nextDueDate) : '15 May 2026',
+          nextDueDate: nextDueDate || (installments.find(i => i.status === 'UNPAID')?.dueDate || 'Upcoming'),
           nextDueAmount: nextDueAmount || balanceDue,
           installments: [
-            { number: 0, title: 'Registration Fee', amount: regAmount, status: regAmount > 0 ? 'Paid' : 'Unpaid', date: 'Admission Day', mode: 'Registration' },
+            {
+              id: 'inst-0',
+              number: 0,
+              title: 'Registration Fee',
+              amount: regAmount,
+              status: regAmount > 0 ? 'PAID' : 'UNPAID',
+              dueDate: registrationDateStr,
+              date: registrationDateStr,
+              mode: d.registration_mode || 'Registration',
+              isOverdue: false
+            },
             ...installments
           ]
         };
@@ -363,21 +438,81 @@ class CrmService {
         id: 267,
         admissionNo: 'OMC-0267',
         name: 'Ram Charan',
-        fullName: 'Ram Charan',
+        fullName: 'Ram Balbir Charan',
         firstName: 'Ram',
+        middleName: 'Balbir',
         lastName: 'Charan',
         email: 'ram@lmsoperatingmedia.org',
         phone: '+91 73047 48384',
+        mobile: '+91 73047 48384',
         branch: 'Andheri Center',
         center: 'Andheri Center',
         course: 'Diploma in Digital Marketing',
         batchName: 'Diploma in Digital Marketing (DDM-A1)',
         batchCode: 'DDM-A1',
-        totalFees: 45000,
-        totalPaid: 45000,
-        balanceDue: 0,
-        paidPercentage: 100,
-        paymentStatus: 'Fully Cleared'
+        dob: '25 Jun 1994',
+        gender: 'Male',
+        maritalStatus: 'Single',
+        employedStatus: 'Employed',
+        organization: 'Sitel',
+        address: 'Pawar Chawl Kadam wadi Marol Pipeline Andheri E',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        pincode: '400059',
+        country: 'India',
+        emergencyName: 'Sangeeta Chraran',
+        emergencyPhone: '+91 84520 76467',
+        admissionDate: '09 Mar 2026',
+        registrationDate: '09 Mar 2026',
+        courseDuration: '6 Months',
+        courseStart: '09 Mar 2026',
+        courseEnd: '09 Sep 2026',
+        daysLeft: 147,
+        totalFees: 25000,
+        regAmount: 2000,
+        totalPaid: 2000,
+        balanceDue: 23000,
+        paidPercentage: 8,
+        feesClearedPercent: 8,
+        paymentStatus: 'Fees Pending',
+        nextDueDate: '09 Mar 2026',
+        nextDueAmount: 11500,
+        installments: [
+          {
+            id: 'inst-0',
+            number: 0,
+            title: 'Registration Fee',
+            amount: 2000,
+            status: 'PAID',
+            dueDate: '09 Mar 2026',
+            date: '09 Mar 2026',
+            mode: 'Registration',
+            isOverdue: false
+          },
+          {
+            id: 'inst-1',
+            number: 1,
+            title: 'Inst 1',
+            amount: 11500,
+            status: 'UNPAID',
+            dueDate: '09 Mar 2026',
+            date: '09 Mar 2026',
+            mode: 'Pending',
+            isOverdue: true
+          },
+          {
+            id: 'inst-2',
+            number: 2,
+            title: 'Inst 2',
+            amount: 11500,
+            status: 'UNPAID',
+            dueDate: '04 Apr 2026',
+            date: '04 Apr 2026',
+            mode: 'Pending',
+            isOverdue: true
+          }
+        ],
+        courseHistoryRaw: '16/06/2026 ⬇️ Downgraded: Advanced Diploma in Digital Marketing (₹30000.00) → Diploma in Digital Marketing (₹25000)\n16/06/2026: Diploma in Digital Marketing (₹25000.00) → Advanced Diploma in Digital Marketing (₹30000)'
       };
     }
 

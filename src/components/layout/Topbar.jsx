@@ -22,8 +22,14 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
   const [unreadNotifications, setUnreadNotifications] = useState(3);
   const [notifOpen, setNotifOpen] = useState(false);
   const navigate = useNavigate();
-  const { currentUser, role, isAdmin, isStudent, switchRole, logout } =
+  const { currentUser, role, isAdmin, isStudent, switchRole, logout, crmProfile } =
     useAuth();
+
+  const currentAvatar =
+    (role === "ADMIN"
+      ? currentUser?.avatar
+      : currentUser?.avatar || crmProfile?.photo || crmProfile?.avatar || profilePic) ||
+    profilePic;
   return (
     <header className="sticky top-0 z-20 h-16 bg-white dark:bg-[#0b1329] border-b border-slate-200 dark:border-slate-800/90 px-4 md:px-6 flex items-center justify-between shadow-xs transition-colors duration-200">
       {/* Left side: Mobile Toggle & Global Search */}
@@ -188,8 +194,11 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
             aria-label="User Profile Menu"
           >
             <img
-              src={role === "ADMIN" ? currentUser.avatar : profilePic}
-              alt={currentUser.name}
+              src={currentAvatar}
+              alt={currentUser?.name || "User"}
+              onError={(e) => {
+                e.currentTarget.src = profilePic;
+              }}
               className="w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full object-cover ring-2 ring-slate-200/90 dark:ring-slate-700 shadow-2xs shrink-0"
             />
             <div className="text-left hidden xl:block pr-1">
@@ -210,8 +219,11 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
             <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#0f172a] rounded-xl shadow-xl border border-slate-200/90 dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2">
               <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center space-x-3">
                 <img
-                  src={role === "ADMIN" ? currentUser.avatar : profilePic}
-                  alt={currentUser.name}
+                  src={currentAvatar}
+                  alt={currentUser?.name || "User"}
+                  onError={(e) => {
+                    e.currentTarget.src = profilePic;
+                  }}
                   className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700 shrink-0"
                 />
                 <div className="min-w-0">

@@ -49,6 +49,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { FeeReceiptModal } from "../components/crm/FeeReceiptModal";
 import { AttendanceComparisonChart } from "../components/crm/AttendanceComparisonChart";
 import { lmsService } from "../services/lmsService";
+import { crmService } from "../services/crmService";
 
 // Visual assets
 import profilePic from "../assets/profile-pic.png";
@@ -117,8 +118,8 @@ const AadhaarDocView = ({ studentData, sahilProfilePic, isCard = false }) => (
         }`}
       >
         <img
-          src={sahilProfilePic}
-          alt="Sahil Hasolkar"
+          src={studentData?.avatar || sahilProfilePic}
+          alt={studentData?.fullName || "Student Photo"}
           className="w-full h-full object-cover"
         />
         <div
@@ -258,12 +259,14 @@ const TenthMarksheetDocView = ({ studentData, isCard = false }) => (
       <div>
         <span className="text-slate-400 block text-[6px]">CANDIDATE NAME</span>
         <strong className="text-slate-900 font-black truncate block">
-          {studentData.fullName || "HASOLKAR SAHIL NILESH"}
+          {studentData.fullName ? studentData.fullName.toUpperCase() : "RAM BALBIR CHARAN"}
         </strong>
       </div>
       <div>
         <span className="text-slate-400 block text-[6px]">CENTER</span>
-        <strong className="text-slate-900 font-black">0375 (BORIVALI)</strong>
+        <strong className="text-slate-900 font-black">
+          {studentData.studentId ? studentData.studentId.replace("OMC-", "") : "0267"} ({studentData.center ? studentData.center.replace("Center", "").trim().toUpperCase() : "ANDHERI"})
+        </strong>
       </div>
     </div>
 
@@ -382,7 +385,7 @@ const TwelfthMarksheetDocView = ({ studentData, isCard = false }) => (
       <div>
         <span className="text-slate-400 block text-[6px]">CANDIDATE NAME</span>
         <strong className="text-slate-900 font-black truncate block">
-          {studentData.fullName || "HASOLKAR SAHIL NILESH"}
+          {studentData.fullName ? studentData.fullName.toUpperCase() : "RAM BALBIR CHARAN"}
         </strong>
       </div>
       <div>
@@ -477,6 +480,157 @@ const DocumentVisualizer = ({ doc, studentData, sahilProfilePic, isCard = false 
     return <TenthMarksheetDocView studentData={studentData} isCard={isCard} />;
   }
   return <TwelfthMarksheetDocView studentData={studentData} isCard={isCard} />;
+};
+
+const mapStudentDataFromCrm = (crm, user) => {
+  const source = crm || {};
+  const rawId = source.id || user?.crmAdmissionId || user?.id || 267;
+  const numOnly = String(rawId).replace(/[^0-9]/g, "") || "267";
+  const numericId = `#${numOnly}`;
+  const studentId = source.admissionNo || user?.admissionNo || `OMC-${numOnly.padStart(4, "0")}`;
+  const name = source.name || user?.name || "Ram Charan";
+  const fullName = source.fullName || user?.fullName || source.name || user?.name || "Ram Charan";
+  const avatar = source.photo || source.avatar || user?.avatar || premPhotoImg;
+  const course = source.course || user?.course || "Diploma in Digital Marketing";
+  const isDiploma = course.toLowerCase().includes("diploma");
+  const center = source.center || source.branch || user?.center || user?.branch || "Andheri Center";
+  const batch = source.batchName || user?.batchName || `${course} (${isDiploma ? "DDM-A1" : "WD-M1"})`;
+
+  const admissionDate = source.admissionDate || (source.submission_time ? crmService.formatDate(source.submission_time) : "09 Mar 2026");
+  const registrationDate = source.registrationDate || (source.registration_date ? crmService.formatDate(source.registration_date) : admissionDate);
+  const dob = source.dob || "25 Jun 1994";
+  const gender = source.gender || "Male";
+  const maritalStatus = source.maritalStatus || source.status || "Single";
+  const email = source.email || user?.email || "ram@lmsoperatingmedia.org";
+  const mobile = source.mobile || source.phone || user?.phone || "+91 73047 48384";
+  const address = source.address || "Pawar Chawl Kadam wadi Marol Pipeline Andheri E";
+  const city = source.city || "Mumbai";
+  const state = source.state || "Maharashtra";
+  const pincode = source.pincode || "400059";
+  const country = source.country || "India";
+  const facultyLead = source.facultyLead || "Harsh Pareek";
+  const facultyLeadRole = source.facultyLeadRole || "Director & Lead Faculty";
+  const courseDuration = source.courseDuration || (isDiploma ? "6 Months" : "12 Months");
+  const courseStart = source.courseStart || admissionDate;
+  const courseEnd = source.courseEnd || (isDiploma ? "09 Sep 2026" : "20 Apr 2027");
+  const daysLeft = typeof source.daysLeft === "number" ? source.daysLeft : 147;
+  const totalFees = typeof source.totalFees === "number" ? source.totalFees : 25000;
+  const amountPaid = typeof source.totalPaid === "number" ? source.totalPaid : 2000;
+  const balanceDue = typeof source.balanceDue === "number" ? source.balanceDue : Math.max(0, totalFees - amountPaid);
+  const feesClearedPercent = typeof source.paidPercentage === "number" ? Math.round(source.paidPercentage) : (totalFees > 0 ? Math.round((amountPaid / totalFees) * 100) : 0);
+  const paymentStatus = source.paymentStatus || (balanceDue <= 0 ? "Fully Cleared" : "Fees Pending");
+
+  // Installments list from CRM
+  let installments = source.installments;
+  if (!Array.isArray(installments) || installments.length === 0) {
+    installments = [
+      {
+        id: "inst-0",
+        number: 0,
+        title: "Registration Fee",
+        dueDate: registrationDate,
+        date: registrationDate,
+        amount: source.regAmount || 2000,
+        mode: "Registration",
+        status: (source.regAmount || 2000) > 0 ? "PAID" : "UNPAID",
+        isOverdue: false,
+      },
+      {
+        id: "inst-1",
+        number: 1,
+        title: "Inst 1",
+        dueDate: "09 Mar 2026",
+        date: "09 Mar 2026",
+        amount: 11500,
+        mode: "Pending",
+        status: "UNPAID",
+        isOverdue: true,
+      },
+      {
+        id: "inst-2",
+        number: 2,
+        title: "Inst 2",
+        dueDate: "04 Apr 2026",
+        date: "04 Apr 2026",
+        amount: 11500,
+        mode: "Pending",
+        status: "UNPAID",
+        isOverdue: true,
+      },
+    ];
+  } else {
+    installments = installments.map((inst, idx) => ({
+      ...inst,
+      id: inst.id || `inst-${inst.number ?? idx}`,
+      dueDate: inst.dueDate || inst.date || "Scheduled",
+      status: String(inst.status).toUpperCase() === "PAID" ? "PAID" : "UNPAID",
+    }));
+  }
+
+  // Course History
+  let courseHistory = source.courseChangeHistory;
+  if (!courseHistory && source.courseHistoryRaw) {
+    const rawLines = String(source.courseHistoryRaw).split("\n").filter((l) => l.trim());
+    courseHistory = rawLines.map((line, idx) => {
+      const parts = line.split(":");
+      const date = parts[0]?.trim() || "Logged Date";
+      const title = parts.slice(1).join(":").trim() || line;
+      return {
+        id: `ch-${idx}`,
+        date,
+        title,
+        description: "Course transition recorded in Operating Media CRM.",
+      };
+    });
+  }
+  if (!courseHistory || courseHistory.length === 0) {
+    courseHistory = [
+      {
+        id: "ch-0",
+        date: admissionDate,
+        title: `Enrolled in ${course}`,
+        description: "Official student admission confirmed in Operating Media CRM records.",
+      },
+    ];
+  }
+
+  return {
+    name,
+    fullName,
+    avatar,
+    studentId,
+    numericId,
+    course,
+    courseDesc: "Comprehensive program covering SEO, Social Media, Google Ads, Analytics and more.",
+    center,
+    batch,
+    admissionDate,
+    registrationDate,
+    dob,
+    gender,
+    maritalStatus,
+    email,
+    mobile,
+    address,
+    city,
+    state,
+    pincode,
+    country,
+    facultyLead,
+    facultyLeadRole,
+    courseDuration,
+    courseStart,
+    courseEnd,
+    daysLeft,
+    progressPercentage: 65,
+    totalFees,
+    amountPaid,
+    balanceDue,
+    feesClearedPercent,
+    paymentStatus,
+    installments,
+    courseHistory,
+  };
 };
 
 export const ProfilePage = () => {
@@ -621,103 +775,36 @@ export const ProfilePage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Student Profile State (seeded from crmProfile with Prem Suthar default & pending fees)
-  const [studentData, setStudentData] = useState(() => ({
-    name: crmProfile?.name || "Prem Suthar",
-    fullName: crmProfile?.fullName || "Prem Suthar",
-    avatar: crmProfile?.avatar || premPhotoImg,
-    studentId: crmProfile?.admissionNo || "OMC-0375",
-    numericId: "#375",
-    course: crmProfile?.course || "Masters in Digital Marketing",
-    courseDesc:
-      "Comprehensive program covering SEO, Social Media, Google Ads, Analytics and more.",
-    center: crmProfile?.branch || crmProfile?.center || "Borivali Center",
-    batch: crmProfile?.batchName || "WD-M1",
-    admissionDate: crmProfile?.admissionDate || "22 Apr 2026",
-    registrationDate: crmProfile?.registrationDate || "18 Apr 2026",
-    dob: crmProfile?.dob || "16 May 2008",
-    gender: crmProfile?.gender || "Male",
-    maritalStatus: crmProfile?.maritalStatus || "Single",
-    email: crmProfile?.email || "premsuthar@gmail.com",
-    mobile: crmProfile?.mobile || crmProfile?.phone || "8955573859",
-    address:
-      crmProfile?.address ||
-      "S/O: Jayanti Lal, Mundara, PO: Mundara, DIST: Pali",
-    city: crmProfile?.city || "Pali",
-    state: crmProfile?.state || "Rajasthan",
-    pincode: crmProfile?.pincode || "306705",
-    country: "India",
-    facultyLead: crmProfile?.facultyLead || "Harsh Pareek",
-    facultyLeadRole: crmProfile?.facultyLeadRole || "Director & Lead Faculty",
-    courseDuration: "12 Months",
-    courseStart: "22 Apr 2026",
-    courseEnd: "20 Apr 2027",
-    daysLeft: 360,
-    progressPercentage: 65,
-    // Financial State (Fees Pending as requested)
-    totalFees: crmProfile?.totalFees || 90000,
-    amountPaid: crmProfile?.totalPaid || 5000,
-    balanceDue: crmProfile?.balanceDue || 85000,
-    feesClearedPercent: 6,
-    paymentStatus: crmProfile?.paymentStatus || "Fees Pending",
-    installments: crmProfile?.installments || [
-      {
-        id: "inst-0",
-        number: 0,
-        title: "Registration Fee",
-        dueDate: "30 Sep 2026",
-        amount: 5000,
-        mode: "GPay",
-        status: "PAID",
-      },
-      {
-        id: "inst-1",
-        number: 1,
-        title: "Inst 1",
-        dueDate: "01 Oct 2026",
-        amount: 17000,
-        mode: "Bank Transfer",
-        status: "UNPAID",
-        isOverdue: true,
-      },
-      {
-        id: "inst-2",
-        number: 2,
-        title: "Inst 2",
-        dueDate: "01 Nov 2026",
-        amount: 17000,
-        mode: "Bank Transfer",
-        status: "UNPAID",
-      },
-      {
-        id: "inst-3",
-        number: 3,
-        title: "Inst 3",
-        dueDate: "01 Dec 2026",
-        amount: 17000,
-        mode: "Bank Transfer",
-        status: "UNPAID",
-      },
-      {
-        id: "inst-4",
-        number: 4,
-        title: "Inst 4",
-        dueDate: "01 Jan 2027",
-        amount: 17000,
-        mode: "Bank Transfer",
-        status: "UNPAID",
-      },
-      {
-        id: "inst-5",
-        number: 5,
-        title: "Inst 5",
-        dueDate: "01 Feb 2027",
-        amount: 17000,
-        mode: "Bank Transfer",
-        status: "UNPAID",
-      },
-    ],
-  }));
+  // Student Profile State (dynamically populated from CRM with real student credentials)
+  const [studentData, setStudentData] = useState(() => mapStudentDataFromCrm(crmProfile, currentUser));
+
+  // Reactive synchronization whenever crmProfile or currentUser changes
+  useEffect(() => {
+    if (crmProfile || currentUser) {
+      setStudentData((prev) => {
+        const next = mapStudentDataFromCrm(crmProfile, currentUser);
+        return {
+          ...prev,
+          ...next,
+          ...(prev?.isLocallyEdited
+            ? {
+                fullName: prev.fullName,
+                name: prev.name,
+                email: prev.email,
+                mobile: prev.mobile,
+                dob: prev.dob,
+                gender: prev.gender,
+                maritalStatus: prev.maritalStatus,
+                address: prev.address,
+                city: prev.city,
+                state: prev.state,
+                pincode: prev.pincode,
+              }
+            : {}),
+        };
+      });
+    }
+  }, [crmProfile, currentUser]);
 
   // Attendance sub-view state
   const [attendanceView, setAttendanceView] = useState("graph"); // 'graph' | 'logs'
@@ -795,7 +882,12 @@ export const ProfilePage = () => {
       state: formData.get("state") || studentData.state,
       pincode: formData.get("pincode") || studentData.pincode,
     };
-    setStudentData((prev) => ({ ...prev, ...updated }));
+    setStudentData((prev) => ({
+      ...prev,
+      ...updated,
+      name: updated.fullName,
+      isLocallyEdited: true,
+    }));
     updateCurrentUser({
       name: updated.fullName,
       email: updated.email,
@@ -807,35 +899,35 @@ export const ProfilePage = () => {
   // Document item list (Actual student verified records)
   const studentDocuments = [
     {
-      id: "prem-photo",
+      id: "doc-photo",
       title: "Student Photo",
       type: "Passport Photograph",
       status: "Verified",
-      image: premPhotoImg,
-      fullImage: premPhotoImg,
-      uploadedOn: "13 Oct 2026",
-      docNo: "OMC-PREM-PHOTO",
+      image: studentData.avatar || premPhotoImg,
+      fullImage: studentData.avatar || premPhotoImg,
+      uploadedOn: studentData.admissionDate || "09 Mar 2026",
+      docNo: `${studentData.studentId}-PHOTO`,
       desc: "Official Student Identity Photograph",
     },
     {
-      id: "prem-aadhar-front",
+      id: "doc-aadhar-front",
       title: "Aadhaar Card (Front)",
       type: "UIDAI Official ID",
       status: "Verified",
-      image: premAadharFrontImg,
-      fullImage: premAadharFrontImg,
-      uploadedOn: "13 Oct 2026",
+      image: crmProfile?.aadharFront || premAadharFrontImg,
+      fullImage: crmProfile?.aadharFront || premAadharFrontImg,
+      uploadedOn: studentData.admissionDate || "09 Mar 2026",
       docNo: "9218 7859 8578",
       desc: "UIDAI Government Aadhaar • Front Side",
     },
     {
-      id: "prem-aadhar-back",
+      id: "doc-aadhar-back",
       title: "Aadhaar Card (Back)",
       type: "UIDAI Address Record",
       status: "Verified",
-      image: premAadharBackImg,
-      fullImage: premAadharBackImg,
-      uploadedOn: "13 Oct 2026",
+      image: crmProfile?.aadharBack || premAadharBackImg,
+      fullImage: crmProfile?.aadharBack || premAadharBackImg,
+      uploadedOn: studentData.admissionDate || "09 Mar 2026",
       docNo: "9218 7859 8578",
       desc: "UIDAI Government Aadhaar • Back Side (Address)",
     },
@@ -1328,17 +1420,29 @@ export const ProfilePage = () => {
             </div>
 
             {/* Pending Fee Notice Alert */}
-            {studentData.balanceDue > 0 && (
-              <div className="mt-3.5 p-3 rounded-xl bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 flex items-start space-x-2.5 text-xs text-rose-800 dark:text-rose-300">
-                <AlertCircle size={15} className="text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
-                <div className="space-y-0.5">
-                  <span className="font-bold block">Tuition Fees Pending: ₹{studentData.balanceDue.toLocaleString()} Due</span>
-                  <span className="text-rose-700/80 dark:text-rose-400/80 text-[11px] block">
-                    Installment 1 of ₹17,000 is Overdue since 01 Oct 2026. Please complete the transaction to avoid interruption.
-                  </span>
+            {studentData.balanceDue > 0 && (() => {
+              const pendingInst = (studentData.installments || []).find(
+                (i) => i.amount > 0 && String(i.status).toUpperCase() !== "PAID"
+              );
+              const instTitle = pendingInst?.title || "Installment 1";
+              const instAmount = pendingInst?.amount ? `₹${pendingInst.amount.toLocaleString()}` : `₹${studentData.balanceDue.toLocaleString()}`;
+              const instDate = pendingInst?.dueDate || pendingInst?.date || studentData.nextDueDate || "Scheduled Date";
+              const isOverdue = pendingInst?.isOverdue ?? true;
+
+              return (
+                <div className="mt-3.5 p-3 rounded-xl bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 flex items-start space-x-2.5 text-xs text-rose-800 dark:text-rose-300">
+                  <AlertCircle size={15} className="text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+                  <div className="space-y-0.5">
+                    <span className="font-bold block">Tuition Fees Pending: ₹{studentData.balanceDue.toLocaleString()} Due</span>
+                    <span className="text-rose-700/80 dark:text-rose-400/80 text-[11px] block">
+                      {pendingInst
+                        ? `${instTitle} of ${instAmount} is ${isOverdue ? "Overdue since" : "due on"} ${instDate}. Please complete the transaction to avoid interruption.`
+                        : `Please complete the transaction of ₹${studentData.balanceDue.toLocaleString()} to avoid interruption.`}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
 
           {/* Fee Account Status Strip */}
@@ -1840,7 +1944,7 @@ export const ProfilePage = () => {
               <div className="p-2 rounded-lg bg-white/80 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700/60">
                 <span className="text-[10px] text-slate-400 block font-medium">Verified On</span>
                 <strong className="text-slate-800 dark:text-slate-200 font-bold block truncate">
-                  13 Oct 2026
+                  {studentData.admissionDate || "09 Mar 2026"}
                 </strong>
               </div>
             </div>
@@ -1943,7 +2047,7 @@ export const ProfilePage = () => {
                 </span>
               )}
               <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200/60 dark:border-slate-800">
-                1 Logged Event
+                {(studentData.courseHistory || []).length} Logged {(studentData.courseHistory || []).length === 1 ? "Event" : "Events"}
               </span>
             </div>
           </div>
@@ -1951,23 +2055,25 @@ export const ProfilePage = () => {
           {/* Timeline entry */}
           <div className="relative pl-6 space-y-4">
             <div className="absolute left-2 top-2 bottom-2 w-0.5 bg-blue-100 dark:bg-slate-800" />
-            <div className="relative flex items-start space-x-3 text-xs">
-              <div className="absolute -left-6 top-1.5 w-3 h-3 rounded-full bg-blue-600 ring-4 ring-blue-100 dark:ring-blue-950" />
-              <span className="text-slate-400 dark:text-slate-500 font-medium shrink-0 pt-0.5">
-                01 Oct 2026
-              </span>
-              <div className="flex items-start space-x-2.5 bg-slate-50/70 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex-1">
-                <FileText size={16} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="text-slate-900 dark:text-white font-bold block">
-                    Upgraded: Masters Only (₹0.00) → Masters in Digital Marketing (₹90,000)
-                  </strong>
-                  <p className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">
-                    Course upgraded by admin. Payment adjusted.
-                  </p>
+            {(studentData.courseHistory || []).map((ev, idx) => (
+              <div key={ev.id || idx} className="relative flex items-start space-x-3 text-xs">
+                <div className="absolute -left-6 top-1.5 w-3 h-3 rounded-full bg-blue-600 ring-4 ring-blue-100 dark:ring-blue-950" />
+                <span className="text-slate-400 dark:text-slate-500 font-medium shrink-0 pt-0.5 min-w-[75px]">
+                  {ev.date}
+                </span>
+                <div className="flex items-start space-x-2.5 bg-slate-50/70 dark:bg-slate-900/60 p-3 rounded-xl border border-slate-100 dark:border-slate-800 flex-1">
+                  <FileText size={16} className="text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="text-slate-900 dark:text-white font-bold block">
+                      {ev.title}
+                    </strong>
+                    <p className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">
+                      {ev.description}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
 
