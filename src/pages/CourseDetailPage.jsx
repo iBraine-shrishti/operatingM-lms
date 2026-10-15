@@ -1340,17 +1340,6 @@ export const CourseDetailPage = () => {
                 </div>
                 <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
                   <span className="text-slate-500 dark:text-slate-400 font-medium">
-                    Rating
-                  </span>
-                  <span className="font-semibold text-amber-500 flex items-center space-x-1">
-                    <Star size={13} className="fill-current" />
-                    <span>
-                      {course.rating} ({course.reviewsCount} reviews)
-                    </span>
-                  </span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 font-medium">
                     Enrolled
                   </span>
                   <span className="font-semibold text-slate-900 dark:text-white tabular-nums">
