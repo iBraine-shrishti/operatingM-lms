@@ -77,7 +77,7 @@ const CATEGORIES = [
   { id: "analytics", label: "Google Analytics" },
   { id: "ads", label: "Google Ads" },
   { id: "wordpress", label: "WordPress Dev" },
-  { id: "growth", label: "Growth & Specialized" },
+  { id: "growth", label: "Growth Marketing" },
 ];
 
 export const EnrolledCoursesPage = () => {
@@ -95,7 +95,10 @@ export const EnrolledCoursesPage = () => {
   const totalCount = courses.length;
   const inProgressCount = courses.filter((c) => {
     const info = ENROLLMENT_DATA[c.id];
-    return (info?.status || "in-progress") !== "completed" && (info?.progress || 0) < 100;
+    return (
+      (info?.status || "in-progress") !== "completed" &&
+      (info?.progress || 0) < 100
+    );
   }).length;
   const completedCount = courses.filter((c) => {
     const info = ENROLLMENT_DATA[c.id];
@@ -111,7 +114,8 @@ export const EnrolledCoursesPage = () => {
           progress: 50,
         };
         const isDone =
-          enrollInfo.status === "completed" || (enrollInfo.progress || 0) >= 100;
+          enrollInfo.status === "completed" ||
+          (enrollInfo.progress || 0) >= 100;
 
         // Tab Filter
         if (activeTab === "in-progress" && isDone) return false;
@@ -130,13 +134,12 @@ export const EnrolledCoursesPage = () => {
             .toLowerCase()
             .includes(selectedCategory.toLowerCase()) ||
           course.title.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-          (selectedCategory === "growth" && (
-            course.id === "course-3" ||
-            course.title.toLowerCase().includes("growth") ||
-            course.title.toLowerCase().includes("specialized") ||
-            course.title.toLowerCase().includes("advanced") ||
-            course.category.toLowerCase().includes("growth")
-          ));
+          (selectedCategory === "growth" &&
+            (course.id === "course-3" ||
+              course.title.toLowerCase().includes("growth") ||
+              course.title.toLowerCase().includes("specialized") ||
+              course.title.toLowerCase().includes("advanced") ||
+              course.category.toLowerCase().includes("growth")));
 
         return matchesSearch && matchesCategory;
       })
@@ -162,9 +165,21 @@ export const EnrolledCoursesPage = () => {
       <StudentPageHeader
         {...STUDENT_HEADERS_CONFIG.enrolledCourses}
         metrics={[
-          { value: totalCount, label: "Enrolled Courses", dotColor: "bg-blue-600" },
-          { value: inProgressCount, label: "In Progress", dotColor: "bg-rose-500" },
-          { value: completedCount, label: "Completed", dotColor: "bg-emerald-500" },
+          {
+            value: totalCount,
+            label: "Enrolled Courses",
+            dotColor: "bg-blue-600",
+          },
+          {
+            value: inProgressCount,
+            label: "In Progress",
+            dotColor: "bg-rose-500",
+          },
+          {
+            value: completedCount,
+            label: "Completed",
+            dotColor: "bg-emerald-500",
+          },
           { value: "65%", label: "Avg. Progress", dotColor: "bg-purple-500" },
         ]}
         action={
@@ -439,7 +454,9 @@ export const EnrolledCoursesPage = () => {
                               : "text-[#2563eb] dark:text-blue-400"
                           }`}
                         >
-                          {isCompleted ? "100% Completed" : `${enroll.progress}%`}
+                          {isCompleted
+                            ? "100% Completed"
+                            : `${enroll.progress}%`}
                         </span>
                       </div>
                       <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -512,7 +529,11 @@ export const EnrolledCoursesPage = () => {
                         ? "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/20"
                         : "bg-[#2563eb] hover:bg-blue-600 shadow-blue-500/20"
                     }`}
-                    title={isCompleted ? "Rewatch course lessons" : "Continue course lessons"}
+                    title={
+                      isCompleted
+                        ? "Rewatch course lessons"
+                        : "Continue course lessons"
+                    }
                   >
                     {isCompleted ? (
                       <>
