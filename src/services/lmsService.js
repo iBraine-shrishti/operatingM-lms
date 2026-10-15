@@ -67,12 +67,33 @@ export const lmsService = {
     // Units
     getUnits: () => {
         const stored = getStored('units', INITIAL_UNITS);
-        return stored
+        const initialMap = new Map(INITIAL_UNITS.map(iu => [iu.id, iu]));
+        
+        // Merge stored units with any units in INITIAL_UNITS not yet in storage
+        const existingIds = new Set((stored || []).map(u => u.id));
+        const merged = Array.isArray(stored) ? [...stored] : [...INITIAL_UNITS];
+        INITIAL_UNITS.forEach(iu => {
+            if (!existingIds.has(iu.id)) {
+                merged.push(iu);
+            }
+        });
+
+        return merged
             .filter(u => u.courseId !== 'course-2')
-            .map(u => ({
-                ...u,
-                videoUrl: u.videoUrl ? u.videoUrl.replace('LMS_COURSES-vidoes', 'LMS_COURSES-videos') : u.videoUrl
-            }));
+            .map(u => {
+                const init = initialMap.get(u.id);
+                // Prefer latest initialized videoUrl if present, otherwise fall back to stored unit
+                const rawUrl = init?.videoUrl || u.videoUrl || '';
+                const fixedUrl = rawUrl
+                    ? rawUrl.replace('LMS_COURSES-vidoes', 'LMS_COURSES-videos').replace(/%26/g, '&')
+                    : '';
+                return {
+                    ...u,
+                    videoUrl: fixedUrl,
+                    duration: u.duration || init?.duration || '20:00',
+                    type: u.type || init?.type || 'video'
+                };
+            });
     },
     getUnitsByCourse: (courseId) => {
         return lmsService.getUnits().filter(u => u.courseId === courseId);

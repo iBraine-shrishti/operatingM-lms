@@ -59,23 +59,42 @@ export const LessonPlayerPage = () => {
 
   // Load units for current course
   const [units, setUnits] = useState(() =>
-    lmsService.getUnitsByCourse(currentCourse.id),
+    lmsService.getUnitsByCourse(currentCourse?.id || "course-8"),
   );
 
   useEffect(() => {
-    setUnits(lmsService.getUnitsByCourse(currentCourse.id));
+    const updatedUnits = lmsService.getUnitsByCourse(currentCourse.id);
+    setUnits(updatedUnits);
   }, [currentCourse.id]);
 
   // Determine active lesson index
   const [activeLessonIdx, setActiveLessonIdx] = useState(() => {
-    if (unitIdParam && units.length > 0) {
-      const foundIdx = units.findIndex((u) => u.id === unitIdParam);
+    const initialUnits = lmsService.getUnitsByCourse(currentCourse?.id || "course-8");
+    if (unitIdParam && initialUnits.length > 0) {
+      const foundIdx = initialUnits.findIndex((u) => u.id === unitIdParam);
       return foundIdx !== -1 ? foundIdx : 0;
     }
     return 0;
   });
 
-  // Keep URL in sync when active lesson changes
+  // Sync activeLessonIdx whenever unitIdParam or units changes
+  useEffect(() => {
+    if (!units || units.length === 0) return;
+    if (unitIdParam) {
+      const foundIdx = units.findIndex((u) => u.id === unitIdParam);
+      if (foundIdx !== -1) {
+        if (foundIdx !== activeLessonIdx) {
+          setActiveLessonIdx(foundIdx);
+        }
+        return;
+      }
+    }
+    if (activeLessonIdx >= units.length) {
+      setActiveLessonIdx(0);
+    }
+  }, [unitIdParam, units]);
+
+  // Derived current lesson
   const currentLesson = units[activeLessonIdx] ||
     units[0] || {
       id: "default-unit",
@@ -86,14 +105,17 @@ export const LessonPlayerPage = () => {
       description: "Lecture material.",
     };
 
+  // Keep URL in sync when active lesson changes (only if different from URL query)
   useEffect(() => {
     if (currentLesson && currentLesson.id) {
-      setSearchParams(
-        { courseId: currentCourse.id, unitId: currentLesson.id },
-        { replace: true },
-      );
+      if (unitIdParam !== currentLesson.id || courseIdParam !== currentCourse.id) {
+        setSearchParams(
+          { courseId: currentCourse.id, unitId: currentLesson.id },
+          { replace: true },
+        );
+      }
     }
-  }, [currentLesson?.id, currentCourse.id]);
+  }, [currentLesson?.id, currentCourse.id, unitIdParam, courseIdParam, setSearchParams]);
 
   // Player feature states
   const [isPlaying, setIsPlaying] = useState(false);
@@ -103,6 +125,16 @@ export const LessonPlayerPage = () => {
   const [resumePrompt, setResumePrompt] = useState(null); // { time: seconds, formatted: "04:32" }
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [videoError, setVideoError] = useState(null);
+
+  // Reload video player whenever current lesson or videoUrl changes
+  useEffect(() => {
+    setVideoError(null);
+    setCurrentTime(0);
+    if (videoRef.current && currentLesson?.videoUrl) {
+      videoRef.current.load();
+    }
+  }, [currentLesson?.videoUrl, currentLesson?.id]);
 
   // Tab & Notes states
   const [activeTab, setActiveTab] = useState("overview"); // overview | notes | resources | discussion
@@ -555,22 +587,93 @@ export const LessonPlayerPage = () => {
               </div>
             )}
 
+            {/* VIDEO ERROR OVERLAY */}
+            {videoError && (
+              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/90 text-center p-6 space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                  <Video size={24} />
+                </div>
+                <div className="max-w-md">
+                  <h3 className="text-white font-bold text-sm">Video Stream Notice</h3>
+                  <p className="text-slate-400 text-xs mt-1">{videoError}</p>
+                  {currentLesson.videoUrl && (
+                    <p className="text-slate-500 text-[10px] font-mono mt-1 break-all">
+                      {currentLesson.videoUrl}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center space-x-2 pt-2">
+                  <button
+                    onClick={() => {
+                      setVideoError(null);
+                      if (videoRef.current) {
+                        videoRef.current.load();
+                        videoRef.current.play().catch(() => {});
+                      }
+                    }}
+                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md flex items-center space-x-1.5 cursor-pointer"
+                  >
+                    <RotateCcw size={13} />
+                    <span>Retry Playback</span>
+                  </button>
+                  {currentLesson.videoUrl && (
+                    <a
+                      href={currentLesson.videoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all border border-slate-700 flex items-center space-x-1.5"
+                    >
+                      <ExternalLink size={13} />
+                      <span>Open Direct Stream</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* EMPTY VIDEO OVERLAY */}
+            {!currentLesson.videoUrl && (
+              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/80 text-center p-6 space-y-2">
+                <Video size={28} className="text-slate-500" />
+                <h3 className="text-white font-bold text-sm">No Video Attached</h3>
+                <p className="text-slate-400 text-xs max-w-sm">
+                  This lesson does not have a video stream attached yet.
+                </p>
+              </div>
+            )}
+
             {/* HTML5 VIDEO PLAYER */}
             <video
               ref={videoRef}
               key={currentLesson.videoUrl || currentLesson.id}
+              src={currentLesson.videoUrl || undefined}
               controls
-              autoPlay={false}
+              playsInline
+              preload="metadata"
               className="w-full h-full object-contain bg-black"
               poster={currentCourse.thumbnail}
               onLoadedMetadata={handleLoadedMetadata}
               onTimeUpdate={handleTimeUpdate}
               onEnded={handleVideoEnded}
-              onPlay={() => setIsPlaying(true)}
+              onPlay={() => {
+                setIsPlaying(true);
+                setVideoError(null);
+              }}
               onPause={() => setIsPlaying(false)}
+              onError={(e) => {
+                console.warn("Video playback error for URL:", currentLesson.videoUrl, e);
+                setVideoError("Unable to stream video. Please check media format or connection.");
+              }}
             >
               {currentLesson.videoUrl ? (
-                <source src={currentLesson.videoUrl} type="video/mp4" />
+                <source
+                  src={currentLesson.videoUrl}
+                  type={
+                    currentLesson.videoUrl.endsWith(".mov")
+                      ? "video/quicktime"
+                      : "video/mp4"
+                  }
+                />
               ) : null}
               Your browser does not support HTML5 video streaming.
             </video>
