@@ -57,14 +57,70 @@ export const DEGREE_PROGRAMS = [
     ],
     // Weekly breakdown (8 Weeks)
     weeklyData: [
-      { period: "Wk 1", label: "Week 1 (Orientation & SEO)", attended: 4, missed: 0, total: 4, rate: 100 },
-      { period: "Wk 2", label: "Week 2 (Keyword Research)", attended: 3, missed: 1, total: 4, rate: 75 },
-      { period: "Wk 3", label: "Week 3 (On-Page SEO & Content)", attended: 4, missed: 0, total: 4, rate: 100 },
-      { period: "Wk 4", label: "Week 4 (Technical SEO Audits)", attended: 3, missed: 0, total: 3, rate: 100 },
-      { period: "Wk 5", label: "Week 5 (WordPress & Elementor)", attended: 3, missed: 1, total: 4, rate: 75 },
-      { period: "Wk 6", label: "Week 6 (Google Ads Search)", attended: 4, missed: 0, total: 4, rate: 100 },
-      { period: "Wk 7", label: "Week 7 (PMax & Display Ads)", attended: 2, missed: 1, total: 3, rate: 66.7 },
-      { period: "Wk 8", label: "Week 8 (Analytics & Capstone)", attended: 2, missed: 0, total: 2, rate: 100 },
+      {
+        period: "Wk 1",
+        label: "Week 1 (Orientation & SEO)",
+        attended: 4,
+        missed: 0,
+        total: 4,
+        rate: 100,
+      },
+      {
+        period: "Wk 2",
+        label: "Week 2 (Keyword Research)",
+        attended: 3,
+        missed: 1,
+        total: 4,
+        rate: 75,
+      },
+      {
+        period: "Wk 3",
+        label: "Week 3 (On-Page SEO & Content)",
+        attended: 4,
+        missed: 0,
+        total: 4,
+        rate: 100,
+      },
+      {
+        period: "Wk 4",
+        label: "Week 4 (Technical SEO Audits)",
+        attended: 3,
+        missed: 0,
+        total: 3,
+        rate: 100,
+      },
+      {
+        period: "Wk 5",
+        label: "Week 5 (WordPress & Elementor)",
+        attended: 3,
+        missed: 1,
+        total: 4,
+        rate: 75,
+      },
+      {
+        period: "Wk 6",
+        label: "Week 6 (Google Ads Search)",
+        attended: 4,
+        missed: 0,
+        total: 4,
+        rate: 100,
+      },
+      {
+        period: "Wk 7",
+        label: "Week 7 (PMax & Display Ads)",
+        attended: 2,
+        missed: 1,
+        total: 3,
+        rate: 66.7,
+      },
+      {
+        period: "Wk 8",
+        label: "Week 8 (Analytics & Capstone)",
+        attended: 2,
+        missed: 0,
+        total: 2,
+        rate: 100,
+      },
     ],
     // Total aggregate breakdown
     totalData: [
@@ -91,31 +147,178 @@ export const DEGREE_PROGRAMS = [
     attendedCount: 50,
     missedCount: 6,
     monthlyData: [
-      { period: "Month 1", label: "Month 1 (SEO & Web)", attended: 14, missed: 1, total: 15, rate: 93.3 },
-      { period: "Month 2", label: "Month 2 (Performance Ads)", attended: 12, missed: 2, total: 14, rate: 85.7 },
-      { period: "Month 3", label: "Month 3 (Social & Creative)", attended: 13, missed: 1, total: 14, rate: 92.8 },
-      { period: "Month 4", label: "Month 4 (Analytics & Automation)", attended: 11, missed: 2, total: 13, rate: 84.6 },
+      {
+        period: "Month 1",
+        label: "Month 1 (SEO & Web)",
+        attended: 14,
+        missed: 1,
+        total: 15,
+        rate: 93.3,
+      },
+      {
+        period: "Month 2",
+        label: "Month 2 (Performance Ads)",
+        attended: 12,
+        missed: 2,
+        total: 14,
+        rate: 85.7,
+      },
+      {
+        period: "Month 3",
+        label: "Month 3 (Social & Creative)",
+        attended: 13,
+        missed: 1,
+        total: 14,
+        rate: 92.8,
+      },
+      {
+        period: "Month 4",
+        label: "Month 4 (Analytics & Automation)",
+        attended: 11,
+        missed: 2,
+        total: 13,
+        rate: 84.6,
+      },
     ],
     weeklyData: [
-      { period: "Wk 1", label: "Week 1", attended: 4, missed: 0, total: 4, rate: 100 },
-      { period: "Wk 2", label: "Week 2", attended: 3, missed: 1, total: 4, rate: 75 },
-      { period: "Wk 3", label: "Week 3", attended: 4, missed: 0, total: 4, rate: 100 },
-      { period: "Wk 4", label: "Week 4", attended: 3, missed: 0, total: 3, rate: 100 },
-      { period: "Wk 5", label: "Week 5", attended: 3, missed: 1, total: 4, rate: 75 },
-      { period: "Wk 6", label: "Week 6", attended: 4, missed: 0, total: 4, rate: 100 },
-      { period: "Wk 7", label: "Week 7", attended: 3, missed: 1, total: 4, rate: 75 },
-      { period: "Wk 8", label: "Week 8", attended: 2, missed: 0, total: 2, rate: 100 },
-      { period: "Wk 9", label: "Week 9", attended: 3, missed: 0, total: 3, rate: 100 },
-      { period: "Wk 10", label: "Week 10", attended: 3, missed: 1, total: 4, rate: 75 },
-      { period: "Wk 11", label: "Week 11", attended: 4, missed: 0, total: 4, rate: 100 },
-      { period: "Wk 12", label: "Week 12", attended: 3, missed: 0, total: 3, rate: 100 },
-      { period: "Wk 13", label: "Week 13", attended: 3, missed: 1, total: 4, rate: 75 },
-      { period: "Wk 14", label: "Week 14", attended: 3, missed: 0, total: 3, rate: 100 },
-      { period: "Wk 15", label: "Week 15", attended: 3, missed: 1, total: 4, rate: 75 },
-      { period: "Wk 16", label: "Week 16", attended: 2, missed: 0, total: 2, rate: 100 },
+      {
+        period: "Wk 1",
+        label: "Week 1",
+        attended: 4,
+        missed: 0,
+        total: 4,
+        rate: 100,
+      },
+      {
+        period: "Wk 2",
+        label: "Week 2",
+        attended: 3,
+        missed: 1,
+        total: 4,
+        rate: 75,
+      },
+      {
+        period: "Wk 3",
+        label: "Week 3",
+        attended: 4,
+        missed: 0,
+        total: 4,
+        rate: 100,
+      },
+      {
+        period: "Wk 4",
+        label: "Week 4",
+        attended: 3,
+        missed: 0,
+        total: 3,
+        rate: 100,
+      },
+      {
+        period: "Wk 5",
+        label: "Week 5",
+        attended: 3,
+        missed: 1,
+        total: 4,
+        rate: 75,
+      },
+      {
+        period: "Wk 6",
+        label: "Week 6",
+        attended: 4,
+        missed: 0,
+        total: 4,
+        rate: 100,
+      },
+      {
+        period: "Wk 7",
+        label: "Week 7",
+        attended: 3,
+        missed: 1,
+        total: 4,
+        rate: 75,
+      },
+      {
+        period: "Wk 8",
+        label: "Week 8",
+        attended: 2,
+        missed: 0,
+        total: 2,
+        rate: 100,
+      },
+      {
+        period: "Wk 9",
+        label: "Week 9",
+        attended: 3,
+        missed: 0,
+        total: 3,
+        rate: 100,
+      },
+      {
+        period: "Wk 10",
+        label: "Week 10",
+        attended: 3,
+        missed: 1,
+        total: 4,
+        rate: 75,
+      },
+      {
+        period: "Wk 11",
+        label: "Week 11",
+        attended: 4,
+        missed: 0,
+        total: 4,
+        rate: 100,
+      },
+      {
+        period: "Wk 12",
+        label: "Week 12",
+        attended: 3,
+        missed: 0,
+        total: 3,
+        rate: 100,
+      },
+      {
+        period: "Wk 13",
+        label: "Week 13",
+        attended: 3,
+        missed: 1,
+        total: 4,
+        rate: 75,
+      },
+      {
+        period: "Wk 14",
+        label: "Week 14",
+        attended: 3,
+        missed: 0,
+        total: 3,
+        rate: 100,
+      },
+      {
+        period: "Wk 15",
+        label: "Week 15",
+        attended: 3,
+        missed: 1,
+        total: 4,
+        rate: 75,
+      },
+      {
+        period: "Wk 16",
+        label: "Week 16",
+        attended: 2,
+        missed: 0,
+        total: 2,
+        rate: 100,
+      },
     ],
     totalData: [
-      { period: "Total Program", label: "4 Months Adv. Diploma Track", attended: 50, missed: 6, total: 56, rate: 89.3 },
+      {
+        period: "Total Program",
+        label: "4 Months Adv. Diploma Track",
+        attended: 50,
+        missed: 6,
+        total: 56,
+        rate: 89.3,
+      },
     ],
   },
   {
@@ -131,27 +334,146 @@ export const DEGREE_PROGRAMS = [
     attendedCount: 101,
     missedCount: 11,
     monthlyData: [
-      { period: "Month 1", label: "Month 1 (SEO Foundations)", attended: 14, missed: 1, total: 15, rate: 93.3 },
-      { period: "Month 2", label: "Month 2 (WordPress & CMS)", attended: 13, missed: 1, total: 14, rate: 92.8 },
-      { period: "Month 3", label: "Month 3 (Performance Marketing)", attended: 13, missed: 2, total: 15, rate: 86.7 },
-      { period: "Month 4", label: "Month 4 (Social Media Growth)", attended: 14, missed: 0, total: 14, rate: 100 },
-      { period: "Month 5", label: "Month 5 (Creative & Video)", attended: 12, missed: 2, total: 14, rate: 85.7 },
-      { period: "Month 6", label: "Month 6 (Google Analytics 4)", attended: 13, missed: 1, total: 14, rate: 92.8 },
-      { period: "Month 7", label: "Month 7 (AI & Growth Marketing)", attended: 11, missed: 2, total: 13, rate: 84.6 },
-      { period: "Month 8", label: "Month 8 (Capstone & Client Pitch)", attended: 11, missed: 2, total: 13, rate: 84.6 },
+      {
+        period: "Month 1",
+        label: "Month 1 (SEO Foundations)",
+        attended: 14,
+        missed: 1,
+        total: 15,
+        rate: 93.3,
+      },
+      {
+        period: "Month 2",
+        label: "Month 2 (WordPress & CMS)",
+        attended: 13,
+        missed: 1,
+        total: 14,
+        rate: 92.8,
+      },
+      {
+        period: "Month 3",
+        label: "Month 3 (Performance Marketing)",
+        attended: 13,
+        missed: 2,
+        total: 15,
+        rate: 86.7,
+      },
+      {
+        period: "Month 4",
+        label: "Month 4 (Social Media Growth)",
+        attended: 14,
+        missed: 0,
+        total: 14,
+        rate: 100,
+      },
+      {
+        period: "Month 5",
+        label: "Month 5 (Creative & Video)",
+        attended: 12,
+        missed: 2,
+        total: 14,
+        rate: 85.7,
+      },
+      {
+        period: "Month 6",
+        label: "Month 6 (Google Analytics 4)",
+        attended: 13,
+        missed: 1,
+        total: 14,
+        rate: 92.8,
+      },
+      {
+        period: "Month 7",
+        label: "Month 7 (AI & Growth Marketing)",
+        attended: 11,
+        missed: 2,
+        total: 13,
+        rate: 84.6,
+      },
+      {
+        period: "Month 8",
+        label: "Month 8 (Capstone & Client Pitch)",
+        attended: 11,
+        missed: 2,
+        total: 13,
+        rate: 84.6,
+      },
     ],
     weeklyData: [
-      { period: "M1", label: "Weeks 1-4", attended: 14, missed: 1, total: 15, rate: 93.3 },
-      { period: "M2", label: "Weeks 5-8", attended: 13, missed: 1, total: 14, rate: 92.8 },
-      { period: "M3", label: "Weeks 9-12", attended: 13, missed: 2, total: 15, rate: 86.7 },
-      { period: "M4", label: "Weeks 13-16", attended: 14, missed: 0, total: 14, rate: 100 },
-      { period: "M5", label: "Weeks 17-20", attended: 12, missed: 2, total: 14, rate: 85.7 },
-      { period: "M6", label: "Weeks 21-24", attended: 13, missed: 1, total: 14, rate: 92.8 },
-      { period: "M7", label: "Weeks 25-28", attended: 11, missed: 2, total: 13, rate: 84.6 },
-      { period: "M8", label: "Weeks 29-32", attended: 11, missed: 2, total: 13, rate: 84.6 },
+      {
+        period: "M1",
+        label: "Weeks 1-4",
+        attended: 14,
+        missed: 1,
+        total: 15,
+        rate: 93.3,
+      },
+      {
+        period: "M2",
+        label: "Weeks 5-8",
+        attended: 13,
+        missed: 1,
+        total: 14,
+        rate: 92.8,
+      },
+      {
+        period: "M3",
+        label: "Weeks 9-12",
+        attended: 13,
+        missed: 2,
+        total: 15,
+        rate: 86.7,
+      },
+      {
+        period: "M4",
+        label: "Weeks 13-16",
+        attended: 14,
+        missed: 0,
+        total: 14,
+        rate: 100,
+      },
+      {
+        period: "M5",
+        label: "Weeks 17-20",
+        attended: 12,
+        missed: 2,
+        total: 14,
+        rate: 85.7,
+      },
+      {
+        period: "M6",
+        label: "Weeks 21-24",
+        attended: 13,
+        missed: 1,
+        total: 14,
+        rate: 92.8,
+      },
+      {
+        period: "M7",
+        label: "Weeks 25-28",
+        attended: 11,
+        missed: 2,
+        total: 13,
+        rate: 84.6,
+      },
+      {
+        period: "M8",
+        label: "Weeks 29-32",
+        attended: 11,
+        missed: 2,
+        total: 13,
+        rate: 84.6,
+      },
     ],
     totalData: [
-      { period: "Total Program", label: "8 Months Master's Program Track", attended: 101, missed: 11, total: 112, rate: 90.2 },
+      {
+        period: "Total Program",
+        label: "8 Months Master's Program Track",
+        attended: 101,
+        missed: 11,
+        total: 112,
+        rate: 90.2,
+      },
     ],
   },
 ];
@@ -183,7 +505,9 @@ const CustomComparisonTooltip = ({ active, payload, label }) => {
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" />
               <span>Attended Lectures:</span>
             </span>
-            <strong className="font-black text-sm text-white">{attended}</strong>
+            <strong className="font-black text-sm text-white">
+              {attended}
+            </strong>
           </div>
 
           {/* Red Missed */}
@@ -197,7 +521,9 @@ const CustomComparisonTooltip = ({ active, payload, label }) => {
 
           <div className="border-t border-slate-700/80 pt-1.5 flex items-center justify-between text-slate-300 text-[11px]">
             <span>Total Conducted:</span>
-            <strong className="font-bold text-slate-100">{total} Lectures</strong>
+            <strong className="font-bold text-slate-100">
+              {total} Lectures
+            </strong>
           </div>
         </div>
       </div>
@@ -206,11 +532,17 @@ const CustomComparisonTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Digital Marketing" }) => {
+export const AttendanceComparisonChart = ({
+  enrolledCourseTitle = "Diploma in Digital Marketing",
+}) => {
   // Find default selected degree matching student's enrolled course
   const defaultDegreeId = useMemo(() => {
     if (enrolledCourseTitle?.toLowerCase().includes("master")) return "masters";
-    if (enrolledCourseTitle?.toLowerCase().includes("advanced") || enrolledCourseTitle?.toLowerCase().includes("adv")) return "adv_diploma";
+    if (
+      enrolledCourseTitle?.toLowerCase().includes("advanced") ||
+      enrolledCourseTitle?.toLowerCase().includes("adv")
+    )
+      return "adv_diploma";
     return "diploma";
   }, [enrolledCourseTitle]);
 
@@ -219,7 +551,10 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
 
   // Selected degree program object
   const activeProgram = useMemo(() => {
-    return DEGREE_PROGRAMS.find((p) => p.id === selectedDegreeId) || DEGREE_PROGRAMS[0];
+    return (
+      DEGREE_PROGRAMS.find((p) => p.id === selectedDegreeId) ||
+      DEGREE_PROGRAMS[0]
+    );
   }, [selectedDegreeId]);
 
   // Chart data according to breakdown mode
@@ -249,8 +584,15 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
             </h3>
           </div>
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
-            Side-by-side comparison of <strong className="text-emerald-700 dark:text-emerald-400 font-bold">Attended Lectures</strong> vs{" "}
-            <strong className="text-rose-600 dark:text-rose-400 font-bold">Missed Lectures</strong> synchronized across degree duration.
+            Side-by-side comparison of{" "}
+            <strong className="text-emerald-700 dark:text-emerald-400 font-bold">
+              Attended Lectures
+            </strong>{" "}
+            vs{" "}
+            <strong className="text-rose-600 dark:text-rose-400 font-bold">
+              Missed Lectures
+            </strong>{" "}
+            synchronized across degree duration.
           </p>
         </div>
 
@@ -275,7 +617,9 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
                 <span>{prog.shortName}</span>
                 <span
                   className={`text-[10px] px-1.5 py-0.2 rounded font-extrabold ${
-                    isSelected ? "bg-white/20 text-white" : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
+                    isSelected
+                      ? "bg-white/20 text-white"
+                      : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
                   }`}
                 >
                   {prog.durationText}
@@ -293,7 +637,10 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
         {/* Card 1: Degree Duration */}
         <div className="bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 p-3.5 sm:p-4 rounded-xl space-y-1 shadow-2xs">
           <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
-            <Clock size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
+            <Clock
+              size={14}
+              className="text-blue-600 dark:text-blue-400 shrink-0"
+            />
             <span>Course Duration</span>
           </div>
           <div className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
@@ -307,7 +654,10 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
         {/* Card 2: Total Conducted */}
         <div className="bg-slate-50/80 dark:bg-slate-900/80 border border-slate-200/90 dark:border-slate-800 p-3.5 sm:p-4 rounded-xl space-y-1 shadow-2xs">
           <div className="flex items-center space-x-1.5 text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
-            <Calendar size={14} className="text-purple-600 dark:text-purple-400 shrink-0" />
+            <Calendar
+              size={14}
+              className="text-purple-600 dark:text-purple-400 shrink-0"
+            />
             <span>Total Lectures</span>
           </div>
           <div className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
@@ -410,7 +760,12 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
             data={chartData}
             margin={{ top: 16, right: 24, left: -15, bottom: 6 }}
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-800/80" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="currentColor"
+              className="text-slate-100 dark:text-slate-800/80"
+            />
             <XAxis
               dataKey="period"
               axisLine={{ stroke: "#64748b", strokeOpacity: 0.3 }}
@@ -429,7 +784,11 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
             />
             <Tooltip
               content={<CustomComparisonTooltip />}
-              cursor={{ stroke: "#94a3b8", strokeWidth: 1, strokeDasharray: "4 4" }}
+              cursor={{
+                stroke: "#94a3b8",
+                strokeWidth: 1,
+                strokeDasharray: "4 4",
+              }}
             />
             {/* GREEN: Attended Lectures Line */}
             <Line
@@ -438,8 +797,18 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
               name="Attended Lectures"
               stroke="#10b981"
               strokeWidth={3}
-              dot={{ r: 4.5, fill: "#10b981", stroke: "#ffffff", strokeWidth: 2 }}
-              activeDot={{ r: 7, fill: "#10b981", stroke: "#ffffff", strokeWidth: 2 }}
+              dot={{
+                r: 4.5,
+                fill: "#10b981",
+                stroke: "#ffffff",
+                strokeWidth: 2,
+              }}
+              activeDot={{
+                r: 7,
+                fill: "#10b981",
+                stroke: "#ffffff",
+                strokeWidth: 2,
+              }}
             />
             {/* RED: Missed Lectures Line */}
             <Line
@@ -448,8 +817,18 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
               name="Missed Lectures"
               stroke="#ef4444"
               strokeWidth={3}
-              dot={{ r: 4.5, fill: "#ef4444", stroke: "#ffffff", strokeWidth: 2 }}
-              activeDot={{ r: 7, fill: "#ef4444", stroke: "#ffffff", strokeWidth: 2 }}
+              dot={{
+                r: 4.5,
+                fill: "#ef4444",
+                stroke: "#ffffff",
+                strokeWidth: 2,
+              }}
+              activeDot={{
+                r: 7,
+                fill: "#ef4444",
+                stroke: "#ffffff",
+                strokeWidth: 2,
+              }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -460,10 +839,11 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
       {/* ============================================================== */}
       <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center space-x-2 text-slate-700 dark:text-slate-300 font-medium">
-          <Sparkles size={16} className="text-amber-500 shrink-0" />
           <span>
             Certification Examination Eligibility Criteria:{" "}
-            <strong className="text-slate-900 dark:text-white font-bold">Minimum 75% Attendance Required</strong>
+            <strong className="text-slate-900 dark:text-white font-bold">
+              Minimum 85% Attendance Required
+            </strong>
           </span>
         </div>
 
@@ -472,7 +852,10 @@ export const AttendanceComparisonChart = ({ enrolledCourseTitle = "Diploma in Di
             Cohort Standing:
           </span>
           <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40 shadow-2xs">
-            <CheckCircle2 size={13} className="text-emerald-700 dark:text-emerald-400" />
+            <CheckCircle2
+              size={13}
+              className="text-emerald-700 dark:text-emerald-400"
+            />
             <span>Eligible ({overallRate}%)</span>
           </span>
         </div>
