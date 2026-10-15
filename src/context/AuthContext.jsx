@@ -3,9 +3,11 @@ import boyAvatar from '../assets/Boy.png';
 import girlAvatar from '../assets/Girl.png';
 import profilePic from '../assets/profile-pic.png';
 import sahilProfilePic from '../assets/sahil-profile.png';
+import premPhotoImg from '../assets/Prem_Photo.jpg';
+import premPassportPhotoImg from '../assets/Prem_Photo_Passport.png';
 import { crmService, DEFAULT_CRM_PROFILE, DEFAULT_CRM_ATTENDANCE, DEFAULT_CRM_BATCH, DEFAULT_CRM_CERTIFICATES } from '../services/crmService';
 
-export { boyAvatar, girlAvatar, profilePic, sahilProfilePic };
+export { boyAvatar, girlAvatar, profilePic, sahilProfilePic, premPhotoImg, premPassportPhotoImg };
 
 export const ADMIN_USER = {
     id: 'admin-1',
@@ -21,10 +23,10 @@ export const STUDENT_USER = {
     id: 'std-375',
     crmAdmissionId: 375,
     admissionNo: 'OMC-0375',
-    name: 'Sahil Hasolkar',
-    fullName: 'Sahil Nilesh Hasolkar',
-    email: 'hasolkarsahil@gmail.com',
-    phone: '919372017331',
+    name: 'Prem Suthar',
+    fullName: 'Prem Suthar',
+    email: 'premsuthar@gmail.com',
+    phone: '8955573859',
     dob: '28 Nov 2006',
     gender: 'Male',
     maritalStatus: 'Single',
@@ -34,7 +36,7 @@ export const STUDENT_USER = {
     facultyLeadRole: 'Director & Lead Faculty',
     role: 'STUDENT',
     roleLabel: 'STUDENT',
-    avatar: sahilProfilePic, // Sahil Hasolkar photo
+    avatar: premPassportPhotoImg, // Prem Suthar verified passport photo
     designation: 'Masters in Digital Marketing Student',
     course: 'Masters in Digital Marketing',
     center: 'Borivali Center',
@@ -66,10 +68,10 @@ export const AuthProvider = ({ children }) => {
             if (savedAvatar === boyAvatar || savedAvatar === girlAvatar) {
                 initial.avatar = savedAvatar;
             } else {
-                initial.avatar = sahilProfilePic;
+                initial.avatar = premPassportPhotoImg;
             }
         } catch {
-            initial.avatar = sahilProfilePic;
+            initial.avatar = premPassportPhotoImg;
         }
         return initial;
     });
@@ -113,7 +115,7 @@ export const AuthProvider = ({ children }) => {
                         branch: profile.branch || prev.branch,
                         center: profile.center || profile.branch || prev.center,
                         designation: `${profile.course || 'Digital Marketing'} Student`,
-                        avatar: profile.photo || prev.avatar || sahilProfilePic
+                        avatar: profile.photo || prev.avatar || premPassportPhotoImg
                     };
                 });
             }

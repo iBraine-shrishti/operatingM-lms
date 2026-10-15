@@ -31,13 +31,14 @@ export const COURSE_THEMES = {
     topGradient: "from-rose-500 via-pink-500 to-rose-600",
     badgeBg:
       "bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border-rose-200/90 dark:border-rose-800/60",
-    buttonBg: "bg-rose-600 hover:bg-rose-700 dark:bg-rose-600 dark:hover:bg-rose-500",
+    buttonBg:
+      "bg-rose-600 hover:bg-rose-700 dark:bg-rose-600 dark:hover:bg-rose-500",
   },
   "course-3": {
     id: "course-3",
-    name: "Masters in Digital Marketing - Advanced Topics",
-    short: "Career & Guidance",
-    category: "Career",
+    name: "Masters in Digital Marketing - Growth Marketing & Specialized Channels",
+    short: "Growth & Channels",
+    category: "Growth Marketing",
     icon: GraduationCap,
     pillStyle:
       "bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-300 border-sky-200/90 dark:border-sky-800/60",
@@ -47,7 +48,8 @@ export const COURSE_THEMES = {
     topGradient: "from-sky-500 via-blue-600 to-indigo-600",
     badgeBg:
       "bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border-sky-200/90 dark:border-sky-800/60",
-    buttonBg: "bg-sky-600 hover:bg-sky-700 dark:bg-sky-600 dark:hover:bg-sky-500",
+    buttonBg:
+      "bg-sky-600 hover:bg-sky-700 dark:bg-sky-600 dark:hover:bg-sky-500",
   },
   "course-1": {
     id: "course-1",
@@ -97,7 +99,8 @@ export const COURSE_THEMES = {
     topGradient: "from-blue-600 via-indigo-600 to-blue-500",
     badgeBg:
       "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200/90 dark:border-blue-800/60",
-    buttonBg: "bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500",
+    buttonBg:
+      "bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500",
   },
   "course-5": {
     id: "course-5",
@@ -130,7 +133,8 @@ export const COURSE_THEMES = {
     topGradient: "from-teal-600 via-cyan-600 to-teal-500",
     badgeBg:
       "bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border-teal-200/90 dark:border-teal-800/60",
-    buttonBg: "bg-teal-600 hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-500",
+    buttonBg:
+      "bg-teal-600 hover:bg-teal-700 dark:bg-teal-600 dark:hover:bg-teal-500",
   },
 };
 
@@ -144,22 +148,54 @@ export const getCourseTheme = (courseId, courseTitle = "", category = "") => {
   if (searchKey.includes("seo") || searchKey.includes("search engine")) {
     return COURSE_THEMES["course-8"];
   }
-  if (searchKey.includes("word") || searchKey.includes("web") || searchKey.includes("cms")) {
+  if (
+    searchKey.includes("word") ||
+    searchKey.includes("web") ||
+    searchKey.includes("cms")
+  ) {
     return COURSE_THEMES["course-7"];
   }
-  if (searchKey.includes("design") || searchKey.includes("creative") || searchKey.includes("figma") || searchKey.includes("ui/ux")) {
+  if (
+    searchKey.includes("design") ||
+    searchKey.includes("creative") ||
+    searchKey.includes("figma") ||
+    searchKey.includes("ui/ux")
+  ) {
     return COURSE_THEMES["course-4"];
   }
-  if (searchKey.includes("social") || searchKey.includes("smm") || searchKey.includes("instagram")) {
+  if (
+    searchKey.includes("social") ||
+    searchKey.includes("smm") ||
+    searchKey.includes("instagram")
+  ) {
     return COURSE_THEMES["course-1"];
   }
-  if (searchKey.includes("analytic") || searchKey.includes("ga4") || searchKey.includes("tracking")) {
+  if (
+    searchKey.includes("analytic") ||
+    searchKey.includes("ga4") ||
+    searchKey.includes("tracking")
+  ) {
     return COURSE_THEMES["course-5"];
   }
-  if (searchKey.includes("ads") || searchKey.includes("ppc") || searchKey.includes("google ads") || searchKey.includes("marketing")) {
+  if (
+    searchKey.includes("ads") ||
+    searchKey.includes("ppc") ||
+    searchKey.includes("google ads") ||
+    searchKey.includes("marketing")
+  ) {
     return COURSE_THEMES["course-6"];
   }
-  if (searchKey.includes("advanced") || searchKey.includes("career") || searchKey.includes("capstone") || searchKey.includes("aptitude")) {
+  if (
+    searchKey.includes("growth") ||
+    searchKey.includes("specialized") ||
+    searchKey.includes("affiliate") ||
+    searchKey.includes("influencer") ||
+    searchKey.includes("viral") ||
+    searchKey.includes("advanced") ||
+    searchKey.includes("career") ||
+    searchKey.includes("capstone") ||
+    searchKey.includes("aptitude")
+  ) {
     return COURSE_THEMES["course-3"];
   }
 
@@ -175,8 +211,10 @@ export const getCourseTheme = (courseId, courseTitle = "", category = "") => {
     accent: "text-blue-600 dark:text-blue-400",
     borderAccent: "border-slate-200 dark:border-slate-700",
     topGradient: "from-blue-600 via-indigo-600 to-blue-500",
-    badgeBg: "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700",
-    buttonBg: "bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500",
+    badgeBg:
+      "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700",
+    buttonBg:
+      "bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500",
   };
 };
 

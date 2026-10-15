@@ -11,7 +11,7 @@ import {
   History,
 } from "lucide-react";
 import dashboardHat from "../../assets/header-bg/dashboard-hat.png";
-import premPhotoImg from "../../assets/Prem_Photo.jpg";
+import premPassportPhotoImg from "../../assets/Prem_Photo_Passport.png";
 
 /**
  * ProfileHeader: Displays the top student profile banner, countdown,
@@ -37,9 +37,9 @@ export const ProfileHeader = ({ studentData, activeTab, onTabChange }) => {
             <div className="relative shrink-0">
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-white dark:border-slate-700 shadow-md bg-white dark:bg-slate-800 p-0.5">
                 <img
-                  src={studentData.avatar || premPhotoImg}
+                  src={studentData.avatar || premPassportPhotoImg}
                   alt={studentData.name}
-                  className="w-full h-full object-cover object-top rounded-xl"
+                  className="w-full h-full object-cover object-center rounded-xl"
                 />
               </div>
               {/* Online Green Indicator Dot on Top Right */}

@@ -34,7 +34,7 @@ export const INITIAL_PENDING_ASSIGNMENTS = [
   {
     id: "a-adv-5",
     title: "Online Reputation Management (ORM) Assignment",
-    course: "Advanced Topics • Brand Security",
+    course: "Growth Marketing • Brand Security",
     dueDate: "Due Yesterday • Oct 6, 2026",
     status: "overdue",
     daysLeft: -1,
@@ -46,7 +46,7 @@ export const INITIAL_PENDING_ASSIGNMENTS = [
   {
     id: "a-adv-2",
     title: "Influencer Marketing Assignment-1",
-    course: "Advanced Topics • Influencer Track",
+    course: "Growth Marketing • Influencer Track",
     dueDate: "In 2 days • Oct 9, 2026 (11:59 PM)",
     status: "pending",
     daysLeft: 2,
@@ -58,7 +58,7 @@ export const INITIAL_PENDING_ASSIGNMENTS = [
   {
     id: "a-adv-4",
     title: "Mobile Marketing Assignment",
-    course: "Advanced Topics • Mobile Growth",
+    course: "Growth Marketing • Mobile Growth",
     dueDate: "In 5 days • Oct 12, 2026 (11:59 PM)",
     status: "pending",
     daysLeft: 5,
@@ -70,7 +70,7 @@ export const INITIAL_PENDING_ASSIGNMENTS = [
   {
     id: "a-adv-6",
     title: "Viral Marketing Assignment-1",
-    course: "Advanced Topics • Viral Growth",
+    course: "Growth Marketing • Viral Growth",
     dueDate: "In 7 days • Oct 14, 2026 (11:59 PM)",
     status: "pending",
     daysLeft: 7,
@@ -82,7 +82,7 @@ export const INITIAL_PENDING_ASSIGNMENTS = [
   {
     id: "a-adv-7",
     title: "Viral Marketing Assignment-2",
-    course: "Advanced Topics • Social Media",
+    course: "Growth Marketing • Social Media",
     dueDate: "In 9 days • Oct 16, 2026 (11:59 PM)",
     status: "pending",
     daysLeft: 9,
@@ -93,7 +93,7 @@ export const INITIAL_PENDING_ASSIGNMENTS = [
   {
     id: "a-adv-8",
     title: "Content Marketing Assignment-1",
-    course: "Advanced Topics • Content Marketing",
+    course: "Growth Marketing • Content Marketing",
     dueDate: "In 14 days • Oct 21, 2026 (11:59 PM)",
     status: "pending",
     daysLeft: 14,
@@ -108,7 +108,7 @@ export const INITIAL_NOTIFICATIONS = [
     id: "notif-today",
     type: "assignment_today",
     title: "Affiliate Marketing Assignment",
-    course: "Advanced Topics • Module 4",
+    course: "Growth Marketing • Module 4",
     dueDate: "Today • 11:59 PM",
     daysLeft: 0,
     badgeText: "Due Today",

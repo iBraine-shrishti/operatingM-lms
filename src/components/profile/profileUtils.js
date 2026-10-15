@@ -1,5 +1,6 @@
 import { crmService } from "../../services/crmService";
 import premPhotoImg from "../../assets/Prem_Photo.jpg";
+import premPassportPhotoImg from "../../assets/Prem_Photo_Passport.png";
 
 /**
  * Maps CRM profile data and current user auth state into a normalized student profile object.
@@ -10,15 +11,19 @@ import premPhotoImg from "../../assets/Prem_Photo.jpg";
  */
 export const mapStudentDataFromCrm = (crm, user) => {
   const source = crm || {};
-  const rawId = source.id || user?.crmAdmissionId || user?.id || 267;
-  const numOnly = String(rawId).replace(/[^0-9]/g, "") || "267";
+  const rawId = source.id || user?.crmAdmissionId || user?.id || 375;
+  const numOnly = String(rawId).replace(/[^0-9]/g, "") || "375";
   const numericId = `#${numOnly}`;
   const studentId =
     source.admissionNo || user?.admissionNo || `OMC-${numOnly.padStart(4, "0")}`;
-  const name = source.name || user?.name || "Ram Charan";
+  const name = source.name || user?.name || "Prem Suthar";
   const fullName =
-    source.fullName || user?.fullName || source.name || user?.name || "Ram Charan";
-  const avatar = source.photo || source.avatar || user?.avatar || premPhotoImg;
+    source.fullName || user?.fullName || source.name || user?.name || "Prem Suthar";
+  const rawAvatar = source.photo || source.avatar || user?.avatar;
+  const avatar =
+    rawAvatar && rawAvatar !== premPhotoImg
+      ? rawAvatar
+      : premPassportPhotoImg;
   const course = source.course || user?.course || "Diploma in Digital Marketing";
   const isDiploma = course.toLowerCase().includes("diploma");
   const center =

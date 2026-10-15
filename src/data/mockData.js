@@ -104,8 +104,8 @@ export const INITIAL_COURSES = [
     },
     {
         id: 'course-3',
-        title: 'Advanced Topics',
-        category: 'Advanced Digital Marketing',
+        title: 'Growth Marketing & Specialized Channels',
+        category: 'Growth & Specialized Channels',
         status: 'published',
         thumbnail: advancedTopicsImg,
         bannerGradient: 'from-sky-500 to-blue-700',
@@ -118,11 +118,11 @@ export const INITIAL_COURSES = [
         duration: '32h 10m',
         lessonsCount: 20,
         updatedAt: '4 days ago',
-        bracketText: "This course offers a comprehensive overview of digital media, teaching you how to integrate and use it to meet business and marketing goals. It covers the entire marketing mix across various roles and disciplines, making it suitable for clients and agencies in any industry.",
-        description: "This course offers a comprehensive overview of digital media, teaching you how to integrate and use it to meet business and marketing goals. It covers the entire marketing mix across various roles and disciplines, making it suitable for clients and agencies in any industry. Master Affiliate Marketing, Influencer Marketing, WhatsApp Marketing, Mobile Marketing, ORM, Viral Marketing, Content Marketing, and Digital Marketing Freelancing.",
+        bracketText: "This course offers a comprehensive overview of growth marketing and specialized channels, teaching you how to integrate and use them to meet business and acquisition goals across Affiliate, Influencer, WhatsApp, Mobile, ORM, Viral Loops, Content Strategy, and Freelancing.",
+        description: "Master high-impact growth strategies and specialized digital channels across Affiliate Marketing, Influencer Marketing, WhatsApp Marketing, Mobile Marketing, ORM, Viral Marketing, Content Marketing, and Digital Marketing Freelancing.",
         overview: {
-            greeting: "Thank you for your interest in our Masters Program in Digital Marketing Advanced Topics at Operating Media!",
-            whyChooseUsTitle: "What Sets Our Advanced Program Apart:",
+            greeting: "Thank you for your interest in our Masters Program in Growth Marketing & Specialized Channels at Operating Media! 🚀",
+            whyChooseUsTitle: "What Sets Our Growth & Specialized Program Apart:",
             highlights: [
                 { title: "Deep Industry Insights", desc: "Gain exposure to cutting-edge digital strategies and real-world case studies.", iconName: "TrendingUp" },
                 { title: "Advanced Analytics & Data-Driven Marketing", desc: "Master data interpretation, performance metrics, and analytics tools to drive impactful campaigns.", iconName: "BarChart3" },
@@ -143,7 +143,7 @@ export const INITIAL_COURSES = [
                 "Content Marketing",
                 "Digital Marketing Freelancing"
             ],
-            callToAction: "Our Masters Program in Digital Marketing Advanced Topics is meticulously designed to elevate your skills and transform your career. Explore our syllabus or schedule a 1:1 counseling session or demo class.",
+            callToAction: "Our Masters Program in Growth Marketing & Specialized Channels is meticulously designed to elevate your skills and transform your career. Explore our syllabus or schedule a 1:1 counseling session or demo class.",
             contact: {
                 phone: "7700022882 / 9326474007",
                 website: "www.operatingmedia.com"
@@ -342,7 +342,7 @@ export const INITIAL_ASSIGNMENTS = [
     {
         id: 'a-adv-cr',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         title: 'Career Roadmap & Goal Setting Worksheet',
         dueDate: '2026-10-10',
         totalSubmissions: 140,
@@ -407,7 +407,7 @@ export const INITIAL_ASSIGNMENTS = [
     {
         id: 'a-adv-1',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         title: 'Affiliate Marketing Assignment',
         dueDate: '2026-10-22',
         totalSubmissions: 86,
@@ -419,7 +419,7 @@ export const INITIAL_ASSIGNMENTS = [
     {
         id: 'a-adv-2',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         title: 'Influencer Marketing Assignment-1',
         dueDate: '2026-10-25',
         totalSubmissions: 74,
@@ -431,7 +431,7 @@ export const INITIAL_ASSIGNMENTS = [
     {
         id: 'a-adv-3',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         title: 'Influencer Marketing Assignment-2',
         dueDate: '2026-10-28',
         totalSubmissions: 62,
@@ -443,7 +443,7 @@ export const INITIAL_ASSIGNMENTS = [
     {
         id: 'a-adv-4',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         title: 'Mobile Marketing Assignment',
         dueDate: '2026-11-02',
         totalSubmissions: 58,
@@ -455,7 +455,7 @@ export const INITIAL_ASSIGNMENTS = [
     {
         id: 'a-adv-5',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         title: 'Online Reputation Management (ORM) Assignment',
         dueDate: '2026-11-05',
         totalSubmissions: 69,
@@ -467,7 +467,7 @@ export const INITIAL_ASSIGNMENTS = [
     {
         id: 'a-adv-6',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         title: 'Viral Marketing Assignment-1',
         dueDate: '2026-11-08',
         totalSubmissions: 71,
@@ -479,7 +479,7 @@ export const INITIAL_ASSIGNMENTS = [
     {
         id: 'a-adv-7',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         title: 'Viral Marketing Assignment-2',
         dueDate: '2026-11-12',
         totalSubmissions: 55,
@@ -491,7 +491,7 @@ export const INITIAL_ASSIGNMENTS = [
     {
         id: 'a-adv-8',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         title: 'Content Marketing Assignment-1',
         dueDate: '2026-11-15',
         totalSubmissions: 82,
@@ -503,7 +503,7 @@ export const INITIAL_ASSIGNMENTS = [
     {
         id: 'a-adv-9',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         title: 'Content Marketing Assignment-2',
         dueDate: '2026-11-18',
         totalSubmissions: 60,
@@ -515,7 +515,7 @@ export const INITIAL_ASSIGNMENTS = [
     {
         id: 'a-adv-10',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         title: 'Freelance Digital Marketing Assignment',
         dueDate: '2026-11-22',
         totalSubmissions: 78,
@@ -808,7 +808,7 @@ export const INITIAL_STUDENTS = [
         phone: '+91 98211 77889',
         avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150&auto=format&fit=crop&q=80',
         courseId: 'course-3',
-        courseName: 'Advanced Topics',
+        courseName: 'Growth Marketing & Specialized Channels',
         batch: 'Weekend Advanced (WE-AT1, 11:00 AM - 03:00 PM)',
         branch: 'Andheri Center',
         attendancePercentage: 88.0,
@@ -1137,7 +1137,7 @@ export const INITIAL_DISCUSSIONS = [
     {
         id: 'disc-7',
         courseId: 'course-3',
-        courseTitle: 'Advanced Topics',
+        courseTitle: 'Growth Marketing & Specialized Channels',
         authorName: 'Aarav Patel',
         authorRole: 'Student',
         authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
@@ -1145,7 +1145,7 @@ export const INITIAL_DISCUSSIONS = [
         content: 'In our advanced marketing mix modeling, how are you handling conversion deduplication between Meta Conversions API and Google Ads enhanced conversions when tracking multi-touch customer journeys?',
         repliesCount: 2,
         createdAt: '2 days ago',
-        category: 'Advanced Topics',
+        category: 'Growth Marketing',
         isPinned: false,
         replies: [
             {

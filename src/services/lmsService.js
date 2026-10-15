@@ -23,14 +23,25 @@ export const lmsService = {
     // Courses (Total 7 active courses)
     getCourses: () => {
         const stored = getStored('courses', INITIAL_COURSES);
-        return stored
+        let modified = false;
+        const mapped = stored
             .filter(c => c.id !== 'course-2' && !c.title.toLowerCase().includes('counseling'))
             .map(course => {
-                if (COURSE_THUMBNAILS && COURSE_THUMBNAILS[course.id] && (!course.thumbnail || course.thumbnail.includes('unsplash.com'))) {
-                    return { ...course, thumbnail: COURSE_THUMBNAILS[course.id] };
+                let updatedCourse = { ...course };
+                if (updatedCourse.id === 'course-3' && (updatedCourse.title === 'Advanced Topics' || updatedCourse.title.toLowerCase().includes('advanced topics'))) {
+                    updatedCourse.title = 'Growth Marketing & Specialized Channels';
+                    updatedCourse.category = 'Growth & Specialized Channels';
+                    modified = true;
                 }
-                return course;
+                if (COURSE_THUMBNAILS && COURSE_THUMBNAILS[updatedCourse.id] && (!updatedCourse.thumbnail || updatedCourse.thumbnail.includes('unsplash.com'))) {
+                    updatedCourse.thumbnail = COURSE_THUMBNAILS[updatedCourse.id];
+                }
+                return updatedCourse;
             });
+        if (modified) {
+            setStored('courses', mapped);
+        }
+        return mapped;
     },
     getCourseById: (id) => {
         return lmsService.getCourses().find(c => c.id === id);
@@ -427,7 +438,7 @@ export const lmsService = {
                 if (t.includes('analytics')) return { ...d, courseId: 'course-5' };
                 if (t.includes('wordpress')) return { ...d, courseId: 'course-7' };
                 if (t.includes('design')) return { ...d, courseId: 'course-4' };
-                if (t.includes('advanced')) return { ...d, courseId: 'course-3' };
+                if (t.includes('advanced') || t.includes('growth') || t.includes('specialized')) return { ...d, courseId: 'course-3' };
             }
             return d;
         });

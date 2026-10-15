@@ -1,4 +1,6 @@
 import sahilProfilePic from '../assets/sahil-profile.png';
+import premPhotoImg from '../assets/Prem_Photo.jpg';
+import premPassportPhotoImg from '../assets/Prem_Photo_Passport.png';
 
 /**
  * Operating Media LMS - CRM Integration Service
@@ -22,13 +24,13 @@ const CRM_STORAGE_KEY_STUDENT_ID = 'om_lms_selected_crm_student_id';
 export const DEFAULT_CRM_PROFILE = {
   id: 375,
   admissionNo: 'OMC-0375',
-  name: 'Sahil Hasolkar',
-  fullName: 'Sahil Nilesh Hasolkar',
-  firstName: 'Sahil',
-  lastName: 'Hasolkar',
-  email: 'hasolkarsahil@gmail.com',
-  phone: '+91 91937 20173',
-  mobile: '919372017331',
+  name: 'Prem Suthar',
+  fullName: 'Prem Suthar',
+  firstName: 'Prem',
+  lastName: 'Suthar',
+  email: 'premsuthar@gmail.com',
+  phone: '+91 89555 73859',
+  mobile: '8955573859',
   dob: '28 Nov 2006',
   gender: 'Male',
   maritalStatus: 'Single',
@@ -44,7 +46,8 @@ export const DEFAULT_CRM_PROFILE = {
   daysLeft: 360,
   facultyLead: 'Harsh Pareek',
   facultyLeadRole: 'Director & Lead Faculty',
-  photo: sahilProfilePic,
+  photo: premPassportPhotoImg,
+  avatar: premPassportPhotoImg,
   // Financial Overview matching profile.png (Fees Pending)
   totalFees: 90000,
   regAmount: 5000,
@@ -376,8 +379,8 @@ class CrmService {
           courseStart: admissionDateStr,
           courseEnd: courseEndStr,
           daysLeft,
-          photo: d.photo || null,
-          avatar: d.photo || null,
+          photo: d.photo || premPassportPhotoImg,
+          avatar: d.photo || premPassportPhotoImg,
           aadharFront: d.aadhar_card_front || null,
           aadharBack: d.aadhar_card_back || null,
           courseHistoryRaw: d.course_history || '',
@@ -814,7 +817,7 @@ class CrmService {
                   batchCode: profile?.batchCode || candidate.course,
                   batchName: profile?.batchName || candidate.course,
                   totalFees: profile?.totalFees || 0,
-                  photo: profile?.photo || null,
+                  photo: profile?.photo || premPassportPhotoImg,
                   role: 'STUDENT',
                   roleLabel: 'STUDENT',
                   designation: `${candidate.course || 'Digital Marketing'} Student`
@@ -852,7 +855,7 @@ class CrmService {
           batchCode: profile?.batchCode || 'DDM-A1',
           batchName: profile?.batchName || 'Diploma in Digital Marketing (DDM-A1)',
           totalFees: profile?.totalFees || 45000,
-          photo: profile?.photo || null,
+          photo: profile?.photo || sahilProfilePic,
           role: 'STUDENT',
           roleLabel: 'STUDENT',
           designation: `${profile?.course || 'Diploma in Digital Marketing'} Student`

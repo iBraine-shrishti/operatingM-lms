@@ -77,7 +77,7 @@ const CATEGORIES = [
   { id: "analytics", label: "Google Analytics" },
   { id: "ads", label: "Google Ads" },
   { id: "wordpress", label: "WordPress Dev" },
-  { id: "advanced", label: "Advanced Topics" },
+  { id: "growth", label: "Growth & Specialized" },
 ];
 
 export const EnrolledCoursesPage = () => {
@@ -129,7 +129,14 @@ export const EnrolledCoursesPage = () => {
           course.category
             .toLowerCase()
             .includes(selectedCategory.toLowerCase()) ||
-          course.title.toLowerCase().includes(selectedCategory.toLowerCase());
+          course.title.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+          (selectedCategory === "growth" && (
+            course.id === "course-3" ||
+            course.title.toLowerCase().includes("growth") ||
+            course.title.toLowerCase().includes("specialized") ||
+            course.title.toLowerCase().includes("advanced") ||
+            course.category.toLowerCase().includes("growth")
+          ));
 
         return matchesSearch && matchesCategory;
       })
