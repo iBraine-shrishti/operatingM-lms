@@ -38,8 +38,12 @@ import {
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
+import { useAuth } from "../context/AuthContext";
+import { PremiumVideoPlayer } from "../components/player/PremiumVideoPlayer";
 
 export const LessonPlayerPage = () => {
+  const { currentUser, crmProfile } = useAuth();
+  const studentId = crmProfile?.id || currentUser?.crmAdmissionId || 375;
   const { showToast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -69,7 +73,9 @@ export const LessonPlayerPage = () => {
 
   // Determine active lesson index
   const [activeLessonIdx, setActiveLessonIdx] = useState(() => {
-    const initialUnits = lmsService.getUnitsByCourse(currentCourse?.id || "course-8");
+    const initialUnits = lmsService.getUnitsByCourse(
+      currentCourse?.id || "course-8",
+    );
     if (unitIdParam && initialUnits.length > 0) {
       const foundIdx = initialUnits.findIndex((u) => u.id === unitIdParam);
       return foundIdx !== -1 ? foundIdx : 0;
@@ -108,14 +114,95 @@ export const LessonPlayerPage = () => {
   // Keep URL in sync when active lesson changes (only if different from URL query)
   useEffect(() => {
     if (currentLesson && currentLesson.id) {
-      if (unitIdParam !== currentLesson.id || courseIdParam !== currentCourse.id) {
-        setSearchParams(
-          { courseId: currentCourse.id, unitId: currentLesson.id },
-          { replace: true },
-        );
-      }
+      setSearchParams(
+        { courseId: currentCourse.id, unitId: currentLesson.id },
+        { replace: true },
+      );
     }
-  }, [currentLesson?.id, currentCourse.id, unitIdParam, courseIdParam, setSearchParams]);
+  }, [currentLesson?.id, currentCourse.id]);
+
+  // Dynamic stream state from CRM backend / database
+  const [streamData, setStreamData] = useState({
+    url: "",
+    mime: "video/mp4",
+    isLoading: true,
+    isLocked: false,
+    lockMessage: "",
+  });
+  const [isBuffering, setIsBuffering] = useState(false);
+
+  // Fetch secure streaming URL from CRM backend / database on active lesson change
+  useEffect(() => {
+    let isCancelled = false;
+    if (!currentLesson || !currentLesson.id) return;
+
+    setStreamData((prev) => ({
+      ...prev,
+      isLoading: true,
+      isLocked: false,
+      lockMessage: "",
+    }));
+    setIsBuffering(true);
+
+    lmsService
+      .fetchUnitStreamUrl(currentLesson.id, studentId)
+      .then((res) => {
+        if (isCancelled) return;
+        if (res && res.locked) {
+          setStreamData({
+            url: "",
+            mime: "video/mp4",
+            isLoading: false,
+            isLocked: true,
+            lockMessage:
+              res.message ||
+              "Access restricted. Video access is managed in Operating Media CRM.",
+          });
+        } else if (res && res.videoUrl) {
+          setStreamData({
+            url: res.videoUrl,
+            mime:
+              res.videoMime ||
+              (res.videoUrl.endsWith(".mov") ? "video/quicktime" : "video/mp4"),
+            isLoading: false,
+            isLocked: false,
+            lockMessage: "",
+          });
+        } else {
+          setStreamData({
+            url: currentLesson.videoUrl || "",
+            mime: currentLesson.videoUrl?.endsWith(".mov")
+              ? "video/quicktime"
+              : "video/mp4",
+            isLoading: false,
+            isLocked: false,
+            lockMessage: "",
+          });
+        }
+      })
+      .catch((err) => {
+        if (isCancelled) return;
+        console.warn("Stream resolution error:", err);
+        setStreamData({
+          url: currentLesson.videoUrl || "",
+          mime: currentLesson.videoUrl?.endsWith(".mov")
+            ? "video/quicktime"
+            : "video/mp4",
+          isLoading: false,
+          isLocked: false,
+          lockMessage: "",
+        });
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setIsBuffering(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [currentLesson?.id, studentId]);
 
   // Player feature states
   const [isPlaying, setIsPlaying] = useState(false);
@@ -333,16 +420,26 @@ export const LessonPlayerPage = () => {
     });
 
     // Dynamic combined Tests & Assignments module as last module
-    const assessmentsModule = lmsService.getCourseAssessmentsModule(currentCourse.id);
-    if (assessmentsModule && assessmentsModule.items && assessmentsModule.items.length > 0) {
-      const completedAssessments = assessmentsModule.items.filter((i) => i.isCompleted).length;
+    const assessmentsModule = lmsService.getCourseAssessmentsModule(
+      currentCourse.id,
+    );
+    if (
+      assessmentsModule &&
+      assessmentsModule.items &&
+      assessmentsModule.items.length > 0
+    ) {
+      const completedAssessments = assessmentsModule.items.filter(
+        (i) => i.isCompleted,
+      ).length;
       result.push({
         name: assessmentsModule.name,
         index: result.length + 1,
         items: assessmentsModule.items,
         completedCount: completedAssessments,
         totalCount: assessmentsModule.items.length,
-        isCompleted: completedAssessments === assessmentsModule.items.length && assessmentsModule.items.length > 0,
+        isCompleted:
+          completedAssessments === assessmentsModule.items.length &&
+          assessmentsModule.items.length > 0,
         isAssessmentModule: true,
       });
     }
@@ -555,148 +652,84 @@ export const LessonPlayerPage = () => {
       >
         {/* LEFT / CENTER COLUMN: Video Player & Tabs */}
         <div className={theaterMode ? "col-span-1" : "lg:col-span-2 space-y-4"}>
-          {/* VIDEO CONTAINER */}
-          <div className="bg-slate-950 rounded-3xl overflow-hidden shadow-2xl aspect-video relative group border border-slate-800">
-            {/* RESUME PLAYBACK NOTIFICATION BANNER */}
-            {resumePrompt && (
-              <div className="absolute top-4 left-4 right-4 z-30 bg-slate-900/90 backdrop-blur-md border border-blue-500/50 text-white rounded-2xl p-3 flex items-center justify-between shadow-2xl animate-in fade-in slide-in-from-top-2">
-                <div className="flex items-center space-x-2 text-xs">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
-                  <span className="font-semibold">
-                    Resumed from where you left off at{" "}
-                    <strong className="text-blue-400">
-                      {resumePrompt.formatted}
-                    </strong>
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={handleRestartVideo}
-                    className="text-xs font-bold text-slate-300 hover:text-white px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors flex items-center space-x-1 cursor-pointer"
-                  >
-                    <RotateCcw size={12} />
-                    <span>Start from 0:00</span>
-                  </button>
-                  <button
-                    onClick={() => setResumePrompt(null)}
-                    className="text-slate-400 hover:text-white text-xs px-1 cursor-pointer"
-                  >
-                    Dismiss
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* VIDEO ERROR OVERLAY */}
-            {videoError && (
-              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/90 text-center p-6 space-y-3">
-                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
-                  <Video size={24} />
-                </div>
-                <div className="max-w-md">
-                  <h3 className="text-white font-bold text-sm">Video Stream Notice</h3>
-                  <p className="text-slate-400 text-xs mt-1">{videoError}</p>
-                  {currentLesson.videoUrl && (
-                    <p className="text-slate-500 text-[10px] font-mono mt-1 break-all">
-                      {currentLesson.videoUrl}
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center space-x-2 pt-2">
-                  <button
-                    onClick={() => {
-                      setVideoError(null);
-                      if (videoRef.current) {
-                        videoRef.current.load();
-                        videoRef.current.play().catch(() => {});
-                      }
-                    }}
-                    className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all shadow-md flex items-center space-x-1.5 cursor-pointer"
-                  >
-                    <RotateCcw size={13} />
-                    <span>Retry Playback</span>
-                  </button>
-                  {currentLesson.videoUrl && (
-                    <a
-                      href={currentLesson.videoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all border border-slate-700 flex items-center space-x-1.5"
-                    >
-                      <ExternalLink size={13} />
-                      <span>Open Direct Stream</span>
-                    </a>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* EMPTY VIDEO OVERLAY */}
-            {!currentLesson.videoUrl && (
-              <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-950/80 text-center p-6 space-y-2">
-                <Video size={28} className="text-slate-500" />
-                <h3 className="text-white font-bold text-sm">No Video Attached</h3>
-                <p className="text-slate-400 text-xs max-w-sm">
-                  This lesson does not have a video stream attached yet.
-                </p>
-              </div>
-            )}
-
-            {/* HTML5 VIDEO PLAYER */}
-            <video
-              ref={videoRef}
-              key={currentLesson.videoUrl || currentLesson.id}
-              src={currentLesson.videoUrl || undefined}
-              controls
-              playsInline
-              preload="metadata"
-              className="w-full h-full object-contain bg-black"
-              poster={currentCourse.thumbnail}
-              onLoadedMetadata={handleLoadedMetadata}
-              onTimeUpdate={handleTimeUpdate}
-              onEnded={handleVideoEnded}
-              onPlay={() => {
-                setIsPlaying(true);
-                setVideoError(null);
-              }}
-              onPause={() => setIsPlaying(false)}
-              onError={(e) => {
-                console.warn("Video playback error for URL:", currentLesson.videoUrl, e);
-                setVideoError("Unable to stream video. Please check media format or connection.");
-              }}
-            >
-              {currentLesson.videoUrl ? (
-                <source
-                  src={currentLesson.videoUrl}
-                  type={
-                    currentLesson.videoUrl.endsWith(".mov")
-                      ? "video/quicktime"
-                      : "video/mp4"
-                  }
-                />
-              ) : null}
-              Your browser does not support HTML5 video streaming.
-            </video>
-          </div>
+          {/* ------------------------------------------------------------- */}
+          {/* WORLD-CLASS CUSTOM STREAMING VIDEO PLAYER                     */}
+          {/* ------------------------------------------------------------- */}
+          <PremiumVideoPlayer
+            videoRef={videoRef}
+            streamUrl={streamData.url}
+            videoMime={streamData.mime}
+            isLoading={streamData.isLoading}
+            isLocked={streamData.isLocked}
+            lockMessage={streamData.lockMessage}
+            title={currentLesson.title}
+            moduleName={currentLesson.moduleName || "Curriculum Track"}
+            lessonNumber={activeLessonIdx + 1}
+            totalLessons={units.length}
+            poster={currentCourse.thumbnail}
+            playbackSpeed={playbackSpeed}
+            onSpeedChange={(spd) => {
+              setPlaybackSpeed(spd);
+              if (videoRef.current) {
+                videoRef.current.playbackRate = spd;
+              }
+              showToast(`Speed set to ${spd}x`, "info");
+            }}
+            theaterMode={theaterMode}
+            onToggleTheater={() => setTheaterMode(!theaterMode)}
+            onTimeUpdate={handleTimeUpdate}
+            onLoadedMetadata={handleLoadedMetadata}
+            onEnded={handleVideoEnded}
+            resumePrompt={resumePrompt}
+            onRestartVideo={handleRestartVideo}
+            onDismissResume={() => setResumePrompt(null)}
+            onPreviousLesson={
+              activeLessonIdx > 0
+                ? () => setActiveLessonIdx((prev) => Math.max(0, prev - 1))
+                : null
+            }
+            onNextLesson={
+              activeLessonIdx < units.length - 1
+                ? () =>
+                    setActiveLessonIdx((prev) =>
+                      Math.min(units.length - 1, prev + 1),
+                    )
+                : null
+            }
+            hasPrevLesson={activeLessonIdx > 0}
+            hasNextLesson={activeLessonIdx < units.length - 1}
+            isCompleted={currentLesson.isCompleted}
+            onToggleCompleted={handleMarkCompleted}
+            onNavigateToFees={() => navigate("/profile?tab=attendance")}
+            onBackToCourse={() => navigate(`/courses/${currentCourse.id}`)}
+          />
 
           {/* LOWER ACTIONS STRIP */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 shadow-xs">
             <div className="flex items-center space-x-3">
-              <span className="flex items-center space-x-1 text-slate-500 font-mono">
-                <Clock size={13} className="text-blue-500" />
+              <span className="flex items-center space-x-1.5 text-slate-600 dark:text-slate-300 font-mono font-medium">
+                <Clock size={14} className="text-cyan-500" />
                 <span>
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </span>
               </span>
               <span className="text-slate-300 dark:text-slate-700">•</span>
-              <label className="flex items-center space-x-1.5 cursor-pointer font-semibold text-slate-700 dark:text-slate-300">
-                <input
-                  type="checkbox"
-                  checked={autoPlayNext}
-                  onChange={(e) => setAutoPlayNext(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded-md text-blue-600"
-                />
-                <span>Autoplay Next Lesson</span>
+
+              {/* Modern iOS-Style Toggle for Autoplay Next Lesson */}
+              <label className="flex items-center space-x-2 cursor-pointer select-none">
+                <div
+                  onClick={() => setAutoPlayNext(!autoPlayNext)}
+                  className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors duration-200 ease-in-out cursor-pointer ${
+                    autoPlayNext
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 justify-end"
+                      : "bg-slate-300 dark:bg-slate-700 justify-start"
+                  }`}
+                >
+                  <div className="w-4 h-4 rounded-full bg-white shadow-md transform transition-transform" />
+                </div>
+                <span className="font-semibold text-slate-700 dark:text-slate-300">
+                  Autoplay Next Lesson
+                </span>
               </label>
             </div>
 
@@ -706,11 +739,35 @@ export const LessonPlayerPage = () => {
                   setActiveTab("notes");
                   handleInsertTimestamp();
                 }}
-                className="px-3 py-1.5 rounded-xl font-bold text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 transition-colors flex items-center space-x-1 cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl font-bold text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/40 border border-blue-200/60 dark:border-blue-800/60 transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs"
                 title="Add Note at Current Timestamp"
               >
-                <Bookmark size={13} />
-                <span>Take Note at {formatTime(currentTime)}</span>
+                <Bookmark
+                  size={13}
+                  className="text-blue-500 dark:text-cyan-400"
+                />
+                <span>Bookmark Note [{formatTime(currentTime)}]</span>
+              </button>
+
+              <button
+                onClick={() => handleMarkCompleted()}
+                className={`px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs ${
+                  currentLesson.isCompleted
+                    ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
+                }`}
+              >
+                <CheckCircle2
+                  size={14}
+                  className={
+                    currentLesson.isCompleted
+                      ? "text-emerald-500"
+                      : "text-slate-400"
+                  }
+                />
+                <span>
+                  {currentLesson.isCompleted ? "Completed" : "Mark as Done"}
+                </span>
               </button>
             </div>
           </div>
@@ -1003,7 +1060,8 @@ export const LessonPlayerPage = () => {
                     </h4>
                     <p className="text-[10px] text-slate-500 dark:text-blue-200 font-medium truncate mt-0.5">
                       {currentCourse.category || "Certification"} •{" "}
-                      {allPlayerItems.length} Lessons & Activities • {sections.length} Modules
+                      {allPlayerItems.length} Lessons & Activities •{" "}
+                      {sections.length} Modules
                     </p>
                   </div>
                 </div>
@@ -1025,7 +1083,8 @@ export const LessonPlayerPage = () => {
                 <div className="flex items-center justify-between text-[10px] font-bold text-slate-600 dark:text-blue-200">
                   <span>Overall Course Progress</span>
                   <span className="text-blue-600 dark:text-cyan-300 tabular-nums">
-                    {completedCount} / {allPlayerItems.length} Activities ({progressPercent}
+                    {completedCount} / {allPlayerItems.length} Activities (
+                    {progressPercent}
                     %)
                   </span>
                 </div>
@@ -1253,7 +1312,8 @@ export const LessonPlayerPage = () => {
                               unit.type === "quiz" ||
                               unit.title.toLowerCase().includes("quiz") ||
                               unit.title.toLowerCase().includes("test");
-                            const isActive = unit.id === currentLesson.id && !isAss && !isQuiz;
+                            const isActive =
+                              unit.id === currentLesson.id && !isAss && !isQuiz;
                             const savedProgress = localStorage.getItem(
                               `om_video_progress_${currentCourse.id}_${unit.id}`,
                             );
@@ -1267,9 +1327,13 @@ export const LessonPlayerPage = () => {
                                 key={unit.id}
                                 onClick={() => {
                                   if (isQuiz) {
-                                    navigate(`/take-quiz/${unit.quizId || unit.id}`);
+                                    navigate(
+                                      `/take-quiz/${unit.quizId || unit.id}`,
+                                    );
                                   } else if (isAss) {
-                                    navigate(`/take-assignment/${unit.assignmentId || unit.id}`);
+                                    navigate(
+                                      `/take-assignment/${unit.assignmentId || unit.id}`,
+                                    );
                                   } else {
                                     const targetIdx = units.findIndex(
                                       (u) => u.id === unit.id,
@@ -1347,23 +1411,29 @@ export const LessonPlayerPage = () => {
                                         {isQuiz && unit.totalQuestions && (
                                           <>
                                             <span>•</span>
-                                            <span>{unit.totalQuestions} Questions</span>
-                                          </>
-                                        )}
-                                        {hasResume && !unit.isCompleted && !isQuiz && !isAss && (
-                                          <>
-                                            <span>•</span>
-                                            <span
-                                              className={
-                                                isActive
-                                                  ? "text-cyan-200 font-semibold"
-                                                  : "text-blue-500 font-semibold"
-                                              }
-                                            >
-                                              Resume at {formatTime(savedSecs)}
+                                            <span>
+                                              {unit.totalQuestions} Questions
                                             </span>
                                           </>
                                         )}
+                                        {hasResume &&
+                                          !unit.isCompleted &&
+                                          !isQuiz &&
+                                          !isAss && (
+                                            <>
+                                              <span>•</span>
+                                              <span
+                                                className={
+                                                  isActive
+                                                    ? "text-cyan-200 font-semibold"
+                                                    : "text-blue-500 font-semibold"
+                                                }
+                                              >
+                                                Resume at{" "}
+                                                {formatTime(savedSecs)}
+                                              </span>
+                                            </>
+                                          )}
                                       </div>
                                     </div>
                                   </div>
