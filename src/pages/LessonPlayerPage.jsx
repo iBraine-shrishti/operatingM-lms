@@ -38,8 +38,12 @@ import {
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
+import { useAuth } from "../context/AuthContext";
+import { PremiumVideoPlayer } from "../components/player/PremiumVideoPlayer";
 
 export const LessonPlayerPage = () => {
+  const { currentUser, crmProfile } = useAuth();
+  const studentId = crmProfile?.id || currentUser?.crmAdmissionId || 375;
   const { showToast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -94,6 +98,91 @@ export const LessonPlayerPage = () => {
       );
     }
   }, [currentLesson?.id, currentCourse.id]);
+
+  // Dynamic stream state from CRM backend / database
+  const [streamData, setStreamData] = useState({
+    url: "",
+    mime: "video/mp4",
+    isLoading: true,
+    isLocked: false,
+    lockMessage: "",
+  });
+  const [isBuffering, setIsBuffering] = useState(false);
+
+  // Fetch secure streaming URL from CRM backend / database on active lesson change
+  useEffect(() => {
+    let isCancelled = false;
+    if (!currentLesson || !currentLesson.id) return;
+
+    setStreamData((prev) => ({
+      ...prev,
+      isLoading: true,
+      isLocked: false,
+      lockMessage: "",
+    }));
+    setIsBuffering(true);
+
+    lmsService
+      .fetchUnitStreamUrl(currentLesson.id, studentId)
+      .then((res) => {
+        if (isCancelled) return;
+        if (res && res.locked) {
+          setStreamData({
+            url: "",
+            mime: "video/mp4",
+            isLoading: false,
+            isLocked: true,
+            lockMessage:
+              res.message ||
+              "Access restricted. Video access is managed in Operating Media CRM.",
+          });
+        } else if (res && res.videoUrl) {
+          setStreamData({
+            url: res.videoUrl,
+            mime:
+              res.videoMime ||
+              (res.videoUrl.endsWith(".mov")
+                ? "video/quicktime"
+                : "video/mp4"),
+            isLoading: false,
+            isLocked: false,
+            lockMessage: "",
+          });
+        } else {
+          setStreamData({
+            url: currentLesson.videoUrl || "",
+            mime: currentLesson.videoUrl?.endsWith(".mov")
+              ? "video/quicktime"
+              : "video/mp4",
+            isLoading: false,
+            isLocked: false,
+            lockMessage: "",
+          });
+        }
+      })
+      .catch((err) => {
+        if (isCancelled) return;
+        console.warn("Stream resolution error:", err);
+        setStreamData({
+          url: currentLesson.videoUrl || "",
+          mime: currentLesson.videoUrl?.endsWith(".mov")
+            ? "video/quicktime"
+            : "video/mp4",
+          isLoading: false,
+          isLocked: false,
+          lockMessage: "",
+        });
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setIsBuffering(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [currentLesson?.id, studentId]);
 
   // Player feature states
   const [isPlaying, setIsPlaying] = useState(false);
@@ -523,77 +612,84 @@ export const LessonPlayerPage = () => {
       >
         {/* LEFT / CENTER COLUMN: Video Player & Tabs */}
         <div className={theaterMode ? "col-span-1" : "lg:col-span-2 space-y-4"}>
-          {/* VIDEO CONTAINER */}
-          <div className="bg-slate-950 rounded-3xl overflow-hidden shadow-2xl aspect-video relative group border border-slate-800">
-            {/* RESUME PLAYBACK NOTIFICATION BANNER */}
-            {resumePrompt && (
-              <div className="absolute top-4 left-4 right-4 z-30 bg-slate-900/90 backdrop-blur-md border border-blue-500/50 text-white rounded-2xl p-3 flex items-center justify-between shadow-2xl animate-in fade-in slide-in-from-top-2">
-                <div className="flex items-center space-x-2 text-xs">
-                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
-                  <span className="font-semibold">
-                    Resumed from where you left off at{" "}
-                    <strong className="text-blue-400">
-                      {resumePrompt.formatted}
-                    </strong>
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={handleRestartVideo}
-                    className="text-xs font-bold text-slate-300 hover:text-white px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors flex items-center space-x-1 cursor-pointer"
-                  >
-                    <RotateCcw size={12} />
-                    <span>Start from 0:00</span>
-                  </button>
-                  <button
-                    onClick={() => setResumePrompt(null)}
-                    className="text-slate-400 hover:text-white text-xs px-1 cursor-pointer"
-                  >
-                    Dismiss
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* HTML5 VIDEO PLAYER */}
-            <video
-              ref={videoRef}
-              key={currentLesson.videoUrl || currentLesson.id}
-              controls
-              autoPlay={false}
-              className="w-full h-full object-contain bg-black"
-              poster={currentCourse.thumbnail}
-              onLoadedMetadata={handleLoadedMetadata}
-              onTimeUpdate={handleTimeUpdate}
-              onEnded={handleVideoEnded}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-            >
-              {currentLesson.videoUrl ? (
-                <source src={currentLesson.videoUrl} type="video/mp4" />
-              ) : null}
-              Your browser does not support HTML5 video streaming.
-            </video>
-          </div>
+          {/* ------------------------------------------------------------- */}
+          {/* WORLD-CLASS CUSTOM STREAMING VIDEO PLAYER                     */}
+          {/* ------------------------------------------------------------- */}
+          <PremiumVideoPlayer
+            videoRef={videoRef}
+            streamUrl={streamData.url}
+            videoMime={streamData.mime}
+            isLoading={streamData.isLoading}
+            isLocked={streamData.isLocked}
+            lockMessage={streamData.lockMessage}
+            title={currentLesson.title}
+            moduleName={currentLesson.moduleName || "Curriculum Track"}
+            lessonNumber={activeLessonIdx + 1}
+            totalLessons={units.length}
+            poster={currentCourse.thumbnail}
+            playbackSpeed={playbackSpeed}
+            onSpeedChange={(spd) => {
+              setPlaybackSpeed(spd);
+              if (videoRef.current) {
+                videoRef.current.playbackRate = spd;
+              }
+              showToast(`Speed set to ${spd}x`, "info");
+            }}
+            theaterMode={theaterMode}
+            onToggleTheater={() => setTheaterMode(!theaterMode)}
+            onTimeUpdate={handleTimeUpdate}
+            onLoadedMetadata={handleLoadedMetadata}
+            onEnded={handleVideoEnded}
+            resumePrompt={resumePrompt}
+            onRestartVideo={handleRestartVideo}
+            onDismissResume={() => setResumePrompt(null)}
+            onPreviousLesson={
+              activeLessonIdx > 0
+                ? () => setActiveLessonIdx((prev) => Math.max(0, prev - 1))
+                : null
+            }
+            onNextLesson={
+              activeLessonIdx < units.length - 1
+                ? () =>
+                    setActiveLessonIdx((prev) =>
+                      Math.min(units.length - 1, prev + 1)
+                    )
+                : null
+            }
+            hasPrevLesson={activeLessonIdx > 0}
+            hasNextLesson={activeLessonIdx < units.length - 1}
+            isCompleted={currentLesson.isCompleted}
+            onToggleCompleted={handleMarkCompleted}
+            onNavigateToFees={() => navigate("/profile?tab=attendance")}
+            onBackToCourse={() => navigate(`/courses/${currentCourse.id}`)}
+          />
 
           {/* LOWER ACTIONS STRIP */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300">
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-300 shadow-xs">
             <div className="flex items-center space-x-3">
-              <span className="flex items-center space-x-1 text-slate-500 font-mono">
-                <Clock size={13} className="text-blue-500" />
+              <span className="flex items-center space-x-1.5 text-slate-600 dark:text-slate-300 font-mono font-medium">
+                <Clock size={14} className="text-cyan-500" />
                 <span>
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </span>
               </span>
               <span className="text-slate-300 dark:text-slate-700">•</span>
-              <label className="flex items-center space-x-1.5 cursor-pointer font-semibold text-slate-700 dark:text-slate-300">
-                <input
-                  type="checkbox"
-                  checked={autoPlayNext}
-                  onChange={(e) => setAutoPlayNext(e.target.checked)}
-                  className="w-3.5 h-3.5 rounded-md text-blue-600"
-                />
-                <span>Autoplay Next Lesson</span>
+
+              {/* Modern iOS-Style Toggle for Autoplay Next Lesson */}
+              <label className="flex items-center space-x-2 cursor-pointer select-none">
+                <div
+                  onClick={() => setAutoPlayNext(!autoPlayNext)}
+                  className={`w-9 h-5 flex items-center rounded-full p-0.5 transition-colors duration-200 ease-in-out cursor-pointer ${
+                    autoPlayNext
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 justify-end"
+                      : "bg-slate-300 dark:bg-slate-700 justify-start"
+                  }`}
+                >
+                  <div className="w-4 h-4 rounded-full bg-white shadow-md transform transition-transform" />
+                </div>
+                <span className="font-semibold text-slate-700 dark:text-slate-300">
+                  Autoplay Next Lesson
+                </span>
               </label>
             </div>
 
@@ -603,11 +699,32 @@ export const LessonPlayerPage = () => {
                   setActiveTab("notes");
                   handleInsertTimestamp();
                 }}
-                className="px-3 py-1.5 rounded-xl font-bold text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 transition-colors flex items-center space-x-1 cursor-pointer"
+                className="px-3.5 py-1.5 rounded-xl font-bold text-blue-600 dark:text-cyan-400 bg-blue-50 dark:bg-blue-950/40 hover:bg-blue-100 dark:hover:bg-blue-900/40 border border-blue-200/60 dark:border-blue-800/60 transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs"
                 title="Add Note at Current Timestamp"
               >
-                <Bookmark size={13} />
-                <span>Take Note at {formatTime(currentTime)}</span>
+                <Bookmark size={13} className="text-blue-500 dark:text-cyan-400" />
+                <span>Bookmark Note [{formatTime(currentTime)}]</span>
+              </button>
+
+              <button
+                onClick={() => handleMarkCompleted()}
+                className={`px-3.5 py-1.5 rounded-xl font-bold transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs ${
+                  currentLesson.isCompleted
+                    ? "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800"
+                    : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700"
+                }`}
+              >
+                <CheckCircle2
+                  size={14}
+                  className={
+                    currentLesson.isCompleted
+                      ? "text-emerald-500"
+                      : "text-slate-400"
+                  }
+                />
+                <span>
+                  {currentLesson.isCompleted ? "Completed" : "Mark as Done"}
+                </span>
               </button>
             </div>
           </div>

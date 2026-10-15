@@ -2,6 +2,15 @@ import { INITIAL_COURSES, COURSE_THUMBNAILS, INITIAL_UNITS, INITIAL_QUIZZES, INI
 import { IMPORTED_LMS_QUIZZES } from '../data/importedLmsQuizzes';
 // Helper for persistent local storage mock service
 const STORAGE_PREFIX = 'om_lms_v12_';
+export const R2_STORAGE_BASE = 'https://pub-e12f5dbd15e94f87bcde01ce90c0043e.r2.dev';
+
+export const CRM_BACKEND_API = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_CRM_API_URL) || (
+    typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:8000/api'
+        : (typeof window !== 'undefined' && (window.location.hostname.includes('operatingmedia.org') || window.location.hostname.includes('operatingmedia.com'))
+            ? 'https://operatingmedia.org/api'
+            : 'https://crm.dmsoi.org/api')
+);
 const getStored = (key, initial) => {
     try {
         const item = localStorage.getItem(`${STORAGE_PREFIX}${key}`);
@@ -20,6 +29,81 @@ const setStored = (key, value) => {
     }
 };
 export const lmsService = {
+    // Dynamic stream resolution from CRM backend / database
+    fetchUnitStreamUrl: async (unitId, studentId = null) => {
+        if (!unitId) return null;
+
+        const endpoints = [
+            CRM_BACKEND_API,
+            'http://localhost:8000/api',
+            'https://crm.dmsoi.org/api',
+            'https://operatingmedia.org/api'
+        ].filter((val, idx, self) => self.indexOf(val) === idx);
+
+        for (const base of endpoints) {
+            try {
+                const query = studentId ? `?student_id=${encodeURIComponent(studentId)}` : '';
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 2500);
+                const resp = await fetch(`${base}/lms/units/${encodeURIComponent(unitId)}/stream/${query}`, {
+                    signal: controller.signal,
+                    headers: { 'Accept': 'application/json' }
+                });
+                clearTimeout(timeoutId);
+
+                if (resp.status === 403) {
+                    const data = await resp.json().catch(() => ({}));
+                    return {
+                        success: false,
+                        locked: true,
+                        unitId,
+                        title: data.title || 'Course Lecture',
+                        message: data.message || 'Access restricted. Video access is managed in Operating Media CRM.'
+                    };
+                }
+
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data && data.videoUrl) {
+                        return {
+                            success: true,
+                            locked: false,
+                            videoUrl: data.videoUrl,
+                            videoMime: data.videoMime || (data.videoUrl.endsWith('.mov') ? 'video/quicktime' : 'video/mp4'),
+                            title: data.title,
+                            moduleName: data.moduleName,
+                            duration: data.duration,
+                            unitId: data.unitId
+                        };
+                    }
+                }
+            } catch (err) {
+                // Ignore and try next endpoint or fallback
+            }
+        }
+
+        // Resilient Fallback: If backend is unreachable or offline, resolve using local units
+        const localUnits = lmsService.getUnits();
+        const found = localUnits.find(u => u.id === unitId);
+        if (found && found.videoUrl) {
+            return {
+                success: true,
+                locked: false,
+                videoUrl: found.videoUrl,
+                videoMime: found.videoUrl.endsWith('.mov') ? 'video/quicktime' : 'video/mp4',
+                title: found.title,
+                moduleName: found.moduleName,
+                duration: found.duration,
+                unitId: found.id
+            };
+        }
+
+        return {
+            success: false,
+            locked: false,
+            error: 'Unable to load video stream.'
+        };
+    },
     // Courses (Total 7 active courses)
     getCourses: () => {
         const stored = getStored('courses', INITIAL_COURSES);
@@ -69,10 +153,24 @@ export const lmsService = {
         const stored = getStored('units', INITIAL_UNITS);
         return stored
             .filter(u => u.courseId !== 'course-2')
-            .map(u => ({
-                ...u,
-                videoUrl: u.videoUrl ? u.videoUrl.replace('LMS_COURSES-vidoes', 'LMS_COURSES-videos') : u.videoUrl
-            }));
+            .map(u => {
+                let videoUrl = u.videoUrl;
+                if (videoUrl) {
+                    if (videoUrl.includes('/LMS_COURSES-videos/')) {
+                        videoUrl = videoUrl.replace('/LMS_COURSES-videos/', `${R2_STORAGE_BASE}/`);
+                    } else if (videoUrl.includes('/LMS_COURSES-vidoes/')) {
+                        videoUrl = videoUrl.replace('/LMS_COURSES-vidoes/', `${R2_STORAGE_BASE}/`);
+                    } else if (videoUrl.startsWith('LMS_COURSES-videos/')) {
+                        videoUrl = videoUrl.replace('LMS_COURSES-videos/', `${R2_STORAGE_BASE}/`);
+                    } else if (videoUrl.startsWith('LMS_COURSES-vidoes/')) {
+                        videoUrl = videoUrl.replace('LMS_COURSES-vidoes/', `${R2_STORAGE_BASE}/`);
+                    }
+                }
+                return {
+                    ...u,
+                    videoUrl
+                };
+            });
     },
     getUnitsByCourse: (courseId) => {
         return lmsService.getUnits().filter(u => u.courseId === courseId);
