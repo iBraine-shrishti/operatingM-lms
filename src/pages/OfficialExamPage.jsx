@@ -25,8 +25,12 @@ import {
   Flame,
   Check,
   ShieldCheck,
+  GraduationCap,
+  Grid,
+  X,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { mapStudentDataFromCrm } from "../components/profile";
 import profilePic from "../assets/profile-pic.png";
 
 // ============================================================================
@@ -1072,22 +1076,26 @@ const EXAM_QUESTIONS = [
 
 export const OfficialExamPage = () => {
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
+  const { currentUser, crmProfile } = useAuth();
+  const studentData = mapStudentDataFromCrm(crmProfile, currentUser);
 
   // Stages: "BRIEFING" | "LIVE_EXAM" | "SCORECARD"
   const [examStage, setExamStage] = useState("BRIEFING");
 
-  // Candidate identity details
-  const candidateName = currentUser?.name || "Hiteshpuri Goswami";
-  const rollNumber = "OMC-2026-EXAM-0266";
-  const centerNode = "Borivali Campus • Proctored Node B-12";
+  // Candidate identity details from Profile Details
+  const candidateName = studentData?.name || currentUser?.name || "Student";
+  const rollNumber = studentData?.studentId || currentUser?.admissionNo || "OMC-0267";
+  const candidateAvatar = studentData?.avatar || profilePic;
+  const centerNode = `${studentData?.center || "Borivali Center"} • Assessment Node`;
   const sessionHash = "SHA256: 9e887f4c10a30b2e847d91";
 
-  // Institutional Lockdown & Security state
+  // Institutional Lockdown & Security state (3 Warnings Total)
+  const MAX_WARNINGS = 3;
   const [fullscreenActive, setFullscreenActive] = useState(false);
   const [pledgeAccepted, setPledgeAccepted] = useState(false);
   const [securityStrikes, setSecurityStrikes] = useState(0);
   const [strikeAlert, setStrikeAlert] = useState(null);
+  const [showMobilePalette, setShowMobilePalette] = useState(false);
 
   // Live Exam Runner state
   const [activeSection, setActiveSection] = useState("sec-1");
@@ -1125,12 +1133,12 @@ export const OfficialExamPage = () => {
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        triggerSecurityStrike("Tab switch or browser minimized violation");
+        triggerSecurityStrike("Tab switch or window minimized detected");
       }
     };
 
     const handleWindowBlur = () => {
-      triggerSecurityStrike("Window unfocused or secondary app activated");
+      triggerSecurityStrike("Window unfocused or secondary application active");
     };
 
     window.addEventListener("visibilitychange", handleVisibilityChange);
@@ -1159,13 +1167,13 @@ export const OfficialExamPage = () => {
     const alertData = {
       strikeNumber: newStrikes,
       reason,
-      remaining: Math.max(0, 2 - newStrikes),
+      remaining: Math.max(0, MAX_WARNINGS - newStrikes),
     };
     setStrikeAlert(alertData);
     strikeAlertRef.current = alertData;
 
-    if (newStrikes >= 2) {
-      // Disqualification & transition - guaranteed to dismiss alert modal and avoid loading hang
+    if (newStrikes >= MAX_WARNINGS) {
+      // Automatic submission upon exhausting all 3 warnings
       setTimeout(() => {
         setStrikeAlert(null);
         strikeAlertRef.current = null;
@@ -1258,7 +1266,6 @@ export const OfficialExamPage = () => {
 
   // Calculate scores and finalize exam
   const handleFinalSubmission = (isDisqualified = false) => {
-
     let totalCorrect = 0;
     let totalIncorrect = 0;
     let totalUnattempted = 0;
@@ -1331,47 +1338,42 @@ export const OfficialExamPage = () => {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen bg-[#f8fafc] dark:bg-[#070b14] text-slate-900 dark:text-slate-100 flex flex-col font-sans select-none transition-colors duration-150 text-base"
+      className="h-screen max-h-screen w-screen overflow-hidden bg-slate-50 dark:bg-[#070b14] text-slate-900 dark:text-slate-100 flex flex-col font-sans select-none text-base"
     >
       {/* ==================================================================== */}
-      {/* TOP INSTITUTIONAL SECURITY HEADER BAR                                */}
+      {/* TOP INSTITUTIONAL HEADER BAR                                         */}
       {/* ==================================================================== */}
-      <header className="bg-white/95 dark:bg-slate-950/90 border-b border-slate-200/90 dark:border-slate-800/90 px-4 py-3 sm:px-6 flex items-center justify-between sticky top-0 z-40 backdrop-blur-md shadow-xs dark:shadow-none">
-        <div className="flex items-center gap-3.5">
-          <div className="w-9 h-9 rounded-xl bg-rose-100 dark:bg-rose-500/20 border border-rose-200 dark:border-rose-500/40 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0">
-            <ShieldAlert size={20} className="animate-pulse" />
+      <header className="bg-white/95 dark:bg-slate-950/90 border-b border-slate-200/90 dark:border-slate-800/90 px-4 py-2.5 sm:px-6 flex items-center justify-between shrink-0 z-40 backdrop-blur-md shadow-xs dark:shadow-none">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+            <GraduationCap size={20} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono uppercase tracking-widest text-rose-600 dark:text-rose-400 font-black">
-                OMC SECURE ASSESSMENT BROWSER v4.9
+              <span className="text-[11px] font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold">
+                OMC ASSESSMENT PORTAL
               </span>
-              <span className="hidden md:inline-flex px-2 py-0.5 text-[11px] font-mono bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30 rounded font-bold">
-                PROCTORED LOCKDOWN
+              <span className="hidden md:inline-flex px-2 py-0.5 text-[10px] font-mono bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-500/20 rounded font-semibold">
+                OFFICIAL CERTIFICATION
               </span>
             </div>
             <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5">
-              <span>National Board Certification Examination</span>
-              <span className="text-slate-400 dark:text-slate-500 hidden sm:inline">• Term Assessment</span>
+              <span>Operating Media Certification Assessment</span>
+              <span className="text-slate-400 dark:text-slate-500 hidden sm:inline text-xs font-normal">• Final Evaluation</span>
             </h2>
           </div>
         </div>
 
-        {/* Live Proctor Status Chips */}
+        {/* Status Chips */}
         <div className="flex items-center gap-2.5 sm:gap-3.5">
           <div className="hidden lg:flex items-center gap-2 bg-emerald-50 dark:bg-slate-900 border border-emerald-200 dark:border-slate-800 px-3 py-1.5 rounded-lg text-xs font-mono">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
-            <span className="text-emerald-800 dark:text-slate-300 font-bold">AI PROCTOR: ARMED</span>
-          </div>
-
-          <div className="hidden xl:flex items-center gap-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-lg text-xs font-mono text-slate-600 dark:text-slate-400">
-            <Lock size={13} className="text-rose-600 dark:text-rose-400" />
-            <span>GEO-NODE: MUMBAI-B12</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+            <span className="text-emerald-800 dark:text-slate-300 font-semibold">SESSION ACTIVE</span>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-xs sm:text-sm font-mono font-bold text-slate-700 dark:text-slate-300 hidden sm:inline">
-              ROLL: {rollNumber}
+            <span className="text-xs sm:text-sm font-mono font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
+              STUDENT ID: {rollNumber}
             </span>
             {examStage !== "LIVE_EXAM" && (
               <button
@@ -1380,7 +1382,7 @@ export const OfficialExamPage = () => {
                 className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-850 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs sm:text-sm font-semibold border border-slate-300 dark:border-slate-700/80 flex items-center gap-1.5 transition-colors cursor-pointer"
               >
                 <ArrowLeft size={14} />
-                <span>Exit Hall</span>
+                <span>Exit Portal</span>
               </button>
             )}
           </div>
@@ -1388,38 +1390,38 @@ export const OfficialExamPage = () => {
       </header>
 
       {/* ==================================================================== */}
-      {/* SECURITY VIOLATION OVERLAY DIALOG                                     */}
+      {/* SECURITY / FOCUS VIOLATION OVERLAY DIALOG (3 WARNINGS TOTAL)          */}
       {/* ==================================================================== */}
       {strikeAlert && (
         <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="max-w-lg w-full bg-white dark:bg-slate-950 border-2 border-rose-600 rounded-2xl p-7 text-center shadow-2xl animate-in fade-in zoom-in-95 duration-150">
-            <div className="w-16 h-16 mx-auto rounded-full bg-rose-100 dark:bg-rose-500/20 border-2 border-rose-500 text-rose-600 dark:text-rose-500 flex items-center justify-center mb-3.5">
-              <BadgeAlert size={36} />
+          <div className="max-w-md w-full bg-white dark:bg-slate-950 border border-amber-300 dark:border-amber-700/60 rounded-2xl p-6 sm:p-7 text-center shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <div className="w-14 h-14 mx-auto rounded-full bg-amber-100 dark:bg-amber-500/20 border border-amber-300 dark:border-amber-500 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3">
+              <AlertTriangle size={30} />
             </div>
-            <span className="px-3 py-1 rounded-full text-xs sm:text-sm font-mono font-black uppercase bg-rose-600 text-white tracking-widest inline-block mb-2.5">
-              SECURITY STRIKE #{strikeAlert.strikeNumber} / 2
+            <span className="px-3 py-1 rounded-full text-xs font-mono font-bold uppercase bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-700 tracking-wider inline-block mb-2">
+              Assessment Warning #{strikeAlert.strikeNumber} of {MAX_WARNINGS}
             </span>
-            <h3 className="text-xl sm:text-2xl font-black text-slate-950 dark:text-white">PROCTOR VIOLATION DETECTED</h3>
-            <p className="text-rose-600 dark:text-rose-400 font-mono text-xs sm:text-sm mt-1.5 font-bold">
-              REASON: {strikeAlert.reason}
+            <h3 className="text-lg sm:text-xl font-bold text-slate-950 dark:text-white">Exam Window Focus Alert</h3>
+            <p className="text-amber-700 dark:text-amber-400 font-mono text-xs mt-1 font-semibold">
+              Notice: {strikeAlert.reason}
             </p>
-            <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base mt-3.5 leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-300 text-sm mt-3 leading-relaxed">
               {strikeAlert.remaining > 0 ? (
                 <>
-                  You have committed an unfocus or tab-switch violation. You have{" "}
-                  <strong className="text-rose-600 dark:text-rose-400 font-bold">{strikeAlert.remaining} strike left</strong>{" "}
-                  before immediate automated paper cancellation and diploma forfeiture.
+                  You switched tabs or moved away from the assessment window. You have{" "}
+                  <strong className="text-amber-700 dark:text-amber-400 font-bold">{strikeAlert.remaining} warning(s) left</strong>{" "}
+                  before automated exam submission.
                 </>
               ) : (
                 <>
-                  <strong className="text-rose-600 dark:text-rose-500 font-black">
-                    2 STRIKES EXCEEDED. AUTOMATIC DISQUALIFICATION INITIATED.
+                  <strong className="text-slate-900 dark:text-white font-bold">
+                    3 warnings reached. Automated submission initiated.
                   </strong>{" "}
-                  Your examination session is terminated with 0 marks.
+                  Your assessment paper will now be submitted and evaluated.
                 </>
               )}
             </p>
-            <div className="mt-6">
+            <div className="mt-5">
               {strikeAlert.remaining > 0 ? (
                 <button
                   type="button"
@@ -1431,14 +1433,14 @@ export const OfficialExamPage = () => {
                       window.focus();
                     } catch {}
                   }}
-                  className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm uppercase tracking-wider cursor-pointer shadow-md"
+                  className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm tracking-wide cursor-pointer shadow-sm transition-all"
                 >
-                  I Acknowledge & Return to Exam Lockdown
+                  I Understand • Return to Assessment
                 </button>
               ) : (
-                <div className="space-y-3">
-                  <div className="text-sm font-mono text-rose-600 dark:text-rose-400 animate-pulse font-bold">
-                    Submitting paper and recording audit logs to central server...
+                <div className="space-y-2.5">
+                  <div className="text-xs font-mono text-amber-700 dark:text-amber-400 animate-pulse font-bold">
+                    Saving responses and finalizing submission...
                   </div>
                   <button
                     type="button"
@@ -1447,9 +1449,9 @@ export const OfficialExamPage = () => {
                       strikeAlertRef.current = null;
                       handleFinalSubmission(true);
                     }}
-                    className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm uppercase tracking-wider cursor-pointer shadow-md"
+                    className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm tracking-wide cursor-pointer shadow-sm"
                   >
-                    Proceed to Disqualification Scorecard
+                    View Scorecard
                   </button>
                 </div>
               )}
@@ -1462,20 +1464,19 @@ export const OfficialExamPage = () => {
       {/* STAGE 1: INSTITUTIONAL BRIEFING & PRE-FLIGHT VERIFICATION            */}
       {/* ==================================================================== */}
       {examStage === "BRIEFING" && (
-        <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col justify-between">
-          <div className="space-y-6">
-            {/* Top Warning Banner */}
-            <div className="bg-rose-50/90 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-500/40 rounded-2xl p-5 flex items-start gap-4 shadow-xs dark:shadow-[0_0_20px_rgba(244,63,94,0.15)]">
-              <Flame size={28} className="text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+        <main className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+          <div className="max-w-7xl w-full mx-auto space-y-6">
+            {/* Top Information Banner */}
+            <div className="bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200/90 dark:border-blue-900/40 rounded-2xl p-5 flex items-start gap-4 shadow-xs">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+                <Info size={22} />
+              </div>
               <div>
-                <h3 className="text-base sm:text-lg font-black text-rose-900 dark:text-rose-200 tracking-wide">
-                  HIGH-STAKES PROCTORED EXAMINATION ENVIRONMENT
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-wide">
+                  Operating Media Certification Assessment Guidelines
                 </h3>
-                <p className="text-sm sm:text-base text-rose-800/90 dark:text-rose-300/90 mt-1.5 leading-relaxed">
-                  This examination enforces severe institutional grading standards. Negative marking
-                  is activated (<strong>-0.67 marks per wrong answer</strong>). A strict{" "}
-                  <strong>80.0% threshold (48/60 questions correct)</strong> is mandatory for Diploma
-                  Certification. Retesting is blocked for 90 days upon failure.
+                <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                  Welcome to your official certification assessment. Please verify your details and review the assessment scheme below. Marking scheme: <strong>+2.00 marks for each correct answer</strong> and <strong>-0.67 marks for incorrect answers</strong>. A minimum score of <strong>80.0% (96/120 marks)</strong> is required for your official Course Diploma.
                 </p>
               </div>
             </div>
@@ -1490,19 +1491,19 @@ export const OfficialExamPage = () => {
                       CANDIDATE ADMIT CARD
                     </span>
                     <span className="text-xs font-mono px-3 py-1 rounded font-bold border bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-500/40">
-                      ID VERIFIED • READY
+                      PROFILE VERIFIED • READY
                     </span>
                   </div>
 
                   <div className="flex items-center gap-4.5 mt-5">
                     <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 shrink-0 bg-slate-100 dark:bg-slate-800 shadow-sm">
                       <img
-                        src={profilePic}
+                        src={candidateAvatar}
                         alt="Candidate"
                         className="w-full h-full object-cover object-top"
                       />
-                      <div className="absolute inset-0 bg-emerald-500/10 pointer-events-none" />
-                      <div className="absolute bottom-0 inset-x-0 bg-emerald-700/95 text-[9px] font-mono text-center text-white py-1 font-bold uppercase tracking-wider">
+                      <div className="absolute inset-0 bg-blue-500/10 pointer-events-none" />
+                      <div className="absolute bottom-0 inset-x-0 bg-slate-900/90 text-[9px] font-mono text-center text-white py-1 font-bold uppercase tracking-wider">
                         PHOTO VERIFIED
                       </div>
                     </div>
@@ -1511,11 +1512,11 @@ export const OfficialExamPage = () => {
                       <span className="text-xs uppercase font-bold text-slate-400 dark:text-slate-400 block tracking-wider">
                         Candidate Name
                       </span>
-                      <h4 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white truncate">
+                      <h4 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white truncate">
                         {candidateName}
                       </h4>
                       <p className="text-sm font-mono text-slate-700 dark:text-slate-300 mt-1">
-                        Roll: <strong>{rollNumber}</strong>
+                        Student ID: <strong>{rollNumber}</strong>
                       </p>
                       <span className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 block mt-1 truncate font-medium">
                         {centerNode}
@@ -1528,19 +1529,23 @@ export const OfficialExamPage = () => {
                   <div className="flex justify-between text-slate-500 dark:text-slate-400">
                     <span>Program:</span>
                     <span className="text-slate-800 dark:text-slate-200 font-bold truncate max-w-[220px]">
-                      Adv. Digital Marketing
+                      {studentData?.course || "Masters in Digital Marketing"}
                     </span>
                   </div>
                   <div className="flex justify-between text-slate-500 dark:text-slate-400">
-                    <span>Hall Ticket:</span>
-                    <span className="text-slate-800 dark:text-slate-200 font-bold">HT-2026-OMC-881</span>
+                    <span>Batch:</span>
+                    <span className="text-slate-800 dark:text-slate-200 font-bold">
+                      {studentData?.batch || "WD-M1"}
+                    </span>
                   </div>
                   <div className="flex justify-between text-slate-500 dark:text-slate-400">
-                    <span>IP Lock:</span>
-                    <span className="text-emerald-700 dark:text-emerald-400 font-bold">103.24.120.89 [MUMBAI]</span>
+                    <span>Center:</span>
+                    <span className="text-slate-800 dark:text-slate-200 font-bold">
+                      {studentData?.center || "Borivali Center"}
+                    </span>
                   </div>
                   <div className="flex justify-between text-slate-500 dark:text-slate-400">
-                    <span>Hash Signature:</span>
+                    <span>Security Hash:</span>
                     <span className="text-slate-500 dark:text-slate-400 font-mono text-xs truncate max-w-[180px]">
                       {sessionHash}
                     </span>
@@ -1548,13 +1553,13 @@ export const OfficialExamPage = () => {
                 </div>
               </div>
 
-              {/* Strict Examination Rules & Scheme (7 cols) */}
+              {/* Assessment Rules & Scheme (7 cols) */}
               <div className="md:col-span-7 bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 space-y-5 shadow-xs dark:shadow-none">
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3.5">
                   <span className="text-xs font-mono uppercase text-slate-500 dark:text-slate-400 tracking-widest font-bold">
                     MARKING SCHEME & PROTOCOLS
                   </span>
-                  <span className="text-xs font-mono text-rose-600 dark:text-rose-400 font-bold">STRICT NEGATIVE MARKING</span>
+                  <span className="text-xs font-mono text-blue-600 dark:text-blue-400 font-bold">STANDARD SCHEME</span>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
@@ -1570,35 +1575,35 @@ export const OfficialExamPage = () => {
                     <span className="block text-xs text-slate-500 dark:text-slate-400 uppercase font-mono font-bold">Correct Ans</span>
                     <span className="text-2xl sm:text-3xl font-black text-emerald-700 dark:text-emerald-400">+2.00</span>
                   </div>
-                  <div className="bg-rose-50/80 dark:bg-slate-950 border border-rose-200 dark:border-rose-900/50 p-3 rounded-xl">
-                    <span className="block text-xs text-rose-600 dark:text-rose-400 uppercase font-mono font-bold">Wrong Penalty</span>
-                    <span className="text-2xl sm:text-3xl font-black text-rose-600 dark:text-rose-400">-0.67</span>
+                  <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-3 rounded-xl">
+                    <span className="block text-xs text-slate-500 dark:text-slate-400 uppercase font-mono font-bold">Wrong Penalty</span>
+                    <span className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-400">-0.67</span>
                   </div>
                 </div>
 
                 <ul className="space-y-3 text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed">
                   <li className="flex items-start gap-2.5">
-                    <span className="text-rose-600 dark:text-rose-400 font-bold font-mono text-sm sm:text-base">01.</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-bold font-mono text-sm sm:text-base">01.</span>
                     <span>
-                      <strong>Full-Screen Lockdown:</strong> Navigating away from the window, opening devtools, or pressing Alt-Tab records a Security Violation.
+                      <strong>Assessment Focus:</strong> Navigating away from the window or minimizing the browser logs a proctor warning.
                     </span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-rose-600 dark:text-rose-400 font-bold font-mono text-sm sm:text-base">02.</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-bold font-mono text-sm sm:text-base">02.</span>
                     <span>
-                      <strong>Two-Strike Expulsion:</strong> Receiving 2 security strikes triggers immediate paper cancellation with 0 marks.
+                      <strong>3 Warnings Permitted:</strong> A total of 3 warnings are permitted. Exceeding 3 warnings will automatically submit your assessment paper.
                     </span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-rose-600 dark:text-rose-400 font-bold font-mono text-sm sm:text-base">03.</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-bold font-mono text-sm sm:text-base">03.</span>
                     <span>
-                      <strong>Passing Grade:</strong> Minimum 80.0% (96 / 120 Marks). Candidates scoring below 80% fail and cannot re-attempt for 90 days.
+                      <strong>Passing Grade:</strong> Minimum 80.0% (96 / 120 Marks) to qualify for Diploma Certification.
                     </span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <span className="text-rose-600 dark:text-rose-400 font-bold font-mono text-sm sm:text-base">04.</span>
+                    <span className="text-blue-600 dark:text-blue-400 font-bold font-mono text-sm sm:text-base">04.</span>
                     <span>
-                      <strong>Unanswered Questions:</strong> Carry 0 penalty. Blind guessing is penalized mathematically via the -0.67 deduction.
+                      <strong>Unanswered Questions:</strong> Carry 0 penalty. Unanswered questions do not deduct marks.
                     </span>
                   </li>
                 </ul>
@@ -1609,10 +1614,10 @@ export const OfficialExamPage = () => {
             <div className="bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 space-y-5 shadow-xs dark:shadow-none">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3.5">
                 <div>
-                  <span className="text-xs font-mono uppercase text-rose-600 dark:text-rose-400 tracking-widest font-bold block">
-                    PRE-EXAMINATION VERIFICATION GATE
+                  <span className="text-xs font-mono uppercase text-blue-600 dark:text-blue-400 tracking-widest font-bold block">
+                    CANDIDATE VERIFICATION GATE
                   </span>
-                  <h4 className="text-base sm:text-lg font-black text-slate-900 dark:text-white mt-0.5">
+                  <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">
                     System Security & Diagnostics
                   </h4>
                 </div>
@@ -1629,279 +1634,264 @@ export const OfficialExamPage = () => {
                   <Monitor size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                   <div className="min-w-0">
                     <span className="text-sm font-bold text-slate-900 dark:text-white block">Display Architecture</span>
-                    <span className="text-xs text-emerald-700 dark:text-emerald-400 font-mono">Single Primary Monitor Locked</span>
+                    <span className="text-xs text-emerald-700 dark:text-emerald-400 font-mono">Single Display Focus Active</span>
                   </div>
                 </div>
 
                 <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4 rounded-xl flex items-center gap-3.5">
                   <Wifi size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                   <div className="min-w-0">
-                    <span className="text-sm font-bold text-slate-900 dark:text-white block">Bandwidth & Latency</span>
-                    <span className="text-xs text-emerald-700 dark:text-emerald-400 font-mono">18ms • Ultra-Low Latency TLS 1.3</span>
+                    <span className="text-sm font-bold text-slate-900 dark:text-white block">Network & Latency</span>
+                    <span className="text-xs text-emerald-700 dark:text-emerald-400 font-mono">Secure TLS 1.3 Connection</span>
                   </div>
                 </div>
 
                 <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4 rounded-xl flex items-center gap-3.5">
                   <ShieldCheck size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                   <div className="min-w-0">
-                    <span className="text-sm font-bold text-slate-900 dark:text-white block">Institutional Lockdown</span>
-                    <span className="text-xs text-emerald-700 dark:text-emerald-400 font-mono">2-Strike Expulsion Active</span>
+                    <span className="text-sm font-bold text-slate-900 dark:text-white block">Window Proctoring</span>
+                    <span className="text-xs text-emerald-700 dark:text-emerald-400 font-mono">3 Warnings Policy Active</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Honor Code Pledge */}
-            <div className="bg-amber-50/60 dark:bg-slate-950 border border-amber-200 dark:border-slate-800 p-5 rounded-2xl flex items-start gap-3.5">
+            <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl flex items-start gap-3.5">
               <input
                 id="pledge-check"
                 type="checkbox"
                 checked={pledgeAccepted}
                 onChange={(e) => setPledgeAccepted(e.target.checked)}
-                className="mt-1 w-5 h-5 rounded text-rose-600 focus:ring-rose-500 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 cursor-pointer shrink-0"
+                className="mt-1 w-5 h-5 rounded text-blue-600 focus:ring-blue-500 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 cursor-pointer shrink-0"
               />
               <label htmlFor="pledge-check" className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed cursor-pointer">
-                I, <strong className="text-slate-950 dark:text-white">{candidateName}</strong>, confirm that I am the registered
-                candidate. I agree to comply with all proctoring protocols, accept the negative marking scheme,
-                and understand that switching tabs, communicating with third parties, or using AI assistance
-                will cause immediate termination of my certification candidature.
+                I, <strong className="text-slate-950 dark:text-white">{candidateName}</strong>, confirm that I am taking this assessment independently. I agree to adhere to the assessment guidelines, accept the marking scheme (+2.00 / -0.67), and understand that maintaining window focus is required throughout the test session.
               </label>
             </div>
-          </div>
 
-          {/* Action Row & Gating */}
-          <div className="mt-8 pt-5 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <button
-              type="button"
-              onClick={() => navigate("/dashboard")}
-              className="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
-            >
-              ← Return to Dashboard (Cancel & Retain Attempt)
-            </button>
-
-            <div className="flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
-              {/* Readiness Checklist Chips */}
-              <div className="flex items-center gap-2 text-xs sm:text-sm font-mono">
-                <span className="px-2.5 py-1 rounded-md border font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700">
-                  System: ✓ Ready
-                </span>
-                <span className={`px-2.5 py-1 rounded-md border font-semibold ${pledgeAccepted ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700" : "bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-300 dark:border-slate-700"}`}>
-                  Pledge: {pledgeAccepted ? "✓ Accepted" : "Required"}
-                </span>
-              </div>
-
+            {/* Action Row & Gating */}
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
               <button
                 type="button"
-                disabled={!canStartExam}
-                onClick={handleStartExam}
-                className={`w-full sm:w-auto px-10 py-4 rounded-xl font-black text-sm sm:text-base tracking-wide uppercase transition-all shadow-md flex items-center justify-center gap-2.5 cursor-pointer ${
-                  canStartExam
-                    ? "bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white shadow-md dark:shadow-[0_0_28px_rgba(244,63,94,0.5)] hover:scale-[1.02] active:scale-[0.98]"
-                    : "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed"
-                }`}
-                title={!canStartExam ? "Accept the Honor Code Pledge above to unlock" : "Commence Official Proctored Examination"}
+                onClick={() => navigate("/dashboard")}
+                className="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
               >
-                <Lock size={18} />
-                <span>Commence Proctored Examination</span>
+                ← Return to Dashboard
               </button>
+
+              <div className="flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
+                {/* Readiness Checklist Chips */}
+                <div className="flex items-center gap-2 text-xs sm:text-sm font-mono">
+                  <span className="px-2.5 py-1 rounded-md border font-semibold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700">
+                    System: ✓ Ready
+                  </span>
+                  <span className={`px-2.5 py-1 rounded-md border font-semibold ${pledgeAccepted ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700" : "bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-300 dark:border-slate-700"}`}>
+                    Pledge: {pledgeAccepted ? "✓ Accepted" : "Required"}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  disabled={!canStartExam}
+                  onClick={handleStartExam}
+                  className={`w-full sm:w-auto px-8 py-3.5 rounded-xl font-bold text-sm sm:text-base tracking-wide uppercase transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer ${
+                    canStartExam
+                      ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:scale-[1.01] active:scale-[0.99]"
+                      : "bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed"
+                  }`}
+                  title={!canStartExam ? "Accept the Honor Code Pledge above to unlock" : "Start Certification Assessment"}
+                >
+                  <GraduationCap size={18} />
+                  <span>Start Certification Assessment</span>
+                </button>
+              </div>
             </div>
           </div>
         </main>
       )}
 
       {/* ==================================================================== */}
-      {/* STAGE 2: LIVE EXAMINATION RUNNER (LOCKED PROCTORED TERMINAL)         */}
+      {/* ==================================================================== */}
+      {/* STAGE 2: LIVE EXAMINATION RUNNER (NON-SCROLLABLE FIXED CONTAINERS)   */}
       {/* ==================================================================== */}
       {examStage === "LIVE_EXAM" && (
-        <div className="flex-1 flex flex-col h-[calc(100vh-3.75rem)] overflow-hidden">
-          {/* Top Exam Navigation Bar: Timer, Proctor Feed, and Actions */}
+        <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+          {/* Top Exam Navigation Bar */}
           <div className="bg-white dark:bg-slate-950 border-b border-slate-200/90 dark:border-slate-800/90 px-4 py-2.5 sm:px-6 flex items-center justify-between shrink-0 shadow-xs dark:shadow-none">
-            {/* Section Selector Tabs */}
-            <div className="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 sm:pb-0">
-              {EXAM_SECTIONS.map((sec, idx) => {
-                const isActive = activeSection === sec.id;
-                return (
-                  <button
-                    key={sec.id}
-                    type="button"
-                    onClick={() => {
-                      setActiveSection(sec.id);
-                      // Jump to first question of that section
-                      const targetIdx = idx * 15;
-                      goToQuestion(targetIdx);
-                    }}
-                    className={`px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
-                      isActive
-                        ? "bg-rose-600 text-white shadow-sm dark:shadow-[0_0_14px_rgba(244,63,94,0.4)]"
-                        : "bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-850 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200/80 dark:border-transparent"
-                    }`}
-                  >
-                    <span>Domain {idx + 1}</span>
-                    <span className="hidden md:inline ml-1 text-xs opacity-80 font-medium">
-                      ({sec.name.split(":")[1]?.trim() || sec.name})
-                    </span>
-                  </button>
-                );
-              })}
+            {/* Left Status & Mobile Palette Opener */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
+                  Assessment in Progress
+                </span>
+              </div>
+
+              {/* Mobile Palette Opener Button */}
+              <button
+                type="button"
+                onClick={() => setShowMobilePalette(true)}
+                className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-850 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono text-xs font-bold border border-slate-200 dark:border-slate-700 cursor-pointer transition-colors"
+              >
+                <Grid size={14} className="text-blue-600 dark:text-blue-400" />
+                <span>Questions ({answeredCount}/60)</span>
+              </button>
             </div>
 
-            {/* High-Urgency Countdown Timer & Proctor */}
+            {/* Countdown Timer, Warnings & Submit Button */}
             <div className="flex items-center gap-3">
               <div
-                className={`flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2 rounded-xl border font-mono font-black text-base sm:text-lg md:text-xl tracking-wider shadow-xs ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl border font-mono font-bold text-sm sm:text-base tracking-wider ${
                   timeRemaining < 300
-                    ? "bg-rose-100 dark:bg-rose-950/80 border-rose-400 dark:border-rose-600 text-rose-800 dark:text-rose-400 animate-pulse shadow-sm"
+                    ? "bg-rose-50 dark:bg-rose-950/70 border-rose-300 dark:border-rose-700 text-rose-700 dark:text-rose-400 animate-pulse"
                     : timeRemaining < 900
-                    ? "bg-amber-50 dark:bg-amber-950/70 border-amber-300 dark:border-amber-600 text-amber-800 dark:text-amber-400"
-                    : "bg-slate-100 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-blue-700 dark:text-cyan-400"
+                    ? "bg-amber-50 dark:bg-amber-950/70 border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-400"
+                    : "bg-slate-100 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200"
                 }`}
               >
-                <Clock size={18} />
+                <Clock size={16} />
                 <span>{formatTime(timeRemaining)}</span>
               </div>
 
-              {/* Institutional Exam Lockdown Status */}
-              <div className="hidden sm:flex items-center gap-2.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-xl">
-                <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-300 dark:border-slate-700 shrink-0">
-                  <img src={profilePic} alt="Candidate" className="w-full h-full object-cover" />
-                </div>
-                <div className="text-xs font-mono leading-tight">
-                  <span className="text-emerald-700 dark:text-emerald-400 font-bold block flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-ping" />
-                    LOCKDOWN ARMED
-                  </span>
-                  <span className="text-slate-500 dark:text-slate-400 font-medium text-[11px]">
-                    Strikes: {securityStrikes}/2
-                  </span>
-                </div>
+              {/* Warnings Indicator */}
+              <div className="hidden sm:flex items-center gap-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-3 py-1.5 rounded-xl text-xs font-mono">
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    securityStrikes === 0
+                      ? "bg-emerald-500"
+                      : securityStrikes < MAX_WARNINGS
+                      ? "bg-amber-500"
+                      : "bg-rose-500"
+                  }`}
+                />
+                <span className="text-slate-700 dark:text-slate-300 font-bold">
+                  Warnings: {securityStrikes}/{MAX_WARNINGS}
+                </span>
               </div>
 
               <button
                 type="button"
                 onClick={() => setShowSubmitModal(true)}
-                className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm transition-all cursor-pointer"
+                className="px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-xs transition-all cursor-pointer"
               >
                 Submit Paper
               </button>
             </div>
           </div>
 
-          {/* Main Exam Body: Split View (Canvas on Left, Question Matrix on Right) */}
-          <div className="flex-1 flex overflow-hidden">
-            {/* Left Question Canvas */}
-            <div className="flex-1 flex flex-col justify-between overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#f8fafc] dark:bg-[#070b14] custom-scrollbar">
-              <div className="max-w-4xl w-full mx-auto space-y-6">
-                {/* Question Info Header */}
-                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3.5">
-                  <div className="flex items-center gap-2.5">
-                    <span className="px-3.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-white font-mono font-black text-sm sm:text-base border border-slate-200 dark:border-slate-700">
-                      Q {currentQuestionIndex + 1} OF 60
-                    </span>
-                    <span className="text-sm sm:text-base font-mono text-slate-700 dark:text-slate-300 font-bold">
-                      {currentQ.sectionName}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2.5">
-                    <span className="px-3 py-1 rounded-md text-xs sm:text-sm font-mono font-bold bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300">
-                      DIFFICULTY: {currentQ.difficulty}
-                    </span>
-                    <span className="px-3 py-1 rounded-md text-xs sm:text-sm font-mono font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30">
-                      +2.00 / -0.67
-                    </span>
-                  </div>
+          {/* Main Exam Runner Body: Fixed Containers */}
+          <div className="flex-1 min-h-0 p-3 sm:p-4 lg:p-5 flex gap-4 overflow-hidden">
+            {/* Left Question Box: Fixed dimensions, never jumps on question switch */}
+            <div className="flex-1 min-w-0 h-full flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden">
+              {/* Question Header (Fixed inside box) */}
+              <div className="shrink-0 px-4 py-3 sm:px-6 sm:py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/70 dark:bg-slate-950/40">
+                <div className="flex items-center gap-2.5">
+                  <span className="px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-mono font-bold text-xs sm:text-sm border border-blue-200 dark:border-blue-800">
+                    Question {currentQuestionIndex + 1} of {EXAM_QUESTIONS.length}
+                  </span>
+                  <span className="hidden sm:inline text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400">
+                    {currentQ.sectionName}
+                  </span>
                 </div>
 
-                {/* Question Body */}
-                <div className="bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/90 rounded-2xl p-6 sm:p-8 shadow-xs dark:shadow-none space-y-6">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-slate-950 dark:text-white leading-snug sm:leading-relaxed">
-                    {currentQ.text}
-                  </h3>
-
-                  {/* Multiple Choice Options */}
-                  <div className="space-y-3.5 pt-2">
-                    {currentQ.options.map((opt) => {
-                      const isSelected = selectedAnswers[currentQ.id] === opt.id;
-                      return (
-                        <div
-                          key={opt.id}
-                          onClick={() => handleSelectOption(currentQ.id, opt.id)}
-                          className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer flex items-start gap-4 sm:gap-4.5 ${
-                            isSelected
-                              ? "bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-500 text-rose-950 dark:text-white shadow-xs dark:shadow-[0_0_15px_rgba(244,63,94,0.2)]"
-                              : "bg-slate-50/70 hover:bg-white dark:bg-slate-900/70 dark:hover:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white shadow-2xs"
-                          }`}
-                        >
-                          <div
-                            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl border flex items-center justify-center font-mono font-black text-sm sm:text-base shrink-0 mt-0.5 transition-colors ${
-                              isSelected
-                                ? "bg-rose-600 border-rose-500 text-white font-black shadow-xs"
-                                : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold"
-                            }`}
-                          >
-                            {opt.id}
-                          </div>
-                          <span className="text-base sm:text-lg font-medium leading-relaxed">
-                            {opt.text}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-md text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                    Level: {currentQ.difficulty}
+                  </span>
+                  <span className="px-2.5 py-1 rounded-md text-xs font-mono font-bold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                    +2.00 / -0.67
+                  </span>
                 </div>
               </div>
 
-              {/* Bottom Question Controls */}
-              <div className="max-w-4xl w-full mx-auto pt-6 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 mt-6">
-                <div className="flex items-center gap-2.5">
+              {/* Scrollable Question Content (internal scroll only if needed) */}
+              <div className="flex-1 min-h-0 overflow-y-auto px-4 py-5 sm:px-7 sm:py-6 space-y-5 custom-scrollbar">
+                <h3 className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 dark:text-white leading-relaxed">
+                  {currentQ.text}
+                </h3>
+
+                {/* Multiple Choice Options */}
+                <div className="space-y-3 pt-2">
+                  {currentQ.options.map((opt) => {
+                    const isSelected = selectedAnswers[currentQ.id] === opt.id;
+                    return (
+                      <div
+                        key={opt.id}
+                        onClick={() => handleSelectOption(currentQ.id, opt.id)}
+                        className={`p-3.5 sm:p-4 rounded-xl border transition-all cursor-pointer flex items-start gap-3.5 ${
+                          isSelected
+                            ? "bg-blue-50/80 dark:bg-blue-950/40 border-2 border-blue-600 text-slate-900 dark:text-white shadow-xs"
+                            : "bg-slate-50/60 hover:bg-white dark:bg-slate-900/60 dark:hover:bg-slate-850 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-300"
+                        }`}
+                      >
+                        <div
+                          className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg border flex items-center justify-center font-mono font-bold text-xs sm:text-sm shrink-0 mt-0.5 transition-colors ${
+                            isSelected
+                              ? "bg-blue-600 border-blue-600 text-white font-black"
+                              : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                          }`}
+                        >
+                          {opt.id}
+                        </div>
+                        <span className="text-sm sm:text-base font-medium leading-relaxed pt-0.5">
+                          {opt.text}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Fixed Bottom Action Controls */}
+              <div className="shrink-0 px-4 py-3 sm:px-6 sm:py-3.5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3 bg-slate-50/70 dark:bg-slate-950/40">
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => handleToggleReview(currentQ.id)}
-                    className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all border flex items-center gap-2 cursor-pointer ${
+                    className={`px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all border flex items-center gap-1.5 cursor-pointer ${
                       markedForReview[currentQ.id]
-                        ? "bg-purple-100 dark:bg-purple-900/60 border-purple-300 dark:border-purple-500 text-purple-900 dark:text-purple-200"
-                        : "bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-850 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
+                        ? "bg-purple-100 dark:bg-purple-950/60 border-purple-300 dark:border-purple-600 text-purple-800 dark:text-purple-300"
+                        : "bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300"
                     }`}
                   >
-                    <span>
-                      {markedForReview[currentQ.id] ? "Marked for Review" : "Mark for Review"}
-                    </span>
+                    <span>{markedForReview[currentQ.id] ? "Marked for Review" : "Mark for Review"}</span>
                   </button>
 
                   {selectedAnswers[currentQ.id] && (
                     <button
                       type="button"
                       onClick={() => handleClearAnswer(currentQ.id)}
-                      className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-850 text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
+                      className="px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-400 border border-slate-300 dark:border-slate-700 cursor-pointer transition-colors"
                     >
-                      Clear Selection
+                      Clear
                     </button>
                   )}
                 </div>
 
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2">
                   <button
                     type="button"
                     disabled={currentQuestionIndex === 0}
                     onClick={() => goToQuestion(currentQuestionIndex - 1)}
-                    className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold border transition-colors flex items-center gap-1.5 cursor-pointer ${
+                    className={`px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold border transition-colors flex items-center gap-1 cursor-pointer ${
                       currentQuestionIndex === 0
-                        ? "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed"
-                        : "bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-850 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200"
+                        ? "bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed"
+                        : "bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-750 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200"
                     }`}
                   >
                     <ChevronLeft size={16} />
-                    <span>Previous</span>
+                    <span className="hidden sm:inline">Previous</span>
                   </button>
 
                   <button
                     type="button"
                     disabled={currentQuestionIndex === EXAM_QUESTIONS.length - 1}
                     onClick={() => goToQuestion(currentQuestionIndex + 1)}
-                    className={`px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                    className={`px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold border transition-all flex items-center gap-1 cursor-pointer ${
                       currentQuestionIndex === EXAM_QUESTIONS.length - 1
-                        ? "bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed"
-                        : "bg-rose-600 hover:bg-rose-500 border-rose-500 text-white shadow-sm dark:shadow-[0_0_12px_rgba(244,63,94,0.3)]"
+                        ? "bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600 cursor-not-allowed"
+                        : "bg-blue-600 hover:bg-blue-700 border-blue-600 text-white shadow-xs"
                     }`}
                   >
                     <span>Save & Next</span>
@@ -1911,52 +1901,136 @@ export const OfficialExamPage = () => {
               </div>
             </div>
 
-            {/* Right Question Palette & Status Summary (Fixed Sidebar on Right) */}
-            <div className="w-88 xl:w-96 bg-white dark:bg-slate-950 border-l border-slate-200/90 dark:border-slate-800 flex flex-col justify-between p-5 hidden md:flex shrink-0 overflow-y-auto custom-scrollbar">
-              <div className="space-y-5">
-                {/* Palette Summary Legend */}
-                <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-                  <span className="text-xs sm:text-sm font-mono uppercase text-slate-500 dark:text-slate-400 tracking-wider font-bold block mb-3">
-                    QUESTION PALETTE (60)
-                  </span>
+            {/* Right Question Palette: Fixed Size, Shows all 60 Questions directly */}
+            <div className="hidden lg:flex w-80 xl:w-96 shrink-0 h-full flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden">
+              {/* Palette Header with Legend */}
+              <div className="shrink-0 p-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40">
+                <span className="text-xs font-mono uppercase text-slate-500 dark:text-slate-400 tracking-wider font-bold block mb-2.5">
+                  Question Palette (60)
+                </span>
+                <div className="grid grid-cols-2 gap-2 text-[11px] sm:text-xs font-mono">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded bg-emerald-600 inline-block shrink-0" />
+                    <span className="text-slate-700 dark:text-slate-300 font-semibold truncate">Answered ({answeredCount})</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded bg-purple-600 inline-block shrink-0" />
+                    <span className="text-slate-700 dark:text-slate-300 font-semibold truncate">Review ({reviewCount})</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded bg-slate-300 dark:bg-slate-700 inline-block shrink-0" />
+                    <span className="text-slate-700 dark:text-slate-300 font-semibold truncate">Unanswered ({unattemptedCount})</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 rounded bg-blue-600 inline-block shrink-0" />
+                    <span className="text-slate-700 dark:text-slate-300 font-semibold truncate">Current (Q{currentQuestionIndex + 1})</span>
+                  </div>
+                </div>
+              </div>
 
-                  <div className="grid grid-cols-2 gap-2.5 text-xs sm:text-sm font-mono">
-                    <div className="flex items-center gap-2">
-                      <span className="w-3.5 h-3.5 rounded bg-emerald-600 inline-block" />
-                      <span className="text-slate-700 dark:text-slate-300 font-semibold">Answered ({answeredCount})</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-3.5 h-3.5 rounded bg-purple-600 inline-block" />
-                      <span className="text-slate-700 dark:text-slate-300 font-semibold">Review ({reviewCount})</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-3.5 h-3.5 rounded bg-slate-300 dark:bg-slate-700 inline-block" />
-                      <span className="text-slate-700 dark:text-slate-300 font-semibold">Unanswered ({unattemptedCount})</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-3.5 h-3.5 rounded bg-rose-600 inline-block" />
-                      <span className="text-slate-700 dark:text-slate-300 font-semibold">Current</span>
-                    </div>
+              {/* Scrollable Questions Grid */}
+              <div className="flex-1 min-h-0 overflow-y-auto p-3.5 custom-scrollbar">
+                <div className="grid grid-cols-5 gap-2">
+                  {EXAM_QUESTIONS.map((q, idx) => {
+                    const isCurrent = currentQuestionIndex === idx;
+                    const isAnswered = Boolean(selectedAnswers[q.id]);
+                    const isMarked = Boolean(markedForReview[q.id]);
+
+                    let btnStyle = "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300";
+                    if (isCurrent) {
+                      btnStyle = "bg-blue-600 border-blue-600 text-white ring-2 ring-blue-400 font-black shadow-xs";
+                    } else if (isAnswered && isMarked) {
+                      btnStyle = "bg-indigo-600 border-indigo-500 text-white font-bold";
+                    } else if (isMarked) {
+                      btnStyle = "bg-purple-600 border-purple-500 text-white font-bold";
+                    } else if (isAnswered) {
+                      btnStyle = "bg-emerald-600 border-emerald-500 text-white font-bold";
+                    } else if (visitedQuestions[q.id]) {
+                      btnStyle = "bg-slate-200 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-300";
+                    }
+
+                    return (
+                      <button
+                        key={q.id}
+                        type="button"
+                        onClick={() => goToQuestion(idx)}
+                        className={`h-9 rounded-xl border text-xs font-mono font-bold transition-all flex items-center justify-center cursor-pointer ${btnStyle}`}
+                      >
+                        {q.id}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Fixed Palette Footer */}
+              <div className="shrink-0 p-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40">
+                <button
+                  type="button"
+                  onClick={() => setShowSubmitModal(true)}
+                  className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-xs transition-all cursor-pointer"
+                >
+                  Submit Assessment
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Question Palette Drawer */}
+          {showMobilePalette && (
+            <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 lg:hidden">
+              <div className="max-w-md w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-2xl flex flex-col max-h-[85vh] animate-in fade-in zoom-in-95 duration-150">
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                  <div className="flex items-center gap-2">
+                    <Grid size={18} className="text-blue-600 dark:text-blue-400" />
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                      Question Palette (60)
+                    </h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowMobilePalette(false)}
+                    className="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-[11px] font-mono py-3 border-b border-slate-200 dark:border-slate-800">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded bg-emerald-600 inline-block" />
+                    <span className="text-slate-700 dark:text-slate-300">Answered ({answeredCount})</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded bg-purple-600 inline-block" />
+                    <span className="text-slate-700 dark:text-slate-300">Review ({reviewCount})</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded bg-slate-300 dark:bg-slate-700 inline-block" />
+                    <span className="text-slate-700 dark:text-slate-300">Unanswered ({unattemptedCount})</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded bg-blue-600 inline-block" />
+                    <span className="text-slate-700 dark:text-slate-300">Current (Q{currentQuestionIndex + 1})</span>
                   </div>
                 </div>
 
-                {/* 60 Questions Matrix Grid */}
-                <div>
-                  <div className="grid grid-cols-5 gap-2 max-h-[420px] overflow-y-auto p-1 custom-scrollbar">
+                <div className="flex-1 min-h-0 overflow-y-auto py-3 custom-scrollbar">
+                  <div className="grid grid-cols-5 gap-2">
                     {EXAM_QUESTIONS.map((q, idx) => {
                       const isCurrent = currentQuestionIndex === idx;
                       const isAnswered = Boolean(selectedAnswers[q.id]);
                       const isMarked = Boolean(markedForReview[q.id]);
 
-                      let btnStyle = "bg-slate-100 hover:bg-slate-200 dark:bg-slate-900 dark:hover:bg-slate-850 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-400";
+                      let btnStyle = "bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300";
                       if (isCurrent) {
-                        btnStyle = "bg-rose-600 border-rose-500 text-white ring-2 ring-rose-400 font-black shadow-xs";
+                        btnStyle = "bg-blue-600 border-blue-600 text-white ring-2 ring-blue-400 font-black";
                       } else if (isAnswered && isMarked) {
-                        btnStyle = "bg-cyan-700 border-cyan-500 text-white font-black";
+                        btnStyle = "bg-indigo-600 border-indigo-500 text-white font-bold";
                       } else if (isMarked) {
-                        btnStyle = "bg-purple-600 border-purple-500 text-white font-black";
+                        btnStyle = "bg-purple-600 border-purple-500 text-white font-bold";
                       } else if (isAnswered) {
-                        btnStyle = "bg-emerald-600 border-emerald-500 text-white font-black";
+                        btnStyle = "bg-emerald-600 border-emerald-500 text-white font-bold";
                       } else if (visitedQuestions[q.id]) {
                         btnStyle = "bg-slate-200 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-900 dark:text-slate-300";
                       }
@@ -1965,8 +2039,11 @@ export const OfficialExamPage = () => {
                         <button
                           key={q.id}
                           type="button"
-                          onClick={() => goToQuestion(idx)}
-                          className={`h-10 rounded-xl border text-xs sm:text-sm font-mono font-bold transition-all flex items-center justify-center cursor-pointer ${btnStyle}`}
+                          onClick={() => {
+                            goToQuestion(idx);
+                            setShowMobilePalette(false);
+                          }}
+                          className={`h-9 rounded-xl border text-xs font-mono font-bold transition-all flex items-center justify-center cursor-pointer ${btnStyle}`}
                         >
                           {q.id}
                         </button>
@@ -1974,20 +2051,22 @@ export const OfficialExamPage = () => {
                     })}
                   </div>
                 </div>
-              </div>
 
-              {/* Bottom Quick Submit CTA */}
-              <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setShowSubmitModal(true)}
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold text-xs sm:text-sm uppercase tracking-wider shadow-sm transition-all cursor-pointer"
-                >
-                  Finalize & Submit
-                </button>
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowMobilePalette(false);
+                      setShowSubmitModal(true);
+                    }}
+                    className="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider cursor-pointer"
+                  >
+                    Submit Assessment
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 
@@ -2001,13 +2080,12 @@ export const OfficialExamPage = () => {
               <CheckCircle2 size={34} />
             </div>
 
-            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-              SUBMIT EXAMINATION?
+            <h3 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+              Submit Examination?
             </h3>
 
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
-              Once submitted, your responses will be cryptographically locked and evaluated against
-              the strict negative marking rules (-0.67 deduction).
+              Once submitted, your responses will be evaluated against the marking scheme (+2.00 / -0.67). Are you sure you want to finalize your submission?
             </p>
 
             <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 grid grid-cols-3 gap-3 text-center font-mono">
@@ -2036,7 +2114,7 @@ export const OfficialExamPage = () => {
               <button
                 type="button"
                 onClick={() => handleFinalSubmission(false)}
-                className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm sm:text-base uppercase tracking-wider shadow-md cursor-pointer transition-all"
+                className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm sm:text-base uppercase tracking-wider shadow-md cursor-pointer transition-all"
               >
                 Confirm Submit
               </button>
@@ -2049,51 +2127,51 @@ export const OfficialExamPage = () => {
       {/* STAGE 3: OFFICIAL TRANSCRIPT & SCORECARD                             */}
       {/* ==================================================================== */}
       {examStage === "SCORECARD" && examResult && (
-        <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col justify-between">
-          <div className="space-y-6">
+        <main className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+          <div className="max-w-5xl w-full mx-auto space-y-6">
             {/* Header Result Card */}
             <div
               className={`rounded-3xl p-7 sm:p-9 border text-center relative overflow-hidden shadow-xs ${
                 examResult.passed
-                  ? "bg-gradient-to-b from-emerald-50 via-white to-emerald-50/40 dark:from-emerald-950/60 dark:to-slate-950 border-emerald-300 dark:border-emerald-500/40 dark:shadow-[0_0_30px_rgba(16,185,129,0.15)]"
-                  : "bg-gradient-to-b from-rose-50 via-white to-rose-50/40 dark:from-rose-950/60 dark:to-slate-950 border-rose-300 dark:border-rose-500/40 dark:shadow-[0_0_30px_rgba(244,63,94,0.15)]"
+                  ? "bg-gradient-to-b from-emerald-50 via-white to-emerald-50/40 dark:from-emerald-950/60 dark:to-slate-950 border-emerald-300 dark:border-emerald-500/40"
+                  : "bg-gradient-to-b from-amber-50/60 via-white to-amber-50/20 dark:from-amber-950/30 dark:to-slate-950 border-amber-200 dark:border-amber-700/50"
               }`}
             >
               <div
                 className={`w-20 h-20 mx-auto rounded-full border-2 flex items-center justify-center mb-4 ${
                   examResult.passed
                     ? "bg-emerald-100 dark:bg-emerald-500/20 border-emerald-400 dark:border-emerald-500 text-emerald-700 dark:text-emerald-400"
-                    : "bg-rose-100 dark:bg-rose-500/20 border-rose-400 dark:border-rose-500 text-rose-700 dark:text-rose-400"
+                    : "bg-amber-100 dark:bg-amber-500/20 border-amber-300 dark:border-amber-600 text-amber-700 dark:text-amber-400"
                 }`}
               >
                 {examResult.passed ? <Award size={44} /> : <XCircle size={44} />}
               </div>
 
               <span
-                className={`px-4 py-1.5 rounded-full text-xs sm:text-sm font-mono font-black uppercase tracking-widest inline-block mb-2.5 ${
+                className={`px-4 py-1.5 rounded-full text-xs sm:text-sm font-mono font-bold uppercase tracking-widest inline-block mb-2.5 ${
                   examResult.passed
                     ? "bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/40"
-                    : "bg-rose-100 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-500/40"
+                    : "bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-600/40"
                 }`}
               >
                 {examResult.passed
-                  ? "OFFICIAL VERDICT: PASSED • DIPLOMA CERTIFIED"
-                  : "OFFICIAL VERDICT: FAILED • THRESHOLD NOT MET"}
+                  ? "OFFICIAL RESULT: PASSED • DIPLOMA CERTIFIED"
+                  : "ASSESSMENT COMPLETED • PASSING MARK: 80.0%"}
               </span>
 
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-950 dark:text-white">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-950 dark:text-white">
                 {examResult.passed
                   ? "Congratulations! You Cleared the Examination"
-                  : "Certification Withheld - Passing Mark 80.0%"}
+                  : "Assessment Completed - Passing Threshold 80.0%"}
               </h2>
 
-              <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 mt-3 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 mt-2 max-w-2xl mx-auto leading-relaxed">
                 {examResult.passed
                   ? "You have successfully demonstrated mastery across Technical SEO, Google Ads, GA4 Analytics, and Growth Engineering."
-                  : "Under institutional guidelines, an 80% score is mandatory for professional certification. Retesting will unlock after the 90-day cooldown period."}
+                  : "The passing threshold for this certification is 80.0%. You can review course modules with your instructor before attempting your next evaluation."}
               </p>
 
-              {/* High-Impact Numerical Score */}
+              {/* Numerical Score */}
               <div className="mt-7 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
                 <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-xs">
                   <span className="text-xs sm:text-sm font-mono text-slate-500 dark:text-slate-400 uppercase font-bold block mb-1">Final Score</span>
@@ -2105,7 +2183,7 @@ export const OfficialExamPage = () => {
                   <span className="text-xs sm:text-sm font-mono text-slate-500 dark:text-slate-400 uppercase font-bold block mb-1">Percentage</span>
                   <span
                     className={`text-2xl sm:text-3xl font-black block ${
-                      examResult.passed ? "text-emerald-700 dark:text-emerald-400" : "text-rose-700 dark:text-rose-400"
+                      examResult.passed ? "text-emerald-700 dark:text-emerald-400" : "text-amber-700 dark:text-amber-400"
                     }`}
                   >
                     {examResult.percentage}%
@@ -2119,7 +2197,7 @@ export const OfficialExamPage = () => {
                 </div>
                 <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-xs">
                   <span className="text-xs sm:text-sm font-mono text-slate-500 dark:text-slate-400 uppercase font-bold block mb-1">Penalty</span>
-                  <span className="text-2xl sm:text-3xl font-black text-rose-700 dark:text-rose-400 block">
+                  <span className="text-2xl sm:text-3xl font-black text-slate-700 dark:text-slate-300 block">
                     -{examResult.penaltyDeduction}
                   </span>
                 </div>
@@ -2130,7 +2208,7 @@ export const OfficialExamPage = () => {
             <div className="bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xs dark:shadow-none">
               <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
                 <span className="text-xs sm:text-sm font-mono uppercase text-slate-500 dark:text-slate-400 tracking-widest font-bold">
-                  DOMAIN COMPETENCY BREAKDOWN
+                  TOPIC PERFORMANCE BREAKDOWN
                 </span>
                 <span className="text-xs sm:text-sm font-mono text-slate-500 dark:text-slate-400 font-semibold">
                   REF: {examResult.certificateId}
@@ -2151,7 +2229,7 @@ export const OfficialExamPage = () => {
                       <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                         <div
                           className={`h-full rounded-full transition-all duration-500 ${
-                            pct >= 80 ? "bg-emerald-500" : pct >= 60 ? "bg-amber-500" : "bg-rose-500"
+                            pct >= 80 ? "bg-emerald-500" : pct >= 60 ? "bg-amber-500" : "bg-blue-500"
                           }`}
                           style={{ width: `${pct}%` }}
                         />
@@ -2169,7 +2247,7 @@ export const OfficialExamPage = () => {
                 <span className="text-slate-900 dark:text-white font-bold">{candidateName}</span>
               </div>
               <div className="flex justify-between">
-                <span>Roll Number:</span>
+                <span>Student ID:</span>
                 <span className="text-slate-900 dark:text-white font-bold">{rollNumber}</span>
               </div>
               <div className="flex justify-between">
@@ -2179,47 +2257,47 @@ export const OfficialExamPage = () => {
               <div className="flex justify-between">
                 <span>Proctor Audit:</span>
                 <span className="text-emerald-700 dark:text-emerald-400 font-bold">
-                  VALIDATED • {securityStrikes} STRIKES RECORDED
+                  VALIDATED • {securityStrikes} / {MAX_WARNINGS} WARNINGS RECORDED
                 </span>
               </div>
             </div>
-          </div>
 
-          {/* Action Row */}
-          <div className="mt-8 pt-5 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <button
-              type="button"
-              onClick={() => window.print()}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 transition-colors cursor-pointer"
-            >
-              <Download size={16} />
-              <span>Print / Save Transcript</span>
-            </button>
-
-            <div className="flex items-center gap-3.5 w-full sm:w-auto">
+            {/* Action Row */}
+            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
               <button
                 type="button"
-                onClick={() => {
-                  // Reset exam for practice
-                  setExamStage("BRIEFING");
-                  setSelectedAnswers({});
-                  setMarkedForReview({});
-                  setTimeRemaining(45 * 60);
-                  setSecurityStrikes(0);
-                  setStrikeAlert(null);
-                }}
-                className="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm sm:text-base border border-slate-200 dark:border-transparent transition-colors cursor-pointer"
+                onClick={() => window.print()}
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 transition-colors cursor-pointer"
               >
-                Retake Diagnostic
+                <Download size={16} />
+                <span>Print / Save Transcript</span>
               </button>
 
-              <button
-                type="button"
-                onClick={() => navigate("/dashboard")}
-                className="flex-1 sm:flex-none px-8 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm sm:text-base uppercase tracking-wider shadow-md transition-all cursor-pointer"
-              >
-                Return to Dashboard
-              </button>
+              <div className="flex items-center gap-3.5 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => {
+                    // Reset exam for practice
+                    setExamStage("BRIEFING");
+                    setSelectedAnswers({});
+                    setMarkedForReview({});
+                    setTimeRemaining(45 * 60);
+                    setSecurityStrikes(0);
+                    setStrikeAlert(null);
+                  }}
+                  className="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm sm:text-base border border-slate-200 dark:border-transparent transition-colors cursor-pointer"
+                >
+                  Retake Diagnostic
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate("/dashboard")}
+                  className="flex-1 sm:flex-none px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base tracking-wide shadow-md transition-all cursor-pointer"
+                >
+                  Return to Dashboard
+                </button>
+              </div>
             </div>
           </div>
         </main>

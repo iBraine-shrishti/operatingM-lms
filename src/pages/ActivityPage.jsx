@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { 
   Activity, Search, Filter, Clock, Award, BookOpen, 
-  CheckCircle2, UserCheck, CheckSquare, MessagesSquare, 
+  CheckCircle2, CheckSquare, MessagesSquare, 
   FileText, ArrowRight, RefreshCw, X, Shield, Sparkles, 
   ChevronRight, Calendar, UserPlus, GraduationCap
 } from "lucide-react";
@@ -16,7 +16,6 @@ import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 export const ActivityPage = () => {
   const { isAdmin, currentUser } = useAuth();
   const [activitiesList, setActivitiesList] = useState(() => lmsService.getActivities());
-  const [viewScope, setViewScope] = useState("mine"); // "mine" | "students"
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest"); // "newest" | "oldest"
@@ -98,52 +97,29 @@ export const ActivityPage = () => {
       ? currentUser.avatar
       : sahilProfilePic || profilePic;
 
-  // Filter activities by viewScope (My Learning Activity vs All Enrolled Students)
+  // Filter activities: strictly the logged-in student's milestones
   const scopedActivities = useMemo(() => {
     if (isAdmin) {
       return activitiesList;
     }
 
-    if (viewScope === "mine") {
-      return activitiesList
-        .filter(
-          (act) =>
-            act.studentId === "std-375" ||
-            act.id?.startsWith("act-sahil-") ||
-            act.user?.name?.toLowerCase().includes("sahil") ||
-            !act.id?.startsWith("act-peer-")
-        )
-        .map((act) => ({
-          ...act,
-          user: {
-            ...act.user,
-            name: currentStudentName,
-            avatar: currentStudentAvatar || act.user?.avatar,
-          },
-        }));
-    }
-
-    // "students" view (all enrolled students, strictly no admin/faculty)
     return activitiesList
-      .filter((act) => act.isStudent !== false)
-      .map((act) => {
-        if (
+      .filter(
+        (act) =>
           act.studentId === "std-375" ||
           act.id?.startsWith("act-sahil-") ||
-          act.user?.name?.toLowerCase().includes("sahil")
-        ) {
-          return {
-            ...act,
-            user: {
-              ...act.user,
-              name: currentStudentName,
-              avatar: currentStudentAvatar || act.user?.avatar,
-            },
-          };
-        }
-        return act;
-      });
-  }, [activitiesList, viewScope, isAdmin, currentStudentName, currentStudentAvatar]);
+          act.user?.name?.toLowerCase().includes("sahil") ||
+          !act.id?.startsWith("act-peer-")
+      )
+      .map((act) => ({
+        ...act,
+        user: {
+          ...act.user,
+          name: currentStudentName,
+          avatar: currentStudentAvatar || act.user?.avatar,
+        },
+      }));
+  }, [activitiesList, isAdmin, currentStudentName, currentStudentAvatar]);
 
   // Counts for filter pills
   const counts = useMemo(() => {
@@ -257,7 +233,6 @@ export const ActivityPage = () => {
           {...STUDENT_HEADERS_CONFIG.activity}
           metrics={[
             { value: scopedActivities.length, label: "Total Milestones", dotColor: "bg-blue-600" },
-            { value: counts.enrollment, label: "Enrollments", dotColor: "bg-emerald-500" },
             { value: counts.quiz + counts.certificate, label: "Quizzes & Certs", dotColor: "bg-purple-500" },
             { value: counts.assignment, label: "Submissions", dotColor: "bg-rose-500" },
           ]}
@@ -277,72 +252,6 @@ export const ActivityPage = () => {
       {/* 2. SEARCH & FILTER TABS BAR                                    */}
       {/* ============================================================== */}
       <div className="bg-white dark:bg-[#0b1329]/95 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-4 sm:p-5 2xl:p-6 shadow-xs dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] space-y-4 transition-colors duration-200">
-        {/* Scope Toggle for Students */}
-        {!isAdmin && (
-          <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800/80">
-            <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-900/90 p-1 rounded-xl border border-slate-200/80 dark:border-slate-800">
-              <button
-                type="button"
-                onClick={() => setViewScope("mine")}
-                className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
-                  viewScope === "mine"
-                    ? "bg-[#2563eb] text-white shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                }`}
-              >
-                <UserCheck size={14} />
-                <span>My Learning Activity</span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
-                    viewScope === "mine"
-                      ? "bg-white/20 text-white"
-                      : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
-                  }`}
-                >
-                  {
-                    activitiesList.filter(
-                      (a) =>
-                        a.studentId === "std-375" ||
-                        a.id?.startsWith("act-sahil-") ||
-                        a.user?.name?.toLowerCase().includes("sahil") ||
-                        !a.id?.startsWith("act-peer-")
-                    ).length
-                  }
-                </span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewScope("students")}
-                className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
-                  viewScope === "students"
-                    ? "bg-[#2563eb] text-white shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                }`}
-              >
-                <GraduationCap size={14} />
-                <span>All Enrolled Students</span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-extrabold ${
-                    viewScope === "students"
-                      ? "bg-white/20 text-white"
-                      : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
-                  }`}
-                >
-                  {activitiesList.filter((a) => a.isStudent !== false).length}
-                </span>
-              </button>
-            </div>
-
-            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-              {viewScope === "mine" ? (
-                <span>Showing verified student activity for <strong>{currentStudentName}</strong></span>
-              ) : (
-                <span>Showing peer activities from enrolled students in your cohort</span>
-              )}
-            </div>
-          </div>
-        )}
-
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           {/* Search Input */}
           <div className="relative flex-1">
@@ -354,11 +263,7 @@ export const ActivityPage = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={
-                viewScope === "mine"
-                  ? "Search your milestones, courses, exams, or actions..."
-                  : "Search student milestones by name, course, exam, or action..."
-              }
+              placeholder="Search your milestones, courses, exams, or actions..."
               className="w-full pl-10 pr-10 py-2.5 2xl:py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/90 text-sm 2xl:text-base text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 font-medium focus:bg-white dark:focus:bg-slate-850 focus:border-[#2563eb] dark:focus:border-blue-500 transition-all shadow-2xs"
             />
             {searchQuery && (
