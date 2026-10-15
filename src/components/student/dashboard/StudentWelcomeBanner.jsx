@@ -1,18 +1,14 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Calendar,
-  MapPin,
-  GraduationCap,
-  CheckSquare,
-  FileText,
-} from "lucide-react";
+import { Calendar, MapPin } from "lucide-react";
 import dashboardHeaderBg from "../../../assets/header-bg/dashboard-header.png";
 import dashboardHeaderDarkBg from "../../../assets/header-bg/dashboard-header-dark.png";
 import profilePic from "../../../assets/profile-pic.png";
+import sahilProfilePic from "../../../assets/sahil-profile.png";
+import sahilCleanAvatar from "../../../assets/sahil-clean-avatar.png";
 
 /**
- * Reusable Welcome Banner for Student Dashboard
+ * Reusable Welcome Banner for Student Dashboard matching DASHBOARD.png
  */
 export const StudentWelcomeBanner = ({
   currentUser = {},
@@ -20,13 +16,6 @@ export const StudentWelcomeBanner = ({
   onNavigate,
 }) => {
   const navigate = useNavigate();
-  const handleNav = (path) => {
-    if (onNavigate) {
-      onNavigate(path);
-    } else {
-      navigate(path);
-    }
-  };
 
   // Preload both light and dark header images for instant zero-latency theme switching
   useEffect(() => {
@@ -36,97 +25,82 @@ export const StudentWelcomeBanner = ({
     img2.src = dashboardHeaderDarkBg;
   }, []);
 
-  const studentName = currentUser.name || "Hiteshpuri Goswami";
-  const studentCourse = crmProfile.course || "Diploma in Digital Marketing";
-  const admissionId = crmProfile.admissionNo || "OMC-0266";
-  const centerBranch = crmProfile.branch || "Borivali Center";
-  const avatarSrc = currentUser.avatar || profilePic;
+  const studentName = currentUser?.name || crmProfile?.studentName || "Sahil Hasolkar";
+  const studentCourse = crmProfile?.course || currentUser?.course || "Masters in Digital Marketing";
+  const admissionId = crmProfile?.admissionNo || currentUser?.admissionNo || "OMC-0375";
+  const centerBranch = crmProfile?.branch || currentUser?.branch || "Borivali Center";
+  const isDefaultSahil = !currentUser?.avatar || currentUser?.avatar === sahilProfilePic;
+  const avatarSrc = currentUser?.avatar || sahilProfilePic || profilePic;
 
   return (
-    <div className="lg:col-span-7 xl:col-span-7 2xl:col-span-7 relative bg-cover bg-center dashboard-hero-banner border border-blue-100/70 dark:border-blue-500/30 shadow-2xs hover:shadow-md dark:shadow-[0_4px_30px_rgba(2,6,23,0.7)] hover:border-blue-300 dark:hover:border-blue-400/60 dark:hover:shadow-[0_8px_36px_rgba(37,99,235,0.2)] p-3.5 sm:p-4 lg:p-4 xl:p-4.5 2xl:p-6 flex items-center overflow-hidden rounded-2xl transition-all duration-200">
-      {/* Avatar + Details + Mobile/Tablet Quick Actions */}
-      <div className="relative z-10 flex items-center justify-between min-w-0 flex-1 gap-3">
-        <div className="flex items-center space-x-3 sm:space-x-4 lg:space-x-4 xl:space-x-4.5 2xl:space-x-5 min-w-0">
-          {/* User Avatar Image */}
-          <div className="relative shrink-0">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 xl:w-22 xl:h-22 2xl:w-28 2xl:h-28 rounded-full border-2 2xl:border-3 border-white dark:border-slate-800 shadow-md ring-2 ring-blue-100/90 dark:ring-blue-500/50 hover:dark:ring-blue-400 dark:shadow-[0_0_18px_rgba(37,99,235,0.35)] p-0.5 sm:p-1 transition-all duration-200">
-              <div className="w-full h-full rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800">
-                <img
-                  src={avatarSrc}
-                  alt={studentName}
-                  className="w-full h-full object-cover object-top"
-                />
-              </div>
-            </div>
-          </div>
+    <div className="lg:col-span-7 xl:col-span-7 2xl:col-span-7 relative bg-cover bg-center dashboard-hero-banner border border-blue-100/70 dark:border-blue-500/30 shadow-2xs hover:shadow-xs p-5 sm:p-6 lg:p-6 xl:p-7 flex items-center justify-between overflow-hidden rounded-3xl transition-all duration-200 min-h-[175px] sm:min-h-[187px]">
+      {/* Left Column: Greeting, Student Name, Specialization & Identity Pills */}
+      <div className="relative z-10 flex-1 min-w-0 pr-3 sm:pr-4 space-y-0.5 sm:space-y-1">
+        <p className="text-slate-600 dark:text-slate-300 font-medium text-xs sm:text-sm md:text-[15px] tracking-normal">
+          Welcome Back,
+        </p>
+        <h1 className="text-2xl sm:text-3xl lg:text-[32px] xl:text-[34px] font-black text-[#0f172a] dark:text-white tracking-tight leading-none py-0.5">
+          <span className="truncate block">{studentName}!</span>
+        </h1>
+        <p className="text-slate-600 dark:text-slate-300 font-medium text-xs sm:text-sm md:text-[15px] truncate">
+          {studentCourse}
+        </p>
 
-          <div className="min-w-0 space-y-0.5 xl:space-y-1">
-            <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-blue-900 dark:text-cyan-400 block drop-shadow-[0_0_8px_rgba(6,182,212,0.3)]">
-              WELCOME BACK,
+        {/* 2 White Badges / Pills: Student ID & Center */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-2.5 sm:pt-3">
+          <div className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs border border-white/80 dark:border-slate-700/60 shadow-2xs rounded-full px-3.5 py-1.5 flex items-center space-x-1.5 text-xs sm:text-[13px] font-semibold text-slate-700 dark:text-slate-200">
+            <Calendar
+              size={14}
+              className="text-[#3b82f6] dark:text-blue-400 stroke-[2.2] shrink-0"
+            />
+            <span>
+              ID:{" "}
+              <strong className="font-bold text-slate-900 dark:text-white">
+                {admissionId}
+              </strong>
             </span>
-            <h1 className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl 2xl:text-3xl font-black text-[#0c1e3d] dark:text-white tracking-tight leading-tight flex items-center gap-1.5 drop-shadow-md">
-              <span className="truncate">{studentName}!</span>
-            </h1>
-            <p className="text-xs sm:text-xs lg:text-sm 2xl:text-base text-slate-900 dark:text-blue-100 font-bold truncate">
-              {studentCourse}
-            </p>
+          </div>
 
-            {/* 2 Pills: Student ID & Center */}
-            <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-              <div className="bg-white/95 dark:bg-slate-900/85 dark:backdrop-blur-md border border-slate-200/80 dark:border-blue-500/35 hover:dark:border-blue-400/70 hover:dark:bg-slate-850/90 rounded-full px-2.5 py-1 text-[10px] sm:text-[11px] xl:text-[11.5px] 2xl:text-xs text-slate-700 dark:text-blue-100 font-medium flex items-center space-x-1 shadow-2xs hover:shadow-xs transition-all duration-150 whitespace-nowrap cursor-default">
-                <Calendar
-                  size={12}
-                  className="text-[#2563eb] dark:text-cyan-400 drop-shadow-[0_0_6px_rgba(6,182,212,0.4)]"
-                />
-                <span>
-                  ID:{" "}
-                  <strong className="text-slate-900 dark:text-white font-black">
-                    {admissionId}
-                  </strong>
-                </span>
-              </div>
-              <div className="bg-white/95 dark:bg-slate-900/85 dark:backdrop-blur-md border border-slate-200/80 dark:border-blue-500/35 hover:dark:border-blue-400/70 hover:dark:bg-slate-850/90 rounded-full px-2.5 py-1 text-[10px] sm:text-[11px] xl:text-[11.5px] 2xl:text-xs text-slate-700 dark:text-blue-100 font-medium flex items-center space-x-1 shadow-2xs hover:shadow-xs transition-all duration-150 whitespace-nowrap cursor-default">
-                <MapPin
-                  size={12}
-                  className="text-[#2563eb] dark:text-cyan-400 drop-shadow-[0_0_6px_rgba(6,182,212,0.4)]"
-                />
-                <span>
-                  <strong className="text-slate-900 dark:text-white font-black">
-                    {centerBranch}
-                  </strong>
-                </span>
-              </div>
-            </div>
+          <div className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs border border-white/80 dark:border-slate-700/60 shadow-2xs rounded-full px-3.5 py-1.5 flex items-center space-x-1.5 text-xs sm:text-[13px] font-semibold text-slate-700 dark:text-slate-200">
+            <MapPin
+              size={14}
+              className="text-[#3b82f6] dark:text-blue-400 stroke-[2.2] shrink-0"
+            />
+            <span>
+              <strong className="font-bold text-slate-900 dark:text-white">
+                {centerBranch}
+              </strong>
+            </span>
           </div>
         </div>
+      </div>
 
-        {/* Quick Actions (Vertical Rounded Icon Buttons on screens <= 1023px) */}
-        <div className="flex lg:hidden flex-col items-center gap-1 sm:gap-1.5 shrink-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs p-1 sm:p-1.5 rounded-xl border border-blue-100/80 dark:border-blue-500/30 shadow-xs">
-          <button
-            type="button"
-            onClick={() => handleNav("/enrolled-courses")}
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-50 dark:bg-blue-500/20 text-[#2563eb] dark:text-blue-300 border border-blue-200 dark:border-blue-500/40 shadow-2xs flex items-center justify-center transition-all hover:bg-blue-100 dark:hover:bg-blue-500 dark:hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
-            title="Enrolled Courses"
-          >
-            <GraduationCap size={14} />
-          </button>
-          <button
-            type="button"
-            onClick={() => handleNav("/my-quizzes")}
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-50 dark:bg-purple-500/20 text-purple-600 dark:text-purple-300 border border-purple-200 dark:border-purple-500/40 shadow-2xs flex items-center justify-center transition-all hover:bg-purple-100 dark:hover:bg-purple-500 dark:hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
-            title="My Quizzes"
-          >
-            <CheckSquare size={14} />
-          </button>
-          <button
-            type="button"
-            onClick={() => handleNav("/my-assignments")}
-            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-50 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40 shadow-2xs flex items-center justify-center transition-all hover:bg-emerald-100 dark:hover:bg-emerald-500 dark:hover:text-white hover:scale-105 active:scale-95 cursor-pointer"
-            title="Assignments"
-          >
-            <FileText size={14} />
-          </button>
-        </div>
+      {/* Right Column: Circular Student Avatar with Green Online Status Dot */}
+      <div className="relative z-10 shrink-0 self-center">
+        {isDefaultSahil ? (
+          <div className="relative w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32">
+            <img
+              src={sahilCleanAvatar}
+              alt={studentName}
+              className="w-full h-full object-contain drop-shadow-xs"
+            />
+          </div>
+        ) : (
+          <div className="relative">
+            <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full ring-4 ring-white/95 dark:ring-slate-800 shadow-md overflow-hidden bg-white dark:bg-slate-800">
+              <img
+                src={avatarSrc}
+                alt={studentName}
+                className="w-full h-full object-cover object-top"
+              />
+            </div>
+            {/* Status Indicator Dot (Green with white ring matching DASHBOARD.png) */}
+            <span
+              className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#10b981] ring-2 sm:ring-3 ring-white dark:ring-slate-900 shadow-xs z-20 pointer-events-none"
+              title="Active Student"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

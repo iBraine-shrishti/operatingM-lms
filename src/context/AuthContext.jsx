@@ -23,10 +23,10 @@ export const STUDENT_USER = {
     id: 'std-375',
     crmAdmissionId: 375,
     admissionNo: 'OMC-0375',
-    name: 'Prem Suthar',
-    fullName: 'Prem Suthar',
-    email: 'premsuthar@gmail.com',
-    phone: '8955573859',
+    name: 'Sahil Hasolkar',
+    fullName: 'Sahil Nilesh Hasolkar',
+    email: 'hasolkarsahil@gmail.com',
+    phone: '919372017331',
     dob: '28 Nov 2006',
     gender: 'Male',
     maritalStatus: 'Single',
@@ -36,7 +36,7 @@ export const STUDENT_USER = {
     facultyLeadRole: 'Director & Lead Faculty',
     role: 'STUDENT',
     roleLabel: 'STUDENT',
-    avatar: premPassportPhotoImg, // Prem Suthar verified passport photo
+    avatar: sahilProfilePic, // Sahil Hasolkar verified photo
     designation: 'Masters in Digital Marketing Student',
     course: 'Masters in Digital Marketing',
     center: 'Borivali Center',
@@ -68,10 +68,10 @@ export const AuthProvider = ({ children }) => {
             if (savedAvatar === boyAvatar || savedAvatar === girlAvatar) {
                 initial.avatar = savedAvatar;
             } else {
-                initial.avatar = premPassportPhotoImg;
+                initial.avatar = sahilProfilePic;
             }
         } catch {
-            initial.avatar = premPassportPhotoImg;
+            initial.avatar = sahilProfilePic;
         }
         return initial;
     });

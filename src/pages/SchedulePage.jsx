@@ -140,32 +140,6 @@ export const SchedulePage = () => {
           { value: "Mon - Fri", label: "9:00 AM - 10:00 AM", dotColor: "bg-purple-500" },
           { value: "Borivali", label: "Campus", dotColor: "bg-rose-500" },
         ]}
-        action={
-          <div className="flex items-center space-x-1.5 shrink-0 bg-slate-100/90 dark:bg-slate-900/80 p-1.5 rounded-xl border border-slate-200/80 dark:border-slate-750 self-start md:self-auto">
-            <button
-              type="button"
-              onClick={() => setActiveTab("timetable")}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                activeTab === "timetable"
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60"
-              }`}
-            >
-              Weekly Timetable
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("upcoming")}
-              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                activeTab === "upcoming"
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60"
-              }`}
-            >
-              Curriculum Sessions
-            </button>
-          </div>
-        }
       />
 
       {/* 1. Enrolled Batch & Schedule Card (LATEST UI) */}
@@ -283,23 +257,74 @@ export const SchedulePage = () => {
         </div>
       </div>
 
-      {/* 2. Upcoming Curriculum Sessions (LATEST UI) */}
-      {activeTab === "upcoming" ? (
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-4">
-          <div className="flex items-center justify-between">
+      {/* 2. Schedule Details: Weekly Timetable & Curriculum Sessions */}
+      <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-5">
+        {/* Section Header with View Switcher Toggle */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center border border-blue-200 dark:border-blue-800/60 shrink-0">
+              {activeTab === "timetable" ? (
+                <Calendar size={18} />
+              ) : (
+                <BookOpen size={18} />
+              )}
+            </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                Upcoming Curriculum Sessions
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Planned module roadmap and chronological class timelines
+              <div className="flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                  {activeTab === "timetable"
+                    ? "Weekly Class Timetable"
+                    : "Upcoming Curriculum Sessions"}
+                </h3>
+                {activeTab === "timetable" ? (
+                  <span className="hidden sm:inline-flex text-[11px] font-extrabold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/60 px-2 py-0.5 rounded-md">
+                    Mon – Fri Active Batch
+                  </span>
+                ) : (
+                  <span className="hidden sm:inline-flex text-[11px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-md">
+                    {upcomingSessions.length} Modules Scheduled
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                {activeTab === "timetable"
+                  ? "Daily lecture times, topics, and interactive lab sessions"
+                  : "Planned module roadmap and chronological class timelines"}
               </p>
             </div>
-            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-lg">
-              {upcomingSessions.length} Modules Scheduled
-            </span>
           </div>
 
+          {/* Toggle: Weekly Timetable | Curriculum Sessions */}
+          <div className="flex items-center space-x-1.5 shrink-0 bg-slate-100/90 dark:bg-slate-900/80 p-1.5 rounded-xl border border-slate-200/80 dark:border-slate-750 self-start sm:self-auto shadow-2xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("timetable")}
+              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
+                activeTab === "timetable"
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60"
+              }`}
+            >
+              <Calendar size={13} />
+              <span>Weekly Timetable</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("upcoming")}
+              className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center space-x-1.5 ${
+                activeTab === "upcoming"
+                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white/60 dark:hover:bg-slate-800/60"
+              }`}
+            >
+              <BookOpen size={13} />
+              <span>Curriculum Sessions</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Tab Content: Upcoming Curriculum Sessions OR Weekly Timetable */}
+        {activeTab === "upcoming" ? (
           <div className="space-y-3 pt-1">
             {upcomingSessions.map((session) => (
               <div
@@ -354,24 +379,7 @@ export const SchedulePage = () => {
               </div>
             ))}
           </div>
-        </div>
-      ) : (
-        /* Weekly Timetable View - Attribute BG color on thead & Distinct row colors below */
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">
-                Weekly Class Timetable
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Daily lecture times, topics, and interactive lab sessions
-              </p>
-            </div>
-            <span className="text-xs font-extrabold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/60 px-2.5 py-1 rounded-lg">
-              Mon – Fri Active Batch
-            </span>
-          </div>
-
+        ) : (
           <div className="overflow-x-auto rounded-xl border border-slate-300/80 dark:border-slate-800 shadow-xs">
             <table className="w-full text-left text-xs border-collapse">
               {/* Attribute Background Header */}
@@ -405,7 +413,9 @@ export const SchedulePage = () => {
                     <tr
                       key={rIdx}
                       className={`transition-colors ${
-                        isEven ? "bg-white dark:bg-[#0b1329] hover:bg-blue-50/40 dark:hover:bg-slate-800/50" : "bg-slate-50/80 dark:bg-slate-900/60 hover:bg-blue-50/40 dark:hover:bg-slate-800/50"
+                        isEven
+                          ? "bg-white dark:bg-[#0b1329] hover:bg-blue-50/40 dark:hover:bg-slate-800/50"
+                          : "bg-slate-50/80 dark:bg-slate-900/60 hover:bg-blue-50/40 dark:hover:bg-slate-800/50"
                       }`}
                     >
                       {/* Day Pill with Distinct Category Color */}
@@ -422,7 +432,10 @@ export const SchedulePage = () => {
                       {/* Time with Clock Icon */}
                       <td className="py-4 px-4 whitespace-nowrap">
                         <span className="inline-flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700 px-2.5 py-1 rounded-md text-[11.5px] shadow-2xs">
-                          <Clock size={12} className="text-blue-600 dark:text-blue-400" />
+                          <Clock
+                            size={12}
+                            className="text-blue-600 dark:text-blue-400"
+                          />
                           <span>{row.time}</span>
                         </span>
                       </td>
@@ -445,7 +458,10 @@ export const SchedulePage = () => {
                       {/* Faculty with User Avatar Icon */}
                       <td className="py-4 px-4 whitespace-nowrap">
                         <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300 text-xs">
-                          <User size={13} className="text-slate-400 dark:text-slate-500" />
+                          <User
+                            size={13}
+                            className="text-slate-400 dark:text-slate-500"
+                          />
                           <span>{row.faculty}</span>
                         </span>
                       </td>
@@ -468,8 +484,8 @@ export const SchedulePage = () => {
               </tbody>
             </table>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
