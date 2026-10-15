@@ -462,22 +462,22 @@ export const CourseDetailPage = () => {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3.5 sm:space-y-4">
       {/* ------------------------------------------------------------- */}
       {/* TOP NAVIGATION BAR matching course-outline.png                */}
       {/* ------------------------------------------------------------- */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 bg-white dark:bg-[#0b1329] p-4 sm:p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-        <div className="flex items-start sm:items-center space-x-3.5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 bg-white dark:bg-[#0b1329] px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+        <div className="flex items-center space-x-3">
           <button
             onClick={() => navigate("/courses")}
-            className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 cursor-pointer"
             title="Back to Courses"
           >
-            <ArrowLeft size={18} />
+            <ArrowLeft size={16} />
           </button>
           <div className="space-y-0.5">
             <div className="flex items-center space-x-2">
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight whitespace-nowrap">
+              <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight whitespace-nowrap">
                 Course outline
               </h2>
               <button
@@ -488,13 +488,13 @@ export const CourseDetailPage = () => {
                     "Course Outline Guide",
                   )
                 }
-                className="inline-flex items-center space-x-1 text-xs text-slate-400 dark:text-slate-500 font-medium hover:text-[#3b49df] dark:hover:text-blue-400 cursor-pointer shrink-0"
+                className="inline-flex items-center space-x-1 text-[11px] text-slate-400 dark:text-slate-500 font-medium hover:text-[#3b49df] dark:hover:text-blue-400 cursor-pointer shrink-0"
               >
                 <span>Learn more</span>
-                <Info size={13} />
+                <Info size={12} />
               </button>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-normal max-w-xl">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-normal max-w-xl line-clamp-1">
               Develop your course outline and contents and set up the drip feed
               to schedule lesson delivery.
             </p>
@@ -502,12 +502,12 @@ export const CourseDetailPage = () => {
         </div>
 
         {/* Right Action Button matching course-outline.png */}
-        <div className="flex items-center space-x-2.5 shrink-0 self-start md:self-auto">
+        <div className="flex items-center space-x-2 shrink-0 self-start md:self-auto">
           <button
             onClick={() => navigate(`/lesson-player?courseId=${course.id}`)}
-            className="px-5 py-2 rounded-xl bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer"
+            className="px-3.5 py-1.5 rounded-lg bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer"
           >
-            <Play size={13} className="fill-white" />
+            <Play size={12} className="fill-white" />
             <span>Preview & Learn</span>
           </button>
         </div>
@@ -516,9 +516,9 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {/* WIDE COVER BANNER & INSET AVATAR matching course-outline.png  */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs overflow-hidden">
+      <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs overflow-hidden">
         {/* Cover Image Container with Change Cover button */}
-        <div className="relative h-48 sm:h-56 md:h-64 w-full bg-slate-900 overflow-hidden">
+        <div className="relative h-28 sm:h-32 md:h-36 w-full bg-slate-900 overflow-hidden">
           <img
             src={coverImage}
             alt={course.title}
@@ -527,23 +527,23 @@ export const CourseDetailPage = () => {
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent pointer-events-none" />
 
           {/* Action buttons (Edit Course & Change Cover) */}
-          <div className="absolute top-4 right-4 flex items-center space-x-2 z-10">
+          <div className="absolute top-2.5 right-3 flex items-center space-x-2 z-10">
             {isAdmin && (
               <button
                 onClick={() => navigate(`/create-course?edit=${course.id}`)}
-                className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-3.5 py-1.5 rounded-xl border border-amber-400 shadow-md backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer"
+                className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-amber-400 shadow-md backdrop-blur-xs transition-all flex items-center space-x-1 cursor-pointer"
                 title="Edit course in Course Builder"
               >
-                <Edit size={13} />
+                <Edit size={12} />
                 <span>Edit Course</span>
               </button>
             )}
             {isAdmin && (
               <button
                 onClick={() => setShowCoverModal(true)}
-                className="bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-900 text-slate-800 dark:text-slate-200 text-xs font-semibold px-3.5 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-700 shadow-xs backdrop-blur-xs transition-all flex items-center space-x-1.5 cursor-pointer"
+                className="bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-900 text-slate-800 dark:text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-slate-200/80 dark:border-slate-700 shadow-xs backdrop-blur-xs transition-all flex items-center space-x-1 cursor-pointer"
               >
-                <Camera size={14} className="text-[#3b49df] dark:text-blue-400" />
+                <Camera size={12} className="text-[#3b49df] dark:text-blue-400" />
                 <span>Change Cover</span>
               </button>
             )}
@@ -551,11 +551,11 @@ export const CourseDetailPage = () => {
         </div>
 
         {/* Header Body: Inset Circular Badge + Title + Instructor + Stat Chips */}
-        <div className="px-5 sm:px-8 pb-6 pt-3 bg-white dark:bg-[#0b1329]">
-          <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-4 -mt-10 sm:-mt-12 mb-5">
-            {/* Inset Circular Avatar matching course-outline.png */}
-            <div className="flex flex-col sm:flex-row sm:items-end gap-3.5 sm:gap-4">
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 xl:w-28 xl:h-28 rounded-full ring-4 ring-white dark:ring-[#0b1329] shadow-md bg-white dark:bg-[#0b1329] overflow-hidden shrink-0 border border-slate-100 dark:border-slate-800">
+        <div className="px-4 sm:px-6 pb-4 pt-2 bg-white dark:bg-[#0b1329]">
+          <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-3 -mt-7 sm:-mt-8 mb-3">
+            {/* Inset Circular Avatar */}
+            <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+              <div className="relative w-14 h-14 sm:w-16 sm:h-16 xl:w-18 xl:h-18 rounded-full ring-3 ring-white dark:ring-[#0b1329] shadow-md bg-white dark:bg-[#0b1329] overflow-hidden shrink-0 border border-slate-100 dark:border-slate-800">
                 <img
                   src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&auto=format&fit=crop&q=80"
                   alt="Operating Media Masterclass"
@@ -563,91 +563,91 @@ export const CourseDetailPage = () => {
                 />
               </div>
 
-              <div className="pb-1 min-w-0">
-                <span className="inline-block bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 text-[11px] font-bold px-2.5 py-0.5 rounded-md border border-blue-200/80 dark:border-blue-800/60 mb-1.5">
+              <div className="pb-0.5 min-w-0">
+                <span className="inline-block bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-200/80 dark:border-blue-800/60 mb-1">
                   {course.category}
                 </span>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+                <h1 className="text-base sm:text-lg md:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
                   {course.title}
                 </h1>
               </div>
             </div>
 
-            {/* Instructor Credit on Right Side matching course-outline.png */}
-            <div className="flex items-center space-x-3 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 px-4 py-2.5 rounded-xl shrink-0 self-start xl:self-auto">
+            {/* Instructor Credit on Right Side */}
+            <div className="flex items-center space-x-2.5 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 px-3 py-1.5 rounded-lg shrink-0 self-start xl:self-auto">
               <img
                 src={profilePic}
                 alt="Nilkamal Mukharjee"
-                className="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-800 shadow-2xs shrink-0"
+                className="w-7 h-7 rounded-full object-cover ring-1 ring-white dark:ring-slate-800 shadow-2xs shrink-0"
               />
               <div>
-                <p className="text-xs font-bold text-slate-900 dark:text-white leading-snug">
+                <p className="text-[11px] font-bold text-slate-900 dark:text-white leading-snug">
                   Instructor: Nilkamal Mukharjee
                 </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
                   instructor@operatingmedia.com
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Clean Stat Chips Row matching course-outline.png */}
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+          {/* Clean Stat Chips Row */}
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800">
             {/* Chip 1: Total Modules */}
-            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-blue-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-xl p-3 flex items-center space-x-3 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center shrink-0 shadow-2xs">
-                <Layers size={18} />
+            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-blue-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-lg p-2 flex items-center space-x-2.5 transition-colors">
+              <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center shrink-0 shadow-2xs">
+                <Layers size={15} />
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
+                <span className="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
                   Total Modules
                 </span>
-                <span className="text-base font-extrabold text-slate-900 dark:text-white tabular-nums">
+                <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white tabular-nums">
                   {String(sections.length).padStart(2, "0")}
                 </span>
               </div>
             </div>
 
             {/* Chip 2: Activities */}
-            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-emerald-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-xl p-3 flex items-center space-x-3 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-2xs">
-                <Play size={18} className="fill-current translate-x-0.5" />
+            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-emerald-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-lg p-2 flex items-center space-x-2.5 transition-colors">
+              <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-2xs">
+                <Play size={15} className="fill-current translate-x-0.5" />
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
+                <span className="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
                   Activities
                 </span>
-                <span className="text-base font-extrabold text-slate-900 dark:text-white tabular-nums">
+                <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white tabular-nums">
                   {totalActivitiesCount}
                 </span>
               </div>
             </div>
 
             {/* Chip 3: Course Level */}
-            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-purple-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-xl p-3 flex items-center space-x-3 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-200/80 dark:border-purple-800/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 shadow-2xs">
-                <Star size={18} className="fill-current" />
+            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-purple-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-lg p-2 flex items-center space-x-2.5 transition-colors">
+              <div className="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-950/60 border border-purple-200/80 dark:border-purple-800/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 shadow-2xs">
+                <Star size={15} className="fill-current" />
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
+                <span className="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
                   Course Level
                 </span>
-                <span className="text-base font-extrabold text-slate-900 dark:text-white">
+                <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
                   Beginner
                 </span>
               </div>
             </div>
 
             {/* Chip 4: Verified Certificate */}
-            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-amber-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-xl p-3 flex items-center space-x-3 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 shadow-2xs">
-                <Award size={18} />
+            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-amber-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-lg p-2 flex items-center space-x-2.5 transition-colors">
+              <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 shadow-2xs">
+                <Award size={15} />
               </div>
               <div className="min-w-0">
-                <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
+                <span className="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
                   Credential
                 </span>
-                <span className="text-base font-extrabold text-amber-700 dark:text-amber-400">
+                <span className="text-xs sm:text-sm font-extrabold text-amber-700 dark:text-amber-400">
                   Certified
                 </span>
               </div>
@@ -659,7 +659,7 @@ export const CourseDetailPage = () => {
       {/* ------------------------------------------------------------- */}
       {/* TABS HEADER: Overview (1st) | Course Outline | Notes          */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 p-1.5 shadow-2xs flex space-x-1 sm:space-x-2 overflow-x-auto custom-scrollbar">
+      <div className="sticky top-0 z-20 bg-white/95 dark:bg-[#0b1329]/95 backdrop-blur-md rounded-xl border border-slate-200/80 dark:border-slate-800 p-1 shadow-2xs flex space-x-1 sm:space-x-1.5 overflow-x-auto custom-scrollbar">
         {[
           { key: "overview", label: "Overview", icon: BookOpen },
           { key: "outline", label: "Course Outline", icon: Layers },
@@ -680,14 +680,14 @@ export const CourseDetailPage = () => {
             <button
               key={t.key}
               onClick={() => setActiveTab(t.key)}
-              className={`px-4 py-2 text-xs font-bold rounded-lg whitespace-nowrap transition-all flex items-center space-x-2 cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-lg whitespace-nowrap transition-all flex items-center space-x-1.5 cursor-pointer ${
                 isActive
                   ? "bg-[#3b49df] text-white shadow-xs"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800"
               }`}
             >
               <Icon
-                size={14}
+                size={13}
                 className={
                   isActive ? "text-white" : "text-slate-400 dark:text-slate-500"
                 }
@@ -1225,20 +1225,20 @@ export const CourseDetailPage = () => {
       {/* TAB 2: OVERVIEW                                               */}
       {/* ------------------------------------------------------------- */}
       {activeTab === "overview" && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
+          <div className="lg:col-span-2 space-y-3.5 sm:space-y-4">
             {/* 1. STARTING BRACKET TEXT CALLOUT (Course Introduction) */}
             {course.bracketText && (
-              <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-purple-50/50 dark:from-blue-950/40 dark:via-indigo-950/30 dark:to-purple-950/20 border border-blue-200/80 dark:border-blue-800/60 rounded-2xl p-6 shadow-xs relative overflow-hidden">
-                <div className="flex items-start space-x-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-md">
-                    <Info size={20} />
+              <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-purple-50/50 dark:from-blue-950/40 dark:via-indigo-950/30 dark:to-purple-950/20 border border-blue-200/80 dark:border-blue-800/60 rounded-xl p-3.5 sm:p-4 shadow-2xs relative overflow-hidden">
+                <div className="flex items-start space-x-3">
+                  <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <Info size={16} />
                   </div>
-                  <div className="space-y-1.5">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">
                       Course Introduction & Focus
                     </span>
-                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
+                    <p className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
                       {course.bracketText}
                     </p>
                   </div>
@@ -1247,66 +1247,31 @@ export const CourseDetailPage = () => {
             )}
 
             {/* 2. OVERVIEW GREETING & DETAILS */}
-            <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 md:p-8 shadow-xs space-y-6">
+            <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-2xs space-y-3">
               <div>
-                <h3 className="font-bold text-slate-900 dark:text-white text-base md:text-lg mb-2">
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base mb-1.5">
                   About this Specialization
                 </h3>
                 {course.overview?.greeting && (
-                  <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-3">
+                  <p className="text-xs sm:text-sm font-semibold text-blue-600 dark:text-blue-400 mb-2">
                     {course.overview.greeting}
                   </p>
                 )}
-                <p className="text-xs md:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
                   {course.description || course.bracketText}
                 </p>
               </div>
-
-              {/* 3. KEY HIGHLIGHTS / WHY CHOOSE THIS COURSE (ICONS, NO EMOJIS) */}
-              {course.overview?.highlights &&
-                course.overview.highlights.length > 0 && (
-                  <div>
-                    <h3 className="font-bold text-slate-900 dark:text-white text-base mb-3.5">
-                      {course.overview.whyChooseUsTitle ||
-                        "Key Highlights & Advantages"}
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                      {course.overview.highlights.map((h, i) => {
-                        const IconComp =
-                          OVERVIEW_ICONS[h.iconName] || CheckCircle2;
-                        return (
-                          <div
-                            key={i}
-                            className="flex items-start space-x-3 p-3.5 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800/80 hover:border-blue-300 dark:hover:border-blue-700/60 transition-colors"
-                          >
-                            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
-                              <IconComp size={16} />
-                            </div>
-                            <div className="space-y-0.5 min-w-0">
-                              <h4 className="text-xs font-bold text-slate-900 dark:text-white">
-                                {h.title}
-                              </h4>
-                              <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                                {h.desc}
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
             </div>
           </div>
 
           {/* RIGHT SIDEBAR: COURSE CREDENTIALS */}
-          <div className="space-y-6">
-            <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-xs space-y-4">
-              <h3 className="font-bold text-slate-900 dark:text-white text-base">
+          <div className="space-y-4">
+            <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-2xs space-y-3">
+              <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
                 Course Credentials
               </h3>
-              <div className="space-y-3 text-xs">
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
                   <span className="text-slate-500 dark:text-slate-400 font-medium">
                     Instructor
                   </span>
@@ -1314,7 +1279,7 @@ export const CourseDetailPage = () => {
                     {course.author}
                   </span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
                   <span className="text-slate-500 dark:text-slate-400 font-medium">
                     Duration
                   </span>
@@ -1322,7 +1287,7 @@ export const CourseDetailPage = () => {
                     {course.duration}
                   </span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
                   <span className="text-slate-500 dark:text-slate-400 font-medium">
                     Curriculum Modules
                   </span>
@@ -1330,7 +1295,7 @@ export const CourseDetailPage = () => {
                     {sections.length} Modules
                   </span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
                   <span className="text-slate-500 dark:text-slate-400 font-medium">
                     Total Units / Lessons
                   </span>
@@ -1338,7 +1303,7 @@ export const CourseDetailPage = () => {
                     {units.length} Items
                   </span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
                   <span className="text-slate-500 dark:text-slate-400 font-medium">
                     Enrolled
                   </span>
@@ -1346,7 +1311,7 @@ export const CourseDetailPage = () => {
                     {course.studentsCount} Students
                   </span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
                   <span className="text-slate-500 dark:text-slate-400 font-medium">
                     Certificate
                   </span>
