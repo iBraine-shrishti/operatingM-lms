@@ -1811,15 +1811,17 @@ export const OfficialExamPage = () => {
             <span className="text-xs sm:text-sm font-mono font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
               STUDENT ID: {rollNumber}
             </span>
-            <button
-              type="button"
-              onClick={handleExitHall}
-              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-xs hover:shadow flex items-center gap-2 border border-rose-600 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] ring-2 ring-rose-300/40 dark:ring-rose-900/40"
-              title="Exit Examination Hall"
-            >
-              <LogOut size={15} />
-              <span>Exit Hall</span>
-            </button>
+            {examStage !== "LIVE_EXAM" && (
+              <button
+                type="button"
+                onClick={handleExitHall}
+                className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-xs hover:shadow flex items-center gap-2 border border-rose-600 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] ring-2 ring-rose-300/40 dark:ring-rose-900/40"
+                title="Exit Examination Hall"
+              >
+                <LogOut size={15} />
+                <span>Exit Hall</span>
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -2210,10 +2212,10 @@ export const OfficialExamPage = () => {
               <button
                 type="button"
                 onClick={handleExitHall}
-                className="px-4 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-800 text-sm font-bold flex items-center gap-2 cursor-pointer transition-colors shadow-2xs"
+                className="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
               >
-                <LogOut size={16} />
-                <span>Exit Hall</span>
+                <ArrowLeft size={16} />
+                <span>Return to Dashboard</span>
               </button>
 
               <div className="flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
@@ -2996,11 +2998,11 @@ export const OfficialExamPage = () => {
 
                 <button
                   type="button"
-                  onClick={handleExitHall}
-                  className="flex-1 sm:flex-none px-8 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-sm sm:text-base tracking-wide shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 ring-2 ring-rose-300/40"
+                  onClick={() => navigate("/dashboard")}
+                  className="flex-1 sm:flex-none px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base tracking-wide shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <LogOut size={16} />
-                  <span>Exit Hall</span>
+                  <ArrowLeft size={16} />
+                  <span>Return to Dashboard</span>
                 </button>
               </div>
             </div>
