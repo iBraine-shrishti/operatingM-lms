@@ -32,9 +32,8 @@ export const MyAssignmentsPage = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
   const studentId = crmService.getSelectedStudentId();
-  const [assignments, setAssignments] = useState(() =>
-    lmsService.getAssignments(),
-  );
+  const [assignments, setAssignments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const courses = lmsService.getCourses();
 
   const [searchParams] = useSearchParams();
@@ -55,13 +54,19 @@ export const MyAssignmentsPage = () => {
   const [feedbackModalAssignment, setFeedbackModalAssignment] = useState(null);
 
   const loadAssignments = async () => {
+    setIsLoading(true);
     try {
-      const data = await lmsService.fetchStudentBatchAssignments(studentId);
-      if (data && data.length > 0) {
-        setAssignments(data);
+      if (!studentId) {
+        setAssignments([]);
+        return;
       }
+      const data = await lmsService.fetchStudentBatchAssignments(studentId);
+      setAssignments(Array.isArray(data) ? data : []);
     } catch (e) {
       console.warn("Could not load batch assignments:", e);
+      setAssignments([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -229,14 +234,19 @@ export const MyAssignmentsPage = () => {
       {/* ------------------------------------------------------------- */}
       {/* CONTENT LISTING: TABLE VIEW OR CARD GRID VIEW                 */}
       {/* ------------------------------------------------------------- */}
-      {filteredAssignments.length === 0 ? (
+      {isLoading ? (
+        <div className="py-16 flex flex-col items-center justify-center space-y-3 bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-8 shadow-xs">
+          <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm font-medium text-slate-500">Loading your batch assignments...</p>
+        </div>
+      ) : filteredAssignments.length === 0 ? (
         <AssessmentEmptyState
           icon={BookCheck}
-          title="No assignments matched your search criteria"
+          title={hasActiveFilters ? "No assignments matched your search criteria" : "No Assignments Assigned"}
           description={
             hasActiveFilters
-              ? "Try adjusting your search terms or clearing course and specialization filters to view more tasks."
-              : "No assignments are currently assigned for your enrolled courses."
+              ? "Try adjusting your search terms or clearing filters to view tasks."
+              : "No assignments have been assigned to your batch yet. Check back soon or contact your trainer."
           }
           hasActiveFilters={hasActiveFilters}
           onResetFilters={handleClearFilters}

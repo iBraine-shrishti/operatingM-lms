@@ -539,7 +539,7 @@ export const lmsService = {
   },
   // Batch Assignments (from CRM backend)
   fetchStudentBatchAssignments: async (studentId) => {
-    if (!studentId) return lmsService.getAssignments();
+    if (!studentId) return [];
     try {
       const endpoints = [
         CRM_BACKEND_API,
@@ -563,7 +563,7 @@ export const lmsService = {
 
           if (res.ok) {
             const data = await res.json();
-            if (data && data.success && Array.isArray(data.assignments) && data.assignments.length > 0) {
+            if (data && data.success && Array.isArray(data.assignments)) {
               return data.assignments.map((a) => ({
                 id: String(a.id),
                 title: a.title,
@@ -587,15 +587,16 @@ export const lmsService = {
                 pendingGrading: a.status === "submitted" ? 1 : 0,
               }));
             }
+            return [];
           }
         } catch (e) {
           // try next endpoint
         }
       }
     } catch (err) {
-      console.warn("Could not fetch batch assignments from backend, falling back to local:", err);
+      console.warn("Could not fetch batch assignments from backend:", err);
     }
-    return lmsService.getAssignments();
+    return [];
   },
 
   submitStudentBatchAssignment: async (assignmentId, studentId, { file, linkUrl = "", notes = "" }) => {

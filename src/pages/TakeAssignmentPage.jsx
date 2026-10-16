@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import { useToast } from "../context/ToastContext";
@@ -31,27 +31,35 @@ export const TakeAssignmentPage = () => {
   const { showToast } = useToast();
   const studentId = crmService.getSelectedStudentId();
 
-  const [assignments, setAssignments] = useState(() => lmsService.getAssignments());
+  const [assignments, setAssignments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadAssignments = async () => {
+      setIsLoading(true);
       try {
-        const data = await lmsService.fetchStudentBatchAssignments(studentId);
-        if (data && data.length > 0) {
-          setAssignments(data);
+        if (!studentId) {
+          setAssignments([]);
+          return;
         }
+        const data = await lmsService.fetchStudentBatchAssignments(studentId);
+        setAssignments(Array.isArray(data) ? data : []);
       } catch (e) {
         console.warn("Could not load batch assignments:", e);
+        setAssignments([]);
+      } finally {
+        setIsLoading(false);
       }
     };
     loadAssignments();
   }, [studentId]);
 
   const assignment = useMemo(() => {
+    if (assignments.length === 0) return null;
     if (id) {
-      return assignments.find((a) => a.id === id) || assignments[0];
+      return assignments.find((a) => a.id === id) || null;
     }
-    return assignments.find((a) => a.status === "pending") || assignments[0];
+    return assignments.find((a) => a.status === "pending") || assignments[0] || null;
   }, [id, assignments]);
 
   // Submission Form State
@@ -114,6 +122,34 @@ export const TakeAssignmentPage = () => {
     "Detailed methodology explanation and rationale included",
     "Public view-only permissions verified on project link or valid archive uploaded",
   ];
+
+  if (isLoading) {
+    return (
+      <div className="max-w-6xl mx-auto py-20 flex flex-col items-center justify-center space-y-3">
+        <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm font-medium text-slate-500">Loading assignment details...</p>
+      </div>
+    );
+  }
+
+  if (!assignment) {
+    return (
+      <div className="max-w-md mx-auto py-20 text-center space-y-4">
+        <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto text-slate-400">
+          <AlertCircle size={32} />
+        </div>
+        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">No Assignment Found</h2>
+        <p className="text-sm text-slate-500">This assignment might not be assigned to your batch or is inactive.</p>
+        <Link
+          to="/my-assignments"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm"
+        >
+          <ArrowLeft size={16} />
+          <span>Back to Assignments</span>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-16 animate-in fade-in duration-200">
