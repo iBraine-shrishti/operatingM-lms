@@ -35,10 +35,10 @@ export const INITIAL_COURSES = [
         duration: '20h 30m',
         lessonsCount: 10,
         updatedAt: 'Today',
-        bracketText: "Are you looking for social media marketing content ideas or do you need ready-to-use posts for your brand? Let me know the industry or business type, and I'll craft engaging content for your audience!",
-        description: "Are you looking for social media marketing content ideas or do you need ready-to-use posts for your brand? Let me know the industry or business type, and I'll craft engaging content for your audience! Ready to elevate your online presence and drive real engagement? Our Social Media Optimization (SMO) services are designed to make your brand stand out! Custom campaigns that boost engagement & conversions, data-driven insights, and multi-platform growth across Facebook, Instagram, LinkedIn, Quora, and Twitter/X.",
+        bracketText: "Gain comprehensive, practical knowledge of social media marketing and digital campaigns. This course covers step-by-step campaign setup, targeted audience reach, budget optimization, and conversion tracking across Meta, LinkedIn, Quora, and Twitter/X.",
+        description: "Master modern social media marketing with practical frameworks, industry standard metrics, and hands-on campaign execution across Facebook, Instagram, LinkedIn, Quora, and Twitter/X.",
         overview: {
-            greeting: "Ready to elevate your online presence and drive real engagement? Our Social Media Optimization (SMO) services are designed to make your brand stand out!",
+            greeting: "Welcome to the Social Media Marketing specialization. Master organic growth, paid ad campaigns, and multi-channel strategies.",
             whyChooseUsTitle: "Why Choose Us?",
             highlights: [
                 { title: "Proven Strategies", desc: "Custom campaigns that boost engagement & conversions.", iconName: "TrendingUp" },

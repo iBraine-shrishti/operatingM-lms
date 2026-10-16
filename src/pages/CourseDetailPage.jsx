@@ -454,6 +454,31 @@ export const CourseDetailPage = () => {
     (completedActivitiesCount / (totalActivitiesCount || 1)) * 100,
   );
 
+  const courseInformationText = useMemo(() => {
+    if (
+      !course.bracketText ||
+      course.bracketText.includes("content ideas") ||
+      course.bracketText.includes("ready-to-use posts") ||
+      course.bracketText.includes("Let me know the industry") ||
+      course.bracketText.includes("Have questions about this course")
+    ) {
+      return "Gain comprehensive, practical knowledge of social media marketing and digital campaigns. This course covers step-by-step campaign setup, targeted audience reach, budget optimization, and conversion tracking across Meta, LinkedIn, Quora, and Twitter/X.";
+    }
+    return course.bracketText;
+  }, [course.bracketText]);
+
+  const courseDescriptionText = useMemo(() => {
+    let desc = course.description || "";
+    desc = desc.replace(
+      /Are you looking for social media marketing content ideas or do you need ready-to-use posts for your brand\? Let me know the industry or business type, and I'll craft engaging content for your audience!\s*/gi,
+      "",
+    );
+    if (!desc.trim()) {
+      return "Master modern social media marketing with practical frameworks, industry standard metrics, and hands-on campaign execution across Facebook, Instagram, LinkedIn, Quora, and Twitter/X.";
+    }
+    return desc;
+  }, [course.description]);
+
   return (
     <div className="space-y-3.5 sm:space-y-4">
       {/* ------------------------------------------------------------- */}
@@ -1055,24 +1080,22 @@ export const CourseDetailPage = () => {
       {activeTab === "overview" && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
           <div className="lg:col-span-2 space-y-3.5 sm:space-y-4">
-            {/* 1. STARTING BRACKET TEXT CALLOUT (Course Introduction) */}
-            {course.bracketText && (
-              <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-purple-50/50 dark:from-blue-950/40 dark:via-indigo-950/30 dark:to-purple-950/20 border border-blue-200/80 dark:border-blue-800/60 rounded-xl p-3.5 sm:p-4 shadow-2xs relative overflow-hidden">
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <Info size={16} />
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">
-                      Course Introduction & Focus
-                    </span>
-                    <p className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
-                      {course.bracketText}
-                    </p>
-                  </div>
+            {/* 1. STARTING BRACKET TEXT CALLOUT (Course Information) */}
+            <div className="bg-gradient-to-r from-blue-50/90 via-indigo-50/70 to-purple-50/50 dark:from-blue-950/40 dark:via-indigo-950/30 dark:to-purple-950/20 border border-blue-200/80 dark:border-blue-800/60 rounded-xl p-3.5 sm:p-4 shadow-2xs relative overflow-hidden">
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                  <Info size={16} />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">
+                    Course Information
+                  </span>
+                  <p className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
+                    {courseInformationText}
+                  </p>
                 </div>
               </div>
-            )}
+            </div>
 
             {/* 2. OVERVIEW GREETING & DETAILS */}
             <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-2xs space-y-3">
@@ -1086,7 +1109,7 @@ export const CourseDetailPage = () => {
                   </p>
                 )}
                 <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                  {course.description || course.bracketText}
+                  {courseDescriptionText}
                 </p>
               </div>
             </div>

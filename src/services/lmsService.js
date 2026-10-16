@@ -161,6 +161,26 @@ export const lmsService = {
         ) {
           updatedCourse.thumbnail = COURSE_THUMBNAILS[updatedCourse.id];
         }
+        if (
+          updatedCourse.bracketText &&
+          (updatedCourse.bracketText.includes("content ideas") ||
+            updatedCourse.bracketText.includes("ready-to-use posts") ||
+            updatedCourse.bracketText.includes("Have questions about this course"))
+        ) {
+          updatedCourse.bracketText =
+            "Gain comprehensive, practical knowledge of social media marketing and digital campaigns. This course covers step-by-step campaign setup, targeted audience reach, budget optimization, and conversion tracking across Meta, LinkedIn, Quora, and Twitter/X.";
+          modified = true;
+        }
+        if (
+          updatedCourse.description &&
+          (updatedCourse.description.includes("content ideas") ||
+            updatedCourse.description.includes("ready-to-use posts") ||
+            updatedCourse.description.includes("Let me know the industry"))
+        ) {
+          updatedCourse.description =
+            "Master modern social media marketing with practical frameworks, industry standard metrics, and hands-on campaign execution across Facebook, Instagram, LinkedIn, Quora, and Twitter/X.";
+          modified = true;
+        }
         return updatedCourse;
       });
     if (modified) {
