@@ -12,7 +12,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth, profilePic } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import logo from "../../assets/logo.png";
 
 export const CourseCard = ({ course, onDelete }) => {
@@ -171,20 +171,6 @@ export const CourseCard = ({ course, onDelete }) => {
             {course.description}
           </p>
 
-          {/* Instructor Line */}
-          <div className="flex items-center space-x-2 pb-2 mb-2 sm:pb-2.5 sm:mb-3 border-b border-slate-100 dark:border-slate-800">
-            <img
-              src={profilePic}
-              alt="Instructor"
-              className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700"
-            />
-            <span className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 font-medium truncate">
-              Nilkamal Mukharjee •{" "}
-              <span className="text-slate-400 dark:text-slate-500 font-normal">
-                Lead
-              </span>
-            </span>
-          </div>
 
           {/* Metadata Row: Duration | Lessons */}
           <div className="grid grid-cols-2 gap-1.5 text-center text-xs text-slate-600 dark:text-slate-300 bg-slate-50/80 dark:bg-slate-900/60 p-1.5 sm:p-2 xl:p-2.5 border border-slate-100 dark:border-slate-800 rounded-lg mb-2 sm:mb-3.5">

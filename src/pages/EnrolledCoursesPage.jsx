@@ -16,7 +16,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth, profilePic } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { lmsService } from "../services/lmsService";
 import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
@@ -425,20 +425,6 @@ export const EnrolledCoursesPage = () => {
                       {course.description}
                     </p>
 
-                    {/* Instructor Line */}
-                    <div className="flex items-center space-x-2 pb-2.5 mb-3 border-t border-slate-100 dark:border-slate-800 pt-2.5">
-                      <img
-                        src={profilePic}
-                        alt="Instructor"
-                        className="w-6 h-6 shrink-0 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700"
-                      />
-                      <span className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-medium truncate">
-                        Nilkamal Mukharjee •{" "}
-                        <span className="text-slate-500 dark:text-slate-500 font-normal">
-                          Lead Instructor
-                        </span>
-                      </span>
-                    </div>
 
                     {/* Progress Bar Component */}
                     <div className="space-y-1.5 mb-3 bg-slate-50/80 dark:bg-slate-900/80 p-3 rounded-xl border border-slate-100 dark:border-slate-800">

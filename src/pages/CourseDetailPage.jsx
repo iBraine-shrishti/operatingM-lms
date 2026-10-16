@@ -12,9 +12,7 @@ import {
   Camera,
   Edit,
   BookOpen,
-  Video,
   FileText,
-  CheckSquare,
   HelpCircle,
   Sparkles,
   MoreVertical,
@@ -44,7 +42,7 @@ import {
   Phone,
   Globe,
 } from "lucide-react";
-import { useAuth, profilePic } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 
 const OVERVIEW_ICONS = {
@@ -102,7 +100,6 @@ export const CourseDetailPage = () => {
 
   // Module Accordion states - all closed by default
   const [expandedSections, setExpandedSections] = useState({});
-  const [hiddenInfoSections, setHiddenInfoSections] = useState({});
   const [activeMenuIdx, setActiveMenuIdx] = useState(null);
 
   // AI Tutor / Activity helper modal
@@ -447,10 +444,6 @@ export const CourseDetailPage = () => {
     setExpandedSections({});
   };
 
-  const toggleModuleInfo = (idx) => {
-    setHiddenInfoSections((prev) => ({ ...prev, [idx]: !prev[idx] }));
-  };
-
   const allActivities = useMemo(() => {
     return sections.flatMap((sec) => sec.items || []);
   }, [sections]);
@@ -550,44 +543,25 @@ export const CourseDetailPage = () => {
           </div>
         </div>
 
-        {/* Header Body: Inset Circular Badge + Title + Instructor + Stat Chips */}
+        {/* Header Body: Inset Circular Badge + Title + Stat Chips */}
         <div className="px-4 sm:px-6 pb-4 pt-2 bg-white dark:bg-[#0b1329]">
-          <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-3 -mt-7 sm:-mt-8 mb-3">
+          <div className="flex flex-col sm:flex-row sm:items-end gap-3 -mt-7 sm:-mt-8 mb-3">
             {/* Inset Circular Avatar */}
-            <div className="flex flex-col sm:flex-row sm:items-end gap-3">
-              <div className="relative w-14 h-14 sm:w-16 sm:h-16 xl:w-18 xl:h-18 rounded-full ring-3 ring-white dark:ring-[#0b1329] shadow-md bg-white dark:bg-[#0b1329] overflow-hidden shrink-0 border border-slate-100 dark:border-slate-800">
-                <img
-                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&auto=format&fit=crop&q=80"
-                  alt="Operating Media Masterclass"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <div className="pb-0.5 min-w-0">
-                <span className="inline-block bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-200/80 dark:border-blue-800/60 mb-1">
-                  {course.category}
-                </span>
-                <h1 className="text-base sm:text-lg md:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-                  {course.title}
-                </h1>
-              </div>
+            <div className="relative w-14 h-14 sm:w-16 sm:h-16 xl:w-18 xl:h-18 rounded-full ring-3 ring-white dark:ring-[#0b1329] shadow-md bg-white dark:bg-[#0b1329] overflow-hidden shrink-0 border border-slate-100 dark:border-slate-800">
+              <img
+                src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&auto=format&fit=crop&q=80"
+                alt="Operating Media Masterclass"
+                className="w-full h-full object-cover"
+              />
             </div>
 
-            {/* Instructor Credit on Right Side */}
-            <div className="flex items-center space-x-2.5 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 px-3 py-1.5 rounded-lg shrink-0 self-start xl:self-auto">
-              <img
-                src={profilePic}
-                alt="Nilkamal Mukharjee"
-                className="w-7 h-7 rounded-full object-cover ring-1 ring-white dark:ring-slate-800 shadow-2xs shrink-0"
-              />
-              <div>
-                <p className="text-[11px] font-bold text-slate-900 dark:text-white leading-snug">
-                  Instructor: Nilkamal Mukharjee
-                </p>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
-                  instructor@operatingmedia.com
-                </p>
-              </div>
+            <div className="pb-0.5 min-w-0">
+              <span className="inline-block bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-200/80 dark:border-blue-800/60 mb-1">
+                {course.category}
+              </span>
+              <h1 className="text-base sm:text-lg md:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+                {course.title}
+              </h1>
             </div>
           </div>
 
@@ -773,23 +747,7 @@ export const CourseDetailPage = () => {
           <div className="space-y-4">
             {sections.map((section, sIdx) => {
               const isExpanded = Boolean(expandedSections[sIdx]);
-              const isInfoHidden = hiddenInfoSections[sIdx] === true;
               const isAssModule = section.isAssessmentModule;
-
-              // Calculate module included activities
-              const videoCount = section.items.filter(
-                (i) =>
-                  i.type === "video" ||
-                  (!i.type && !i.duration?.includes("Quiz") && i.type !== "quiz" && i.type !== "assignment"),
-              ).length;
-              const readingCount = section.items.filter((i) => i.type === "reading").length;
-              const assignmentCount = section.items.filter((i) => i.type === "assignment").length;
-              const quizCount = section.items.filter(
-                (i) =>
-                  i.type === "quiz" ||
-                  i.title.toLowerCase().includes("quiz") ||
-                  i.title.toLowerCase().includes("test"),
-              ).length;
 
               return (
                 <div
@@ -934,88 +892,7 @@ export const CourseDetailPage = () => {
 
                   {/* Expanded Section Content */}
                   {isExpanded && (
-                    <div className="p-5 sm:p-6 space-y-4">
-                      {/* Description & What's included block matching course-outline.png */}
-                      {!isInfoHidden && (
-                        <div className="space-y-3.5 bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 rounded-2xl">
-                          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
-                            {isAssModule
-                              ? `Comprehensive examinations, tests, and practical assignment deliverables for ${section.name}. Complete these assessments to validate your mastery and qualify for course certification.`
-                              : `In this foundational module, students will be introduced to the core principles and practical frameworks behind ${section.name}. The module explores comprehensive step-by-step execution, industry standard metrics, and practical campaign creation.`}
-                          </p>
-
-                          {/* "What's included" row with icons matching course-outline.png */}
-                          <div>
-                            <span className="text-xs font-bold text-slate-900 dark:text-white block mb-2">
-                              What's included
-                            </span>
-                            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                              {videoCount > 0 && (
-                                <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
-                                  <Video
-                                    size={14}
-                                    className="text-blue-600 dark:text-blue-400"
-                                  />
-                                  <span>{videoCount} {videoCount === 1 ? "video" : "videos"}</span>
-                                </div>
-                              )}
-                              {readingCount > 0 && (
-                                <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
-                                  <BookOpen
-                                    size={14}
-                                    className="text-emerald-600 dark:text-emerald-400"
-                                  />
-                                  <span>{readingCount} {readingCount === 1 ? "reading" : "readings"}</span>
-                                </div>
-                              )}
-                              {quizCount > 0 && (
-                                <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
-                                  <CheckSquare
-                                    size={14}
-                                    className="text-purple-600 dark:text-purple-400"
-                                  />
-                                  <span>{quizCount} {quizCount === 1 ? "Test / Quiz" : "Tests"}</span>
-                                </div>
-                              )}
-                              {assignmentCount > 0 && (
-                                <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
-                                  <FileText
-                                    size={14}
-                                    className="text-amber-600 dark:text-amber-400"
-                                  />
-                                  <span>{assignmentCount} {assignmentCount === 1 ? "assignment" : "assignments"}</span>
-                                </div>
-                              )}
-                              {videoCount === 0 && readingCount === 0 && quizCount === 0 && assignmentCount === 0 && (
-                                <div className="flex items-center space-x-1.5 bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-1 rounded-lg shadow-2xs">
-                                  <Play size={14} className="text-blue-600" />
-                                  <span>{section.items.length} lessons</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Hide/Show info toggle link matching course-outline.png */}
-                      <div>
-                        <button
-                          type="button"
-                          onClick={() => toggleModuleInfo(sIdx)}
-                          className="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors inline-flex items-center space-x-1 cursor-pointer"
-                        >
-                          <span>
-                            {isInfoHidden
-                              ? "Show info about module content"
-                              : "Hide info about module content"}
-                          </span>
-                          <ChevronDown
-                            size={14}
-                            className={isInfoHidden ? "" : "rotate-180"}
-                          />
-                        </button>
-                      </div>
-
+                    <div className="p-4 sm:p-5">
                       {/* Module Lessons List */}
                       <div className="divide-y divide-slate-100 dark:divide-slate-800 border border-slate-200/80 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-[#0b1329] shadow-2xs">
                         {section.items.map((item, iIdx) => {
@@ -1271,14 +1148,6 @@ export const CourseDetailPage = () => {
                 Course Credentials
               </h3>
               <div className="space-y-2 text-xs">
-                <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500 dark:text-slate-400 font-medium">
-                    Instructor
-                  </span>
-                  <span className="font-semibold text-slate-900 dark:text-white">
-                    {course.author}
-                  </span>
-                </div>
                 <div className="flex justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
                   <span className="text-slate-500 dark:text-slate-400 font-medium">
                     Duration
