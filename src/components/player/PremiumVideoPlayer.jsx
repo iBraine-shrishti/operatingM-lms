@@ -85,10 +85,11 @@ export const PremiumVideoPlayer = ({
     }
   });
   const [isMuted, setIsMuted] = useState(false);
+  const lastNonZeroVolumeRef = useRef(volume > 0 ? volume : 0.8);
   const [isBuffering, setIsBuffering] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
-  const [rippleAction, setRippleAction] = useState(null); // 'play' | 'pause' | 'skip-back' | 'skip-fwd'
+  const [rippleAction, setRippleAction] = useState(null); // 'play' | 'pause' | 'skip-back' | 'skip-fwd' | 'volume'
 
   // Hover & Popover states
   const [hoverTime, setHoverTime] = useState(null);
@@ -161,13 +162,13 @@ export const PremiumVideoPlayer = ({
   }, [isPlaying, showSpeedMenu, isScrubbing]);
 
   // Trigger tactile center ripple icon
-  const triggerRipple = (type) => {
+  const triggerRipple = useCallback((type) => {
     setRippleAction(type);
     if (rippleTimeoutRef.current) clearTimeout(rippleTimeoutRef.current);
     rippleTimeoutRef.current = setTimeout(() => {
       setRippleAction(null);
     }, 600);
-  };
+  }, []);
 
   // Play / Pause toggle
   const togglePlay = useCallback(() => {
@@ -233,17 +234,32 @@ export const PremiumVideoPlayer = ({
 
   // Toggle Mute
   const toggleMute = useCallback(() => {
-    setIsMuted((prev) => !prev);
-  }, []);
+    setIsMuted((prev) => {
+      const willMute = !prev;
+      if (!willMute) {
+        if (volume === 0) {
+          const restored = lastNonZeroVolumeRef.current || 0.8;
+          setVolume(restored);
+        }
+      } else {
+        if (volume > 0) {
+          lastNonZeroVolumeRef.current = volume;
+        }
+      }
+      return willMute;
+    });
+    triggerRipple("volume");
+  }, [volume, triggerRipple]);
 
-  // Volume slider change
+  // Volume slider / meter change
   const handleVolumeChange = (e) => {
     const val = parseFloat(e.target.value);
     setVolume(val);
-    if (val === 0) {
+    if (val > 0) {
+      lastNonZeroVolumeRef.current = val;
+      if (isMuted) setIsMuted(false);
+    } else {
       setIsMuted(true);
-    } else if (isMuted) {
-      setIsMuted(false);
     }
     try {
       localStorage.setItem("om_player_volume", val.toString());
@@ -290,12 +306,22 @@ export const PremiumVideoPlayer = ({
           break;
         case "arrowup":
           e.preventDefault();
-          setVolume((prev) => Math.min(1, prev + 0.1));
+          setVolume((prev) => {
+            const nextVol = Math.min(1, Math.round((prev + 0.1) * 10) / 10);
+            lastNonZeroVolumeRef.current = nextVol;
+            return nextVol;
+          });
           setIsMuted(false);
+          triggerRipple("volume");
           break;
         case "arrowdown":
           e.preventDefault();
-          setVolume((prev) => Math.max(0, prev - 0.1));
+          setVolume((prev) => {
+            const nextVol = Math.max(0, Math.round((prev - 0.1) * 10) / 10);
+            if (nextVol === 0) setIsMuted(true);
+            return nextVol;
+          });
+          triggerRipple("volume");
           break;
         default:
           break;
@@ -304,7 +330,7 @@ export const PremiumVideoPlayer = ({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [togglePlay, toggleFullscreen, toggleMute, skipTime]);
+  }, [togglePlay, toggleFullscreen, toggleMute, skipTime, triggerRipple]);
 
   // Progress update & buffer calculation
   const handleInternalTimeUpdate = (e) => {
@@ -463,6 +489,20 @@ export const PremiumVideoPlayer = ({
                   <div className="flex flex-col items-center">
                     <RotateCcw size={26} className="text-blue-400" />
                     <span className="text-[10px] font-bold font-mono mt-0.5">-10s</span>
+                  </div>
+                )}
+                {rippleAction === "volume" && (
+                  <div className="flex flex-col items-center">
+                    {isMuted || volume === 0 ? (
+                      <VolumeX size={28} className="text-red-400" />
+                    ) : volume < 0.5 ? (
+                      <Volume1 size={28} className="text-cyan-400" />
+                    ) : (
+                      <Volume2 size={28} className="text-cyan-400" />
+                    )}
+                    <span className="text-[10px] font-bold font-mono mt-0.5">
+                      {isMuted || volume === 0 ? "MUTED" : `${Math.round(volume * 100)}%`}
+                    </span>
                   </div>
                 )}
               </div>
@@ -636,23 +676,42 @@ export const PremiumVideoPlayer = ({
                   </span>
                 </button>
 
-                {/* Volume & Expandable Slider */}
-                <div className="flex items-center group/volume">
+                {/* Volume Control with Interactive Meter & Level Readout */}
+                <div className="flex items-center space-x-1 sm:space-x-1.5 bg-black/40 hover:bg-black/60 px-1.5 sm:px-2 py-1 rounded-xl border border-white/10 transition-colors group/volume">
+                  {/* Mute/Unmute Button */}
                   <button
+                    type="button"
                     onClick={toggleMute}
-                    className="p-1.5 sm:p-2 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
-                    title={isMuted ? "Unmute (M)" : "Mute (M)"}
+                    className="p-1 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer shrink-0"
+                    title={isMuted || volume === 0 ? "Unmute (M)" : "Mute (M)"}
                   >
                     {isMuted || volume === 0 ? (
-                      <VolumeX size={18} className="text-red-400" />
+                      <VolumeX size={17} className="text-red-400" />
                     ) : volume < 0.5 ? (
-                      <Volume1 size={18} />
+                      <Volume1 size={17} className="text-cyan-300" />
                     ) : (
-                      <Volume2 size={18} />
+                      <Volume2 size={17} className="text-cyan-400" />
                     )}
                   </button>
 
-                  <div className="w-0 overflow-hidden group-hover/volume:w-18 sm:group-hover/volume:w-22 transition-all duration-200 flex items-center pr-2">
+                  {/* Interactive Volume Slider & Meter Bar */}
+                  <div className="relative w-14 sm:w-18 md:w-22 h-5 flex items-center cursor-pointer group/meter">
+                    {/* Background Track */}
+                    <div className="w-full h-1.5 group-hover/meter:h-2 bg-white/20 rounded-full overflow-hidden transition-all duration-150 relative">
+                      {/* Active Volume Meter Level Fill */}
+                      <div
+                        className={`h-full rounded-full transition-all duration-75 ${
+                          isMuted || volume === 0
+                            ? "w-0 bg-slate-500"
+                            : "bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 shadow-sm shadow-cyan-400/50"
+                        }`}
+                        style={{
+                          width: `${isMuted ? 0 : Math.round(volume * 100)}%`,
+                        }}
+                      />
+                    </div>
+
+                    {/* Native Range Input for Smooth Dragging & Accessibility */}
                     <input
                       type="range"
                       min="0"
@@ -660,9 +719,55 @@ export const PremiumVideoPlayer = ({
                       step="0.05"
                       value={isMuted ? 0 : volume}
                       onChange={handleVolumeChange}
-                      className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                      aria-label="Volume Meter"
+                    />
+
+                    {/* Glowing Indicator Knob */}
+                    <div
+                      className={`absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white shadow-md shadow-cyan-400/60 ring-2 ring-cyan-400/50 transition-opacity pointer-events-none ${
+                        isMuted || volume === 0
+                          ? "opacity-30"
+                          : "opacity-90 group-hover/meter:opacity-100"
+                      }`}
+                      style={{
+                        left: `calc(${isMuted ? 0 : Math.round(volume * 100)}% - 5px)`,
+                      }}
                     />
                   </div>
+
+                  {/* Audio Level Meter Bars */}
+                  <div
+                    className="hidden md:flex items-end gap-0.5 h-3 px-0.5 cursor-pointer"
+                    onClick={toggleMute}
+                    title={`Audio Level: ${isMuted || volume === 0 ? "0%" : `${Math.round(volume * 100)}%`}`}
+                  >
+                    <span
+                      className={`w-0.5 rounded-full transition-all duration-150 ${
+                        !isMuted && volume > 0 ? "h-1.5 bg-cyan-400" : "h-1.5 bg-white/20"
+                      }`}
+                    />
+                    <span
+                      className={`w-0.5 rounded-full transition-all duration-150 ${
+                        !isMuted && volume >= 0.33 ? "h-2 bg-cyan-400" : "h-2 bg-white/20"
+                      }`}
+                    />
+                    <span
+                      className={`w-0.5 rounded-full transition-all duration-150 ${
+                        !isMuted && volume >= 0.66 ? "h-2.5 bg-cyan-400" : "h-2.5 bg-white/20"
+                      }`}
+                    />
+                    <span
+                      className={`w-0.5 rounded-full transition-all duration-150 ${
+                        !isMuted && volume >= 0.9 ? "h-3 bg-cyan-400" : "h-3 bg-white/20"
+                      }`}
+                    />
+                  </div>
+
+                  {/* Volume Level Percentage */}
+                  <span className="text-[10px] sm:text-[11px] font-mono font-bold text-slate-300 tabular-nums min-w-[24px] sm:min-w-[28px] text-right select-none">
+                    {isMuted || volume === 0 ? "0%" : `${Math.round(volume * 100)}%`}
+                  </span>
                 </div>
 
                 {/* Time Display */}
