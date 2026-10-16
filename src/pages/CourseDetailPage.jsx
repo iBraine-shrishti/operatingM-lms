@@ -2,14 +2,12 @@ import React, { useState, useMemo } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import {
-  Star,
   Users,
   CheckCircle2,
   Play,
   Clock,
   ArrowLeft,
   Trash2,
-  Camera,
   Edit,
   BookOpen,
   FileText,
@@ -90,13 +88,6 @@ export const CourseDetailPage = () => {
   const [activeTab, setActiveTab] = useState(
     () => searchParams.get("tab") || "overview",
   );
-
-  // Cover image customizable state matching "Change Cover" in course-outline.png
-  const [coverImage, setCoverImage] = useState(
-    course.thumbnail ||
-      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
-  );
-  const [showCoverModal, setShowCoverModal] = useState(false);
 
   // Module Accordion states - all closed by default
   const [expandedSections, setExpandedSections] = useState({});
@@ -449,6 +440,15 @@ export const CourseDetailPage = () => {
   }, [sections]);
 
   const totalActivitiesCount = allActivities.length || units.length || 16;
+  const totalVideosCount = useMemo(() => {
+    const vids = allActivities.filter((item) => {
+      const isQuiz = item.type === "quiz" || Boolean(item.quizId);
+      const isAss = item.type === "assignment" || Boolean(item.assignmentId);
+      const isReading = item.type === "reading";
+      return !isQuiz && !isAss && !isReading;
+    });
+    return vids.length || course.lessonsCount || 10;
+  }, [allActivities, course.lessonsCount]);
   const completedActivitiesCount = allActivities.filter((u) => u.isCompleted).length;
   const progressPercent = Math.round(
     (completedActivitiesCount / (totalActivitiesCount || 1)) * 100,
@@ -458,6 +458,9 @@ export const CourseDetailPage = () => {
     <div className="space-y-3.5 sm:space-y-4">
       {/* ------------------------------------------------------------- */}
       {/* TOP NAVIGATION BAR matching course-outline.png                */}
+      {/* ------------------------------------------------------------- */}
+      {/* ------------------------------------------------------------- */}
+      {/* TOP NAVIGATION BAR                                            */}
       {/* ------------------------------------------------------------- */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 bg-white dark:bg-[#0b1329] px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
         <div className="flex items-center space-x-3">
@@ -471,104 +474,69 @@ export const CourseDetailPage = () => {
           <div className="space-y-0.5">
             <div className="flex items-center space-x-2">
               <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight whitespace-nowrap">
-                Course outline
+                Course Details
               </h2>
-              <button
-                onClick={() =>
-                  showToast(
-                    "Course outline lets you structure modules, schedule drip releases, and configure activities.",
-                    "info",
-                    "Course Outline Guide",
-                  )
-                }
-                className="inline-flex items-center space-x-1 text-[11px] text-slate-400 dark:text-slate-500 font-medium hover:text-[#3b49df] dark:hover:text-blue-400 cursor-pointer shrink-0"
-              >
-                <span>Learn more</span>
-                <Info size={12} />
-              </button>
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 font-normal max-w-xl line-clamp-1">
-              Develop your course outline and contents and set up the drip feed
-              to schedule lesson delivery.
+              View curriculum, watch video lessons, and track your learning progress.
             </p>
           </div>
         </div>
 
-        {/* Right Action Button matching course-outline.png */}
-        <div className="flex items-center space-x-2 shrink-0 self-start md:self-auto">
-          <button
-            onClick={() => navigate(`/lesson-player?courseId=${course.id}`)}
-            className="px-3.5 py-1.5 rounded-lg bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer"
-          >
-            <Play size={12} className="fill-white" />
-            <span>Preview & Learn</span>
-          </button>
-        </div>
+        {isAdmin && (
+          <div className="flex items-center space-x-2 shrink-0 self-start md:self-auto">
+            <button
+              onClick={() => navigate(`/create-course?edit=${course.id}`)}
+              className="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer"
+              title="Edit course in Course Builder"
+            >
+              <Edit size={13} />
+              <span>Edit Course</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* WIDE COVER BANNER & INSET AVATAR matching course-outline.png  */}
+      {/* COURSE HEADER CARD (Banner removed)                            */}
       {/* ------------------------------------------------------------- */}
-      <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs overflow-hidden">
-        {/* Cover Image Container with Change Cover button */}
-        <div className="relative h-28 sm:h-32 md:h-36 w-full bg-slate-900 overflow-hidden">
-          <img
-            src={coverImage}
-            alt={course.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-transparent pointer-events-none" />
+      <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs p-4 sm:p-5">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3.5 sm:gap-4 mb-4">
+          {/* Course Thumbnail Image */}
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs bg-slate-100 dark:bg-slate-800">
+            <img
+              src={
+                course.image ||
+                "https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&auto=format&fit=crop&q=80"
+              }
+              alt={course.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
 
-          {/* Action buttons (Edit Course & Change Cover) */}
-          <div className="absolute top-2.5 right-3 flex items-center space-x-2 z-10">
-            {isAdmin && (
-              <button
-                onClick={() => navigate(`/create-course?edit=${course.id}`)}
-                className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-[11px] font-bold px-2.5 py-1 rounded-lg border border-amber-400 shadow-md backdrop-blur-xs transition-all flex items-center space-x-1 cursor-pointer"
-                title="Edit course in Course Builder"
-              >
-                <Edit size={12} />
-                <span>Edit Course</span>
-              </button>
-            )}
-            {isAdmin && (
-              <button
-                onClick={() => setShowCoverModal(true)}
-                className="bg-white/95 dark:bg-slate-900/90 hover:bg-white dark:hover:bg-slate-900 text-slate-800 dark:text-slate-200 text-[11px] font-semibold px-2.5 py-1 rounded-lg border border-slate-200/80 dark:border-slate-700 shadow-xs backdrop-blur-xs transition-all flex items-center space-x-1 cursor-pointer"
-              >
-                <Camera size={12} className="text-[#3b49df] dark:text-blue-400" />
-                <span>Change Cover</span>
-              </button>
-            )}
+          {/* Title & Metadata */}
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center space-x-2 mb-1.5 flex-wrap gap-y-1">
+              <span className="inline-block bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-200/80 dark:border-blue-800/60">
+                {course.category}
+              </span>
+              {course.tag && (
+                <span className="inline-block bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 text-[10px] font-semibold px-2 py-0.5 rounded border border-purple-200/80 dark:border-purple-800/60">
+                  {course.tag}
+                </span>
+              )}
+            </div>
+            <h1 className="text-base sm:text-lg md:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
+              {course.title}
+            </h1>
           </div>
         </div>
 
-        {/* Header Body: Inset Circular Badge + Title + Stat Chips */}
-        <div className="px-4 sm:px-6 pb-4 pt-2 bg-white dark:bg-[#0b1329]">
-          <div className="flex flex-col sm:flex-row sm:items-end gap-3 -mt-7 sm:-mt-8 mb-3">
-            {/* Inset Circular Avatar */}
-            <div className="relative w-14 h-14 sm:w-16 sm:h-16 xl:w-18 xl:h-18 rounded-full ring-3 ring-white dark:ring-[#0b1329] shadow-md bg-white dark:bg-[#0b1329] overflow-hidden shrink-0 border border-slate-100 dark:border-slate-800">
-              <img
-                src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&auto=format&fit=crop&q=80"
-                alt="Operating Media Masterclass"
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            <div className="pb-0.5 min-w-0">
-              <span className="inline-block bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-200/80 dark:border-blue-800/60 mb-1">
-                {course.category}
-              </span>
-              <h1 className="text-base sm:text-lg md:text-xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-                {course.title}
-              </h1>
-            </div>
-          </div>
-
-          {/* Clean Stat Chips Row */}
-          <div className="grid grid-cols-2 xl:grid-cols-4 gap-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-800">
+        {/* Stats Chips & Simplified Action Button */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3.5 border-t border-slate-100 dark:border-slate-800">
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2.5">
             {/* Chip 1: Total Modules */}
-            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-blue-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-lg p-2 flex items-center space-x-2.5 transition-colors">
+            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-blue-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-lg p-2 sm:p-2.5 flex items-center space-x-2.5 transition-colors">
               <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center shrink-0 shadow-2xs">
                 <Layers size={15} />
               </div>
@@ -577,66 +545,49 @@ export const CourseDetailPage = () => {
                   Total Modules
                 </span>
                 <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white tabular-nums">
-                  {String(sections.length).padStart(2, "0")}
+                  {String(sections.length).padStart(2, "0")} Modules
                 </span>
               </div>
             </div>
 
-            {/* Chip 2: Activities */}
-            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-emerald-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-lg p-2 flex items-center space-x-2.5 transition-colors">
+            {/* Chip 2: Total Videos (Replaced Activities) */}
+            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-emerald-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-lg p-2 sm:p-2.5 flex items-center space-x-2.5 transition-colors">
               <div className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-2xs">
                 <Play size={15} className="fill-current translate-x-0.5" />
               </div>
               <div className="min-w-0">
                 <span className="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
-                  Activities
+                  Total Videos
                 </span>
                 <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white tabular-nums">
-                  {totalActivitiesCount}
-                </span>
-              </div>
-            </div>
-
-            {/* Chip 3: Course Level */}
-            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-purple-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-lg p-2 flex items-center space-x-2.5 transition-colors">
-              <div className="w-8 h-8 rounded-lg bg-purple-50 dark:bg-purple-950/60 border border-purple-200/80 dark:border-purple-800/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 shadow-2xs">
-                <Star size={15} className="fill-current" />
-              </div>
-              <div className="min-w-0">
-                <span className="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
-                  Course Level
-                </span>
-                <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
-                  Beginner
-                </span>
-              </div>
-            </div>
-
-            {/* Chip 4: Verified Certificate */}
-            <div className="bg-slate-50/80 dark:bg-slate-900/60 hover:bg-amber-50/20 dark:hover:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 rounded-lg p-2 flex items-center space-x-2.5 transition-colors">
-              <div className="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 shadow-2xs">
-                <Award size={15} />
-              </div>
-              <div className="min-w-0">
-                <span className="text-[9px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider block">
-                  Credential
-                </span>
-                <span className="text-xs sm:text-sm font-extrabold text-amber-700 dark:text-amber-400">
-                  Certified
+                  {totalVideosCount} Videos
                 </span>
               </div>
             </div>
           </div>
+
+          {/* Action Button: Simplified from 'Preview & Learn' to 'Start Learning' */}
+          <button
+            onClick={() => navigate(`/lesson-player?courseId=${course.id}`)}
+            className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.99]"
+          >
+            <Play size={14} className="fill-white" />
+            <span>
+              {completedActivitiesCount > 0
+                ? "Continue Learning"
+                : "Start Learning"}
+            </span>
+          </button>
         </div>
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* TABS HEADER: Overview (1st) | Course Outline | Notes          */}
+      {/* TABS HEADER: Overview (1st) | Modules & Lessons | Notes       */}
       {/* ------------------------------------------------------------- */}
       <div className="sticky top-0 z-20 bg-white/95 dark:bg-[#0b1329]/95 backdrop-blur-md rounded-xl border border-slate-200/80 dark:border-slate-800 p-1 shadow-2xs flex space-x-1 sm:space-x-1.5 overflow-x-auto custom-scrollbar">
         {[
           { key: "overview", label: "Overview", icon: BookOpen },
-          { key: "outline", label: "Course Outline", icon: Layers },
+          { key: "outline", label: "Modules & Lessons", icon: Layers },
           { key: "notes", label: "Notes", icon: BookMarked },
           ...(isAdmin
             ? [
@@ -718,7 +669,7 @@ export const CourseDetailPage = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
             <div>
               <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                Course Outline & Modules ({sections.length})
+                Modules & Lessons ({sections.length} Modules)
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 Click any module header to expand its lessons and activities.
@@ -1388,70 +1339,7 @@ export const CourseDetailPage = () => {
         </div>
       )}
 
-      {/* ------------------------------------------------------------- */}
-      {/* CHANGE COVER MODAL                                            */}
-      {/* ------------------------------------------------------------- */}
-      {showCoverModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                Choose Course Cover Banner
-              </h3>
-              <button
-                onClick={() => setShowCoverModal(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
-              >
-                <X size={16} />
-              </button>
-            </div>
 
-            <p className="text-xs text-slate-500 dark:text-slate-400 font-normal">
-              Select one of our curated high-resolution covers or enter an image
-              URL:
-            </p>
-
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80",
-                "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop&q=80",
-                "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=1200&auto=format&fit=crop&q=80",
-                "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&auto=format&fit=crop&q=80",
-              ].map((imgUrl, i) => (
-                <div
-                  key={i}
-                  onClick={() => {
-                    setCoverImage(imgUrl);
-                    setShowCoverModal(false);
-                    showToast("Course cover updated successfully!", "success");
-                  }}
-                  className="h-24 rounded-xl overflow-hidden border-2 border-slate-200 dark:border-slate-700 hover:border-[#3b49df] dark:hover:border-blue-500 cursor-pointer transition-all relative group shadow-2xs"
-                >
-                  <img
-                    src={imgUrl}
-                    alt="Cover option"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors flex items-center justify-center">
-                    <span className="text-white text-[10px] font-bold bg-black/60 px-2.5 py-0.5 rounded-full">
-                      Cover {i + 1}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="pt-2 flex justify-end">
-              <button
-                onClick={() => setShowCoverModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold cursor-pointer"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ------------------------------------------------------------- */}
       {/* AI ACTIVITY / TUTOR ASSISTANT MODAL                            */}
