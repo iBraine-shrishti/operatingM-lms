@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import QRCode from "qrcode";
-import logoImg from "../../assets/logo.png";
+import logoImg from "../../assets/logo-certificate.png";
 import { CheckCircle2, ExternalLink } from "lucide-react";
 
 export const OperatingMediaCertificate = ({
@@ -20,7 +20,7 @@ export const OperatingMediaCertificate = ({
     verificationUrl ||
     (typeof window !== "undefined"
       ? `${window.location.origin}/verify-certificate?id=${certificateId}&name=${encodeURIComponent(
-          studentName
+          studentName,
         )}&course=${encodeURIComponent(courseTitle)}`
       : `https://operatingmedia.com/verify-certificate?id=${certificateId}`);
 
@@ -52,7 +52,8 @@ export const OperatingMediaCertificate = ({
         showBorder ? "shadow-2xl rounded-sm" : ""
       } ${className}`}
       style={{
-        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+        fontFamily:
+          "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       }}
     >
       {/* ============================================================== */}
@@ -176,7 +177,8 @@ export const OperatingMediaCertificate = ({
               <h1
                 className="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] text-slate-900 tracking-normal mt-1 sm:mt-2 leading-tight select-none"
                 style={{
-                  fontFamily: "'Dancing Script', 'Playfair Display', cursive, serif",
+                  fontFamily:
+                    "'Dancing Script', 'Playfair Display', cursive, serif",
                   fontStyle: "italic",
                   fontWeight: 700,
                 }}
@@ -209,15 +211,21 @@ export const OperatingMediaCertificate = ({
               <div className="text-left text-[10px] sm:text-xs md:text-sm text-slate-700 font-medium space-y-0.5 sm:space-y-1">
                 <div>
                   <span className="text-slate-500">Issue Date:</span>{" "}
-                  <strong className="text-slate-900 font-semibold">{issueDate}</strong>
+                  <strong className="text-slate-900 font-semibold">
+                    {issueDate}
+                  </strong>
                 </div>
                 <div>
                   <span className="text-slate-500">Expiry Date:</span>{" "}
-                  <strong className="text-slate-900 font-semibold">{expiryDate}</strong>
+                  <strong className="text-slate-900 font-semibold">
+                    {expiryDate}
+                  </strong>
                 </div>
                 <div>
                   <span className="text-slate-500">Certificate ID:</span>{" "}
-                  <strong className="text-slate-900 font-semibold">{certificateId}</strong>
+                  <strong className="text-slate-900 font-semibold">
+                    {certificateId}
+                  </strong>
                 </div>
               </div>
 

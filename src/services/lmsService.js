@@ -448,8 +448,11 @@ export const lmsService = {
         ) {
           list[existingIdx].questions = imported.questions;
         }
-        if (!list[existingIdx].perQuestionTimerSeconds) {
-          list[existingIdx].perQuestionTimerSeconds = 45;
+        if (
+          !list[existingIdx].perQuestionTimerSeconds ||
+          list[existingIdx].perQuestionTimerSeconds === 45
+        ) {
+          list[existingIdx].perQuestionTimerSeconds = 60;
         }
       }
     });
@@ -473,7 +476,7 @@ export const lmsService = {
       timeSpent: null,
       deadline: "Available Anytime",
       status: "active",
-      perQuestionTimerSeconds: quiz.perQuestionTimerSeconds || 45,
+      perQuestionTimerSeconds: quiz.perQuestionTimerSeconds || 60,
     };
     setStored("quizzes", [newQuiz, ...quizzes]);
     return newQuiz;

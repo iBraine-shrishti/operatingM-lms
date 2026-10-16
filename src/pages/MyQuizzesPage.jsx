@@ -386,7 +386,7 @@ export const MyQuizzesPage = () => {
                       Total assessment has {activeQuizModal.totalQuestions} questions ({activeQuizModal.durationMinutes} mins total window).
                     </li>
                     <li>
-                      <strong>45-Second Question Timer</strong>: Each question has an active 45s timer with auto-advancement.
+                      <strong>60-Second Question Timer</strong>: Each question has an active 60s timer with auto-advancement.
                     </li>
                     <li>
                       Requires a minimum benchmark of{" "}
@@ -405,7 +405,7 @@ export const MyQuizzesPage = () => {
                     Per Question
                   </span>
                   <span className="font-black text-blue-600 dark:text-blue-400">
-                    45 Seconds
+                    60 Seconds
                   </span>
                 </div>
                 <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50 dark:bg-slate-900/60 text-center">
