@@ -8,6 +8,7 @@ import {
   PAYMENT_MODAL_INFO,
   NOTIFICATIONS_SUMMARY_TEXT,
 } from "../data/studentDashboardData";
+import { lmsService } from "./lmsService";
 
 const STORAGE_PREFIX = "om_lms_student_dashboard_";
 
@@ -45,6 +46,9 @@ export const studentDashboardService = {
       courses = [],
       quizzes = [],
       assignments = [],
+      assignedCourseIds = [],
+      studentCoursesAccess = [],
+      enrolledCoursesCount,
     } = options;
 
     const storedSnooze =
@@ -69,6 +73,9 @@ export const studentDashboardService = {
       crmProfile,
       crmBatch,
       courses,
+      assignedCourseIds,
+      studentCoursesAccess,
+      enrolledCoursesCount,
     });
 
     const reminderOptions = studentDashboardService.getReminderOptions();
@@ -79,7 +86,10 @@ export const studentDashboardService = {
       currentUser,
       crmProfile,
       crmAttendance,
-      coursesCount: courses.length > 0 ? courses.length : undefined,
+      assignedCourseIds,
+      studentCoursesAccess,
+      enrolledCoursesCount,
+      coursesCount: enrolledCoursesCount || (assignedCourseIds && assignedCourseIds.length > 0 ? assignedCourseIds.length : (courses.length > 0 ? courses.length : undefined)),
       quizzesCount: quizzes.length > 0 ? quizzes.length : undefined,
       assignments,
       quizzes,
@@ -305,72 +315,139 @@ export const studentDashboardService = {
     const currentUser = params.currentUser || {};
     const crmProfile = params.crmProfile || {};
     const crmBatch = params.crmBatch || {};
+    const assignedCourseIds =
+      Array.isArray(params.assignedCourseIds) && params.assignedCourseIds.length > 0
+        ? params.assignedCourseIds
+        : currentUser.assignedCourseIds || ["course-1", "course-8"];
 
-    const courseName =
-      crmProfile.course || currentUser.course || "Diploma in Digital Marketing";
-    const currentTopic =
-      crmBatch.currentTopic ||
-      "Google Ads (PPC) Strategy & Campaign Architecture";
-    const progressPercent = currentUser.overallProgress ?? 65;
+    // Find active course among assigned courses
+    let activeCourseId = assignedCourseIds[0] || "course-1";
+    try {
+      const storedLast = localStorage.getItem("om_lms_last_active_course");
+      if (storedLast && assignedCourseIds.includes(storedLast)) {
+        activeCourseId = storedLast;
+      } else {
+        // Find course in progress
+        for (const cId of assignedCourseIds) {
+          const m = lmsService.getRealCourseMetrics(cId);
+          if (m.completedActivities > 0 && m.completedActivities < m.totalActivities) {
+            activeCourseId = cId;
+            break;
+          }
+        }
+      }
+    } catch (e) {}
 
-    // Realistic time calculation
-    const totalMinutes = 300;
-    const watchedMinutes = Math.round(totalMinutes * (progressPercent / 100));
+    const course = lmsService.getCourseById(activeCourseId) || {
+      id: activeCourseId,
+      title: "Social Media Marketing",
+    };
+    const metrics = lmsService.getRealCourseMetrics(activeCourseId);
+    const units = lmsService.getUnitsByCourse(activeCourseId);
+
+    const nextUnit = units.find((u) => !u.isCompleted) || units[0];
+    const nextUnitIdx = units.indexOf(nextUnit);
+    const subsequentUnit =
+      nextUnitIdx >= 0 && nextUnitIdx + 1 < units.length
+        ? units[nextUnitIdx + 1]
+        : null;
+
+    const moduleNames = [
+      ...new Set(units.map((u) => u.moduleName).filter(Boolean)),
+    ];
+    const currentModName =
+      nextUnit?.moduleName || moduleNames[0] || "Core Module";
+    const currentModIdx = moduleNames.indexOf(currentModName);
+    const modNumber = currentModIdx >= 0 ? currentModIdx + 1 : 1;
+    const totalModules = Math.max(moduleNames.length, 1);
+    const remainingModules = Math.max(0, totalModules - modNumber);
+    const lessonPositionNumber = nextUnitIdx >= 0 ? nextUnitIdx + 1 : 1;
+
+    const parseSeconds = (dur) => {
+      if (!dur) return 1335;
+      const parts = dur.toString().split(":").map(Number);
+      if (parts.length === 2) return parts[0] * 60 + (parts[1] || 0);
+      if (parts.length === 3)
+        return parts[0] * 3600 + parts[1] * 60 + (parts[2] || 0);
+      return 1335;
+    };
+
+    let totalSec = 0;
+    let watchedSec = 0;
+    units.forEach((u) => {
+      const s = parseSeconds(u.duration);
+      totalSec += s;
+      if (u.isCompleted) watchedSec += s;
+    });
+
+    const nextUnitSec = nextUnit ? parseSeconds(nextUnit.duration) : 1335;
+    const watchedMinutes = Math.round(watchedSec / 60);
+    const totalMinutes = Math.max(watchedMinutes + 1, Math.round(totalSec / 60));
     const remainingMinutes = Math.max(0, totalMinutes - watchedMinutes);
-    const completedMinutes = Math.round(watchedMinutes * 0.77);
-    const currentMinutes = watchedMinutes - completedMinutes;
+    const currentMinutes = Math.min(
+      remainingMinutes,
+      Math.round(nextUnitSec / 60),
+    );
+    const laterRemainingMinutes = Math.max(
+      0,
+      remainingMinutes - currentMinutes,
+    );
 
-    const completedPct = Math.round((completedMinutes / totalMinutes) * 100);
-    const currentPct = Math.round((currentMinutes / totalMinutes) * 100);
-    const remainingPct = 100 - completedPct - currentPct;
+    const progressPercent = metrics.progress;
+    const totalCircumference = 276.46; // 2 * Math.PI * 44
 
-    const moduleBadge = courseName.includes("Diploma")
-      ? "Diploma Track"
-      : courseName.includes("Masters")
-        ? "Masters Track"
-        : "SEO Technical";
+    const totalDonut =
+      watchedMinutes + currentMinutes + laterRemainingMinutes || 1;
+    const completedPct = Math.round((watchedMinutes / totalDonut) * 100);
+    const currentPct = Math.max(5, Math.round((currentMinutes / totalDonut) * 100));
+    const remainingPct = Math.max(0, 100 - completedPct - currentPct);
 
-    const nextLessonTitle =
-      crmBatch.upcomingSchedule?.[1]?.topic ||
-      "Display & YouTube Video Advertising";
+    const dash1 = (completedPct / 100) * totalCircumference;
+    const dash2 = (currentPct / 100) * totalCircumference;
+    const dash3 = (remainingPct / 100) * totalCircumference;
+
+    const segments = [
+      {
+        label: "Completed",
+        minutes: `${watchedMinutes}m (${completedPct}%)`,
+        color: "#2563eb",
+        strokeDasharray: `${dash1.toFixed(1)} ${totalCircumference}`,
+        strokeDashoffset: "0",
+      },
+      {
+        label: "Current",
+        minutes: `${currentMinutes}m (${currentPct}%)`,
+        color: "#06b6d4",
+        strokeDasharray: `${dash2.toFixed(1)} ${totalCircumference}`,
+        strokeDashoffset: `-${dash1.toFixed(1)}`,
+      },
+      {
+        label: "Remaining",
+        minutes: `${remainingMinutes}m (${remainingPct}%)`,
+        color: "text-slate-300 dark:text-slate-700",
+        strokeDasharray: `${dash3.toFixed(1)} ${totalCircumference}`,
+        strokeDashoffset: `-${(dash1 + dash2).toFixed(1)}`,
+      },
+    ];
 
     return {
-      courseId: crmBatch.batchCode || "course-8",
-      moduleNumber: "MODULE 2 OF 4",
-      moduleBadge: moduleBadge,
-      lessonTitle:
-        currentTopic ||
-        "Lesson 2.2: Schema Markup & Structured Data Implementation",
+      courseId: activeCourseId,
+      courseTitle: course.title,
+      thumbnail: course.thumbnail,
+      moduleNumber: `MODULE ${modNumber} OF ${totalModules}`,
+      moduleBadge: course.title,
+      lessonTitle: nextUnit ? nextUnit.title : course.title,
       progressPercent,
-      overallStatus: "On Track",
+      overallStatus: progressPercent >= 75 ? "Ahead of Schedule" : "On Track",
       timeStats: {
         watchedMinutes,
         remainingMinutes,
-        alertText: `Just ${remainingMinutes}m remain! Goal on track`,
+        alertText:
+          remainingMinutes > 0
+            ? `Just ${remainingMinutes}m remain! Goal on track`
+            : "Course fully completed!",
       },
-      segments: [
-        {
-          label: "Completed",
-          minutes: `${completedMinutes}m (${completedPct}%)`,
-          color: "#2563eb",
-          strokeDasharray: "124.2 276.46",
-          strokeDashoffset: "0",
-        },
-        {
-          label: "Current",
-          minutes: `${currentMinutes}m (${currentPct}%)`,
-          color: "#06b6d4",
-          strokeDasharray: "27.5 276.46",
-          strokeDashoffset: "-138.2",
-        },
-        {
-          label: "Remaining",
-          minutes: `${remainingMinutes}m (${remainingPct}%)`,
-          color: "text-slate-300 dark:text-slate-700",
-          strokeDasharray: "82.8 276.46",
-          strokeDashoffset: "-179.7",
-        },
-      ],
+      segments,
       comparativeMetrics: [
         {
           title: "Status",
@@ -380,22 +457,24 @@ export const studentDashboardService = {
         },
         {
           title: "Position",
-          main: "Module 2",
-          sub: "Lesson 2.2",
+          main: `Module ${modNumber}`,
+          sub: `Lesson ${lessonPositionNumber}`,
           colorClass: "text-[#0c1e3d] dark:text-cyan-400",
         },
         {
           title: "Remaining",
-          main: "2 Modules",
-          sub: "Mod 3 & 4",
+          main: `${remainingModules} ${remainingModules === 1 ? "Module" : "Modules"}`,
+          sub: `${Math.max(0, units.length - lessonPositionNumber)} lessons left`,
           colorClass: "text-purple-600 dark:text-purple-400",
         },
       ],
       nextLesson: {
         label: "Next Lesson",
-        title: nextLessonTitle,
+        title: subsequentUnit
+          ? subsequentUnit.title
+          : "Assessment & Certification",
       },
-      resumeLink: "/enrolled-courses",
+      resumeLink: `/lesson-player?courseId=${activeCourseId}&unitId=${nextUnit ? nextUnit.id : ""}`,
     };
   },
 
@@ -452,13 +531,58 @@ export const studentDashboardService = {
   getStudentStats: (options = {}) => {
     const currentUser = options.currentUser || {};
     const crmProfile = options.crmProfile || {};
-    const coursesCount =
-      options.coursesCount ?? (currentUser.enrolledCoursesCount || 7);
+    const assignedCourseIds =
+      Array.isArray(options.assignedCourseIds) && options.assignedCourseIds.length > 0
+        ? options.assignedCourseIds
+        : currentUser.assignedCourseIds || ["course-1", "course-8"];
+
+    const enrolledCoursesCount =
+      options.enrolledCoursesCount ?? assignedCourseIds.length;
+
+    let totalActivities = 0;
+    let completedActivities = 0;
+
+    assignedCourseIds.forEach((courseId) => {
+      const metrics = lmsService.getRealCourseMetrics(courseId);
+      totalActivities += metrics.totalActivities || metrics.totalLessons || 0;
+      completedActivities +=
+        metrics.completedActivities || metrics.completedLessons || 0;
+    });
+
     const progress =
-      currentUser.overallProgress ??
-      (crmProfile.attendancePercentage
-        ? Math.round(crmProfile.attendancePercentage)
-        : 65);
+      totalActivities > 0
+        ? Math.round((completedActivities / totalActivities) * 100)
+        : currentUser.overallProgress ?? 0;
+
+    const allQuizzes = lmsService.getQuizzes();
+    const studentQuizzes = allQuizzes.filter(
+      (q) => q.studentScore !== undefined && q.studentScore !== null,
+    );
+    const avgQuizScore =
+      studentQuizzes.length > 0
+        ? Math.round(
+            (studentQuizzes.reduce(
+              (acc, q) => acc + Number(q.studentScore),
+              0,
+            ) /
+              studentQuizzes.length) *
+              10,
+          ) / 10
+        : 88.5;
+
+    const allAssignments = lmsService.getAssignments();
+    const pendingAssignmentsCount = allAssignments.filter(
+      (a) =>
+        assignedCourseIds.includes(a.courseId) &&
+        a.status !== "graded" &&
+        a.status !== "submitted",
+    ).length;
+    const pendingQuizzesCount = allQuizzes.filter(
+      (q) =>
+        assignedCourseIds.includes(q.courseId) &&
+        q.studentStatus !== "passed",
+    ).length;
+    const pendingTasksCount = pendingAssignmentsCount + pendingQuizzesCount || 2;
 
     return [
       {
@@ -477,7 +601,7 @@ export const studentDashboardService = {
       {
         id: "stat-courses",
         title: "COURSES",
-        value: coursesCount,
+        value: enrolledCoursesCount,
         subtitle: "Enrolled Courses",
         color: "teal",
         link: "/enrolled-courses",
@@ -486,7 +610,7 @@ export const studentDashboardService = {
       {
         id: "stat-quiz",
         title: "QUIZ SCORE",
-        value: "88.5%",
+        value: `${avgQuizScore}%`,
         subtitle: "Average Score",
         color: "purple",
         link: "/my-quizzes",
@@ -495,7 +619,7 @@ export const studentDashboardService = {
       {
         id: "stat-tasks",
         title: "PENDING TASKS",
-        value: 7,
+        value: pendingTasksCount,
         subtitle: "Assignments & Exams",
         color: "amber",
         link: "/my-assignments",

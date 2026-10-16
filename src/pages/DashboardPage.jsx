@@ -11,6 +11,9 @@ export const DashboardPage = () => {
     crmAttendance,
     crmBatch,
     crmCertificates,
+    assignedCourseIds,
+    studentCoursesAccess,
+    enrolledCoursesCount,
   } = useAuth();
 
   const courses = lmsService.getCourses();
@@ -29,6 +32,9 @@ export const DashboardPage = () => {
       quizzes={quizzes}
       assignments={assignments}
       achievements={achievements}
+      assignedCourseIds={assignedCourseIds}
+      studentCoursesAccess={studentCoursesAccess}
+      enrolledCoursesCount={enrolledCoursesCount}
       onUpdateCurrentUser={updateCurrentUser}
     />
   );

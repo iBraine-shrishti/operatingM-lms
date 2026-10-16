@@ -6,6 +6,7 @@ import sahilProfilePic from '../assets/sahil-profile.png';
 import premPhotoImg from '../assets/Prem_Photo.jpg';
 import premPassportPhotoImg from '../assets/Prem_Photo_Passport.png';
 import { crmService, DEFAULT_CRM_PROFILE, DEFAULT_CRM_ATTENDANCE, DEFAULT_CRM_BATCH, DEFAULT_CRM_CERTIFICATES } from '../services/crmService';
+import { lmsService } from '../services/lmsService';
 
 export { boyAvatar, girlAvatar, profilePic, sahilProfilePic, premPhotoImg, premPassportPhotoImg };
 
@@ -82,6 +83,8 @@ export const AuthProvider = ({ children }) => {
     const [crmBatch, setCrmBatch] = useState(DEFAULT_CRM_BATCH);
     const [crmCertificates, setCrmCertificates] = useState(DEFAULT_CRM_CERTIFICATES);
     const [availableStudents, setAvailableStudents] = useState([]);
+    const [assignedCourseIds, setAssignedCourseIds] = useState(['course-1', 'course-8']);
+    const [studentCoursesAccess, setStudentCoursesAccess] = useState([]);
     const [crmLoading, setCrmLoading] = useState(true);
 
     // Fetch and bind live CRM student data
@@ -94,12 +97,20 @@ export const AuthProvider = ({ children }) => {
             const profile = await crmService.getStudentProfile(targetId);
             const studentName = profile?.name || 'Aditya Jadhav';
 
-            const [attendance, batch, certs, studentsList] = await Promise.all([
+            const [attendance, batch, certs, studentsList, permissions] = await Promise.all([
                 crmService.getStudentAttendance(1039), // maps to active attendance cohort
                 crmService.getBatchSchedule('Andheri'),
                 crmService.getCertificates(studentName),
-                crmService.getAvailableStudents()
+                crmService.getAvailableStudents(),
+                lmsService.fetchStudentCoursePermissions(targetId)
             ]);
+
+            let activePermittedIds = ['course-1', 'course-8'];
+            if (permissions && Array.isArray(permissions) && permissions.length > 0) {
+                activePermittedIds = permissions.filter(p => p.hasAccess).map(p => p.courseId);
+                setStudentCoursesAccess(permissions);
+                setAssignedCourseIds(activePermittedIds);
+            }
 
             if (profile) {
                 setCrmProfile(profile);
@@ -115,9 +126,15 @@ export const AuthProvider = ({ children }) => {
                         branch: profile.branch || prev.branch,
                         center: profile.center || profile.branch || prev.center,
                         designation: `${profile.course || 'Digital Marketing'} Student`,
-                        avatar: profile.photo || prev.avatar || premPassportPhotoImg
+                        avatar: profile.photo || prev.avatar || premPassportPhotoImg,
+                        enrolledCoursesCount: activePermittedIds.length
                     };
                 });
+            } else {
+                setStudentUser((prev) => ({
+                    ...prev,
+                    enrolledCoursesCount: activePermittedIds.length
+                }));
             }
 
             if (attendance) setCrmAttendance(attendance);
@@ -210,6 +227,9 @@ export const AuthProvider = ({ children }) => {
             crmBatch,
             crmCertificates,
             availableStudents,
+            assignedCourseIds,
+            studentCoursesAccess,
+            enrolledCoursesCount: assignedCourseIds.length,
             crmLoading,
             switchCrmStudent,
             refreshCrmData
