@@ -106,23 +106,28 @@ export const StudentQuickActions = ({
   };
 
   return (
-    <div className="hidden lg:flex lg:col-span-5 xl:col-span-5 2xl:col-span-5 bg-white dark:bg-[#0f172a]/95 border border-slate-100/90 dark:border-slate-800 hover:dark:border-slate-700 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.25)] p-3.5 sm:p-4 lg:p-4 xl:p-4.5 2xl:p-6 flex-col justify-between space-y-2 rounded-2xl transition-all duration-200">
+    <div className="flex lg:col-span-5 xl:col-span-5 2xl:col-span-5 bg-white dark:bg-[#0f172a]/95 border border-slate-100/90 dark:border-slate-800 hover:dark:border-slate-700 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.25)] p-2.5 sm:p-3.5 lg:p-4 xl:p-4.5 2xl:p-6 flex-col justify-between space-y-2 rounded-2xl transition-all duration-200">
       {/* Header */}
-      <div className="flex items-center gap-2 px-0.5">
-        <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 2xl:w-8.5 2xl:h-8.5 rounded-lg bg-blue-50 dark:bg-blue-500/15 text-[#2563eb] dark:text-blue-400 border border-blue-100 dark:border-blue-500/30 flex items-center justify-center shrink-0 shadow-xs dark:shadow-[0_0_12px_rgba(59,130,246,0.25)]">
-          <Zap
-            size={14}
-            className="fill-[#2563eb] dark:fill-blue-400 2xl:w-4 2xl:h-4"
-          />
+      <div className="flex items-center justify-between gap-2 px-0.5">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="w-6 h-6 sm:w-7 sm:h-7 2xl:w-8.5 2xl:h-8.5 rounded-lg bg-blue-50 dark:bg-blue-500/15 text-[#2563eb] dark:text-blue-400 border border-blue-100 dark:border-blue-500/30 flex items-center justify-center shrink-0 shadow-xs dark:shadow-[0_0_12px_rgba(59,130,246,0.25)]">
+            <Zap
+              size={13}
+              className="fill-[#2563eb] dark:fill-blue-400 sm:w-3.5 sm:h-3.5 2xl:w-4 2xl:h-4"
+            />
+          </div>
+          <h3 className="text-xs sm:text-sm 2xl:text-base font-bold text-slate-900 dark:text-white tracking-tight">
+            Quick Actions
+          </h3>
         </div>
-        <h3 className="text-sm sm:text-base 2xl:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
-          Quick Actions
-        </h3>
+        <span className="text-[10px] sm:text-[11px] font-semibold text-slate-400 dark:text-slate-500 bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-750 px-2 py-0.5 rounded-md">
+          {actions.length} Shortcuts
+        </span>
       </div>
 
       {/* Actions: distinct styled responsive items */}
       <div
-        className={`grid ${actions.length >= 4 ? "grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 2xl:grid-cols-4" : "grid-cols-1 sm:grid-cols-3"} gap-2 xl:gap-2.5 2xl:gap-3.5 w-full flex-1`}
+        className={`grid ${actions.length >= 4 ? "grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 2xl:grid-cols-4" : "grid-cols-3"} gap-1.5 sm:gap-2.5 xl:gap-2.5 2xl:gap-3.5 w-full flex-1`}
       >
         {actions.map((act) => {
           const colorKey = act.color || "blue";
@@ -136,32 +141,33 @@ export const StudentQuickActions = ({
             <div
               key={act.id}
               onClick={() => handleAction(act)}
-              className={`${styles.card} border rounded-xl p-2.5 xl:p-3 2xl:p-4 transition-all duration-200 shadow-2xs hover:shadow-xs dark:shadow-none hover:-translate-y-1 cursor-pointer group flex flex-col justify-between gap-2 min-w-0`}
+              className={`${styles.card} border rounded-xl p-2 sm:p-2.5 xl:p-3 2xl:p-4 transition-all duration-200 shadow-2xs hover:shadow-xs dark:shadow-none hover:-translate-y-0.5 cursor-pointer group flex flex-col justify-between gap-1.5 sm:gap-2 min-w-0`}
             >
               <div className="flex items-center justify-between">
                 <div
-                  className={`w-7 h-7 2xl:w-9 2xl:h-9 rounded-lg border border-transparent flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-200 shadow-2xs ${styles.iconBox}`}
+                  className={`w-6 h-6 sm:w-7 sm:h-7 2xl:w-9 2xl:h-9 rounded-lg border border-transparent flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-200 shadow-2xs ${styles.iconBox}`}
                 >
-                  <IconComp size={15} className="2xl:w-4.5 2xl:h-4.5" />
+                  <IconComp size={13} className="sm:w-3.5 sm:h-3.5 2xl:w-4.5 2xl:h-4.5" />
                 </div>
                 <div
-                  className={`w-5 h-5 2xl:w-6 2xl:h-6 rounded-full border group-hover:translate-x-0.5 flex items-center justify-center transition-all duration-200 shrink-0 ${styles.arrowBox}`}
+                  className={`w-4.5 h-4.5 sm:w-5 sm:h-5 2xl:w-6 2xl:h-6 rounded-full border group-hover:translate-x-0.5 flex items-center justify-center transition-all duration-200 shrink-0 ${styles.arrowBox}`}
                 >
                   <ArrowRight
-                    size={11}
+                    size={10}
                     strokeWidth={2.5}
-                    className="2xl:w-3 2xl:h-3"
+                    className="sm:w-2.5 sm:h-2.5 2xl:w-3 2xl:h-3"
                   />
                 </div>
               </div>
               <div className="min-w-0">
                 <h4
-                  className={`font-bold text-xs 2xl:text-sm transition-colors truncate ${styles.title}`}
+                  className={`font-bold text-[11px] sm:text-xs 2xl:text-sm transition-colors truncate ${styles.title}`}
+                  title={act.title}
                 >
                   {act.title}
                 </h4>
                 <p
-                  className={`text-[10.5px] 2xl:text-xs font-medium truncate mt-0.5 transition-colors ${styles.subtitle}`}
+                  className={`text-[9.5px] sm:text-[10.5px] 2xl:text-xs font-medium truncate mt-0.5 transition-colors ${styles.subtitle}`}
                 >
                   {act.subtitle}
                 </p>
