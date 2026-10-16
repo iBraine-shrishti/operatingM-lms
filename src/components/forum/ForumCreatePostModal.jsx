@@ -8,6 +8,7 @@ import {
   Check,
   AlertCircle,
   Trash2,
+  MessageSquare,
 } from "lucide-react";
 
 // Presets for instant marketing screenshots
@@ -82,7 +83,7 @@ export const ForumCreatePostModal = ({
     const newPost = {
       title: title.trim(),
       content: content.trim(),
-      community: `r/${community}`,
+      community: community.replace(/^r\//, ""),
       category,
       courseId,
       courseTitle: selectedCourseObj?.title || "Digital Marketing",
@@ -92,9 +93,9 @@ export const ForumCreatePostModal = ({
       authorAvatar:
         currentUser?.avatar ||
         "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-      authorHandle: `u/${(currentUser?.name || "student")
+      authorHandle: (currentUser?.name || "student")
         .toLowerCase()
-        .replace(/\s+/g, "_")}`,
+        .replace(/\s+/g, "_"),
       createdAt: "Just now",
       upvotes: 1,
       score: 1,
@@ -112,8 +113,8 @@ export const ForumCreatePostModal = ({
         {/* Modal Header */}
         <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg bg-[#3b49df] text-white flex items-center justify-center font-black text-sm">
-              r/
+            <div className="w-8 h-8 rounded-lg bg-[#3b49df] text-white flex items-center justify-center shadow-xs">
+              <MessageSquare size={16} />
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -138,26 +139,26 @@ export const ForumCreatePostModal = ({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Choose Subreddit Community
+                Topic Category
               </label>
               <select
                 value={community}
                 onChange={(e) => setCommunity(e.target.value)}
                 className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-medium text-slate-900 dark:text-white focus:outline-hidden focus:border-[#3b49df]"
               >
-                <option value="social-media">r/social-media</option>
-                <option value="google-ads">r/google-ads</option>
-                <option value="seo-mastery">r/seo-mastery</option>
-                <option value="web-development">r/web-development</option>
-                <option value="analytics">r/analytics</option>
-                <option value="growth-hacks">r/growth-hacks</option>
-                <option value="general-doubts">r/general-doubts</option>
+                <option value="social-media">Social Media</option>
+                <option value="google-ads">Google Ads & PPC</option>
+                <option value="seo-mastery">SEO Mastery</option>
+                <option value="web-development">Web Development</option>
+                <option value="analytics">Analytics & GA4</option>
+                <option value="growth-hacks">Growth Hacks</option>
+                <option value="general-doubts">General Q&A</option>
               </select>
             </div>
 
             <div>
               <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                Flair / Tag
+                Tag
               </label>
               <select
                 value={category}

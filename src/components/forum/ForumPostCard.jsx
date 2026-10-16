@@ -9,22 +9,24 @@ import {
   ImageIcon,
 } from "lucide-react";
 import { ForumVoteButtons } from "./ForumVoteButtons";
+import { getTopicLabel, cleanAuthorHandle } from "./ForumSidebar";
 
-// Color helper for Reddit community badge / flair
+// Color helper for topic badge
 const getCommunityBadgeColor = (community = "") => {
-  if (community.includes("seo")) {
+  const c = community.toLowerCase();
+  if (c.includes("seo")) {
     return "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200/80 dark:border-emerald-800/60";
   }
-  if (community.includes("google") || community.includes("ads")) {
+  if (c.includes("google") || c.includes("ads")) {
     return "bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border-amber-200/80 dark:border-amber-800/60";
   }
-  if (community.includes("social") || community.includes("marketing")) {
+  if (c.includes("social") || c.includes("marketing")) {
     return "bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 border-blue-200/80 dark:border-blue-800/60";
   }
-  if (community.includes("web") || community.includes("wordpress")) {
+  if (c.includes("web") || c.includes("wordpress")) {
     return "bg-cyan-50 dark:bg-cyan-950/60 text-cyan-700 dark:text-cyan-300 border-cyan-200/80 dark:border-cyan-800/60";
   }
-  if (community.includes("analytics")) {
+  if (c.includes("analytics")) {
     return "bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border-purple-200/80 dark:border-purple-800/60";
   }
   return "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200/80 dark:border-indigo-800/60";
@@ -40,12 +42,12 @@ export const ForumPostCard = ({
   onSave,
   isSaved = false,
 }) => {
-  const communityName =
-    post.community ||
-    `r/${(post.category || "general").toLowerCase().replace(/[^a-z0-9]/g, "-")}`;
-  const authorHandle =
-    post.authorHandle ||
-    `u/${(post.authorName || "student").toLowerCase().replace(/\s+/g, "_")}`;
+  const communitySlug = (post.community || post.category || "general")
+    .replace(/^r\//, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "-");
+  const topicLabel = getTopicLabel(communitySlug);
+  const authorDisplay = cleanAuthorHandle(post.authorHandle, post.authorName);
   const totalComments =
     post.repliesCount ?? (Array.isArray(post.replies) ? post.replies.length : 0);
 
@@ -67,25 +69,25 @@ export const ForumPostCard = ({
       {/* 2. Main Post Content Container */}
       <div className="flex-1 p-3.5 sm:p-4 min-w-0 flex flex-col justify-between">
         <div className="space-y-2">
-          {/* Post Header: Subreddit • Posted by • Date • Flair */}
+          {/* Post Header: Topic • Posted by • Date • Flair */}
           <div className="flex items-center flex-wrap gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
-            {/* Subreddit badge */}
+            {/* Topic badge */}
             <span
               onClick={(e) => {
                 e.stopPropagation();
                 onOpenPost && onOpenPost(post);
               }}
               className={`font-bold hover:underline cursor-pointer px-2 py-0.5 rounded-full border text-[10px] ${getCommunityBadgeColor(
-                communityName,
+                communitySlug,
               )}`}
             >
-              {communityName}
+              {topicLabel}
             </span>
 
             <span>•</span>
 
             <span className="font-medium text-slate-700 dark:text-slate-300 truncate max-w-[140px]">
-              Posted by {authorHandle}
+              Posted by {authorDisplay}
             </span>
 
             {post.authorRole && (

@@ -762,13 +762,19 @@ export const lmsService = {
       }
 
       if (!item.community) {
-        item.community = initMatch?.community || "r/general-doubts";
+        item.community = initMatch?.community || "general-doubts";
+        modified = true;
+      } else if (item.community.startsWith("r/")) {
+        item.community = item.community.replace(/^r\//, "");
         modified = true;
       }
       if (!item.authorHandle) {
         item.authorHandle =
           initMatch?.authorHandle ||
-          `u/${(item.authorName || "student").toLowerCase().replace(/\s+/g, "_")}`;
+          (item.authorName || "student").toLowerCase().replace(/\s+/g, "_");
+        modified = true;
+      } else if (item.authorHandle.startsWith("u/")) {
+        item.authorHandle = item.authorHandle.replace(/^u\//, "");
         modified = true;
       }
       if (item.upvotes === undefined && item.score === undefined) {
@@ -799,14 +805,18 @@ export const lmsService = {
   },
   addDiscussion: (disc) => {
     const items = lmsService.getDiscussions();
+    const cleanComm = (disc.community || "general-doubts").replace(/^r\//, "");
+    const cleanHandle = (disc.authorHandle || disc.authorName || "student")
+      .replace(/^u\//, "")
+      .toLowerCase()
+      .replace(/\s+/g, "_");
+
     const newItem = {
       ...disc,
       id: `disc-${Date.now()}`,
       courseId: disc.courseId || "course-1",
-      community: disc.community || "r/general-doubts",
-      authorHandle:
-        disc.authorHandle ||
-        `u/${(disc.authorName || "student").toLowerCase().replace(/\s+/g, "_")}`,
+      community: cleanComm,
+      authorHandle: cleanHandle,
       upvotes: disc.upvotes || 1,
       repliesCount: 0,
       replies: [],

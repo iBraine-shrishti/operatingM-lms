@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { ForumVoteButtons } from "./ForumVoteButtons";
 import { ForumCommentNode } from "./ForumCommentNode";
-import { ForumSidebar } from "./ForumSidebar";
+import { ForumSidebar, getTopicLabel, cleanAuthorHandle } from "./ForumSidebar";
 
 export const ForumPostDetailView = ({
   post,
@@ -48,12 +48,12 @@ export const ForumPostDetailView = ({
     );
   }
 
-  const communityName =
-    post.community ||
-    `r/${(post.category || "general").toLowerCase().replace(/[^a-z0-9]/g, "-")}`;
-  const authorHandle =
-    post.authorHandle ||
-    `u/${(post.authorName || "student").toLowerCase().replace(/\s+/g, "_")}`;
+  const communitySlug = (post.community || post.category || "general")
+    .replace(/^r\//, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "-");
+  const topicLabel = getTopicLabel(communitySlug);
+  const authorDisplay = cleanAuthorHandle(post.authorHandle, post.authorName);
   const replies = Array.isArray(post.replies) ? post.replies : [];
 
   const handlePostTopComment = (e) => {
@@ -88,7 +88,7 @@ export const ForumPostDetailView = ({
         </button>
         <span className="text-slate-300 dark:text-slate-700">/</span>
         <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
-          {communityName}
+          {topicLabel}
         </span>
         <span className="text-slate-300 dark:text-slate-700">/</span>
         <span className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-sm">
@@ -96,7 +96,7 @@ export const ForumPostDetailView = ({
         </span>
       </div>
 
-      {/* 2. Main Reddit 2-Column Grid */}
+      {/* 2. Main 2-Column Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* Left Column: Full Thread & Comments (8 cols) */}
         <div className="lg:col-span-8 space-y-4">
@@ -117,11 +117,11 @@ export const ForumPostDetailView = ({
               {/* Header Meta Line */}
               <div className="flex items-center flex-wrap gap-1.5 text-[11px] text-slate-500 dark:text-slate-400">
                 <span className="font-bold text-[#3b49df] dark:text-blue-400">
-                  {communityName}
+                  {topicLabel}
                 </span>
                 <span>•</span>
                 <span className="font-medium text-slate-700 dark:text-slate-300">
-                  Posted by {authorHandle}
+                  Posted by {authorDisplay}
                 </span>
                 {post.authorRole && (
                   <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">

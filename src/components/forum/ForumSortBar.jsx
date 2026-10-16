@@ -1,16 +1,19 @@
 import React from "react";
-import { Flame, Sparkles, TrendingUp, ImageIcon, Link2, Plus } from "lucide-react";
+import { Flame, Sparkles, TrendingUp, ImageIcon } from "lucide-react";
+import { TOPIC_CATEGORIES } from "./ForumSidebar";
 
 export const ForumSortBar = ({
   activeSort = "hot",
   onSortChange,
+  selectedCommunity = "all",
+  onSelectCommunity,
   currentUser,
   onCreatePostClick,
   onImagePostClick,
 }) => {
   return (
     <div className="space-y-3">
-      {/* 1. Reddit-style "Create Post" input card */}
+      {/* 1. Quick "Create Post / Ask Question" bar */}
       <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/90 dark:border-slate-800 p-2.5 sm:p-3 shadow-2xs flex items-center space-x-2.5">
         <img
           src={
@@ -38,31 +41,54 @@ export const ForumSortBar = ({
         </button>
       </div>
 
-      {/* 2. Reddit Sort Bar: Hot • New • Top */}
-      <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/90 dark:border-slate-800 px-3 py-2 shadow-2xs flex items-center space-x-1.5 sm:space-x-2 text-xs">
-        {[
-          { key: "hot", label: "Hot", icon: Flame },
-          { key: "new", label: "New", icon: Sparkles },
-          { key: "top", label: "Top", icon: TrendingUp },
-        ].map((s) => {
-          const Icon = s.icon;
-          const isActive = activeSort === s.key;
+      {/* 2. Topic Category Filter Chips */}
+      <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 no-scrollbar">
+        {TOPIC_CATEGORIES.map((topic) => {
+          const isSelected = selectedCommunity === topic.id;
           return (
             <button
-              key={s.key}
+              key={topic.id}
               type="button"
-              onClick={() => onSortChange && onSortChange(s.key)}
-              className={`px-3 py-1.5 rounded-full font-bold flex items-center space-x-1.5 transition-all cursor-pointer ${
-                isActive
-                  ? "bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-2xs"
-                  : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50"
+              onClick={() => onSelectCommunity && onSelectCommunity(topic.id)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                isSelected
+                  ? "bg-[#3b49df] text-white shadow-xs font-bold"
+                  : "bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/80"
               }`}
             >
-              <Icon size={14} className={isActive ? "fill-current" : ""} />
-              <span>{s.label}</span>
+              {topic.label}
             </button>
           );
         })}
+      </div>
+
+      {/* 3. Feed Sorter: Hot • New • Top */}
+      <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/90 dark:border-slate-800 px-3 py-2 shadow-2xs flex items-center justify-between text-xs">
+        <div className="flex items-center space-x-1 sm:space-x-1.5">
+          {[
+            { key: "hot", label: "Hot", icon: Flame },
+            { key: "new", label: "New", icon: Sparkles },
+            { key: "top", label: "Top", icon: TrendingUp },
+          ].map((s) => {
+            const Icon = s.icon;
+            const isActive = activeSort === s.key;
+            return (
+              <button
+                key={s.key}
+                type="button"
+                onClick={() => onSortChange && onSortChange(s.key)}
+                className={`px-3 py-1.5 rounded-lg font-bold flex items-center space-x-1.5 transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-2xs"
+                    : "text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                }`}
+              >
+                <Icon size={14} className={isActive ? "fill-current" : ""} />
+                <span>{s.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

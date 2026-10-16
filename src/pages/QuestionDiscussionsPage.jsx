@@ -4,11 +4,11 @@ import { lmsService } from "../services/lmsService";
 import { useToast } from "../context/ToastContext";
 import { useAuth } from "../context/AuthContext";
 
-// Modular Reddit-style Forum Components
+// Modular Forum Components
 import { ForumHeader } from "../components/forum/ForumHeader";
 import { ForumSortBar } from "../components/forum/ForumSortBar";
 import { ForumPostCard } from "../components/forum/ForumPostCard";
-import { ForumSidebar } from "../components/forum/ForumSidebar";
+import { ForumSidebar, getTopicLabel } from "../components/forum/ForumSidebar";
 import { ForumPostDetailView } from "../components/forum/ForumPostDetailView";
 import { ForumCreatePostModal } from "../components/forum/ForumCreatePostModal";
 import { ForumImageModal } from "../components/forum/ForumImageModal";
@@ -25,7 +25,7 @@ export const QuestionDiscussionsPage = () => {
     lmsService.getDiscussions(),
   );
 
-  // Reddit Filters & Navigation State
+  // Filters & Navigation State
   const [selectedCommunity, setSelectedCommunity] = useState("all");
   const [activeSort, setActiveSort] = useState("hot"); // "hot" | "new" | "top"
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,16 +61,17 @@ export const QuestionDiscussionsPage = () => {
   const filteredDiscussions = useMemo(() => {
     let result = [...discussions];
 
-    // Filter by Subreddit Community
+    // Filter by Topic Category
     if (selectedCommunity !== "all") {
       result = result.filter((d) => {
-        const comm = (d.community || "").toLowerCase();
+        const comm = (d.community || "").replace(/^r\//, "").toLowerCase();
         const cat = (d.category || "").toLowerCase();
-        const target = selectedCommunity.toLowerCase();
+        const target = selectedCommunity.replace(/^r\//, "").toLowerCase();
         return (
           comm.includes(target) ||
           cat.includes(target) ||
-          target.includes(cat)
+          target.includes(cat) ||
+          target.includes(comm)
         );
       });
     }
@@ -151,7 +152,7 @@ export const QuestionDiscussionsPage = () => {
     });
   };
 
-  // Navigation: Open Single Post Detail Page (like Reddit comments page)
+  // Navigation: Open Single Post Detail Page
   const handleOpenPost = (post) => {
     navigate(`/forums/${post.id}`);
   };
@@ -164,7 +165,7 @@ export const QuestionDiscussionsPage = () => {
   const handleCreatePostSubmit = (newPostData) => {
     const created = lmsService.addDiscussion(newPostData);
     setDiscussions((prev) => [created, ...prev]);
-    showToast("Post published to community!", "success", "Reddit Forum");
+    showToast("Post published to community!", "success", "Forums");
     navigate(`/forums/${created.id}`);
   };
 
@@ -285,6 +286,8 @@ export const QuestionDiscussionsPage = () => {
           <ForumSortBar
             activeSort={activeSort}
             onSortChange={setActiveSort}
+            selectedCommunity={selectedCommunity}
+            onSelectCommunity={setSelectedCommunity}
             currentUser={currentUser}
             onCreatePostClick={() => setIsCreateModalOpen(true)}
             onImagePostClick={() => setIsCreateModalOpen(true)}
@@ -297,7 +300,7 @@ export const QuestionDiscussionsPage = () => {
                 <MessagesSquare size={22} />
               </div>
               <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                No discussions found in {selectedCommunity === "all" ? "r/all" : `r/${selectedCommunity}`}
+                No discussions found in {getTopicLabel(selectedCommunity)}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
                 Be the first to ask a question or upload a campaign screenshot for review!
@@ -309,7 +312,7 @@ export const QuestionDiscussionsPage = () => {
                     onClick={() => setSelectedCommunity("all")}
                     className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
                   >
-                    View r/all
+                    View All Discussions
                   </button>
                 )}
                 <button
@@ -340,11 +343,9 @@ export const QuestionDiscussionsPage = () => {
           )}
         </div>
 
-        {/* Right Column: Reddit Community Sidebar (4 cols on desktop) */}
+        {/* Right Column: Community Sidebar (4 cols on desktop) */}
         <div className="lg:col-span-4 hidden lg:block sticky top-20">
           <ForumSidebar
-            selectedCommunity={selectedCommunity}
-            onSelectCommunity={setSelectedCommunity}
             onCreatePostClick={() => setIsCreateModalOpen(true)}
             totalPostsCount={discussions.length}
           />

@@ -1,35 +1,47 @@
 import React from "react";
 import {
-  Users,
   ShieldCheck,
   Plus,
-  BookOpen,
-  Sparkles,
-  Award,
-  Globe,
+  Clock,
+  CheckCircle2,
   HelpCircle,
-  ExternalLink,
 } from "lucide-react";
 
-export const COMMUNITIES_LIST = [
-  { id: "all", name: "r/all", label: "All Communities", icon: Globe, count: "All" },
-  { id: "social-media", name: "r/social-media", label: "Social Media Marketing", icon: Sparkles, count: 185 },
-  { id: "google-ads", name: "r/google-ads", label: "Google Ads & PPC", icon: Award, count: 210 },
-  { id: "seo-mastery", name: "r/seo-mastery", label: "SEO & Core Web Vitals", icon: Globe, count: 142 },
-  { id: "web-dev", name: "r/web-development", label: "WordPress & Web Dev", icon: BookOpen, count: 166 },
-  { id: "analytics", name: "r/analytics", label: "GA4 & Data Tracking", icon: ShieldCheck, count: 130 },
-  { id: "general-doubts", name: "r/general-doubts", label: "General Q&A", icon: HelpCircle, count: 98 },
+export const TOPIC_CATEGORIES = [
+  { id: "all", label: "All Discussions" },
+  { id: "google-ads", label: "Google Ads & PPC" },
+  { id: "seo-mastery", label: "SEO Mastery" },
+  { id: "social-media", label: "Social Media" },
+  { id: "web-development", label: "Web Development" },
+  { id: "analytics", label: "Analytics & GA4" },
+  { id: "general-doubts", label: "General Q&A" },
 ];
 
+export const getTopicLabel = (slug = "") => {
+  if (!slug) return "General";
+  const clean = slug.replace(/^r\//, "").toLowerCase();
+  const found = TOPIC_CATEGORIES.find((t) => t.id === clean);
+  if (found) return found.label;
+  if (clean === "web-dev") return "Web Development";
+  return clean
+    .split("-")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+};
+
+export const cleanAuthorHandle = (handle = "", name = "") => {
+  if (name && name.trim()) return name.trim();
+  if (!handle) return "Student";
+  return handle.replace(/^u\//, "").replace(/\s+/g, "_");
+};
+
 export const ForumSidebar = ({
-  selectedCommunity = "all",
-  onSelectCommunity,
   onCreatePostClick,
   totalPostsCount = 0,
 }) => {
   return (
     <aside className="space-y-4">
-      {/* 1. About Community Card (Reddit Style) */}
+      {/* 1. About Community Card */}
       <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-2xs overflow-hidden">
         {/* Banner strip */}
         <div className="h-14 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 relative">
@@ -41,7 +53,7 @@ export const ForumSidebar = ({
         <div className="p-4 pt-6 space-y-3">
           <div>
             <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
-              <span>r/OperatingMedia</span>
+              <span>Operating Media Community</span>
               <ShieldCheck size={14} className="text-blue-500 fill-blue-500/20" />
             </h3>
             <p className="text-[12px] text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
@@ -82,63 +94,29 @@ export const ForumSidebar = ({
         </div>
       </div>
 
-      {/* 2. Subreddits / Communities Filter Card */}
-      <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/90 dark:border-slate-800 p-4 shadow-2xs space-y-2.5">
-        <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          Communities & Subreddits
+      {/* 2. Faculty Support & Help Card (Professional, clean) */}
+      <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/90 dark:border-slate-800 p-4 shadow-2xs space-y-2.5 text-xs">
+        <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
+          <Clock size={12} className="text-blue-500" />
+          <span>Instructor Support</span>
         </h4>
-
-        <div className="space-y-1">
-          {COMMUNITIES_LIST.map((comm) => {
-            const Icon = comm.icon;
-            const isSelected = selectedCommunity === comm.id;
-            return (
-              <button
-                key={comm.id}
-                type="button"
-                onClick={() => onSelectCommunity && onSelectCommunity(comm.id)}
-                className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                  isSelected
-                    ? "bg-blue-50 dark:bg-blue-950/70 text-[#3b49df] dark:text-blue-400 font-bold border border-blue-200/80 dark:border-blue-800/80"
-                    : "text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60"
-                }`}
-              >
-                <div className="flex items-center space-x-2 truncate">
-                  <Icon size={13} className="shrink-0 text-slate-400" />
-                  <span className="truncate">{comm.name}</span>
-                </div>
-                <span className="text-[10px] text-slate-400 font-normal ml-1 shrink-0">
-                  {comm.count}
-                </span>
-              </button>
-            );
-          })}
+        <div className="space-y-2 text-[12px] text-slate-600 dark:text-slate-400 leading-snug">
+          <div className="flex items-start space-x-2">
+            <CheckCircle2 size={13} className="text-emerald-500 shrink-0 mt-0.5" />
+            <span>
+              <strong className="text-slate-800 dark:text-slate-200">Daily Live Q&A:</strong> Mon - Fri, 4:00 PM – 6:00 PM IST
+            </span>
+          </div>
+          <div className="flex items-start space-x-2">
+            <CheckCircle2 size={13} className="text-emerald-500 shrink-0 mt-0.5" />
+            <span>
+              <strong className="text-slate-800 dark:text-slate-200">Avg. Reply Time:</strong> Under 2 hours during active sessions
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* 3. Community Rules Card */}
-      <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/90 dark:border-slate-800 p-4 shadow-2xs space-y-2.5 text-xs">
-        <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          Community Rules
-        </h4>
-
-        <ol className="space-y-2 text-[12px] text-slate-600 dark:text-slate-400 list-decimal pl-4 leading-snug">
-          <li>
-            <strong className="text-slate-800 dark:text-slate-200 font-semibold">Be respectful:</strong> Support peers with constructive answers.
-          </li>
-          <li>
-            <strong className="text-slate-800 dark:text-slate-200 font-semibold">Upload Screenshots:</strong> Include screenshots when asking for campaign audits or debugging.
-          </li>
-          <li>
-            <strong className="text-slate-800 dark:text-slate-200 font-semibold">No Self-Promotion:</strong> Keep all posts strictly educational and coursework-focused.
-          </li>
-          <li>
-            <strong className="text-slate-800 dark:text-slate-200 font-semibold">Tag the Community:</strong> Use accurate subreddit tags for quick mentor discovery.
-          </li>
-        </ol>
-      </div>
-
-      {/* 4. Footer Links */}
+      {/* 3. Footer Links */}
       <div className="text-[10px] text-slate-400 dark:text-slate-500 px-2 space-y-1">
         <div className="flex flex-wrap gap-x-2 gap-y-1">
           <span>Operating Media LMS Forums</span>

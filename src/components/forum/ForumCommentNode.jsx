@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { MessageSquare, Send, X, CornerDownRight, CheckCircle2 } from "lucide-react";
 import { ForumVoteButtons } from "./ForumVoteButtons";
+import { cleanAuthorHandle } from "./ForumSidebar";
 
 // Helper to highlight @mentions inside comments
 const formatCommentContent = (text = "") => {
@@ -39,9 +40,7 @@ export const ForumCommentNode = ({
   const [replyText, setReplyText] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const authorHandle =
-    comment.authorHandle ||
-    `u/${(comment.authorName || "user").toLowerCase().replace(/\s+/g, "_")}`;
+  const authorDisplay = cleanAuthorHandle(comment.authorHandle, comment.authorName);
   const voteData = commentVotes[comment.id] || {
     score: comment.likesCount || comment.score || 0,
     reaction: null,
@@ -79,7 +78,7 @@ export const ForumCommentNode = ({
             className="w-5 h-5 rounded-full object-cover shrink-0"
           />
           <span className="font-bold text-slate-900 dark:text-white truncate">
-            {authorHandle}
+            {authorDisplay}
           </span>
 
           {comment.authorRole && (
@@ -156,7 +155,7 @@ export const ForumCommentNode = ({
                   required
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
-                  placeholder={`Replying to ${authorHandle}...`}
+                  placeholder={`Replying to ${authorDisplay}...`}
                   className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-[#3b49df]"
                 />
                 <div className="flex justify-end space-x-2">
