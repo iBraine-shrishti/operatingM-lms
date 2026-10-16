@@ -21,10 +21,11 @@ export const R2_STORAGE_BASE =
 export const CRM_BACKEND_API =
   (typeof import.meta !== "undefined" && import.meta.env?.VITE_CRM_API_URL) ||
   (typeof window !== "undefined" &&
-  (window.location.hostname.includes("operatingmedia.org") ||
-    window.location.hostname.includes("operatingmedia.com"))
-    ? "https://operatingmedia.org/api"
-    : "https://crm.dmsoi.org/api");
+  (window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1" ||
+    window.location.hostname === "::1")
+    ? "https://crm.dmsoi.org/api"
+    : "https://operatingmedia.org/api");
 const getStored = (key, initial) => {
   try {
     const item = localStorage.getItem(`${STORAGE_PREFIX}${key}`);
@@ -47,8 +48,9 @@ export const lmsService = {
 
     const endpoints = [
       CRM_BACKEND_API,
-      "https://operatingmedia.org/api",
-      "https://crm.dmsoi.org/api",
+      CRM_BACKEND_API.includes("operatingmedia.org")
+        ? "https://crm.dmsoi.org/api"
+        : "https://operatingmedia.org/api",
     ].filter((val, idx, self) => self.indexOf(val) === idx);
 
     for (const base of endpoints) {
@@ -144,8 +146,9 @@ export const lmsService = {
     if (!studentId) return [];
     const endpoints = [
       CRM_BACKEND_API,
-      "https://operatingmedia.org/api",
-      "https://crm.dmsoi.org/api",
+      CRM_BACKEND_API.includes("operatingmedia.org")
+        ? "https://crm.dmsoi.org/api"
+        : "https://operatingmedia.org/api",
     ].filter((val, idx, self) => self.indexOf(val) === idx);
 
     for (const base of endpoints) {
