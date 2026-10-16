@@ -179,7 +179,7 @@ export const lmsService = {
     } catch (e) {}
     return [];
   },
-  // Calculate real metrics directly from real video units
+  // Calculate real metrics directly from real video units and course assessments
   getRealCourseMetrics: (courseId) => {
     const units = lmsService.getUnitsByCourse(courseId);
     let totalSec = 0;
@@ -196,14 +196,25 @@ export const lmsService = {
     const h = Math.floor(totalSec / 3600);
     const m = Math.floor((totalSec % 3600) / 60);
     const duration = h > 0 ? `${h}h ${m.toString().padStart(2, "0")}m` : `${m}m`;
-    const progress = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+
+    // Include course assessments (quizzes and assignments) so progress is 100% unified
+    const assess = lmsService.getCourseAssessmentsModule(courseId);
+    const assessItems = assess?.items || [];
+    const completedAssess = assessItems.filter((i) => i.isCompleted).length;
+
+    const totalActivities = totalLessons + assessItems.length;
+    const completedActivities = completedCount + completedAssess;
+    const progress = totalActivities > 0 ? Math.round((completedActivities / totalActivities) * 100) : 0;
+
     return {
       totalLessons,
       completedLessons: completedCount,
+      totalActivities,
+      completedActivities,
       duration,
       progress,
-      status: completedCount === totalLessons && totalLessons > 0 ? "completed" : "in-progress",
-      isCompleted: completedCount === totalLessons && totalLessons > 0,
+      status: completedActivities === totalActivities && totalActivities > 0 ? "completed" : "in-progress",
+      isCompleted: completedActivities === totalActivities && totalActivities > 0,
     };
   },
   // Courses (Total 7 active courses with real durations calculated from real units)

@@ -288,20 +288,22 @@ export const CourseDetailPage = () => {
     e.stopPropagation();
     const unitExists = units.some((u) => u.id === itemId);
     if (unitExists) {
+      const targetUnit = units.find((u) => u.id === itemId);
+      const updated = !targetUnit?.isCompleted;
+      lmsService.updateUnit(itemId, { isCompleted: updated });
       setUnits((prev) =>
         prev.map((u) => {
           if (u.id === itemId) {
-            const updated = !u.isCompleted;
-            showToast(
-              updated
-                ? `Marked "${u.title}" as completed!`
-                : `Marked "${u.title}" as incomplete`,
-              "info",
-            );
             return { ...u, isCompleted: updated };
           }
           return u;
         }),
+      );
+      showToast(
+        updated
+          ? `Marked "${targetUnit?.title || 'Lesson'}" as completed!`
+          : `Marked "${targetUnit?.title || 'Lesson'}" as incomplete`,
+        "info",
       );
       return;
     }

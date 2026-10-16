@@ -419,8 +419,8 @@ export const EnrolledCoursesPage = () => {
                     <div className="space-y-1.5 mb-3 bg-slate-50/80 dark:bg-slate-900/80 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
                       <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 tabular-nums">
                         <span>
-                          {metrics.completedLessons} of {metrics.totalLessons}{" "}
-                          Lessons
+                          {metrics.completedActivities || metrics.completedLessons} of {metrics.totalActivities || metrics.totalLessons}{" "}
+                          Activities
                         </span>
                         <span
                           className={`font-bold ${
