@@ -67,7 +67,7 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
           {/* Thumbnail */}
           <div className="w-full rounded-xl p-0.5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:dark:border-blue-500/40 shadow-2xs dark:shadow-none hover:dark:shadow-[0_0_15px_rgba(37,99,235,0.2)] shrink-0 flex items-center justify-center overflow-hidden h-24 sm:h-28 xl:h-28 2xl:h-32 group transition-all duration-200">
             <img
-              src={continueLearningLaptopImg}
+              src={data.thumbnail || continueLearningLaptopImg}
               alt="Lesson Preview"
               className="w-full h-full rounded-lg object-cover group-hover:scale-105 transition-transform duration-300"
             />
@@ -92,8 +92,8 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
                   r="44"
                   className="text-[#2563eb] dark:text-blue-500"
                   strokeWidth="9"
-                  strokeDasharray="124.2 276.46"
-                  strokeDashoffset="0"
+                  strokeDasharray={data.segments?.[0]?.strokeDasharray || "124.2 276.46"}
+                  strokeDashoffset={data.segments?.[0]?.strokeDashoffset || "0"}
                   strokeLinecap="round"
                   stroke="currentColor"
                   fill="none"
@@ -104,8 +104,8 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
                   r="44"
                   className="text-[#06b6d4] dark:text-cyan-400"
                   strokeWidth="9"
-                  strokeDasharray="27.5 276.46"
-                  strokeDashoffset="-138.2"
+                  strokeDasharray={data.segments?.[1]?.strokeDasharray || "27.5 276.46"}
+                  strokeDashoffset={data.segments?.[1]?.strokeDashoffset || "-138.2"}
                   strokeLinecap="round"
                   stroke="currentColor"
                   fill="none"
@@ -116,8 +116,8 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
                   r="44"
                   className="text-slate-300 dark:text-slate-700"
                   strokeWidth="9"
-                  strokeDasharray="82.8 276.46"
-                  strokeDashoffset="-179.7"
+                  strokeDasharray={data.segments?.[2]?.strokeDasharray || "82.8 276.46"}
+                  strokeDashoffset={data.segments?.[2]?.strokeDashoffset || "-179.7"}
                   strokeLinecap="round"
                   stroke="currentColor"
                   fill="none"

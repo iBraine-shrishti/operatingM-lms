@@ -27,6 +27,9 @@ export const StudentDashboardHub = ({
   quizzes = [],
   assignments = [],
   achievements = [],
+  assignedCourseIds = [],
+  studentCoursesAccess = [],
+  enrolledCoursesCount,
   onUpdateCurrentUser,
 }) => {
   const { showToast } = useToast();
@@ -52,6 +55,9 @@ export const StudentDashboardHub = ({
       courses,
       quizzes,
       assignments,
+      assignedCourseIds,
+      studentCoursesAccess,
+      enrolledCoursesCount,
     })
   );
 
@@ -70,6 +76,9 @@ export const StudentDashboardHub = ({
           courses,
           quizzes,
           assignments,
+          assignedCourseIds,
+          studentCoursesAccess,
+          enrolledCoursesCount,
         });
         if (isMounted) {
           setDashboardData(data);
@@ -100,6 +109,8 @@ export const StudentDashboardHub = ({
     courses.length,
     quizzes.length,
     assignments.length,
+    assignedCourseIds?.join(","),
+    enrolledCoursesCount,
   ]);
 
   // Handler for scheduling payment reminder snooze
