@@ -26,8 +26,8 @@ export const SharedLayout = () => {
     // Lockdown Mode for Proctored Examination: completely hide regular sidebar and topbar
     if (isExamPage) {
         return (
-            <div className="min-h-screen w-full bg-[#f8fafc] dark:bg-[#070b14] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden">
-                <main className="w-full min-h-screen flex flex-col p-0 m-0">
+            <div className="h-screen max-h-screen w-full bg-[#f8fafc] dark:bg-[#070b14] font-sans text-slate-900 dark:text-slate-100 overflow-hidden flex flex-col">
+                <main className="w-full h-full flex flex-col p-0 m-0 overflow-hidden flex-1">
                     <Outlet />
                 </main>
             </div>

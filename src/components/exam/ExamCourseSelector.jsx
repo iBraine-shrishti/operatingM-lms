@@ -68,9 +68,10 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
   }, [selectedCategory, searchQuery]);
 
   return (
-    <div className="flex-1 overflow-y-auto w-full max-w-[1650px] mx-auto px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-6 space-y-6">
-      {/* 1. FULL-WIDTH ENTERPRISE HERO BANNER */}
-      <div className="relative rounded-2xl sm:rounded-3xl border border-blue-200/80 dark:border-slate-800 bg-gradient-to-r from-blue-50/90 via-indigo-50/40 to-white dark:from-slate-900/95 dark:via-blue-950/30 dark:to-slate-900/90 p-5 sm:p-6 lg:p-7 shadow-xs overflow-hidden">
+    <main className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
+      <div className="max-w-7xl w-full mx-auto space-y-6 pb-12 sm:pb-16">
+        {/* 1. INSTITUTIONAL HERO BANNER */}
+        <div className="relative rounded-2xl sm:rounded-3xl border border-blue-200/80 dark:border-slate-800 bg-gradient-to-r from-blue-50/90 via-indigo-50/40 to-white dark:from-slate-900/95 dark:via-blue-950/30 dark:to-slate-900/90 p-5 sm:p-6 lg:p-7 shadow-xs overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 dark:bg-blue-400/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -200,14 +201,14 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredTracks.map((track) => {
             const IconComponent = ICONS_MAP[track.iconName] || BookOpen;
 
             return (
               <div
                 key={track.id}
-                className="group relative bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200/90 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200 flex flex-col justify-between p-4 sm:p-5 shadow-2xs hover:shadow-md"
+                className="group relative bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200/90 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200 flex flex-col justify-between p-5 shadow-2xs hover:shadow-md"
               >
                 <div className="space-y-3">
                   {/* Top Bar: Icon, Code & Category Badge */}
@@ -232,47 +233,47 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
 
                   {/* Title & Short Description */}
                   <div>
-                    <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2">
                       {track.title}
                     </h3>
-                    <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mt-1.5 line-clamp-2">
+                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-1.5 line-clamp-2">
                       {track.description}
                     </p>
                   </div>
 
                   {/* Quick Specification Strip */}
-                  <div className="grid grid-cols-2 gap-1.5 pt-2 text-[11px] font-mono border-t border-slate-100 dark:border-slate-800">
-                    <div className="flex items-center gap-1 text-slate-600 dark:text-slate-300 truncate">
-                      <Clock size={11} className="text-blue-600 dark:text-blue-400 shrink-0" />
+                  <div className="grid grid-cols-2 gap-2 pt-2.5 text-xs font-mono border-t border-slate-100 dark:border-slate-800">
+                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 truncate">
+                      <Clock size={12} className="text-blue-600 dark:text-blue-400 shrink-0" />
                       <span>{track.durationMinutes} Mins</span>
                     </div>
-                    <div className="flex items-center gap-1 text-slate-600 dark:text-slate-300 truncate">
-                      <BookOpen size={11} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
+                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 truncate">
+                      <BookOpen size={12} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
                       <span>{track.questionsCount} Questions</span>
                     </div>
-                    <div className="flex items-center gap-1 text-slate-600 dark:text-slate-300 truncate">
-                      <Award size={11} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 truncate">
+                      <Award size={12} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
                       <span>80% ({track.passingMarks}/{track.totalMarks}M)</span>
                     </div>
-                    <div className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-bold truncate">
-                      <CheckCircle2 size={11} className="shrink-0" />
+                    <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-bold truncate">
+                      <CheckCircle2 size={12} className="shrink-0" />
                       <span>0 Penalty</span>
                     </div>
                   </div>
 
                   {/* Skills Tags */}
-                  <div className="pt-0.5">
-                    <div className="flex flex-wrap gap-1">
+                  <div className="pt-1">
+                    <div className="flex flex-wrap gap-1.5">
                       {track.skillsCovered.slice(0, 3).map((skill, sIdx) => (
                         <span
                           key={sIdx}
-                          className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-medium text-slate-600 dark:text-slate-300 truncate max-w-[130px]"
+                          className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-600 dark:text-slate-300 truncate max-w-[140px]"
                         >
                           {skill}
                         </span>
                       ))}
                       {track.skillsCovered.length > 3 && (
-                        <span className="px-1 py-0.5 rounded text-[10px] text-slate-400 font-mono">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] text-slate-400 font-mono">
                           +{track.skillsCovered.length - 3}
                         </span>
                       )}
@@ -281,14 +282,14 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
                 </div>
 
                 {/* Bottom CTA Action Button */}
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <div className="mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-800">
                   <button
                     type="button"
                     onClick={() => onSelectTrack(track)}
-                    className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs hover:shadow transition-all group-hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-2xs hover:shadow transition-all group-hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
                   >
                     <span>Prepare & Launch Exam</span>
-                    <ArrowRight size={13} />
+                    <ArrowRight size={14} />
                   </button>
                 </div>
               </div>
@@ -296,6 +297,7 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
           })}
         </div>
       )}
-    </div>
+      </div>
+    </main>
   );
 };

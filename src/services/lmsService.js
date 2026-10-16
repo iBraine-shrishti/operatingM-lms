@@ -638,28 +638,47 @@ export const lmsService = {
       return INITIAL_DISCUSSIONS;
     }
 
-    // Backfill courseId if any discussion lacks it
+    // Backfill courseId, community, authorHandle, upvotes, and imageUrl if missing
     let modified = false;
     const normalized = stored.map((d) => {
-      if (!d.courseId) {
+      let item = { ...d };
+      const initMatch = INITIAL_DISCUSSIONS.find((init) => init.id === item.id);
+
+      if (!item.courseId) {
         modified = true;
-        const match = INITIAL_DISCUSSIONS.find((init) => init.id === d.id);
-        if (match?.courseId) return { ...d, courseId: match.courseId };
-        const t = (d.courseTitle || "").toLowerCase();
-        if (t.includes("seo")) return { ...d, courseId: "course-8" };
-        if (t.includes("ads")) return { ...d, courseId: "course-6" };
-        if (t.includes("social")) return { ...d, courseId: "course-1" };
-        if (t.includes("analytics")) return { ...d, courseId: "course-5" };
-        if (t.includes("wordpress")) return { ...d, courseId: "course-7" };
-        if (t.includes("design")) return { ...d, courseId: "course-4" };
-        if (
-          t.includes("advanced") ||
-          t.includes("growth") ||
-          t.includes("specialized")
-        )
-          return { ...d, courseId: "course-3" };
+        if (initMatch?.courseId) item.courseId = initMatch.courseId;
+        else {
+          const t = (item.courseTitle || "").toLowerCase();
+          if (t.includes("seo")) item.courseId = "course-8";
+          else if (t.includes("ads")) item.courseId = "course-6";
+          else if (t.includes("social")) item.courseId = "course-1";
+          else if (t.includes("analytics")) item.courseId = "course-5";
+          else if (t.includes("wordpress")) item.courseId = "course-7";
+          else if (t.includes("design")) item.courseId = "course-4";
+          else item.courseId = "course-1";
+        }
       }
-      return d;
+
+      if (!item.community) {
+        item.community = initMatch?.community || "r/general-doubts";
+        modified = true;
+      }
+      if (!item.authorHandle) {
+        item.authorHandle =
+          initMatch?.authorHandle ||
+          `u/${(item.authorName || "student").toLowerCase().replace(/\s+/g, "_")}`;
+        modified = true;
+      }
+      if (item.upvotes === undefined && item.score === undefined) {
+        item.upvotes = initMatch?.upvotes || 12;
+        modified = true;
+      }
+      if (!item.imageUrl && initMatch?.imageUrl) {
+        item.imageUrl = initMatch.imageUrl;
+        modified = true;
+      }
+
+      return item;
     });
 
     // Ensure newly added initial discussions are present
@@ -682,12 +701,46 @@ export const lmsService = {
       ...disc,
       id: `disc-${Date.now()}`,
       courseId: disc.courseId || "course-1",
+      community: disc.community || "r/general-doubts",
+      authorHandle:
+        disc.authorHandle ||
+        `u/${(disc.authorName || "student").toLowerCase().replace(/\s+/g, "_")}`,
+      upvotes: disc.upvotes || 1,
       repliesCount: 0,
       replies: [],
       createdAt: "Just now",
     };
     setStored("discussions", [newItem, ...items]);
     return newItem;
+  },
+  toggleDiscussionReaction: (discussionId, reactionType) => {
+    const items = lmsService.getDiscussions();
+    const index = items.findIndex((d) => d.id === discussionId);
+    if (index === -1) return null;
+
+    const currentScore = items[index].upvotes ?? items[index].score ?? 0;
+    const currentReaction = items[index].userReaction;
+
+    let newReaction = reactionType;
+    let newScore = currentScore;
+
+    if (currentReaction === reactionType) {
+      // Toggle off
+      newReaction = null;
+      newScore = reactionType === "up" ? currentScore - 1 : currentScore + 1;
+    } else if (currentReaction === "up" && reactionType === "down") {
+      newScore = currentScore - 2;
+    } else if (currentReaction === "down" && reactionType === "up") {
+      newScore = currentScore + 2;
+    } else {
+      newScore = reactionType === "up" ? currentScore + 1 : currentScore - 1;
+    }
+
+    items[index].userReaction = newReaction;
+    items[index].upvotes = newScore;
+    items[index].score = newScore;
+    setStored("discussions", items);
+    return items[index];
   },
   addDiscussionReply: (discussionId, reply, parentReplyId = null) => {
     const items = lmsService.getDiscussions();
@@ -697,6 +750,8 @@ export const lmsService = {
       ...reply,
       id: `rep-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       createdAt: "Just now",
+      likesCount: 0,
+      score: 0,
       replies: [],
     };
 

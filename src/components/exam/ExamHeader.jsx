@@ -20,21 +20,19 @@ export const ExamHeader = ({
         <div className="min-w-0">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold truncate">
-              OMC SKILLSHOP CERTIFICATIONS
+              OMC ASSESSMENT PORTAL
             </span>
             <span className="hidden md:inline-flex px-2 py-0.5 text-[10px] font-mono bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-500/20 rounded font-semibold">
-              OFFICIAL EVALUATION
+              OFFICIAL CERTIFICATION
             </span>
           </div>
           <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5 truncate">
             <span className="truncate">
-              {activeTrack ? activeTrack.title : "Operating Media Skillshop Certification Center"}
+              {activeTrack ? activeTrack.title : "Operating Media Certification Assessment"}
             </span>
-            {activeTrack && (
-              <span className="text-slate-400 dark:text-slate-500 hidden sm:inline text-xs font-normal">
-                • {activeTrack.code}
-              </span>
-            )}
+            <span className="text-slate-400 dark:text-slate-500 hidden sm:inline text-xs font-normal">
+              • {activeTrack ? activeTrack.code : "Final Evaluation"}
+            </span>
           </h2>
         </div>
       </div>
@@ -44,13 +42,13 @@ export const ExamHeader = ({
         <div className="hidden lg:flex items-center gap-2 bg-emerald-50 dark:bg-slate-900 border border-emerald-200 dark:border-slate-800 px-3 py-1.5 rounded-lg text-xs font-mono">
           <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
           <span className="text-emerald-800 dark:text-slate-300 font-semibold">
-            SECURE PORTAL
+            SESSION ACTIVE
           </span>
         </div>
 
         <div className="flex items-center gap-2.5">
           <span className="text-xs sm:text-sm font-mono font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
-            ID: {rollNumber}
+            STUDENT ID: {rollNumber}
           </span>
 
           {/* Back to Catalog if in Briefing or Scorecard */}
@@ -71,11 +69,11 @@ export const ExamHeader = ({
             <button
               type="button"
               onClick={onExitHall}
-              className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-xs hover:shadow flex items-center gap-1.5 border border-rose-600 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] ring-2 ring-rose-300/40 dark:ring-rose-900/40"
+              className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs sm:text-sm tracking-wide shadow-xs hover:shadow flex items-center gap-2 border border-rose-600 cursor-pointer transition-all hover:scale-[1.02] active:scale-[0.98] ring-2 ring-rose-300/40 dark:ring-rose-900/40"
               title="Exit Examination Hall"
             >
-              <LogOut size={14} />
-              <span>Exit Portal</span>
+              <LogOut size={15} />
+              <span>Exit Hall</span>
             </button>
           )}
         </div>

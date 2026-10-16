@@ -55,7 +55,9 @@ export function App() {
                 <Route path="activity" element={<ActivityPage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="forums" element={<QuestionDiscussionsPage />} />
+                <Route path="forums/:postId" element={<QuestionDiscussionsPage />} />
                 <Route path="question-discussions" element={<QuestionDiscussionsPage />} />
+                <Route path="question-discussions/:postId" element={<QuestionDiscussionsPage />} />
                 <Route path="schedule" element={<SchedulePage />} />
                 <Route path="attendance-fees" element={<Navigate to="/profile?tab=attendance" replace />} />
                 <Route path="gallery" element={<GalleryPage />} />

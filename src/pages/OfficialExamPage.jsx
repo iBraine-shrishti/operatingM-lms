@@ -57,8 +57,17 @@ export const OfficialExamPage = () => {
     return null;
   }, [searchParams]);
 
+  const stageParam = searchParams.get("stage");
   // Stage state: "CATALOG" | "BRIEFING" | "LIVE_EXAM" | "SCORECARD"
-  const [examStage, setExamStage] = useState(initialTrack ? "BRIEFING" : "CATALOG");
+  const [examStage, setExamStage] = useState(
+    stageParam === "LIVE_EXAM"
+      ? "LIVE_EXAM"
+      : stageParam === "SCORECARD"
+      ? "SCORECARD"
+      : initialTrack
+      ? "BRIEFING"
+      : "CATALOG"
+  );
   const [selectedTrack, setSelectedTrack] = useState(initialTrack || EXAM_TRACKS[0]);
 
   // Curated questions list for active track
@@ -350,16 +359,18 @@ export const OfficialExamPage = () => {
   return (
     <div
       ref={containerRef}
-      className="h-screen max-h-screen w-screen overflow-hidden bg-slate-50 dark:bg-[#070b14] text-slate-900 dark:text-slate-100 flex flex-col font-sans select-none text-base"
+      className="h-full w-full max-w-full overflow-hidden bg-slate-50 dark:bg-[#070b14] text-slate-900 dark:text-slate-100 flex flex-col font-sans select-none text-base"
     >
-      {/* Institutional Top Header */}
-      <ExamHeader
-        rollNumber={rollNumber}
-        activeTrack={examStage !== "CATALOG" ? selectedTrack : null}
-        examStage={examStage}
-        onExitHall={handleExitHall}
-        onBackToCatalog={examStage !== "CATALOG" ? handleBackToCatalog : null}
-      />
+      {/* Institutional Top Header (Rendered for CATALOG, BRIEFING, and SCORECARD; LIVE_EXAM uses its own unified proctored header) */}
+      {examStage !== "LIVE_EXAM" && (
+        <ExamHeader
+          rollNumber={rollNumber}
+          activeTrack={examStage !== "CATALOG" ? selectedTrack : null}
+          examStage={examStage}
+          onExitHall={handleExitHall}
+          onBackToCatalog={examStage !== "CATALOG" ? handleBackToCatalog : null}
+        />
+      )}
 
       {/* Stage 1: COURSE / TRACK CATALOG (Google Skills Exam Flow) */}
       {examStage === "CATALOG" && (

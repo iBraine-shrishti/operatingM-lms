@@ -893,6 +893,10 @@ export const INITIAL_DISCUSSIONS = [
         repliesCount: 2,
         createdAt: '3 hours ago',
         category: 'Technical SEO',
+        community: 'r/seo-mastery',
+        authorHandle: 'u/sneharoy',
+        upvotes: 24,
+        imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1000&auto=format&fit=crop&q=80',
         isPinned: true,
         replies: [
             {
@@ -967,6 +971,10 @@ export const INITIAL_DISCUSSIONS = [
         repliesCount: 3,
         createdAt: '1 day ago',
         category: 'PMAX & Bidding',
+        community: 'r/google-ads',
+        authorHandle: 'u/vikram_m',
+        upvotes: 38,
+        imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&auto=format&fit=crop&q=80',
         isPinned: true,
         replies: [
             {
@@ -1015,6 +1023,10 @@ export const INITIAL_DISCUSSIONS = [
         repliesCount: 2,
         createdAt: '2 days ago',
         category: 'Social Media',
+        community: 'r/social-media',
+        authorHandle: 'u/ananya_g',
+        upvotes: 19,
+        imageUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1000&auto=format&fit=crop&q=80',
         isPinned: false,
         replies: [
             {
@@ -1053,6 +1065,10 @@ export const INITIAL_DISCUSSIONS = [
         repliesCount: 1,
         createdAt: '3 days ago',
         category: 'Analytics',
+        community: 'r/analytics',
+        authorHandle: 'u/aarav_p',
+        upvotes: 15,
+        imageUrl: 'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1000&auto=format&fit=crop&q=80',
         isPinned: false,
         replies: [
             {
@@ -1080,6 +1096,10 @@ export const INITIAL_DISCUSSIONS = [
         repliesCount: 2,
         createdAt: '4 hours ago',
         category: 'WordPress',
+        community: 'r/web-development',
+        authorHandle: 'u/rohan_m',
+        upvotes: 27,
+        imageUrl: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1000&auto=format&fit=crop&q=80',
         isPinned: false,
         replies: [
             {
@@ -1119,6 +1139,10 @@ export const INITIAL_DISCUSSIONS = [
         repliesCount: 2,
         createdAt: '1 day ago',
         category: 'Creative Design',
+        community: 'r/social-media',
+        authorHandle: 'u/priya_s',
+        upvotes: 21,
+        imageUrl: 'https://images.unsplash.com/photo-1558655146-d09347e92766?w=1000&auto=format&fit=crop&q=80',
         isPinned: false,
         replies: [
             {
