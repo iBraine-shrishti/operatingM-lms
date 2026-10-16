@@ -13,10 +13,14 @@ import premPassportPhotoImg from '../assets/Prem_Photo_Passport.png';
  *  5. Verified Student Certificates & Credentials
  */
 
-const CRM_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_CRM_API_URL) || (
-  typeof window !== 'undefined' && (window.location.hostname.includes('operatingmedia.org') || window.location.hostname.includes('operatingmedia.com'))
-    ? 'https://operatingmedia.org/api'
-    : 'https://crm.dmsoi.org/api'
+export const CRM_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_CRM_API_URL) || (
+  typeof window !== 'undefined' && (
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === '::1'
+  )
+    ? 'https://crm.dmsoi.org/api'
+    : 'https://operatingmedia.org/api'
 );
 const CRM_STORAGE_KEY_STUDENT_ID = 'om_lms_selected_crm_student_id';
 
