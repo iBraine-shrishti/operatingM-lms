@@ -170,13 +170,11 @@ export const LessonPlayerPage = () => {
           });
         } else {
           setStreamData({
-            url: currentLesson.videoUrl || "",
-            mime: currentLesson.videoUrl?.endsWith(".mov")
-              ? "video/quicktime"
-              : "video/mp4",
+            url: "",
+            mime: "video/mp4",
             isLoading: false,
-            isLocked: false,
-            lockMessage: "",
+            isLocked: true,
+            lockMessage: "Access restricted. You do not have verified access to this course in Operating Media CRM.",
           });
         }
       })
@@ -184,13 +182,11 @@ export const LessonPlayerPage = () => {
         if (isCancelled) return;
         console.warn("Stream resolution error:", err);
         setStreamData({
-          url: currentLesson.videoUrl || "",
-          mime: currentLesson.videoUrl?.endsWith(".mov")
-            ? "video/quicktime"
-            : "video/mp4",
+          url: "",
+          mime: "video/mp4",
           isLoading: false,
-          isLocked: false,
-          lockMessage: "",
+          isLocked: true,
+          lockMessage: "Access restricted. Unable to verify CRM course enrollment.",
         });
       })
       .finally(() => {

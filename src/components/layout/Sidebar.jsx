@@ -30,7 +30,7 @@ import {
 export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isStudent, logout } = useAuth();
+  const { isStudent, logout, enrolledCoursesCount } = useAuth();
 
   const sections = [
     {
@@ -48,7 +48,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           name: "Enrolled Courses",
           path: "/enrolled-courses",
           icon: GraduationCap,
-          badge: "4",
+          badge: String(enrolledCoursesCount || 2),
         },
         {
           name: "Achievements",

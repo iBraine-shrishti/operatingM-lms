@@ -21,14 +21,10 @@ export const R2_STORAGE_BASE =
 export const CRM_BACKEND_API =
   (typeof import.meta !== "undefined" && import.meta.env?.VITE_CRM_API_URL) ||
   (typeof window !== "undefined" &&
-  (window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1")
-    ? "http://localhost:8000/api"
-    : typeof window !== "undefined" &&
-        (window.location.hostname.includes("operatingmedia.org") ||
-          window.location.hostname.includes("operatingmedia.com"))
-      ? "https://operatingmedia.org/api"
-      : "https://crm.dmsoi.org/api");
+  (window.location.hostname.includes("operatingmedia.org") ||
+    window.location.hostname.includes("operatingmedia.com"))
+    ? "https://operatingmedia.org/api"
+    : "https://crm.dmsoi.org/api");
 const getStored = (key, initial) => {
   try {
     const item = localStorage.getItem(`${STORAGE_PREFIX}${key}`);
@@ -51,9 +47,8 @@ export const lmsService = {
 
     const endpoints = [
       CRM_BACKEND_API,
-      "http://localhost:8000/api",
-      "https://crm.dmsoi.org/api",
       "https://operatingmedia.org/api",
+      "https://crm.dmsoi.org/api",
     ].filter((val, idx, self) => self.indexOf(val) === idx);
 
     for (const base of endpoints) {
@@ -62,7 +57,7 @@ export const lmsService = {
           ? `?student_id=${encodeURIComponent(studentId)}`
           : "";
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500);
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
         const resp = await fetch(
           `${base}/lms/units/${encodeURIComponent(unitId)}/stream/${query}`,
           {
@@ -105,11 +100,22 @@ export const lmsService = {
           }
         }
       } catch (err) {
-        // Ignore and try next endpoint or fallback
+        // Ignore and try next endpoint
       }
     }
 
-    // Resilient Fallback: If backend is unreachable or offline, resolve using local units
+    // If student ID was passed, never grant unauthorized access on network errors
+    if (studentId) {
+      return {
+        success: false,
+        locked: true,
+        unitId,
+        title: "Course Lecture",
+        message: "Access restricted. You do not have verified access to this course in Operating Media CRM.",
+      };
+    }
+
+    // Resilient Fallback for anonymous public previews only
     const localUnits = lmsService.getUnits();
     const found = localUnits.find((u) => u.id === unitId);
     if (found && found.videoUrl) {
@@ -129,11 +135,78 @@ export const lmsService = {
 
     return {
       success: false,
-      locked: false,
+      locked: true,
       error: "Unable to load video stream.",
     };
   },
-  // Courses (Total 7 active courses)
+  // Real course permissions fetched from CRM database
+  fetchStudentCoursePermissions: async (studentId) => {
+    if (!studentId) return [];
+    const endpoints = [
+      CRM_BACKEND_API,
+      "https://operatingmedia.org/api",
+      "https://crm.dmsoi.org/api",
+    ].filter((val, idx, self) => self.indexOf(val) === idx);
+
+    for (const base of endpoints) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const resp = await fetch(`${base}/lms/students/${studentId}/courses/`, {
+          signal: controller.signal,
+          headers: { Accept: "application/json" },
+        });
+        clearTimeout(timeoutId);
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data && Array.isArray(data.courses)) {
+            try {
+              localStorage.setItem(
+                `${STORAGE_PREFIX}perms_${studentId}`,
+                JSON.stringify(data.courses),
+              );
+            } catch (e) {}
+            return data.courses;
+          }
+        }
+      } catch (err) {}
+    }
+
+    // Cached fallback
+    try {
+      const cached = localStorage.getItem(`${STORAGE_PREFIX}perms_${studentId}`);
+      if (cached) return JSON.parse(cached);
+    } catch (e) {}
+    return [];
+  },
+  // Calculate real metrics directly from real video units
+  getRealCourseMetrics: (courseId) => {
+    const units = lmsService.getUnitsByCourse(courseId);
+    let totalSec = 0;
+    let completedCount = 0;
+    units.forEach((u) => {
+      if (u.isCompleted) completedCount++;
+      if (u.duration) {
+        const p = u.duration.split(":").map(Number);
+        if (p.length === 2 && !isNaN(p[0]) && !isNaN(p[1])) totalSec += p[0] * 60 + p[1];
+        else if (p.length === 3 && !isNaN(p[0]) && !isNaN(p[1]) && !isNaN(p[2])) totalSec += p[0] * 3600 + p[1] * 60 + p[2];
+      }
+    });
+    const totalLessons = units.length;
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const duration = h > 0 ? `${h}h ${m.toString().padStart(2, "0")}m` : `${m}m`;
+    const progress = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+    return {
+      totalLessons,
+      completedLessons: completedCount,
+      duration,
+      progress,
+      status: completedCount === totalLessons && totalLessons > 0 ? "completed" : "in-progress",
+      isCompleted: completedCount === totalLessons && totalLessons > 0,
+    };
+  },
+  // Courses (Total 7 active courses with real durations calculated from real units)
   getCourses: () => {
     const stored = getStored("courses", INITIAL_COURSES);
     let modified = false;
@@ -181,6 +254,24 @@ export const lmsService = {
             "Master modern social media marketing with practical frameworks, industry standard metrics, and hands-on campaign execution across Facebook, Instagram, LinkedIn, Quora, and Twitter/X.";
           modified = true;
         }
+
+        // Calculate real duration and real lessons count from actual video units
+        const courseUnits = (INITIAL_UNITS || []).filter((u) => u.courseId === updatedCourse.id);
+        if (courseUnits && courseUnits.length > 0) {
+          updatedCourse.lessonsCount = courseUnits.length;
+          let totalSec = 0;
+          courseUnits.forEach((u) => {
+            if (u.duration) {
+              const p = u.duration.split(":").map(Number);
+              if (p.length === 2 && !isNaN(p[0]) && !isNaN(p[1])) totalSec += p[0] * 60 + p[1];
+              else if (p.length === 3 && !isNaN(p[0]) && !isNaN(p[1]) && !isNaN(p[2])) totalSec += p[0] * 3600 + p[1] * 60 + p[2];
+            }
+          });
+          const h = Math.floor(totalSec / 3600);
+          const m = Math.floor((totalSec % 3600) / 60);
+          updatedCourse.duration = h > 0 ? `${h}h ${m.toString().padStart(2, "0")}m` : `${m}m`;
+        }
+
         return updatedCourse;
       });
     if (modified) {

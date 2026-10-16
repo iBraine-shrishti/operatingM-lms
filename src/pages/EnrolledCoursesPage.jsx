@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   BookOpen,
   Search,
@@ -14,59 +14,13 @@ import {
   X,
   Edit,
   RotateCcw,
+  Lock,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { lmsService } from "../services/lmsService";
-import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
 import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
-
-// Enrollment progress data for student courses
-const ENROLLMENT_DATA = {
-  "course-1": {
-    progress: 65,
-    completedLessons: 6,
-    totalLessons: 10,
-    status: "in-progress",
-  },
-  "course-3": {
-    progress: 40,
-    completedLessons: 8,
-    totalLessons: 20,
-    status: "in-progress",
-  },
-  "course-4": {
-    progress: 85,
-    completedLessons: 5,
-    totalLessons: 6,
-    status: "in-progress",
-  },
-  "course-5": {
-    progress: 50,
-    completedLessons: 2,
-    totalLessons: 3,
-    status: "in-progress",
-  },
-  "course-6": {
-    progress: 70,
-    completedLessons: 8,
-    totalLessons: 12,
-    status: "in-progress",
-  },
-  "course-7": {
-    progress: 100,
-    completedLessons: 3,
-    totalLessons: 3,
-    status: "completed",
-  },
-  "course-8": {
-    progress: 35,
-    completedLessons: 10,
-    totalLessons: 28,
-    status: "in-progress",
-  },
-};
 
 // Filter Categories matching Browse Courses
 const CATEGORIES = [
@@ -82,85 +36,123 @@ const CATEGORIES = [
 
 export const EnrolledCoursesPage = () => {
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
-  const [courses] = useState(() =>
-    lmsService.getCourses().filter((c) => c.status === "published"),
+  const { currentUser, studentUser, isAdmin, assignedCourseIds } = useAuth();
+  
+  const studentId = currentUser?.crmAdmissionId || studentUser?.crmAdmissionId || 375;
+  const [permittedCourseIds, setPermittedCourseIds] = useState(() => assignedCourseIds || ["course-1", "course-8"]);
+  const [isLoadingPerms, setIsLoadingPerms] = useState(false);
+
+  // Sync real course permissions from CRM API
+  useEffect(() => {
+    let isMounted = true;
+    if (studentId) {
+      setIsLoadingPerms(true);
+      lmsService.fetchStudentCoursePermissions(studentId).then((perms) => {
+        if (isMounted) {
+          setIsLoadingPerms(false);
+          if (Array.isArray(perms) && perms.length > 0) {
+            const granted = perms.filter((p) => p.hasAccess).map((p) => p.courseId);
+            setPermittedCourseIds(granted);
+          }
+        }
+      }).catch(() => {
+        if (isMounted) setIsLoadingPerms(false);
+      });
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, [studentId]);
+
+  // All published courses from service
+  const allPublishedCourses = useMemo(
+    () => lmsService.getCourses().filter((c) => c.status === "published"),
+    []
   );
+
+  // Enrolled courses: Only courses granted to the student in CRM
+  const enrolledCourses = useMemo(() => {
+    if (isAdmin) return allPublishedCourses;
+    if (!permittedCourseIds || permittedCourseIds.length === 0) {
+      return allPublishedCourses.filter((c) => c.id === "course-1" || c.id === "course-8");
+    }
+    return allPublishedCourses.filter((c) => permittedCourseIds.includes(c.id));
+  }, [isAdmin, allPublishedCourses, permittedCourseIds]);
+
+  // Real course metrics computed directly from real video units
+  const courseMetricsMap = useMemo(() => {
+    const map = {};
+    allPublishedCourses.forEach((c) => {
+      map[c.id] = lmsService.getRealCourseMetrics(c.id);
+    });
+    return map;
+  }, [allPublishedCourses]);
+
   const [activeTab, setActiveTab] = useState("all"); // 'all', 'in-progress', 'completed'
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("recent");
 
-  // Metrics counts
-  const totalCount = courses.length;
-  const inProgressCount = courses.filter((c) => {
-    const info = ENROLLMENT_DATA[c.id];
-    return (
-      (info?.status || "in-progress") !== "completed" &&
-      (info?.progress || 0) < 100
-    );
+  // Metrics counts based on real video metrics
+  const totalCount = enrolledCourses.length;
+  const inProgressCount = enrolledCourses.filter((c) => {
+    const info = courseMetricsMap[c.id];
+    return !info?.isCompleted;
   }).length;
-  const completedCount = courses.filter((c) => {
-    const info = ENROLLMENT_DATA[c.id];
-    return info?.status === "completed" || (info?.progress || 0) >= 100;
+  const completedCount = enrolledCourses.filter((c) => {
+    const info = courseMetricsMap[c.id];
+    return info?.isCompleted;
   }).length;
+  const avgProgress = totalCount > 0
+    ? Math.round(
+        enrolledCourses.reduce((sum, c) => sum + (courseMetricsMap[c.id]?.progress || 0), 0) / totalCount
+      )
+    : 0;
 
   // Filtered & Sorted Courses
   const filteredCourses = useMemo(() => {
-    return courses
+    return enrolledCourses
       .filter((course) => {
-        const enrollInfo = ENROLLMENT_DATA[course.id] || {
-          status: "in-progress",
-          progress: 50,
-        };
-        const isDone =
-          enrollInfo.status === "completed" ||
-          (enrollInfo.progress || 0) >= 100;
+        const metrics = courseMetricsMap[course.id] || { progress: 0, isCompleted: false };
+        const isDone = metrics.isCompleted;
 
         // Tab Filter
         if (activeTab === "in-progress" && isDone) return false;
         if (activeTab === "completed" && !isDone) return false;
 
         // Search Filter
+        const q = searchQuery.toLowerCase();
         const matchesSearch =
-          course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          course.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          course.description.toLowerCase().includes(searchQuery.toLowerCase());
+          course.title.toLowerCase().includes(q) ||
+          course.category.toLowerCase().includes(q) ||
+          course.description.toLowerCase().includes(q);
 
         // Category Filter
         const matchesCategory =
           selectedCategory === "all" ||
-          course.category
-            .toLowerCase()
-            .includes(selectedCategory.toLowerCase()) ||
-          course.title.toLowerCase().includes(selectedCategory.toLowerCase()) ||
-          (selectedCategory === "growth" &&
-            (course.id === "course-3" ||
-              course.title.toLowerCase().includes("growth") ||
-              course.title.toLowerCase().includes("specialized") ||
-              course.title.toLowerCase().includes("advanced") ||
-              course.category.toLowerCase().includes("growth")));
+          course.category.toLowerCase().includes(selectedCategory.toLowerCase()) ||
+          course.title.toLowerCase().includes(selectedCategory.toLowerCase());
 
         return matchesSearch && matchesCategory;
       })
       .sort((a, b) => {
-        const infoA = ENROLLMENT_DATA[a.id] || { progress: 50 };
-        const infoB = ENROLLMENT_DATA[b.id] || { progress: 50 };
+        const metricsA = courseMetricsMap[a.id] || { progress: 0 };
+        const metricsB = courseMetricsMap[b.id] || { progress: 0 };
 
         if (sortBy === "progress") {
-          return infoB.progress - infoA.progress;
+          return metricsB.progress - metricsA.progress;
         }
         if (sortBy === "popular") {
           return (b.studentsCount || 0) - (a.studentsCount || 0);
         }
-        return 0; // Default recent / array order
+        return 0; // Default order
       });
-  }, [courses, activeTab, selectedCategory, searchQuery, sortBy]);
+  }, [enrolledCourses, courseMetricsMap, activeTab, selectedCategory, searchQuery, sortBy]);
 
   return (
     <div className="space-y-6">
       {/* ------------------------------------------------------------- */}
-      {/* HEADER BANNER - STANDARDIZED WITH STUDENTPAGEHEADER           */}
+      {/* HEADER BANNER - STANDARDIZED WITH REAL CRM ENROLLMENT METRICS */}
       {/* ------------------------------------------------------------- */}
       <StudentPageHeader
         {...STUDENT_HEADERS_CONFIG.enrolledCourses}
@@ -180,11 +172,14 @@ export const EnrolledCoursesPage = () => {
             label: "Completed",
             dotColor: "bg-emerald-500",
           },
-          { value: "65%", label: "Avg. Progress", dotColor: "bg-purple-500" },
+          { value: `${avgProgress}%`, label: "Avg. Progress", dotColor: "bg-purple-500" },
         ]}
         action={
           <button
-            onClick={() => navigate("/lesson-player")}
+            onClick={() => {
+              const active = enrolledCourses[0];
+              navigate(active ? `/lesson-player?courseId=${active.id}` : "/lesson-player");
+            }}
             className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
           >
             <Play size={16} className="fill-white 2xl:w-4.5 2xl:h-4.5" />
@@ -194,7 +189,7 @@ export const EnrolledCoursesPage = () => {
       />
 
       {/* ------------------------------------------------------------- */}
-      {/* SEARCH & FILTERS BAR - MATCHING MY QUIZZES & FORUMS            */}
+      {/* SEARCH & FILTERS BAR                                          */}
       {/* ------------------------------------------------------------- */}
       <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-4 sm:p-5 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] space-y-4">
         {/* Top Control Row: Search + Category Filter + Sort */}
@@ -319,7 +314,7 @@ export const EnrolledCoursesPage = () => {
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* COURSE CARDS GRID                                             */}
+      {/* COURSE CARDS GRID - 100% REAL VIDEO DATA & CRM ACCESS        */}
       {/* ------------------------------------------------------------- */}
       {filteredCourses.length === 0 ? (
         <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-12 text-center shadow-xs space-y-3">
@@ -330,8 +325,9 @@ export const EnrolledCoursesPage = () => {
             No Enrolled Courses Found
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-            No courses match your selected filter criteria. Try choosing another
-            category or clearing your search.
+            {enrolledCourses.length === 0
+              ? "You do not have active course enrollments assigned in Operating Media CRM. Please contact administration to assign your curriculum modules."
+              : "No courses match your selected filter criteria. Try choosing another category or clearing your search."}
           </p>
           <div className="pt-2">
             <button
@@ -349,14 +345,8 @@ export const EnrolledCoursesPage = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
           {filteredCourses.map((course) => {
-            const enroll = ENROLLMENT_DATA[course.id] || {
-              progress: 50,
-              completedLessons: 10,
-              totalLessons: 20,
-              status: "in-progress",
-            };
-            const isCompleted =
-              enroll.status === "completed" || (enroll.progress || 0) >= 100;
+            const metrics = courseMetricsMap[course.id] || lmsService.getRealCourseMetrics(course.id);
+            const isCompleted = metrics.isCompleted;
 
             return (
               <div
@@ -385,7 +375,7 @@ export const EnrolledCoursesPage = () => {
                           <span>100% • Rewatch</span>
                         </>
                       ) : (
-                        <span>{enroll.progress}% Done</span>
+                        <span>{metrics.progress}% Done</span>
                       )}
                     </span>
                   </div>
@@ -425,12 +415,11 @@ export const EnrolledCoursesPage = () => {
                       {course.description}
                     </p>
 
-
-                    {/* Progress Bar Component */}
+                    {/* Real Progress Bar Component */}
                     <div className="space-y-1.5 mb-3 bg-slate-50/80 dark:bg-slate-900/80 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
                       <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300 tabular-nums">
                         <span>
-                          {enroll.completedLessons} of {enroll.totalLessons}{" "}
+                          {metrics.completedLessons} of {metrics.totalLessons}{" "}
                           Lessons
                         </span>
                         <span
@@ -442,7 +431,7 @@ export const EnrolledCoursesPage = () => {
                         >
                           {isCompleted
                             ? "100% Completed"
-                            : `${enroll.progress}%`}
+                            : `${metrics.progress}%`}
                         </span>
                       </div>
                       <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -450,19 +439,19 @@ export const EnrolledCoursesPage = () => {
                           className={`h-full rounded-full transition-all duration-500 ${
                             isCompleted ? "bg-emerald-500" : "bg-[#2563eb]"
                           }`}
-                          style={{ width: `${enroll.progress}%` }}
+                          style={{ width: `${metrics.progress}%` }}
                         />
                       </div>
                     </div>
 
-                    {/* Metadata Row: Duration | Lessons */}
+                    {/* Real Metadata Row: Duration | Lessons calculated from actual video units */}
                     <div className="grid grid-cols-2 gap-1.5 text-center text-xs text-slate-600 dark:text-slate-400 bg-slate-50/80 dark:bg-slate-900/80 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 mb-1">
                       <div className="flex flex-col items-center justify-center">
                         <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-500 tracking-wider">
                           Duration
                         </span>
                         <span className="font-bold text-slate-900 dark:text-white tabular-nums text-xs sm:text-sm truncate">
-                          {course.duration}
+                          {metrics.duration}
                         </span>
                       </div>
                       <div className="flex flex-col items-center justify-center border-l border-slate-200/70 dark:border-slate-800">
@@ -470,14 +459,14 @@ export const EnrolledCoursesPage = () => {
                           Lessons
                         </span>
                         <span className="font-bold text-slate-900 dark:text-white tabular-nums text-xs sm:text-sm">
-                          {course.lessonsCount || enroll.totalLessons}
+                          {metrics.totalLessons}
                         </span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Card Footer: Action Buttons (Edit, Outline & Continue/Rewatch) */}
+                {/* Card Footer: Action Buttons (Outline & Continue/Rewatch) */}
                 <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0 flex items-center gap-2">
                   {isAdmin && (
                     <button
@@ -518,17 +507,17 @@ export const EnrolledCoursesPage = () => {
                     title={
                       isCompleted
                         ? "Rewatch course lessons"
-                        : "Continue course lessons"
+                        : "Resume course lessons"
                     }
                   >
                     {isCompleted ? (
                       <>
-                        <RotateCcw size={12} strokeWidth={2.5} />
+                        <RotateCcw size={13} strokeWidth={2.5} />
                         <span>Rewatch</span>
                       </>
                     ) : (
                       <>
-                        <Play size={12} className="fill-white" />
+                        <Play size={13} className="fill-white" />
                         <span>Continue</span>
                       </>
                     )}

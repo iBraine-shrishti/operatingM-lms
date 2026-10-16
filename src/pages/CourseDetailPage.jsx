@@ -39,6 +39,7 @@ import {
   Cpu,
   Phone,
   Globe,
+  Lock,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -67,7 +68,7 @@ const OVERVIEW_ICONS = {
 export const CourseDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAdmin, isStudent, currentUser } = useAuth();
+  const { isAdmin, isStudent, currentUser, assignedCourseIds } = useAuth();
   const { showToast } = useToast();
 
   const courses = lmsService.getCourses();
@@ -76,6 +77,12 @@ export const CourseDetailPage = () => {
     courses.find((c) => c.id === id) ||
     courses.find((c) => c.title.toLowerCase().includes("social")) ||
     courses[0];
+
+  const hasCourseAccess =
+    isAdmin ||
+    !assignedCourseIds ||
+    assignedCourseIds.length === 0 ||
+    assignedCourseIds.includes(course.id);
 
   const [units, setUnits] = useState(() =>
     lmsService.getUnitsByCourse(course.id),
@@ -591,18 +598,29 @@ export const CourseDetailPage = () => {
             </div>
           </div>
 
-          {/* Action Button: Simplified from 'Preview & Learn' to 'Start Learning' */}
-          <button
-            onClick={() => navigate(`/lesson-player?courseId=${course.id}`)}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.99]"
-          >
-            <Play size={14} className="fill-white" />
-            <span>
-              {completedActivitiesCount > 0
-                ? "Continue Learning"
-                : "Start Learning"}
-            </span>
-          </button>
+          {/* Action Button: Enrolled vs Restricted */}
+          {hasCourseAccess ? (
+            <button
+              onClick={() => navigate(`/lesson-player?courseId=${course.id}`)}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.99]"
+            >
+              <Play size={14} className="fill-white" />
+              <span>
+                {completedActivitiesCount > 0
+                  ? "Continue Learning"
+                  : "Start Learning"}
+              </span>
+            </button>
+          ) : (
+            <button
+              disabled
+              className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-500 dark:text-amber-400 text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center justify-center space-x-2 cursor-not-allowed"
+              title="Course access managed in Operating Media CRM"
+            >
+              <Lock size={14} />
+              <span>Access Restricted in CRM</span>
+            </button>
+          )}
         </div>
       </div>
 
