@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import { useToast } from "../context/ToastContext";
+import { crmService } from "../services/crmService";
 import {
   ArrowLeft,
   Calendar,
@@ -28,19 +29,44 @@ export const TakeAssignmentPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { showToast } = useToast();
+  const studentId = crmService.getSelectedStudentId();
 
-  const [assignments, setAssignments] = useState(() => lmsService.getAssignments());
+  const [assignments, setAssignments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadAssignments = async () => {
+      setIsLoading(true);
+      try {
+        if (!studentId) {
+          setAssignments([]);
+          return;
+        }
+        const data = await lmsService.fetchStudentBatchAssignments(studentId);
+        setAssignments(Array.isArray(data) ? data : []);
+      } catch (e) {
+        console.warn("Could not load batch assignments:", e);
+        setAssignments([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadAssignments();
+  }, [studentId]);
+
   const assignment = useMemo(() => {
+    if (assignments.length === 0) return null;
     if (id) {
-      return assignments.find((a) => a.id === id) || assignments[0];
+      return assignments.find((a) => a.id === id) || null;
     }
-    return assignments.find((a) => a.status === "pending") || assignments[0];
+    return assignments.find((a) => a.status === "pending") || assignments[0] || null;
   }, [id, assignments]);
 
   // Submission Form State
   const [submissionLink, setSubmissionLink] = useState(assignment?.submissionLink || "");
   const [submissionNotes, setSubmissionNotes] = useState(assignment?.submissionNotes || "");
   const [fileName, setFileName] = useState(assignment?.submittedFileName || "");
+  const [fileObj, setFileObj] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResubmitting, setIsResubmitting] = useState(false);
 
@@ -54,10 +80,10 @@ export const TakeAssignmentPage = () => {
   const isGraded = assignment?.status === "graded";
   const isSubmitted = assignment?.status === "submitted" && !isResubmitting;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!submissionLink.trim() && !fileName) {
+    if (!submissionLink.trim() && !fileName && !fileObj) {
       showToast(
         "Please provide a project link or attach a project file.",
         "warning",
@@ -67,14 +93,17 @@ export const TakeAssignmentPage = () => {
     }
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      lmsService.submitAssignment(assignment.id, {
-        submissionLink: submissionLink.trim(),
-        submissionNotes: submissionNotes.trim(),
-        submittedFileName: fileName || "assignment_final_deliverable.pdf",
+    try {
+      await lmsService.submitStudentBatchAssignment(assignment.id, studentId, {
+        file: fileObj,
+        linkUrl: submissionLink.trim(),
+        notes: submissionNotes.trim(),
       });
 
-      setAssignments(lmsService.getAssignments());
+      const updated = await lmsService.fetchStudentBatchAssignments(studentId);
+      if (updated && updated.length > 0) {
+        setAssignments(updated);
+      }
       setIsSubmitting(false);
       setIsResubmitting(false);
       showToast(
@@ -82,7 +111,10 @@ export const TakeAssignmentPage = () => {
         "success",
         "Work Submitted"
       );
-    }, 600);
+    } catch (err) {
+      setIsSubmitting(false);
+      showToast("Submission failed. Please try again.", "error", "Error");
+    }
   };
 
   const deliverables = [
@@ -90,6 +122,34 @@ export const TakeAssignmentPage = () => {
     "Detailed methodology explanation and rationale included",
     "Public view-only permissions verified on project link or valid archive uploaded",
   ];
+
+  if (isLoading) {
+    return (
+      <div className="max-w-6xl mx-auto py-20 flex flex-col items-center justify-center space-y-3">
+        <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm font-medium text-slate-500">Loading assignment details...</p>
+      </div>
+    );
+  }
+
+  if (!assignment) {
+    return (
+      <div className="max-w-md mx-auto py-20 text-center space-y-4">
+        <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto text-slate-400">
+          <AlertCircle size={32} />
+        </div>
+        <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">No Assignment Found</h2>
+        <p className="text-sm text-slate-500">This assignment might not be assigned to your batch or is inactive.</p>
+        <Link
+          to="/my-assignments"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl text-sm"
+        >
+          <ArrowLeft size={16} />
+          <span>Back to Assignments</span>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-6 pb-16 animate-in fade-in duration-200">
@@ -107,7 +167,14 @@ export const TakeAssignmentPage = () => {
           </Link>
           <div>
             <div className="flex items-center space-x-2">
-              <CourseBadge courseId={assignment?.courseId} courseTitle={assignment?.courseTitle} size="sm" />
+              {assignment?.batchName ? (
+                <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800">
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400" />
+                  <span>{assignment.batchName}</span>
+                </span>
+              ) : (
+                <CourseBadge courseId={assignment?.courseId} courseTitle={assignment?.courseTitle} size="sm" />
+              )}
               <span className="text-slate-300 dark:text-slate-700">•</span>
               <span className="text-xs text-slate-500 font-semibold">
                 Due: {assignment?.dueDate} ({getDaysLeftText(assignment?.dueDate)})
@@ -426,6 +493,7 @@ export const TakeAssignmentPage = () => {
                       onChange={(e) => {
                         if (e.target.files && e.target.files[0]) {
                           setFileName(e.target.files[0].name);
+                          setFileObj(e.target.files[0]);
                         }
                       }}
                     />

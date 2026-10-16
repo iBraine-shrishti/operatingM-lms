@@ -11,6 +11,7 @@ import {
   BookCheck,
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
+import { crmService } from "../services/crmService";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
 import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 import { AssessmentFilterBar } from "../components/common/AssessmentFilterBar";
@@ -30,9 +31,9 @@ import {
 export const MyAssignmentsPage = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const [assignments, setAssignments] = useState(() =>
-    lmsService.getAssignments(),
-  );
+  const studentId = crmService.getSelectedStudentId();
+  const [assignments, setAssignments] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const courses = lmsService.getCourses();
 
   const [searchParams] = useSearchParams();
@@ -49,7 +50,29 @@ export const MyAssignmentsPage = () => {
   const [submissionLink, setSubmissionLink] = useState("");
   const [submissionNotes, setSubmissionNotes] = useState("");
   const [fileName, setFileName] = useState("");
+  const [fileObj, setFileObj] = useState(null);
   const [feedbackModalAssignment, setFeedbackModalAssignment] = useState(null);
+
+  const loadAssignments = async () => {
+    setIsLoading(true);
+    try {
+      if (!studentId) {
+        setAssignments([]);
+        return;
+      }
+      const data = await lmsService.fetchStudentBatchAssignments(studentId);
+      setAssignments(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.warn("Could not load batch assignments:", e);
+      setAssignments([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadAssignments();
+  }, [studentId]);
 
   // Auto-open target assignment if specified in query string (?id=...)
   useEffect(() => {
@@ -124,11 +147,11 @@ export const MyAssignmentsPage = () => {
     }
   };
 
-  const handleSubmitAssignment = (e) => {
+  const handleSubmitAssignment = async (e) => {
     e.preventDefault();
     if (!activeAssignment) return;
 
-    if (!submissionLink.trim() && !fileName) {
+    if (!submissionLink.trim() && !fileName && !fileObj) {
       showToast(
         "Please provide a project link or select a file to submit.",
         "warning",
@@ -137,19 +160,28 @@ export const MyAssignmentsPage = () => {
       return;
     }
 
-    lmsService.submitAssignment(activeAssignment.id, {
-      submissionLink: submissionLink.trim(),
-      submissionNotes: submissionNotes.trim(),
-      submittedFileName: fileName || "assignment_project_final.pdf",
-    });
+    try {
+      await lmsService.submitStudentBatchAssignment(activeAssignment.id, studentId, {
+        file: fileObj,
+        linkUrl: submissionLink.trim(),
+        notes: submissionNotes.trim(),
+      });
 
-    setAssignments(lmsService.getAssignments());
-    setIsSubmitModalOpen(false);
-    showToast(
-      `Assignment "${activeAssignment.title}" submitted successfully!`,
-      "success",
-      "Work Submitted",
-    );
+      await loadAssignments();
+      setIsSubmitModalOpen(false);
+      setFileObj(null);
+      setFileName("");
+      setSubmissionLink("");
+      setSubmissionNotes("");
+      showToast(
+        `Assignment "${activeAssignment.title}" submitted successfully!`,
+        "success",
+        "Work Submitted",
+      );
+    } catch (err) {
+      console.error("Submission failed:", err);
+      showToast("Submission failed. Please try again.", "error", "Error");
+    }
   };
 
   return (
@@ -202,14 +234,19 @@ export const MyAssignmentsPage = () => {
       {/* ------------------------------------------------------------- */}
       {/* CONTENT LISTING: TABLE VIEW OR CARD GRID VIEW                 */}
       {/* ------------------------------------------------------------- */}
-      {filteredAssignments.length === 0 ? (
+      {isLoading ? (
+        <div className="py-16 flex flex-col items-center justify-center space-y-3 bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-8 shadow-xs">
+          <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm font-medium text-slate-500">Loading your batch assignments...</p>
+        </div>
+      ) : filteredAssignments.length === 0 ? (
         <AssessmentEmptyState
           icon={BookCheck}
-          title="No assignments matched your search criteria"
+          title={hasActiveFilters ? "No assignments matched your search criteria" : "No Assignments Assigned"}
           description={
             hasActiveFilters
-              ? "Try adjusting your search terms or clearing course and specialization filters to view more tasks."
-              : "No assignments are currently assigned for your enrolled courses."
+              ? "Try adjusting your search terms or clearing filters to view tasks."
+              : "No assignments have been assigned to your batch yet. Check back soon or contact your trainer."
           }
           hasActiveFilters={hasActiveFilters}
           onResetFilters={handleClearFilters}
@@ -238,7 +275,7 @@ export const MyAssignmentsPage = () => {
                 <tr className="border-b border-slate-200/80 dark:border-slate-800/80 text-[11px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 bg-slate-50/50 dark:bg-slate-900/30">
                   <th className="py-4 px-6 w-14 text-center">#</th>
                   <th className="py-4 px-6 min-w-[280px]">Assignment</th>
-                  <th className="py-4 px-6 min-w-[170px]">Course</th>
+                  <th className="py-4 px-6 min-w-[170px]">Batch / Track</th>
                   <th className="py-4 px-6 min-w-[150px]">Due Date</th>
                   <th className="py-4 px-6 min-w-[110px]">Max Points</th>
                   <th className="py-4 px-6 min-w-[130px]">Submissions</th>
@@ -276,13 +313,20 @@ export const MyAssignmentsPage = () => {
                         </div>
                       </td>
 
-                      {/* Course Pill */}
+                      {/* Batch / Course Pill */}
                       <td className="py-5 px-6 whitespace-nowrap">
-                        <CourseBadge
-                          courseId={a.courseId}
-                          courseTitle={a.courseTitle}
-                          size="md"
-                        />
+                        {a.batchName ? (
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400" />
+                            <span>{a.batchName}</span>
+                          </span>
+                        ) : (
+                          <CourseBadge
+                            courseId={a.courseId}
+                            courseTitle={a.courseTitle}
+                            size="md"
+                          />
+                        )}
                       </td>
 
                       {/* Due Date */}
@@ -457,6 +501,7 @@ export const MyAssignmentsPage = () => {
                     onChange={(e) => {
                       if (e.target.files && e.target.files[0]) {
                         setFileName(e.target.files[0].name);
+                        setFileObj(e.target.files[0]);
                       }
                     }}
                   />

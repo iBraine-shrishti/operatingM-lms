@@ -185,11 +185,18 @@ export const AssessmentCard = ({
         <div className="space-y-3.5">
           {/* Top Row: Course Theme Pill + Status Badge */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
-            <CourseBadge
-              courseId={data.courseId}
-              courseTitle={data.courseTitle}
-              size="md"
-            />
+            {data.batchName ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-blue-400" />
+                <span>{data.batchName}</span>
+              </span>
+            ) : (
+              <CourseBadge
+                courseId={data.courseId}
+                courseTitle={data.courseTitle}
+                size="md"
+              />
+            )}
 
             <AssessmentStatusBadge status={data.status} score={data.score} />
           </div>

@@ -537,6 +537,113 @@ export const lmsService = {
     setStored("quizzes", filtered);
     return true;
   },
+  // Batch Assignments (from CRM backend)
+  fetchStudentBatchAssignments: async (studentId) => {
+    if (!studentId) return [];
+    try {
+      const endpoints = [
+        CRM_BACKEND_API,
+        CRM_BACKEND_API.includes("operatingmedia.org")
+          ? "https://crm.dmsoi.org/api"
+          : "https://operatingmedia.org/api",
+      ].filter((val, idx, self) => self.indexOf(val) === idx);
+
+      for (const base of endpoints) {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 4000);
+          const res = await fetch(
+            `${base}/lms/student/assignments/?student_id=${encodeURIComponent(studentId)}`,
+            {
+              signal: controller.signal,
+              headers: { Accept: "application/json" },
+            }
+          );
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.success && Array.isArray(data.assignments)) {
+              return data.assignments.map((a) => ({
+                id: String(a.id),
+                title: a.title,
+                batchId: a.batchId,
+                batchName: a.batchName || "Assigned Batch",
+                courseId: "course-batch",
+                courseTitle: a.batchName || "Batch Practical Assessment",
+                dueDate: a.dueDate,
+                maxScore: a.maxScore || 100,
+                instructions: a.instructions,
+                attachmentUrl: a.attachmentUrl,
+                status: a.status || "pending",
+                score: a.score,
+                feedback: a.feedback || "",
+                submittedAt: a.submittedAt,
+                submissionLink: a.submission?.linkUrl || "",
+                submissionNotes: a.submission?.notes || "",
+                submittedFileName: a.submission?.fileName || "",
+                submittedFileUrl: a.submission?.fileUrl || "",
+                totalSubmissions: 1,
+                pendingGrading: a.status === "submitted" ? 1 : 0,
+              }));
+            }
+            return [];
+          }
+        } catch (e) {
+          // try next endpoint
+        }
+      }
+    } catch (err) {
+      console.warn("Could not fetch batch assignments from backend:", err);
+    }
+    return [];
+  },
+
+  submitStudentBatchAssignment: async (assignmentId, studentId, { file, linkUrl = "", notes = "" }) => {
+    try {
+      const formData = new FormData();
+      formData.append("student_id", String(studentId));
+      if (file && typeof file === "object") {
+        formData.append("file", file);
+      }
+      formData.append("link_url", linkUrl || "");
+      formData.append("notes", notes || "");
+
+      const endpoints = [
+        CRM_BACKEND_API,
+        CRM_BACKEND_API.includes("operatingmedia.org")
+          ? "https://crm.dmsoi.org/api"
+          : "https://operatingmedia.org/api",
+      ].filter((val, idx, self) => self.indexOf(val) === idx);
+
+      for (const base of endpoints) {
+        try {
+          const res = await fetch(`${base}/lms/assignments/${assignmentId}/submit/`, {
+            method: "POST",
+            body: formData,
+          });
+          if (res.ok) {
+            const json = await res.json();
+            if (json && json.success) {
+              return json;
+            }
+          }
+        } catch (e) {
+          // try next
+        }
+      }
+    } catch (err) {
+      console.error("Error submitting assignment to backend:", err);
+    }
+
+    // Local fallback
+    return lmsService.submitAssignment(assignmentId, {
+      submissionLink: linkUrl,
+      submissionNotes: notes,
+      submittedFileName: file?.name || "assignment_project.pdf",
+    });
+  },
+
   // Assignments
   getAssignments: () => {
     const stored = getStored("assignments", INITIAL_ASSIGNMENTS);
