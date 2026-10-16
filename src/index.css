@@ -93,9 +93,74 @@ html.dark body {
   color: #f1f5f9 !important;
 }
 
+/* ==========================================================================
+   OFFICIAL DOCUMENT PROTECTION (Certificates / Diplomas / Credentials)
+   Official certificates are printable physical documents and MUST maintain
+   their authentic white/cream paper & dark ink colors in all display modes.
+   ========================================================================== */
+.certificate-document,
+.certificate-document *,
+html.dark .certificate-document,
+html.dark .certificate-document * {
+  color-scheme: light !important;
+}
+
+html.dark .certificate-document {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+html.dark .certificate-document [data-cert-paper="true"],
+html.dark .certificate-document .cert-paper,
+html.dark .certificate-document [class*="bg-white"],
+html.dark .certificate-document .bg-white {
+  background-color: #ffffff !important;
+}
+
+html.dark .certificate-document [class*="text-slate-900"],
+html.dark .certificate-document .text-slate-900 {
+  color: #0f172a !important;
+}
+
+html.dark .certificate-document [class*="text-slate-700"],
+html.dark .certificate-document .text-slate-700 {
+  color: #334155 !important;
+}
+
+html.dark .certificate-document [class*="text-slate-600"],
+html.dark .certificate-document .text-slate-600 {
+  color: #475569 !important;
+}
+
+html.dark .certificate-document [class*="text-slate-500"],
+html.dark .certificate-document .text-slate-500 {
+  color: #64748b !important;
+}
+
+html.dark .certificate-document [class*="border-slate-300"],
+html.dark .certificate-document .border-slate-300 {
+  border-color: #cbd5e1 !important;
+}
+
+html.dark .certificate-document [class*="border-slate-100"],
+html.dark .certificate-document .border-slate-100 {
+  border-color: #f1f5f9 !important;
+}
+
+html.dark .certificate-document svg text {
+  fill: #334155 !important;
+}
+
 /* Base Card Surfaces */
 html.dark .bg-white {
   background-color: #111827 !important;
+}
+
+/* Document Paper Surface Override */
+html.dark .certificate-document,
+html.dark .certificate-document .bg-white,
+html.dark .certificate-document [data-cert-paper="true"] {
+  background-color: #ffffff !important;
 }
 
 html.dark .bg-\[\#f8fafc\] {

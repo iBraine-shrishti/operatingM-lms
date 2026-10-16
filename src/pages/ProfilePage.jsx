@@ -219,13 +219,10 @@ export const ProfilePage = () => {
         onOpenReceipt={handleOpenReceipt}
       />
 
-      {/* 4. Course Change History & Quick Actions Section */}
+      {/* 4. Course Change History Section */}
       <ProfileCourseHistorySection
         studentData={studentData}
         activeTab={activeTab}
-        onOpenReceipt={handleOpenReceipt}
-        onNavigateCourse={() => navigate(`/courses/${respectiveCourseId}`)}
-        onNavigateSchedule={() => navigate("/schedule")}
       />
 
       {/* Fee Receipt Modal */}
