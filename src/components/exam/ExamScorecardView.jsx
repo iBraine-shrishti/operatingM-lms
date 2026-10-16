@@ -33,7 +33,7 @@ export const ExamScorecardView = ({
   if (!examResult) return null;
 
   return (
-    <div className="flex-1 overflow-y-auto w-full px-4 sm:px-6 md:px-8 xl:px-10 py-5 space-y-4">
+    <div className="flex-1 overflow-y-auto w-full max-w-[1650px] mx-auto px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-6 space-y-5">
       {/* 1. FULL-WIDTH OUTCOME & SCORE MATRIX BANNER */}
       <div className="bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         {/* Left: Outcome Status & Candidate Congratulation */}

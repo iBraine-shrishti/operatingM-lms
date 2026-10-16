@@ -68,7 +68,7 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
   }, [selectedCategory, searchQuery]);
 
   return (
-    <div className="flex-1 overflow-y-auto w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-5 space-y-5">
+    <div className="flex-1 overflow-y-auto w-full max-w-[1650px] mx-auto px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-6 space-y-6">
       {/* 1. FULL-WIDTH ENTERPRISE HERO BANNER */}
       <div className="relative rounded-2xl sm:rounded-3xl border border-blue-200/80 dark:border-slate-800 bg-gradient-to-r from-blue-50/90 via-indigo-50/40 to-white dark:from-slate-900/95 dark:via-blue-950/30 dark:to-slate-900/90 p-5 sm:p-6 lg:p-7 shadow-xs overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 dark:bg-blue-400/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
