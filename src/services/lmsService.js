@@ -200,13 +200,9 @@ export const lmsService = {
     const m = Math.floor((totalSec % 3600) / 60);
     const duration = h > 0 ? `${h}h ${m.toString().padStart(2, "0")}m` : `${m}m`;
 
-    // Include course assessments (quizzes and assignments) so progress is 100% unified
-    const assess = lmsService.getCourseAssessmentsModule(courseId);
-    const assessItems = assess?.items || [];
-    const completedAssess = assessItems.filter((i) => i.isCompleted).length;
-
-    const totalActivities = totalLessons + assessItems.length;
-    const completedActivities = completedCount + completedAssess;
+    // Course progress is based on course curriculum lessons/units
+    const totalActivities = totalLessons;
+    const completedActivities = completedCount;
     const progress = totalActivities > 0 ? Math.round((completedActivities / totalActivities) * 100) : 0;
 
     return {

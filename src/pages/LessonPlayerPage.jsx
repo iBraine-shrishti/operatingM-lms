@@ -415,31 +415,6 @@ export const LessonPlayerPage = () => {
       };
     });
 
-    // Dynamic combined Tests & Assignments module as last module
-    const assessmentsModule = lmsService.getCourseAssessmentsModule(
-      currentCourse.id,
-    );
-    if (
-      assessmentsModule &&
-      assessmentsModule.items &&
-      assessmentsModule.items.length > 0
-    ) {
-      const completedAssessments = assessmentsModule.items.filter(
-        (i) => i.isCompleted,
-      ).length;
-      result.push({
-        name: assessmentsModule.name,
-        index: result.length + 1,
-        items: assessmentsModule.items,
-        completedCount: completedAssessments,
-        totalCount: assessmentsModule.items.length,
-        isCompleted:
-          completedAssessments === assessmentsModule.items.length &&
-          assessmentsModule.items.length > 0,
-        isAssessmentModule: true,
-      });
-    }
-
     return result;
   }, [units, currentCourse.id]);
 
@@ -1266,11 +1241,6 @@ export const LessonPlayerPage = () => {
                             <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-blue-100 dark:bg-indigo-950/80 text-blue-700 dark:text-indigo-300">
                               Module {sec.index}
                             </span>
-                            {sec.isAssessmentModule && (
-                              <span className="px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300">
-                                Final Module
-                              </span>
-                            )}
                             {containsActive && (
                               <span className="px-1.5 py-0.5 bg-blue-600 text-white text-[9px] font-bold rounded-sm uppercase tracking-wide">
                                 Active Lesson
