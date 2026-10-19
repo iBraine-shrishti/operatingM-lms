@@ -43,7 +43,6 @@ export const QuestionDiscussionsPage = () => {
   });
 
   const [commentVotes, setCommentVotes] = useState({});
-  const [savedPosts, setSavedPosts] = useState(new Set());
 
   // Current Active Single Post (derived from URL param or local state)
   const currentPost = useMemo(() => {
@@ -182,32 +181,6 @@ export const QuestionDiscussionsPage = () => {
     showToast("Comment posted!", "success");
   };
 
-  // Share post URL
-  const handleShare = (post) => {
-    const url = `${window.location.origin}/forums/${post.id}`;
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(url);
-      showToast("Link copied to clipboard!", "info", "Share Post");
-    } else {
-      showToast(url, "info", "Post Link");
-    }
-  };
-
-  // Save / Bookmark post
-  const handleSave = (post) => {
-    setSavedPosts((prev) => {
-      const next = new Set(prev);
-      if (next.has(post.id)) {
-        next.delete(post.id);
-        showToast("Removed from saved bookmarks", "info");
-      } else {
-        next.add(post.id);
-        showToast("Saved to your bookmarks!", "success");
-      }
-      return next;
-    });
-  };
-
   // Image Lightbox zoom
   const handleImageClick = (imageUrl, title) => {
     setLightboxData({ url: imageUrl, title });
@@ -226,9 +199,6 @@ export const QuestionDiscussionsPage = () => {
           onCommentVote={handleCommentVote}
           commentVotes={commentVotes}
           onImageClick={handleImageClick}
-          onShare={handleShare}
-          onSave={handleSave}
-          isSaved={savedPosts.has(currentPost.id)}
           currentUser={currentUser}
           onCreatePostClick={() => setIsCreateModalOpen(true)}
         />
@@ -321,9 +291,6 @@ export const QuestionDiscussionsPage = () => {
                   onVote={(type) => handlePostVote(post.id, type)}
                   onOpenPost={handleOpenPost}
                   onImageClick={handleImageClick}
-                  onShare={handleShare}
-                  onSave={handleSave}
-                  isSaved={savedPosts.has(post.id)}
                 />
               ))}
             </div>

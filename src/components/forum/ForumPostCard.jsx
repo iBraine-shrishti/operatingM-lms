@@ -1,8 +1,6 @@
 import React from "react";
 import {
   MessageSquare,
-  Share2,
-  Bookmark,
   Pin,
   ExternalLink,
   Tag,
@@ -38,9 +36,6 @@ export const ForumPostCard = ({
   onVote,
   onOpenPost,
   onImageClick,
-  onShare,
-  onSave,
-  isSaved = false,
 }) => {
   const communitySlug = (post.community || post.category || "general")
     .replace(/^r\//, "")
@@ -175,38 +170,6 @@ export const ForumPostCard = ({
             >
               <MessageSquare size={13} />
               <span>{totalComments} Comments</span>
-            </button>
-
-            {/* Share button */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onShare && onShare(post);
-              }}
-              className="px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center space-x-1.5 cursor-pointer"
-            >
-              <Share2 size={13} />
-              <span className="hidden sm:inline">Share</span>
-            </button>
-
-            {/* Save / Bookmark button */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSave && onSave(post);
-              }}
-              className={`px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center space-x-1.5 cursor-pointer ${
-                isSaved
-                  ? "text-blue-600 dark:text-blue-400 font-bold"
-                  : "hover:text-slate-900 dark:hover:text-white"
-              }`}
-            >
-              <Bookmark size={13} className={isSaved ? "fill-current" : ""} />
-              <span className="hidden sm:inline">
-                {isSaved ? "Saved" : "Save"}
-              </span>
             </button>
           </div>
 

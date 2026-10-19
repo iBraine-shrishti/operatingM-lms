@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import {
   ArrowLeft,
   MessageSquare,
-  Share2,
-  Bookmark,
   Pin,
   Tag,
   Send,
@@ -23,9 +21,6 @@ export const ForumPostDetailView = ({
   onCommentVote,
   commentVotes = {},
   onImageClick,
-  onShare,
-  onSave,
-  isSaved = false,
   currentUser,
   onCreatePostClick,
 }) => {
@@ -196,28 +191,6 @@ export const ForumPostDetailView = ({
                     <MessageSquare size={13} />
                     <span>{replies.length} Comments</span>
                   </span>
-
-                  <button
-                    type="button"
-                    onClick={() => onShare && onShare(post)}
-                    className="px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center space-x-1.5 cursor-pointer"
-                  >
-                    <Share2 size={13} />
-                    <span>Share</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => onSave && onSave(post)}
-                    className={`px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center space-x-1.5 cursor-pointer ${
-                      isSaved
-                        ? "text-blue-600 dark:text-blue-400 font-bold"
-                        : "hover:text-slate-900 dark:hover:text-white"
-                    }`}
-                  >
-                    <Bookmark size={13} className={isSaved ? "fill-current" : ""} />
-                    <span>{isSaved ? "Saved" : "Save"}</span>
-                  </button>
                 </div>
 
                 {post.courseTitle && (
