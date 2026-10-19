@@ -62,29 +62,29 @@ export const OperatingMediaCertificate = ({
   return (
     <div
       data-certificate-document="true"
-      className={`certificate-document relative w-full max-w-[920px] mx-auto min-h-[460px] sm:min-h-0 aspect-auto sm:aspect-[1.38/1] select-none overflow-hidden print:w-full print:max-w-none print:shadow-none print:m-0 print:p-0 ${
-        showBorder ? "shadow-xl rounded-sm" : ""
+      className={`certificate-document relative w-full max-w-[940px] mx-auto min-h-[520px] sm:min-h-0 aspect-auto sm:aspect-[1.38/1] select-none overflow-hidden print:w-full print:max-w-none print:shadow-none print:m-0 print:p-0 ${
+        showBorder ? "shadow-2xl rounded-sm" : ""
       } ${className}`}
       style={{
         backgroundColor: "#ffffff",
         color: "#0f172a",
         colorScheme: "light",
-        border: showBorder ? "4px solid #dc2626" : "none", // THICK RED BORDER
-        borderRadius: showBorder ? "4px" : "0px",
+        border: showBorder ? "10px solid #dc2626" : "none", // THICK RED FRAMING BORDER
+        borderRadius: showBorder ? "2px" : "0px",
         fontFamily:
           "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       }}
     >
       <div
         data-cert-paper="true"
-        className="w-full h-full relative flex flex-col justify-between p-4 sm:p-7 md:p-9 bg-white"
+        className="w-full h-full relative flex flex-col justify-between p-6 sm:p-10 md:p-12 lg:p-14 bg-white"
       >
         {/* Subtle Watermark in background */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04] overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.035] overflow-hidden">
           <img
             src={logoImg}
             alt=""
-            className="w-[65%] max-w-[480px] object-contain grayscale mix-blend-multiply"
+            className="w-[60%] max-w-[440px] object-contain grayscale mix-blend-multiply"
           />
         </div>
 
@@ -92,14 +92,16 @@ export const OperatingMediaCertificate = ({
         {/* 1. TOP SECTION: FOCUSED OPERATING MEDIA BRAND LOGO        */}
         {/* Clear advertising focus, large size, and brand authority */}
         {/* ========================================================== */}
-        <div className="relative z-10 flex flex-col items-center justify-center pt-2 sm:pt-3">
-          <img
-            src={logoImg}
-            alt="Operating Media - Digitize Your Career"
-            className="h-32 sm:h-40 md:h-48 lg:h-56 w-auto max-w-[92%] object-contain drop-shadow-sm mix-blend-multiply transition-all"
-            style={{ filter: "none" }}
-          />
-          <div className="flex items-center gap-2 mt-1 sm:mt-1.5">
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <div className="relative flex items-center justify-center overflow-hidden">
+            <img
+              src={logoImg}
+              alt="Operating Media - Digitize Your Career"
+              className="h-28 sm:h-36 md:h-44 lg:h-48 w-auto max-w-[90%] object-contain drop-shadow-sm mix-blend-multiply transition-all"
+              style={{ filter: "none", clipPath: "inset(1.5% 1.5% 1.5% 1.5%)" }}
+            />
+          </div>
+          <div className="flex items-center gap-2 mt-1.5 sm:mt-2">
             <span className="h-[1px] w-8 sm:w-16 bg-slate-300" />
             <span className="text-[9px] sm:text-[10.5px] font-bold uppercase tracking-[0.22em] text-slate-500">
               Center of Excellence in Digital Marketing • ISO 9001:2015
