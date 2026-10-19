@@ -87,25 +87,38 @@ export const ProfileHeader = ({ studentData, activeTab, onTabChange }) => {
           {/* Right: Countdown Card + 3D Graduation Cap Graphic */}
           <div className="flex items-center space-x-4 shrink-0">
             {/* Days Left Card */}
-            <div className="bg-white/95 dark:bg-slate-900/90 border border-blue-100 dark:border-slate-800 rounded-2xl px-5 py-3.5 shadow-xs flex items-center space-x-3.5 relative min-w-[210px]">
-              <div className="w-11 h-11 rounded-full bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                <Clock size={22} />
-              </div>
-              <div className="pr-5">
-                <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-tight">
-                  {studentData.daysLeft}{" "}
-                  <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
-                    Days Left
-                  </span>
+            <div className="bg-white/95 dark:bg-slate-900/90 border border-blue-100 dark:border-slate-800 rounded-2xl px-5 py-3.5 shadow-xs flex flex-col justify-between relative min-w-[210px] sm:min-w-[220px]">
+              <div className="flex items-center space-x-3.5 relative">
+                <div className="w-11 h-11 rounded-full bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                  <Clock size={22} />
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                  Course ends on {studentData.courseEnd}
+                <div className="pr-5">
+                  <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-tight">
+                    {studentData.daysLeft}{" "}
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                      Days Left
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                    Course ends on {studentData.courseEnd}
+                  </div>
+                </div>
+                <Calendar
+                  size={14}
+                  className="absolute top-0 right-0 text-blue-500 dark:text-blue-400 opacity-80"
+                />
+              </div>
+
+              {/* Stretched Progress Bar Below */}
+              <div className="w-full mt-3">
+                <div className="w-full h-2 bg-blue-100/80 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
+                  <div
+                    className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full transition-all duration-500"
+                    style={{ width: `${studentData.progressPercentage || 65}%` }}
+                    title={`${studentData.progressPercentage || 65}% Course Completed`}
+                  />
                 </div>
               </div>
-              <Calendar
-                size={14}
-                className="absolute top-3 right-3 text-blue-500 dark:text-blue-400 opacity-80"
-              />
             </div>
 
             {/* 3D Graduation Cap Graphic */}
