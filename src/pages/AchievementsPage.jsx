@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { lmsService } from "../services/lmsService";
 import {
-  Award,
   CheckCircle,
   Eye,
   ShieldCheck,
@@ -29,31 +28,36 @@ import badgeGold from "../assets/badge-type-gold.png";
 const BADGE_THEMES = {
   SEO: {
     accent: "text-emerald-700 dark:text-emerald-400",
-    badgeBg: "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200/90 dark:border-emerald-500/40",
+    badgeBg:
+      "bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200/90 dark:border-emerald-500/40",
     topGradient: "from-emerald-400 via-teal-500 to-emerald-600",
     categoryLabel: "SEO & AUDIT",
   },
   WordPress: {
     accent: "text-teal-700 dark:text-teal-400",
-    badgeBg: "bg-teal-50 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 border-teal-200/90 dark:border-teal-500/40",
+    badgeBg:
+      "bg-teal-50 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 border-teal-200/90 dark:border-teal-500/40",
     topGradient: "from-teal-400 via-cyan-500 to-teal-600",
     categoryLabel: "CMS ARCHITECTURE",
   },
   Analytics: {
     accent: "text-amber-800 dark:text-amber-400",
-    badgeBg: "bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border-amber-200/90 dark:border-amber-500/40",
+    badgeBg:
+      "bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border-amber-200/90 dark:border-amber-500/40",
     topGradient: "from-amber-400 via-orange-500 to-amber-600",
     categoryLabel: "DATA & ANALYTICS",
   },
   Design: {
     accent: "text-rose-700 dark:text-rose-400",
-    badgeBg: "bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200/90 dark:border-rose-500/40",
+    badgeBg:
+      "bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200/90 dark:border-rose-500/40",
     topGradient: "from-rose-400 via-pink-500 to-rose-600",
     categoryLabel: "UI & BRANDING",
   },
   Marketing: {
     accent: "text-purple-700 dark:text-purple-400",
-    badgeBg: "bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border-purple-200/90 dark:border-purple-500/40",
+    badgeBg:
+      "bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border-purple-200/90 dark:border-purple-500/40",
     topGradient: "from-purple-400 via-indigo-500 to-purple-600",
     categoryLabel: "DIGITAL STRATEGY",
   },
@@ -62,10 +66,17 @@ const BADGE_THEMES = {
 const getBadgeTheme = (category = "") => {
   const cat = (category || "").toLowerCase();
   if (cat.includes("seo")) return BADGE_THEMES.SEO;
-  if (cat.includes("word") || cat.includes("web")) return BADGE_THEMES.WordPress;
+  if (cat.includes("word") || cat.includes("web"))
+    return BADGE_THEMES.WordPress;
   if (cat.includes("analytic")) return BADGE_THEMES.Analytics;
-  if (cat.includes("design") || cat.includes("creative")) return BADGE_THEMES.Design;
-  if (cat.includes("market") || cat.includes("strategy") || cat.includes("capstone")) return BADGE_THEMES.Marketing;
+  if (cat.includes("design") || cat.includes("creative"))
+    return BADGE_THEMES.Design;
+  if (
+    cat.includes("market") ||
+    cat.includes("strategy") ||
+    cat.includes("capstone")
+  )
+    return BADGE_THEMES.Marketing;
   return BADGE_THEMES.SEO;
 };
 
@@ -162,7 +173,7 @@ export const AchievementsPage = () => {
       (b) =>
         b.course.toLowerCase().includes(searchQuery.toLowerCase()) ||
         b.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        b.certificate_id.toLowerCase().includes(searchQuery.toLowerCase())
+        b.certificate_id.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [activeFilter, searchQuery]);
 
@@ -171,12 +182,13 @@ export const AchievementsPage = () => {
     return achievements.filter(
       (a) =>
         a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        a.category.toLowerCase().includes(searchQuery.toLowerCase())
+        a.category.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [activeFilter, searchQuery, achievements]);
 
   const totalCredentials = COURSE_BATCHES_DATA.length + achievements.length;
-  const totalEarned = COURSE_BATCHES_DATA.length + achievements.filter((a) => a.unlocked).length;
+  const totalEarned =
+    COURSE_BATCHES_DATA.length + achievements.filter((a) => a.unlocked).length;
 
   return (
     <div className="space-y-6">
@@ -186,21 +198,27 @@ export const AchievementsPage = () => {
       <StudentPageHeader
         {...STUDENT_HEADERS_CONFIG.achievements}
         metrics={[
-          { value: COURSE_BATCHES_DATA.length, label: "Course Batches", dotColor: "bg-blue-600" },
-          { value: achievements.length, label: "Milestone Badges", dotColor: "bg-amber-500" },
-          { value: `${totalEarned} / ${totalCredentials}`, label: "Earned", dotColor: "bg-emerald-500" },
-          { value: "100%", label: "Verified Credentials", dotColor: "bg-purple-500" },
+          {
+            value: COURSE_BATCHES_DATA.length,
+            label: "Course Batches",
+            dotColor: "bg-blue-600",
+          },
+          {
+            value: achievements.length,
+            label: "Milestone Badges",
+            dotColor: "bg-amber-500",
+          },
+          {
+            value: `${totalEarned} / ${totalCredentials}`,
+            label: "Earned",
+            dotColor: "bg-emerald-500",
+          },
+          {
+            value: "100%",
+            label: "Verified Credentials",
+            dotColor: "bg-purple-500",
+          },
         ]}
-        action={
-          <button
-            type="button"
-            onClick={() => handleOpenCertificate(COURSE_BATCHES_DATA[0])}
-            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
-          >
-            <Award size={16} className="2xl:w-4.5 2xl:h-4.5" />
-            <span>View Verified Certificate</span>
-          </button>
-        }
       />
 
       {/* ------------------------------------------------------------- */}
@@ -246,7 +264,10 @@ export const AchievementsPage = () => {
 
         {/* Search Input */}
         <div className="relative w-full sm:w-60">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+          />
           <input
             type="text"
             value={searchQuery}
@@ -292,10 +313,10 @@ export const AchievementsPage = () => {
                     cert.badgeType === "gold"
                       ? "bg-gradient-to-r from-amber-400 to-yellow-500"
                       : cert.badgeType === "green"
-                      ? "bg-gradient-to-r from-emerald-400 to-teal-500"
-                      : cert.badgeType === "purple"
-                      ? "bg-gradient-to-r from-purple-400 to-indigo-500"
-                      : "bg-gradient-to-r from-blue-400 to-cyan-500"
+                        ? "bg-gradient-to-r from-emerald-400 to-teal-500"
+                        : cert.badgeType === "purple"
+                          ? "bg-gradient-to-r from-purple-400 to-indigo-500"
+                          : "bg-gradient-to-r from-blue-400 to-cyan-500"
                   }`}
                 />
 
@@ -382,7 +403,8 @@ export const AchievementsPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-3.5 sm:gap-4">
             {filteredAchievements.map((ach) => {
               const theme = getBadgeTheme(ach.category);
-              const desc = SHORT_ACHIEVEMENT_DESCRIPTIONS[ach.id] || ach.description;
+              const desc =
+                SHORT_ACHIEVEMENT_DESCRIPTIONS[ach.id] || ach.description;
 
               return (
                 <div
@@ -418,12 +440,18 @@ export const AchievementsPage = () => {
 
                       {ach.unlocked ? (
                         <span className="text-[9.5px] font-black px-1.5 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200/90 dark:border-emerald-500/40 inline-flex items-center space-x-1 shrink-0">
-                          <CheckCircle2 size={10} className="text-emerald-600 dark:text-emerald-400" />
+                          <CheckCircle2
+                            size={10}
+                            className="text-emerald-600 dark:text-emerald-400"
+                          />
                           <span>EARNED</span>
                         </span>
                       ) : (
                         <span className="text-[9.5px] font-bold px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 inline-flex items-center space-x-1 shrink-0">
-                          <Lock size={9} className="text-slate-400 dark:text-slate-500" />
+                          <Lock
+                            size={9}
+                            className="text-slate-400 dark:text-slate-500"
+                          />
                           <span>LOCKED</span>
                         </span>
                       )}

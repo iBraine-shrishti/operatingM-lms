@@ -5,7 +5,6 @@ import {
   ExternalLink,
   Download,
   ShieldCheck,
-  Eye,
   Sparkles,
 } from "lucide-react";
 
@@ -90,15 +89,6 @@ export const StudentCertificatesCard = ({
         <span className="text-xs text-slate-500 font-medium text-center sm:text-left">
           Available in high-resolution PDF with verifiable QR verification.
         </span>
-
-        <button
-          type="button"
-          onClick={() => onOpenCertificate(primaryCert)}
-          className="w-full sm:w-auto inline-flex items-center justify-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer active:scale-95 shrink-0"
-        >
-          <Eye size={13} />
-          <span>View Verified Certificate</span>
-        </button>
       </div>
     </div>
   );
