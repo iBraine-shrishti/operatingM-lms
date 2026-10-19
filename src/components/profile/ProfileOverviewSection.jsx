@@ -2,7 +2,6 @@ import React from "react";
 import {
   Calendar,
   FileText,
-  MapPin,
   User,
   GraduationCap,
   ArrowRight,
@@ -30,80 +29,64 @@ export const ProfileOverviewSection = ({
 }) => {
   return (
     <div className="space-y-5">
-      {/* 4 TOP METRIC CARDS ROW */}
+      {/* 1. ACADEMIC MILESTONES & MENTORSHIP BAR */}
       <div
         id="section-overview"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 scroll-mt-20"
+        className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xs scroll-mt-20"
       >
-        {/* Card 1: Admission Date */}
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 flex items-center space-x-3.5 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-            <Calendar size={18} />
+        <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-100 dark:divide-slate-800/80 gap-3.5 sm:gap-0">
+          {/* Milestone 1: Admission Date */}
+          <div className="flex items-center space-x-3.5 sm:px-4 py-2 sm:py-0 first:pl-0">
+            <div className="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+              <Calendar size={20} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">
+                Admission Date
+              </span>
+              <strong className="text-sm sm:text-base font-black text-slate-900 dark:text-white block truncate">
+                {studentData.admissionDate}
+              </strong>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block truncate">
+                Started learning journey
+              </span>
+            </div>
           </div>
-          <div>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">
-              Admission Date
-            </span>
-            <strong className="text-sm sm:text-base font-bold text-slate-900 dark:text-white block">
-              {studentData.admissionDate}
-            </strong>
-            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">
-              Started your learning journey
-            </span>
-          </div>
-        </div>
 
-        {/* Card 2: Registration Date */}
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 flex items-center space-x-3.5 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-            <FileText size={18} />
+          {/* Milestone 2: Registration Date */}
+          <div className="flex items-center space-x-3.5 sm:px-4 py-2 sm:py-0">
+            <div className="w-11 h-11 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+              <FileText size={20} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">
+                Registration Date
+              </span>
+              <strong className="text-sm sm:text-base font-black text-slate-900 dark:text-white block truncate">
+                {studentData.registrationDate}
+              </strong>
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block truncate">
+                CRM Account Verified
+              </span>
+            </div>
           </div>
-          <div>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">
-              Registration Date
-            </span>
-            <strong className="text-sm sm:text-base font-bold text-slate-900 dark:text-white block">
-              {studentData.registrationDate}
-            </strong>
-            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">
-              Account created
-            </span>
-          </div>
-        </div>
 
-        {/* Card 3: Branch / Center */}
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 flex items-center space-x-3.5 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-            <MapPin size={18} />
-          </div>
-          <div>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">
-              Branch / Center
-            </span>
-            <strong className="text-sm sm:text-base font-bold text-slate-900 dark:text-white block">
-              {studentData.center}
-            </strong>
-            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">
-              Classroom + Live Zoom Hybrid
-            </span>
-          </div>
-        </div>
-
-        {/* Card 4: Faculty Lead */}
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-4 sm:p-5 flex items-center space-x-3.5 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
-            <User size={18} />
-          </div>
-          <div>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">
-              Faculty Lead
-            </span>
-            <strong className="text-sm sm:text-base font-bold text-slate-900 dark:text-white block">
-              {studentData.facultyLead}
-            </strong>
-            <span className="text-[10px] text-slate-400 dark:text-slate-500 block">
-              {studentData.facultyLeadRole}
-            </span>
+          {/* Milestone 3: Faculty Lead */}
+          <div className="flex items-center space-x-3.5 sm:px-4 py-2 sm:py-0 last:pr-0">
+            <div className="w-11 h-11 rounded-xl bg-purple-50 dark:bg-purple-950/60 border border-purple-100 dark:border-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+              <User size={20} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">
+                Faculty Lead
+              </span>
+              <strong className="text-sm sm:text-base font-black text-slate-900 dark:text-white block truncate">
+                {studentData.facultyLead}
+              </strong>
+              <span className="text-[11px] text-purple-600 dark:text-purple-400 font-semibold block truncate">
+                {studentData.facultyLeadRole}
+              </span>
+            </div>
           </div>
         </div>
       </div>
