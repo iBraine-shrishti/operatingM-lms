@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShieldAlert, ArrowRight } from "lucide-react";
 import { useToast } from "../../context/ToastContext";
 import { studentDashboardService } from "../../services/studentDashboardService";
 import {
   StudentWelcomeBanner,
   StudentQuickActions,
   StudentStatCards,
+  DashboardExamCard,
   ContinueLearningCard,
   NotificationsDeadlinesHub,
   PendingAssignmentsModal,
@@ -154,57 +154,10 @@ export const StudentDashboardHub = ({
       />
 
       {/* ============================================================== */}
-      {/* 2.5 PROCTORED EXAMINATION TERMINAL CALLOUT BANNER              */}
+      {/* 2.5 DEDICATED OFFICIAL EXAMINATIONS CARD                       */}
       {/* ============================================================== */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-rose-50/90 via-white to-rose-50/60 dark:from-slate-950 dark:via-slate-900 dark:to-rose-950/70 border border-rose-200 dark:border-rose-500/40 p-3 sm:p-3.5 xl:p-4 text-slate-900 dark:text-white shadow-xs dark:shadow-[0_4px_24px_rgba(244,63,94,0.12)]">
-        {/* Subtle grid pattern / security overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(#f43f5e_1px,transparent_1px)] [background-size:16px_16px] opacity-10 dark:opacity-15 pointer-events-none" />
+      <DashboardExamCard crmProfile={crmProfile} />
 
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-rose-100 dark:bg-rose-500/20 border border-rose-200 dark:border-rose-500/40 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 shadow-2xs dark:shadow-[0_0_15px_rgba(244,63,94,0.35)]">
-              <ShieldAlert size={22} className="animate-pulse text-rose-600 dark:text-rose-400" />
-            </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/40 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500 dark:bg-rose-400 animate-ping inline-block" />
-                  PROCTORED EXAM TERMINAL
-                </span>
-                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono font-semibold">
-                  CODE: OMC-2026-EXAM
-                </span>
-                <span className="hidden sm:inline-block text-[11px] text-slate-600 dark:text-slate-400">
-                  • 60 Questions • 45 Mins • Negative Marking (-0.67)
-                </span>
-              </div>
-              <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white tracking-tight mt-0.5 flex items-center gap-2">
-                Digital Marketing Mid-Term Board Examination
-                <span className="text-xs font-semibold px-2 py-0.5 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/30 rounded">
-                  Window Open
-                </span>
-              </h4>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end shrink-0">
-            <div className="text-right hidden xl:block">
-              <span className="block text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider">Candidate Pass</span>
-              <span className="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">
-                {crmProfile?.admissionNo || "OMC-0266"} • Borivali Center
-              </span>
-            </div>
-            <button
-              type="button"
-              onClick={() => navigate("/exam")}
-              className="w-full md:w-auto px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-500 hover:to-rose-600 text-white font-black text-xs sm:text-sm tracking-wide shadow-md dark:shadow-[0_0_20px_rgba(244,63,94,0.4)] hover:shadow-lg dark:hover:shadow-[0_0_28px_rgba(244,63,94,0.6)] flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-            >
-              <span>Enter Exam Hall</span>
-              <ArrowRight size={15} />
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* ============================================================== */}
       {/* 3. TWO-COLUMN MAIN WORKSPACE                                   */}

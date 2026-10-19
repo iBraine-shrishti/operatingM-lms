@@ -260,6 +260,14 @@ export const QUICK_ACTIONS_DATA = [
     iconName: "GraduationCap",
   },
   {
+    id: "action-exams",
+    title: "Official Exams",
+    subtitle: "8 Certifications",
+    link: "/exam",
+    color: "rose",
+    iconName: "Award",
+  },
+  {
     id: "action-quizzes",
     title: "My Quizzes",
     subtitle: "Test knowledge",

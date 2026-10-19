@@ -1,5 +1,6 @@
 export * from "./examTracksConfig";
 export * from "./ExamHeader";
+export * from "./ExamTrackCard";
 export * from "./ExamCourseSelector";
 export * from "./ExamBriefingView";
 export * from "./ExamLiveRunner";

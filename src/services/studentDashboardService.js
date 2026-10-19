@@ -248,26 +248,25 @@ export const studentDashboardService = {
       course: courseTitle.includes("Diploma")
         ? "Diploma in Digital Marketing"
         : "Search Engine Optimization (SEO)",
-      dueDate: "In 5 days • Oct 12, 2026 (11:59 PM)",
-      daysLeft: 5,
-      badgeText: "5 Days Left",
+      dueDate: "Live Quiz Available • 15 Questions",
+      daysLeft: 1,
+      badgeText: "Active Quiz",
       severity: "quiz", // BLUE
       link: "/my-quizzes",
       btnText: "Start Quiz",
     };
 
-    // Item 5: Exam
+    // Item 5: Exam (8 Certification Tracks Available)
     const itemExam = {
       id: "notif-exam",
       type: "exam",
-      title: "Digital Marketing Mid-Term Certification Exam",
-      course: `${courseTitle} • Final Assessment`,
-      dueDate: "In 4 days • Oct 11, 2026 (10:00 AM)",
-      daysLeft: 4,
-      badgeText: "Exam in 4 Days",
+      title: "Official Skills Certification Exams",
+      course: "8 Certification Tracks Open • Instant Results",
+      dueDate: "Proctored Exam Hall Open • Take Exams Online",
+      badgeText: "Take Exams",
       severity: "exam", // GREEN
       link: "/exam",
-      btnText: "Enter Exam Hall",
+      btnText: "Take Exams",
     };
 
     return [itemToday, itemAssignmentsGroup, itemPayment, itemQuiz, itemExam];

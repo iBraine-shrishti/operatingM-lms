@@ -69,7 +69,7 @@ const SEVERITY_CONFIGS = {
     clockColor: "text-blue-500 dark:text-blue-400",
     btnStyle:
       "bg-blue-600 hover:bg-blue-700 text-white border-blue-600 shadow-[0_2px_8px_rgba(37,99,235,0.3)] dark:shadow-[0_0_12px_rgba(37,99,235,0.4)] group-hover:brightness-110 group-hover:border-blue-500",
-    stripText: "5d LEFT",
+    stripText: "QUIZ",
     titleHover: "group-hover:text-blue-600 dark:group-hover:text-cyan-400",
     icon: BookCheck,
     iconClass: "text-blue-600 dark:text-blue-400 group-hover:scale-125",
@@ -85,7 +85,7 @@ const SEVERITY_CONFIGS = {
     clockColor: "text-emerald-500 dark:text-emerald-400",
     btnStyle:
       "bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600 shadow-[0_2px_8px_rgba(16,185,129,0.3)] dark:shadow-[0_0_12px_rgba(16,185,129,0.4)] group-hover:brightness-110 group-hover:border-emerald-500",
-    stripText: "EXAM",
+    stripText: "EXAMS",
     titleHover: "group-hover:text-emerald-600 dark:group-hover:text-emerald-400",
     icon: Award,
     iconClass: "text-emerald-600 dark:text-emerald-400 group-hover:scale-125",

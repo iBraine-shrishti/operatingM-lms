@@ -5,6 +5,7 @@ import {
   GraduationCap,
   CheckSquare,
   FileText,
+  Award,
   ArrowRight,
 } from "lucide-react";
 
@@ -12,6 +13,7 @@ const ICON_MAP = {
   GraduationCap,
   CheckSquare,
   FileText,
+  Award,
 };
 
 const DEFAULT_ACTIONS = [
@@ -22,6 +24,14 @@ const DEFAULT_ACTIONS = [
     link: "/enrolled-courses",
     color: "blue",
     icon: GraduationCap,
+  },
+  {
+    id: "action-exams",
+    title: "Official Exams",
+    subtitle: "8 Certifications",
+    link: "/exam",
+    color: "rose",
+    icon: Award,
   },
   {
     id: "action-quizzes",

@@ -1,56 +1,29 @@
 import React, { useState, useMemo } from "react";
 import {
-  Globe,
-  Target,
-  BarChart2,
-  Share2,
-  Layout,
-  GraduationCap,
-  Palette,
-  Sparkles,
+  Award,
   Search,
   CheckCircle2,
-  Clock,
-  Award,
-  BookOpen,
-  ArrowRight,
   ShieldCheck,
-  Filter,
-  Film,
-  TrendingUp,
+  Sparkles,
 } from "lucide-react";
 import { EXAM_TRACKS } from "./examTracksConfig";
-
-const ICONS_MAP = {
-  Globe,
-  Target,
-  BarChart2,
-  Share2,
-  Layout,
-  Palette,
-  GraduationCap,
-  Sparkles,
-  Search,
-  Film,
-  TrendingUp,
-};
+import { ExamTrackCard } from "./ExamTrackCard";
 
 const CATEGORIES = [
   { key: "all", label: "All Certifications" },
   { key: "wordpress", label: "WordPress" },
   { key: "seo", label: "SEO" },
   { key: "google-ads", label: "Google Ads (PPC)" },
-  { key: "graphic-design", label: "Graphic Designing (Canva)" },
+  { key: "graphic-design", label: "Graphic Designing" },
   { key: "smm", label: "SMM" },
-  { key: "ai-prompt", label: "AI in DM & Prompt Eng" },
+  { key: "ai-prompt", label: "AI & Prompt Eng" },
   { key: "video-editing", label: "Video Editing" },
   { key: "smo", label: "SMO" },
 ];
 
 /**
- * Enterprise Course Selection Catalog.
- * Utilizes the full horizontal screen canvas with a 4-column responsive grid on desktop,
- * minimizing vertical scrolling and presenting a sleek, professional UI.
+ * Card-Based Exam Catalog Page.
+ * A clean, simple, color-coordinated, component-based layout showcasing all 8 certification tracks.
  */
 export const ExamCourseSelector = ({ onSelectTrack }) => {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -77,234 +50,125 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
   return (
     <main className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
       <div className="max-w-7xl w-full mx-auto space-y-6 pb-12 sm:pb-16">
-        {/* 1. INSTITUTIONAL HERO BANNER */}
-        <div className="relative rounded-2xl sm:rounded-3xl border border-blue-200/80 dark:border-slate-800 bg-gradient-to-r from-blue-50/90 via-indigo-50/40 to-white dark:from-slate-900/95 dark:via-blue-950/30 dark:to-slate-900/90 p-5 sm:p-6 lg:p-7 shadow-xs overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 dark:bg-blue-400/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          {/* Left Title & Intro */}
-          <div className="max-w-3xl space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-blue-100/80 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-500/30 text-[11px] font-mono font-bold tracking-wider uppercase">
-              <Sparkles size={12} className="text-blue-600 dark:text-blue-400" />
-              <span>Operating Media Skillshop Certifications</span>
+        {/* Simple & Clean Header */}
+        <div className="rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-[#0f172a] p-5 sm:p-6 shadow-xs">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="space-y-1.5 max-w-2xl">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-500/30 text-xs font-bold uppercase tracking-wider">
+                <Sparkles size={13} className="text-blue-600 dark:text-blue-400" />
+                <span>Operating Media Skillshop</span>
+              </div>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                Official Certification Exams
+              </h1>
+              <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
+                Choose from 8 specialized industry certification tracks. Complete the proctored assessment to earn your official industry credentials.
+              </p>
             </div>
 
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-950 dark:text-white tracking-tight leading-tight">
-              Choose Your Certification Track
-            </h1>
+            {/* Quick Summary Pill Highlights */}
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0 text-xs font-mono">
+              <div className="px-3 py-1.5 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 text-blue-800 dark:text-blue-300 font-bold flex items-center gap-1.5">
+                <Award size={14} className="text-blue-600 dark:text-blue-400" />
+                <span>8 Tracks Open</span>
+              </div>
+              <div className="px-3 py-1.5 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 font-bold flex items-center gap-1.5">
+                <ShieldCheck size={14} className="text-emerald-600 dark:text-emerald-400" />
+                <span>Zero Penalty</span>
+              </div>
+              <div className="px-3 py-1.5 rounded-xl bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 text-purple-800 dark:text-purple-300 font-bold flex items-center gap-1.5">
+                <CheckCircle2 size={14} className="text-purple-600 dark:text-purple-400" />
+                <span>80% Passing</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-            <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
-              Select any of the 8 specialized industry certifications to validate your competencies,
-              or complete the targeted skills assessment for official certification.
+        {/* Filter Pills & Search Bar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
+          {/* Category Filter Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none flex-1">
+            {CATEGORIES.map((cat) => {
+              const isActive = selectedCategory === cat.key;
+              return (
+                <button
+                  key={cat.key}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat.key)}
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
+                    isActive
+                      ? "bg-blue-600 text-white border-blue-600 shadow-sm"
+                      : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Search Box & Counter */}
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="relative w-full sm:w-64">
+              <Search
+                size={14}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search tracks, skills..."
+                className="w-full pl-9 pr-7 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-2xs"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 whitespace-nowrap font-medium hidden sm:inline">
+              {filteredTracks.length} / {EXAM_TRACKS.length} Tracks
+            </span>
+          </div>
+        </div>
+
+        {/* Card-Based Exam Grid */}
+        {filteredTracks.length === 0 ? (
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center space-y-3">
+            <p className="text-slate-500 dark:text-slate-400 text-sm">
+              No certification tracks match "{searchQuery}".
             </p>
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedCategory("all");
+              }}
+              className="px-4 py-2 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-bold text-xs border border-blue-200 dark:border-blue-800/60 transition-colors cursor-pointer"
+            >
+              Reset Filters
+            </button>
           </div>
-
-          {/* Right Metrics Matrix (Uses horizontal space) */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 gap-2.5 shrink-0 text-xs font-mono">
-            <div className="px-3.5 py-2 rounded-xl bg-white/90 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-              <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold mb-0.5">
-                <Award size={14} />
-                <span>8 Tracks</span>
-              </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">Available Exams</span>
-            </div>
-
-            <div className="px-3.5 py-2 rounded-xl bg-white/90 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-              <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold mb-0.5">
-                <ShieldCheck size={14} />
-                <span>+2.00 / 0</span>
-              </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">Zero Penalty</span>
-            </div>
-
-            <div className="px-3.5 py-2 rounded-xl bg-white/90 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-              <div className="flex items-center gap-1.5 text-purple-600 dark:text-purple-400 font-bold mb-0.5">
-                <Clock size={14} />
-                <span>80% Score</span>
-              </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">Passing Threshold</span>
-            </div>
-
-            <div className="px-3.5 py-2 rounded-xl bg-white/90 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-              <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold mb-0.5">
-                <CheckCircle2 size={14} />
-                <span>Proctored</span>
-              </div>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">3 Warnings Policy</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 2. FULL-WIDTH SEARCH & FILTER CONTROLS */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
-        {/* Category Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none flex-1">
-          {CATEGORIES.map((cat) => {
-            const isActive = selectedCategory === cat.key;
-            return (
-              <button
-                key={cat.key}
-                type="button"
-                onClick={() => setSelectedCategory(cat.key)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
-                  isActive
-                    ? "bg-blue-600 text-white border-blue-600 shadow-xs"
-                    : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200/90 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white"
-                }`}
-              >
-                {cat.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Search Box & Counter */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="relative w-full sm:w-72">
-            <Search
-              size={15}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-            />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search tracks, skills..."
-              className="w-full pl-9 pr-7 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-2xs"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-
-          <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 whitespace-nowrap font-medium hidden sm:inline">
-            {filteredTracks.length} / {EXAM_TRACKS.length} Tracks
-          </span>
-        </div>
-      </div>
-
-      {/* 3. FLUID 4-COLUMN RESPONSIVE GRID (Minimizes vertical scroll on desktop) */}
-      {filteredTracks.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center space-y-3">
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
-            No certification track matches "{searchQuery}".
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              setSearchQuery("");
-              setSelectedCategory("all");
-            }}
-            className="px-4 py-2 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-bold text-xs border border-blue-200 dark:border-blue-800/60 transition-colors cursor-pointer"
-          >
-            Reset Filters
-          </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredTracks.map((track) => {
-            const IconComponent = ICONS_MAP[track.iconName] || BookOpen;
-
-            return (
-              <div
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {filteredTracks.map((track) => (
+              <ExamTrackCard
                 key={track.id}
-                className="group relative bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200/90 dark:border-slate-800 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-200 flex flex-col justify-between p-5 shadow-2xs hover:shadow-md"
-              >
-                <div className="space-y-3">
-                  {/* Top Bar: Icon, Code & Category Badge */}
-                  <div className="flex items-start justify-between gap-2">
-                    <div
-                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${track.gradient} text-white flex items-center justify-center shadow-xs shrink-0`}
-                    >
-                      <IconComponent size={19} />
-                    </div>
-
-                    <div className="flex flex-col items-end gap-1">
-                      <span
-                        className={`px-2 py-0.5 rounded-md border text-[10px] font-mono font-bold uppercase tracking-wider ${track.badgeColor}`}
-                      >
-                        {track.badgeText}
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500 font-semibold">
-                        {track.code}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Title & Short Description */}
-                  <div>
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug line-clamp-2">
-                      {track.title}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-1.5 line-clamp-2">
-                      {track.description}
-                    </p>
-                  </div>
-
-                  {/* Quick Specification Strip */}
-                  <div className="grid grid-cols-2 gap-2 pt-2.5 text-xs font-mono border-t border-slate-100 dark:border-slate-800">
-                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 truncate">
-                      <Clock size={12} className="text-blue-600 dark:text-blue-400 shrink-0" />
-                      <span>{track.durationMinutes} Mins</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 truncate">
-                      <BookOpen size={12} className="text-indigo-600 dark:text-indigo-400 shrink-0" />
-                      <span>{track.questionsCount} Questions</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 truncate">
-                      <Award size={12} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
-                      <span>80% ({track.passingMarks}/{track.totalMarks}M)</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400 font-bold truncate">
-                      <CheckCircle2 size={12} className="shrink-0" />
-                      <span>0 Penalty</span>
-                    </div>
-                  </div>
-
-                  {/* Skills Tags */}
-                  <div className="pt-1">
-                    <div className="flex flex-wrap gap-1.5">
-                      {track.skillsCovered.slice(0, 3).map((skill, sIdx) => (
-                        <span
-                          key={sIdx}
-                          className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[11px] font-medium text-slate-600 dark:text-slate-300 truncate max-w-[140px]"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                      {track.skillsCovered.length > 3 && (
-                        <span className="px-1.5 py-0.5 rounded text-[10px] text-slate-400 font-mono">
-                          +{track.skillsCovered.length - 3}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom CTA Action Button */}
-                <div className="mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-800">
-                  <button
-                    type="button"
-                    onClick={() => onSelectTrack(track)}
-                    className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-2xs hover:shadow transition-all group-hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
-                  >
-                    <span>Prepare & Launch Exam</span>
-                    <ArrowRight size={14} />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+                track={track}
+                onSelectTrack={onSelectTrack}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );
 };
+
+export default ExamCourseSelector;

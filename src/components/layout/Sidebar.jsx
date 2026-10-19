@@ -9,6 +9,7 @@ import {
   User,
   GraduationCap,
   Award,
+  Trophy,
   CheckSquare,
   FileText,
   BookCheck,
@@ -51,9 +52,15 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           badge: String(enrolledCoursesCount || 2),
         },
         {
+          name: "Exams",
+          path: "/exam",
+          icon: Award,
+          badge: "8",
+        },
+        {
           name: "Achievements",
           path: "/achievements",
-          icon: Award,
+          icon: Trophy,
           badge: "4",
         },
         {
