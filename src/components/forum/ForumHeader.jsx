@@ -44,24 +44,24 @@ export const ForumHeader = ({
         </button>
       </div>
 
-      {/* Search Input */}
-      <div className="relative">
+      {/* Search Input - Permanent Highlighted Border & Enhanced Hover Effect */}
+      <div className="relative group">
         <Search
           size={16}
-          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 pointer-events-none"
+          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#3b49df] dark:text-blue-400 group-hover:scale-110 transition-transform duration-200 pointer-events-none"
         />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
           placeholder={`Search ${selectedCommunity === "all" ? "discussions" : currentTopicLabel}, topics, keywords, or authors...`}
-          className="w-full pl-10 pr-9 py-2.5 bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-700/80 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-[#3b49df] focus:bg-white dark:focus:bg-[#0b1329] transition-all"
+          className="w-full pl-10 pr-9 py-2.5 bg-blue-50/25 dark:bg-blue-950/25 hover:bg-blue-50/50 dark:hover:bg-blue-950/40 focus:bg-white dark:focus:bg-[#0b1329] border-2 border-[#3b49df] dark:border-blue-500 hover:border-[#2f3ab2] dark:hover:border-blue-400 focus:border-[#2f3ab2] dark:focus:border-blue-300 ring-2 ring-blue-500/15 dark:ring-blue-500/20 hover:ring-4 hover:ring-blue-500/25 dark:hover:ring-blue-400/30 focus:ring-4 focus:ring-blue-500/35 dark:focus:ring-blue-400/40 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 shadow-xs hover:shadow-md focus:shadow-md focus:outline-hidden transition-all duration-200"
         />
         {searchQuery && (
           <button
             type="button"
             onClick={() => onSearchChange && onSearchChange("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition-colors"
           >
             <X size={14} />
           </button>
