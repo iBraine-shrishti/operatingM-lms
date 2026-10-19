@@ -33,13 +33,13 @@ export const StudentWelcomeBanner = ({
   const avatarSrc = currentUser?.avatar || sahilProfilePic || profilePic;
 
   return (
-    <div className="lg:col-span-7 xl:col-span-7 2xl:col-span-7 relative bg-cover bg-center dashboard-hero-banner border border-blue-100/70 dark:border-blue-500/30 shadow-2xs hover:shadow-xs p-5 sm:p-6 lg:p-6 xl:p-7 flex items-center justify-between overflow-hidden rounded-3xl transition-all duration-200 min-h-[175px] sm:min-h-[187px]">
+    <div className="lg:col-span-7 xl:col-span-7 2xl:col-span-7 relative bg-cover bg-center dashboard-hero-banner border border-blue-100/70 dark:border-blue-500/30 shadow-2xs hover:shadow-xs p-4 sm:p-5 lg:p-6 xl:p-7 flex items-center justify-between overflow-hidden rounded-3xl transition-all duration-200 min-h-[160px] sm:min-h-[185px] gap-3 sm:gap-4">
       {/* Left Column: Greeting, Student Name, Specialization & Identity Pills */}
-      <div className="relative z-10 flex-1 min-w-0 pr-3 sm:pr-4 space-y-0.5 sm:space-y-1">
+      <div className="relative z-10 flex-1 min-w-0 pr-1 sm:pr-4 space-y-0.5 sm:space-y-1">
         <p className="text-slate-600 dark:text-slate-300 font-medium text-xs sm:text-sm md:text-[15px] tracking-normal">
           Welcome Back,
         </p>
-        <h1 className="text-2xl sm:text-3xl lg:text-[32px] xl:text-[34px] font-black text-[#0f172a] dark:text-white tracking-tight leading-none py-0.5">
+        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-[32px] xl:text-[34px] font-black text-[#0f172a] dark:text-white tracking-tight leading-tight py-0.5">
           <span className="truncate block">{studentName}!</span>
         </h1>
         <p className="text-slate-600 dark:text-slate-300 font-medium text-xs sm:text-sm md:text-[15px] truncate">
@@ -47,10 +47,10 @@ export const StudentWelcomeBanner = ({
         </p>
 
         {/* 2 White Badges / Pills: Student ID & Center */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-2.5 sm:pt-3">
-          <div className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs border border-white/80 dark:border-slate-700/60 shadow-2xs rounded-full px-3.5 py-1.5 flex items-center space-x-1.5 text-xs sm:text-[13px] font-semibold text-slate-700 dark:text-slate-200">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2.5 pt-2 sm:pt-3">
+          <div className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs border border-white/80 dark:border-slate-700/60 shadow-2xs rounded-full px-2.5 sm:px-3.5 py-1 sm:py-1.5 flex items-center space-x-1 sm:space-x-1.5 text-[11px] sm:text-xs md:text-[13px] font-semibold text-slate-700 dark:text-slate-200">
             <Calendar
-              size={14}
+              size={13}
               className="text-[#3b82f6] dark:text-blue-400 stroke-[2.2] shrink-0"
             />
             <span>
@@ -61,9 +61,9 @@ export const StudentWelcomeBanner = ({
             </span>
           </div>
 
-          <div className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs border border-white/80 dark:border-slate-700/60 shadow-2xs rounded-full px-3.5 py-1.5 flex items-center space-x-1.5 text-xs sm:text-[13px] font-semibold text-slate-700 dark:text-slate-200">
+          <div className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs border border-white/80 dark:border-slate-700/60 shadow-2xs rounded-full px-2.5 sm:px-3.5 py-1 sm:py-1.5 flex items-center space-x-1 sm:space-x-1.5 text-[11px] sm:text-xs md:text-[13px] font-semibold text-slate-700 dark:text-slate-200">
             <MapPin
-              size={14}
+              size={13}
               className="text-[#3b82f6] dark:text-blue-400 stroke-[2.2] shrink-0"
             />
             <span>
@@ -75,32 +75,27 @@ export const StudentWelcomeBanner = ({
         </div>
       </div>
 
-      {/* Right Column: Circular Student Avatar with Green Online Status Dot */}
+      {/* Right Column: Square Student Photo with Green Online Status Dot */}
       <div className="relative z-10 shrink-0 self-center">
-        {isDefaultSahil ? (
-          <div className="relative w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32">
+        <div className="relative group">
+          {/* Square Photo Container with Responsive Dimensions */}
+          <div className="relative aspect-square w-[76px] h-[76px] sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 xl:w-36 xl:h-36 2xl:w-40 2xl:h-40 rounded-xl sm:rounded-2xl md:rounded-3xl border-2 sm:border-[2.5px] border-white/95 dark:border-slate-700 shadow-md hover:shadow-xl bg-white dark:bg-slate-800 p-0.5 sm:p-1 md:p-1.5 overflow-hidden transition-all duration-300 flex items-center justify-center">
             <img
-              src={sahilCleanAvatar}
+              src={avatarSrc}
               alt={studentName}
-              className="w-full h-full object-contain drop-shadow-xs"
+              onError={(e) => {
+                e.currentTarget.src = profilePic;
+              }}
+              className="w-full h-full object-cover object-center rounded-lg sm:rounded-xl md:rounded-2xl transition-transform duration-300 group-hover:scale-105"
             />
           </div>
-        ) : (
-          <div className="relative">
-            <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full ring-4 ring-white/95 dark:ring-slate-800 shadow-md overflow-hidden bg-white dark:bg-slate-800">
-              <img
-                src={avatarSrc}
-                alt={studentName}
-                className="w-full h-full object-cover object-top"
-              />
-            </div>
-            {/* Status Indicator Dot (Green with white ring matching DASHBOARD.png) */}
-            <span
-              className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#10b981] ring-2 sm:ring-3 ring-white dark:ring-slate-900 shadow-xs z-20 pointer-events-none"
-              title="Active Student"
-            />
-          </div>
-        )}
+
+          {/* Status Indicator Dot (Green with white border) */}
+          <span
+            className="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 2xl:w-4.5 2xl:h-4.5 rounded-full bg-[#10b981] ring-2 sm:ring-2.5 ring-white dark:ring-slate-900 shadow-xs z-20 pointer-events-none"
+            title="Active Student"
+          />
+        </div>
       </div>
     </div>
   );
