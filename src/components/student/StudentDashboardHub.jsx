@@ -6,7 +6,6 @@ import {
   StudentWelcomeBanner,
   StudentQuickActions,
   StudentStatCards,
-  DashboardExamCard,
   ContinueLearningCard,
   NotificationsDeadlinesHub,
   PendingAssignmentsModal,
@@ -152,12 +151,6 @@ export const StudentDashboardHub = ({
       <StudentStatCards
         stats={dashboardData.stats}
       />
-
-      {/* ============================================================== */}
-      {/* 2.5 DEDICATED OFFICIAL EXAMINATIONS CARD                       */}
-      {/* ============================================================== */}
-      <DashboardExamCard crmProfile={crmProfile} />
-
 
       {/* ============================================================== */}
       {/* 3. TWO-COLUMN MAIN WORKSPACE                                   */}
