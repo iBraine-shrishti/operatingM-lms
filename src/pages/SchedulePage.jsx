@@ -90,6 +90,7 @@ export const SchedulePage = () => {
 
   const weeklySchedule = [
     {
+      date: "20 Apr 2026",
       day: "Monday",
       time: "9:00 AM - 10:00 AM",
       topic: "Technical SEO Audits & Core Web Vitals",
@@ -97,6 +98,7 @@ export const SchedulePage = () => {
       type: "Lecture + Lab",
     },
     {
+      date: "21 Apr 2026",
       day: "Tuesday",
       time: "9:00 AM - 10:00 AM",
       topic: "Schema Markup & Rich Snippets Hands-on",
@@ -104,6 +106,7 @@ export const SchedulePage = () => {
       type: "Live Workshop",
     },
     {
+      date: "22 Apr 2026",
       day: "Wednesday",
       time: "9:00 AM - 10:00 AM",
       topic: "Robots.txt, XML Sitemaps & Canonicalization",
@@ -111,6 +114,7 @@ export const SchedulePage = () => {
       type: "Theory & Case Study",
     },
     {
+      date: "23 Apr 2026",
       day: "Thursday",
       time: "9:00 AM - 10:00 AM",
       topic: "Google Search Console Advanced Diagnostics",
@@ -118,6 +122,7 @@ export const SchedulePage = () => {
       type: "Lab Session",
     },
     {
+      date: "24 Apr 2026",
       day: "Friday",
       time: "9:00 AM - 10:00 AM",
       topic: "Weekly Q&A, Doubt Solving & Project Review",
@@ -381,26 +386,26 @@ export const SchedulePage = () => {
           </div>
         ) : (
           <div className="overflow-x-auto rounded-xl border border-slate-300/80 dark:border-slate-800 shadow-xs">
-            <table className="w-full text-left text-xs border-collapse">
+            <table className="w-full text-center text-xs border-collapse">
               {/* Attribute Background Header */}
               <thead className="bg-[#1e293b] dark:bg-slate-950 text-white">
                 <tr>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200">
-                    Day
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
+                    Lecture Date
                   </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200">
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
                     Time
                   </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200">
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
                     Lecture Subject / Topic
                   </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200">
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
                     Format
                   </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200">
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
                     Faculty
                   </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-right">
+                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
                     Action
                   </th>
                 </tr>
@@ -418,20 +423,21 @@ export const SchedulePage = () => {
                           : "bg-slate-50/80 dark:bg-slate-900/60 hover:bg-blue-50/40 dark:hover:bg-slate-800/50"
                       }`}
                     >
-                      {/* Day Pill with Distinct Category Color */}
-                      <td className="py-4 px-4 whitespace-nowrap">
+                      {/* Lecture Date with Calendar Icon & Category Color */}
+                      <td className="py-4 px-4 whitespace-nowrap text-center">
                         <span
-                          className={`inline-block text-[11px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg border shadow-2xs ${getDayBadgeClass(
+                          className={`inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-tight px-3 py-1.5 rounded-lg border shadow-2xs ${getDayBadgeClass(
                             row.day
                           )}`}
                         >
-                          {row.day}
+                          <Calendar size={13} className="shrink-0" />
+                          <span>{row.date}</span>
                         </span>
                       </td>
 
                       {/* Time with Clock Icon */}
-                      <td className="py-4 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700 px-2.5 py-1 rounded-md text-[11.5px] shadow-2xs">
+                      <td className="py-4 px-4 whitespace-nowrap text-center">
+                        <span className="inline-flex items-center justify-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700 px-2.5 py-1 rounded-md text-[11.5px] shadow-2xs">
                           <Clock
                             size={12}
                             className="text-blue-600 dark:text-blue-400"
@@ -440,24 +446,24 @@ export const SchedulePage = () => {
                         </span>
                       </td>
 
-                      {/* Topic - Bold & High Contrast */}
-                      <td className="py-4 px-4 min-w-[220px]">
-                        <span className="font-extrabold text-slate-900 dark:text-white text-xs sm:text-[13px] leading-snug block">
+                      {/* Topic - Bold & High Contrast, Centered */}
+                      <td className="py-4 px-4 min-w-[220px] text-center">
+                        <span className="font-extrabold text-slate-900 dark:text-white text-xs sm:text-[13px] leading-snug block text-center">
                           {row.topic}
                         </span>
                       </td>
 
-                      {/* Format Badge with indicator dot */}
-                      <td className="py-4 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 bg-blue-50/90 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 px-2.5 py-1 rounded-md font-bold text-[11px]">
+                      {/* Format Badge with indicator dot, Centered */}
+                      <td className="py-4 px-4 whitespace-nowrap text-center">
+                        <span className="inline-flex items-center justify-center gap-1.5 bg-blue-50/90 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 px-2.5 py-1 rounded-md font-bold text-[11px]">
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                           <span>{row.type}</span>
                         </span>
                       </td>
 
-                      {/* Faculty with User Avatar Icon */}
-                      <td className="py-4 px-4 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300 text-xs">
+                      {/* Faculty with User Avatar Icon, Centered */}
+                      <td className="py-4 px-4 whitespace-nowrap text-center">
+                        <span className="inline-flex items-center justify-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300 text-xs">
                           <User
                             size={13}
                             className="text-slate-400 dark:text-slate-500"
@@ -466,13 +472,13 @@ export const SchedulePage = () => {
                         </span>
                       </td>
 
-                      {/* Action Button */}
-                      <td className="py-4 px-4 text-right whitespace-nowrap">
+                      {/* Action Button, Centered */}
+                      <td className="py-4 px-4 text-center whitespace-nowrap">
                         <button
                           onClick={() =>
                             navigate("/lesson-player?courseId=course-8")
                           }
-                          className="inline-flex items-center gap-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-2xs transition-all cursor-pointer active:scale-95"
+                          className="inline-flex items-center justify-center gap-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-2xs transition-all cursor-pointer active:scale-95"
                         >
                           <span>Enter Room</span>
                           <ArrowRight size={12} />
