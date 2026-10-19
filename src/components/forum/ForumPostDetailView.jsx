@@ -72,21 +72,24 @@ export const ForumPostDetailView = ({
   return (
     <div className="space-y-4">
       {/* 1. Breadcrumb / Back Bar */}
-      <div className="flex items-center space-x-3 bg-white dark:bg-[#0b1329] px-4 py-2.5 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-2xs">
+      <div className="flex items-center space-x-2.5 sm:space-x-3 bg-white dark:bg-[#0b1329] px-4 sm:px-5 py-3 rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-2xs">
         <button
           type="button"
           onClick={onBack}
-          className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center space-x-1.5 text-xs font-bold cursor-pointer"
+          className="p-1.5 sm:px-3 sm:py-1.5 rounded-lg text-slate-700 dark:text-slate-200 hover:text-[#3b49df] dark:hover:text-blue-400 hover:bg-blue-50/80 dark:hover:bg-blue-950/40 transition-colors flex items-center space-x-2 text-xs sm:text-sm font-bold cursor-pointer shrink-0"
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={17} />
           <span>Back to Feed</span>
         </button>
-        <span className="text-slate-300 dark:text-slate-700">/</span>
-        <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">
+        <span className="text-slate-300 dark:text-slate-600 text-xs sm:text-sm font-medium shrink-0">/</span>
+        <span className="text-xs sm:text-sm font-bold text-[#3b49df] dark:text-blue-400 shrink-0">
           {topicLabel}
         </span>
-        <span className="text-slate-300 dark:text-slate-700">/</span>
-        <span className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-sm">
+        <span className="text-slate-300 dark:text-slate-600 text-xs sm:text-sm font-medium shrink-0">/</span>
+        <span
+          title={post.title}
+          className="text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 truncate max-w-xs sm:max-w-md md:max-w-xl lg:max-w-2xl"
+        >
           {post.title}
         </span>
       </div>
