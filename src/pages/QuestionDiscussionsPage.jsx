@@ -257,26 +257,30 @@ export const QuestionDiscussionsPage = () => {
 
   // Main Reddit Forum Feed View
   return (
-    <div className="space-y-4 max-w-7xl mx-auto">
-      {/* 1. Reddit Community Header */}
-      <ForumHeader
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        onCreatePostClick={() => setIsCreateModalOpen(true)}
-        selectedCommunity={selectedCommunity}
-      />
+    <div className="h-[calc(100vh-5.5rem)] flex flex-col space-y-3.5 max-w-7xl mx-auto w-full overflow-hidden">
+      {/* 1. Reddit Community Header - FIXED AT TOP (SEARCH NEVER SCROLLS) */}
+      <div className="shrink-0">
+        <ForumHeader
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          onCreatePostClick={() => setIsCreateModalOpen(true)}
+          selectedCommunity={selectedCommunity}
+        />
+      </div>
 
-      {/* 2. Reddit 2-Column Grid (Feed + Right Community Sidebar) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      {/* 2. 2-Column Grid (Feed + Right Community Sidebar) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 min-h-0 overflow-hidden">
         {/* Left Column: Post Feed (8 cols on desktop) */}
-        <div className="lg:col-span-8 space-y-3.5">
+        <div className="lg:col-span-8 flex flex-col h-full min-h-0 space-y-3">
           {/* Topic Category Filter Chips */}
-          <ForumSortBar
-            selectedCommunity={selectedCommunity}
-            onSelectCommunity={setSelectedCommunity}
-          />
+          <div className="shrink-0">
+            <ForumSortBar
+              selectedCommunity={selectedCommunity}
+              onSelectCommunity={setSelectedCommunity}
+            />
+          </div>
 
-          {/* Posts Feed - Scroll down only the questions */}
+          {/* Posts Feed - ONLY QUESTIONS SCROLL, SCROLLBAR HIDDEN */}
           {filteredDiscussions.length === 0 ? (
             <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-10 text-center shadow-2xs space-y-3">
               <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center mx-auto">
@@ -308,7 +312,7 @@ export const QuestionDiscussionsPage = () => {
               </div>
             </div>
           ) : (
-            <div className="space-y-3 lg:max-h-[calc(100vh-250px)] overflow-y-auto pr-1.5 custom-scrollbar">
+            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar space-y-3 pr-1 pb-4">
               {filteredDiscussions.map((post) => (
                 <ForumPostCard
                   key={post.id}
@@ -327,7 +331,7 @@ export const QuestionDiscussionsPage = () => {
         </div>
 
         {/* Right Column: Community Sidebar (4 cols on desktop) */}
-        <div className="lg:col-span-4 hidden lg:block">
+        <div className="lg:col-span-4 hidden lg:block overflow-hidden">
           <ForumSidebar totalPostsCount={discussions.length} />
         </div>
       </div>
