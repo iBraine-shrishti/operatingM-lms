@@ -14,7 +14,11 @@ import {
   Moon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useAuth, profilePic } from "../../context/AuthContext";
+import {
+  useAuth,
+  sahilProfilePic,
+  profilePic,
+} from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
   const { isDark, toggleTheme } = useTheme();
@@ -22,14 +26,23 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
   const [unreadNotifications, setUnreadNotifications] = useState(3);
   const [notifOpen, setNotifOpen] = useState(false);
   const navigate = useNavigate();
-  const { currentUser, role, isAdmin, isStudent, switchRole, logout, crmProfile } =
-    useAuth();
+  const {
+    currentUser,
+    role,
+    isAdmin,
+    isStudent,
+    switchRole,
+    logout,
+    crmProfile,
+  } = useAuth();
 
   const currentAvatar =
-    (role === "ADMIN"
-      ? currentUser?.avatar
-      : currentUser?.avatar || crmProfile?.photo || crmProfile?.avatar || profilePic) ||
-    profilePic;
+    role === "ADMIN"
+      ? currentUser?.avatar || profilePic
+      : currentUser?.avatar ||
+        crmProfile?.photo ||
+        crmProfile?.avatar ||
+        sahilProfilePic;
   return (
     <header className="sticky top-0 z-20 h-16 bg-white dark:bg-[#0b1329] border-b border-slate-200 dark:border-slate-800/90 px-4 md:px-6 flex items-center justify-between shadow-xs transition-colors duration-200">
       {/* Left side: Mobile Toggle & Global Search */}
@@ -74,8 +87,6 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
         >
           <Search size={19} />
         </button>
-
-
 
         {/* Notifications Dropdown Container */}
         <div className="relative">
@@ -197,7 +208,11 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
               src={currentAvatar}
               alt={currentUser?.name || "User"}
               onError={(e) => {
-                e.currentTarget.src = profilePic;
+                const fallback =
+                  role === "ADMIN" ? profilePic : sahilProfilePic;
+                if (e.currentTarget.src !== fallback) {
+                  e.currentTarget.src = fallback;
+                }
               }}
               className="w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full object-cover ring-2 ring-slate-200/90 dark:ring-slate-700 shadow-2xs shrink-0"
             />
@@ -222,7 +237,11 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
                   src={currentAvatar}
                   alt={currentUser?.name || "User"}
                   onError={(e) => {
-                    e.currentTarget.src = profilePic;
+                    const fallback =
+                      role === "ADMIN" ? profilePic : sahilProfilePic;
+                    if (e.currentTarget.src !== fallback) {
+                      e.currentTarget.src = fallback;
+                    }
                   }}
                   className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700 shrink-0"
                 />
@@ -235,9 +254,15 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
                   </p>
                   <span className="mt-1 inline-flex items-center space-x-1 text-[10.5px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
                     {isAdmin ? (
-                      <Shield size={11} className="text-slate-600 dark:text-slate-400" />
+                      <Shield
+                        size={11}
+                        className="text-slate-600 dark:text-slate-400"
+                      />
                     ) : (
-                      <GraduationCap size={11} className="text-teal-700 dark:text-teal-400" />
+                      <GraduationCap
+                        size={11}
+                        className="text-teal-700 dark:text-teal-400"
+                      />
                     )}
                     <span>
                       {isAdmin ? "Administrator" : "Enrolled Student"}

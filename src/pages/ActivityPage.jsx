@@ -95,7 +95,7 @@ export const ActivityPage = () => {
   const currentStudentAvatar =
     currentUser?.avatar && !currentUser?.avatar?.includes("avatar-card")
       ? currentUser.avatar
-      : sahilProfilePic || profilePic;
+      : sahilProfilePic;
 
   // Filter activities: strictly the logged-in student's milestones
   const scopedActivities = useMemo(() => {
@@ -430,7 +430,7 @@ export const ActivityPage = () => {
                         alt={act.user.name}
                         onError={(e) => {
                           e.currentTarget.onerror = null;
-                          e.currentTarget.src = sahilProfilePic || profilePic;
+                          e.currentTarget.src = sahilProfilePic;
                         }}
                         className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700 shrink-0 mt-0.5 sm:mt-0"
                       />

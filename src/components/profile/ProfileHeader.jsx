@@ -12,7 +12,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import dashboardHat from "../../assets/header-bg/dashboard-hat.png";
-import premPassportPhotoImg from "../../assets/Prem_Photo_Passport.png";
+import sahilProfilePic from "../../assets/sahil-profile.png";
 
 /**
  * ProfileHeader: Displays the top student profile banner, countdown,
@@ -36,16 +36,23 @@ export const ProfileHeader = ({ studentData, activeTab, onTabChange }) => {
           <div className="flex items-start sm:items-center gap-4 sm:gap-5 min-w-0">
             {/* Avatar Container with Green Active Dot */}
             <div className="relative shrink-0">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-white dark:border-slate-700 shadow-md bg-white dark:bg-slate-800 p-0.5">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border border-white/80 dark:border-slate-700/80 shadow-md bg-slate-100 dark:bg-slate-800 p-0">
                 <img
-                  src={studentData.avatar || premPassportPhotoImg}
+                  src={studentData.avatar || sahilProfilePic}
                   alt={studentData.name}
-                  className="w-full h-full object-cover object-center rounded-xl"
+                  loading="eager"
+                  decoding="sync"
+                  onError={(e) => {
+                    if (e.currentTarget.src !== sahilProfilePic) {
+                      e.currentTarget.src = sahilProfilePic;
+                    }
+                  }}
+                  className="w-full h-full object-cover object-center rounded-2xl"
                 />
               </div>
               {/* Online Green Indicator Dot on Top Right */}
               <span
-                className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900 shadow-xs ring-1 ring-emerald-400"
+                className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border border-white dark:border-slate-900 shadow-xs ring-1 ring-emerald-400"
                 title="Active Student"
               />
             </div>

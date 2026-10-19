@@ -1,6 +1,5 @@
 import { crmService } from "../../services/crmService";
-import premPhotoImg from "../../assets/Prem_Photo.jpg";
-import premPassportPhotoImg from "../../assets/Prem_Photo_Passport.png";
+import sahilProfilePic from "../../assets/sahil-profile.png";
 
 /**
  * Maps CRM profile data and current user auth state into a normalized student profile object.
@@ -16,14 +15,11 @@ export const mapStudentDataFromCrm = (crm, user) => {
   const numericId = `#${numOnly}`;
   const studentId =
     source.admissionNo || user?.admissionNo || `OMC-${numOnly.padStart(4, "0")}`;
-  const name = source.name || user?.name || "Prem Suthar";
+  const name = source.name || user?.name || "Sahil Hasolkar";
   const fullName =
-    source.fullName || user?.fullName || source.name || user?.name || "Prem Suthar";
+    source.fullName || user?.fullName || source.name || user?.name || "Sahil Nilesh Hasolkar";
   const rawAvatar = source.photo || source.avatar || user?.avatar;
-  const avatar =
-    rawAvatar && rawAvatar !== premPhotoImg
-      ? rawAvatar
-      : premPassportPhotoImg;
+  const avatar = rawAvatar || sahilProfilePic;
   const course = source.course || user?.course || "Diploma in Digital Marketing";
   const isDiploma = course.toLowerCase().includes("diploma");
   const center =

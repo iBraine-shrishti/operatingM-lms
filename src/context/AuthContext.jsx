@@ -65,8 +65,21 @@ export const AuthProvider = ({ children }) => {
     const [studentUser, setStudentUser] = useState(() => {
         const initial = { ...STUDENT_USER };
         try {
+            const cachedProfileStr = localStorage.getItem('om_lms_crm_cached_profile');
             const savedAvatar = localStorage.getItem('om_lms_student_avatar');
-            if (savedAvatar === boyAvatar || savedAvatar === girlAvatar) {
+            if (cachedProfileStr) {
+                const cached = JSON.parse(cachedProfileStr);
+                if (cached?.photo || cached?.avatar) {
+                    initial.avatar = cached.photo || cached.avatar;
+                }
+                if (cached?.name) initial.name = cached.name;
+                if (cached?.fullName) initial.fullName = cached.fullName;
+                if (cached?.admissionNo) initial.admissionNo = cached.admissionNo;
+                if (cached?.course) initial.course = cached.course;
+                if (cached?.branch) initial.branch = cached.branch;
+                if (cached?.center) initial.center = cached.center;
+                if (cached?.id) initial.crmAdmissionId = cached.id;
+            } else if (savedAvatar && savedAvatar !== boyAvatar && savedAvatar !== girlAvatar && savedAvatar !== profilePic && savedAvatar !== premPassportPhotoImg && savedAvatar !== premPhotoImg) {
                 initial.avatar = savedAvatar;
             } else {
                 initial.avatar = sahilProfilePic;
@@ -78,7 +91,18 @@ export const AuthProvider = ({ children }) => {
     });
 
     // Live CRM states
-    const [crmProfile, setCrmProfile] = useState(DEFAULT_CRM_PROFILE);
+    const [crmProfile, setCrmProfile] = useState(() => {
+        try {
+            const cachedProfileStr = localStorage.getItem('om_lms_crm_cached_profile');
+            if (cachedProfileStr) {
+                const cached = JSON.parse(cachedProfileStr);
+                if (cached && (cached.id || cached.admissionNo || cached.name)) {
+                    return cached;
+                }
+            }
+        } catch {}
+        return DEFAULT_CRM_PROFILE;
+    });
     const [crmAttendance, setCrmAttendance] = useState(DEFAULT_CRM_ATTENDANCE);
     const [crmBatch, setCrmBatch] = useState(DEFAULT_CRM_BATCH);
     const [crmCertificates, setCrmCertificates] = useState(DEFAULT_CRM_CERTIFICATES);
@@ -114,11 +138,19 @@ export const AuthProvider = ({ children }) => {
 
             if (profile) {
                 setCrmProfile(profile);
+                const resolvedAvatar = profile.photo || profile.avatar || sahilProfilePic;
+                try {
+                    localStorage.setItem('om_lms_crm_cached_profile', JSON.stringify(profile));
+                    if (resolvedAvatar && resolvedAvatar !== sahilProfilePic) {
+                        localStorage.setItem('om_lms_student_avatar', resolvedAvatar);
+                    }
+                } catch (e) {}
+
                 setStudentUser((prev) => {
                     return {
                         ...prev,
-                        crmAdmissionId: profile.id,
-                        admissionNo: profile.admissionNo,
+                        crmAdmissionId: profile.id || prev.crmAdmissionId,
+                        admissionNo: profile.admissionNo || prev.admissionNo,
                         name: profile.name || prev.name,
                         fullName: profile.fullName || profile.name || prev.fullName,
                         email: profile.email || prev.email,
@@ -126,7 +158,7 @@ export const AuthProvider = ({ children }) => {
                         branch: profile.branch || prev.branch,
                         center: profile.center || profile.branch || prev.center,
                         designation: `${profile.course || 'Digital Marketing'} Student`,
-                        avatar: profile.photo || prev.avatar || premPassportPhotoImg,
+                        avatar: resolvedAvatar,
                         enrolledCoursesCount: activePermittedIds.length
                     };
                 });
