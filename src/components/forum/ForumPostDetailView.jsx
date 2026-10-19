@@ -97,7 +97,7 @@ export const ForumPostDetailView = ({
       </div>
 
       {/* 2. Main 2-Column Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Full Thread & Comments (8 cols) */}
         <div className="lg:col-span-8 space-y-4">
           {/* Main Post Card */}
@@ -294,10 +294,9 @@ export const ForumPostDetailView = ({
         </div>
 
         {/* Right Column: Reddit Community Sidebar (4 cols) */}
-        <div className="lg:col-span-4 hidden lg:block sticky top-20">
+        <div className="lg:col-span-4 hidden lg:block">
           <ForumSidebar
             selectedCommunity={post.community?.replace("r/", "") || "all"}
-            onCreatePostClick={onCreatePostClick}
             totalPostsCount={1}
           />
         </div>

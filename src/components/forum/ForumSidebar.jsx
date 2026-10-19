@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  ShieldCheck,
-  Plus,
-  Clock,
-  CheckCircle2,
-  HelpCircle,
-} from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 export const TOPIC_CATEGORIES = [
   { id: "all", label: "All Discussions" },
@@ -36,11 +30,10 @@ export const cleanAuthorHandle = (handle = "", name = "") => {
 };
 
 export const ForumSidebar = ({
-  onCreatePostClick,
   totalPostsCount = 0,
 }) => {
   return (
-    <aside className="space-y-4">
+    <aside className="space-y-4 sticky top-20">
       {/* 1. About Community Card */}
       <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/90 dark:border-slate-800 shadow-2xs overflow-hidden">
         {/* Banner strip */}
@@ -62,7 +55,7 @@ export const ForumSidebar = ({
           </div>
 
           {/* Community Stats */}
-          <div className="grid grid-cols-2 gap-2 py-2 border-y border-slate-100 dark:border-slate-800 text-xs">
+          <div className="grid grid-cols-2 gap-2 py-2 border-t border-slate-100 dark:border-slate-800 text-xs">
             <div>
               <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
                 Members
@@ -81,42 +74,10 @@ export const ForumSidebar = ({
               </span>
             </div>
           </div>
-
-          {/* Create Post Button */}
-          <button
-            type="button"
-            onClick={onCreatePostClick}
-            className="w-full bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs font-bold py-2.5 rounded-xl shadow-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer active:scale-[0.99]"
-          >
-            <Plus size={14} />
-            <span>Create Post / Ask Question</span>
-          </button>
         </div>
       </div>
 
-      {/* 2. Faculty Support & Help Card (Professional, clean) */}
-      <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/90 dark:border-slate-800 p-4 shadow-2xs space-y-2.5 text-xs">
-        <h4 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
-          <Clock size={12} className="text-blue-500" />
-          <span>Instructor Support</span>
-        </h4>
-        <div className="space-y-2 text-[12px] text-slate-600 dark:text-slate-400 leading-snug">
-          <div className="flex items-start space-x-2">
-            <CheckCircle2 size={13} className="text-emerald-500 shrink-0 mt-0.5" />
-            <span>
-              <strong className="text-slate-800 dark:text-slate-200">Daily Live Q&A:</strong> Mon - Fri, 4:00 PM – 6:00 PM IST
-            </span>
-          </div>
-          <div className="flex items-start space-x-2">
-            <CheckCircle2 size={13} className="text-emerald-500 shrink-0 mt-0.5" />
-            <span>
-              <strong className="text-slate-800 dark:text-slate-200">Avg. Reply Time:</strong> Under 2 hours during active sessions
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. Footer Links */}
+      {/* 2. Footer Links */}
       <div className="text-[10px] text-slate-400 dark:text-slate-500 px-2 space-y-1">
         <div className="flex flex-wrap gap-x-2 gap-y-1">
           <span>Operating Media LMS Forums</span>

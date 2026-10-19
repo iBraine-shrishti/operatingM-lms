@@ -27,7 +27,6 @@ export const QuestionDiscussionsPage = () => {
 
   // Filters & Navigation State
   const [selectedCommunity, setSelectedCommunity] = useState("all");
-  const [activeSort, setActiveSort] = useState("hot"); // "hot" | "new" | "top"
   const [searchQuery, setSearchQuery] = useState("");
 
   // Modals
@@ -89,29 +88,18 @@ export const QuestionDiscussionsPage = () => {
       );
     }
 
-    // Sort: Hot (score + pinned first), New (date), Top (highest upvotes)
+    // Default Sort: pinned first, then combined score and replies activity
     result.sort((a, b) => {
       if (a.isPinned && !b.isPinned) return -1;
       if (!a.isPinned && b.isPinned) return 1;
 
-      if (activeSort === "top") {
-        const scoreA = a.upvotes ?? a.score ?? 0;
-        const scoreB = b.upvotes ?? b.score ?? 0;
-        return scoreB - scoreA;
-      }
-
-      if (activeSort === "new") {
-        return (b.id || "").localeCompare(a.id || "");
-      }
-
-      // Hot (default): combined score and replies activity
       const hotA = (a.upvotes ?? a.score ?? 0) * 2 + (a.repliesCount || 0);
       const hotB = (b.upvotes ?? b.score ?? 0) * 2 + (b.repliesCount || 0);
       return hotB - hotA;
     });
 
     return result;
-  }, [discussions, selectedCommunity, searchQuery, activeSort]);
+  }, [discussions, selectedCommunity, searchQuery]);
 
   // Handle Thumbs Up / Down reaction on Posts
   const handlePostVote = (targetPostId, type) => {
@@ -279,21 +267,16 @@ export const QuestionDiscussionsPage = () => {
       />
 
       {/* 2. Reddit 2-Column Grid (Feed + Right Community Sidebar) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Post Feed (8 cols on desktop) */}
         <div className="lg:col-span-8 space-y-3.5">
-          {/* Create Post shortcut bar & Sort bar (Hot, New, Top) */}
+          {/* Topic Category Filter Chips */}
           <ForumSortBar
-            activeSort={activeSort}
-            onSortChange={setActiveSort}
             selectedCommunity={selectedCommunity}
             onSelectCommunity={setSelectedCommunity}
-            currentUser={currentUser}
-            onCreatePostClick={() => setIsCreateModalOpen(true)}
-            onImagePostClick={() => setIsCreateModalOpen(true)}
           />
 
-          {/* Posts Feed */}
+          {/* Posts Feed - Scroll down only the questions */}
           {filteredDiscussions.length === 0 ? (
             <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-10 text-center shadow-2xs space-y-3">
               <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center mx-auto">
@@ -325,7 +308,7 @@ export const QuestionDiscussionsPage = () => {
               </div>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-3 lg:max-h-[calc(100vh-250px)] overflow-y-auto pr-1.5 custom-scrollbar">
               {filteredDiscussions.map((post) => (
                 <ForumPostCard
                   key={post.id}
@@ -344,11 +327,8 @@ export const QuestionDiscussionsPage = () => {
         </div>
 
         {/* Right Column: Community Sidebar (4 cols on desktop) */}
-        <div className="lg:col-span-4 hidden lg:block sticky top-20">
-          <ForumSidebar
-            onCreatePostClick={() => setIsCreateModalOpen(true)}
-            totalPostsCount={discussions.length}
-          />
+        <div className="lg:col-span-4 hidden lg:block">
+          <ForumSidebar totalPostsCount={discussions.length} />
         </div>
       </div>
 
