@@ -9,6 +9,7 @@ import {
   MapPin,
   Bookmark,
   History,
+  TrendingUp,
 } from "lucide-react";
 import dashboardHat from "../../assets/header-bg/dashboard-hat.png";
 import premPassportPhotoImg from "../../assets/Prem_Photo_Passport.png";
@@ -121,6 +122,28 @@ export const ProfileHeader = ({ studentData, activeTab, onTabChange }) => {
 
         {/* Stretched Course Progress Bar - Aligning with Active Student on Desktop, Responsive Full-Width on Mobile */}
         <div className="relative z-10 mt-4 sm:mt-5 w-full lg:pl-[116px]">
+          {/* Progress Info Row */}
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs mb-1.5">
+            <div className="flex items-center space-x-2">
+              <TrendingUp size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
+              <span className="font-bold text-slate-800 dark:text-slate-200">
+                Course Progress
+              </span>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100/70 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/80">
+                {studentData.progressPercentage || 65}% Completed
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+              <span>Overall Curriculum</span>
+              <span className="text-slate-300 dark:text-slate-700">•</span>
+              <span className="font-bold text-slate-700 dark:text-slate-300">
+                {studentData.courseDuration || "12 Months"} Program
+              </span>
+            </div>
+          </div>
+
+          {/* Stretched Gradient Progress Track */}
           <div className="w-full h-2 sm:h-2.5 bg-blue-100/90 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
             <div
               className="h-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 rounded-full transition-all duration-500"
