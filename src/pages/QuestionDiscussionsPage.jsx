@@ -163,6 +163,7 @@ export const QuestionDiscussionsPage = () => {
     authorName,
     authorRole,
     authorAvatar,
+    replyToAuthor,
   }) => {
     if (!currentPost) return;
 
@@ -171,6 +172,7 @@ export const QuestionDiscussionsPage = () => {
       authorRole,
       authorAvatar,
       content,
+      replyToAuthor: replyToAuthor || null,
       likesCount: 0,
       isOfficial: authorRole.toLowerCase().includes("instructor"),
     };

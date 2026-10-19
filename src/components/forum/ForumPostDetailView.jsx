@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   ArrowLeft,
   MessageSquare,
@@ -25,6 +25,8 @@ export const ForumPostDetailView = ({
   onCreatePostClick,
 }) => {
   const [commentInput, setCommentInput] = useState("");
+  const [isReplyingToPost, setIsReplyingToPost] = useState(false);
+  const topCommentInputRef = useRef(null);
 
   if (!post) {
     return (
@@ -58,7 +60,10 @@ export const ForumPostDetailView = ({
     onReplySubmit &&
       onReplySubmit({
         parentId: null,
-        content: commentInput.trim(),
+        replyToAuthor: isReplyingToPost ? authorDisplay : null,
+        content: isReplyingToPost
+          ? `@${authorDisplay} ${commentInput.trim()}`
+          : commentInput.trim(),
         authorName: currentUser?.name || "Sahil Hasolkar",
         authorRole: currentUser?.role || "Student",
         authorAvatar:
@@ -67,6 +72,7 @@ export const ForumPostDetailView = ({
       });
 
     setCommentInput("");
+    setIsReplyingToPost(false);
   };
 
   return (
@@ -194,6 +200,18 @@ export const ForumPostDetailView = ({
                     <MessageSquare size={13} />
                     <span>{replies.length} Comments</span>
                   </span>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsReplyingToPost(true);
+                      setTimeout(() => topCommentInputRef.current?.focus(), 50);
+                    }}
+                    className="px-2.5 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors flex items-center space-x-1.5 cursor-pointer"
+                  >
+                    <MessageSquare size={13} />
+                    <span>Reply</span>
+                  </button>
                 </div>
 
                 {post.courseTitle && (
@@ -207,30 +225,74 @@ export const ForumPostDetailView = ({
 
           {/* 3. Reddit Comment Composer */}
           <div className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/90 dark:border-slate-800 p-4 sm:p-5 shadow-2xs space-y-3">
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Comment as{" "}
-              <strong className="text-slate-900 dark:text-white font-bold">
-                {currentUser?.name || "Sahil Hasolkar"}
-              </strong>
-            </p>
+            <div className="flex items-center justify-between">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Comment as{" "}
+                <strong className="text-slate-900 dark:text-white font-bold">
+                  {currentUser?.name || "Sahil Hasolkar"}
+                </strong>
+              </p>
+              {isReplyingToPost && (
+                <span className="text-[11px] text-[#3b49df] dark:text-blue-400 font-medium">
+                  Replying to original post
+                </span>
+              )}
+            </div>
 
             <form onSubmit={handlePostTopComment} className="space-y-2.5">
-              <textarea
-                rows={3}
-                required
-                value={commentInput}
-                onChange={(e) => setCommentInput(e.target.value)}
-                placeholder="What are your thoughts? Support your peers with actionable tips..."
-                className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-xs leading-relaxed text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:border-[#3b49df]"
-              />
+              <div className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3 focus-within:border-[#3b49df] focus-within:ring-2 focus-within:ring-[#3b49df]/20 transition-all shadow-xs">
+                <div className="flex items-start gap-2">
+                  {isReplyingToPost && (
+                    <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-100 dark:bg-blue-950/80 text-[#3b49df] dark:text-blue-300 border border-blue-200/90 dark:border-blue-800/80 text-xs font-bold shrink-0 select-none shadow-2xs mt-0.5">
+                      <span className="opacity-70">@</span>
+                      <span>{authorDisplay}</span>
+                      <button
+                        type="button"
+                        onClick={() => setIsReplyingToPost(false)}
+                        className="ml-1 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-200 cursor-pointer"
+                        title="Remove mention"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  )}
 
-              <div className="flex justify-end">
+                  <textarea
+                    ref={topCommentInputRef}
+                    rows={3}
+                    required
+                    value={commentInput}
+                    onChange={(e) => setCommentInput(e.target.value)}
+                    placeholder={
+                      isReplyingToPost
+                        ? `Write your reply to @${authorDisplay}...`
+                        : "What are your thoughts? Support your peers with actionable tips..."
+                    }
+                    className="flex-1 bg-transparent border-0 p-0 text-xs leading-relaxed text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-0 resize-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end space-x-2">
+                {isReplyingToPost && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsReplyingToPost(false);
+                      setCommentInput("");
+                    }}
+                    className="px-3.5 py-2 text-xs font-semibold rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                )}
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-[#3b49df] hover:bg-[#2f3ab2] text-white text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer active:scale-98"
+                  disabled={!commentInput.trim()}
+                  className="px-4 py-2 rounded-xl bg-[#3b49df] hover:bg-[#2f3ab2] disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5 cursor-pointer active:scale-98"
                 >
                   <Send size={12} />
-                  <span>Comment</span>
+                  <span>{isReplyingToPost ? "Reply" : "Comment"}</span>
                 </button>
               </div>
             </form>
