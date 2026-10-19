@@ -137,7 +137,7 @@ export const AttendanceFeesPage = () => {
               }`}
             >
               <Calendar size={13} />
-              <span>Class Logs (5)</span>
+              <span>Class Logs ({crmAttendance.logs?.length || 0})</span>
             </button>
           </div>
         </div>
@@ -150,8 +150,8 @@ export const AttendanceFeesPage = () => {
           </div>
         ) : (
           /* Class Logs List */
-          <div className="space-y-2 pt-1">
-            {(crmAttendance.logs || []).slice(0, 8).map((log, lIdx) => (
+          <div className="space-y-2 pt-1 max-h-[322px] overflow-y-auto pr-1.5 custom-scrollbar">
+            {(crmAttendance.logs || []).map((log, lIdx) => (
               <div
                 key={lIdx}
                 className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-xs"
