@@ -163,17 +163,6 @@ export const SchedulePage = () => {
               </p>
             </div>
           </div>
-
-          <div className="p-2.5 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-200 dark:border-purple-800/60 text-xs font-bold text-purple-900 dark:text-purple-300 flex items-center space-x-2 self-start sm:self-auto">
-            <span className="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded bg-purple-200/80 dark:bg-purple-900/80 text-purple-800 dark:text-purple-200 text-[10px] font-black uppercase">
-              <span className="w-1.5 h-1.5 rounded-full bg-purple-600 animate-pulse" />
-              <span>LIVE</span>
-            </span>
-            <span>
-              {crmProfile.batchName ||
-                "Masters in Digital Marketing - Weekday Morning"}
-            </span>
-          </div>
         </div>
 
         {/* 2x2 Meta Grid matching LATEST UI */}
