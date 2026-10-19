@@ -16,6 +16,7 @@ export const StudentPageHeader = ({
   children,
   className = "",
   isAdmin = false,
+  backgroundImage,
 }) => {
   return (
     <div
@@ -24,6 +25,7 @@ export const StudentPageHeader = ({
           ? `bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 2xl:p-8.5 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] flex flex-col md:flex-row md:items-center justify-between gap-5 transition-all ${className}`
           : `relative dashboard-hero-banner rounded-2xl border border-blue-100/80 dark:border-slate-800 p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6 transition-all overflow-hidden ${className}`
       }
+      style={backgroundImage ? { backgroundImage: `url(${backgroundImage})` } : undefined}
     >
       <div className="space-y-2 relative z-10 min-w-0 flex-1">
         {/* Eyebrow: Icon + Category + Active Status Pill */}

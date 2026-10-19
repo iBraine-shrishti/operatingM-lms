@@ -24,15 +24,21 @@ export const StudentWelcomeBanner = ({
     img2.src = dashboardHeaderDarkBg;
   }, []);
 
-  const studentName = currentUser?.name || crmProfile?.studentName || "Sahil Hasolkar";
+  const studentName = currentUser?.name || crmProfile?.studentName || crmProfile?.name || "Sahil Hasolkar";
   const studentCourse = crmProfile?.course || currentUser?.course || "Masters in Digital Marketing";
   const admissionId = crmProfile?.admissionNo || currentUser?.admissionNo || "OMC-0375";
   const centerBranch = crmProfile?.branch || currentUser?.branch || "Borivali Center";
-  const isDefaultSahil = !currentUser?.avatar || currentUser?.avatar === sahilProfilePic;
-  const avatarSrc = currentUser?.avatar || crmProfile?.photo || crmProfile?.avatar || sahilProfilePic;
+
+  // Prioritize live backend photo from CRM API before any fallback asset
+  const backendPhoto = crmProfile?.photo || crmProfile?.avatar || currentUser?.photo;
+  const avatarSrc = backendPhoto || currentUser?.avatar || sahilProfilePic;
+  const headerBgFromBackend = crmProfile?.headerBg || currentUser?.headerBg;
 
   return (
-    <div className="lg:col-span-7 xl:col-span-7 2xl:col-span-7 relative bg-cover bg-center dashboard-hero-banner border border-blue-100/70 dark:border-blue-500/30 shadow-2xs hover:shadow-xs p-3.5 sm:p-5 lg:p-6 xl:p-7 flex items-center justify-between overflow-hidden rounded-3xl transition-all duration-200 min-h-[150px] sm:min-h-[185px] gap-2.5 sm:gap-4">
+    <div
+      className={`lg:col-span-7 xl:col-span-7 2xl:col-span-7 relative bg-cover bg-center dashboard-hero-banner border border-blue-100/70 dark:border-blue-500/30 shadow-2xs hover:shadow-xs p-3.5 sm:p-5 lg:p-6 xl:p-7 flex items-center justify-between overflow-hidden rounded-3xl transition-all duration-200 min-h-[150px] sm:min-h-[185px] gap-2.5 sm:gap-4`}
+      style={headerBgFromBackend ? { backgroundImage: `url(${headerBgFromBackend})` } : undefined}
+    >
       {/* Left Column: Greeting, Student Name, Specialization & Identity Pills */}
       <div className="relative z-10 flex-1 min-w-0 pr-0 sm:pr-4 space-y-0.5 sm:space-y-1">
         <p className="text-slate-600 dark:text-slate-300 font-medium text-xs sm:text-sm md:text-[15px] tracking-normal">
