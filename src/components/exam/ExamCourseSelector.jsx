@@ -16,6 +16,8 @@ import {
   ArrowRight,
   ShieldCheck,
   Filter,
+  Film,
+  TrendingUp,
 } from "lucide-react";
 import { EXAM_TRACKS } from "./examTracksConfig";
 
@@ -27,17 +29,22 @@ const ICONS_MAP = {
   Layout,
   Palette,
   GraduationCap,
+  Sparkles,
+  Search,
+  Film,
+  TrendingUp,
 };
 
 const CATEGORIES = [
   { key: "all", label: "All Certifications" },
-  { key: "seo", label: "Search & SEO" },
-  { key: "google-ads", label: "Paid Advertising" },
-  { key: "analytics", label: "Data & Analytics" },
-  { key: "social", label: "Social & Growth" },
-  { key: "web-dev", label: "Web Architecture" },
-  { key: "creative", label: "Creative Designing" },
-  { key: "master", label: "Diploma Capstone" },
+  { key: "wordpress", label: "WordPress" },
+  { key: "seo", label: "SEO" },
+  { key: "google-ads", label: "Google Ads (PPC)" },
+  { key: "graphic-design", label: "Graphic Designing (Canva)" },
+  { key: "smm", label: "SMM" },
+  { key: "ai-prompt", label: "AI in DM & Prompt Eng" },
+  { key: "video-editing", label: "Video Editing" },
+  { key: "smo", label: "SMO" },
 ];
 
 /**
@@ -87,8 +94,8 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
             </h1>
 
             <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
-              Select any of the 7 specialized industry certifications to validate your competencies,
-              or complete the Comprehensive Board Assessment for your official Diploma.
+              Select any of the 8 specialized industry certifications to validate your competencies,
+              or complete the targeted skills assessment for official certification.
             </p>
           </div>
 
@@ -97,7 +104,7 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
             <div className="px-3.5 py-2 rounded-xl bg-white/90 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
               <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold mb-0.5">
                 <Award size={14} />
-                <span>7 Tracks</span>
+                <span>8 Tracks</span>
               </div>
               <span className="text-[11px] text-slate-500 dark:text-slate-400">Available Exams</span>
             </div>

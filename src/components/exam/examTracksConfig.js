@@ -1981,12 +1981,812 @@ const CREATIVE_QUESTIONS = [
 ];
 
 
+
+export const AI_PROMPT_QUESTIONS = [
+  {
+    id: 301,
+    sectionId: "sec-ai",
+    sectionName: "Prompt Engineering Frameworks",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "When implementing the RTF (Role, Task, Format) framework to generate high-converting Meta ad copy, what is the primary benefit of explicitly defining the 'Role' in the system prompt?",
+    options: [
+      { id: "A", text: "It prevents the LLM from executing Python code inside code sandboxes." },
+      { id: "B", text: "It anchors the model's latent probability space to industry-specific vocabulary, tone constraints, and copywriting principles." },
+      { id: "C", text: "It bypasses the model's total context window token consumption limit." },
+      { id: "D", text: "It guarantees that the generated ad headlines will automatically rank #1 on Google Search." }
+    ],
+    correctAnswer: "B",
+    explanation: "Role prompting activates relevant semantic subspaces in the neural network, biasing generative output toward domain expertise, tone, and conversion-focused copy frameworks."
+  },
+  {
+    id: 302,
+    sectionId: "sec-ai",
+    sectionName: "Few-Shot In-Context Learning",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "A digital marketing agency needs an LLM to generate email newsletters matching their unique, irreverent brand tone. Why is 'few-shot prompting' superior to 'zero-shot prompting' for this use case?",
+    options: [
+      { id: "A", text: "Few-shot prompting eliminates the need for paying API token costs." },
+      { id: "B", text: "Few-shot prompting provides concrete input-output demonstration pairs that establish the exact rhythm, cadence, and styling rules without model fine-tuning." },
+      { id: "C", text: "Few-shot prompting forces the LLM to search live web pages via Googlebot." },
+      { id: "D", text: "Zero-shot prompting causes permanent GPU memory corruption in self-hosted models." }
+    ],
+    correctAnswer: "B",
+    explanation: "Few-shot in-context learning gives the model 2-5 explicit examples of desired output, allowing it to mimic nuances, humor, structure, and tone far better than abstract zero-shot instructions."
+  },
+  {
+    id: 303,
+    sectionId: "sec-ai",
+    sectionName: "LLM Hyperparameters",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "When configuring an LLM API workflow to extract structured JSON data from messy SEO crawl reports versus generating creative social media video hook ideas, how should the 'Temperature' parameter be set?",
+    options: [
+      { id: "A", text: "Set Temperature to 1.5 for data extraction and 0.0 for creative video hooks." },
+      { id: "B", text: "Set Temperature near 0.0-0.2 for deterministic data extraction, and 0.7-0.9 for creative, diverse video hook ideation." },
+      { id: "C", text: "Temperature must always remain exactly 1.0 regardless of the task." },
+      { id: "D", text: "Temperature only controls network request timeout latency, not generative randomness." }
+    ],
+    correctAnswer: "B",
+    explanation: "Low temperature (0.0-0.2) reduces token randomness and maximizes probability on the most likely tokens for precise extraction, while higher temperature (0.7-0.9) fosters creative variance."
+  },
+  {
+    id: 304,
+    sectionId: "sec-ai",
+    sectionName: "Reasoning & Attribution",
+    difficulty: "CRITICAL",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "You instruct an AI model to analyze a complex multi-touch attribution model across Google Ads, Meta, and Organic channels with custom CAC and LTV figures. Which prompt technique ensures the highest numerical accuracy?",
+    options: [
+      { id: "A", text: "Chain-of-Thought (CoT) prompting: 'Think step-by-step, showing intermediate calculation formulas before stating the final ROAS allocation.'" },
+      { id: "B", text: "One-Word Constraint: 'Respond with only the final dollar figure without explanation.'" },
+      { id: "C", text: "Repeating the word 'Accurate' 15 times at the end of the prompt." },
+      { id: "D", text: "Typing the entire prompt in ALL CAPS to increase token attention weights." }
+    ],
+    correctAnswer: "A",
+    explanation: "Chain-of-Thought (CoT) prompting encourages the model to break down mathematical reasoning into intermediate tokens, drastically reducing arithmetic and attribution hallucination."
+  },
+  {
+    id: 305,
+    sectionId: "sec-ai",
+    sectionName: "RAG & Hallucination Guardrails",
+    difficulty: "CRITICAL",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "To prevent an AI customer service chatbot from hallucinating refund policies or inventing fake discount coupons, what architecture should be implemented?",
+    options: [
+      { id: "A", text: "Retrieval-Augmented Generation (RAG) coupled with system prompt instructions: 'Answer solely based on the retrieved context below; if unknown, state that you cannot assist.'" },
+      { id: "B", text: "Increasing model temperature to 1.8 to force the model to explore creative possibilities." },
+      { id: "C", text: "Deleting the system prompt completely to allow unrestricted user conversation." },
+      { id: "D", text: "Running the chatbot exclusively through SMS text messages." }
+    ],
+    correctAnswer: "A",
+    explanation: "RAG retrieves verified company documentation from a vector database and grounds the LLM response in factual context with strict fallback constraints."
+  },
+  {
+    id: 306,
+    sectionId: "sec-ai",
+    sectionName: "System Instructions & Safety",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "In professional AI app development for marketing teams, what distinguishes 'System Instructions' (Developer Messages) from 'User Prompts'?",
+    options: [
+      { id: "A", text: "System instructions cannot contain English words." },
+      { id: "B", text: "System instructions define authoritative behavioral guardrails, brand guidelines, and formatting rules that persist across user conversation turns." },
+      { id: "C", text: "User prompts take absolute precedence and automatically erase system instructions." },
+      { id: "D", text: "System instructions are only used to charge the client's credit card." }
+    ],
+    correctAnswer: "B",
+    explanation: "System instructions provide the foundational constitution of the agent, dictating brand safety, tone constraints, tool availability, and output formatting across all user interactions."
+  },
+  {
+    id: 307,
+    sectionId: "sec-ai",
+    sectionName: "Visual Generative AI",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "When crafting prompts for Midjourney v6 to generate photorealistic lifestyle ad banners for an organic skincare product, which prompt structure yields the highest visual quality?",
+    options: [
+      { id: "A", text: "'A bottle of lotion, make it very viral and 4k resolution quality.'" },
+      { id: "B", text: "'Minimalist organic glass serum dropper bottle on natural slate rock, water droplets, soft morning sunlight, cinematic lighting, editorial beauty photography, 85mm lens f/1.8 --ar 16:9 --style raw --v 6.0'" },
+      { id: "C", text: "'Photo of skin care products --no quality --fast'" },
+      { id: "D", text: "'Generate 50 Facebook ads with call to action buttons directly painted on the canvas.'" }
+    ],
+    correctAnswer: "B",
+    explanation: "Midjourney v6 responds best to descriptive photography terminology (lighting, materials, lens, depth of field) and explicit aspect ratio / version parameter flags."
+  },
+  {
+    id: 308,
+    sectionId: "sec-ai",
+    sectionName: "Autonomous Agents & Tool Calling",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "What capability enables an AI marketing assistant to check current campaign ROAS inside Google Ads and automatically pause an underperforming ad set without human intervention?",
+    options: [
+      { id: "A", text: "Markov Chain probability decay." },
+      { id: "B", text: "Function Calling / Tool Use, where the LLM recognizes when to output structured arguments to invoke external REST APIs." },
+      { id: "C", text: "Prompt Injection vulnerability." },
+      { id: "D", text: "CSS Flexbox layout nesting." }
+    ],
+    correctAnswer: "B",
+    explanation: "Function calling (tool use) allows LLMs to determine when external actions are required, formatting JSON payloads to query or update external marketing platforms via authenticated APIs."
+  },
+  {
+    id: 309,
+    sectionId: "sec-ai",
+    sectionName: "AI & Search Quality Standards",
+    difficulty: "CRITICAL",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "According to Google Search Central's official guidance on AI-generated content, how does Google's ranking algorithm treat content produced with generative AI?",
+    options: [
+      { id: "A", text: "Google automatically de-indexes any page that contains AI-generated text detected by token perplexity scanners." },
+      { id: "B", text: "Google rewards content based on quality, value, and E-E-A-T (Experience, Expertise, Authoritativeness, Trustworthiness), regardless of how it was produced." },
+      { id: "C", text: "Google ranks AI content higher than human content because AI models have better spelling." },
+      { id: "D", text: "All AI-generated content must contain a mandatory government watermark in the footer." }
+    ],
+    correctAnswer: "B",
+    explanation: "Google's guidance explicitly states that using AI does not violate guidelines; content is evaluated purely on whether it is helpful, original, and demonstrates E-E-A-T for human users."
+  },
+  {
+    id: 310,
+    sectionId: "sec-ai",
+    sectionName: "Negative Prompting & Artifact Removal",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "In text-to-image AI platforms (Stable Diffusion, Midjourney), how does 'Negative Prompting' improve commercial marketing assets?",
+    options: [
+      { id: "A", text: "It decreases pixel resolution by 50% to save hard drive space." },
+      { id: "B", text: "It explicitly directs the diffusion process away from specified unwanted features, such as text glitches, distorted anatomy, watermarks, and oversaturated colors." },
+      { id: "C", text: "It forces the image to be black and white." },
+      { id: "D", text: "It automatically creates a negative copyright violation claim." }
+    ],
+    correctAnswer: "B",
+    explanation: "Negative prompts instruct the latent diffusion model to steer clear of specific semantic tokens, actively suppressing common artifacts like deformed limbs, unreadable text, or blur."
+  },
+  {
+    id: 311,
+    sectionId: "sec-ai",
+    sectionName: "Prompt Chaining & Multi-Stage Pipelines",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "Why do enterprise growth teams build 'Prompt Chains' (sequential micro-prompts) instead of asking an LLM to generate an entire 30-day multi-channel marketing campaign in a single prompt?",
+    options: [
+      { id: "A", text: "Single mega-prompts suffer from attention degradation and context drift, while modular chaining allows validation, error checking, and refinement between each step." },
+      { id: "B", text: "Single prompts are illegal under GDPR regulations." },
+      { id: "C", text: "Prompt chaining makes the AI run 1,000 times faster because of parallel quantum loops." },
+      { id: "D", text: "LLMs can only generate a maximum of 140 characters per prompt." }
+    ],
+    correctAnswer: "A",
+    explanation: "Prompt chaining breaks down complex workflows (audience research -> messaging pillars -> copy generation -> compliance check) into discrete steps, vastly improving reasoning depth and QA."
+  },
+  {
+    id: 312,
+    sectionId: "sec-ai",
+    sectionName: "Context Windows & Token Management",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "When conducting long multi-turn market research interviews with an LLM, what occurs when the conversation history exceeds the model's maximum context window?",
+    options: [
+      { id: "A", text: "The model restarts the computer automatically." },
+      { id: "B", text: "The earliest messages are truncated or dropped, causing the model to forget initial instructions, persona rules, and foundational context." },
+      { id: "C", text: "The model automatically switches from GPT-4 to binary assembly code." },
+      { id: "D", text: "The context window has unlimited infinite storage on all modern cloud servers." }
+    ],
+    correctAnswer: "B",
+    explanation: "LLM context windows are finite buffers. When conversations grow too long, sliding-window truncation cuts off the earliest tokens, causing persona amnesia unless summary embeddings are maintained."
+  },
+  {
+    id: 313,
+    sectionId: "sec-ai",
+    sectionName: "Fine-Tuning vs RAG vs Prompting",
+    difficulty: "CRITICAL",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "A direct-to-consumer brand wants its marketing AI to recommend up-to-the-minute product inventory and current flash sale prices. What is the most appropriate technological architecture?",
+    options: [
+      { id: "A", text: "Fine-tuning an open-source model once every month on historical product catalogs." },
+      { id: "B", text: "Retrieval-Augmented Generation (RAG) querying real-time inventory and pricing APIs dynamically during prompt execution." },
+      { id: "C", text: "Training a base model from scratch with 10,000 GPUs." },
+      { id: "D", text: "Asking the model to guess prices based on general market trends." }
+    ],
+    correctAnswer: "B",
+    explanation: "Fine-tuning updates parametric weights and is static/slow; real-time pricing and inventory require dynamic retrieval (RAG / API tool-calling) to inject live data into the prompt."
+  },
+  {
+    id: 314,
+    sectionId: "sec-ai",
+    sectionName: "Enterprise Data Privacy & Security",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "Before feeding customer CRM interaction logs into a commercial public generative AI tool to analyze churn sentiment, what data hygiene practice is legally required under DPDP & GDPR?",
+    options: [
+      { id: "A", text: "Doubling the font size of the text before pasting." },
+      { id: "B", text: "Data anonymization / PII masking to remove names, phone numbers, email addresses, and credit card numbers." },
+      { id: "C", text: "Encrypting the text with a Caesar cipher." },
+      { id: "D", text: "Translating the entire dataset into Latin." }
+    ],
+    correctAnswer: "B",
+    explanation: "Submitting unmasked PII (Personally Identifiable Information) to public models violates privacy laws and risks data exposure if the platform uses prompt logs for training."
+  },
+  {
+    id: 315,
+    sectionId: "sec-ai",
+    sectionName: "Synthetic Buyer Personas",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "How should a digital marketer structure a prompt to utilize an LLM as a 'Synthetic Skeptical Buyer' to stress-test high-ticket sales landing page copy?",
+    options: [
+      { id: "A", text: "'Please read this and tell me you love it so my boss is happy.'" },
+      { id: "B", text: "'Adopt the persona of a risk-averse CFO with a tight Q4 budget. Read the landing page below, challenge every ROI claim, and list 5 specific trust objections preventing you from signing.'" },
+      { id: "C", text: "'Rewrite this copy in the style of Shakespeare.'" },
+      { id: "D", text: "'Check for spelling and punctuation errors only.'" }
+    ],
+    correctAnswer: "B",
+    explanation: "Assigning clear demographic/psychographic counter-perspectives forces the model to uncover hidden customer friction points and objection gaps before deploying ad spend."
+  }
+];
+
+export const VIDEO_EDITING_QUESTIONS = [
+  {
+    id: 401,
+    sectionId: "sec-video",
+    sectionName: "Retention Hook Architecture",
+    difficulty: "CRITICAL",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "In short-form vertical video advertising (Reels, TikTok, YouTube Shorts), what editing strategy in the first 3 seconds yields the highest viewer retention rate?",
+    options: [
+      { id: "A", text: "A 5-second fade-in from black with slow ambient music." },
+      { id: "B", text: "A visual pattern interrupt, immediate bold on-screen headline hook, and vocal delivery without introductory greetings." },
+      { id: "C", text: "Displaying the company's full legal corporate registration certificate." },
+      { id: "D", text: "A slow horizontal pan across an empty office desk." }
+    ],
+    correctAnswer: "B",
+    explanation: "Social feed users swipe rapidly. The first 3 seconds require an immediate hook (pattern interrupt, bold text hook, immediate value promise) to stop scrolling."
+  },
+  {
+    id: 402,
+    sectionId: "sec-video",
+    sectionName: "Aspect Ratios & Platform UI Safe Zones",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "When editing a 9:16 (1080x1920) vertical video for Instagram Reels and TikTok, where should important captions and CTA buttons be positioned?",
+    options: [
+      { id: "A", text: "Along the far bottom right edge touching the comment icon." },
+      { id: "B", text: "Within the central 4:5 safe zone, keeping top 15% and bottom 20% clear of critical typography to avoid platform overlay occlusion." },
+      { id: "C", text: "Directly in the top 5% behind the native camera notch." },
+      { id: "D", text: "Rotated 90 degrees vertically along the left screen border." }
+    ],
+    correctAnswer: "B",
+    explanation: "Native UI overlays (profile header, description caption, audio ticker, like/share icons) cover top and bottom margins; critical graphics must stay in the central safe zone."
+  },
+  {
+    id: 403,
+    sectionId: "sec-video",
+    sectionName: "Audio Ducking & Dynamic Range",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "In Premiere Pro or CapCut, what does the 'Audio Ducking' feature achieve in commercial video production?",
+    options: [
+      { id: "A", text: "It replaces spoken dialogue with quacking bird sound effects." },
+      { id: "B", text: "It automatically attenuates background music levels by -15dB to -22dB whenever vocal dialogue is detected, restoring volume during pauses." },
+      { id: "C", text: "It deletes the audio track whenever background music starts playing." },
+      { id: "D", text: "It converts mono microphone recordings into Dolby Atmos 7.1." }
+    ],
+    correctAnswer: "B",
+    explanation: "Audio ducking uses sidechain compression to automatically lower background music when a speaker talks, maintaining vocal clarity without manual volume keyframing."
+  },
+  {
+    id: 404,
+    sectionId: "sec-video",
+    sectionName: "Audio Normalization & Loudness Standards",
+    difficulty: "CRITICAL",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "To ensure consistent, punchy vocal audio that avoids automatic platform normalization penalties across YouTube and Instagram, what target integrated loudness standard should be mastered?",
+    options: [
+      { id: "A", text: "0 LUFS (completely maxed out with severe digital clipping)" },
+      { id: "B", text: "-14 LUFS (with True Peak not exceeding -1.0 dBTP)" },
+      { id: "C", text: "-40 LUFS (almost imperceptible whisper level)" },
+      { id: "D", text: "+10 LUFS (exceeding all digital audio headroom limits)" }
+    ],
+    correctAnswer: "B",
+    explanation: "-14 LUFS is the standard web/streaming target (YouTube, Spotify, Meta). Delivering audio louder than this triggers platform compression; quieter audio sounds weak."
+  },
+  {
+    id: 405,
+    sectionId: "sec-video",
+    sectionName: "Visual Pacing & B-Roll Rhythm",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "What visual editing cadence is widely adopted in high-performing educational and direct-response marketing videos to prevent viewer drop-off?",
+    options: [
+      { id: "A", text: "Maintaining a static talking-head camera angle for 60 seconds without cuts." },
+      { id: "B", text: "Introducing visual changes (B-roll cutaway, angle punch-in, graphic callout, kinetic text) every 2.5 to 3.5 seconds." },
+      { id: "C", text: "Inserting full 10-second black freeze frames after every sentence." },
+      { id: "D", text: "Applying extreme strobe lighting effects across every frame." }
+    ],
+    correctAnswer: "B",
+    explanation: "Dynamic pacing with B-roll cutaways, scale shifts, and text callouts every 2.5-3.5 seconds resets viewer visual attention and maintains high watch time."
+  },
+  {
+    id: 406,
+    sectionId: "sec-video",
+    sectionName: "Keyframing & Temporal Interpolation",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "When animating text pop-ups or subtle zoom-ins in video editing software, why is 'Bézier / Ease In & Ease Out' preferred over 'Linear' keyframe interpolation?",
+    options: [
+      { id: "A", text: "Linear keyframes cause GPU hardware crashes." },
+      { id: "B", text: "Bézier easing mimics real-world physics with smooth acceleration and deceleration, making animations look polished and professional rather than robotic." },
+      { id: "C", text: "Bézier keyframes eliminate the need for video rendering." },
+      { id: "D", text: "Linear interpolation automatically changes text color." }
+    ],
+    correctAnswer: "B",
+    explanation: "Linear keyframes move at constant abrupt speeds. Bézier easing applies natural acceleration and deceleration, creating smooth, organic motion graphics."
+  },
+  {
+    id: 407,
+    sectionId: "sec-video",
+    sectionName: "Frame Rates & Shutter Angle Rule",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "When shooting high-end talking-head marketing video at 24fps, what shutter speed adheres to the cinematic 180-degree shutter angle rule for natural motion blur?",
+    options: [
+      { id: "A", text: "1/10 second" },
+      { id: "B", text: "1/50 second (or 1/48s)" },
+      { id: "C", text: "1/1000 second" },
+      { id: "D", text: "1/2 second" }
+    ],
+    correctAnswer: "B",
+    explanation: "The 180-degree shutter rule dictates that shutter speed should be 1 / (2 * frame rate). For 24fps, this is approximately 1/50s, producing natural, pleasant motion blur."
+  },
+  {
+    id: 408,
+    sectionId: "sec-video",
+    sectionName: "Color Science & LUT Workflows",
+    difficulty: "CRITICAL",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "When editing video recorded in a camera flat Log profile (Sony S-Log3, Canon C-Log), what is the correct two-stage color grading workflow?",
+    options: [
+      { id: "A", text: "Apply a creative high-contrast cinematic teal & orange LUT directly on uncorrected Log footage." },
+      { id: "B", text: "First apply a Technical Transform / Color Space Transform (CST) to convert Log into standard Rec.709, then apply creative styling and exposure balance." },
+      { id: "C", text: "Increase saturation to 300% without exposure balancing." },
+      { id: "D", text: "Export the Log footage flat without any color correction." }
+    ],
+    correctAnswer: "B",
+    explanation: "Log profiles must first undergo technical normalization to Rec.709 color space before creative grading, ensuring colors map accurately without crushing highlights or banding shadows."
+  },
+  {
+    id: 409,
+    sectionId: "sec-video",
+    sectionName: "Video Export Codecs & Compression",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "For uploading 1080p 60fps vertical videos to Meta Ads and Instagram Reels, what export configuration provides the best combination of quality and platform compatibility?",
+    options: [
+      { id: "A", text: "AVI Uncompressed (file size 18GB for 30 seconds)" },
+      { id: "B", text: "Format: MP4 (H.264), VBR 2-Pass (Target Bitrate 15-20 Mbps), Audio: AAC 320 kbps (48 kHz)" },
+      { id: "C", text: "GIF animated at 12fps" },
+      { id: "D", text: "WMV low bitrate 0.5 Mbps" }
+    ],
+    correctAnswer: "B",
+    explanation: "H.264 MP4 with 15-20 Mbps bitrate and AAC 320 kbps audio delivers pristine visual clarity without exceeding social platform ingestion limits or causing heavy compression artifacting."
+  },
+  {
+    id: 410,
+    sectionId: "sec-video",
+    sectionName: "Captions & Silent Autoplay Optimization",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "Why is burnt-in kinetic captioning (subtitles) considered non-negotiable for high-converting social media video ads?",
+    options: [
+      { id: "A", text: "Instagram algorithms delete videos that do not contain subtitles." },
+      { id: "B", text: "Over 70% of mobile users scroll social feeds with audio muted; animated captions ensure the core value proposition is comprehended instantly." },
+      { id: "C", text: "Captions double the video file resolution automatically." },
+      { id: "D", text: "Captions prevent competitors from downloading your video." }
+    ],
+    correctAnswer: "B",
+    explanation: "Mobile users frequently watch videos on mute during commutes or in public. On-screen animated captions ensure message comprehension and increase watch time."
+  },
+  {
+    id: 411,
+    sectionId: "sec-video",
+    sectionName: "Audio Continuity (J-Cuts & L-Cuts)",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "In video storytelling, what is an 'L-Cut' and how does it improve conversational editing flow?",
+    options: [
+      { id: "A", text: "A cut that deletes all left-side video pixels." },
+      { id: "B", text: "The audio from the preceding scene continues playing while the video switches to the next scene or reaction shot." },
+      { id: "C", text: "A cut that changes the aspect ratio into the shape of the letter L." },
+      { id: "D", text: "Cutting the video exactly when someone says a word starting with the letter L." }
+    ],
+    correctAnswer: "B",
+    explanation: "In an L-Cut, audio from shot A carries over as video transitions to shot B (e.g. listener reaction), creating seamless natural dialogue pacing."
+  },
+  {
+    id: 412,
+    sectionId: "sec-video",
+    sectionName: "Chroma Key & Green Screen Composite",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "When keying green screen spokesperson footage in Premiere Pro Ultra Key or DaVinci Resolve, what setting prevents the unsightly green halo around fine hair strands?",
+    options: [
+      { id: "A", text: "Spill Suppression and Edge Soften/Feathering controls." },
+      { id: "B", text: "Turning off video preview monitors." },
+      { id: "C", text: "Increasing ISO to 12800 on camera." },
+      { id: "D", text: "Inverting the composite mask completely." }
+    ],
+    correctAnswer: "A",
+    explanation: "Spill suppression desaturates or counterbalances green light bounce, while matte choke/feathering cleans fine hair edges without harsh fringes."
+  },
+  {
+    id: 413,
+    sectionId: "sec-video",
+    sectionName: "Timeline Optimization & Scratch Disks",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "What causes severe dropped frames and playback lag during 4K multi-layer video timeline editing on high-spec workstations?",
+    options: [
+      { id: "A", text: "Editing highly compressed Inter-frame (Long-GOP) H.265/H.264 camera files without generating ProRes/DNxHR editing proxies." },
+      { id: "B", text: "Using a wireless computer mouse." },
+      { id: "C", text: "Having more than 3 audio tracks." },
+      { id: "D", text: "Exporting videos in MP4 format." }
+    ],
+    correctAnswer: "A",
+    explanation: "Long-GOP codecs (H.264/H.265) require intense CPU/GPU decompression per frame. Editing with intra-frame proxies (ProRes/DNxHR) ensures smooth, lag-free timeline scrub."
+  },
+  {
+    id: 414,
+    sectionId: "sec-video",
+    sectionName: "Dead Air & Pacing Tightening",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "Which editing tool in Premiere Pro and DaVinci Resolve deletes pauses and breath gaps while automatically closing the empty space between clips in a single click?",
+    options: [
+      { id: "A", text: "Ripple Delete (or Q/W Ripple Trim)" },
+      { id: "B", text: "Hand Tool" },
+      { id: "C", text: "Type Tool" },
+      { id: "D", text: "Zoom In Tool" }
+    ],
+    correctAnswer: "A",
+    explanation: "Ripple trim and ripple delete remove selected clip sections and instantly shift subsequent timeline clips forward, eliminating dead air without manual dragging."
+  },
+  {
+    id: 415,
+    sectionId: "sec-video",
+    sectionName: "Reels Cover & Freeze-Frame Strategy",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "Why is selecting or designing a dedicated 9:16 cover frame with centered 1:1 grid preview critical for Instagram Reels and TikTok?",
+    options: [
+      { id: "A", text: "Instagram bans accounts that do not upload custom covers." },
+      { id: "B", text: "The cover displays on the profile grid in 1:1 square crop; centering the graphic hook ensures it doesn't get cut off on the profile overview." },
+      { id: "C", text: "Custom covers increase audio volume by 6dB." },
+      { id: "D", text: "Covers reduce video file size." }
+    ],
+    correctAnswer: "B",
+    explanation: "On Instagram profiles, Reels appear in a 1:1 square grid. Keeping the title and focal point inside the center 1:1 square prevents truncated text and increases profile click-throughs."
+  }
+];
+
+export const SMO_QUESTIONS = [
+  {
+    id: 501,
+    sectionId: "sec-smo",
+    sectionName: "Profile & Bio Conversion Architecture",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "When optimizing an Instagram brand profile for organic conversions, what formula ensures the highest bio link click-through rate (CTR)?",
+    options: [
+      { id: "A", text: "A paragraph of random inspirational quotes without mentions of the business." },
+      { id: "B", text: "A 1-sentence Unique Value Proposition (who you help + outcome), bulleted social proof / credentials, and a singular actionable CTA pointing to a tracked bio link." },
+      { id: "C", text: "50 emojis without any text." },
+      { id: "D", text: "Writing the entire bio in Morse code." }
+    ],
+    correctAnswer: "B",
+    explanation: "A high-converting bio clearly states target audience + core transformation, establishes authority with quick proof, and funnels visitors to a single clear action."
+  },
+  {
+    id: 502,
+    sectionId: "sec-smo",
+    sectionName: "Algorithmic Signal Weighting",
+    difficulty: "CRITICAL",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "Across modern Instagram, LinkedIn, and TikTok recommendation algorithms, which user engagement signal carries the highest weight for viral organic feed distribution?",
+    options: [
+      { id: "A", text: "Double-tap 'Likes'" },
+      { id: "B", text: "Saves (bookmarking for future reference) and Shares (direct message forwards / external shares)" },
+      { id: "C", text: "Viewing the post on an Android smartphone." },
+      { id: "D", text: "Muting the account notifications." }
+    ],
+    correctAnswer: "B",
+    explanation: "Likes are low-effort passive actions. Saves and shares signal high utility, value, and viral advocacy, which feed recommendation systems reward with explosive distribution."
+  },
+  {
+    id: 503,
+    sectionId: "sec-smo",
+    sectionName: "Social SEO & Search Keyword Indexing",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "How should social media managers optimize posts for 'Social SEO' on Instagram and TikTok search tabs beyond using hashtags?",
+    options: [
+      { id: "A", text: "Placing target search keywords naturally in the profile display name, post caption opening, on-screen text overlays, and spoken audio (transcripts)." },
+      { id: "B", text: "Hiding 10,000 keywords in white text on white background." },
+      { id: "C", text: "Tagging 20 unrelated celebrity accounts in the photo." },
+      { id: "D", text: "Only posting images without any words or captions." }
+    ],
+    correctAnswer: "A",
+    explanation: "Social platforms index profile names, caption copy, OCR on-screen text, and audio transcription. Integrating keywords contextually drives organic discovery in search results."
+  },
+  {
+    id: 504,
+    sectionId: "sec-smo",
+    sectionName: "Carousel Dwell Time & Algorithmic Retargeting",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "Why do multi-slide carousel posts on Instagram and LinkedIn consistently outperform single-image static graphics in organic reach?",
+    options: [
+      { id: "A", text: "Carousels pay social platforms a fee per swipe." },
+      { id: "B", text: "Carousels dramatically increase user 'Dwell Time', and Instagram automatically re-serves the post to users showing slide 2 if they didn't finish swiping on their first impression." },
+      { id: "C", text: "Carousels disable the comment section to boost reach." },
+      { id: "D", text: "Single images are blocked on desktop browsers." }
+    ],
+    correctAnswer: "B",
+    explanation: "Carousels capture prolonged dwell time as users swipe through slides. Additionally, Instagram often gives carousels a second exposure by showing the second slide in the feed."
+  },
+  {
+    id: 505,
+    sectionId: "sec-smo",
+    sectionName: "Hashtag Strategy & Algorithmic Categorization",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "According to current Meta creator guidelines, what is the most effective hashtag strategy for organic reach?",
+    options: [
+      { id: "A", text: "Pasting the maximum allowable 30 generic viral hashtags (#viral #love #follow)." },
+      { id: "B", text: "Using 3 to 5 highly relevant, niche-specific hashtags that accurately describe the topic, industry, and community to facilitate machine categorization." },
+      { id: "C", text: "Inventing a new hashtag with 60 characters that has 0 search volume." },
+      { id: "D", text: "Never using any hashtags under any circumstances." }
+    ],
+    correctAnswer: "B",
+    explanation: "Meta explicitly recommends 3-5 hyper-relevant hashtags. Excessive or generic tags trigger spam classifications and confuse algorithmic content categorization."
+  },
+  {
+    id: 506,
+    sectionId: "sec-smo",
+    sectionName: "First-Hour Engagement Velocity",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "Why is the first 30 to 60 minutes after publishing ('Engagement Velocity') critical for organic post distribution?",
+    options: [
+      { id: "A", text: "Social platforms delete posts after 60 minutes if nobody comments." },
+      { id: "B", text: "The algorithm initially tests content with a small seed cohort of active followers; rapid engagement signals high relevance and unlocks broader explore/feed distribution." },
+      { id: "C", text: "Ad revenue is only calculated during the first hour." },
+      { id: "D", text: "Server bandwidth is higher during the first hour." }
+    ],
+    correctAnswer: "B",
+    explanation: "Content is tested against a small sample of active followers. If the initial seed group likes, comments, and shares quickly, algorithms expand distribution to wider lookalike audiences."
+  },
+  {
+    id: 507,
+    sectionId: "sec-smo",
+    sectionName: "Stories Engagement & Tray Ranking",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "What technique moves an account's Instagram Story to the very front of your followers' story feed tray in the morning?",
+    options: [
+      { id: "A", text: "Posting 45 stories at 3:00 AM without stickers." },
+      { id: "B", text: "Using interactive stickers (poll, emoji slider, quiz, or question box) in the very first story to trigger immediate physical user taps and engagement." },
+      { id: "C", text: "Tagging 100 accounts in invisible tiny text." },
+      { id: "D", text: "Posting only a blank black screen." }
+    ],
+    correctAnswer: "B",
+    explanation: "Interactive story stickers invite quick micro-actions (taps, votes). High early interaction signals close user affinity, bumping the account's avatar to the front of the story tray."
+  },
+  {
+    id: 508,
+    sectionId: "sec-smo",
+    sectionName: "Highlight Albums & Brand Journey",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "How should an enterprise service business organize its Instagram Profile Highlights to convert cold profile visitors into inquiries?",
+    options: [
+      { id: "A", text: "Random unsorted stories spanning 5 years with default covers." },
+      { id: "B", text: "Structured buckets with custom branded covers: 'Start Here / About Us', 'Client Results & Reviews', 'Services & Pricing', and 'FAQs & Contact'." },
+      { id: "C", text: "Only 1 highlight containing coffee pictures." },
+      { id: "D", text: "Highlights cannot be viewed by new profile visitors." }
+    ],
+    correctAnswer: "B",
+    explanation: "Curated highlights act as an evergreen mini-website menu, quickly qualifying cold visitors and guiding them through social proof, offer details, and clear contact steps."
+  },
+  {
+    id: 509,
+    sectionId: "sec-smo",
+    sectionName: "Community Engagement & Comment Velocity",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "How should brand community managers reply to organic user comments to maximize algorithmic post reach?",
+    options: [
+      { id: "A", text: "Reply with a thumbs-up emoji only, 3 weeks later." },
+      { id: "B", text: "Reply promptly with thoughtful, open-ended questions that spark genuine two-way conversations and double the total comment count." },
+      { id: "C", text: "Copy and paste the exact same generic bot response to every user." },
+      { id: "D", text: "Delete all comments immediately." }
+    ],
+    correctAnswer: "B",
+    explanation: "Replying promptly with open-ended conversational questions encourages secondary user responses, doubling comment count and signaling active community discussion to the algorithm."
+  },
+  {
+    id: 510,
+    sectionId: "sec-smo",
+    sectionName: "LinkedIn Organic Reach Optimization",
+    difficulty: "CRITICAL",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "What formatting choice on LinkedIn significantly increases impressions compared to posts containing external outbound links in the caption?",
+    options: [
+      { id: "A", text: "Posting external blog links directly in line 1 of the post." },
+      { id: "B", text: "Native multi-page PDF document carousels or text-first insights with external links placed in the comments or creator bio." },
+      { id: "C", text: "Writing posts using only capital letters." },
+      { id: "D", text: "Sharing links to competitor websites." }
+    ],
+    correctAnswer: "B",
+    explanation: "Social platforms penalize posts that take users off-site. Native document carousels keep users inside LinkedIn, driving significantly higher organic dwell time and feed impressions."
+  },
+  {
+    id: 511,
+    sectionId: "sec-smo",
+    sectionName: "User-Generated Content (UGC) Amplification",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "Why is integrating User-Generated Content (UGC) into an organic social strategy more effective than brand-created studio photography?",
+    options: [
+      { id: "A", text: "UGC has 0 production cost and provides peer social proof that feels authentic and non-commercial, driving higher engagement and conversion rates." },
+      { id: "B", text: "Studio photography is blocked by ad blockers." },
+      { id: "C", text: "Customers get angry when brands post high-resolution images." },
+      { id: "D", text: "UGC eliminates the need for internet connection." }
+    ],
+    correctAnswer: "A",
+    explanation: "Consumers trust authentic peer recommendations over polished corporate advertisements. UGC blends into social feeds natively, fostering community trust and engagement."
+  },
+  {
+    id: 512,
+    sectionId: "sec-smo",
+    sectionName: "Native Content vs Automated Cross-Posting",
+    difficulty: "HIGH",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "What is the penalty of using third-party automated tools to publish the exact same post simultaneously across Instagram, LinkedIn, and X without platform customization?",
+    options: [
+      { id: "A", text: "Immediate permanent account ban across all three networks." },
+      { id: "B", text: "Format mismatch (wrong aspect ratios, truncated character limits, broken handle tags, irrelevant hashtags) that suppresses engagement across all channels." },
+      { id: "C", text: "The platforms charge extra roaming data fees." },
+      { id: "D", text: "The post turns into an audio podcast." }
+    ],
+    correctAnswer: "B",
+    explanation: "Each network has distinct audience etiquette, aspect ratios, and tagging systems. Generic cross-posting looks careless and fails to optimize for each platform's unique algorithm."
+  },
+  {
+    id: 513,
+    sectionId: "sec-smo",
+    sectionName: "Pinned Posts Strategic Allocation",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "What is the recommended 3-post strategy for Instagram and TikTok profile 'Pinned Posts' to maximize conversion of new profile visitors?",
+    options: [
+      { id: "A", text: "Pin 3 funny memes from 2 years ago." },
+      { id: "B", text: "Post 1: Brand Origin / Who You Are; Post 2: Top Social Proof / Customer Transformation; Post 3: Lead Magnet / Free Resource / Core Offer." },
+      { id: "C", text: "Pin 3 pictures of the office lunch." },
+      { id: "D", text: "Pinning posts disables profile follower buttons." }
+    ],
+    correctAnswer: "B",
+    explanation: "The 3 pinned slots serve as the primary landing billboard: establishing identity, demonstrating proof of results, and providing a direct lead capture opportunity."
+  },
+  {
+    id: 514,
+    sectionId: "sec-smo",
+    sectionName: "Instagram Collab & Shared Reach",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "How does Instagram's 'Invite Collaborator' feature enhance organic post distribution?",
+    options: [
+      { id: "A", text: "It allows both accounts to share the single post, displaying it simultaneously on both profile grids and combining all likes, views, and comments." },
+      { id: "B", text: "It transfers account ownership to the collaborator." },
+      { id: "C", text: "It creates two duplicate posts that compete against each other in the feed." },
+      { id: "D", text: "It requires paying Meta an influencer commission fee." }
+    ],
+    correctAnswer: "A",
+    explanation: "Collab posts show both creators in the header, pool the audiences of both accounts, and aggregate all engagement metrics onto one shared post."
+  },
+  {
+    id: 515,
+    sectionId: "sec-smo",
+    sectionName: "Audience Timing & Posting Windows",
+    difficulty: "INTERMEDIATE",
+    marks: 2.0,
+    penalty: 0.0,
+    text: "How should social media teams determine the optimal time to publish organic content for their specific brand?",
+    options: [
+      { id: "A", text: "Always publish at midnight every day regardless of geography." },
+      { id: "B", text: "Analyze native platform audience analytics for follower active hours and timezones, scheduling 15-30 minutes prior to peak online activity." },
+      { id: "C", text: "Post only when the brand CEO is having breakfast." },
+      { id: "D", text: "Timing has zero impact on social media algorithms." }
+    ],
+    correctAnswer: "B",
+    explanation: "Publishing 15-30 minutes before your audience's daily active peak ensures your content is fresh in the feed as followers open their apps, maximizing initial engagement velocity."
+  }
+];
+
 export const EXAM_TRACKS = [
   {
+    id: "track-wordpress",
+    courseId: "course-7",
+    title: "WordPress Development & Web Architecture Certification",
+    shortTitle: "WordPress",
+    code: "OMC-CERT-WP-2026",
+    category: "Web Architecture",
+    categoryKey: "wordpress",
+    badgeText: "Professional Certification",
+    badgeColor: "bg-cyan-100 text-cyan-800 dark:bg-cyan-950/60 dark:text-cyan-300 border-cyan-300 dark:border-cyan-700",
+    gradient: "from-cyan-600 to-blue-700",
+    iconName: "Layout",
+    description: "Assess WordPress server performance, Redis object caching, sub-2s mobile loading speeds, Elementor/Gutenberg DOM depth, and security hardening.",
+    durationMinutes: 30,
+    durationSeconds: 30 * 60,
+    questionsCount: 15,
+    passingScorePercent: 80,
+    passingMarks: 24,
+    totalMarks: 30,
+    marksPerQuestion: 2.0,
+    penaltyPerQuestion: 0.0,
+    difficulty: "Advanced",
+    skillsCovered: ["Redis Object Cache", "Sub-2s Web Vitals", "Gutenberg vs Elementor", "REST API Endpoints", "SSL & Database Security"],
+    questionIds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115],
+  },
+  {
     id: "track-seo",
-    courseId: "course-1",
+    courseId: "course-8",
     title: "Search Engine Optimization (SEO) Specialist Certification",
-    shortTitle: "Technical SEO & Web Vitals",
+    shortTitle: "SEO",
     code: "OMC-CERT-SEO-2026",
     category: "Search & SEO",
     categoryKey: "seo",
@@ -2009,13 +2809,13 @@ export const EXAM_TRACKS = [
   },
   {
     id: "track-google-ads",
-    courseId: "course-2",
-    title: "Google Ads & Performance Marketing Certification",
-    shortTitle: "Google Ads & Smart Bidding",
+    courseId: "course-6",
+    title: "Google Ads (PPC) & Performance Marketing Certification",
+    shortTitle: "Google Ads (PPC)",
     code: "OMC-CERT-GADS-2026",
     category: "Paid Advertising",
     categoryKey: "google-ads",
-    badgeText: "Professional Certification",
+    badgeText: "Performance Certification",
     badgeColor: "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 border-amber-300 dark:border-amber-700",
     gradient: "from-amber-500 to-orange-600",
     iconName: "Target",
@@ -2033,93 +2833,18 @@ export const EXAM_TRACKS = [
     questionIds: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
   },
   {
-    id: "track-ga4",
-    courseId: "course-3",
-    title: "Google Analytics 4 (GA4) & Measurement Certification",
-    shortTitle: "GA4 & Data Attribution",
-    code: "OMC-CERT-GA4-2026",
-    category: "Data & Measurement",
-    categoryKey: "analytics",
-    badgeText: "Analytics Certification",
-    badgeColor: "bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 border-purple-300 dark:border-purple-700",
-    gradient: "from-purple-600 to-indigo-700",
-    iconName: "BarChart2",
-    description: "Evaluate GA4 event tracking protocols, BigQuery export architectures, cookieless Consent Mode v2, and server-side container tracking.",
-    durationMinutes: 30,
-    durationSeconds: 30 * 60,
-    questionsCount: 15,
-    passingScorePercent: 80,
-    passingMarks: 24,
-    totalMarks: 30,
-    marksPerQuestion: 2.0,
-    penaltyPerQuestion: 0.0,
-    difficulty: "Advanced",
-    skillsCovered: ["GA4 Event Schema", "BigQuery SQL Export", "Consent Mode v2", "Server-Side Tagging", "Data-Driven Attribution"],
-    questionIds: [31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45],
-  },
-  {
-    id: "track-social",
+    id: "track-graphic-design",
     courseId: "course-4",
-    title: "Social Media Strategy & Crisis ORM Certification",
-    shortTitle: "Social Funnels & Crisis ORM",
-    code: "OMC-CERT-SMM-2026",
-    category: "Social & Growth",
-    categoryKey: "social",
-    badgeText: "Strategy Certification",
-    badgeColor: "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border-rose-300 dark:border-rose-700",
-    gradient: "from-rose-500 to-pink-600",
-    iconName: "Share2",
-    description: "Demonstrate omnichannel performance funnels, vertical short-form video retention dynamics, crisis PR containment, and DPDP regulatory safety.",
-    durationMinutes: 30,
-    durationSeconds: 30 * 60,
-    questionsCount: 15,
-    passingScorePercent: 80,
-    passingMarks: 24,
-    totalMarks: 30,
-    marksPerQuestion: 2.0,
-    penaltyPerQuestion: 0.0,
-    difficulty: "Intermediate / Advanced",
-    skillsCovered: ["9:16 Video Hooks", "Algorithmic Discovery", "Crisis Containment", "Brand Safety", "DPDP Compliance"],
-    questionIds: [46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60],
-  },
-  {
-    id: "track-wordpress",
-    courseId: "course-5",
-    title: "Website Development & WordPress Architecture Certification",
-    shortTitle: "WordPress & Web Architecture",
-    code: "OMC-CERT-WP-2026",
-    category: "Web Architecture",
-    categoryKey: "web-dev",
-    badgeText: "Technical Certification",
-    badgeColor: "bg-cyan-100 text-cyan-800 dark:bg-cyan-950/60 dark:text-cyan-300 border-cyan-300 dark:border-cyan-700",
-    gradient: "from-cyan-600 to-blue-700",
-    iconName: "Layout",
-    description: "Assess WordPress server performance, Redis object caching, sub-2s mobile loading speeds, Elementor/Gutenberg DOM depth, and security hardening.",
-    durationMinutes: 30,
-    durationSeconds: 30 * 60,
-    questionsCount: 15,
-    passingScorePercent: 80,
-    passingMarks: 24,
-    totalMarks: 30,
-    marksPerQuestion: 2.0,
-    penaltyPerQuestion: 0.0,
-    difficulty: "Advanced",
-    skillsCovered: ["Redis Object Cache", "Sub-2s Web Vitals", "Gutenberg vs Elementor", "REST API Endpoints", "SSL & Database Security"],
-    questionIds: [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115],
-  },
-  {
-    id: "track-creative",
-    courseId: "course-creative",
-    title: "Creative Designing & Visual Brand Communication Certification",
-    shortTitle: "Creative Design & Branding",
+    title: "Graphic Designing (Canva) & Visual Brand Communication Certification",
+    shortTitle: "Graphic Designing (Canva)",
     code: "OMC-CERT-DES-2026",
     category: "Creative Designing",
-    categoryKey: "creative",
+    categoryKey: "graphic-design",
     badgeText: "Design Certification",
     badgeColor: "bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-950/60 dark:text-fuchsia-300 border-fuchsia-300 dark:border-fuchsia-700",
     gradient: "from-fuchsia-600 via-pink-600 to-rose-600",
     iconName: "Palette",
-    description: "Validate digital design principles, WCAG 2.2 accessibility, responsive 8pt layout grids, Figma component systems, and high-conversion ad creative production.",
+    description: "Validate Canva brand kits, digital design principles, WCAG 2.2 accessibility, responsive 8pt layout grids, and high-conversion ad creative production.",
     durationMinutes: 30,
     durationSeconds: 30 * 60,
     questionsCount: 15,
@@ -2129,38 +2854,120 @@ export const EXAM_TRACKS = [
     marksPerQuestion: 2.0,
     penaltyPerQuestion: 0.0,
     difficulty: "Intermediate / Advanced",
-    skillsCovered: ["WCAG 2.2 Contrast", "8pt Grid Architecture", "Figma Auto-Layout", "Display Ad Creative", "Vector & WebP Pipeline"],
+    skillsCovered: ["Canva Brand Kits", "WCAG 2.2 Contrast", "8pt Grid Architecture", "Display Ad Creatives", "Vector & WebP Pipeline"],
     questionIds: [201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215],
   },
   {
-    id: "track-master",
-    courseId: "course-master",
-    title: "Masters in Digital Marketing - Board Comprehensive Evaluation",
-    shortTitle: "Masters Capstone Board Exam",
-    code: "OMC-DIPLOMA-BOARD-2026",
-    category: "Full Board Evaluation",
-    categoryKey: "master",
-    badgeText: "Official Course Diploma Exam",
-    badgeColor: "bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 border-blue-300 dark:border-blue-700",
-    gradient: "from-blue-600 via-indigo-600 to-purple-700",
-    iconName: "GraduationCap",
-    description: "The definitive 60-question institutional board certification covering Technical SEO, Google Ads, GA4 Measurement, and Crisis Strategy for official Diploma issuance.",
-    durationMinutes: 90,
-    durationSeconds: 90 * 60,
-    questionsCount: 60,
+    id: "track-smm",
+    courseId: "course-1",
+    title: "Social Media Marketing (SMM) Strategy & Paid Ads Certification",
+    shortTitle: "SMM",
+    code: "OMC-CERT-SMM-2026",
+    category: "Social Media",
+    categoryKey: "smm",
+    badgeText: "Marketing Certification",
+    badgeColor: "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border-rose-300 dark:border-rose-700",
+    gradient: "from-rose-500 to-pink-600",
+    iconName: "Share2",
+    description: "Demonstrate omnichannel performance funnels, vertical short-form video retention dynamics, Meta/LinkedIn paid campaign scaling, and crisis ORM containment.",
+    durationMinutes: 30,
+    durationSeconds: 30 * 60,
+    questionsCount: 15,
     passingScorePercent: 80,
-    passingMarks: 96,
-    totalMarks: 120,
+    passingMarks: 24,
+    totalMarks: 30,
     marksPerQuestion: 2.0,
     penaltyPerQuestion: 0.0,
-    difficulty: "Comprehensive",
-    skillsCovered: ["Technical SEO", "Google Ads Bidding", "GA4 Measurement", "Performance Funnels", "Crisis Strategy", "BigQuery Exports"],
-    questionIds: Array.from({ length: 60 }, (_, i) => i + 1),
+    difficulty: "Intermediate / Advanced",
+    skillsCovered: ["Meta & LinkedIn Paid Ads", "Performance Funnels", "9:16 Video Hooks", "Algorithmic Discovery", "Crisis Containment"],
+    questionIds: [46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60],
+  },
+  {
+    id: "track-ai-prompt",
+    courseId: "course-3",
+    title: "AI in DM & Generative AI - Prompt Engineering Certification",
+    shortTitle: "AI in DM & Generative AI - Prompt Engineering",
+    code: "OMC-CERT-AI-2026",
+    category: "Artificial Intelligence",
+    categoryKey: "ai-prompt",
+    badgeText: "AI Specialist Certification",
+    badgeColor: "bg-violet-100 text-violet-800 dark:bg-violet-950/60 dark:text-violet-300 border-violet-300 dark:border-violet-700",
+    gradient: "from-violet-600 via-purple-600 to-indigo-700",
+    iconName: "Sparkles",
+    description: "Evaluate Generative AI models in digital marketing, multi-turn prompt engineering frameworks, temperature/top_p tuning, autonomous marketing agents, and AI hallucination guardrails.",
+    durationMinutes: 30,
+    durationSeconds: 30 * 60,
+    questionsCount: 15,
+    passingScorePercent: 80,
+    passingMarks: 24,
+    totalMarks: 30,
+    marksPerQuestion: 2.0,
+    penaltyPerQuestion: 0.0,
+    difficulty: "Advanced",
+    skillsCovered: ["Prompt Frameworks (RTF/CREATE)", "Few-Shot & Chain-of-Thought", "AI Hallucination Guardrails", "Temperature & Top_p", "Marketing Automation Agents"],
+    questionIds: [301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315],
+  },
+  {
+    id: "track-video-editing",
+    courseId: "course-3",
+    title: "Video Editing & Short-Form Motion Design Certification",
+    shortTitle: "Video Editing",
+    code: "OMC-CERT-VID-2026",
+    category: "Video Production",
+    categoryKey: "video-editing",
+    badgeText: "Production Certification",
+    badgeColor: "bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300 border-red-300 dark:border-red-700",
+    gradient: "from-red-500 via-rose-600 to-orange-600",
+    iconName: "Film",
+    description: "Assess high-retention short-form video pacing, Premiere Pro & CapCut timeline workflows, B-roll overlays, audio ducking, color LUT grading, and 9:16 export encoding.",
+    durationMinutes: 30,
+    durationSeconds: 30 * 60,
+    questionsCount: 15,
+    passingScorePercent: 80,
+    passingMarks: 24,
+    totalMarks: 30,
+    marksPerQuestion: 2.0,
+    penaltyPerQuestion: 0.0,
+    difficulty: "Intermediate / Advanced",
+    skillsCovered: ["9:16 Retention Hooks", "Jump Cuts & B-Roll", "Audio Ducking & -14 LUFS", "Color Grading & LUTs", "H.264 / ProRes Encoding"],
+    questionIds: [401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415],
+  },
+  {
+    id: "track-smo",
+    courseId: "course-1",
+    title: "Social Media Optimization (SMO) & Organic Growth Certification",
+    shortTitle: "SMO",
+    code: "OMC-CERT-SMO-2026",
+    category: "Organic Social",
+    categoryKey: "smo",
+    badgeText: "Optimization Certification",
+    badgeColor: "bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300 border-sky-300 dark:border-sky-700",
+    gradient: "from-sky-500 via-blue-600 to-indigo-600",
+    iconName: "TrendingUp",
+    description: "Validate profile optimization architectures, bio conversion funnels, algorithmic watch time metrics, hashtag & keyword indexing on Instagram/YouTube/LinkedIn, and community engagement loops.",
+    durationMinutes: 30,
+    durationSeconds: 30 * 60,
+    questionsCount: 15,
+    passingScorePercent: 80,
+    passingMarks: 24,
+    totalMarks: 30,
+    marksPerQuestion: 2.0,
+    penaltyPerQuestion: 0.0,
+    difficulty: "Intermediate / Advanced",
+    skillsCovered: ["Profile Funnel Optimization", "Algorithmic Dwell Time", "Hashtag & Keyword SEO", "Viral Hook Engineering", "Community Engagement Loops"],
+    questionIds: [501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515],
   },
 ];
 
 export const ALL_QUESTIONS_MAP = {};
-[...EXAM_QUESTIONS, ...WORDPRESS_QUESTIONS, ...CREATIVE_QUESTIONS].forEach((q) => {
+[
+  ...EXAM_QUESTIONS,
+  ...WORDPRESS_QUESTIONS,
+  ...CREATIVE_QUESTIONS,
+  ...AI_PROMPT_QUESTIONS,
+  ...VIDEO_EDITING_QUESTIONS,
+  ...SMO_QUESTIONS,
+].forEach((q) => {
   ALL_QUESTIONS_MAP[q.id] = q;
 });
 
