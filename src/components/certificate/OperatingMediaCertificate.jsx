@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import QRCode from "qrcode";
-import logoImg from "../../assets/logo.png";
+import logoImg from "../../assets/logo-certificate.png";
 import { CheckCircle2, ShieldCheck } from "lucide-react";
 
 export const OperatingMediaCertificate = ({
@@ -50,7 +50,8 @@ export const OperatingMediaCertificate = ({
   const isExpired = (() => {
     if (!expiryDate) return false;
     const str = String(expiryDate).trim().toLowerCase();
-    if (str === "never" || str === "lifetime" || str === "no expiry") return false;
+    if (str === "never" || str === "lifetime" || str === "no expiry")
+      return false;
     const d = new Date(expiryDate);
     if (!isNaN(d.getTime())) {
       return d.getTime() < Date.now();
@@ -68,7 +69,8 @@ export const OperatingMediaCertificate = ({
         backgroundColor: "#ffffff",
         color: "#0f172a",
         colorScheme: "light",
-        border: "1.5px solid #1e293b", // SINGLE OUTLINING BORDER WITH SMALL THICKNESS, SINGLE COLORED
+        border: showBorder ? "4px solid #dc2626" : "none", // THICK RED BORDER
+        borderRadius: showBorder ? "4px" : "0px",
         fontFamily:
           "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
       }}
@@ -78,11 +80,11 @@ export const OperatingMediaCertificate = ({
         className="w-full h-full relative flex flex-col justify-between p-4 sm:p-7 md:p-9 bg-white"
       >
         {/* Subtle Watermark in background */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.035] overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04] overflow-hidden">
           <img
             src={logoImg}
             alt=""
-            className="w-[70%] max-w-[500px] object-contain grayscale"
+            className="w-[65%] max-w-[480px] object-contain grayscale mix-blend-multiply"
           />
         </div>
 
@@ -90,11 +92,11 @@ export const OperatingMediaCertificate = ({
         {/* 1. TOP SECTION: FOCUSED OPERATING MEDIA BRAND LOGO        */}
         {/* Clear advertising focus, large size, and brand authority */}
         {/* ========================================================== */}
-        <div className="relative z-10 flex flex-col items-center justify-center pt-1 sm:pt-2">
+        <div className="relative z-10 flex flex-col items-center justify-center pt-2 sm:pt-3">
           <img
             src={logoImg}
             alt="Operating Media - Digitize Your Career"
-            className="h-12 sm:h-16 md:h-20 w-auto max-w-[85%] object-contain drop-shadow-2xs"
+            className="h-32 sm:h-40 md:h-48 lg:h-56 w-auto max-w-[92%] object-contain drop-shadow-sm mix-blend-multiply transition-all"
             style={{ filter: "none" }}
           />
           <div className="flex items-center gap-2 mt-1 sm:mt-1.5">
@@ -136,7 +138,8 @@ export const OperatingMediaCertificate = ({
             className="text-xs sm:text-sm md:text-base font-medium mt-1 sm:mt-2"
             style={{ color: "#475569" }}
           >
-            has successfully completed all academic requirements and is officially certified in
+            has successfully completed all academic requirements and is
+            officially certified in
           </p>
 
           {/* Course Title: Sans-Serif font distinctly different from formal serif student name */}
@@ -194,7 +197,10 @@ export const OperatingMediaCertificate = ({
             </div>
             <div>
               <span style={{ color: "#64748b" }}>Certificate ID:</span>{" "}
-              <strong style={{ color: "#0f172a" }} className="font-semibold font-mono">
+              <strong
+                style={{ color: "#0f172a" }}
+                className="font-semibold font-mono"
+              >
                 {certificateId}
               </strong>
             </div>
