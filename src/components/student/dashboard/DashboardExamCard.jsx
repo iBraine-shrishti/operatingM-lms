@@ -111,9 +111,9 @@ export const DashboardExamCard = ({ crmProfile = {} }) => {
               <button
                 key={track.code}
                 type="button"
-                onClick={() => navigate(`/exam?track=${track.trackId}`)}
+                onClick={() => navigate("/exam")}
                 className={`px-2 py-0.5 rounded-md text-[10.5px] font-mono font-semibold border ${track.color} hover:scale-105 transition-transform cursor-pointer`}
-                title={`Take ${track.name} Exam`}
+                title={`Explore ${track.name} Exam`}
               >
                 {track.name}
               </button>

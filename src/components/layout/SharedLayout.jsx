@@ -12,8 +12,6 @@ export const SharedLayout = () => {
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [searchModalOpen, setSearchModalOpen] = useState(false);
 
-    const isExamPage = location.pathname.startsWith('/exam');
-
     const toggleSidebar = () => {
         if (window.innerWidth < 768) {
             setMobileSidebarOpen(!mobileSidebarOpen);
@@ -22,17 +20,6 @@ export const SharedLayout = () => {
             setSidebarCollapsed(!sidebarCollapsed);
         }
     };
-
-    // Lockdown Mode for Proctored Examination: completely hide regular sidebar and topbar
-    if (isExamPage) {
-        return (
-            <div className="h-screen max-h-screen w-full bg-[#f8fafc] dark:bg-[#070b14] font-sans text-slate-900 dark:text-slate-100 overflow-hidden flex flex-col">
-                <main className="w-full h-full flex flex-col p-0 m-0 overflow-hidden flex-1">
-                    <Outlet />
-                </main>
-            </div>
-        );
-    }
 
     return (<div className={`min-h-screen bg-[#f8fafc] dark:bg-[#0b0f19] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors duration-200 role-student`}>
       {/* Sidebar Desktop */}

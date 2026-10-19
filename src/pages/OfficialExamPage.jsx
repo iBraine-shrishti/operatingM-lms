@@ -202,6 +202,15 @@ export const OfficialExamPage = () => {
     setSecurityStrikes(0);
     setStrikeAlert(null);
     setExamResult(null);
+
+    // Request native browser fullscreen upon course selection
+    try {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    } catch {}
+
+    setFullscreenActive(true);
     setExamStage("BRIEFING");
   };
 
@@ -333,6 +342,12 @@ export const OfficialExamPage = () => {
     if (examStage === "LIVE_EXAM") {
       setShowExitHallModal(true);
     } else {
+      if (document.fullscreenElement) {
+        try {
+          document.exitFullscreen().catch(() => {});
+        } catch {}
+      }
+      setFullscreenActive(false);
       setExamStage("CATALOG");
     }
   };
@@ -342,6 +357,12 @@ export const OfficialExamPage = () => {
     if (examStage === "LIVE_EXAM") {
       setShowExitHallModal(true);
     } else {
+      if (document.fullscreenElement) {
+        try {
+          document.exitFullscreen().catch(() => {});
+        } catch {}
+      }
+      setFullscreenActive(false);
       navigate("/dashboard");
     }
   };
@@ -353,28 +374,34 @@ export const OfficialExamPage = () => {
         document.exitFullscreen().catch(() => {});
       } catch {}
     }
+    setFullscreenActive(false);
     navigate("/dashboard");
   };
 
+  // Stage 1: COURSE / TRACK CATALOG -> Standard layout with regular LMS Sidebar and Topbar (not fullscreen)
+  if (examStage === "CATALOG") {
+    return (
+      <div className="w-full flex-1 animate-in fade-in duration-200">
+        <ExamCourseSelector onSelectTrack={handleSelectTrack} />
+      </div>
+    );
+  }
+
+  // Stages 2, 3, 4: BRIEFING, LIVE_EXAM, SCORECARD -> Dedicated Fullscreen Exam Hall
   return (
     <div
       ref={containerRef}
-      className="h-full w-full max-w-full overflow-hidden bg-slate-50 dark:bg-[#070b14] text-slate-900 dark:text-slate-100 flex flex-col font-sans select-none text-base"
+      className="fixed inset-0 z-[100] h-screen w-screen max-w-full overflow-hidden bg-slate-50 dark:bg-[#070b14] text-slate-900 dark:text-slate-100 flex flex-col font-sans select-none text-base"
     >
-      {/* Institutional Top Header (Rendered for CATALOG, BRIEFING, and SCORECARD; LIVE_EXAM uses its own unified proctored header) */}
+      {/* Institutional Top Header (Rendered for BRIEFING and SCORECARD; LIVE_EXAM uses its own unified proctored header) */}
       {examStage !== "LIVE_EXAM" && (
         <ExamHeader
           rollNumber={rollNumber}
-          activeTrack={examStage !== "CATALOG" ? selectedTrack : null}
+          activeTrack={selectedTrack}
           examStage={examStage}
           onExitHall={handleExitHall}
-          onBackToCatalog={examStage !== "CATALOG" ? handleBackToCatalog : null}
+          onBackToCatalog={handleBackToCatalog}
         />
-      )}
-
-      {/* Stage 1: COURSE / TRACK CATALOG (Google Skills Exam Flow) */}
-      {examStage === "CATALOG" && (
-        <ExamCourseSelector onSelectTrack={handleSelectTrack} />
       )}
 
       {/* Stage 2: COURSE BRIEFING & CANDIDATE ADMIT CARD */}
@@ -429,7 +456,15 @@ export const OfficialExamPage = () => {
           maxWarnings={MAX_WARNINGS}
           onRetakeExam={handleRetakeExam}
           onBackToCatalog={handleBackToCatalog}
-          onReturnDashboard={() => navigate("/dashboard")}
+          onReturnDashboard={() => {
+            if (document.fullscreenElement) {
+              try {
+                document.exitFullscreen().catch(() => {});
+              } catch {}
+            }
+            setFullscreenActive(false);
+            navigate("/dashboard");
+          }}
         />
       )}
 

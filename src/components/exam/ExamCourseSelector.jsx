@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { EXAM_TRACKS } from "./examTracksConfig";
 import { ExamTrackCard } from "./ExamTrackCard";
+import { StudentPageHeader } from "../student/StudentPageHeader";
 
 const CATEGORIES = [
   { key: "all", label: "All Certifications" },
@@ -23,7 +24,8 @@ const CATEGORIES = [
 
 /**
  * Card-Based Exam Catalog Page.
- * A clean, simple, color-coordinated, component-based layout showcasing all 8 certification tracks.
+ * Styled consistently with other student pages (Enrolled Courses, Quizzes, Assignments),
+ * featuring StudentPageHeader, category filters, and color-coordinated exam cards.
  */
 export const ExamCourseSelector = ({ onSelectTrack }) => {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -48,41 +50,35 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
   }, [selectedCategory, searchQuery]);
 
   return (
-    <main className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
-      <div className="max-w-7xl w-full mx-auto space-y-6 pb-12 sm:pb-16">
-        {/* Simple & Clean Header */}
-        <div className="rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-slate-800 bg-white/95 dark:bg-[#0f172a] p-5 sm:p-6 shadow-xs">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div className="space-y-1.5 max-w-2xl">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-500/30 text-xs font-bold uppercase tracking-wider">
-                <Sparkles size={13} className="text-blue-600 dark:text-blue-400" />
-                <span>Operating Media Skillshop</span>
-              </div>
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                Official Certification Exams
-              </h1>
-              <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm leading-relaxed">
-                Choose from 8 specialized industry certification tracks. Complete the proctored assessment to earn your official industry credentials.
-              </p>
-            </div>
-
-            {/* Quick Summary Pill Highlights */}
-            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0 text-xs font-mono">
-              <div className="px-3 py-1.5 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 text-blue-800 dark:text-blue-300 font-bold flex items-center gap-1.5">
-                <Award size={14} className="text-blue-600 dark:text-blue-400" />
-                <span>8 Tracks Open</span>
-              </div>
-              <div className="px-3 py-1.5 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 font-bold flex items-center gap-1.5">
-                <ShieldCheck size={14} className="text-emerald-600 dark:text-emerald-400" />
-                <span>Zero Penalty</span>
-              </div>
-              <div className="px-3 py-1.5 rounded-xl bg-purple-50/80 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 text-purple-800 dark:text-purple-300 font-bold flex items-center gap-1.5">
-                <CheckCircle2 size={14} className="text-purple-600 dark:text-purple-400" />
-                <span>80% Passing</span>
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="w-full max-w-7xl mx-auto space-y-6 pb-12 animate-in fade-in duration-200">
+      {/* Standardized Student Page Header matching other pages */}
+      <StudentPageHeader
+        icon={Award}
+        category="Operating Media Skillshop Certifications"
+        badgeText="8 Tracks Open"
+        title="Official Skills Certification Exams"
+        description="Choose from 8 specialized industry certification tracks. Select any track to begin your proctored assessment with zero negative marking and earn verified credentials."
+        metrics={[
+          {
+            label: "Certification Tracks",
+            value: "8 Tracks",
+            icon: Award,
+            color: "text-blue-600 dark:text-cyan-400",
+          },
+          {
+            label: "Marking Policy",
+            value: "Zero Penalty",
+            icon: ShieldCheck,
+            color: "text-emerald-600 dark:text-emerald-400",
+          },
+          {
+            label: "Passing Score",
+            value: "80% Threshold",
+            icon: CheckCircle2,
+            color: "text-purple-600 dark:text-purple-400",
+          },
+        ]}
+      />
 
         {/* Filter Pills & Search Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
@@ -166,8 +162,7 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
             ))}
           </div>
         )}
-      </div>
-    </main>
+    </div>
   );
 };
 

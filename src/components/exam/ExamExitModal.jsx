@@ -8,7 +8,7 @@ export const ExamExitModal = ({ isOpen, onClose, onConfirm }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[110] bg-black/60 dark:bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white dark:bg-slate-950 border border-rose-300 dark:border-rose-700/60 rounded-2xl p-6 sm:p-7 text-center shadow-2xl animate-in fade-in zoom-in-95 duration-150">
         <div className="w-14 h-14 mx-auto rounded-full bg-rose-100 dark:bg-rose-500/20 border border-rose-300 dark:border-rose-500 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3">
           <LogOut size={28} />

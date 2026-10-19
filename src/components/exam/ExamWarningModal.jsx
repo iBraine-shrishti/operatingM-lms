@@ -10,7 +10,7 @@ export const ExamWarningModal = ({ strikeAlert, maxWarnings = 3, onAcknowledge }
   const isDisqualified = strikeAlert.strikeNumber >= maxWarnings;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 dark:bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[110] bg-black/60 dark:bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-white dark:bg-slate-950 border border-amber-300 dark:border-amber-700/60 rounded-2xl p-6 sm:p-7 text-center shadow-2xl animate-in fade-in zoom-in-95 duration-150">
         <div className="w-14 h-14 mx-auto rounded-full bg-amber-100 dark:bg-amber-500/20 border border-amber-300 dark:border-amber-500 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3">
           <AlertTriangle size={30} />
