@@ -33,8 +33,8 @@ export const STUDENT_USER = {
     maritalStatus: 'Single',
     admissionDate: '22 Apr 2026',
     registrationDate: '18 Apr 2026',
-    facultyLead: 'Harsh Pareek',
-    facultyLeadRole: 'Director & Lead Faculty',
+    facultyLead: 'Rahul Shende',
+    facultyLeadRole: 'Lead Faculty - Borivali Center',
     role: 'STUDENT',
     roleLabel: 'STUDENT',
     avatar: sahilProfilePic, // Sahil Hasolkar verified photo
@@ -147,6 +147,11 @@ export const AuthProvider = ({ children }) => {
                 } catch (e) {}
 
                 setStudentUser((prev) => {
+                    const branchBatchStr = `${profile.branch || prev.branch || ''} ${profile.course || prev.course || ''}`.toLowerCase();
+                    const isAndheri = branchBatchStr.includes('andheri') || branchBatchStr.includes('ddm-a1');
+                    const currentFacultyLead = isAndheri ? 'Nilkamal Mukharjee' : 'Rahul Shende';
+                    const currentFacultyRole = isAndheri ? 'Lead Faculty - Andheri Center' : 'Lead Faculty - Borivali Center';
+
                     return {
                         ...prev,
                         crmAdmissionId: profile.id || prev.crmAdmissionId,
@@ -157,6 +162,8 @@ export const AuthProvider = ({ children }) => {
                         course: profile.course || prev.course,
                         branch: profile.branch || prev.branch,
                         center: profile.center || profile.branch || prev.center,
+                        facultyLead: currentFacultyLead,
+                        facultyLeadRole: currentFacultyRole,
                         designation: `${profile.course || 'Digital Marketing'} Student`,
                         avatar: resolvedAvatar,
                         enrolledCoursesCount: activePermittedIds.length

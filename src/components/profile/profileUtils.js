@@ -2,6 +2,33 @@ import { crmService } from "../../services/crmService";
 import sahilProfilePic from "../../assets/sahil-profile.png";
 
 /**
+ * Resolves faculty lead based on student batch / branch condition:
+ * - Rahul Shende - BORIVALI
+ * - Nilkamal Mukharjee - ANDHERI
+ */
+export const resolveFacultyByBatchOrBranch = (branchOrCenter = "", batchNameOrCode = "") => {
+  const target = `${branchOrCenter || ""} ${batchNameOrCode || ""}`.toLowerCase();
+
+  if (
+    target.includes("andheri") ||
+    target.includes("ddm-a1") ||
+    target.includes("-a1") ||
+    target.includes("andh")
+  ) {
+    return {
+      facultyLead: "Nilkamal Mukharjee",
+      facultyLeadRole: "Lead Faculty - Andheri Center",
+    };
+  }
+
+  // Default to Borivali Center
+  return {
+    facultyLead: "Rahul Shende",
+    facultyLeadRole: "Lead Faculty - Borivali Center",
+  };
+};
+
+/**
  * Maps CRM profile data and current user auth state into a normalized student profile object.
  *
  * @param {Object} crm - CRM profile object
@@ -54,9 +81,19 @@ export const mapStudentDataFromCrm = (crm, user) => {
   const state = source.state || "Maharashtra";
   const pincode = source.pincode || "400059";
   const country = source.country || "India";
-  const facultyLead = source.facultyLead || "Harsh Pareek";
-  const facultyLeadRole =
-    source.facultyLeadRole || "Director & Lead Faculty";
+
+  // Dynamic faculty lead resolution based on student batch/branch:
+  // Rahul Shende - BORIVALI | Nilkamal Mukharjee - ANDHERI (Harsh Pareek removed)
+  const batchAssignedFaculty = resolveFacultyByBatchOrBranch(center, batch);
+  const rawFacultyLead = source.facultyLead || user?.facultyLead;
+  const facultyLead = (rawFacultyLead && !rawFacultyLead.includes("Harsh Pareek"))
+    ? rawFacultyLead
+    : batchAssignedFaculty.facultyLead;
+
+  const rawFacultyRole = source.facultyLeadRole || user?.facultyLeadRole;
+  const facultyLeadRole = (rawFacultyRole && !rawFacultyRole.includes("Director"))
+    ? rawFacultyRole
+    : batchAssignedFaculty.facultyLeadRole;
   const courseDuration =
     source.courseDuration || (isDiploma ? "6 Months" : "12 Months");
   const courseStart = source.courseStart || admissionDate;

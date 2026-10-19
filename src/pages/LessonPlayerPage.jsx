@@ -965,7 +965,7 @@ export const LessonPlayerPage = () => {
                     <div className="p-3 bg-white dark:bg-[#0b1329] rounded-xl border border-slate-100 dark:border-slate-800 space-y-1.5">
                       <div className="flex items-center justify-between text-slate-400 text-[10px]">
                         <span className="font-bold text-slate-800 dark:text-slate-200">
-                          Harsh Pareek (Faculty Lead)
+                          Rahul Shende (Lead Faculty)
                         </span>
                         <span>Pinned Answer</span>
                       </div>

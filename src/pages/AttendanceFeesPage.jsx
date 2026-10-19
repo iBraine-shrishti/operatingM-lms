@@ -166,7 +166,7 @@ export const AttendanceFeesPage = () => {
                     </span>
                     <span className="text-slate-400 dark:text-slate-500 text-[11px]">
                       {log.date} • {log.batch_name || "Masters Weekday Morning"}{" "}
-                      • Faculty: {log.trainer_name || "Harsh Pareek"}
+                      • Faculty: {log.trainer_name && log.trainer_name !== "Harsh Pareek" ? log.trainer_name : ((crmProfile?.branch || "").toLowerCase().includes("andheri") ? "Nilkamal Mukharjee" : "Rahul Shende")}
                     </span>
                   </div>
                 </div>

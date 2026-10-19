@@ -1242,7 +1242,7 @@ export const INITIAL_ACTIVITIES = [
         studentId: 'std-375',
         isStudent: true,
         user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
-        action: 'received Grade A+ from Harsh Pareek on',
+        action: 'received Grade A+ from Rahul Shende on',
         target: 'PMax Strategy Blueprint Assignment',
         timeAgo: 'Yesterday',
         type: 'grading'

@@ -47,7 +47,7 @@ export const SchedulePage = () => {
       title: "Data Science & Analytics Foundations",
       dates: "22 Apr 2026 - 24 Apr 2026",
       timing: "9:00 AM - 10:00 AM",
-      faculty: "Harsh Pareek (Lead Faculty)",
+      faculty: "Rahul Shende (Lead Faculty)",
       status: "In Session",
       isLive: true,
       room: "Lab 2 & Zoom Hybrid",
@@ -80,7 +80,7 @@ export const SchedulePage = () => {
       title: "Google Ads (PPC) Campaign Planning & ROAS Optimization",
       dates: "16 Mar 2026 - 28 Mar 2026",
       timing: "9:00 AM - 10:00 AM",
-      faculty: "Harsh Pareek",
+      faculty: "Rahul Shende",
       status: "Upcoming",
       isLive: false,
       room: "Main Conference",
@@ -93,35 +93,35 @@ export const SchedulePage = () => {
       day: "Monday",
       time: "9:00 AM - 10:00 AM",
       topic: "Technical SEO Audits & Core Web Vitals",
-      faculty: "Harsh Pareek",
+      faculty: "Rahul Shende",
       type: "Lecture + Lab",
     },
     {
       day: "Tuesday",
       time: "9:00 AM - 10:00 AM",
       topic: "Schema Markup & Rich Snippets Hands-on",
-      faculty: "Harsh Pareek",
+      faculty: "Rahul Shende",
       type: "Live Workshop",
     },
     {
       day: "Wednesday",
       time: "9:00 AM - 10:00 AM",
       topic: "Robots.txt, XML Sitemaps & Canonicalization",
-      faculty: "Harsh Pareek",
+      faculty: "Rahul Shende",
       type: "Theory & Case Study",
     },
     {
       day: "Thursday",
       time: "9:00 AM - 10:00 AM",
       topic: "Google Search Console Advanced Diagnostics",
-      faculty: "Harsh Pareek",
+      faculty: "Rahul Shende",
       type: "Lab Session",
     },
     {
       day: "Friday",
       time: "9:00 AM - 10:00 AM",
       topic: "Weekly Q&A, Doubt Solving & Project Review",
-      faculty: "Harsh Pareek & Nishi",
+      faculty: "Rahul Shende & Nishi",
       type: "Interactive Review",
     },
   ];
@@ -218,10 +218,10 @@ export const SchedulePage = () => {
               <span>FACULTY LEAD:</span>
             </div>
             <div className="font-extrabold text-slate-900 dark:text-white text-sm truncate">
-              Harsh Pareek
+              {(crmProfile.branch || "").toLowerCase().includes("andheri") ? "Nilkamal Mukharjee" : "Rahul Shende"}
             </div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              Director & Lead Faculty
+              {(crmProfile.branch || "").toLowerCase().includes("andheri") ? "Lead Faculty - Andheri Center" : "Lead Faculty - Borivali Center"}
             </div>
           </div>
         </div>

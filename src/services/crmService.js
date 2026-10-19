@@ -47,8 +47,8 @@ export const DEFAULT_CRM_PROFILE = {
   joiningDate: "2026-04-22",
   courseEnd: "20 Apr 2027",
   daysLeft: 360,
-  facultyLead: "Harsh Pareek",
-  facultyLeadRole: "Director & Lead Faculty",
+  facultyLead: "Rahul Shende",
+  facultyLeadRole: "Lead Faculty - Borivali Center",
   photo: sahilProfilePic,
   avatar: sahilProfilePic,
   // Financial Overview matching profile.png (Fees Pending)
@@ -176,7 +176,7 @@ export const DEFAULT_CRM_ATTENDANCE = {
       date: "28 Mar 2026",
       topic: "Ad Copy & Keyword Match Types",
       batch_name: "Masters Weekday Morning",
-      trainer_name: "Harsh Pareek",
+      trainer_name: "Rahul Shende",
       status: "PRESENT",
     },
     {
@@ -184,7 +184,7 @@ export const DEFAULT_CRM_ATTENDANCE = {
       date: "27 Mar 2026",
       topic: "Google Ads Search Campaigns",
       batch_name: "Masters Weekday Morning",
-      trainer_name: "Harsh Pareek",
+      trainer_name: "Rahul Shende",
       status: "PRESENT",
     },
     {
@@ -200,7 +200,7 @@ export const DEFAULT_CRM_ATTENDANCE = {
       date: "23 Mar 2026",
       topic: "Google Search Console Advanced",
       batch_name: "Masters Weekday Morning",
-      trainer_name: "Harsh Pareek",
+      trainer_name: "Rahul Shende",
       status: "PRESENT",
     },
     {
@@ -208,7 +208,7 @@ export const DEFAULT_CRM_ATTENDANCE = {
       date: "20 Mar 2026",
       topic: "Robots.txt & XML Sitemaps",
       batch_name: "Masters Weekday Morning",
-      trainer_name: "Harsh Pareek",
+      trainer_name: "Rahul Shende",
       status: "PRESENT",
     },
     {
@@ -216,7 +216,7 @@ export const DEFAULT_CRM_ATTENDANCE = {
       date: "19 Mar 2026",
       topic: "Schema Markup & Rich Snippets",
       batch_name: "Masters Weekday Morning",
-      trainer_name: "Harsh Pareek",
+      trainer_name: "Rahul Shende",
       status: "PRESENT",
     },
     {
@@ -224,7 +224,7 @@ export const DEFAULT_CRM_ATTENDANCE = {
       date: "17 Mar 2026",
       topic: "Technical SEO Audits & Core Web Vitals",
       batch_name: "Masters Weekday Morning",
-      trainer_name: "Harsh Pareek",
+      trainer_name: "Rahul Shende",
       status: "PRESENT",
     },
   ],
@@ -238,7 +238,7 @@ export const DEFAULT_CRM_BATCH = {
   frequency: "Monday to Friday",
   branch: "Andheri Center",
   classroom: "Room 302 & Zoom Live Link",
-  faculty: "Harsh Pareek (Director & Lead Faculty)",
+  faculty: "Nilkamal Mukharjee (Lead Faculty - Andheri)",
   status: "In Progress",
   currentTopic: "Google Ads (PPC) Strategy & Campaign Architecture",
   currentDateRange: "25 Mar 2026 - 12 Apr 2026",
@@ -538,8 +538,18 @@ class CrmService {
             ? this.formatPhoneNumber(d.emergency_phone)
             : "",
           counsellor: d.counsellor || "",
-          facultyLead: "Harsh Pareek",
-          facultyLeadRole: "Director & Lead Faculty",
+          facultyLead: (() => {
+            const bStr = `${d.branch || ""} ${d.course || ""}`.toLowerCase();
+            return bStr.includes("andheri") || bStr.includes("ddm-a1")
+              ? "Nilkamal Mukharjee"
+              : "Rahul Shende";
+          })(),
+          facultyLeadRole: (() => {
+            const bStr = `${d.branch || ""} ${d.course || ""}`.toLowerCase();
+            return bStr.includes("andheri") || bStr.includes("ddm-a1")
+              ? "Lead Faculty - Andheri Center"
+              : "Lead Faculty - Borivali Center";
+          })(),
           courseDuration,
           courseStart: admissionDateStr,
           courseEnd: courseEndStr,

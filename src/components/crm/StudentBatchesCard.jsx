@@ -19,13 +19,18 @@ export const StudentBatchesCard = ({ batch }) => {
     batchCode = "WD-M1",
     timing = "10:00 AM - 12:00 PM",
     frequency = "Monday to Friday",
-    branch = "Andheri Center",
+    branch = "Borivali Center",
     classroom = "Room 302 & Zoom Live Link",
-    faculty = "Harsh Pareek (Director & Lead Faculty)",
+    faculty,
     currentTopic = "Google Ads (PPC) Strategy & Campaign Architecture",
     currentDateRange = "25 Mar 2026 - 12 Apr 2026",
     upcomingSchedule = [],
   } = batch;
+
+  const defaultFaculty = (branch || "").toLowerCase().includes("andheri")
+    ? "Nilkamal Mukharjee (Lead Faculty - Andheri)"
+    : "Rahul Shende (Lead Faculty - Borivali)";
+  const resolvedFaculty = (faculty && !faculty.includes("Harsh Pareek")) ? faculty : defaultFaculty;
 
   return (
     <div className="bg-white border border-slate-200/90 shadow-2xs p-5 sm:p-6 transition-all flex flex-col justify-between">
@@ -82,7 +87,7 @@ export const StudentBatchesCard = ({ batch }) => {
               <span className="truncate">
                 Faculty:{" "}
                 <strong className="text-slate-900 font-semibold">
-                  {faculty}
+                  {resolvedFaculty}
                 </strong>
               </span>
             </div>

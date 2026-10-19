@@ -216,7 +216,7 @@ export const ProfileAttendanceFeesSection = ({
                     </span>
                     <span className="text-slate-400 dark:text-slate-500 text-[11px]">
                       {log.date} • {log.batch_name || studentData.batch} • Faculty:{" "}
-                      {log.trainer_name || studentData.facultyLead}
+                      {log.trainer_name && log.trainer_name !== "Harsh Pareek" ? log.trainer_name : studentData.facultyLead}
                     </span>
                   </div>
                 </div>
