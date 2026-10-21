@@ -251,47 +251,56 @@ export const TakeAssignmentPage = () => {
               </div>
             </div>
 
-            {/* Starter Files & Reference Materials Mock */}
-            <div className="space-y-2 pt-2">
-              <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
-                Instructor Attachments & Starter Files
-              </h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-2 truncate pr-2">
-                    <FileText size={16} className="text-blue-500 shrink-0" />
-                    <span className="font-semibold text-slate-800 dark:text-slate-200 truncate">
-                      Assignment_Brief_Guide.pdf
-                    </span>
+            {/* Starter Files & Reference Materials */}
+            {assignment?.attachmentUrl ? (
+              <div className="space-y-2 pt-2">
+                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                  <Paperclip size={13} className="text-blue-500" />
+                  <span>Instructor Reference Material & Brief</span>
+                </h4>
+                <div className="p-3.5 rounded-2xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-900/50 flex items-center justify-between text-xs">
+                  <div className="flex items-center space-x-2.5 truncate pr-2">
+                    <div className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                      {assignment.attachmentUrl.includes(".xls") || assignment.attachmentUrl.includes(".csv") ? (
+                        <FileText size={16} className="text-emerald-600" />
+                      ) : (
+                        <FileText size={16} />
+                      )}
+                    </div>
+                    <div className="truncate">
+                      <span className="font-bold text-slate-900 dark:text-white truncate block">
+                        {assignment.attachmentName || (assignment.attachmentUrl.includes("/brief-files/") ? assignment.attachmentUrl.split("/").pop() : "Assignment_Brief_Reference.pdf")}
+                      </span>
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                        {assignment.attachmentUrl.startsWith("http") && !assignment.attachmentUrl.includes("/api/") ? "External Reference Resource" : "Downloadable reference document"}
+                      </span>
+                    </div>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => showToast("Downloading resource guide...", "info")}
-                    className="p-1 rounded-lg text-slate-400 hover:text-blue-600 cursor-pointer"
-                    title="Download Guide"
-                  >
-                    <Download size={14} />
-                  </button>
-                </div>
-
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-2 truncate pr-2">
-                    <FolderArchive size={16} className="text-purple-500 shrink-0" />
-                    <span className="font-semibold text-slate-800 dark:text-slate-200 truncate">
-                      Brand_Assets_Pack.zip
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => showToast("Downloading assets bundle...", "info")}
-                    className="p-1 rounded-lg text-slate-400 hover:text-purple-600 cursor-pointer"
-                    title="Download Bundle"
-                  >
-                    <Download size={14} />
-                  </button>
+                  {assignment.attachmentUrl.startsWith("http") && !assignment.attachmentUrl.includes("/api/") ? (
+                    <a
+                      href={assignment.attachmentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shrink-0 transition-colors shadow-2xs"
+                    >
+                      <span>Open Link</span>
+                      <ExternalLink size={12} />
+                    </a>
+                  ) : (
+                    <a
+                      href={assignment.attachmentUrl.startsWith("http") ? assignment.attachmentUrl : `https://operatingmedia.org${assignment.attachmentUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shrink-0 transition-colors shadow-2xs"
+                    >
+                      <span>Download</span>
+                      <Download size={12} />
+                    </a>
+                  )}
                 </div>
               </div>
-            </div>
+            ) : null}
           </div>
 
           {/* Evaluation Rubric Breakdown Card */}
@@ -503,7 +512,10 @@ export const TakeAssignmentPage = () => {
                       <span className="truncate pr-2 font-semibold">Attached: {fileName}</span>
                       <button
                         type="button"
-                        onClick={() => setFileName("")}
+                        onClick={() => {
+                          setFileName("");
+                          setFileObj(null);
+                        }}
                         className="text-slate-400 hover:text-rose-600 p-0.5 cursor-pointer"
                       >
                         <X size={14} />
