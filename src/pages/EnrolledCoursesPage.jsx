@@ -39,7 +39,7 @@ export const EnrolledCoursesPage = () => {
   const { currentUser, studentUser, isAdmin, assignedCourseIds } = useAuth();
   
   const studentId = currentUser?.crmAdmissionId || studentUser?.crmAdmissionId || 375;
-  const [permittedCourseIds, setPermittedCourseIds] = useState(() => assignedCourseIds || ["course-1", "course-8"]);
+  const [permittedCourseIds, setPermittedCourseIds] = useState(() => assignedCourseIds || []);
   const [isLoadingPerms, setIsLoadingPerms] = useState(false);
 
   // Sync real course permissions from CRM API
@@ -50,7 +50,7 @@ export const EnrolledCoursesPage = () => {
       lmsService.fetchStudentCoursePermissions(studentId).then((perms) => {
         if (isMounted) {
           setIsLoadingPerms(false);
-          if (Array.isArray(perms) && perms.length > 0) {
+          if (Array.isArray(perms)) {
             const granted = perms.filter((p) => p.hasAccess).map((p) => p.courseId);
             setPermittedCourseIds(granted);
           }
@@ -74,7 +74,7 @@ export const EnrolledCoursesPage = () => {
   const enrolledCourses = useMemo(() => {
     if (isAdmin) return allPublishedCourses;
     if (!permittedCourseIds || permittedCourseIds.length === 0) {
-      return allPublishedCourses.filter((c) => c.id === "course-1" || c.id === "course-8");
+      return [];
     }
     return allPublishedCourses.filter((c) => permittedCourseIds.includes(c.id));
   }, [isAdmin, allPublishedCourses, permittedCourseIds]);
