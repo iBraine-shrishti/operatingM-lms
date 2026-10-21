@@ -380,11 +380,7 @@ export const OfficialExamPage = () => {
 
   // Stage 1: COURSE / TRACK CATALOG -> Standard layout with regular LMS Sidebar and Topbar (not fullscreen)
   if (examStage === "CATALOG") {
-    return (
-      <div className="w-full flex-1 animate-in fade-in duration-200">
-        <ExamCourseSelector onSelectTrack={handleSelectTrack} />
-      </div>
-    );
+    return <ExamCourseSelector onSelectTrack={handleSelectTrack} />;
   }
 
   // Stages 2, 3, 4: BRIEFING, LIVE_EXAM, SCORECARD -> Dedicated Fullscreen Exam Hall
