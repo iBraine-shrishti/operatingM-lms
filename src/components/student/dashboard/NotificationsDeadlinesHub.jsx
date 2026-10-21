@@ -113,7 +113,7 @@ const SEVERITY_CONFIGS = {
  */
 export const NotificationsDeadlinesHub = ({
   notifications = [],
-  summaryText = "1 Overdue • 1 Due Today • 1 Fee Notice",
+  summaryText = "No Pending Tasks • Fees Cleared",
   onOpenAssignmentsModal,
   onOpenPaymentModal,
   onNavigate,
@@ -240,16 +240,7 @@ export const NotificationsDeadlinesHub = ({
           className="text-amber-500 shrink-0 animate-pulse 2xl:w-4 2xl:h-4"
         />
         <span className="font-semibold">
-          {summaryText ? (
-            <span>{summaryText}</span>
-          ) : (
-            <>
-              <strong className="text-slate-900 dark:text-white font-black">
-                1 Overdue
-              </strong>{" "}
-              • 1 Due Today • 1 Fee Notice
-            </>
-          )}
+          {summaryText || "No Pending Tasks • Fees Cleared"}
         </span>
       </div>
     </div>

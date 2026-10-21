@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { lmsService } from '../services/lmsService';
+import { crmService } from '../services/crmService';
 import { useAuth } from '../context/AuthContext';
 import { StudentDashboardHub } from '../components/student/StudentDashboardHub';
 
@@ -19,7 +20,36 @@ export const DashboardPage = () => {
   const courses = lmsService.getCourses();
   const quizzes = lmsService.getQuizzes();
   const achievements = lmsService.getAchievements().filter(a => a.unlocked);
-  const assignments = lmsService.getAssignments();
+  const [assignments, setAssignments] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const studentId =
+      crmProfile?.id ||
+      currentUser?.admissionId ||
+      currentUser?.id ||
+      crmService.getSelectedStudentId();
+
+    if (studentId) {
+      lmsService
+        .fetchStudentBatchAssignments(studentId)
+        .then((data) => {
+          if (isMounted) {
+            setAssignments(Array.isArray(data) ? data : []);
+          }
+        })
+        .catch((err) => {
+          console.warn("Could not load student batch assignments:", err);
+          if (isMounted) setAssignments([]);
+        });
+    } else {
+      setAssignments([]);
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [crmProfile?.id, currentUser?.admissionId, currentUser?.id]);
 
   return (
     <StudentDashboardHub

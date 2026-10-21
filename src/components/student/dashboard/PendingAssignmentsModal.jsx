@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, X, Flame, Clock, ArrowRight } from "lucide-react";
+import { AlertTriangle, X, Flame, Clock, ArrowRight, CheckCircle2 } from "lucide-react";
 
 /**
  * Reusable Pending & Overdue Assignments Modal Dialog
@@ -34,8 +34,9 @@ export const PendingAssignmentsModal = ({
     }
   };
 
-  const overdueCount =
-    assignments.filter((a) => a.status === "overdue" || a.isOverdue || a.daysLeft < 0).length || 1;
+  const overdueCount = assignments.filter(
+    (a) => a.status === "overdue" || a.isOverdue || a.daysLeft < 0
+  ).length;
   const pendingCount = Math.max(0, assignments.length - overdueCount);
 
   return (
@@ -44,18 +45,36 @@ export const PendingAssignmentsModal = ({
         {/* Modal Header */}
         <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-[#0f172a]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-100 dark:bg-rose-500/15 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-500/30 shadow-2xs dark:shadow-[0_0_12px_rgba(244,63,94,0.25)] flex items-center justify-center shrink-0">
-              <AlertTriangle size={20} />
+            <div
+              className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
+                assignments.length === 0
+                  ? "bg-emerald-100 dark:bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/30"
+                  : "bg-rose-100 dark:bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-500/30 shadow-2xs dark:shadow-[0_0_12px_rgba(244,63,94,0.25)]"
+              }`}
+            >
+              {assignments.length === 0 ? (
+                <CheckCircle2 size={20} />
+              ) : (
+                <AlertTriangle size={20} />
+              )}
             </div>
             <div>
               <h3 className="font-black text-slate-900 dark:text-white text-base sm:text-lg flex items-center gap-2">
                 Assignments ({assignments.length})
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/40 shadow-2xs">
-                  {overdueCount} Overdue • {pendingCount} Pending
-                </span>
+                {assignments.length === 0 ? (
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40 shadow-2xs">
+                    All Caught Up
+                  </span>
+                ) : (
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/40 shadow-2xs">
+                    {overdueCount} Overdue • {pendingCount} Pending
+                  </span>
+                )}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-300 font-medium">
-                Click any assignment below to directly open its submission form
+                {assignments.length === 0
+                  ? "No pending assignments require your submission at this time"
+                  : "Click any assignment below to directly open its submission form"}
               </p>
             </div>
           </div>
@@ -68,23 +87,38 @@ export const PendingAssignmentsModal = ({
           </button>
         </div>
 
-        {/* Overdue Warning Alert Strip */}
-        <div className="bg-rose-50 dark:bg-rose-950/70 border-b border-rose-100 dark:border-rose-900/60 px-4 py-2.5 flex items-center justify-between text-xs text-rose-800 dark:text-rose-200">
-          <div className="flex items-center gap-2">
-            <Flame
-              size={14}
-              className="text-rose-600 dark:text-rose-400 shrink-0 animate-pulse"
-            />
-            <span className="font-semibold">
-              <strong>Due date gone for {overdueCount} assignment{overdueCount > 1 ? "s" : ""}!</strong> Submit
-              immediately to prevent grade penalty.
-            </span>
+        {/* Overdue Warning Alert Strip - only if real overdue assignments exist */}
+        {overdueCount > 0 && (
+          <div className="bg-rose-50 dark:bg-rose-950/70 border-b border-rose-100 dark:border-rose-900/60 px-4 py-2.5 flex items-center justify-between text-xs text-rose-800 dark:text-rose-200">
+            <div className="flex items-center gap-2">
+              <Flame
+                size={14}
+                className="text-rose-600 dark:text-rose-400 shrink-0 animate-pulse"
+              />
+              <span className="font-semibold">
+                <strong>Due date gone for {overdueCount} assignment{overdueCount > 1 ? "s" : ""}!</strong> Submit
+                immediately to prevent grade penalty.
+              </span>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Modal Body: List of Pending & Overdue Assignments */}
         <div className="p-4 sm:p-5 overflow-y-auto space-y-3 flex-1">
-          {assignments.map((assign) => {
+          {assignments.length === 0 ? (
+            <div className="py-10 px-4 text-center flex flex-col items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3 border border-emerald-200 dark:border-emerald-800/60">
+                <CheckCircle2 size={24} />
+              </div>
+              <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">
+                No Pending Assignments
+              </h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm">
+                No assignments have been assigned to your batch in the database yet, or all your tasks have been completed.
+              </p>
+            </div>
+          ) : (
+            assignments.map((assign) => {
             const isOverdue = assign.status === "overdue" || assign.daysLeft < 0;
             const isUrgent = assign.daysLeft > 0 && assign.daysLeft <= 2;
             const isYellow = assign.daysLeft > 2 && assign.daysLeft <= 7;
@@ -175,7 +209,8 @@ export const PendingAssignmentsModal = ({
                 </div>
               </div>
             );
-          })}
+          })
+        )}
         </div>
 
         {/* Modal Footer */}

@@ -9,6 +9,7 @@ import {
   Award,
   ChevronRight,
   BookCheck,
+  Paperclip,
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 import { crmService } from "../services/crmService";
@@ -311,6 +312,12 @@ export const MyAssignmentsPage = () => {
                         <div className="text-xs text-slate-500 dark:text-slate-400 font-normal line-clamp-1 mt-1 leading-relaxed">
                           {a.instructions}
                         </div>
+                        {a.attachmentUrl && (
+                          <div className="mt-1.5 flex items-center gap-1 text-[11px] font-bold text-blue-600 dark:text-cyan-400">
+                            <Paperclip size={11} />
+                            <span>Reference Brief Attached</span>
+                          </div>
+                        )}
                       </td>
 
                       {/* Batch / Course Pill */}

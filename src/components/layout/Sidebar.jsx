@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { lmsService } from "../../services/lmsService";
+import { crmService } from "../../services/crmService";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import logoImg from "../../assets/logo.png";
@@ -31,7 +33,35 @@ import {
 export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isStudent, logout, enrolledCoursesCount } = useAuth();
+  const { isStudent, logout, enrolledCoursesCount, assignmentsCount, crmProfile, currentUser } = useAuth();
+  const [liveAssignmentsCount, setLiveAssignmentsCount] = useState(assignmentsCount ?? 0);
+
+  useEffect(() => {
+    if (typeof assignmentsCount === "number") {
+      setLiveAssignmentsCount(assignmentsCount);
+    }
+  }, [assignmentsCount]);
+
+  useEffect(() => {
+    const studentId = crmService.getSelectedStudentId() || crmProfile?.id || currentUser?.crmAdmissionId;
+    if (!studentId) return;
+
+    let isMounted = true;
+    lmsService
+      .fetchStudentBatchAssignments(studentId)
+      .then((data) => {
+        if (isMounted && Array.isArray(data)) {
+          setLiveAssignmentsCount(data.length);
+        }
+      })
+      .catch((err) => {
+        console.warn("Could not load assignments count in sidebar:", err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId]);
 
   const sections = [
     {
@@ -67,6 +97,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           name: "My Assignments",
           path: "/my-assignments",
           icon: BookCheck,
+          badge: String(liveAssignmentsCount ?? 0),
         },
         { name: "My Quizzes", path: "/my-quizzes", icon: CheckSquare },
         { name: "Notes", path: "/notes", icon: FileText },
