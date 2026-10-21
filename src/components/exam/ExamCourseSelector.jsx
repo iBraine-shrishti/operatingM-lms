@@ -42,7 +42,7 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
       />
 
       {/* Singular, Unified Card Grid for all 8 Exam Tracks */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {EXAM_TRACKS.map((track) => (
           <ExamTrackCard
             key={track.id}
