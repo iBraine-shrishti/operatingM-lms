@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import { useToast } from "../context/ToastContext";
@@ -39,6 +39,23 @@ export const MyQuizzesPage = () => {
   const { showToast } = useToast();
   const [quizzes, setQuizzes] = useState(() => lmsService.getQuizzes());
   const courses = lmsService.getCourses();
+
+  // Load backend LMS quizzes if available
+  useEffect(() => {
+    try {
+      const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
+      const studentId = studentUser.id || studentUser.student_id;
+      const apiUrl = "/api/lms/student/quizzes/" + (studentId ? `?student_id=${studentId}` : "");
+      fetch(apiUrl)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data && data.success && Array.isArray(data.quizzes) && data.quizzes.length > 0) {
+            setQuizzes(data.quizzes);
+          }
+        })
+        .catch(() => {});
+    } catch (e) {}
+  }, []);
 
   // Filter & View State
   const [searchQuery, setSearchQuery] = useState("");
