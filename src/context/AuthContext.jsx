@@ -52,8 +52,17 @@ export const STUDENT_USER = {
 
 const AuthContext = createContext(undefined);
 const STORAGE_KEY = 'om_lms_current_role';
+const AUTH_KEY = 'om_lms_is_authenticated';
 
 export const AuthProvider = ({ children }) => {
+    const [isAuthenticated, setIsAuthenticated] = useState(() => {
+        try {
+            return localStorage.getItem(AUTH_KEY) === 'true';
+        } catch {
+            return false;
+        }
+    });
+
     const [role, setRole] = useState('STUDENT');
     if (typeof document !== 'undefined') {
         document.documentElement.classList.add('role-student');
@@ -216,12 +225,23 @@ export const AuthProvider = ({ children }) => {
         setRole((prev) => (prev === 'ADMIN' ? 'STUDENT' : 'ADMIN'));
     };
 
-    const login = (newRole) => {
+    const login = (newRole = 'STUDENT') => {
         setRole(newRole);
+        setIsAuthenticated(true);
+        try {
+            localStorage.setItem(AUTH_KEY, 'true');
+        } catch (e) {
+            console.error('Failed to save auth state to localStorage', e);
+        }
     };
 
     const logout = () => {
-        setRole('STUDENT');
+        setIsAuthenticated(false);
+        try {
+            localStorage.removeItem(AUTH_KEY);
+        } catch (e) {
+            console.error('Failed to clear auth state from localStorage', e);
+        }
     };
 
     const switchCrmStudent = async (studentId) => {
@@ -253,6 +273,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={{
+            isAuthenticated,
             currentUser,
             role,
             isAdmin: role === 'ADMIN',

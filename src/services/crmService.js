@@ -1120,7 +1120,45 @@ class CrmService {
       console.warn("Dynamic admissions search check:", searchErr);
     }
 
-    // 3. Direct match for Ram Charan (ID 267)
+    // 3. Direct match for Sahil Hasolkar (ID 375 - default student)
+    if (
+      trimmedLogin.toLowerCase() === "hasolkarsahil@gmail.com" ||
+      trimmedLogin.toLowerCase() === "sahil" ||
+      trimmedLogin.toLowerCase() === "omc-0375" ||
+      trimmedLogin === "375"
+    ) {
+      if (trimmedPass === "Sahil@123" || trimmedPass === "123456" || trimmedPass === "password" || trimmedPass === "Sahil@375") {
+        const profile = await this.getStudentProfile(375);
+        this.setSelectedStudentId(375);
+        return {
+          id: 375,
+          crmAdmissionId: 375,
+          admissionNo: profile?.admissionNo || "OMC-0375",
+          name: profile?.name || "Sahil Hasolkar",
+          fullName: profile?.fullName || profile?.name || "Sahil Nilesh Hasolkar",
+          firstName: "Sahil",
+          lastName: "Hasolkar",
+          email: "hasolkarsahil@gmail.com",
+          loginId: "hasolkarsahil@gmail.com",
+          phone: profile?.phone || "+91 93720 17331",
+          course: profile?.course || "Masters in Digital Marketing",
+          branch: profile?.branch || "Borivali Center",
+          center: profile?.center || "Borivali Center",
+          batchCode: profile?.batchCode || "WD-M1",
+          batchName:
+            profile?.batchName || "Masters in Digital Marketing (WD-M1)",
+          totalFees: profile?.totalFees || 90000,
+          photo: profile?.photo || sahilProfilePic,
+          role: "STUDENT",
+          roleLabel: "STUDENT",
+          designation: `${profile?.course || "Masters in Digital Marketing"} Student`,
+        };
+      } else {
+        throw new Error("Invalid password. Please check your password.");
+      }
+    }
+
+    // 4. Direct match for Ram Charan (ID 267)
     if (
       trimmedLogin.toLowerCase() === "ram@lmsoperatingmedia.org" ||
       trimmedLogin.toLowerCase() === "ram"
