@@ -897,6 +897,7 @@ export const INITIAL_DISCUSSIONS = [
         authorHandle: 'sneharoy',
         upvotes: 24,
         imageUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1000&auto=format&fit=crop&q=80',
+        linkUrl: 'https://web.dev/articles/optimize-lcp',
         isPinned: true,
         replies: [
             {
@@ -975,6 +976,7 @@ export const INITIAL_DISCUSSIONS = [
         authorHandle: 'vikram_m',
         upvotes: 38,
         imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&auto=format&fit=crop&q=80',
+        linkUrl: 'https://support.google.com/google-ads/answer/6263057',
         isPinned: true,
         replies: [
             {
@@ -1027,6 +1029,7 @@ export const INITIAL_DISCUSSIONS = [
         authorHandle: 'ananya_g',
         upvotes: 19,
         imageUrl: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1000&auto=format&fit=crop&q=80',
+        linkUrl: 'https://business.instagram.com/creators/reels-best-practices',
         isPinned: false,
         replies: [
             {

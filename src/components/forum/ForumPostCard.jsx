@@ -110,39 +110,65 @@ export const ForumPostCard = ({
             )}
           </div>
 
-          {/* Post Title - Reddit Bold Style */}
-          <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-            {post.title}
-          </h2>
+          {/* Main Content Area: Text (Left) & Compact Thumbnail (Right) Side-by-Side (matching FORUM-ALIGNMENT.png) */}
+          <div className="flex items-start justify-between gap-3.5 sm:gap-4 pt-0.5">
+            {/* Left Column: Title, Content snippet & Resource Link */}
+            <div className="flex-1 min-w-0 space-y-1.5">
+              {/* Post Title - Reddit Bold Style */}
+              <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 sm:line-clamp-3">
+                {post.title}
+              </h2>
 
-          {/* Post Text - A Little Small as Requested */}
-          {post.content && (
-            <p className="text-[12px] sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed font-normal line-clamp-3">
-              {post.content}
-            </p>
-          )}
+              {/* Post Text - Clean Snippet */}
+              {post.content && (
+                <p className="text-[12px] sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed font-normal line-clamp-2 sm:line-clamp-3">
+                  {post.content}
+                </p>
+              )}
 
-          {/* Post Image Container (Reddit-style media card) */}
-          {post.imageUrl && (
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-                onImageClick ? onImageClick(post.imageUrl, post.title) : onOpenPost(post);
-              }}
-              className="mt-2.5 max-h-80 sm:max-h-96 w-full rounded-xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-slate-950/20 dark:bg-slate-950/50 flex items-center justify-center relative group/img cursor-pointer"
-            >
-              <img
-                src={post.imageUrl}
-                alt={post.title}
-                loading="lazy"
-                className="w-auto h-auto max-h-80 sm:max-h-96 max-w-full object-contain rounded-lg transition-transform group-hover/img:scale-[1.01]"
-              />
-              <div className="absolute top-2 right-2 px-2 py-1 bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold rounded-lg opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center space-x-1">
-                <ImageIcon size={11} />
-                <span>Click to view</span>
-              </div>
+              {/* Resource / External Article Link (matching FORUM-ALIGNMENT.png) */}
+              {(post.linkUrl || post.sourceUrl || post.link) && (
+                <div className="pt-0.5">
+                  <a
+                    href={post.linkUrl || post.sourceUrl || post.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs text-[#2563eb] dark:text-blue-400 hover:underline font-medium truncate max-w-full"
+                  >
+                    <ExternalLink size={11} className="shrink-0" />
+                    <span className="truncate">
+                      {post.linkUrl || post.sourceUrl || post.link}
+                    </span>
+                  </a>
+                </div>
+              )}
             </div>
-          )}
+
+            {/* Right Column: Thumbnail Image (side-by-side, compact aspect ratio) */}
+            {post.imageUrl && (
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onImageClick ? onImageClick(post.imageUrl, post.title) : onOpenPost(post);
+                }}
+                className="shrink-0 w-24 h-18 sm:w-32 sm:h-22 md:w-36 md:h-24 lg:w-40 lg:h-26 rounded-xl overflow-hidden border border-slate-200/90 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/90 shadow-2xs relative group/thumb cursor-pointer self-start"
+                title="Click to view image"
+              >
+                <img
+                  src={post.imageUrl}
+                  alt={post.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover rounded-xl transition-transform duration-300 group-hover/thumb:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover/thumb:bg-black/25 transition-colors flex items-center justify-center">
+                  <div className="p-1 rounded-md bg-black/60 text-white opacity-0 group-hover/thumb:opacity-100 transition-opacity">
+                    <ExternalLink size={12} />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* 3. Bottom Action Bar */}
