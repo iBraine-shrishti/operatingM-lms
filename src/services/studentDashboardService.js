@@ -9,6 +9,7 @@ import {
   NOTIFICATIONS_SUMMARY_TEXT,
 } from "../data/studentDashboardData";
 import { lmsService } from "./lmsService";
+import { crmService } from "./crmService";
 
 const STORAGE_PREFIX = "om_lms_student_dashboard_";
 
@@ -99,13 +100,34 @@ export const studentDashboardService = {
       (crmProfile?.balanceDue !== undefined && crmProfile.balanceDue <= 0) ||
       crmProfile?.paymentStatus === "Fully Cleared";
 
+    const pendingList = Array.isArray(assignments)
+      ? assignments.filter((a) => a.status === "pending" || a.status === "overdue")
+      : [];
+    const overdueCount = pendingList.filter(
+      (a) => a.isOverdue || a.status === "overdue"
+    ).length;
+    const dueTodayCount = pendingList.filter(
+      (a) => a.daysLeft === 0 || a.dueDate?.toLowerCase().includes("today")
+    ).length;
+
+    let summaryParts = [];
+    if (overdueCount > 0) summaryParts.push(`${overdueCount} Overdue`);
+    if (dueTodayCount > 0) summaryParts.push(`${dueTodayCount} Due Today`);
+    if (overdueCount === 0 && dueTodayCount === 0 && pendingList.length > 0) {
+      summaryParts.push(
+        `${pendingList.length} Pending Task${pendingList.length > 1 ? "s" : ""}`
+      );
+    }
+    if (pendingList.length === 0) {
+      summaryParts.push("No Pending Tasks");
+    }
+    summaryParts.push(isFeesCleared ? "Fees Cleared" : "1 Fee Notice");
+
     const notificationsSummary = {
-      overdue: "1 Overdue",
-      dueToday: "1 Due Today",
+      overdue: overdueCount > 0 ? `${overdueCount} Overdue` : "0 Overdue",
+      dueToday: dueTodayCount > 0 ? `${dueTodayCount} Due Today` : "0 Due Today",
       feeNotice: isFeesCleared ? "Fees Cleared" : "1 Fee Notice",
-      fullText: isFeesCleared
-        ? "1 Overdue • 1 Due Today • Fees Cleared"
-        : "1 Overdue • 1 Due Today • 1 Fee Notice",
+      fullText: summaryParts.join(" • "),
     };
 
     return {
@@ -132,7 +154,32 @@ export const studentDashboardService = {
    * Async fetch all dashboard data
    */
   fetchStudentDashboardData: async (options = {}) => {
-    return studentDashboardService.buildDashboardData(options);
+    const studentId =
+      options.crmProfile?.id ||
+      options.currentUser?.admissionId ||
+      options.currentUser?.id ||
+      crmService.getSelectedStudentId();
+
+    let realAssignments = Array.isArray(options.assignments)
+      ? options.assignments
+      : [];
+
+    if (studentId) {
+      try {
+        const batchAssignments =
+          await lmsService.fetchStudentBatchAssignments(studentId);
+        if (Array.isArray(batchAssignments)) {
+          realAssignments = batchAssignments;
+        }
+      } catch (e) {
+        console.warn("Could not fetch real batch assignments:", e);
+      }
+    }
+
+    return studentDashboardService.buildDashboardData({
+      ...options,
+      assignments: realAssignments,
+    });
   },
 
   /**
@@ -144,6 +191,7 @@ export const studentDashboardService = {
     let currentUser = {};
     let crmBatch = {};
     let quizzes = [];
+    let assignments = [];
 
     if (params && typeof params === "object") {
       if (params.crmProfile || params.currentUser || params.reminderSnoozedInfo !== undefined) {
@@ -152,6 +200,7 @@ export const studentDashboardService = {
         currentUser = params.currentUser || {};
         crmBatch = params.crmBatch || {};
         quizzes = params.quizzes || [];
+        assignments = params.assignments || [];
       } else if (params.days && params.date) {
         reminderSnoozedInfo = params;
       }
@@ -166,35 +215,64 @@ export const studentDashboardService = {
     const courseTitle =
       crmProfile?.course || currentUser?.course || "Diploma in Digital Marketing";
 
-    // Item 1: Assignment today
-    const itemToday = {
-      id: "notif-today",
-      type: "assignment_today",
-      title: "Affiliate Marketing Assignment",
-      course: `${courseTitle} • Module 4`,
-      dueDate: "Today • 11:59 PM",
-      daysLeft: 0,
-      badgeText: "Due Today",
-      severity: "critical", // RED
-      link: "/my-assignments?id=a-adv-1",
-      btnText: "Submit Work",
-    };
+    const notifItems = [];
 
-    // Item 2: Pending assignments group
-    const itemAssignmentsGroup = {
-      id: "notif-assignments-group",
-      type: "assignments_group",
-      title: "Assignments (6)",
-      course: "1 Overdue (Due Date Gone) • 5 Pending Submissions",
-      dueDate: "Review 6 Pending Tasks",
-      badgeText: "1 Overdue + 5 Pending",
-      badgeCount: "6 Tasks",
-      severity: "pending_group", // PURPLE
-      actionType: "open_assignments_modal",
-      btnText: "View List (6)",
-    };
+    // Pending assignments list
+    const pendingList = Array.isArray(assignments)
+      ? assignments.filter((a) => a.status === "pending" || a.status === "overdue")
+      : [];
 
-    // Item 3: Fee installment or cleared notice
+    // Only add assignment items if real pending assignments exist
+    if (pendingList.length > 0) {
+      const todayAssign = pendingList.find(
+        (a) => a.daysLeft === 0 || a.dueDate?.toLowerCase().includes("today")
+      );
+
+      if (todayAssign) {
+        notifItems.push({
+          id: `notif-today-${todayAssign.id}`,
+          type: "assignment_today",
+          title: todayAssign.title,
+          course:
+            todayAssign.batchName ||
+            todayAssign.courseName ||
+            todayAssign.course ||
+            courseTitle,
+          dueDate: todayAssign.dueDate || "Today • 11:59 PM",
+          daysLeft: 0,
+          badgeText: "Due Today",
+          severity: "critical", // RED
+          link: `/my-assignments?id=${todayAssign.id}`,
+          btnText: "Submit Work",
+        });
+      }
+
+      const overdueCount = pendingList.filter(
+        (a) => a.isOverdue || a.status === "overdue"
+      ).length;
+      const pendingSubCount = pendingList.length - overdueCount;
+
+      notifItems.push({
+        id: "notif-assignments-group",
+        type: "assignments_group",
+        title: `Assignments (${pendingList.length})`,
+        course:
+          overdueCount > 0
+            ? `${overdueCount} Overdue (Due Date Gone) • ${pendingSubCount} Pending Submissions`
+            : `${pendingSubCount} Pending Submissions`,
+        dueDate: `Review ${pendingList.length} Pending Tasks`,
+        badgeText:
+          overdueCount > 0
+            ? `${overdueCount} Overdue + ${pendingSubCount} Pending`
+            : `${pendingList.length} Tasks`,
+        badgeCount: `${pendingList.length} Tasks`,
+        severity: "pending_group", // PURPLE
+        actionType: "open_assignments_modal",
+        btnText: `View List (${pendingList.length})`,
+      });
+    }
+
+    // Fee installment or cleared notice
     let itemPayment;
     if (isFeesCleared) {
       itemPayment = {
@@ -239,8 +317,9 @@ export const studentDashboardService = {
         btnText: "Pay Online",
       };
     }
+    notifItems.push(itemPayment);
 
-    // Item 4: Quiz
+    // Item: Quiz
     const itemQuiz = {
       id: "notif-quiz",
       type: "quiz",
@@ -255,8 +334,9 @@ export const studentDashboardService = {
       link: "/my-quizzes",
       btnText: "Start Quiz",
     };
+    notifItems.push(itemQuiz);
 
-    // Item 5: Exam (8 Certification Tracks Available)
+    // Item: Exam (8 Certification Tracks Available)
     const itemExam = {
       id: "notif-exam",
       type: "exam",
@@ -268,8 +348,9 @@ export const studentDashboardService = {
       link: "/exam",
       btnText: "Take Exams",
     };
+    notifItems.push(itemExam);
 
-    return [itemToday, itemAssignmentsGroup, itemPayment, itemQuiz, itemExam];
+    return notifItems;
   },
 
   /**
@@ -284,27 +365,27 @@ export const studentDashboardService = {
         return pendingList.slice(0, 6).map((a, idx) => ({
           id: a.id || `a-${idx}`,
           title: a.title,
-          course: a.courseName || a.course || crmProfile.course || "Digital Marketing",
-          dueDate:
-            a.dueDate ||
-            (idx === 0 ? "Due Yesterday • Oct 6, 2026" : `In ${idx * 2 + 1} days`),
-          status: idx === 0 ? "overdue" : "pending",
-          daysLeft: idx === 0 ? -1 : idx * 2 + 1,
+          course: a.batchName || a.courseName || a.course || crmProfile.course || "Practical Assessment",
+          dueDate: a.dueDate || "No Due Date",
+          status: a.status || "pending",
+          daysLeft: a.daysLeft ?? (a.status === "overdue" ? -1 : 3),
           badgeText:
-            idx === 0
+            a.status === "overdue"
               ? "Overdue (Due Date Gone)"
-              : `${idx * 2 + 1} Days Left`,
+              : a.daysLeft !== undefined
+              ? `${a.daysLeft} Days Left`
+              : "Pending",
           instructions:
             a.instructions ||
             a.description ||
             "Complete assignment practical exercises and upload solution files.",
-          isOverdue: idx === 0,
-          isUrgent: idx === 1,
-          isYellow: idx === 2,
+          isOverdue: a.status === "overdue" || (a.daysLeft !== undefined && a.daysLeft < 0),
+          isUrgent: a.daysLeft === 1 || a.daysLeft === 2,
+          isYellow: a.daysLeft > 2 && a.daysLeft <= 7,
         }));
       }
     }
-    return [...INITIAL_PENDING_ASSIGNMENTS];
+    return [];
   },
 
   /**
@@ -582,19 +663,15 @@ export const studentDashboardService = {
           ) / 10
         : 88.5;
 
-    const allAssignments = lmsService.getAssignments();
-    const pendingAssignmentsCount = allAssignments.filter(
-      (a) =>
-        assignedCourseIds.includes(a.courseId) &&
-        a.status !== "graded" &&
-        a.status !== "submitted",
+    const assignmentsList = Array.isArray(options.assignments)
+      ? options.assignments
+      : [];
+    const pendingAssignmentsCount = assignmentsList.filter(
+      (a) => a.status === "pending" || a.status === "overdue"
     ).length;
-    const pendingQuizzesCount = allQuizzes.filter(
-      (q) =>
-        assignedCourseIds.includes(q.courseId) &&
-        q.studentStatus !== "passed",
-    ).length;
-    const pendingTasksCount = pendingAssignmentsCount + pendingQuizzesCount || 2;
+
+    // Only check assignments part for pending tasks count as requested
+    const pendingTasksCount = pendingAssignmentsCount;
 
     return [
       {
@@ -632,7 +709,10 @@ export const studentDashboardService = {
         id: "stat-tasks",
         title: "PENDING TASKS",
         value: pendingTasksCount,
-        subtitle: "Assignments & Exams",
+        subtitle:
+          pendingTasksCount === 0
+            ? "No Pending Assignments"
+            : `${pendingTasksCount} Pending Assignment${pendingTasksCount > 1 ? "s" : ""}`,
         color: "amber",
         link: "/my-assignments",
         iconName: "Bell",
