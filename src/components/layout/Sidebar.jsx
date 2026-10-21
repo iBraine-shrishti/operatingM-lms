@@ -4,6 +4,8 @@ import { crmService } from "../../services/crmService";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import logoImg from "../../assets/logo.png";
+import logoHorizontalImg from "../../assets/logo-horizontal.png";
+import logoMarkImg from "../../assets/logo-mark.png";
 import {
   LayoutDashboard,
   BookOpen,
@@ -114,41 +116,46 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
       }`}
     >
       {/* Sidebar Header / Logo */}
-      <div
-        className={`h-16 flex items-center border-b border-slate-100 dark:border-slate-800/90 shrink-0 ${
-          collapsed ? "justify-between px-2.5" : "justify-between px-4"
-        }`}
-      >
+      <div className="relative h-16 flex items-center border-b border-slate-100 dark:border-slate-800/90 shrink-0">
         {!collapsed ? (
           <NavLink
             to="/dashboard"
-            className="flex items-center overflow-hidden py-1"
+            className="flex items-center w-full h-full px-3.5 sm:px-4 py-2 overflow-hidden group"
+            title="Operating Media Dashboard"
           >
             <img
-              src={logoImg}
+              src={logoHorizontalImg}
               alt="Operating Media"
-              className="h-9 w-auto max-w-[160px] object-contain dark:brightness-110"
+              className="h-10 sm:h-11 w-auto max-w-[215px] object-contain dark:brightness-110 transition-transform duration-200 group-hover:scale-[1.02]"
             />
           </NavLink>
         ) : (
           <NavLink
             to="/dashboard"
-            className="w-7 h-7 flex items-center justify-center overflow-hidden shrink-0"
+            className="flex items-center justify-center w-full h-full px-2 overflow-hidden group"
+            title="Operating Media Dashboard"
           >
             <img
-              src={logoImg}
+              src={logoMarkImg}
               alt="Operating Media"
-              className="h-6 w-auto max-w-[28px] object-cover object-left dark:brightness-110"
+              className="h-9 w-auto max-w-[52px] object-contain dark:brightness-110 transition-transform duration-200 group-hover:scale-105"
             />
           </NavLink>
         )}
 
+        {/* Floating Side Closer / Toggle Button (outside container, on the border boundary) */}
         <button
+          type="button"
           onClick={onToggleCollapse}
-          className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer shrink-0"
+          className="absolute -right-3.5 top-1/2 -translate-y-1/2 z-40 w-7 h-7 rounded-full bg-[#194b81] hover:bg-[#0f345c] dark:bg-[#194b81] dark:hover:bg-[#2563eb] text-white border-2 border-white dark:border-[#0b1329] shadow-md flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95 focus:outline-hidden"
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+          {collapsed ? (
+            <ChevronRight size={14} strokeWidth={2.8} className="translate-x-px" />
+          ) : (
+            <ChevronLeft size={14} strokeWidth={2.8} className="-translate-x-px" />
+          )}
         </button>
       </div>
 
