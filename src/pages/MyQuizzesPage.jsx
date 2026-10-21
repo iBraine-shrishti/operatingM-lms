@@ -43,13 +43,22 @@ export const MyQuizzesPage = () => {
   // Load backend LMS quizzes if available
   useEffect(() => {
     try {
+      const stored = localStorage.getItem("om_lms_v12_quizzes");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.some((q) => q.id?.startsWith("quiz-imp-") || q.id?.startsWith("q-"))) {
+          localStorage.removeItem("om_lms_v12_quizzes");
+          setQuizzes([]);
+        }
+      }
+
       const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
       const studentId = studentUser.id || studentUser.student_id;
       const apiUrl = "/api/lms/student/quizzes/" + (studentId ? `?student_id=${studentId}` : "");
       fetch(apiUrl)
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
-          if (data && data.success && Array.isArray(data.quizzes) && data.quizzes.length > 0) {
+          if (data && data.success && Array.isArray(data.quizzes)) {
             setQuizzes(data.quizzes);
           }
         })

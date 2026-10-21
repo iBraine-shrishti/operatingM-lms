@@ -391,73 +391,10 @@ export const lmsService = {
     setStored("units", filtered);
     return true;
   },
-  // Quizzes
+  // Quizzes - real quizzes created in CRM and fetched from backend
   getQuizzes: () => {
-    const stored = getStored("quizzes", null);
-    let list = stored ? [...stored] : [...IMPORTED_LMS_QUIZZES];
-
-    // Explicitly filter out any old sample / dummy quizzes
-    const SAMPLE_QUIZ_IDS = new Set([
-      "q-1",
-      "q-2",
-      "q-3",
-      "q-4",
-      "q-5",
-      "q-6",
-      "q-7",
-      "q-8",
-    ]);
-    const SAMPLE_QUIZ_TITLES = new Set([
-      "Digital Marketing Aptitude Quiz!",
-      "SEO Fundamentals & Keyword Strategy Assessment",
-      "WordPress Core Architecture & Elementor Layout Test",
-      "GA4 Event Tracking & Funnel Analysis Quiz",
-      "Google Ads Search & Bidding Strategies Quiz",
-      "Social Media Growth Tactics & Viral Algorithms Quiz",
-      "Graphic Design Principles & Typography Assessment",
-      "Advanced Digital Marketing Strategy Comprehensive Exam",
-    ]);
-
-    const deletedIds = new Set(getStored("deleted_quiz_ids", []));
-
-    list = list.filter(
-      (q) =>
-        !SAMPLE_QUIZ_IDS.has(q.id) &&
-        !SAMPLE_QUIZ_TITLES.has(q.title) &&
-        !deletedIds.has(q.id),
-    );
-
-    // Ensure given quizzes from d:\operating-media\lms-quiz are present only if NOT deleted by user
-    IMPORTED_LMS_QUIZZES.forEach((imported) => {
-      if (deletedIds.has(imported.id)) return; // Never resurrect user-deleted quiz
-
-      const existingIdx = list.findIndex((q) => q.id === imported.id);
-      if (existingIdx === -1) {
-        list.push(imported);
-      } else {
-        list[existingIdx].courseId = imported.courseId;
-        list[existingIdx].courseTitle = imported.courseTitle;
-        list[existingIdx].category = imported.category;
-        if (
-          !list[existingIdx].questions ||
-          list[existingIdx].questions.length === 0
-        ) {
-          list[existingIdx].questions = imported.questions;
-        }
-        if (
-          !list[existingIdx].perQuestionTimerSeconds ||
-          list[existingIdx].perQuestionTimerSeconds === 45
-        ) {
-          list[existingIdx].perQuestionTimerSeconds = 60;
-        }
-      }
-    });
-
-    list = list.filter(
-      (q) => q.courseId !== "course-2" && !deletedIds.has(q.id),
-    );
-    setStored("quizzes", list);
-    return list;
+    const stored = getStored("quizzes", []);
+    return Array.isArray(stored) ? stored : [];
   },
   addQuiz: (quiz) => {
     const quizzes = lmsService.getQuizzes();
