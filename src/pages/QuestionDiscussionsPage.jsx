@@ -191,7 +191,7 @@ export const QuestionDiscussionsPage = () => {
   // If viewing a specific Reddit post thread (/forums/:postId)
   if (currentPost) {
     return (
-      <div className="space-y-4 max-w-7xl mx-auto">
+      <div className="h-[calc(100vh-5.5rem)] flex flex-col space-y-3.5 max-w-7xl mx-auto w-full overflow-hidden">
         <ForumPostDetailView
           post={currentPost}
           onBack={handleBackToFeed}
