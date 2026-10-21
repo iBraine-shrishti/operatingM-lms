@@ -44,9 +44,9 @@ export const STUDENT_USER = {
     branch: 'Borivali Center',
     batchCode: 'WD-M1',
     batchName: 'WD-M1',
-    enrolledCoursesCount: 4,
-    completedCoursesCount: 2,
-    overallProgress: 65,
+    enrolledCoursesCount: 0,
+    completedCoursesCount: 0,
+    overallProgress: 0,
     joinedDate: '2026-04-22'
 };
 
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
     const [crmBatch, setCrmBatch] = useState(DEFAULT_CRM_BATCH);
     const [crmCertificates, setCrmCertificates] = useState(DEFAULT_CRM_CERTIFICATES);
     const [availableStudents, setAvailableStudents] = useState([]);
-    const [assignedCourseIds, setAssignedCourseIds] = useState(['course-1', 'course-8']);
+    const [assignedCourseIds, setAssignedCourseIds] = useState([]);
     const [studentCoursesAccess, setStudentCoursesAccess] = useState([]);
     const [crmLoading, setCrmLoading] = useState(true);
 
@@ -129,8 +129,8 @@ export const AuthProvider = ({ children }) => {
                 lmsService.fetchStudentCoursePermissions(targetId)
             ]);
 
-            let activePermittedIds = ['course-1', 'course-8'];
-            if (permissions && Array.isArray(permissions) && permissions.length > 0) {
+            let activePermittedIds = [];
+            if (permissions && Array.isArray(permissions)) {
                 activePermittedIds = permissions.filter(p => p.hasAccess).map(p => p.courseId);
                 setStudentCoursesAccess(permissions);
                 setAssignedCourseIds(activePermittedIds);

@@ -6,6 +6,7 @@ import {
   Sparkles,
   Calendar,
   ChevronRight,
+  BookOpen,
 } from "lucide-react";
 import continueLearningLaptopImg from "../../../assets/continue-learning-laptop.png";
 
@@ -23,13 +24,55 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
     }
   };
 
-  const moduleNumber = data.moduleNumber || "MODULE 2 OF 4";
-  const moduleBadge = data.moduleBadge || "SEO Technical";
+  // If student has 0 assigned courses, display empty state
+  if (data?.hasAssignedCourses === false || data?.enrolledCount === 0) {
+    return (
+      <div className="w-full h-full bg-white dark:bg-[#0b1329]/95 rounded-2xl border border-slate-100 dark:border-slate-800/80 p-4 sm:p-5 lg:p-5 xl:p-6 flex flex-col justify-between shadow-[0_10px_35px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] transition-all duration-200">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-50 dark:bg-blue-500/15 text-[#2563eb] dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-100 dark:border-blue-500/30">
+              <Play size={13} className="fill-[#2563eb] dark:fill-blue-400 ml-0.5" />
+            </div>
+            <h3 className="text-sm sm:text-base 2xl:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+              Continue Learning
+            </h3>
+          </div>
+          <button
+            type="button"
+            onClick={() => handleNav("/enrolled-courses")}
+            className="text-xs 2xl:text-[13px] font-semibold text-[#2563eb] dark:text-cyan-400 hover:text-blue-700 flex items-center gap-1 cursor-pointer transition-all group"
+          >
+            <span>View All Courses</span>
+            <ArrowRight size={12} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
+          </button>
+        </div>
+
+        <div className="flex-1 flex flex-col items-center justify-center py-6 sm:py-8 px-4 text-center my-auto">
+          <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200/80 dark:border-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3 shadow-xs">
+            <BookOpen size={24} />
+          </div>
+          <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-1">
+            No Courses Assigned Yet
+          </h4>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md mb-4 leading-relaxed">
+            Your course access is managed by the Operating Media faculty and administration. Once courses are granted in the CRM LMS roster, your interactive modules and video lectures will appear here.
+          </p>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+            Awaiting course allocation from center admin
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const moduleNumber = data.moduleNumber || "MODULE 1 OF 4";
+  const moduleBadge = data.moduleBadge || "Course Track";
   const lessonTitle =
     data.lessonTitle ||
-    "Lesson 2.2: Schema Markup & Structured Data Implementation";
-  const progressPercent = data.progressPercent || 65;
-  const resumeLink = data.resumeLink || "/lesson-player?courseId=course-8";
+    "Lesson 1: Introduction to Module";
+  const progressPercent = data.progressPercent ?? 0;
+  const resumeLink = data.resumeLink || "/enrolled-courses";
 
   return (
     <div className="w-full h-full bg-white dark:bg-[#0b1329]/95 rounded-2xl border border-slate-100 dark:border-slate-800/80 hover:dark:border-slate-700/90 shadow-[0_10px_35px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] p-3.5 sm:p-4 lg:p-4 xl:p-4.5 2xl:p-6 space-y-2.5 xl:space-y-3 2xl:space-y-3.5 flex flex-col justify-between transition-all duration-200">
@@ -132,7 +175,7 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
                   {progressPercent}%
                 </span>
                 <span className="text-[9.5px] font-semibold text-emerald-600 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/15 border border-emerald-100/80 dark:border-emerald-500/30 px-2 py-0.5 rounded-full mt-1 leading-none">
-                  On Track
+                  {progressPercent === 0 ? "Ready" : progressPercent >= 75 ? "Ahead" : "On Track"}
                 </span>
               </div>
             </div>
@@ -296,7 +339,7 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold px-4 py-2.5 2xl:px-6 2xl:py-3.5 rounded-xl transition-all duration-200 shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 flex items-center justify-center gap-2 text-xs 2xl:text-sm shrink-0 cursor-pointer whitespace-nowrap"
             >
               <Play size={12} className="fill-white 2xl:w-3.5 2xl:h-3.5" />
-              <span>Resume Lesson</span>
+              <span>{progressPercent === 0 ? "Start Course" : "Resume Lesson"}</span>
               <ArrowRight
                 size={13}
                 strokeWidth={2.5}

@@ -49,7 +49,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           name: "Enrolled Courses",
           path: "/enrolled-courses",
           icon: GraduationCap,
-          badge: String(enrolledCoursesCount || 2),
+          badge: String(enrolledCoursesCount ?? 0),
         },
         {
           name: "Exams",

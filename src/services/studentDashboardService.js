@@ -89,7 +89,7 @@ export const studentDashboardService = {
       assignedCourseIds,
       studentCoursesAccess,
       enrolledCoursesCount,
-      coursesCount: enrolledCoursesCount || (assignedCourseIds && assignedCourseIds.length > 0 ? assignedCourseIds.length : (courses.length > 0 ? courses.length : undefined)),
+      coursesCount: enrolledCoursesCount !== undefined ? enrolledCoursesCount : (assignedCourseIds ? assignedCourseIds.length : 0),
       quizzesCount: quizzes.length > 0 ? quizzes.length : undefined,
       assignments,
       quizzes,
@@ -315,12 +315,23 @@ export const studentDashboardService = {
     const crmProfile = params.crmProfile || {};
     const crmBatch = params.crmBatch || {};
     const assignedCourseIds =
-      Array.isArray(params.assignedCourseIds) && params.assignedCourseIds.length > 0
+      Array.isArray(params.assignedCourseIds)
         ? params.assignedCourseIds
-        : currentUser.assignedCourseIds || ["course-1", "course-8"];
+        : (currentUser.assignedCourseIds || []);
+
+    if (!assignedCourseIds || assignedCourseIds.length === 0) {
+      return {
+        hasAssignedCourses: false,
+        enrolledCount: 0,
+        progressPercent: 0,
+        segments: [],
+        timeStats: { watchedMinutes: 0, remainingMinutes: 0, alertText: "No active courses" },
+        message: "No courses currently assigned to your LMS account.",
+      };
+    }
 
     // Find active course among assigned courses
-    let activeCourseId = assignedCourseIds[0] || "course-1";
+    let activeCourseId = assignedCourseIds[0];
     try {
       const storedLast = localStorage.getItem("om_lms_last_active_course");
       if (storedLast && assignedCourseIds.includes(storedLast)) {
@@ -430,6 +441,8 @@ export const studentDashboardService = {
     ];
 
     return {
+      hasAssignedCourses: true,
+      enrolledCount: assignedCourseIds.length,
       courseId: activeCourseId,
       courseTitle: course.title,
       thumbnail: course.thumbnail,
@@ -531,12 +544,12 @@ export const studentDashboardService = {
     const currentUser = options.currentUser || {};
     const crmProfile = options.crmProfile || {};
     const assignedCourseIds =
-      Array.isArray(options.assignedCourseIds) && options.assignedCourseIds.length > 0
+      Array.isArray(options.assignedCourseIds)
         ? options.assignedCourseIds
-        : currentUser.assignedCourseIds || ["course-1", "course-8"];
+        : (currentUser.assignedCourseIds || []);
 
     const enrolledCoursesCount =
-      options.enrolledCoursesCount ?? assignedCourseIds.length;
+      options.coursesCount ?? options.enrolledCoursesCount ?? assignedCourseIds.length;
 
     let totalActivities = 0;
     let completedActivities = 0;
