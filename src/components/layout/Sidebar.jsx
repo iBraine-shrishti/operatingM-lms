@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { lmsService } from "../../services/lmsService";
+import { lmsService, CRM_BACKEND_API } from "../../services/lmsService";
 import { crmService } from "../../services/crmService";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
@@ -40,6 +40,14 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const { isStudent, logout, enrolledCoursesCount, assignmentsCount, crmProfile, currentUser } = useAuth();
   const { isDark } = useTheme();
   const [liveAssignmentsCount, setLiveAssignmentsCount] = useState(assignmentsCount ?? 0);
+  const [liveQuizzesCount, setLiveQuizzesCount] = useState(() => {
+    try {
+      const q = lmsService.getQuizzes();
+      return Array.isArray(q) && q.length > 0 ? q.length : 3;
+    } catch {
+      return 3;
+    }
+  });
 
   useEffect(() => {
     if (typeof assignmentsCount === "number") {
@@ -62,6 +70,41 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
       .catch((err) => {
         console.warn("Could not load assignments count in sidebar:", err);
       });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId]);
+
+  useEffect(() => {
+    let isMounted = true;
+    try {
+      const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
+      const cachedProfile = JSON.parse(localStorage.getItem("om_lms_crm_cached_profile") || "{}");
+      const studentId = crmService.getSelectedStudentId() || crmProfile?.id || currentUser?.crmAdmissionId || studentUser.id || "1";
+      const baseApi = CRM_BACKEND_API || "https://crm.dmsoi.org/api";
+
+      fetch(`${baseApi}/lms/student/quizzes/?student_id=${studentId}`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (isMounted && data && data.success && Array.isArray(data.quizzes)) {
+            setLiveQuizzesCount(data.quizzes.length);
+          }
+        })
+        .catch(() => {
+          if (isMounted) {
+            const localQ = lmsService.getQuizzes();
+            if (Array.isArray(localQ) && localQ.length > 0) {
+              setLiveQuizzesCount(localQ.length);
+            }
+          }
+        });
+    } catch (e) {
+      const localQ = lmsService.getQuizzes();
+      if (Array.isArray(localQ) && localQ.length > 0) {
+        setLiveQuizzesCount(localQ.length);
+      }
+    }
 
     return () => {
       isMounted = false;
@@ -104,7 +147,12 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           icon: BookCheck,
           badge: String(liveAssignmentsCount ?? 0),
         },
-        { name: "My Quizzes", path: "/my-quizzes", icon: CheckSquare },
+        {
+          name: "My Quizzes",
+          path: "/my-quizzes",
+          icon: CheckSquare,
+          badge: String(liveQuizzesCount ?? 0),
+        },
         { name: "Notes", path: "/notes", icon: FileText },
         { name: "Forums", path: "/forums", icon: MessagesSquare },
         { name: "Schedule", path: "/schedule", icon: Calendar },

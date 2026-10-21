@@ -39,7 +39,10 @@ export const AssessmentCard = ({
   // QUIZ CARD VARIANT
   // -------------------------------------------------------------
   if (isQuiz) {
-    const isPassed = data.studentStatus === "passed";
+    const isPassed =
+      data.studentStatus === "passed" ||
+      (typeof data.studentScore === "number" &&
+        data.studentScore >= (data.passScorePercentage || 75));
     const desc = QUIZ_ENHANCED_DESCRIPTIONS[data.id] || data.description;
 
     return (
