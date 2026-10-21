@@ -109,6 +109,7 @@ export const AuthProvider = ({ children }) => {
     const [availableStudents, setAvailableStudents] = useState([]);
     const [assignedCourseIds, setAssignedCourseIds] = useState([]);
     const [studentCoursesAccess, setStudentCoursesAccess] = useState([]);
+    const [assignmentsCount, setAssignmentsCount] = useState(0);
     const [crmLoading, setCrmLoading] = useState(true);
 
     // Fetch and bind live CRM student data
@@ -121,19 +122,20 @@ export const AuthProvider = ({ children }) => {
             const profile = await crmService.getStudentProfile(targetId);
             const studentName = profile?.name || 'Aditya Jadhav';
 
-            const [attendance, batch, certs, studentsList, permissions] = await Promise.all([
+            const [attendance, batch, certs, studentsList, permissions, batchAssignments] = await Promise.all([
                 crmService.getStudentAttendance(1039), // maps to active attendance cohort
                 crmService.getBatchSchedule('Andheri'),
                 crmService.getCertificates(studentName),
                 crmService.getAvailableStudents(),
-                lmsService.fetchStudentCoursePermissions(targetId)
+                lmsService.fetchStudentCoursePermissions(targetId),
+                lmsService.fetchStudentBatchAssignments(targetId)
             ]);
 
             let activePermittedIds = [];
             if (permissions && Array.isArray(permissions)) {
                 activePermittedIds = permissions.filter(p => p.hasAccess).map(p => p.courseId);
                 setStudentCoursesAccess(permissions);
-                setAssignedCourseIds(activePermittedIds);
+                setAssignedCourseIds(activePermittedIds); if (batchAssignments && Array.isArray(batchAssignments)) { setAssignmentsCount(batchAssignments.length); }
             }
 
             if (profile) {
@@ -269,6 +271,7 @@ export const AuthProvider = ({ children }) => {
             assignedCourseIds,
             studentCoursesAccess,
             enrolledCoursesCount: assignedCourseIds.length,
+            assignmentsCount,
             crmLoading,
             switchCrmStudent,
             refreshCrmData
