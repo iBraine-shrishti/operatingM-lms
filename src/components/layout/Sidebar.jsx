@@ -3,8 +3,10 @@ import { lmsService } from "../../services/lmsService";
 import { crmService } from "../../services/crmService";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
 import logoImg from "../../assets/logo.png";
 import logoHorizontalImg from "../../assets/logo-horizontal.png";
+import logoHorizontalDarkImg from "../../assets/logo-horizontal-dark.png";
 import logoMarkImg from "../../assets/logo-mark.png";
 import {
   LayoutDashboard,
@@ -36,6 +38,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isStudent, logout, enrolledCoursesCount, assignmentsCount, crmProfile, currentUser } = useAuth();
+  const { isDark } = useTheme();
   const [liveAssignmentsCount, setLiveAssignmentsCount] = useState(assignmentsCount ?? 0);
 
   useEffect(() => {
@@ -116,7 +119,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
       }`}
     >
       {/* Sidebar Header / Logo */}
-      <div className="relative h-16 flex items-center border-b border-slate-100 dark:border-slate-800/90 shrink-0">
+      <div className="relative h-18 sm:h-20 flex items-center border-b border-slate-100 dark:border-slate-800/90 shrink-0">
         {!collapsed ? (
           <NavLink
             to="/dashboard"
@@ -124,9 +127,9 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
             title="Operating Media Dashboard"
           >
             <img
-              src={logoHorizontalImg}
+              src={isDark ? logoHorizontalDarkImg : logoHorizontalImg}
               alt="Operating Media"
-              className="h-10 sm:h-11 w-auto max-w-[215px] object-contain dark:brightness-110 transition-transform duration-200 group-hover:scale-[1.02]"
+              className="h-12 sm:h-13 w-auto max-w-[225px] object-contain transition-transform duration-200 group-hover:scale-[1.02]"
             />
           </NavLink>
         ) : (
@@ -138,7 +141,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
             <img
               src={logoMarkImg}
               alt="Operating Media"
-              className="h-9 w-auto max-w-[52px] object-contain dark:brightness-110 transition-transform duration-200 group-hover:scale-105"
+              className="h-10 w-auto max-w-[54px] object-contain transition-transform duration-200 group-hover:scale-105"
             />
           </NavLink>
         )}
