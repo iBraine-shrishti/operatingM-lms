@@ -7,7 +7,7 @@ import { StudentPageHeader } from "../student/StudentPageHeader";
 /**
  * Card-Based Exam Catalog Page.
  * Styled consistently with other student pages (Enrolled Courses, Quizzes, Assignments),
- * featuring StudentPageHeader and a singular, uniform exam cards grid.
+ * featuring StudentPageHeader and a singular, uniform exam cards grid with responsive scaling.
  */
 export const ExamCourseSelector = ({ onSelectTrack }) => {
   return (
@@ -41,8 +41,8 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
         ]}
       />
 
-      {/* Singular, Unified Card Grid for all 8 Exam Tracks */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* Singular, Unified Card Grid for all 8 Exam Tracks with responsive auto-scaling */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-5">
         {EXAM_TRACKS.map((track) => (
           <ExamTrackCard
             key={track.id}
