@@ -416,26 +416,54 @@ export const lmsService = {
   },
   submitQuizAttempt: (quizId, score = 90, resultsDetail = null) => {
     const quizzes = lmsService.getQuizzes();
-    const index = quizzes.findIndex((q) => q.id === quizId);
-    if (index === -1) return undefined;
-    const isPassed = score >= (quizzes[index].passScorePercentage || 75);
-    quizzes[index] = {
-      ...quizzes[index],
-      studentStatus: isPassed ? "passed" : "failed",
-      studentScore: score,
-      completedDate: new Date().toLocaleDateString("en-US", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
-      timeSpent:
-        resultsDetail?.timeSpent ||
-        `${Math.max(5, (quizzes[index].durationMinutes || 20) - 5)} mins`,
-      attemptsCount: (quizzes[index].attemptsCount || 0) + 1,
-      lastAttemptResults: resultsDetail || null,
-    };
-    setStored("quizzes", quizzes);
-    return quizzes[index];
+    const index = quizzes.findIndex(
+      (q) => String(q.id) === String(quizId) || String(q.numericId) === String(quizId)
+    );
+    const passThreshold = index !== -1 ? (quizzes[index].passScorePercentage || 75) : 75;
+    const isPassed = score >= passThreshold;
+    const completedDate = new Date().toLocaleDateString("en-US", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    const timeSpent =
+      resultsDetail?.timeSpent ||
+      `${Math.max(1, ((quizzes[index]?.durationMinutes || 20) - 5))} mins`;
+
+    // Persist attempt in dedicated attempts cache so it survives any network fetches
+    try {
+      const attemptsCache = JSON.parse(localStorage.getItem("om_lms_quiz_attempts_cache") || "{}");
+      const attemptData = {
+        status: isPassed ? "passed" : "failed",
+        score,
+        completedDate,
+        timeSpent,
+        isPassed,
+        resultsDetail,
+      };
+      attemptsCache[String(quizId)] = attemptData;
+      if (index !== -1 && quizzes[index].numericId) {
+        attemptsCache[String(quizzes[index].numericId)] = attemptData;
+      }
+      localStorage.setItem("om_lms_quiz_attempts_cache", JSON.stringify(attemptsCache));
+    } catch (e) {
+      console.warn("Could not cache quiz attempt:", e);
+    }
+
+    if (index !== -1) {
+      quizzes[index] = {
+        ...quizzes[index],
+        studentStatus: isPassed ? "passed" : "failed",
+        studentScore: score,
+        completedDate,
+        timeSpent,
+        attemptsCount: (quizzes[index].attemptsCount || 0) + 1,
+        lastAttemptResults: resultsDetail || null,
+      };
+      setStored("quizzes", quizzes);
+      return quizzes[index];
+    }
+    return undefined;
   },
   getQuizById: (quizId) => {
     const deletedIds = new Set(getStored("deleted_quiz_ids", []));

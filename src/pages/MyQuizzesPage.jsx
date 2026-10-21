@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { lmsService } from "../services/lmsService";
+import { lmsService, CRM_BACKEND_API } from "../services/lmsService";
 import { useToast } from "../context/ToastContext";
 import {
   Play,
@@ -37,10 +37,30 @@ import {
 export const MyQuizzesPage = () => {
   const navigate = useNavigate();
   const { showToast } = useToast();
-  const [quizzes, setQuizzes] = useState(() => lmsService.getQuizzes());
+  const [quizzes, setQuizzes] = useState(() => {
+    const list = lmsService.getQuizzes();
+    try {
+      const attemptsCache = JSON.parse(localStorage.getItem("om_lms_quiz_attempts_cache") || "{}");
+      return list.map((q) => {
+        const localAtt = attemptsCache[String(q.id)] || attemptsCache[String(q.numericId)];
+        if (localAtt) {
+          return {
+            ...q,
+            studentStatus: localAtt.status || q.studentStatus,
+            studentScore: localAtt.score ?? q.studentScore,
+            completedDate: localAtt.completedDate || q.completedDate,
+            timeSpent: localAtt.timeSpent || q.timeSpent,
+          };
+        }
+        return q;
+      });
+    } catch {
+      return list;
+    }
+  });
   const courses = lmsService.getCourses();
 
-  // Load backend LMS quizzes if available
+  // Load backend LMS quizzes from live API
   useEffect(() => {
     try {
       const stored = localStorage.getItem("om_lms_v12_quizzes");
@@ -53,16 +73,47 @@ export const MyQuizzesPage = () => {
       }
 
       const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
-      const studentId = studentUser.id || studentUser.student_id;
-      const apiUrl = "/api/lms/student/quizzes/" + (studentId ? `?student_id=${studentId}` : "");
+      const cachedProfile = JSON.parse(localStorage.getItem("om_lms_crm_cached_profile") || "{}");
+      const studentId = studentUser.id || studentUser.student_id || cachedProfile.id || cachedProfile.crmAdmissionId || "1";
+      const baseApi = CRM_BACKEND_API || "https://crm.dmsoi.org/api";
+      const apiUrl = `${baseApi}/lms/student/quizzes/` + (studentId ? `?student_id=${studentId}` : "");
+
       fetch(apiUrl)
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
           if (data && data.success && Array.isArray(data.quizzes)) {
-            setQuizzes(data.quizzes);
+            let attemptsCache = {};
+            try {
+              attemptsCache = JSON.parse(localStorage.getItem("om_lms_quiz_attempts_cache") || "{}");
+            } catch {}
+
+            const formatted = data.quizzes.map((q) => {
+              const localAtt = attemptsCache[String(q.id)] || attemptsCache[String(q.numericId)];
+              const status = (q.studentStatus && q.studentStatus !== "pending")
+                ? q.studentStatus
+                : (localAtt?.status || q.studentStatus || "pending");
+              const score = (q.studentScore !== null && q.studentScore !== undefined)
+                ? q.studentScore
+                : (localAtt?.score ?? null);
+              const completedDate = q.completedDate || localAtt?.completedDate || null;
+              const timeSpent = q.timeSpent || localAtt?.timeSpent || null;
+
+              return {
+                ...q,
+                studentStatus: status,
+                studentScore: score,
+                completedDate,
+                timeSpent,
+                totalQuestions: q.totalQuestions || q.questionsCount || (q.questions ? q.questions.length : 0),
+              };
+            });
+            setQuizzes(formatted);
+            localStorage.setItem("om_lms_v12_quizzes", JSON.stringify(formatted));
           }
         })
-        .catch(() => {});
+        .catch((err) => {
+          console.warn("Could not load backend quizzes:", err);
+        });
     } catch (e) {}
   }, []);
 
@@ -246,7 +297,10 @@ export const MyQuizzesPage = () => {
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
                 {filteredQuizzes.map((quiz, index) => {
-                  const isPassed = quiz.studentStatus === "passed";
+                  const isPassed =
+                    quiz.studentStatus === "passed" ||
+                    (typeof quiz.studentScore === "number" &&
+                      quiz.studentScore >= (quiz.passScorePercentage || 75));
                   const desc = QUIZ_ENHANCED_DESCRIPTIONS[quiz.id] || quiz.description;
 
                   return (
@@ -323,8 +377,14 @@ export const MyQuizzesPage = () => {
 
                       {/* Score */}
                       <td className="py-5 px-6 whitespace-nowrap">
-                        {isPassed && typeof quiz.studentScore === "number" ? (
-                          <span className="inline-block px-3 py-1 rounded-lg text-xs font-black bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/90 dark:border-emerald-800/60">
+                        {typeof quiz.studentScore === "number" ? (
+                          <span
+                            className={`inline-block px-3 py-1 rounded-lg text-xs font-black ${
+                              isPassed
+                                ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/90 dark:border-emerald-800/60"
+                                : "bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-200/90 dark:border-rose-800/60"
+                            }`}
+                          >
                             {quiz.studentScore}%
                           </span>
                         ) : (

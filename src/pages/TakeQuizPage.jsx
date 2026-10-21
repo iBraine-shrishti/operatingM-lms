@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { lmsService } from "../services/lmsService";
+import { lmsService, CRM_BACKEND_API } from "../services/lmsService";
 import { useToast } from "../context/ToastContext";
 import {
   ArrowLeft,
@@ -32,12 +32,29 @@ export const TakeQuizPage = () => {
   const { showToast } = useToast();
 
   const quizzes = useMemo(() => lmsService.getQuizzes(), []);
+  const [liveQuiz, setLiveQuiz] = useState(null);
+
+  // Load quiz details & questions from live API
+  useEffect(() => {
+    if (!id) return;
+    const baseApi = CRM_BACKEND_API || "https://crm.dmsoi.org/api";
+    fetch(`${baseApi}/lms/quizzes/${id}/`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.success && data.quiz) {
+          setLiveQuiz(data.quiz);
+        }
+      })
+      .catch(() => {});
+  }, [id]);
+
   const quiz = useMemo(() => {
+    if (liveQuiz) return liveQuiz;
     if (id) {
-      return quizzes.find((q) => q.id === id) || quizzes[0];
+      return quizzes.find((q) => String(q.id) === String(id) || String(q.numericId) === String(id)) || quizzes[0];
     }
     return quizzes.find((q) => q.studentStatus === "pending") || quizzes[0];
-  }, [id, quizzes]);
+  }, [id, quizzes, liveQuiz]);
 
   // Questions for this quiz (fallback to DEFAULT_QUIZ_QUESTIONS)
   const questions = useMemo(() => {
@@ -176,8 +193,10 @@ export const TakeQuizPage = () => {
     setExamResult(finalResult);
     setIsSubmitted(true);
 
+    const timeSpentStr = `${Math.max(1, Math.round(((quiz?.durationMinutes || 20) * 60 - timeRemaining) / 60))} mins`;
+
     // Save to lmsService
-    lmsService.submitQuizAttempt(quiz.id, calculatedPercentage, {
+    lmsService.submitQuizAttempt(quiz.numericId || quiz.id, calculatedPercentage, {
       scorePercentage: calculatedPercentage,
       isPassed,
       correctCount,
@@ -185,8 +204,48 @@ export const TakeQuizPage = () => {
       wrongCount: questions.length - correctCount,
       unansweredCount,
       selectedAnswers,
-      timeSpent: `${Math.max(1, Math.round(((quiz?.durationMinutes || 20) * 60 - timeRemaining) / 60))} mins`,
+      timeSpent: timeSpentStr,
     });
+
+    // Also persist directly to dedicated cache key
+    try {
+      const attemptsCache = JSON.parse(localStorage.getItem("om_lms_quiz_attempts_cache") || "{}");
+      const attemptData = {
+        status: isPassed ? "passed" : "failed",
+        score: calculatedPercentage,
+        completedDate: new Date().toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" }),
+        timeSpent: timeSpentStr,
+        isPassed,
+      };
+      if (quiz.id) attemptsCache[String(quiz.id)] = attemptData;
+      if (quiz.numericId) attemptsCache[String(quiz.numericId)] = attemptData;
+      localStorage.setItem("om_lms_quiz_attempts_cache", JSON.stringify(attemptsCache));
+    } catch (e) {}
+
+    // POST to live CRM backend
+    try {
+      const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
+      const cachedProfile = JSON.parse(localStorage.getItem("om_lms_crm_cached_profile") || "{}");
+      const studentId = studentUser.id || studentUser.student_id || cachedProfile.id || cachedProfile.crmAdmissionId || "1";
+      const studentName = studentUser.name || studentUser.full_name || cachedProfile.name || "Student";
+      const baseApi = CRM_BACKEND_API || "https://crm.dmsoi.org/api";
+      const targetId = quiz.numericId || quiz.id;
+
+      fetch(`${baseApi}/lms/student/quizzes/${targetId}/submit/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_id: studentId,
+          student_name: studentName,
+          answers: selectedAnswers,
+          score: calculatedPercentage,
+          percentage: calculatedPercentage,
+          time_spent_seconds: (quiz?.durationMinutes || 20) * 60 - timeRemaining,
+        }),
+      }).catch((err) => console.warn("Backend quiz attempt submission error:", err));
+    } catch (e) {
+      console.warn("Quiz submission network trigger error:", e);
+    }
 
     if (isAutoTimeout) {
       showToast("Time expired! Your examination was automatically submitted.", "warning", "Time's Up");
@@ -202,7 +261,7 @@ export const TakeQuizPage = () => {
   // -------------------------------------------------------------
   if (isSubmitted && examResult) {
     return (
-      <div className="w-full max-w-4xl mx-auto space-y-6 pb-16 animate-in fade-in duration-200">
+      <div className="w-full space-y-6 pb-16 animate-in fade-in duration-200">
         <div className="flex items-center justify-between">
           <Link
             to="/my-quizzes"
@@ -235,7 +294,7 @@ export const TakeQuizPage = () => {
             </div>
           </div>
 
-          <div className="space-y-1.5 max-w-md mx-auto">
+          <div className="space-y-1.5 max-w-2xl mx-auto">
             <span
               className={`inline-block px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider ${
                 examResult.isPassed
@@ -255,7 +314,7 @@ export const TakeQuizPage = () => {
           </div>
 
           {/* Key Stat Strips */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto pt-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-4xl mx-auto pt-2">
             <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
               <span className="text-[10px] font-bold text-slate-400 uppercase block">Correct</span>
               <strong className="text-lg font-black text-emerald-600 dark:text-emerald-400">
@@ -409,7 +468,7 @@ export const TakeQuizPage = () => {
   const isTotalTimeCritical = timeRemaining < 300; // < 5 mins
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-5 pb-16 select-none animate-in fade-in duration-200">
+    <div className="w-full space-y-5 pb-16 select-none animate-in fade-in duration-200">
       {/* Top Bar: Breadcrumb + Course + Timers + Submit CTA */}
       <div className="w-full bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-3">
