@@ -13,16 +13,24 @@ export const AssessmentStatusBadge = ({
 }) => {
   const normalized = (status || "pending").toLowerCase();
 
-  if (normalized === "graded") {
+  if (normalized === "approved" || normalized === "graded") {
     return (
       <span
         className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200/90 dark:border-emerald-800/60 shadow-2xs ${className}`}
       >
-        <Award size={13} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
-        <span>GRADED</span>
-        {typeof score === "number" && (
-          <span className="font-extrabold ml-0.5">• {score} pts</span>
-        )}
+        <CheckCircle2 size={13} className="shrink-0 text-emerald-600 dark:text-emerald-400" />
+        <span>APPROVED</span>
+      </span>
+    );
+  }
+
+  if (normalized === "not_approved" || normalized === "not approved" || normalized === "rejected") {
+    return (
+      <span
+        className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/90 dark:border-rose-800/60 shadow-2xs ${className}`}
+      >
+        <AlertCircle size={13} className="shrink-0 text-rose-500" />
+        <span>NOT APPROVED</span>
       </span>
     );
   }

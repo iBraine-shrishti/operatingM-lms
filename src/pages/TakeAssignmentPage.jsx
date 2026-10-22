@@ -66,9 +66,10 @@ export const TakeAssignmentPage = () => {
   const [isResubmitting, setIsResubmitting] = useState(false);
 
 
-  const isGraded = assignment?.status === "graded";
-  const isSubmitted = assignment?.status === "submitted" || isGraded;
-  const isFormActive = !isGraded && (!isSubmitted || isResubmitting);
+  const isApproved = assignment?.status === "approved" || assignment?.status === "graded";
+  const isNotApproved = assignment?.status === "not_approved";
+  const isSubmitted = assignment?.status === "submitted" || isApproved || isNotApproved;
+  const isFormActive = !isApproved && (!isSubmitted || isResubmitting || isNotApproved);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -172,10 +173,7 @@ export const TakeAssignmentPage = () => {
         </div>
 
         <div className="flex items-center space-x-3">
-          <AssessmentStatusBadge status={assignment?.status} score={assignment?.score} />
-          <span className="px-3 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold text-xs">
-            Max: {assignment?.maxScore || 100} pts
-          </span>
+          <AssessmentStatusBadge status={assignment?.status} />
         </div>
       </div>
 
@@ -262,32 +260,68 @@ export const TakeAssignmentPage = () => {
 
         {/* Right Column: Submission Form & Evaluation Card */}
         <div className="lg:col-span-5 space-y-5">
-          {/* If Graded: Show Instructor Evaluation Card */}
-          {isGraded && (
+          {/* If Approved: Show Official Approval Card */}
+          {isApproved && (
             <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-emerald-200 dark:border-emerald-800/60 p-6 shadow-xs space-y-4">
               <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400">
-                <Award size={20} />
+                <CheckCircle2 size={20} />
                 <h3 className="font-extrabold text-sm uppercase tracking-wider">
-                  Official Grade & Instructor Evaluation
+                  Official Faculty Evaluation
                 </h3>
               </div>
 
               <div className="bg-emerald-50/70 dark:bg-emerald-950/40 p-4 rounded-2xl border border-emerald-200/80 dark:border-emerald-800/60 space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-emerald-900 dark:text-emerald-300 font-semibold">
-                    Score Achieved:
+                    Status:
                   </span>
-                  <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
-                    {assignment.score} / {assignment.maxScore || 100}
+                  <span className="text-base font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                    <CheckCircle2 size={16} />
+                    <span>Approved</span>
                   </span>
                 </div>
 
                 {assignment.feedback && (
                   <div className="pt-2 border-t border-emerald-200/60 dark:border-emerald-800/60">
                     <span className="text-[11px] font-bold text-emerald-900 dark:text-emerald-300 block mb-1">
-                      Instructor Feedback:
+                      Faculty Feedback:
                     </span>
                     <p className="text-xs text-emerald-950 dark:text-emerald-200 italic leading-relaxed">
+                      "{assignment.feedback}"
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* If Not Approved: Show Revision Required Card */}
+          {isNotApproved && (
+            <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-rose-200 dark:border-rose-800/60 p-6 shadow-xs space-y-4">
+              <div className="flex items-center space-x-2 text-rose-600 dark:text-rose-400">
+                <AlertCircle size={20} />
+                <h3 className="font-extrabold text-sm uppercase tracking-wider">
+                  Faculty Evaluation: Not Approved
+                </h3>
+              </div>
+
+              <div className="bg-rose-50/70 dark:bg-rose-950/40 p-4 rounded-2xl border border-rose-200/80 dark:border-rose-800/60 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-rose-900 dark:text-rose-300 font-semibold">
+                    Status:
+                  </span>
+                  <span className="text-base font-black text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
+                    <AlertCircle size={16} />
+                    <span>Not Approved</span>
+                  </span>
+                </div>
+
+                {assignment.feedback && (
+                  <div className="pt-2 border-t border-rose-200/60 dark:border-rose-800/60">
+                    <span className="text-[11px] font-bold text-rose-900 dark:text-rose-300 block mb-1">
+                      Faculty Feedback & Instructions:
+                    </span>
+                    <p className="text-xs text-rose-950 dark:text-rose-200 italic leading-relaxed">
                       "{assignment.feedback}"
                     </p>
                   </div>
@@ -301,24 +335,33 @@ export const TakeAssignmentPage = () => {
             <div className="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
               <div>
                 <h3 className="text-base font-black text-slate-900 dark:text-white">
-                  {isGraded
-                    ? "Submitted Deliverables"
+                  {isApproved
+                    ? "Approved Deliverables"
+                    : isNotApproved
+                    ? "Resubmit Assignment"
                     : isSubmitted
                     ? "Submission Details"
                     : "Submit Your Assignment"}
                 </h3>
                 <p className="text-xs text-slate-500">
-                  {isGraded
-                    ? "Evaluated and graded by instructor • Submission locked"
+                  {isApproved
+                    ? "Evaluated and approved by instructor • Submission finalized"
+                    : isNotApproved
+                    ? "Assignment not approved • Please review feedback and resubmit"
                     : isSubmitted
-                    ? "Work submitted and recorded"
+                    ? "Work submitted and recorded • Under review"
                     : "Upload deliverables before deadline"}
                 </p>
               </div>
-              {isGraded ? (
+              {isApproved ? (
                 <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200 flex items-center gap-1">
                   <CheckCircle2 size={12} />
-                  <span>Graded & Locked</span>
+                  <span>Approved</span>
+                </span>
+              ) : isNotApproved ? (
+                <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 border border-rose-200 flex items-center gap-1">
+                  <AlertCircle size={12} />
+                  <span>Not Approved</span>
                 </span>
               ) : isSubmitted ? (
                 <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 dark:bg-purple-950/80 dark:text-purple-300 border border-purple-200">
@@ -330,14 +373,14 @@ export const TakeAssignmentPage = () => {
             {/* If Already Submitted / Graded and Not in Resubmit Mode */}
             {!isFormActive ? (
               <div className="space-y-4 text-xs">
-                {/* Notice if Graded */}
-                {isGraded && (
+                {/* Notice if Approved */}
+                {isApproved && (
                   <div className="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/60 flex items-start space-x-2.5 text-emerald-900 dark:text-emerald-200">
                     <Lock size={15} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                     <div className="space-y-0.5">
-                      <span className="font-bold block text-xs">Submission Locked & Graded</span>
+                      <span className="font-bold block text-xs">Submission Approved</span>
                       <p className="text-[11px] text-emerald-800/90 dark:text-emerald-300/90 leading-relaxed">
-                        This assignment has been evaluated with an official score of <strong>{assignment.score} / {assignment.maxScore || 100} Pts</strong>. Work is finalized and cannot be modified.
+                        This assignment has been evaluated and <strong>Approved</strong> by your instructor. Work is finalized.
                       </p>
                     </div>
                   </div>
@@ -405,7 +448,7 @@ export const TakeAssignmentPage = () => {
                   <span className="text-slate-400 text-[11px]">
                     Submitted {assignment.submittedAt || "Recently"}
                   </span>
-                  {!isGraded ? (
+                  {!isApproved ? (
                     <button
                       type="button"
                       onClick={() => setIsResubmitting(true)}
@@ -416,7 +459,7 @@ export const TakeAssignmentPage = () => {
                   ) : (
                     <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold text-xs">
                       <CheckCircle2 size={13} />
-                      <span>Grading Finalized</span>
+                      <span>Evaluation Finalized</span>
                     </div>
                   )}
                 </div>

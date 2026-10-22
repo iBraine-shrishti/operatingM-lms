@@ -28,7 +28,6 @@ export const ASSIGNMENT_SORT_OPTIONS = [
   { id: "dueDateDesc", label: "Sort: Due Date (Latest)" },
   { id: "title", label: "Sort: Title (A-Z)" },
   { id: "status", label: "Sort: Status" },
-  { id: "scoreDesc", label: "Sort: Score (Highest)" },
 ];
 
 export const QUIZ_SORT_OPTIONS = [
@@ -74,7 +73,8 @@ export const QUIZ_CATEGORIES = [
 export const getAssignmentStatusOptions = (assignments = []) => {
   const pendingCount = assignments.filter((a) => a.status === "pending" || !a.status).length;
   const submittedCount = assignments.filter((a) => a.status === "submitted").length;
-  const gradedCount = assignments.filter((a) => a.status === "graded").length;
+  const approvedCount = assignments.filter((a) => a.status === "approved" || a.status === "graded").length;
+  const notApprovedCount = assignments.filter((a) => a.status === "not_approved").length;
 
   return [
     {
@@ -84,9 +84,16 @@ export const getAssignmentStatusOptions = (assignments = []) => {
       color: "blue",
     },
     {
-      id: "pending",
-      label: "Pending",
-      count: pendingCount,
+      id: "approved",
+      label: "Approved",
+      count: approvedCount,
+      color: "emerald",
+      dotColor: "bg-emerald-500",
+    },
+    {
+      id: "not_approved",
+      label: "Not Approved",
+      count: notApprovedCount,
       color: "rose",
       dotColor: "bg-rose-500",
     },
@@ -98,11 +105,11 @@ export const getAssignmentStatusOptions = (assignments = []) => {
       dotColor: "bg-purple-500",
     },
     {
-      id: "graded",
-      label: "Graded",
-      count: gradedCount,
-      color: "emerald",
-      dotColor: "bg-emerald-500",
+      id: "pending",
+      label: "Pending",
+      count: pendingCount,
+      color: "amber",
+      dotColor: "bg-amber-500",
     },
   ];
 };
@@ -141,13 +148,15 @@ export const getQuizStatusOptions = (quizzes = []) => {
 export const calculateAssignmentMetrics = (assignments = []) => {
   const pending = assignments.filter((a) => a.status === "pending" || !a.status).length;
   const submitted = assignments.filter((a) => a.status === "submitted").length;
-  const graded = assignments.filter((a) => a.status === "graded").length;
+  const approved = assignments.filter((a) => a.status === "approved" || a.status === "graded").length;
+  const notApproved = assignments.filter((a) => a.status === "not_approved").length;
 
   return [
     { value: assignments.length, label: "Total Tasks", dotColor: "bg-blue-600" },
-    { value: pending, label: "Pending", dotColor: "bg-rose-500" },
-    { value: submitted, label: "Submitted", dotColor: "bg-purple-500" },
-    { value: graded, label: "Graded", dotColor: "bg-emerald-500" },
+    { value: approved, label: "Approved", dotColor: "bg-emerald-500" },
+    { value: notApproved, label: "Not Approved", dotColor: "bg-rose-500" },
+    { value: submitted, label: "Under Review", dotColor: "bg-purple-500" },
+    { value: pending, label: "Pending", dotColor: "bg-amber-500" },
   ];
 };
 
@@ -213,7 +222,11 @@ export const filterAndSortAssignments = (
     // 4. Status Filter
     if (selectedStatus !== "all") {
       const aStatus = a.status || "pending";
-      if (aStatus !== selectedStatus) return false;
+      if (selectedStatus === "approved") {
+        if (aStatus !== "approved" && aStatus !== "graded") return false;
+      } else if (aStatus !== selectedStatus) {
+        return false;
+      }
     }
 
     return true;
