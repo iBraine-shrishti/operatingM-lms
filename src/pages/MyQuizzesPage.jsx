@@ -74,7 +74,7 @@ export const MyQuizzesPage = () => {
 
       const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
       const cachedProfile = JSON.parse(localStorage.getItem("om_lms_crm_cached_profile") || "{}");
-      const studentId = studentUser.id || studentUser.student_id || cachedProfile.id || cachedProfile.crmAdmissionId || "1";
+      const studentId = studentUser.id || studentUser.student_id || cachedProfile.id || cachedProfile.crmAdmissionId || "";
       const baseApi = CRM_BACKEND_API || "https://crm.dmsoi.org/api";
       const apiUrl = `${baseApi}/lms/student/quizzes/` + (studentId ? `?student_id=${studentId}` : "");
 
@@ -84,7 +84,8 @@ export const MyQuizzesPage = () => {
           if (data && data.success && Array.isArray(data.quizzes)) {
             let attemptsCache = {};
             try {
-              attemptsCache = JSON.parse(localStorage.getItem("om_lms_quiz_attempts_cache") || "{}");
+              const cacheKey = studentId ? `om_lms_quiz_attempts_cache_${studentId}` : "om_lms_quiz_attempts_cache";
+              attemptsCache = JSON.parse(localStorage.getItem(cacheKey) || "{}");
             } catch {}
 
             const formatted = data.quizzes.map((q) => {

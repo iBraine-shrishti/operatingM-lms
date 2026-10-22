@@ -226,7 +226,7 @@ export const TakeQuizPage = () => {
     try {
       const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
       const cachedProfile = JSON.parse(localStorage.getItem("om_lms_crm_cached_profile") || "{}");
-      const studentId = studentUser.id || studentUser.student_id || cachedProfile.id || cachedProfile.crmAdmissionId || "1";
+      const studentId = studentUser.id || studentUser.student_id || cachedProfile.id || cachedProfile.crmAdmissionId || "";
       const studentName = studentUser.name || studentUser.full_name || cachedProfile.name || "Student";
       const baseApi = CRM_BACKEND_API || "https://crm.dmsoi.org/api";
       const targetId = quiz.numericId || quiz.id;
