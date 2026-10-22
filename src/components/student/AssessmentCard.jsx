@@ -173,7 +173,8 @@ export const AssessmentCard = ({
   // -------------------------------------------------------------
   // ASSIGNMENT CARD VARIANT
   // -------------------------------------------------------------
-  const isGraded = data.status === "graded";
+  const isApproved = data.status === "approved" || data.status === "graded";
+  const isNotApproved = data.status === "not_approved";
   const isSubmitted = data.status === "submitted";
   const isPending = data.status === "pending" || !data.status;
 
@@ -220,13 +221,6 @@ export const AssessmentCard = ({
                 Due: <strong className="text-slate-800 dark:text-slate-200">{data.dueDate}</strong>
               </span>
             </div>
-            <span className="text-slate-300 dark:text-slate-700">•</span>
-            <div className="flex items-center space-x-1.5">
-              <FileCheck2 size={13} className="text-slate-400" />
-              <span>
-                Max: <strong className="text-slate-800 dark:text-slate-200">{data.maxScore || 100} pts</strong>
-              </span>
-            </div>
           </div>
 
           {/* Brief / Instructions */}
@@ -234,19 +228,31 @@ export const AssessmentCard = ({
             {data.instructions}
           </div>
 
-          {/* Graded Feedback Snippet */}
-          {isGraded && data.feedback && (
+          {/* Approved Feedback Snippet */}
+          {isApproved && data.feedback && (
             <div className="bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl p-3 text-xs space-y-1">
-              <div className="flex items-center justify-between text-emerald-900 dark:text-emerald-300 font-bold text-[11px]">
-                <span className="flex items-center space-x-1.5">
-                  <Sparkles size={13} className="text-emerald-600 dark:text-emerald-400" />
-                  <span>Feedback Snippet</span>
-                </span>
-                <span className="font-extrabold">{data.score} / 100</span>
+              <div className="flex items-center space-x-1.5 text-emerald-900 dark:text-emerald-300 font-bold text-[11px]">
+                <CheckCircle2 size={13} className="text-emerald-600 dark:text-emerald-400" />
+                <span>Approved • Faculty Feedback</span>
               </div>
               <p className="text-emerald-950 dark:text-emerald-200 italic line-clamp-2">
                 "{data.feedback}"
               </p>
+            </div>
+          )}
+
+          {/* Not Approved Snippet */}
+          {isNotApproved && (
+            <div className="bg-rose-50/80 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 rounded-xl p-3 text-xs space-y-1">
+              <div className="flex items-center space-x-1.5 text-rose-900 dark:text-rose-300 font-bold text-[11px]">
+                <AlertCircle size={13} className="text-rose-600 dark:text-rose-400" />
+                <span>Not Approved • Revision Required</span>
+              </div>
+              {data.feedback && (
+                <p className="text-rose-950 dark:text-rose-200 italic line-clamp-2">
+                  "{data.feedback}"
+                </p>
+              )}
             </div>
           )}
 
@@ -258,7 +264,7 @@ export const AssessmentCard = ({
                 <span>Submitted {data.submittedAt ? `on ${data.submittedAt}` : ""}</span>
               </div>
               <p className="text-purple-950 dark:text-purple-200 text-[11px]">
-                Under instructor review. Grades will be posted upon grading.
+                Under instructor review. Approval decision will be posted soon.
               </p>
             </div>
           )}
@@ -272,13 +278,21 @@ export const AssessmentCard = ({
         </div>
 
         <div className="flex items-center space-x-2">
-          {isGraded ? (
+          {isApproved ? (
             <button
               onClick={() => onSecondaryAction?.(data)}
               className="px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center space-x-1.5"
             >
               <Eye size={13} />
               <span>Feedback</span>
+            </button>
+          ) : isNotApproved ? (
+            <button
+              onClick={() => onAction?.(data)}
+              className="px-4 py-2 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white text-xs font-bold rounded-xl shadow-xs hover:shadow-md transition-all flex items-center space-x-1.5 cursor-pointer active:scale-95"
+            >
+              <RotateCcw size={13} />
+              <span>Re-submit Work</span>
             </button>
           ) : (
             <button

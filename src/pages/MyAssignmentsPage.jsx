@@ -278,10 +278,8 @@ export const MyAssignmentsPage = () => {
                   <th className="py-4 px-6 min-w-[280px]">Assignment</th>
                   <th className="py-4 px-6 min-w-[170px]">Batch / Track</th>
                   <th className="py-4 px-6 min-w-[150px]">Due Date</th>
-                  <th className="py-4 px-6 min-w-[110px]">Max Points</th>
                   <th className="py-4 px-6 min-w-[130px]">Submissions</th>
-                  <th className="py-4 px-6 min-w-[140px]">Status</th>
-                  <th className="py-4 px-6 min-w-[110px]">Score</th>
+                  <th className="py-4 px-6 min-w-[150px]">Status</th>
                   <th className="py-4 px-6 min-w-[140px] text-right">
                     Actions
                   </th>
@@ -352,13 +350,6 @@ export const MyAssignmentsPage = () => {
                         </div>
                       </td>
 
-                      {/* Max Points */}
-                      <td className="py-5 px-6 whitespace-nowrap">
-                        <span className="text-xs font-bold text-slate-900 dark:text-white">
-                          {a.maxScore || 100} pts
-                        </span>
-                      </td>
-
                       {/* Submissions */}
                       <td className="py-5 px-6 whitespace-nowrap">
                         <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
@@ -369,19 +360,6 @@ export const MyAssignmentsPage = () => {
                       {/* Status */}
                       <td className="py-5 px-6 whitespace-nowrap">
                         <AssessmentStatusBadge status={a.status} />
-                      </td>
-
-                      {/* Score */}
-                      <td className="py-5 px-6 whitespace-nowrap">
-                        {isGraded ? (
-                          <span className="inline-block px-3 py-1 rounded-lg text-xs font-black bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 border border-emerald-200/90 dark:border-emerald-800/60">
-                            {a.score} / 100
-                          </span>
-                        ) : (
-                          <span className="text-xs text-slate-400 dark:text-slate-500 font-bold pl-2">
-                            -
-                          </span>
-                        )}
                       </td>
 
                       {/* Actions */}
@@ -587,23 +565,23 @@ export const MyAssignmentsPage = () => {
                 </p>
               </div>
 
-              <div className="bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-xl p-4 space-y-2">
+              <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-emerald-900 dark:text-emerald-300">
-                    Final Grade:
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
+                    Evaluation Status:
                   </span>
-                  <span className="text-base font-extrabold text-emerald-700 dark:text-emerald-400">
-                    {feedbackModalAssignment.score} / 100
-                  </span>
+                  <AssessmentStatusBadge status={feedbackModalAssignment.status} />
                 </div>
-                <div className="pt-2 border-t border-emerald-200/60 dark:border-emerald-800/60">
-                  <span className="font-bold text-emerald-800 dark:text-emerald-300 text-[11px] block mb-1">
-                    Official Instructor Notes:
-                  </span>
-                  <p className="text-emerald-950 dark:text-emerald-200 text-xs italic leading-relaxed">
-                    "{feedbackModalAssignment.feedback}"
-                  </p>
-                </div>
+                {feedbackModalAssignment.feedback && (
+                  <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                    <span className="font-bold text-slate-700 dark:text-slate-300 text-[11px] block mb-1">
+                      Official Instructor Notes:
+                    </span>
+                    <p className="text-slate-900 dark:text-slate-200 text-xs italic leading-relaxed">
+                      "{feedbackModalAssignment.feedback}"
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-end pt-2">

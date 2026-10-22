@@ -81,10 +81,10 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
     try {
       const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
       const cachedProfile = JSON.parse(localStorage.getItem("om_lms_crm_cached_profile") || "{}");
-      const studentId = crmService.getSelectedStudentId() || crmProfile?.id || currentUser?.crmAdmissionId || studentUser.id || "1";
+      const studentId = crmService.getSelectedStudentId() || crmProfile?.id || currentUser?.crmAdmissionId || studentUser.id || studentUser.student_id || "";
       const baseApi = CRM_BACKEND_API || "https://crm.dmsoi.org/api";
 
-      fetch(`${baseApi}/lms/student/quizzes/?student_id=${studentId}`)
+      fetch(`${baseApi}/lms/student/quizzes/${studentId ? `?student_id=${studentId}` : ""}`)
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
           if (isMounted && data && data.success && Array.isArray(data.quizzes)) {

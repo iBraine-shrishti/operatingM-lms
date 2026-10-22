@@ -46,12 +46,7 @@ export const lmsService = {
   fetchUnitStreamUrl: async (unitId, studentId = null) => {
     if (!unitId) return null;
 
-    const endpoints = [
-      CRM_BACKEND_API,
-      CRM_BACKEND_API.includes("operatingmedia.org")
-        ? "https://crm.dmsoi.org/api"
-        : "https://operatingmedia.org/api",
-    ].filter((val, idx, self) => self.indexOf(val) === idx);
+    const endpoints = [CRM_BACKEND_API];
 
     for (const base of endpoints) {
       try {
@@ -144,12 +139,7 @@ export const lmsService = {
   // Real course permissions fetched from CRM database
   fetchStudentCoursePermissions: async (studentId) => {
     if (!studentId) return [];
-    const endpoints = [
-      CRM_BACKEND_API,
-      CRM_BACKEND_API.includes("operatingmedia.org")
-        ? "https://crm.dmsoi.org/api"
-        : "https://operatingmedia.org/api",
-    ].filter((val, idx, self) => self.indexOf(val) === idx);
+    const endpoints = [CRM_BACKEND_API];
 
     for (const base of endpoints) {
       try {
@@ -502,12 +492,7 @@ export const lmsService = {
   fetchStudentBatchAssignments: async (studentId) => {
     if (!studentId) return [];
     try {
-      const endpoints = [
-        CRM_BACKEND_API,
-        CRM_BACKEND_API.includes("operatingmedia.org")
-          ? "https://crm.dmsoi.org/api"
-          : "https://operatingmedia.org/api",
-      ].filter((val, idx, self) => self.indexOf(val) === idx);
+      const endpoints = [CRM_BACKEND_API];
 
       for (const base of endpoints) {
         try {
@@ -570,12 +555,7 @@ export const lmsService = {
       formData.append("link_url", linkUrl || "");
       formData.append("notes", notes || "");
 
-      const endpoints = [
-        CRM_BACKEND_API,
-        CRM_BACKEND_API.includes("operatingmedia.org")
-          ? "https://crm.dmsoi.org/api"
-          : "https://operatingmedia.org/api",
-      ].filter((val, idx, self) => self.indexOf(val) === idx);
+      const endpoints = [CRM_BACKEND_API];
 
       for (const base of endpoints) {
         try {

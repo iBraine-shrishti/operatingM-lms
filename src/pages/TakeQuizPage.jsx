@@ -5,6 +5,7 @@ import { useToast } from "../context/ToastContext";
 import {
   ArrowLeft,
   Clock,
+  Check,
   CheckCircle2,
   AlertCircle,
   Flag,
@@ -226,7 +227,7 @@ export const TakeQuizPage = () => {
     try {
       const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
       const cachedProfile = JSON.parse(localStorage.getItem("om_lms_crm_cached_profile") || "{}");
-      const studentId = studentUser.id || studentUser.student_id || cachedProfile.id || cachedProfile.crmAdmissionId || "1";
+      const studentId = studentUser.id || studentUser.student_id || cachedProfile.id || cachedProfile.crmAdmissionId || "";
       const studentName = studentUser.name || studentUser.full_name || cachedProfile.name || "Student";
       const baseApi = CRM_BACKEND_API || "https://crm.dmsoi.org/api";
       const targetId = quiz.numericId || quiz.id;
@@ -408,9 +409,10 @@ export const TakeQuizPage = () => {
                   </h4>
 
                   <div className="space-y-1.5 pt-1">
-                    {q.options?.map((opt) => {
+                    {q.options?.map((opt, optIdx) => {
                       const isChosen = studentChoiceId === opt.id;
                       const isOptionCorrect = opt.isCorrect;
+                      const letter = String.fromCharCode(65 + optIdx);
 
                       let optClass = "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60";
                       if (isOptionCorrect) {
@@ -425,8 +427,8 @@ export const TakeQuizPage = () => {
                           className={`p-3 rounded-xl border text-xs flex items-center justify-between ${optClass}`}
                         >
                           <div className="flex items-center space-x-2.5">
-                            <span className="w-5 h-5 rounded-md bg-white dark:bg-slate-800 border flex items-center justify-center font-bold text-[11px] uppercase">
-                              {opt.id}
+                            <span className="w-5 h-5 rounded-md bg-white dark:bg-slate-800 border flex items-center justify-center font-bold text-[11px] uppercase shrink-0">
+                              {letter}
                             </span>
                             <span>{opt.text}</span>
                           </div>
@@ -625,10 +627,11 @@ export const TakeQuizPage = () => {
               </h3>
             </div>
 
-            {/* Options (Radio Style Cards) */}
+            {/* Options (Clean Single Badge Cards - No 2 Holes) */}
             <div className="space-y-3 pt-2 w-full">
-              {currentQ.options?.map((opt) => {
+              {currentQ.options?.map((opt, optIdx) => {
                 const isSelected = selectedAnswers[currentQuestionIdx] === opt.id;
+                const letter = String.fromCharCode(65 + optIdx);
 
                 return (
                   <div
@@ -642,30 +645,28 @@ export const TakeQuizPage = () => {
                   >
                     <div className="flex items-center space-x-3.5 pr-2 flex-1 min-w-0">
                       <span
-                        className={`w-7 h-7 rounded-xl flex items-center justify-center font-bold text-xs uppercase shrink-0 transition-colors ${
+                        className={`w-8 h-8 rounded-xl flex items-center justify-center font-extrabold text-xs uppercase shrink-0 transition-colors ${
                           isSelected
-                            ? "bg-blue-600 text-white"
-                            : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 group-hover:border-blue-400"
+                            ? "bg-blue-600 text-white shadow-xs"
+                            : "bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 group-hover:border-blue-400 group-hover:text-blue-600"
                         }`}
                       >
-                        {opt.id}
+                        {letter}
                       </span>
                       <span
-                        className={`text-xs sm:text-sm font-medium leading-relaxed break-words ${
-                          isSelected ? "text-blue-950 dark:text-blue-100 font-bold" : "text-slate-800 dark:text-slate-200"
+                        className={`text-xs sm:text-sm leading-relaxed break-words ${
+                          isSelected ? "text-blue-950 dark:text-blue-100 font-bold" : "text-slate-800 dark:text-slate-200 font-medium"
                         }`}
                       >
                         {opt.text}
                       </span>
                     </div>
 
-                    <div
-                      className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ml-3 ${
-                        isSelected ? "border-blue-600 bg-blue-600" : "border-slate-300 dark:border-slate-700"
-                      }`}
-                    >
-                      {isSelected && <span className="w-2 h-2 rounded-full bg-white" />}
-                    </div>
+                    {isSelected && (
+                      <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center shrink-0 ml-3 text-white shadow-xs">
+                        <Check size={13} strokeWidth={3} />
+                      </div>
+                    )}
                   </div>
                 );
               })}
