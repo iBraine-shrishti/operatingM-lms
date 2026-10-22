@@ -35,25 +35,6 @@ export const ExamBriefingView = ({
   return (
     <main className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 lg:p-8 custom-scrollbar">
       <div className="max-w-7xl w-full mx-auto space-y-6 pb-12 sm:pb-16">
-        {/* Top Information Banner (Restored Original Callout) */}
-        <div className="bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200/90 dark:border-blue-900/40 rounded-2xl p-5 flex items-start gap-4 shadow-xs">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
-            <Info size={22} />
-          </div>
-          <div>
-            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-wide">
-              Operating Media Certification Assessment Guidelines
-            </h3>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
-              Welcome to your official certification assessment for{" "}
-              <strong>{track.title}</strong>. Please verify your candidate admit card details and review the assessment specifications below. Marking scheme:{" "}
-              <strong>+2.00 marks for each correct answer</strong> with{" "}
-              <strong>No Negative Marking</strong> (0 penalty for incorrect or unattempted answers). A minimum score of{" "}
-              <strong>80.0% ({track.passingMarks}/{track.totalMarks} marks)</strong> is required for your official Course Diploma Certification.
-            </p>
-          </div>
-        </div>
-
         {/* PROPERLY MERGED CANDIDATE ADMIT CARD & EXAMINATION SPECIFICATIONS CONTAINER */}
         <div className="bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 rounded-2xl sm:rounded-3xl shadow-xs overflow-hidden">
           {/* Header of Merged Card */}
@@ -62,7 +43,9 @@ export const ExamBriefingView = ({
               <span className="text-xs font-mono uppercase text-slate-500 dark:text-slate-400 tracking-widest font-bold">
                 CANDIDATE ADMIT CARD & EXAMINATION SPECIFICATIONS
               </span>
-              <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
+              <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">
+                •
+              </span>
               <span className="text-xs font-mono font-bold text-blue-600 dark:text-blue-400 hidden sm:inline">
                 {track.title} ({track.code})
               </span>
@@ -101,17 +84,22 @@ export const ExamBriefingView = ({
                           src={candidateAvatar}
                           alt={candidateName}
                           onError={(e) => {
-                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.style.display = "none";
                             if (e.currentTarget.nextElementSibling) {
-                              e.currentTarget.nextElementSibling.style.display = 'flex';
+                              e.currentTarget.nextElementSibling.style.display =
+                                "flex";
                             }
                           }}
                           className="w-full h-full object-cover object-center rounded-lg"
                         />
                       ) : null}
-                      <div className={`w-full h-full rounded-lg bg-blue-50 dark:bg-slate-900 flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 ${candidateAvatar ? 'hidden' : 'flex'}`}>
+                      <div
+                        className={`w-full h-full rounded-lg bg-blue-50 dark:bg-slate-900 flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 ${candidateAvatar ? "hidden" : "flex"}`}
+                      >
                         <User size={36} />
-                        <span className="text-[10px] font-bold mt-1 text-slate-500 uppercase">{candidateName?.charAt(0) || "U"}</span>
+                        <span className="text-[10px] font-bold mt-1 text-slate-500 uppercase">
+                          {candidateName?.charAt(0) || "U"}
+                        </span>
                       </div>
                       <span
                         className="absolute top-2 right-2 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900 shadow-xs ring-2 ring-emerald-400"
@@ -138,7 +126,10 @@ export const ExamBriefingView = ({
                     </h4>
 
                     <div className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-blue-900 dark:text-blue-300 font-mono text-xs font-bold">
-                      <ShieldCheck size={14} className="text-blue-600 dark:text-blue-400" />
+                      <ShieldCheck
+                        size={14}
+                        className="text-blue-600 dark:text-blue-400"
+                      />
                       <span>STUDENT ID: {rollNumber}</span>
                     </div>
 
@@ -239,7 +230,9 @@ export const ExamBriefingView = ({
                       01.
                     </span>
                     <span>
-                      <strong>Assessment Focus:</strong> Navigating away from the window or minimizing the browser logs a proctor warning.
+                      <strong>Assessment Focus:</strong> Navigating away from
+                      the window or minimizing the browser logs a proctor
+                      warning.
                     </span>
                   </li>
                   <li className="flex items-start gap-2.5">
@@ -247,7 +240,9 @@ export const ExamBriefingView = ({
                       02.
                     </span>
                     <span>
-                      <strong>3 Warnings Permitted:</strong> A total of 3 warnings are permitted. Exceeding 3 warnings will automatically submit your assessment paper.
+                      <strong>3 Warnings Permitted:</strong> A total of 3
+                      warnings are permitted. Exceeding 3 warnings will
+                      automatically submit your assessment paper.
                     </span>
                   </li>
                   <li className="flex items-start gap-2.5">
@@ -255,7 +250,9 @@ export const ExamBriefingView = ({
                       03.
                     </span>
                     <span>
-                      <strong>Passing Grade:</strong> Minimum 80.0% ({track.passingMarks} / {track.totalMarks} Marks) to qualify for Diploma Certification.
+                      <strong>Passing Grade:</strong> Minimum 80.0% (
+                      {track.passingMarks} / {track.totalMarks} Marks) to
+                      qualify for Diploma Certification.
                     </span>
                   </li>
                   <li className="flex items-start gap-2.5">
@@ -263,7 +260,9 @@ export const ExamBriefingView = ({
                       04.
                     </span>
                     <span>
-                      <strong>No Negative Marking:</strong> There is NO negative marking or deduction for incorrect answers. Attempt all {track.questionsCount} questions with confidence.
+                      <strong>No Negative Marking:</strong> There is NO negative
+                      marking or deduction for incorrect answers. Attempt all{" "}
+                      {track.questionsCount} questions with confidence.
                     </span>
                   </li>
                 </ul>
@@ -275,64 +274,6 @@ export const ExamBriefingView = ({
                 </span>
                 <span className="text-blue-700 dark:text-blue-400">
                   Target Passing: 80% Threshold
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* CANDIDATE VERIFICATION GATE: SYSTEM SECURITY & DIAGNOSTICS */}
-        <div className="bg-white dark:bg-slate-900/90 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 space-y-5 shadow-xs dark:shadow-none">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3.5">
-            <div>
-              <span className="text-xs font-mono uppercase text-blue-600 dark:text-blue-400 tracking-widest font-bold block">
-                CANDIDATE VERIFICATION GATE
-              </span>
-              <h4 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mt-0.5">
-                System Security & Diagnostics
-              </h4>
-            </div>
-            <div className="flex items-center gap-2 text-xs sm:text-sm font-mono">
-              <span className="px-3 py-1 rounded-lg font-bold border bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-600">
-                System Verified (Ready)
-              </span>
-            </div>
-          </div>
-
-          {/* 3 Passive Environment & Security Status Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4 rounded-xl flex items-center gap-3.5">
-              <Monitor size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <div className="min-w-0">
-                <span className="text-sm font-bold text-slate-900 dark:text-white block">
-                  Display Architecture
-                </span>
-                <span className="text-xs text-emerald-700 dark:text-emerald-400 font-mono">
-                  Single Display Focus Active
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4 rounded-xl flex items-center gap-3.5">
-              <Wifi size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <div className="min-w-0">
-                <span className="text-sm font-bold text-slate-900 dark:text-white block">
-                  Network & Latency
-                </span>
-                <span className="text-xs text-emerald-700 dark:text-emerald-400 font-mono">
-                  Secure TLS 1.3 Connection
-                </span>
-              </div>
-            </div>
-
-            <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4 rounded-xl flex items-center gap-3.5">
-              <ShieldCheck size={20} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <div className="min-w-0">
-                <span className="text-sm font-bold text-slate-900 dark:text-white block">
-                  Window Proctoring
-                </span>
-                <span className="text-xs text-emerald-700 dark:text-emerald-400 font-mono">
-                  3 Warnings Policy Active
                 </span>
               </div>
             </div>
@@ -352,11 +293,15 @@ export const ExamBriefingView = ({
             htmlFor="pledge-check"
             className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed cursor-pointer select-none"
           >
-            I, <strong className="text-slate-950 dark:text-white">{candidateName}</strong>, confirm
-            that I am taking the <strong>{track.title}</strong> assessment independently. I agree to
-            adhere to the assessment guidelines, accept the marking scheme (+2.00 / No Negative
-            Marking), and understand that maintaining window focus is required throughout the test
-            session.
+            I,{" "}
+            <strong className="text-slate-950 dark:text-white">
+              {candidateName}
+            </strong>
+            , confirm that I am taking the <strong>{track.title}</strong>{" "}
+            assessment independently. I agree to adhere to the assessment
+            guidelines, accept the marking scheme (+2.00 / No Negative Marking),
+            and understand that maintaining window focus is required throughout
+            the test session.
           </label>
         </div>
 

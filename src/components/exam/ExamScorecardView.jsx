@@ -57,19 +57,19 @@ export const ExamScorecardView = ({
           >
             {examResult.passed
               ? "OFFICIAL RESULT: PASSED • DIPLOMA CERTIFIED"
-              : `ASSESSMENT COMPLETED • PASSING MARK: ${track.passingScorePercent || 80.0}%`}
+              : `ASSESSMENT COMPLETED • PASSING MARK: ${track.passingScorePercent || 85.0}%`}
           </span>
 
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-950 dark:text-white">
             {examResult.passed
               ? `Congratulations, ${candidateName}! You Cleared the Examination`
-              : `Assessment Completed - Passing Threshold ${track.passingScorePercent || 80.0}%`}
+              : `Assessment Completed - Passing Threshold ${track.passingScorePercent || 85.0}%`}
           </h2>
 
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 mt-2 max-w-2xl mx-auto leading-relaxed">
             {examResult.passed
               ? `You have successfully demonstrated mastery across ${track.title} competencies and qualified for your official Certificate.`
-              : `The passing threshold for this certification is ${track.passingScorePercent || 80.0}%. You can review the course modules and retake the evaluation.`}
+              : `The passing threshold for this certification is ${track.passingScorePercent || 85.0}%. You can review the course modules and retake the evaluation.`}
           </p>
 
           {/* Numerical Score */}

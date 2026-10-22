@@ -284,7 +284,7 @@ export const OfficialExamPage = () => {
     const finalScore = Number(marksPositive.toFixed(2));
     const maxScore = Number((questions.length * (selectedTrack.marksPerQuestion || 2.0)).toFixed(2));
     const percentage = Number(((finalScore / maxScore) * 100).toFixed(1));
-    const passed = !isDisqualified && percentage >= (selectedTrack.passingScorePercent || 80.0);
+    const passed = !isDisqualified && percentage >= (selectedTrack.passingScorePercent || 85.0);
 
     setExamResult({
       isDisqualified,

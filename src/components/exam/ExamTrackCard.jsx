@@ -282,7 +282,7 @@ export const ExamTrackCard = ({ track, onSelectTrack }) => {
 
           <div className="flex items-center gap-1.5">
             <Star size={14} className="text-amber-500 fill-amber-500 shrink-0" />
-            <span>80%</span>
+            <span>{track.passingScorePercent || 85}%</span>
           </div>
         </div>
 

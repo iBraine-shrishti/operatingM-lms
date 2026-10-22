@@ -34,7 +34,7 @@ export const ExamCourseSelector = ({ onSelectTrack }) => {
           },
           {
             label: "Passing Score",
-            value: "80% Threshold",
+            value: "85% Threshold",
             icon: CheckCircle2,
             color: "text-purple-600 dark:text-purple-400",
           },
