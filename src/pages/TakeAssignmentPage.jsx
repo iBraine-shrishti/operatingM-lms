@@ -5,8 +5,6 @@ import { useToast } from "../context/ToastContext";
 import { crmService } from "../services/crmService";
 import {
   ArrowLeft,
-  Calendar,
-  Clock,
   Award,
   Upload,
   FileText,
@@ -14,12 +12,8 @@ import {
   AlertCircle,
   ExternalLink,
   Download,
-  FolderArchive,
-  Sparkles,
-  CheckSquare,
   Paperclip,
   X,
-  FileCheck2,
   Lock,
 } from "lucide-react";
 import { CourseBadge } from "../components/common/CourseBadge";
@@ -71,12 +65,6 @@ export const TakeAssignmentPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResubmitting, setIsResubmitting] = useState(false);
 
-  // Deliverables self-checklist
-  const [completedDeliverables, setCompletedDeliverables] = useState({
-    0: true,
-    1: false,
-    2: false,
-  });
 
   const isGraded = assignment?.status === "graded";
   const isSubmitted = assignment?.status === "submitted" || isGraded;
@@ -119,11 +107,6 @@ export const TakeAssignmentPage = () => {
     }
   };
 
-  const deliverables = [
-    "Complete practical campaign / design file adhering to client brief",
-    "Detailed methodology explanation and rationale included",
-    "Public view-only permissions verified on project link or valid archive uploaded",
-  ];
 
   if (isLoading) {
     return (
@@ -223,36 +206,6 @@ export const TakeAssignmentPage = () => {
               </div>
             </div>
 
-            {/* Checklist Deliverables */}
-            <div className="space-y-3 pt-2">
-              <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
-                Required Deliverables Checklist
-              </h4>
-              <div className="space-y-2">
-                {deliverables.map((item, idx) => (
-                  <label
-                    key={idx}
-                    className="flex items-start space-x-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-900/30 cursor-pointer hover:bg-blue-50/20 transition-colors"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={!!completedDeliverables[idx]}
-                      onChange={() =>
-                        setCompletedDeliverables((prev) => ({
-                          ...prev,
-                          [idx]: !prev[idx],
-                        }))
-                      }
-                      className="mt-0.5 rounded text-blue-600 focus:ring-blue-500/20"
-                    />
-                    <span className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-snug">
-                      {item}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
             {/* Starter Files & Reference Materials */}
             {assignment?.attachmentUrl ? (
               <div className="space-y-2 pt-2">
@@ -305,54 +258,7 @@ export const TakeAssignmentPage = () => {
             ) : null}
           </div>
 
-          {/* Evaluation Rubric Breakdown Card */}
-          <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-xs space-y-4">
-            <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
-              Grading Criteria & Rubric
-            </h4>
-            <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
-              <div className="py-2.5 flex justify-between items-center">
-                <div>
-                  <strong className="text-slate-900 dark:text-white block font-bold">
-                    Technical Execution & Accuracy
-                  </strong>
-                  <span className="text-slate-500 text-[11px]">
-                    Correct application of campaign tools, formulas, or UX patterns
-                  </span>
-                </div>
-                <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 font-bold text-slate-800 dark:text-slate-200 shrink-0 ml-3">
-                  40 pts
-                </span>
-              </div>
-              <div className="py-2.5 flex justify-between items-center">
-                <div>
-                  <strong className="text-slate-900 dark:text-white block font-bold">
-                    Strategic Rationale & Methodology
-                  </strong>
-                  <span className="text-slate-500 text-[11px]">
-                    Clarity of business hypotheses, KPI choice, and problem analysis
-                  </span>
-                </div>
-                <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 font-bold text-slate-800 dark:text-slate-200 shrink-0 ml-3">
-                  35 pts
-                </span>
-              </div>
-              <div className="py-2.5 flex justify-between items-center">
-                <div>
-                  <strong className="text-slate-900 dark:text-white block font-bold">
-                    Presentation & Clean File Structure
-                  </strong>
-                  <span className="text-slate-500 text-[11px]">
-                    Well-organized Figma components, clean spreadsheets, or readable code
-                  </span>
-                </div>
-                <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 font-bold text-slate-800 dark:text-slate-200 shrink-0 ml-3">
-                  25 pts
-                </span>
-              </div>
-            </div>
           </div>
-        </div>
 
         {/* Right Column: Submission Form & Evaluation Card */}
         <div className="lg:col-span-5 space-y-5">
