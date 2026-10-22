@@ -3,13 +3,11 @@ import {
   Activity, Search, Filter, Clock, Award, BookOpen, 
   CheckCircle2, CheckSquare, MessagesSquare, 
   FileText, ArrowRight, RefreshCw, X, Shield, Sparkles, 
-  ChevronRight, Calendar, UserPlus, GraduationCap
+  ChevronRight, Calendar, UserPlus, GraduationCap, User
 } from "lucide-react";
 import { lmsService } from "../services/lmsService";
 import { useAuth } from "../context/AuthContext";
 import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
-import sahilProfilePic from "../assets/sahil-profile.png";
-import profilePic from "../assets/profile-pic.png";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
 import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 
@@ -95,9 +93,9 @@ export const ActivityPage = () => {
   const currentStudentAvatar =
     currentUser?.avatar && !currentUser?.avatar?.includes("avatar-card")
       ? currentUser.avatar
-      : sahilProfilePic;
+      : null;
 
-  // Filter activities: strictly the logged-in student's milestones
+  // Filter activities: strictly the logged-in student's milestones (excluding enrollment & certificate)
   const scopedActivities = useMemo(() => {
     if (isAdmin) {
       return activitiesList;
@@ -106,10 +104,13 @@ export const ActivityPage = () => {
     return activitiesList
       .filter(
         (act) =>
-          act.studentId === "std-375" ||
-          act.id?.startsWith("act-sahil-") ||
-          act.user?.name?.toLowerCase().includes("sahil") ||
-          !act.id?.startsWith("act-peer-")
+          (act.studentId === "std-375" ||
+            act.id?.startsWith("act-sahil-") ||
+            act.user?.name?.toLowerCase().includes("sahil") ||
+            !act.id?.startsWith("act-peer-")) &&
+          act.type !== "enrollment" &&
+          act.type !== "certificate" &&
+          act.type !== "completion"
       )
       .map((act) => ({
         ...act,
@@ -233,7 +234,7 @@ export const ActivityPage = () => {
           {...STUDENT_HEADERS_CONFIG.activity}
           metrics={[
             { value: scopedActivities.length, label: "Total Milestones", dotColor: "bg-blue-600" },
-            { value: counts.quiz + counts.certificate, label: "Quizzes & Certs", dotColor: "bg-purple-500" },
+            { value: counts.quiz, label: "Quizzes Passed", dotColor: "bg-purple-500" },
             { value: counts.assignment, label: "Submissions", dotColor: "bg-rose-500" },
           ]}
           action={
@@ -303,16 +304,18 @@ export const ActivityPage = () => {
             >
               All Activities ({counts.all})
             </button>
-            <button
-              onClick={() => setSelectedFilter("enrollment")}
-              className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
-                selectedFilter === "enrollment"
-                  ? "bg-blue-600 text-white shadow-xs dark:shadow-[0_0_12px_rgba(37,99,235,0.4)]"
-                  : "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40 border border-blue-200/60 dark:border-blue-500/30"
-              }`}
-            >
-              Enrollments ({counts.enrollment})
-            </button>
+            {isAdmin && counts.enrollment > 0 && (
+              <button
+                onClick={() => setSelectedFilter("enrollment")}
+                className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
+                  selectedFilter === "enrollment"
+                    ? "bg-blue-600 text-white shadow-xs dark:shadow-[0_0_12px_rgba(37,99,235,0.4)]"
+                    : "bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40 border border-blue-200/60 dark:border-blue-500/30"
+                }`}
+              >
+                Enrollments ({counts.enrollment})
+              </button>
+            )}
             <button
               onClick={() => setSelectedFilter("quiz")}
               className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
@@ -323,16 +326,18 @@ export const ActivityPage = () => {
             >
               Quizzes ({counts.quiz})
             </button>
-            <button
-              onClick={() => setSelectedFilter("certificate")}
-              className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
-                selectedFilter === "certificate"
-                  ? "bg-emerald-600 text-white shadow-xs dark:shadow-[0_0_12px_rgba(16,185,129,0.4)]"
-                  : "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-200/60 dark:border-emerald-500/30"
-              }`}
-            >
-              Certificates ({counts.certificate})
-            </button>
+            {isAdmin && counts.certificate > 0 && (
+              <button
+                onClick={() => setSelectedFilter("certificate")}
+                className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
+                  selectedFilter === "certificate"
+                    ? "bg-emerald-600 text-white shadow-xs dark:shadow-[0_0_12px_rgba(16,185,129,0.4)]"
+                    : "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-200/60 dark:border-emerald-500/30"
+                }`}
+              >
+                Certificates ({counts.certificate})
+              </button>
+            )}
             <button
               onClick={() => setSelectedFilter("assignment")}
               className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
@@ -389,77 +394,91 @@ export const ActivityPage = () => {
         /* ============================================================== */
         /* STUDENT VIEW: DEDICATED TIMELINE FORMAT                       */
         /* ============================================================== */
-        <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 sm:p-7 2xl:p-8 shadow-xs">
-          <div className="relative pl-6 sm:pl-10 before:absolute before:top-3 before:bottom-3 before:left-[17px] sm:before:left-[21px] before:w-0.5 before:bg-gradient-to-b before:from-blue-600 before:via-blue-300 dark:before:via-blue-800 before:to-slate-200 dark:before:to-slate-800 space-y-6 sm:space-y-8">
-            {filteredActivities.map((act) => {
-              const theme = getActivityTheme(act.type);
-              const TypeIcon = theme.icon;
+        <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-6 2xl:p-7 shadow-xs">
+          <div className="relative">
+            {/* Continuous Timeline Line perfectly centered through every circle node */}
+            <div
+              className="absolute top-5 bottom-5 left-4.5 sm:left-5 -translate-x-1/2 w-0.5 bg-gradient-to-b from-blue-600 via-blue-400 dark:via-blue-600 to-slate-200 dark:to-slate-800 pointer-events-none"
+              aria-hidden="true"
+            />
 
-              return (
-                <div key={act.id} className="relative flex items-start group">
-                  {/* Timeline Node Marker on the continuous line */}
-                  <div className="absolute -left-[17px] sm:-left-[21px] -translate-x-1/2 top-1.5 flex items-center justify-center">
-                    <div
-                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-white dark:border-[#0b1329] shadow-sm flex items-center justify-center ${theme.iconBg} ring-2 ring-slate-100 dark:ring-slate-800 group-hover:scale-110 group-hover:ring-blue-300 dark:group-hover:ring-blue-500/70 transition-all duration-200`}
-                    >
-                      <TypeIcon size={16} />
-                    </div>
-                  </div>
+            <div className="space-y-3 sm:space-y-3.5">
+              {filteredActivities.map((act) => {
+                const theme = getActivityTheme(act.type);
+                const TypeIcon = theme.icon;
 
-                  {/* Timeline Event Card */}
-                  <div className="flex-1 ml-6 sm:ml-7 bg-slate-50/70 dark:bg-slate-900/60 hover:bg-white dark:hover:bg-slate-850 border border-slate-200/70 dark:border-slate-800/80 hover:border-blue-300 dark:hover:border-blue-500/60 rounded-2xl p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all duration-200">
-                    {/* Top Row: Time & Category Badge */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-slate-200/60 dark:border-slate-800/60 text-xs">
-                      <span className="flex items-center space-x-1.5 text-slate-500 dark:text-slate-400 font-semibold">
-                        <Clock size={12} className="text-slate-400 dark:text-slate-500" />
-                        <span>{act.timeAgo}</span>
-                      </span>
-
-                      <span
-                        className={`inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full border text-xs font-bold ${theme.badgeBg}`}
+                return (
+                  <div key={act.id} className="relative flex items-start gap-3 sm:gap-4 group">
+                    {/* Timeline Node Marker on the continuous line */}
+                    <div className="w-9 sm:w-10 shrink-0 flex items-center justify-center pt-1 relative z-10">
+                      <div
+                        className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-white dark:border-[#0b1329] shadow-xs flex items-center justify-center ${theme.iconBg} ring-2 ring-slate-100 dark:ring-slate-800 group-hover:scale-105 group-hover:ring-blue-300 dark:group-hover:ring-blue-500/70 transition-all duration-200 bg-white dark:bg-[#0b1329]`}
                       >
-                        <TypeIcon size={12} />
-                        <span>{theme.label}</span>
-                      </span>
+                        <TypeIcon size={15} />
+                      </div>
                     </div>
 
-                    {/* Middle Row: User Details, Action, and Target */}
-                    <div className="flex items-start sm:items-center space-x-3.5 pt-3">
-                      <img
-                        src={act.user.avatar || currentStudentAvatar}
-                        alt={act.user.name}
-                        onError={(e) => {
-                          e.currentTarget.onerror = null;
-                          e.currentTarget.src = sahilProfilePic;
-                        }}
-                        className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700 shrink-0 mt-0.5 sm:mt-0"
-                      />
-                      <div className="min-w-0 flex-1 space-y-1">
-                        <div className="flex flex-wrap items-center gap-1.5 text-sm sm:text-base">
-                          <span className="font-extrabold text-slate-900 dark:text-white">
-                            {act.user.name}
-                          </span>
-                          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/70 dark:border-blue-800/60">
-                            Student
-                          </span>
-                          <span className="text-slate-600 dark:text-slate-300 font-medium">
-                            {act.action}
-                          </span>
-                          <span className="font-extrabold text-blue-600 dark:text-cyan-400 break-words">
-                            {act.target}
-                          </span>
+                    {/* Timeline Event Card - Minimized Spacing & Compact Layout */}
+                    <div className="flex-1 min-w-0 bg-slate-50/70 dark:bg-slate-900/60 hover:bg-white dark:hover:bg-slate-850 border border-slate-200/70 dark:border-slate-800/80 hover:border-blue-300 dark:hover:border-blue-500/60 rounded-xl sm:rounded-2xl p-3 sm:p-3.5 2xl:p-4 shadow-2xs hover:shadow-md transition-all duration-200">
+                      {/* Top Row: Time & Category Badge */}
+                      <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-200/60 dark:border-slate-800/60 text-xs">
+                        <span className="flex items-center space-x-1.5 text-slate-500 dark:text-slate-400 font-semibold">
+                          <Clock size={12} className="text-slate-400 dark:text-slate-500" />
+                          <span>{act.timeAgo}</span>
+                        </span>
+
+                        <span
+                          className={`inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full border text-xs font-bold ${theme.badgeBg}`}
+                        >
+                          <TypeIcon size={12} />
+                          <span>{theme.label}</span>
+                        </span>
+                      </div>
+
+                      {/* Middle Row: User Details, Action, and Target */}
+                      <div className="flex items-center space-x-3 pt-2">
+                        {(act.user.avatar || currentStudentAvatar) ? (
+                          <img
+                            src={act.user.avatar || currentStudentAvatar}
+                            alt={act.user.name}
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                              if (e.currentTarget.nextElementSibling) {
+                                e.currentTarget.nextElementSibling.style.display = 'flex';
+                              }
+                            }}
+                            className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-700 shrink-0"
+                          />
+                        ) : null}
+                        <div
+                          className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-[10px] sm:text-xs ring-1 ring-slate-200 dark:ring-slate-700 shrink-0 items-center justify-center ${
+                            (act.user.avatar || currentStudentAvatar) ? 'hidden' : 'flex'
+                          }`}
+                        >
+                          {act.user.name ? act.user.name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase() : <User size={15} />}
                         </div>
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400 dark:text-slate-500 font-medium">
-                          <span>Live Student Milestone</span>
-                          <span>•</span>
-                          <span>Synchronized with Operating Media Student Engine</span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm">
+                            <span className="font-extrabold text-slate-900 dark:text-white">
+                              {act.user.name}
+                            </span>
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/70 dark:border-blue-800/60">
+                              Student
+                            </span>
+                            <span className="text-slate-600 dark:text-slate-300 font-medium">
+                              {act.action}
+                            </span>
+                            <span className="font-extrabold text-blue-600 dark:text-cyan-400 break-words">
+                              {act.target}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
       ) : (
@@ -478,15 +497,26 @@ export const ActivityPage = () => {
                 <div className="flex items-start sm:items-center space-x-3.5 sm:space-x-4 min-w-0 flex-1">
                   {/* Avatar with relative pulse indicator */}
                   <div className="relative shrink-0">
-                    <img
-                      src={act.user.avatar || (sahilProfilePic || profilePic)}
-                      alt={act.user.name}
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = sahilProfilePic || profilePic;
-                      }}
-                      className="w-12 h-12 sm:w-14 sm:h-14 2xl:w-15 2xl:h-15 rounded-full object-cover ring-2 ring-slate-100 dark:ring-slate-800 group-hover:ring-blue-300 dark:group-hover:ring-blue-500/70 transition-all"
-                    />
+                    {(act.user.avatar || currentStudentAvatar) ? (
+                      <img
+                        src={act.user.avatar || currentStudentAvatar}
+                        alt={act.user.name}
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          if (e.currentTarget.nextElementSibling) {
+                            e.currentTarget.nextElementSibling.style.display = 'flex';
+                          }
+                        }}
+                        className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-slate-100 dark:ring-slate-800 group-hover:ring-blue-300 dark:group-hover:ring-blue-500/70 transition-all"
+                      />
+                    ) : null}
+                    <div
+                      className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-xs ring-2 ring-slate-100 dark:ring-slate-800 group-hover:ring-blue-300 dark:group-hover:ring-blue-500/70 transition-all items-center justify-center ${
+                        (act.user.avatar || currentStudentAvatar) ? 'hidden' : 'flex'
+                      }`}
+                    >
+                      {act.user.name ? act.user.name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase() : <User size={18} />}
+                    </div>
                     <span
                       className={`absolute bottom-0 right-0 w-3.5 h-3.5 2xl:w-4 2xl:h-4 rounded-full border-2 border-white dark:border-slate-900 shadow-2xs ${theme.dotColor}`}
                       title={theme.label}

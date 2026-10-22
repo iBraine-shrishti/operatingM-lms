@@ -10,9 +10,10 @@ import {
   Bookmark,
   History,
   TrendingUp,
+  User,
 } from "lucide-react";
 import dashboardHat from "../../assets/header-bg/dashboard-hat.png";
-import sahilProfilePic from "../../assets/sahil-profile.png";
+
 
 /**
  * ProfileHeader: Displays the top student profile banner, countdown,
@@ -36,19 +37,36 @@ export const ProfileHeader = ({ studentData, activeTab, onTabChange }) => {
           <div className="flex items-start sm:items-center gap-4 sm:gap-5 min-w-0">
             {/* Avatar Container with Green Active Dot */}
             <div className="relative shrink-0">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border border-white/80 dark:border-slate-700/80 shadow-md bg-slate-100 dark:bg-slate-800 p-0">
-                <img
-                  src={studentData.avatar || sahilProfilePic}
-                  alt={studentData.name}
-                  loading="eager"
-                  decoding="sync"
-                  onError={(e) => {
-                    if (e.currentTarget.src !== sahilProfilePic) {
-                      e.currentTarget.src = sahilProfilePic;
-                    }
-                  }}
-                  className="w-full h-full object-cover object-center rounded-2xl"
-                />
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border border-white/80 dark:border-slate-700/80 shadow-md bg-slate-100 dark:bg-slate-800 p-0 flex items-center justify-center">
+                {studentData.avatar ? (
+                  <img
+                    src={studentData.avatar}
+                    alt={studentData.name || "Student"}
+                    loading="eager"
+                    decoding="sync"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.nextElementSibling) {
+                        e.currentTarget.nextElementSibling.style.display = 'flex';
+                      }
+                    }}
+                    className="w-full h-full object-cover object-center rounded-2xl"
+                  />
+                ) : null}
+                <div
+                  className={`w-full h-full rounded-2xl flex items-center justify-center font-bold text-xl sm:text-2xl text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-slate-800 ${
+                    studentData.avatar ? 'hidden' : 'flex'
+                  }`}
+                >
+                  {studentData.name
+                    ? studentData.name
+                        .split(' ')
+                        .map((n) => n[0])
+                        .slice(0, 2)
+                        .join('')
+                        .toUpperCase()
+                    : <User size={32} />}
+                </div>
               </div>
               {/* Online Green Indicator Dot on Top Right */}
               <span

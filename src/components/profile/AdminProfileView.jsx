@@ -1,5 +1,5 @@
 import React from "react";
-import profilePic from "../../assets/profile-pic.png";
+import { User } from "lucide-react";
 
 /**
  * AdminProfileView: Renders the administrator view when currentUser is an admin.
@@ -12,11 +12,33 @@ export const AdminProfileView = ({ currentUser = {} }) => {
     <div className="space-y-6">
       <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xs">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-          <img
-            src={currentUser.avatar || profilePic}
-            alt={currentUser.name}
-            className="w-20 h-20 rounded-2xl object-cover ring-2 ring-blue-500/30"
-          />
+          {currentUser.avatar ? (
+            <img
+              src={currentUser.avatar}
+              alt={currentUser.name || "Administrator"}
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+                if (e.currentTarget.nextElementSibling) {
+                  e.currentTarget.nextElementSibling.style.display = "flex";
+                }
+              }}
+              className="w-20 h-20 rounded-2xl object-cover ring-2 ring-blue-500/30"
+            />
+          ) : null}
+          <div
+            className={`w-20 h-20 rounded-2xl bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-xl ring-2 ring-blue-500/30 items-center justify-center ${
+              currentUser.avatar ? "hidden" : "flex"
+            }`}
+          >
+            {currentUser.name
+              ? currentUser.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .slice(0, 2)
+                  .join("")
+                  .toUpperCase()
+              : <User size={32} />}
+          </div>
           <div>
             <span className="text-xs font-black uppercase text-blue-600 bg-blue-50 dark:bg-blue-950/60 px-2.5 py-1 rounded-md">
               ADMINISTRATOR PROFILE

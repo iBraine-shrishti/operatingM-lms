@@ -1000,10 +1000,19 @@ export const lmsService = {
           a.user?.name === "Vikram Malhotra" ||
           a.user?.name === "Hiteshpuri Goswami",
       );
+    const hasEnrollmentOrCert =
+      stored &&
+      stored.some(
+        (a) =>
+          a.type === 'enrollment' ||
+          a.type === 'certificate' ||
+          a.type === 'completion'
+      );
     if (
       !stored ||
       !hasSahil ||
       hasOldFaculty ||
+      hasEnrollmentOrCert ||
       stored.length < INITIAL_ACTIVITIES.length
     ) {
       setStored("activities", INITIAL_ACTIVITIES);

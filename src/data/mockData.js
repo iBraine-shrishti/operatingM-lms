@@ -5,7 +5,6 @@ import googleAnalyticsImg from '../assets/courses/google-analytics.png';
 import googleAdsImg from '../assets/courses/google-ads.png';
 import wordpressImg from '../assets/courses/website-development-wordpress.png';
 import seoImg from '../assets/courses/search-engine-optimization-seo.png';
-import sahilProfilePic from '../assets/sahil-profile.png';
 import { IMPORTED_LMS_QUIZZES } from './importedLmsQuizzes';
 
 export const COURSE_THUMBNAILS = {
@@ -631,7 +630,7 @@ export const INITIAL_STUDENTS = [
         name: 'Hiteshpuri Goswami',
         email: 'hiteshpuri.g@gmail.com',
         phone: '+91 74001 23992',
-        avatar: '/profile-pic.png',
+        avatar: null,
         courseId: 'course-7',
         courseName: 'Website Development With WordPress',
         batch: 'Weekday Morning (WD-M2, 10:00 AM - 12:00 PM)',
@@ -1191,20 +1190,10 @@ export const INITIAL_DISCUSSIONS = [
 ];
 export const INITIAL_ACTIVITIES = [
     {
-        id: 'act-sahil-1',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
-        action: 'enrolled in',
-        target: 'Search Engine Optimization (SEO)',
-        timeAgo: '15 min ago',
-        type: 'enrollment'
-    },
-    {
         id: 'act-sahil-2',
         studentId: 'std-375',
         isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
+        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
         action: 'passed examination with 95% on',
         target: 'Google Ads Campaign Setup & Quality Score Exam',
         timeAgo: '45 min ago',
@@ -1214,37 +1203,17 @@ export const INITIAL_ACTIVITIES = [
         id: 'act-sahil-3',
         studentId: 'std-375',
         isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
+        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
         action: 'submitted practical audit for',
         target: 'Live Client SEO Audit & Keyword Strategy',
         timeAgo: '2 hours ago',
         type: 'assignment'
     },
     {
-        id: 'act-sahil-4',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
-        action: 'earned official credential for',
-        target: 'SEO Specialist Certification (CRM Verified)',
-        timeAgo: '4 hours ago',
-        type: 'certificate'
-    },
-    {
-        id: 'act-sahil-5',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
-        action: 'completed 100% curriculum of',
-        target: 'Website Development With WordPress',
-        timeAgo: 'Yesterday',
-        type: 'completion'
-    },
-    {
         id: 'act-sahil-6',
         studentId: 'std-375',
         isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
+        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
         action: 'received Grade A+ from Rahul Shende on',
         target: 'PMax Strategy Blueprint Assignment',
         timeAgo: 'Yesterday',
@@ -1254,7 +1223,7 @@ export const INITIAL_ACTIVITIES = [
         id: 'act-sahil-7',
         studentId: 'std-375',
         isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
+        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
         action: 'posted technical question in forums on',
         target: 'Core Web Vitals LCP Latency on WordPress',
         timeAgo: '2 days ago',
@@ -1264,37 +1233,17 @@ export const INITIAL_ACTIVITIES = [
         id: 'act-sahil-8',
         studentId: 'std-375',
         isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
+        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
         action: 'passed examination with 94% on',
         target: 'WordPress Core & Elementor Layout Test',
         timeAgo: '3 days ago',
         type: 'quiz'
     },
     {
-        id: 'act-sahil-9',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
-        action: 'enrolled in',
-        target: 'Social Media Marketing & Meta Ads',
-        timeAgo: '4 days ago',
-        type: 'enrollment'
-    },
-    {
-        id: 'act-sahil-10',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
-        action: 'awarded honor badge for',
-        target: 'Design Innovator & Figma Prototyping',
-        timeAgo: '5 days ago',
-        type: 'certificate'
-    },
-    {
         id: 'act-sahil-11',
         studentId: 'std-375',
         isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
+        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
         action: 'submitted practical capstone on',
         target: 'Meta Ads Campaign Setup & Audience Persona',
         timeAgo: '1 week ago',
@@ -1304,21 +1253,11 @@ export const INITIAL_ACTIVITIES = [
         id: 'act-sahil-12',
         studentId: 'std-375',
         isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: sahilProfilePic, role: 'Student' },
+        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
         action: 'resolved technical doubt on',
         target: 'PMax vs Search Campaigns Budget Allocation',
         timeAgo: '1 week ago',
         type: 'discussion'
-    },
-    {
-        id: 'act-peer-1',
-        studentId: 'std-376',
-        isStudent: true,
-        user: { name: 'Aarav Patel', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80', role: 'Student' },
-        action: 'enrolled in',
-        target: 'Search Engine Optimization (SEO)',
-        timeAgo: '35 min ago',
-        type: 'enrollment'
     },
     {
         id: 'act-peer-2',
@@ -1329,16 +1268,6 @@ export const INITIAL_ACTIVITIES = [
         target: 'WordPress Core & Elementor Layout Test',
         timeAgo: '1 hour ago',
         type: 'quiz'
-    },
-    {
-        id: 'act-peer-3',
-        studentId: 'std-378',
-        isStudent: true,
-        user: { name: 'Rohan Mehta', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80', role: 'Student' },
-        action: 'completed course',
-        target: 'Google Analytics Course',
-        timeAgo: '3 hours ago',
-        type: 'completion'
     },
     {
         id: 'act-peer-4',

@@ -81,12 +81,23 @@ export const ExamLiveRunner = ({
 
         {/* Center: Candidate Identity Chip (Shown on 2xl screens to avoid crowding 1366px-1559px laptops) */}
         <div className="hidden 2xl:flex items-center gap-2 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-2.5 py-1 rounded-xl shrink-0">
-          <div className="w-7 h-8 rounded-lg overflow-hidden border border-slate-300 dark:border-slate-700 shrink-0 bg-white dark:bg-slate-800 p-0.5">
-            <img
-              src={candidateAvatar}
-              alt={candidateName}
-              className="w-full h-full object-cover object-center rounded"
-            />
+          <div className="w-7 h-8 rounded-lg overflow-hidden border border-slate-300 dark:border-slate-700 shrink-0 bg-white dark:bg-slate-800 p-0.5 flex items-center justify-center">
+            {candidateAvatar ? (
+              <img
+                src={candidateAvatar}
+                alt={candidateName}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  if (e.currentTarget.nextElementSibling) {
+                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }
+                }}
+                className="w-full h-full object-cover object-center rounded"
+              />
+            ) : null}
+            <div className={`w-full h-full bg-blue-50 dark:bg-slate-900 rounded flex items-center justify-center text-[10px] font-bold text-blue-600 ${candidateAvatar ? 'hidden' : 'flex'}`}>
+              {candidateName?.charAt(0) || "U"}
+            </div>
           </div>
           <div className="text-xs font-mono leading-tight">
             <span className="font-bold text-slate-900 dark:text-white block truncate max-w-[130px]">

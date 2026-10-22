@@ -1,6 +1,3 @@
-import sahilProfilePic from "../assets/sahil-profile.png";
-import premPhotoImg from "../assets/Prem_Photo.jpg";
-import premPassportPhotoImg from "../assets/Prem_Photo_Passport.png";
 
 /**
  * Operating Media LMS - CRM Integration Service
@@ -49,8 +46,8 @@ export const DEFAULT_CRM_PROFILE = {
   daysLeft: 360,
   facultyLead: "Rahul Shende",
   facultyLeadRole: "Lead Faculty - Borivali Center",
-  photo: sahilProfilePic,
-  avatar: sahilProfilePic,
+  photo: null,
+  avatar: null,
   // Financial Overview matching profile.png (Fees Pending)
   totalFees: 90000,
   regAmount: 5000,
@@ -572,7 +569,7 @@ class CrmService {
               }
               return raw;
             }
-            return sahilProfilePic;
+            return null;
           })(),
           avatar: (() => {
             if (
@@ -592,7 +589,7 @@ class CrmService {
               }
               return raw;
             }
-            return sahilProfilePic;
+            return null;
           })(),
           aadharFront: d.aadhar_card_front || null,
           aadharBack: d.aadhar_card_back || null,
@@ -637,7 +634,7 @@ class CrmService {
             "om_lms_crm_cached_profile",
             JSON.stringify(profile),
           );
-          if (profile.photo && profile.photo !== sahilProfilePic) {
+          if (profile.photo) {
             localStorage.setItem("om_lms_student_avatar", profile.photo);
           }
         } catch (e) {}
@@ -1104,7 +1101,7 @@ class CrmService {
                   batchCode: profile?.batchCode || candidate.course,
                   batchName: profile?.batchName || candidate.course,
                   totalFees: profile?.totalFees || 0,
-                  photo: profile?.photo || sahilProfilePic,
+                  photo: profile?.photo || null,
                   role: "STUDENT",
                   roleLabel: "STUDENT",
                   designation: `${candidate.course || "Digital Marketing"} Student`,
@@ -1148,7 +1145,7 @@ class CrmService {
           batchName:
             profile?.batchName || "Masters in Digital Marketing (WD-M1)",
           totalFees: profile?.totalFees || 90000,
-          photo: profile?.photo || sahilProfilePic,
+          photo: profile?.photo || null,
           role: "STUDENT",
           roleLabel: "STUDENT",
           designation: `${profile?.course || "Masters in Digital Marketing"} Student`,
@@ -1184,7 +1181,7 @@ class CrmService {
           batchName:
             profile?.batchName || "Diploma in Digital Marketing (DDM-A1)",
           totalFees: profile?.totalFees || 45000,
-          photo: profile?.photo || sahilProfilePic,
+          photo: profile?.photo || null,
           role: "STUDENT",
           roleLabel: "STUDENT",
           designation: `${profile?.course || "Diploma in Digital Marketing"} Student`,

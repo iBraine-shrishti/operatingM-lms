@@ -7,6 +7,7 @@ import {
   Info,
   Monitor,
   Wifi,
+  User,
 } from "lucide-react";
 
 /**
@@ -94,12 +95,24 @@ export const ExamBriefingView = ({
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 mt-5">
                   {/* Official Passport Photo Frame */}
                   <div className="flex flex-col items-center shrink-0">
-                    <div className="relative w-28 h-36 sm:w-32 sm:h-40 p-1 bg-white dark:bg-slate-800 rounded-xl border-2 border-slate-300 dark:border-slate-700 shadow-md">
-                      <img
-                        src={candidateAvatar}
-                        alt={candidateName}
-                        className="w-full h-full object-cover object-center rounded-lg"
-                      />
+                    <div className="relative w-28 h-36 sm:w-32 sm:h-40 p-1 bg-white dark:bg-slate-800 rounded-xl border-2 border-slate-300 dark:border-slate-700 shadow-md flex items-center justify-center">
+                      {candidateAvatar ? (
+                        <img
+                          src={candidateAvatar}
+                          alt={candidateName}
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            if (e.currentTarget.nextElementSibling) {
+                              e.currentTarget.nextElementSibling.style.display = 'flex';
+                            }
+                          }}
+                          className="w-full h-full object-cover object-center rounded-lg"
+                        />
+                      ) : null}
+                      <div className={`w-full h-full rounded-lg bg-blue-50 dark:bg-slate-900 flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 ${candidateAvatar ? 'hidden' : 'flex'}`}>
+                        <User size={36} />
+                        <span className="text-[10px] font-bold mt-1 text-slate-500 uppercase">{candidateName?.charAt(0) || "U"}</span>
+                      </div>
                       <span
                         className="absolute top-2 right-2 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-900 shadow-xs ring-2 ring-emerald-400"
                         title="Identity Verified"

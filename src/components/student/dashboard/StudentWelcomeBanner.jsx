@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, MapPin } from "lucide-react";
+import { Calendar, MapPin, User } from "lucide-react";
 import dashboardHeaderBg from "../../../assets/header-bg/dashboard-header.png";
 import dashboardHeaderDarkBg from "../../../assets/header-bg/dashboard-header-dark.png";
-import sahilProfilePic from "../../../assets/sahil-profile.png";
-import sahilCleanAvatar from "../../../assets/sahil-clean-avatar.png";
 
 /**
  * Reusable Welcome Banner for Student Dashboard matching DASHBOARD.png
@@ -31,7 +29,7 @@ export const StudentWelcomeBanner = ({
 
   // Prioritize live backend photo from CRM API before any fallback asset
   const backendPhoto = crmProfile?.photo || crmProfile?.avatar || currentUser?.photo;
-  const avatarSrc = backendPhoto || currentUser?.avatar || sahilProfilePic;
+  const avatarSrc = backendPhoto || currentUser?.avatar || null;
   const headerBgFromBackend = crmProfile?.headerBg || currentUser?.headerBg;
 
   return (
@@ -85,18 +83,35 @@ export const StudentWelcomeBanner = ({
         <div className="relative group">
           {/* Square Photo Container with Very Thin 1px Border and Flush Inner Fit */}
           <div className="relative aspect-square w-[72px] h-[72px] sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 xl:w-36 xl:h-36 2xl:w-40 2xl:h-40 rounded-xl sm:rounded-2xl md:rounded-3xl border border-white/80 dark:border-slate-700/80 shadow-md hover:shadow-xl bg-slate-100 dark:bg-slate-800 p-0 overflow-hidden transition-all duration-300 flex items-center justify-center">
-            <img
-              src={avatarSrc}
-              alt={studentName}
-              loading="eager"
-              decoding="sync"
-              onError={(e) => {
-                if (e.currentTarget.src !== sahilProfilePic) {
-                  e.currentTarget.src = sahilProfilePic;
-                }
-              }}
-              className="w-full h-full object-cover object-center rounded-xl sm:rounded-2xl md:rounded-3xl transition-transform duration-300 group-hover:scale-105"
-            />
+            {avatarSrc ? (
+              <img
+                src={avatarSrc}
+                alt={studentName}
+                loading="eager"
+                decoding="sync"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  if (e.currentTarget.nextElementSibling) {
+                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }
+                }}
+                className="w-full h-full object-cover object-center rounded-xl sm:rounded-2xl md:rounded-3xl transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : null}
+            <div
+              className={`w-full h-full rounded-xl sm:rounded-2xl md:rounded-3xl bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-xl sm:text-2xl md:text-3xl flex items-center justify-center ${
+                avatarSrc ? 'hidden' : 'flex'
+              }`}
+            >
+              {studentName
+                ? studentName
+                    .split(' ')
+                    .map((n) => n[0])
+                    .slice(0, 2)
+                    .join('')
+                    .toUpperCase()
+                : <User size={36} />}
+            </div>
           </div>
 
           {/* Status Indicator Dot (Green with thin white border) */}

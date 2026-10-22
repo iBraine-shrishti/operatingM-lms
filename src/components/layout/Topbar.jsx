@@ -14,11 +14,7 @@ import {
   Moon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import {
-  useAuth,
-  sahilProfilePic,
-  profilePic,
-} from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
   const { isDark, toggleTheme } = useTheme();
@@ -38,11 +34,11 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
 
   const currentAvatar =
     role === "ADMIN"
-      ? currentUser?.avatar || profilePic
+      ? currentUser?.avatar || null
       : currentUser?.avatar ||
         crmProfile?.photo ||
         crmProfile?.avatar ||
-        sahilProfilePic;
+        null;
   return (
     <header className="sticky top-0 z-20 h-16 bg-white dark:bg-[#0b1329] border-b border-slate-200 dark:border-slate-800/90 px-4 md:px-6 flex items-center justify-between shadow-xs transition-colors duration-200">
       {/* Left side: Mobile Toggle & Global Search */}
@@ -204,18 +200,24 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
             className="flex items-center space-x-2 sm:space-x-2.5 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-hidden cursor-pointer"
             aria-label="User Profile Menu"
           >
-            <img
-              src={currentAvatar}
-              alt={currentUser?.name || "User"}
-              onError={(e) => {
-                const fallback =
-                  role === "ADMIN" ? profilePic : sahilProfilePic;
-                if (e.currentTarget.src !== fallback) {
-                  e.currentTarget.src = fallback;
-                }
-              }}
-              className="w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full object-cover ring-2 ring-slate-200/90 dark:ring-slate-700 shadow-2xs shrink-0"
-            />
+            {currentAvatar ? (
+              <img
+                src={currentAvatar}
+                alt={currentUser?.name || "User"}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  if (e.currentTarget.nextElementSibling) {
+                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                  }
+                }}
+                className="w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full object-cover ring-2 ring-slate-200/90 dark:ring-slate-700 shadow-2xs shrink-0"
+              />
+            ) : null}
+            <div
+              className={`w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-xs ring-2 ring-slate-200/90 dark:ring-slate-700 shadow-2xs shrink-0 items-center justify-center ${currentAvatar ? 'hidden' : 'flex'}`}
+            >
+              {currentUser?.name ? currentUser.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() : <User size={16} />}
+            </div>
             <div className="text-left hidden xl:block pr-1">
               <div className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
                 {currentUser.name}
@@ -233,18 +235,24 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#0f172a] rounded-xl shadow-xl border border-slate-200/90 dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2">
               <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center space-x-3">
-                <img
-                  src={currentAvatar}
-                  alt={currentUser?.name || "User"}
-                  onError={(e) => {
-                    const fallback =
-                      role === "ADMIN" ? profilePic : sahilProfilePic;
-                    if (e.currentTarget.src !== fallback) {
-                      e.currentTarget.src = fallback;
-                    }
-                  }}
-                  className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700 shrink-0"
-                />
+                {currentAvatar ? (
+                  <img
+                    src={currentAvatar}
+                    alt={currentUser?.name || "User"}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.nextElementSibling) {
+                        e.currentTarget.nextElementSibling.style.display = 'flex';
+                      }
+                    }}
+                    className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700 shrink-0"
+                  />
+                ) : null}
+                <div
+                  className={`w-10 h-10 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-xs ring-2 ring-slate-200 dark:ring-slate-700 shrink-0 items-center justify-center ${currentAvatar ? 'hidden' : 'flex'}`}
+                >
+                  {currentUser?.name ? currentUser.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() : <User size={18} />}
+                </div>
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
                     {currentUser.name}

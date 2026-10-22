@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { mapStudentDataFromCrm } from "../components/profile";
-import premPassportPhotoImg from "../assets/Prem_Photo_Passport.png";
-import premPhotoImg from "../assets/Prem_Photo.jpg";
 
 import {
   EXAM_TRACKS,
@@ -32,15 +30,10 @@ export const OfficialExamPage = () => {
   const studentData = mapStudentDataFromCrm(crmProfile, currentUser);
 
   // Candidate identity details
-  const candidateName = studentData?.name || currentUser?.name || "Prem Suthar";
+  const candidateName = studentData?.name || currentUser?.name || "Student";
   const rollNumber =
     studentData?.studentId || currentUser?.admissionNo || "OMC-0375";
-  const candidateAvatar =
-    studentData?.avatar && studentData.avatar !== premPhotoImg
-      ? studentData.avatar
-      : currentUser?.avatar && currentUser.avatar !== premPhotoImg
-      ? currentUser.avatar
-      : premPassportPhotoImg;
+  const candidateAvatar = studentData?.avatar || currentUser?.avatar || null;
   const centerNode = `${studentData?.center || "Borivali Center"} • Assessment Node`;
   const sessionHash = "SHA256: 9e887f4c10a30b2e847d91";
 

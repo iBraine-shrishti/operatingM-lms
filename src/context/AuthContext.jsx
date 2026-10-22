@@ -1,14 +1,55 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import boyAvatar from '../assets/Boy.png';
-import girlAvatar from '../assets/Girl.png';
-import profilePic from '../assets/profile-pic.png';
-import sahilProfilePic from '../assets/sahil-profile.png';
-import premPhotoImg from '../assets/Prem_Photo.jpg';
-import premPassportPhotoImg from '../assets/Prem_Photo_Passport.png';
 import { crmService, DEFAULT_CRM_PROFILE, DEFAULT_CRM_ATTENDANCE, DEFAULT_CRM_BATCH, DEFAULT_CRM_CERTIFICATES } from '../services/crmService';
 import { lmsService } from '../services/lmsService';
 
-export { boyAvatar, girlAvatar, profilePic, sahilProfilePic, premPhotoImg, premPassportPhotoImg };
+/**
+ * Filter out any mock/placeholder image references from localStorage or cached objects
+ */
+export const sanitizeMockAvatar = (url) => {
+    if (!url || typeof url !== 'string') return null;
+    const lower = url.toLowerCase();
+    if (
+        lower.includes('boy.png') ||
+        lower.includes('girl.png') ||
+        lower.includes('prem_photo') ||
+        lower.includes('prem_photo_passport') ||
+        lower.includes('profile-pic.png') ||
+        lower.includes('sahil-clean-avatar') ||
+        lower.includes('sahil-profile')
+    ) {
+        return null;
+    }
+    return url;
+};
+
+// Immediate client cache sanitization on app boot
+if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+        const rawAvatar = localStorage.getItem('om_lms_student_avatar');
+        if (rawAvatar && !sanitizeMockAvatar(rawAvatar)) {
+            localStorage.removeItem('om_lms_student_avatar');
+        }
+
+        const cachedProfileStr = localStorage.getItem('om_lms_crm_cached_profile');
+        if (cachedProfileStr) {
+            const parsed = JSON.parse(cachedProfileStr);
+            let modified = false;
+            if (parsed.photo && !sanitizeMockAvatar(parsed.photo)) {
+                parsed.photo = null;
+                modified = true;
+            }
+            if (parsed.avatar && !sanitizeMockAvatar(parsed.avatar)) {
+                parsed.avatar = null;
+                modified = true;
+            }
+            if (modified) {
+                localStorage.setItem('om_lms_crm_cached_profile', JSON.stringify(parsed));
+            }
+        }
+    } catch (e) {
+        console.warn('Cache sanitization error:', e);
+    }
+}
 
 export const ADMIN_USER = {
     id: 'admin-1',
@@ -37,7 +78,7 @@ export const STUDENT_USER = {
     facultyLeadRole: 'Lead Faculty - Borivali Center',
     role: 'STUDENT',
     roleLabel: 'STUDENT',
-    avatar: sahilProfilePic, // Sahil Hasolkar verified photo
+    avatar: null, // Clean default: loaded dynamically from CRM API
     designation: 'Masters in Digital Marketing Student',
     course: 'Masters in Digital Marketing',
     center: 'Borivali Center',
@@ -75,11 +116,14 @@ export const AuthProvider = ({ children }) => {
         const initial = { ...STUDENT_USER };
         try {
             const cachedProfileStr = localStorage.getItem('om_lms_crm_cached_profile');
-            const savedAvatar = localStorage.getItem('om_lms_student_avatar');
+            const savedAvatar = sanitizeMockAvatar(localStorage.getItem('om_lms_student_avatar'));
             if (cachedProfileStr) {
                 const cached = JSON.parse(cachedProfileStr);
-                if (cached?.photo || cached?.avatar) {
-                    initial.avatar = cached.photo || cached.avatar;
+                const validPhoto = sanitizeMockAvatar(cached?.photo || cached?.avatar);
+                if (validPhoto) {
+                    initial.avatar = validPhoto;
+                } else {
+                    initial.avatar = null;
                 }
                 if (cached?.name) initial.name = cached.name;
                 if (cached?.fullName) initial.fullName = cached.fullName;
@@ -88,13 +132,13 @@ export const AuthProvider = ({ children }) => {
                 if (cached?.branch) initial.branch = cached.branch;
                 if (cached?.center) initial.center = cached.center;
                 if (cached?.id) initial.crmAdmissionId = cached.id;
-            } else if (savedAvatar && savedAvatar !== boyAvatar && savedAvatar !== girlAvatar && savedAvatar !== profilePic && savedAvatar !== premPassportPhotoImg && savedAvatar !== premPhotoImg) {
+            } else if (savedAvatar) {
                 initial.avatar = savedAvatar;
             } else {
-                initial.avatar = sahilProfilePic;
+                initial.avatar = null;
             }
         } catch {
-            initial.avatar = sahilProfilePic;
+            initial.avatar = null;
         }
         return initial;
     });
@@ -149,11 +193,13 @@ export const AuthProvider = ({ children }) => {
 
             if (profile) {
                 setCrmProfile(profile);
-                const resolvedAvatar = profile.photo || profile.avatar || sahilProfilePic;
+                const resolvedAvatar = sanitizeMockAvatar(profile.photo || profile.avatar);
                 try {
                     localStorage.setItem('om_lms_crm_cached_profile', JSON.stringify(profile));
-                    if (resolvedAvatar && resolvedAvatar !== sahilProfilePic) {
+                    if (resolvedAvatar) {
                         localStorage.setItem('om_lms_student_avatar', resolvedAvatar);
+                    } else {
+                        localStorage.removeItem('om_lms_student_avatar');
                     }
                 } catch (e) {}
 
@@ -176,7 +222,7 @@ export const AuthProvider = ({ children }) => {
                         facultyLead: currentFacultyLead,
                         facultyLeadRole: currentFacultyRole,
                         designation: `${profile.course || 'Digital Marketing'} Student`,
-                        avatar: resolvedAvatar,
+                        avatar: resolvedAvatar || null,
                         enrolledCoursesCount: activePermittedIds.length
                     };
                 });

@@ -1,5 +1,4 @@
 import { crmService } from "../../services/crmService";
-import sahilProfilePic from "../../assets/sahil-profile.png";
 
 /**
  * Resolves faculty lead based on student batch / branch condition:
@@ -46,7 +45,7 @@ export const mapStudentDataFromCrm = (crm, user) => {
   const fullName =
     source.fullName || user?.fullName || source.name || user?.name || "Sahil Nilesh Hasolkar";
   const rawAvatar = source.photo || source.avatar || user?.avatar;
-  const avatar = rawAvatar || sahilProfilePic;
+  const avatar = rawAvatar || null;
   const course = source.course || user?.course || "Diploma in Digital Marketing";
   const isDiploma = course.toLowerCase().includes("diploma");
   const center =
