@@ -561,7 +561,7 @@ export const AttendanceComparisonChart = ({
     );
   }, [courseStr]);
 
-  const [breakdownMode, setBreakdownMode] = useState("monthly"); // "weekly" | "monthly" | "total"
+  const [breakdownMode, setBreakdownMode] = useState("monthly"); // "weekly" | "monthly"
 
   const realLogs = useMemo(
     () => crmAttendance?.logs || [],
@@ -602,7 +602,6 @@ export const AttendanceComparisonChart = ({
   const chartData = useMemo(() => {
     if (!realLogs || realLogs.length === 0) {
       if (breakdownMode === "weekly") return activeProgram.weeklyData;
-      if (breakdownMode === "total") return activeProgram.totalData;
       return activeProgram.monthlyData;
     }
 
@@ -613,19 +612,6 @@ export const AttendanceComparisonChart = ({
     const firstDate = new Date(sorted[0].raw_date || sorted[0].date);
     const durationMonths = activeProgram.durationMonths || 2;
     const durationWeeks = activeProgram.durationWeeks || 8;
-
-    if (breakdownMode === "total") {
-      return [
-        {
-          period: "Total Program",
-          label: `${activeProgram.durationText} Overall Attendance`,
-          attended: totalAttended,
-          missed: totalMissed,
-          total: totalConducted,
-          rate: overallRate,
-        },
-      ];
-    }
 
     if (breakdownMode === "weekly") {
       const weekMap = {};
@@ -852,17 +838,7 @@ export const AttendanceComparisonChart = ({
           >
             Weekly Analysis ({activeProgram.durationWeeks} Weeks)
           </button>
-          <button
-            type="button"
-            onClick={() => setBreakdownMode("total")}
-            className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer ${
-              breakdownMode === "total"
-                ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs"
-                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-            }`}
-          >
-            Overall Total
-          </button>
+
         </div>
 
         {/* 2-WAY COLOR LEGEND */}
