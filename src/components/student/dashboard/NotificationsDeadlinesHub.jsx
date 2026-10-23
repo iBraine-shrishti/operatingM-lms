@@ -54,10 +54,26 @@ const SEVERITY_CONFIGS = {
     clockColor: "text-amber-500 dark:text-amber-400",
     btnStyle:
       "bg-amber-500 hover:bg-amber-600 text-slate-950 font-black border-amber-500 shadow-[0_2px_8px_rgba(245,158,11,0.3)] dark:shadow-[0_0_12px_rgba(245,158,11,0.4)] group-hover:brightness-110 group-hover:border-amber-400",
-    stripText: "7d LEFT",
+    stripText: "DUE",
     titleHover: "group-hover:text-amber-600 dark:group-hover:text-amber-400",
     icon: CreditCard,
     iconClass: "text-amber-700 dark:text-amber-300 group-hover:scale-125",
+  },
+  payment_overdue: {
+    itemBorderHover: "hover:border-rose-400 dark:hover:border-rose-500/80",
+    itemShadowHover:
+      "hover:shadow-[0_6px_20px_rgba(244,63,94,0.18)] dark:hover:shadow-[0_6px_20px_rgba(244,63,94,0.3)]",
+    stripBg:
+      "bg-rose-50 text-rose-700 border-rose-500 dark:bg-rose-950/80 dark:text-rose-300 dark:border-rose-500",
+    badgeBg:
+      "bg-rose-600 text-white font-black shadow-[0_0_8px_rgba(244,63,94,0.3)]",
+    clockColor: "text-rose-500 dark:text-rose-400",
+    btnStyle:
+      "bg-amber-500 hover:bg-amber-600 text-slate-950 font-black border-amber-500 shadow-[0_2px_8px_rgba(245,158,11,0.3)] dark:shadow-[0_0_12px_rgba(245,158,11,0.4)] group-hover:brightness-110 group-hover:border-amber-400",
+    stripText: "OVERDUE",
+    titleHover: "group-hover:text-rose-600 dark:group-hover:text-rose-400",
+    icon: CreditCard,
+    iconClass: "text-rose-600 dark:text-rose-400 group-hover:scale-125",
   },
   quiz: {
     itemBorderHover: "hover:border-blue-400 dark:hover:border-blue-500/80",
@@ -160,7 +176,7 @@ export const NotificationsDeadlinesHub = ({
       </div>
 
       {/* Listed Notifications */}
-      <div className="flex-1 flex flex-col justify-between gap-1.5 xl:gap-2 2xl:gap-3 my-0.5 2xl:my-1">
+      <div className="flex-1 flex flex-col justify-start gap-2.5 my-1">
         {notifications.map((item) => {
           const cfg = SEVERITY_CONFIGS[item.severity] || SEVERITY_CONFIGS.critical;
           const StripIcon = cfg.icon;
@@ -180,7 +196,7 @@ export const NotificationsDeadlinesHub = ({
                   className={`transition-transform duration-200 2xl:w-4 2xl:h-4 ${cfg.iconClass}`}
                 />
                 <span className="text-[8.5px] 2xl:text-[10px] font-black uppercase tracking-tight leading-none mt-0.5">
-                  {cfg.stripText}
+                  {item.stripText || cfg.stripText}
                 </span>
               </div>
 

@@ -36,8 +36,12 @@ export const PaymentDueModal = ({
     reminderOptions.find((o) => o.days === selectedReminderDays) ||
     reminderOptions[1] || {
       days: 3,
-      date: "Oct 10, 2026",
-      desc: "Recommended (Alerts on Oct 10 • 4 days before due)",
+      date: new Date(Date.now() + 3 * 86400000).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+      desc: "Recommended (Alerts resume in 3 days)",
     };
 
   const handlePay = () => {
@@ -63,9 +67,19 @@ export const PaymentDueModal = ({
             </div>
             <div>
               <h3 className="font-black text-slate-900 dark:text-white text-base sm:text-lg">
-                {paymentInfo.isCleared ? "Fee Summary & Receipts" : "Fee Installment Due"}
+                {paymentInfo.isCleared
+                  ? "Fee Summary & Receipts"
+                  : paymentInfo.isOverdue
+                  ? "Fee Installment Overdue"
+                  : "Fee Installment Due"}
               </h3>
-              <p className="text-xs text-amber-800 dark:text-amber-300 font-semibold">
+              <p
+                className={`text-xs font-semibold ${
+                  paymentInfo.isOverdue
+                    ? "text-rose-600 dark:text-rose-400"
+                    : "text-amber-800 dark:text-amber-300"
+                }`}
+              >
                 {daysRemainingText}
               </p>
             </div>

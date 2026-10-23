@@ -183,6 +183,71 @@ export const studentDashboardService = {
   },
 
   /**
+   * Calculate due days, overdue status and dynamic badge/strip text
+   */
+  calculateDueDetails: (dueDateStr) => {
+    if (!dueDateStr) {
+      return {
+        daysLeft: 0,
+        isOverdue: false,
+        badgeText: "Payment Due",
+        stripText: "DUE",
+        dueDateFormatted: "Upcoming",
+        daysRemainingText: "Payment Installment Due",
+      };
+    }
+
+    const parsed = new Date(dueDateStr);
+    if (isNaN(parsed.getTime())) {
+      return {
+        daysLeft: 0,
+        isOverdue: false,
+        badgeText: "Payment Due",
+        stripText: "DUE",
+        dueDateFormatted: dueDateStr,
+        daysRemainingText: `Due on ${dueDateStr}`,
+      };
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    parsed.setHours(0, 0, 0, 0);
+
+    const diffMs = parsed.getTime() - today.getTime();
+    const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays < 0) {
+      const overdueDays = Math.abs(diffDays);
+      return {
+        daysLeft: diffDays,
+        isOverdue: true,
+        badgeText: overdueDays === 1 ? "1 Day Overdue" : `${overdueDays} Days Overdue`,
+        stripText: "OVERDUE",
+        dueDateFormatted: dueDateStr,
+        daysRemainingText: `${overdueDays} Days Overdue • Due on ${dueDateStr}`,
+      };
+    } else if (diffDays === 0) {
+      return {
+        daysLeft: 0,
+        isOverdue: false,
+        badgeText: "Due Today",
+        stripText: "TODAY",
+        dueDateFormatted: dueDateStr,
+        daysRemainingText: `Due Today • ${dueDateStr}`,
+      };
+    } else {
+      return {
+        daysLeft: diffDays,
+        isOverdue: false,
+        badgeText: diffDays === 1 ? "Due in 1 Day" : `Due in ${diffDays} Days`,
+        stripText: diffDays > 99 ? "DUE" : `${diffDays}d LEFT`,
+        dueDateFormatted: dueDateStr,
+        daysRemainingText: `${diffDays} Days Remaining • Due on ${dueDateStr}`,
+      };
+    }
+  },
+
+  /**
    * Get notifications, dynamically formatted with real student dues and snooze
    */
   getNotifications: (params = {}) => {
@@ -301,40 +366,67 @@ export const studentDashboardService = {
         btnText: "Pay / Change",
       };
     } else {
-      const dueDateStr = crmProfile?.nextDueDate
-        ? `Due on ${crmProfile.nextDueDate}`
-        : "Due in 7 days • Oct 14, 2026";
+      const dueDateRaw = crmProfile?.nextDueDate;
+      const dueDetails = studentDashboardService.calculateDueDetails(dueDateRaw);
+      const dueDateDisplay = dueDateRaw
+        ? `Due on ${dueDateRaw}`
+        : "Pending Installment Notice";
+
       itemPayment = {
         id: "notif-payment",
         type: "payment",
-        title: "Course Fee Installment Due",
+        title: dueDetails.isOverdue
+          ? "Course Fee Installment Overdue"
+          : "Course Fee Installment Due",
         course: `Next Installment • ₹${Number(nextDueAmount).toLocaleString("en-IN")}`,
-        dueDate: dueDateStr,
-        daysLeft: 7,
-        badgeText: "Due in 7 Days",
-        severity: "payment", // Amber styling
+        dueDate: dueDateDisplay,
+        daysLeft: dueDetails.daysLeft,
+        badgeText: dueDetails.badgeText,
+        stripText: dueDetails.stripText,
+        severity: dueDetails.isOverdue ? "payment_overdue" : "payment",
         actionType: "open_payment_modal",
         btnText: "Pay Online",
       };
     }
     notifItems.push(itemPayment);
 
-    // Item: Quiz
-    const itemQuiz = {
-      id: "notif-quiz",
-      type: "quiz",
-      title: "New Quiz: SEO Technical Audit & Schema Assessment",
-      course: courseTitle.includes("Diploma")
-        ? "Diploma in Digital Marketing"
-        : "Search Engine Optimization (SEO)",
-      dueDate: "Live Quiz Available • 15 Questions",
-      daysLeft: 1,
-      badgeText: "Active Quiz",
-      severity: "quiz", // BLUE
-      link: "/my-quizzes",
-      btnText: "Start Quiz",
-    };
-    notifItems.push(itemQuiz);
+    // Item: Quiz - ONLY show if an active quiz exists and student hasn't completed it!
+    const availableQuiz = Array.isArray(quizzes)
+      ? quizzes.find(
+          (q) =>
+            (q.status === "active" || !q.status) &&
+            q.studentStatus !== "completed" &&
+            q.studentStatus !== "passed" &&
+            (q.questionsCount > 0 ||
+              (Array.isArray(q.questions) && q.questions.length > 0))
+        )
+      : null;
+
+    if (availableQuiz) {
+      const qCount =
+        availableQuiz.questionsCount ||
+        (Array.isArray(availableQuiz.questions)
+          ? availableQuiz.questions.length
+          : 15);
+      const itemQuiz = {
+        id: `notif-quiz-${availableQuiz.id || "active"}`,
+        type: "quiz",
+        title: availableQuiz.title || "New Quiz Available",
+        course:
+          availableQuiz.course ||
+          availableQuiz.courseName ||
+          (courseTitle.includes("Diploma")
+            ? "Diploma in Digital Marketing"
+            : courseTitle),
+        dueDate: `Live Quiz Available • ${qCount} Questions`,
+        daysLeft: 1,
+        badgeText: "Active Quiz",
+        severity: "quiz", // BLUE
+        link: `/quiz-player/${availableQuiz.id}`,
+        btnText: "Start Quiz",
+      };
+      notifItems.push(itemQuiz);
+    }
 
     // Item: Exam (8 Certification Tracks Available)
     const itemExam = {
@@ -575,7 +667,36 @@ export const studentDashboardService = {
    * Get reminder snooze duration options
    */
   getReminderOptions: () => {
-    return [...REMINDER_OPTIONS];
+    const today = new Date();
+    return [2, 3, 4, 5].map((days) => {
+      const d = new Date(today);
+      d.setDate(today.getDate() + days);
+      const shortDate = d.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      const fullDate = d.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+      let desc = `Snooze alerts until ${shortDate} (${days} days from today)`;
+      if (days === 3) {
+        desc = `Recommended (Alerts resume on ${shortDate} • 3 days from today)`;
+      } else if (days === 2) {
+        desc = `Short snooze (Alerts resume on ${shortDate} • 2 days from today)`;
+      } else if (days === 5) {
+        desc = `Extended snooze (Alerts resume on ${shortDate} • 5 days from today)`;
+      }
+
+      return {
+        days,
+        label: `${days} Days`,
+        date: fullDate,
+        desc,
+      };
+    });
   },
 
   /**
@@ -607,14 +728,17 @@ export const studentDashboardService = {
       };
     }
 
+    const dueDateRaw = crmProfile?.nextDueDate;
+    const dueDetails = studentDashboardService.calculateDueDetails(dueDateRaw);
+
     return {
       installmentAmount: `₹${Number(nextDueAmount).toLocaleString("en-IN")}`,
       termText: `Pending Balance • ₹${Number(totalPaid).toLocaleString("en-IN")} Paid of ₹${Number(totalFees).toLocaleString("en-IN")}`,
-      dueDateText: crmProfile.nextDueDate || "October 14, 2026",
-      daysRemainingText: crmProfile.nextDueDate
-        ? `Due on ${crmProfile.nextDueDate}`
-        : "7 Days Remaining • Due Oct 14, 2026",
+      dueDateText: dueDateRaw || "Pending Notice",
+      daysRemainingText: dueDetails.daysRemainingText,
       isCleared: false,
+      isOverdue: dueDetails.isOverdue,
+      daysLeft: dueDetails.daysLeft,
     };
   },
 
