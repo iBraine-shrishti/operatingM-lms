@@ -355,6 +355,7 @@ export const LessonPlayerPage = () => {
     status = !currentLesson.isCompleted,
     silent = false,
   ) => {
+    if (Boolean(currentLesson.isCompleted) === Boolean(status)) return;
     const nowIso = new Date().toISOString();
     lmsService.updateUnit(currentLesson.id, {
       isCompleted: status,
@@ -366,7 +367,8 @@ export const LessonPlayerPage = () => {
     if (status) {
       const activeStudentId = studentId || crmProfile?.id || currentUser?.admissionId || currentUser?.id || "";
       lmsService.recordStudentActivity(activeStudentId, {
-        id: `act-unit-${currentLesson.id}-${Date.now()}`,
+        id: `act-unit-${currentLesson.id}`,
+        unitId: currentLesson.id,
         type: "completion",
         action: "completed curriculum lesson",
         target: `${currentLesson.title}${currentCourse?.title ? ` in ${currentCourse.title}` : ""}`,

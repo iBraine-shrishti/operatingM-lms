@@ -89,6 +89,7 @@ export const TakeAssignmentPage = () => {
         file: fileObj,
         linkUrl: submissionLink.trim(),
         notes: submissionNotes.trim(),
+        assignmentTitle: assignment?.title || "",
       });
 
       const updated = await lmsService.fetchStudentBatchAssignments(studentId);
