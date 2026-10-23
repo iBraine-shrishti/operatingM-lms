@@ -4,7 +4,6 @@ import {
   Clock,
   MapPin,
   User,
-  ChevronRight,
   Sparkles,
   BookOpen,
   Video,
@@ -355,30 +354,14 @@ export const SchedulePage = () => {
                             {facultyLead}
                           </strong>
                         </span>
-                        <span>•</span>
-                        <span>
-                          Location:{" "}
-                          <strong className="text-slate-700 dark:text-slate-300">
-                            {isAndheri
-                              ? "Room 302 & Zoom Live Link"
-                              : "Lab 2 & Zoom Hybrid"}
-                          </strong>
-                        </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-3 shrink-0 self-end md:self-auto">
+                  <div className="flex items-center shrink-0 self-end md:self-auto">
                     <span className="text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg shadow-2xs">
                       {session.date_range}
                     </span>
-                    <button
-                      onClick={() => navigate("/enrolled-courses")}
-                      className="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
-                    >
-                      <span>Syllabus</span>
-                      <ChevronRight size={13} />
-                    </button>
                   </div>
                 </div>
               );
