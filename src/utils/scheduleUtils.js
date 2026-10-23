@@ -181,43 +181,34 @@ export function determineActiveSchedule(schedules = [], referenceDate = new Date
 }
 
 /**
- * Generates 7 consecutive days starting from startDate (defaulting to today, e.g. 23 Oct)
+ * Generates 7 working days (Monday to Friday only, excluding weekends/holidays) starting from startDate
  */
-export function generate7DayTimetable(schedules = [], startDate = new Date(), timing = "10:00 AM - 12:00 PM", faculty = "Nilkamal Mukharjee") {
+export function generate7DayTimetable(schedules = [], startDate = new Date(), timing = "10:00 AM - 12:00 PM", faculty = "Nilkamal Mukharjee", count = 7) {
   const rows = [];
-  const start = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0, 0);
+  const curr = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0, 0);
 
-  for (let i = 0; i < 7; i++) {
-    const currDate = new Date(start);
-    currDate.setDate(start.getDate() + i);
+  // Collect only working days (skip Saturday & Sunday)
+  while (rows.length < count) {
+    const dayOfWeek = curr.getDay(); // 0 is Sun, 6 is Sat
+    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+      const dayName = DAY_NAMES[dayOfWeek];
+      const dateFormatted = formatLectureDate(curr);
 
-    const dayName = DAY_NAMES[currDate.getDay()];
-    const dateFormatted = formatLectureDate(currDate);
+      // Look up topic scheduled for this date from the live CRM batch schedule
+      const topic = findTopicForDate(curr, schedules) || "Practical Curriculum Session";
 
-    // Look up topic scheduled for this date
-    let topic = findTopicForDate(currDate, schedules);
-
-    // If not found in scheduled modules:
-    if (!topic) {
-      if (dayName === "Sunday") {
-        topic = "Self-Study & Revision Break";
-      } else if (dayName === "Saturday") {
-        topic = "Practical Project & Doubt Solving Lab";
-      } else {
-        topic = "Curriculum Project & Hands-on Lab";
-      }
+      rows.push({
+        date: dateFormatted,
+        day: dayName,
+        rawDate: new Date(curr),
+        time: timing,
+        topic,
+        faculty,
+        isWeekend: false,
+        actionText: "Enter Room",
+      });
     }
-
-    rows.push({
-      date: dateFormatted,
-      day: dayName,
-      rawDate: currDate,
-      time: timing,
-      topic,
-      faculty,
-      isWeekend: dayName === "Saturday" || dayName === "Sunday",
-      actionText: "Enter Room",
-    });
+    curr.setDate(curr.getDate() + 1);
   }
 
   return rows;
