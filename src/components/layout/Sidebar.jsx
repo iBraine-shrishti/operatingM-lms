@@ -40,14 +40,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const { isStudent, logout, enrolledCoursesCount, assignmentsCount, crmProfile, crmAttendance, crmBatch, currentUser } = useAuth();
   const { isDark } = useTheme();
   const [liveAssignmentsCount, setLiveAssignmentsCount] = useState(assignmentsCount ?? 0);
-  const [liveQuizzesCount, setLiveQuizzesCount] = useState(() => {
-    try {
-      const q = lmsService.getQuizzes();
-      return Array.isArray(q) && q.length > 0 ? q.length : 3;
-    } catch {
-      return 3;
-    }
-  });
+  const [liveQuizzesCount, setLiveQuizzesCount] = useState(0);
   const [liveActivitiesCount, setLiveActivitiesCount] = useState(() => {
     try {
       const studentId = crmService.getSelectedStudentId() || crmProfile?.id || currentUser?.crmAdmissionId;
