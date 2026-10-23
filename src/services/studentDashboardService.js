@@ -164,6 +164,8 @@ export const studentDashboardService = {
       ? options.assignments
       : [];
 
+    let realQuizzes = Array.isArray(options.quizzes) ? options.quizzes : [];
+
     if (studentId) {
       try {
         const batchAssignments =
@@ -174,11 +176,21 @@ export const studentDashboardService = {
       } catch (e) {
         console.warn("Could not fetch real batch assignments:", e);
       }
+
+      try {
+        const studentQuizzes = await lmsService.fetchStudentQuizzes(studentId);
+        if (Array.isArray(studentQuizzes) && studentQuizzes.length > 0) {
+          realQuizzes = studentQuizzes;
+        }
+      } catch (e) {
+        console.warn("Could not fetch real quizzes in dashboard:", e);
+      }
     }
 
     return studentDashboardService.buildDashboardData({
       ...options,
       assignments: realAssignments,
+      quizzes: realQuizzes,
     });
   },
 
@@ -390,31 +402,40 @@ export const studentDashboardService = {
     }
     notifItems.push(itemPayment);
 
-    // Item: Quiz - ONLY show if an active quiz exists and student hasn't completed it!
+    // Item: Quiz - ONLY show if an active quiz exists and student hasn't completed/passed it!
     const availableQuiz = Array.isArray(quizzes)
-      ? quizzes.find(
-          (q) =>
-            (q.status === "active" || !q.status) &&
-            q.studentStatus !== "completed" &&
-            q.studentStatus !== "passed" &&
-            (q.questionsCount > 0 ||
-              (Array.isArray(q.questions) && q.questions.length > 0))
-        )
+      ? quizzes.find((q) => {
+          const isPending =
+            !q.studentStatus ||
+            q.studentStatus === "pending" ||
+            q.studentStatus === "active" ||
+            q.studentStatus === "not_started";
+          const isActive = q.status === "active" || !q.status;
+          return isActive && isPending;
+        })
       : null;
 
     if (availableQuiz) {
       const qCount =
+        availableQuiz.totalQuestions ||
         availableQuiz.questionsCount ||
         (Array.isArray(availableQuiz.questions)
           ? availableQuiz.questions.length
-          : 15);
+          : 20);
+
       const itemQuiz = {
         id: `notif-quiz-${availableQuiz.id || "active"}`,
         type: "quiz",
-        title: availableQuiz.title || "New Quiz Available",
+        title: availableQuiz.title
+          ? (availableQuiz.title.toLowerCase().startsWith("quiz") ||
+             availableQuiz.title.toLowerCase().startsWith("new quiz")
+              ? availableQuiz.title
+              : `New Quiz: ${availableQuiz.title}`)
+          : "New Quiz Available",
         course:
-          availableQuiz.course ||
+          availableQuiz.courseTitle ||
           availableQuiz.courseName ||
+          availableQuiz.course ||
           (courseTitle.includes("Diploma")
             ? "Diploma in Digital Marketing"
             : courseTitle),
@@ -422,7 +443,7 @@ export const studentDashboardService = {
         daysLeft: 1,
         badgeText: "Active Quiz",
         severity: "quiz", // BLUE
-        link: `/quiz-player/${availableQuiz.id}`,
+        link: `/take-quiz/${availableQuiz.id}`,
         btnText: "Start Quiz",
       };
       notifItems.push(itemQuiz);

@@ -383,8 +383,58 @@ export const lmsService = {
   },
   // Quizzes - real quizzes created in CRM and fetched from backend
   getQuizzes: () => {
+    try {
+      const v12 = JSON.parse(localStorage.getItem("om_lms_v12_quizzes") || "null");
+      if (Array.isArray(v12) && v12.length > 0) return v12;
+    } catch {}
     const stored = getStored("quizzes", []);
     return Array.isArray(stored) ? stored : [];
+  },
+  fetchStudentQuizzes: async (studentId) => {
+    try {
+      const baseApi = CRM_BACKEND_API || "https://crm.dmsoi.org/api";
+      const targetId = studentId || crmService.getSelectedStudentId() || "";
+      const res = await fetch(`${baseApi}/lms/student/quizzes/${targetId ? `?student_id=${targetId}` : ""}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && Array.isArray(data.quizzes)) {
+          let attemptsCache = {};
+          try {
+            const cacheKey = targetId ? `om_lms_quiz_attempts_cache_${targetId}` : "om_lms_quiz_attempts_cache";
+            attemptsCache = JSON.parse(localStorage.getItem(cacheKey) || localStorage.getItem("om_lms_quiz_attempts_cache") || "{}");
+          } catch {}
+
+          const formatted = data.quizzes.map((q) => {
+            const localAtt = attemptsCache[String(q.id)] || attemptsCache[String(q.numericId)];
+            const status = (q.studentStatus && q.studentStatus !== "pending")
+              ? q.studentStatus
+              : (localAtt?.status || q.studentStatus || "pending");
+            const score = (q.studentScore !== null && q.studentScore !== undefined)
+              ? q.studentScore
+              : (localAtt?.score ?? null);
+            const completedDate = q.completedDate || localAtt?.completedDate || null;
+            const timeSpent = q.timeSpent || localAtt?.timeSpent || null;
+            const totalQuestions = q.totalQuestions || q.questionsCount || (Array.isArray(q.questions) ? q.questions.length : 0);
+
+            return {
+              ...q,
+              studentStatus: status,
+              studentScore: score,
+              completedDate,
+              timeSpent,
+              totalQuestions,
+              questionsCount: totalQuestions,
+            };
+          });
+          setStored("quizzes", formatted);
+          localStorage.setItem("om_lms_v12_quizzes", JSON.stringify(formatted));
+          return formatted;
+        }
+      }
+    } catch (err) {
+      console.warn("Could not fetch backend quizzes:", err);
+    }
+    return lmsService.getQuizzes();
   },
   addQuiz: (quiz) => {
     const quizzes = lmsService.getQuizzes();

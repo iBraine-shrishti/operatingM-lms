@@ -18,7 +18,7 @@ export const DashboardPage = () => {
   } = useAuth();
 
   const courses = lmsService.getCourses();
-  const quizzes = lmsService.getQuizzes();
+  const [quizzes, setQuizzes] = useState(() => lmsService.getQuizzes());
   const achievements = lmsService.getAchievements().filter(a => a.unlocked);
   const [assignments, setAssignments] = useState([]);
 
@@ -41,6 +41,17 @@ export const DashboardPage = () => {
         .catch((err) => {
           console.warn("Could not load student batch assignments:", err);
           if (isMounted) setAssignments([]);
+        });
+
+      lmsService
+        .fetchStudentQuizzes(studentId)
+        .then((data) => {
+          if (isMounted && Array.isArray(data)) {
+            setQuizzes(data);
+          }
+        })
+        .catch((err) => {
+          console.warn("Could not load student quizzes:", err);
         });
     } else {
       setAssignments([]);
