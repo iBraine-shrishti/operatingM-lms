@@ -511,10 +511,9 @@ class CrmService {
           branch: d.branch ? `${d.branch} Center` : "Andheri Center",
           center: d.branch ? `${d.branch} Center` : "Andheri Center",
           course: d.course || "Diploma in Digital Marketing",
-          batchName: d.course
-            ? `${d.course} (${isDiploma ? "DDM-A1" : "WD-M1"})`
-            : "Weekday Batch",
-          batchCode: isDiploma ? "DDM-A1" : "WD-M1",
+          batchName: d.batch_name || d.batch || null,
+          batchCode: d.batch_code || null,
+          batchTiming: d.batch_timing || d.timing || null,
           joiningDate: d.submission_time || "2026-03-09",
           admissionDate: admissionDateStr,
           registrationDate: registrationDateStr,
@@ -797,8 +796,16 @@ class CrmService {
 
         const standing = this.getAttendanceStanding(pct);
 
+        const normalBatches = d.training_chart?.normal_batches || [];
+        const masterBatches = d.training_chart?.master_batches || [];
+        const enrolledBatches = Array.from(new Set([...normalBatches, ...masterBatches].filter(Boolean)));
+        const hasEnrolledBatch = enrolledBatches.length > 0;
+
         const attendance = {
           studentId: d.student_id || studentId,
+          enrolledBatches,
+          hasEnrolledBatch,
+          primaryBatchName: enrolledBatches[0] || null,
           studentName: d.student_name || "Student",
           course:
             d.course !== "N/A" && d.course
