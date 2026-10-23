@@ -5,12 +5,10 @@ import {
   MapPin,
   User,
   ChevronRight,
-  ChevronLeft,
   Sparkles,
   BookOpen,
   Video,
   ArrowRight,
-  RefreshCw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -47,7 +45,6 @@ export const SchedulePage = () => {
   const navigate = useNavigate();
   const { crmProfile, crmBatch, isAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState("timetable"); // 1st default view: 7-Day Timetable
-  const [dayOffset, setDayOffset] = useState(0); // Offset in days from today, stepping by 7
   const [scheduleData, setScheduleData] = useState({
     loading: true,
     schedules: [],
@@ -99,14 +96,16 @@ export const SchedulePage = () => {
     };
   }, [rawBranch, studentTiming, facultyLead, branchDisplayName, facultyLeadRole]);
 
-  // Window starts from Today (23 Oct 2026) + dayOffset
-  const windowStartDate = new Date();
-  windowStartDate.setDate(windowStartDate.getDate() + dayOffset);
+  // Always starts dynamically from Today (e.g. 23 Oct 2026; tomorrow after 12:00 AM it will automatically start from 24 Oct)
+  const today = new Date();
+  const windowStartDate = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate(),
+    0, 0, 0, 0
+  );
 
-  const windowEndDate = new Date(windowStartDate);
-  windowEndDate.setDate(windowStartDate.getDate() + 6);
-
-  // Generate 7-day lecture rows starting from windowStartDate
+  // Generate 7-day lecture rows starting from today
   const timetableRows = generate7DayTimetable(
     scheduleData.schedules,
     windowStartDate,
@@ -386,60 +385,8 @@ export const SchedulePage = () => {
             })}
           </div>
         ) : (
-          <div className="space-y-4">
-            {/* 7-Day Navigation Bar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70 dark:bg-slate-900/40 p-3 rounded-xl border border-slate-200/70 dark:border-slate-800">
-              <div className="flex items-center space-x-2">
-                <Calendar size={15} className="text-blue-600 dark:text-blue-400 shrink-0" />
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                  Showing 7 Days:{" "}
-                  <strong className="text-slate-900 dark:text-white">
-                    {formatLectureDate(windowStartDate)} – {formatLectureDate(windowEndDate)}
-                  </strong>
-                </span>
-                {dayOffset === 0 && (
-                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 px-2 py-0.5 rounded-md">
-                    Starts Today
-                  </span>
-                )}
-              </div>
-
-              <div className="flex items-center space-x-2 self-end sm:self-auto">
-                <button
-                  type="button"
-                  onClick={() => setDayOffset((prev) => prev - 7)}
-                  className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 transition-colors flex items-center space-x-1 cursor-pointer"
-                  title="Previous 7 Days"
-                >
-                  <ChevronLeft size={13} />
-                  <span>Prev 7 Days</span>
-                </button>
-
-                {dayOffset !== 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setDayOffset(0)}
-                    className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800 transition-colors flex items-center space-x-1 cursor-pointer"
-                  >
-                    <RefreshCw size={11} />
-                    <span>Reset to Today</span>
-                  </button>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => setDayOffset((prev) => prev + 7)}
-                  className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 transition-colors flex items-center space-x-1 cursor-pointer"
-                  title="Next 7 Days"
-                >
-                  <span>Next 7 Days</span>
-                  <ChevronRight size={13} />
-                </button>
-              </div>
-            </div>
-
-            {/* Table Container */}
-            <div className="overflow-x-auto rounded-xl border border-slate-300/80 dark:border-slate-800 shadow-xs">
+          /* Table Container */
+          <div className="overflow-x-auto rounded-xl border border-slate-300/80 dark:border-slate-800 shadow-xs">
               <table className="w-full text-center text-xs border-collapse">
                 {/* Attribute Background Header */}
                 <thead className="bg-[#1e293b] dark:bg-slate-950 text-white">
@@ -533,7 +480,6 @@ export const SchedulePage = () => {
                 </tbody>
               </table>
             </div>
-          </div>
         )}
       </div>
     </div>
