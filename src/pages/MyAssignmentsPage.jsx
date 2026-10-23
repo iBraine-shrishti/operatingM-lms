@@ -166,6 +166,7 @@ export const MyAssignmentsPage = () => {
         file: fileObj,
         linkUrl: submissionLink.trim(),
         notes: submissionNotes.trim(),
+        assignmentTitle: activeAssignment?.title || "",
       });
 
       await loadAssignments();

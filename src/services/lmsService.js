@@ -629,7 +629,7 @@ export const lmsService = {
     return [];
   },
 
-  submitStudentBatchAssignment: async (assignmentId, studentId, { file, linkUrl = "", notes = "" }) => {
+  submitStudentBatchAssignment: async (assignmentId, studentId, { file, linkUrl = "", notes = "", assignmentTitle = "" }) => {
     const nowIso = new Date().toISOString();
 
     // Persist local submission cache for this student
@@ -1121,16 +1121,39 @@ export const lmsService = {
       const now = new Date();
       const diffMs = now.getTime() - date.getTime();
       if (diffMs < 0) return "Just now";
+
+      const isDateOnly = typeof dateInput === "string" && !dateInput.includes(":") && !dateInput.includes("T");
+      const isSameDay =
+        date.getDate() === now.getDate() &&
+        date.getMonth() === now.getMonth() &&
+        date.getFullYear() === now.getFullYear();
+
+      if (isSameDay) {
+        if (isDateOnly) return "Today";
+        const diffSec = Math.floor(diffMs / 1000);
+        const diffMin = Math.floor(diffSec / 60);
+        const diffHour = Math.floor(diffMin / 60);
+        if (diffMin < 1) return "Just now";
+        if (diffMin < 60) return `${diffMin} min ago`;
+        if (diffHour === 1) return "1 hour ago";
+        if (diffHour < 24) return `${diffHour} hours ago`;
+        return "Today";
+      }
+
+      const yesterday = new Date(now);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const isYesterday =
+        date.getDate() === yesterday.getDate() &&
+        date.getMonth() === yesterday.getMonth() &&
+        date.getFullYear() === yesterday.getFullYear();
+
+      if (isYesterday) return "Yesterday";
+
       const diffSec = Math.floor(diffMs / 1000);
       const diffMin = Math.floor(diffSec / 60);
       const diffHour = Math.floor(diffMin / 60);
       const diffDay = Math.floor(diffHour / 24);
 
-      if (diffMin < 1) return "Just now";
-      if (diffMin < 60) return `${diffMin} min ago`;
-      if (diffHour === 1) return "1 hour ago";
-      if (diffHour < 24) return `${diffHour} hours ago`;
-      if (diffDay === 1) return "Yesterday";
       if (diffDay < 7) return `${diffDay} days ago`;
       if (diffDay < 30) {
         const weeks = Math.floor(diffDay / 7);
@@ -1166,7 +1189,14 @@ export const lmsService = {
       details: activity.details || null,
     };
 
-    const updated = [newActivity, ...existing.filter((a) => a.id !== newActivity.id)].slice(0, 100);
+    // Deduplicate by target and type before saving
+    const filteredExisting = existing.filter((a) => {
+      if (newActivity.id && a.id === newActivity.id) return false;
+      if (newActivity.target && a.target === newActivity.target && a.type === newActivity.type) return false;
+      return true;
+    });
+
+    const updated = [newActivity, ...filteredExisting].slice(0, 100);
     try {
       localStorage.setItem(storageKey, JSON.stringify(updated));
       if (typeof window !== "undefined") {
@@ -1193,7 +1223,8 @@ export const lmsService = {
     const studentAvatar = currentUser?.avatar || crmProfile?.photo || null;
 
     const activities = [];
-    const seenKeys = new Set();
+    // Deduplication tracker by semantic event key
+    const seenEventKeys = new Set();
 
     // 1. Explicitly recorded real activities in localStorage for this student
     try {
@@ -1201,16 +1232,28 @@ export const lmsService = {
       const recorded = JSON.parse(localStorage.getItem(storageKey) || "[]");
       if (Array.isArray(recorded)) {
         recorded.forEach((act) => {
-          if (act && act.id && !seenKeys.has(act.id)) {
-            // Filter out any obsolete mock entries
-            if (act.target?.includes("Google Ads Campaign Setup & Quality Score Exam") ||
-                act.target?.includes("Live Client SEO Audit & Keyword Strategy") ||
-                act.target?.includes("PMax Strategy Blueprint Assignment") ||
-                act.target?.includes("Career Roadmap & Goal Setting Worksheet") ||
-                act.target?.includes("Google Analytics 4 Tracking Implementation")) {
-              return;
-            }
-            seenKeys.add(act.id);
+          if (!act || !act.target) return;
+          // Discard mock placeholders or generic titles
+          if (act.target.includes("Practical Project Assignment") ||
+              act.target.includes("Google Ads Campaign Setup & Quality Score Exam") ||
+              act.target.includes("Live Client SEO Audit & Keyword Strategy") ||
+              act.target.includes("PMax Strategy Blueprint Assignment") ||
+              act.target.includes("Career Roadmap & Goal Setting Worksheet") ||
+              act.target.includes("Google Analytics 4 Tracking Implementation")) {
+            return;
+          }
+
+          let eventKey = act.id;
+          if (act.type === "quiz") {
+            eventKey = `quiz-${act.quizId || act.target}`;
+          } else if (act.type === "assignment" || act.type === "grading") {
+            eventKey = `assign-${act.assignmentId || act.target}`;
+          } else if (act.type === "completion") {
+            eventKey = `unit-${act.unitId || act.target}`;
+          }
+
+          if (!seenEventKeys.has(eventKey)) {
+            seenEventKeys.add(eventKey);
             activities.push({
               ...act,
               user: act.user || {
@@ -1232,7 +1275,6 @@ export const lmsService = {
       attemptsCache = JSON.parse(localStorage.getItem(cacheKey) || "{}");
     } catch {}
 
-    // Only process real quizzes from backend fetchStudentQuizzes or in this student's attemptsCache
     const candidateQuizzes = Array.isArray(quizzes)
       ? quizzes.filter((q) => q.numericId || attemptsCache[String(q.id)] || attemptsCache[String(q.numericId)])
       : [];
@@ -1246,17 +1288,19 @@ export const lmsService = {
       } : null);
 
       if (attempt && (attempt.status === "passed" || attempt.status === "failed" || (attempt.score !== null && attempt.score !== undefined))) {
-        const actId = `act-quiz-${qKey}`;
-        if (!seenKeys.has(actId)) {
-          seenKeys.add(actId);
+        const eventKey = `quiz-${q.title || qKey}`;
+        if (!seenEventKeys.has(eventKey)) {
+          seenEventKeys.add(eventKey);
           const isPassed = attempt.status === "passed" || (attempt.score >= (q.passScorePercentage || 75));
           const scoreStr = attempt.score !== null && attempt.score !== undefined ? `${attempt.score}%` : "Passed";
-          const parsedTime = attempt.completedDate ? new Date(attempt.completedDate).toISOString() : new Date().toISOString();
+          const timeInput = attempt.completedAtIso || attempt.completedDate;
+          const parsedTime = attempt.completedAtIso || (attempt.completedDate ? new Date(attempt.completedDate).toISOString() : new Date().toISOString());
           activities.push({
-            id: actId,
+            id: `act-quiz-${qKey}`,
+            quizId: qKey,
             studentId: targetId,
             timestamp: parsedTime,
-            timeAgo: lmsService.formatRelativeTime(attempt.completedDate || parsedTime),
+            timeAgo: lmsService.formatRelativeTime(timeInput || parsedTime),
             type: "quiz",
             action: isPassed ? `passed examination with ${scoreStr} on` : `completed assessment with ${scoreStr} on`,
             target: q.title || "Assessment Quiz",
@@ -1271,9 +1315,7 @@ export const lmsService = {
       }
     });
 
-    // 3. Real Assignment Submissions
-    // ONLY assignments from the backend batch API or student's own submissions.
-    // NEVER inspect or fallback to mockData template assignments!
+    // 3. Real Assignment Submissions & Gradings
     let submissionsCache = {};
     try {
       const subKey = targetId ? `om_lms_assignment_submissions_${targetId}` : "om_lms_assignment_submissions";
@@ -1284,40 +1326,41 @@ export const lmsService = {
       ? assignments.filter((a) => a.batchId || submissionsCache[String(a.id)])
       : [];
 
-    // Also include any assignment that exists in submissionsCache
-    const seenBatchIds = new Set(realBatchAssignments.map((a) => String(a.id)));
-    Object.keys(submissionsCache).forEach((subId) => {
-      if (!seenBatchIds.has(String(subId))) {
-        realBatchAssignments.push({
-          id: subId,
-          title: submissionsCache[subId].title || "Practical Project Assignment",
-          status: "submitted",
-          submittedAt: submissionsCache[subId].submittedAt,
-        });
-      }
-    });
-
     realBatchAssignments.forEach((a) => {
       const aKey = String(a.id);
       const cachedSub = submissionsCache[aKey];
-      const isRealSub = Boolean(cachedSub) || (a.batchId && (a.status === "submitted" || a.status === "graded"));
+      const isRealSub = Boolean(cachedSub) || (a.batchId && (a.status === "submitted" || a.status === "graded" || a.status === "approved"));
 
       if (isRealSub) {
-        const isGraded = a.status === "graded" || Boolean(a.score);
-        const actId = `act-assign-${a.id}`;
-        if (!seenKeys.has(actId)) {
-          seenKeys.add(actId);
-          const subDate = cachedSub?.submittedAt || a.submittedAt || a.submittedAtIso;
+        const isGraded = a.status === "graded" || a.status === "approved" || Boolean(a.score) || Boolean(a.gradedAt);
+        const eventKey = `assign-${a.title || aKey}`;
+        if (!seenEventKeys.has(eventKey)) {
+          seenEventKeys.add(eventKey);
+          const subDate = a.gradedAt || cachedSub?.submittedAt || a.submittedAt || a.submittedAtIso;
           const parsedTime = subDate ? new Date(subDate).toISOString() : new Date().toISOString();
+
+          let actionStr = "submitted practical assignment for";
+          if (isGraded) {
+            if (a.score !== null && a.score !== undefined) {
+              actionStr = `received Grade ${a.score}% on`;
+            } else if (a.status === "approved") {
+              actionStr = a.feedback ? `received approved evaluation ("${a.feedback}") on` : "received evaluation & approved on";
+            } else {
+              actionStr = "received Grade / evaluation on";
+            }
+          }
+
           activities.push({
-            id: actId,
+            id: `act-assign-${a.id}`,
+            assignmentId: a.id,
             studentId: targetId,
             timestamp: parsedTime,
             timeAgo: lmsService.formatRelativeTime(subDate || parsedTime),
             type: isGraded ? "grading" : "assignment",
-            action: isGraded ? `received Grade ${a.score ? a.score + '%' : 'A+'} on` : `submitted practical assignment for`,
+            action: actionStr,
             target: a.title || "Practical Assignment",
             score: a.score,
+            feedback: a.feedback,
             user: {
               name: studentName,
               avatar: studentAvatar,
@@ -1329,7 +1372,6 @@ export const lmsService = {
     });
 
     // 4. Completed Units / Curriculum Lessons
-    // Only units where the student explicitly marked them completed with a valid completedAt date
     const units = lmsService.getUnits();
     const courseTitleMap = {};
     (courses && courses.length > 0 ? courses : lmsService.getCourses()).forEach((c) => {
@@ -1338,19 +1380,21 @@ export const lmsService = {
 
     units.forEach((u) => {
       if (u.isCompleted && u.completedAt) {
-        const actId = `act-unit-${u.id}`;
-        if (!seenKeys.has(actId)) {
-          seenKeys.add(actId);
-          const courseName = courseTitleMap[u.courseId] || "Course Curriculum";
+        const courseName = courseTitleMap[u.courseId] || "Course Curriculum";
+        const fullTarget = `${u.title} in ${courseName}`;
+        const eventKey = `unit-${fullTarget}`;
+        if (!seenEventKeys.has(eventKey)) {
+          seenEventKeys.add(eventKey);
           const parsedTime = new Date(u.completedAt).toISOString();
           activities.push({
-            id: actId,
+            id: `act-unit-${u.id}`,
+            unitId: u.id,
             studentId: targetId,
             timestamp: parsedTime,
             timeAgo: lmsService.formatRelativeTime(u.completedAt),
             type: "completion",
             action: "completed curriculum lesson",
-            target: `${u.title} in ${courseName}`,
+            target: fullTarget,
             user: {
               name: studentName,
               avatar: studentAvatar,
@@ -1362,7 +1406,6 @@ export const lmsService = {
     });
 
     // 5. Attended CRM Lectures (Real present sessions from CRM database)
-    // Guard against mock Sahil Hasolkar fallback attendance
     const isRealStudentAttendance =
       crmAttendance &&
       Array.isArray(crmAttendance.logs) &&
@@ -1374,18 +1417,19 @@ export const lmsService = {
       const batchName = crmBatch?.name || crmProfile?.batch || "Classroom Session";
       crmAttendance.logs.forEach((log, idx) => {
         if (log.status === "PRESENT") {
-          const actId = `act-att-${log.id || log.lecture_id || log.date || idx}`;
-          if (!seenKeys.has(actId)) {
-            seenKeys.add(actId);
+          const targetStr = `${log.topic || log.lecture_name || 'Class Session'} (${log.batch_name || batchName})`;
+          const eventKey = `lecture-${log.date}-${targetStr}`;
+          if (!seenEventKeys.has(eventKey)) {
+            seenEventKeys.add(eventKey);
             const parsedTime = log.date ? new Date(log.date).toISOString() : new Date().toISOString();
             activities.push({
-              id: actId,
+              id: `act-att-${log.id || log.lecture_id || log.date || idx}`,
               studentId: targetId,
               timestamp: parsedTime,
               timeAgo: lmsService.formatRelativeTime(log.date || parsedTime),
               type: "lecture",
               action: "attended live classroom session on",
-              target: `${log.topic || log.lecture_name || 'Class Session'} (${log.batch_name || batchName})`,
+              target: targetStr,
               user: {
                 name: studentName,
                 avatar: studentAvatar,
@@ -1398,7 +1442,6 @@ export const lmsService = {
     }
 
     // 6. Program Enrollment Milestone
-    // Guard against mock Sahil Hasolkar fallback profile
     const isRealProfile =
       crmProfile &&
       (crmProfile.name !== "Sahil Hasolkar" || studentName.toLowerCase().includes("sahil")) &&
@@ -1406,12 +1449,12 @@ export const lmsService = {
 
     if (isRealProfile) {
       const enrollDate = crmProfile.registrationDate || crmProfile.joiningDate;
-      const actId = `act-enroll-${targetId || 'student'}`;
-      if (!seenKeys.has(actId)) {
-        seenKeys.add(actId);
+      const eventKey = `enroll-${targetId || 'student'}`;
+      if (!seenEventKeys.has(eventKey)) {
+        seenEventKeys.add(eventKey);
         const parsedTime = new Date(enrollDate).toISOString();
         activities.push({
-          id: actId,
+          id: `act-enroll-${targetId || 'student'}`,
           studentId: targetId,
           timestamp: parsedTime,
           timeAgo: lmsService.formatRelativeTime(enrollDate),
