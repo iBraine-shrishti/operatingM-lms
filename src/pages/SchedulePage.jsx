@@ -8,6 +8,7 @@ import {
   BookOpen,
   Video,
   ArrowRight,
+  Lock,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -243,11 +244,13 @@ export const SchedulePage = () => {
               {activeTopicDates}
             </span>
             <button
-              onClick={() => navigate("/lesson-player?courseId=course-8")}
-              className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all shadow-xs flex items-center space-x-1 cursor-pointer"
+              type="button"
+              disabled
+              className="bg-slate-100 dark:bg-slate-800 border border-slate-200/90 dark:border-slate-700 text-slate-400 dark:text-slate-500 text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all shadow-2xs flex items-center space-x-1.5 cursor-not-allowed select-none"
+              title="Lecture access is currently blocked"
             >
+              <Lock size={13} className="text-slate-400 dark:text-slate-500 shrink-0" />
               <span>Join Lecture</span>
-              <Video size={13} />
             </button>
           </div>
         </div>
@@ -450,13 +453,13 @@ export const SchedulePage = () => {
                         {/* Action Button, Centered */}
                         <td className="py-4 px-4 text-center whitespace-nowrap">
                           <button
-                            onClick={() =>
-                              navigate("/lesson-player?courseId=course-8")
-                            }
-                            className="inline-flex items-center justify-center gap-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-2xs transition-all cursor-pointer active:scale-95"
+                            type="button"
+                            disabled
+                            className="inline-flex items-center justify-center gap-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-2xs transition-all cursor-not-allowed select-none"
+                            title="Lecture access is currently blocked"
                           >
+                            <Lock size={12} className="shrink-0" />
                             <span>Enter Room</span>
-                            <ArrowRight size={12} />
                           </button>
                         </td>
                       </tr>
