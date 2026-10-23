@@ -1,23 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Calendar,
   Clock,
   MapPin,
   User,
   ChevronRight,
-  CheckCircle2,
+  ChevronLeft,
   Sparkles,
   BookOpen,
   Video,
-  ExternalLink,
-  Filter,
-  Layers,
   ArrowRight,
+  RefreshCw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
 import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
+import {
+  fetchLiveBatchSchedules,
+  generate7DayTimetable,
+  formatLectureDate,
+} from "../utils/scheduleUtils";
 
 const getDayBadgeClass = (day = "") => {
   switch (day.toLowerCase()) {
@@ -31,6 +34,10 @@ const getDayBadgeClass = (day = "") => {
       return "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200/90 dark:border-amber-800/60";
     case "friday":
       return "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border-rose-200/90 dark:border-rose-800/60";
+    case "saturday":
+      return "bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border-indigo-200/90 dark:border-indigo-800/60";
+    case "sunday":
+      return "bg-teal-100 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 border-teal-200/90 dark:border-teal-800/60";
     default:
       return "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700";
   }
@@ -39,97 +46,78 @@ const getDayBadgeClass = (day = "") => {
 export const SchedulePage = () => {
   const navigate = useNavigate();
   const { crmProfile, crmBatch, isAdmin } = useAuth();
-  const [activeTab, setActiveTab] = useState("timetable"); // 1st default view: Weekly Timetable
+  const [activeTab, setActiveTab] = useState("timetable"); // 1st default view: 7-Day Timetable
+  const [dayOffset, setDayOffset] = useState(0); // Offset in days from today, stepping by 7
+  const [scheduleData, setScheduleData] = useState({
+    loading: true,
+    schedules: [],
+    activeModule: null,
+    branch: "Andheri Center",
+    faculty: "Nilkamal Mukharjee",
+    facultyRole: "Lead Faculty - Andheri Center",
+    timing: "10:00 AM - 12:00 PM",
+  });
 
-  const upcomingSessions = [
-    {
-      id: "01",
-      title: "Data Science & Analytics Foundations",
-      dates: "22 Apr 2026 - 24 Apr 2026",
-      timing: "9:00 AM - 10:00 AM",
-      faculty: "Rahul Shende (Lead Faculty)",
-      status: "In Session",
-      isLive: true,
-      room: "Lab 2 & Zoom Hybrid",
-      batch: "Masters Weekday Morning",
-    },
-    {
-      id: "02",
-      title: "Social Media Marketing & Meta Ads Strategy",
-      dates: "3 Mar 2026 - 19 Mar 2026",
-      timing: "9:00 AM - 10:00 AM",
-      faculty: "Nishi Solanki",
-      status: "Upcoming",
-      isLive: false,
-      room: "Room 104",
-      batch: "Masters Weekday Morning",
-    },
-    {
-      id: "03",
-      title: "Website Development with WordPress & CMS Customization",
-      dates: "04 Mar 2026 - 12 Mar 2026",
-      timing: "9:00 AM - 10:00 AM",
-      faculty: "Darshan Deorukhkar",
-      status: "Upcoming",
-      isLive: false,
-      room: "Lab 1",
-      batch: "Masters Weekday Morning",
-    },
-    {
-      id: "04",
-      title: "Google Ads (PPC) Campaign Planning & ROAS Optimization",
-      dates: "16 Mar 2026 - 28 Mar 2026",
-      timing: "9:00 AM - 10:00 AM",
-      faculty: "Rahul Shende",
-      status: "Upcoming",
-      isLive: false,
-      room: "Main Conference",
-      batch: "Masters Weekday Morning",
-    },
-  ];
+  // Extract student details dynamically
+  const rawBranch = crmProfile?.branch || crmBatch?.branch || "Andheri Center";
+  const isAndheri = rawBranch.toLowerCase().includes("andheri");
+  const branchDisplayName = isAndheri ? "Andheri Center" : "Borivali Center";
+  const facultyLead = isAndheri ? "Nilkamal Mukharjee" : "Rahul Shende";
+  const facultyLeadRole = isAndheri
+    ? "Lead Faculty - Andheri Center"
+    : "Lead Faculty - Borivali Center";
+  const studentTiming =
+    crmProfile?.batchTiming ||
+    crmProfile?.timing ||
+    crmBatch?.timing ||
+    "10:00 AM - 12:00 PM";
 
-  const weeklySchedule = [
-    {
-      date: "20 Apr 2026",
-      day: "Monday",
-      time: "9:00 AM - 10:00 AM",
-      topic: "Technical SEO Audits & Core Web Vitals",
-      faculty: "Rahul Shende",
-      type: "Lecture + Lab",
-    },
-    {
-      date: "21 Apr 2026",
-      day: "Tuesday",
-      time: "9:00 AM - 10:00 AM",
-      topic: "Schema Markup & Rich Snippets Hands-on",
-      faculty: "Rahul Shende",
-      type: "Live Workshop",
-    },
-    {
-      date: "22 Apr 2026",
-      day: "Wednesday",
-      time: "9:00 AM - 10:00 AM",
-      topic: "Robots.txt, XML Sitemaps & Canonicalization",
-      faculty: "Rahul Shende",
-      type: "Theory & Case Study",
-    },
-    {
-      date: "23 Apr 2026",
-      day: "Thursday",
-      time: "9:00 AM - 10:00 AM",
-      topic: "Google Search Console Advanced Diagnostics",
-      faculty: "Rahul Shende",
-      type: "Lab Session",
-    },
-    {
-      date: "24 Apr 2026",
-      day: "Friday",
-      time: "9:00 AM - 10:00 AM",
-      topic: "Weekly Q&A, Doubt Solving & Project Review",
-      faculty: "Rahul Shende & Nishi",
-      type: "Interactive Review",
-    },
-  ];
+  // Fetch live batch schedule from CRM API on mount and whenever student batch/branch changes
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadSchedule() {
+      setScheduleData((prev) => ({ ...prev, loading: true }));
+      const res = await fetchLiveBatchSchedules(rawBranch, studentTiming);
+      if (isMounted) {
+        setScheduleData({
+          loading: false,
+          schedules: res.schedules || [],
+          activeModule: res.activeModule,
+          branch: branchDisplayName,
+          faculty: facultyLead,
+          facultyRole: facultyLeadRole,
+          timing: studentTiming,
+        });
+      }
+    }
+
+    loadSchedule();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [rawBranch, studentTiming, facultyLead, branchDisplayName, facultyLeadRole]);
+
+  // Window starts from Today (23 Oct 2026) + dayOffset
+  const windowStartDate = new Date();
+  windowStartDate.setDate(windowStartDate.getDate() + dayOffset);
+
+  const windowEndDate = new Date(windowStartDate);
+  windowEndDate.setDate(windowStartDate.getDate() + 6);
+
+  // Generate 7-day lecture rows starting from windowStartDate
+  const timetableRows = generate7DayTimetable(
+    scheduleData.schedules,
+    windowStartDate,
+    studentTiming,
+    facultyLead
+  );
+
+  const activeTopicTitle =
+    scheduleData.activeModule?.topic || "Google Ads (PPC)";
+  const activeTopicDates =
+    scheduleData.activeModule?.date_range || "26 Oct 2026 - 04 Nov 2026";
 
   return (
     <div className="space-y-6">
@@ -140,14 +128,30 @@ export const SchedulePage = () => {
         {...STUDENT_HEADERS_CONFIG.schedule}
         isAdmin={isAdmin}
         metrics={[
-          { value: "4 Modules", label: "Scheduled", dotColor: "bg-blue-600" },
-          { value: "Live Hybrid", label: "In Session", dotColor: "bg-emerald-500" },
-          { value: "Mon - Fri", label: "9:00 AM - 10:00 AM", dotColor: "bg-purple-500" },
-          { value: "Borivali", label: "Campus", dotColor: "bg-rose-500" },
+          {
+            value: `${scheduleData.schedules.length} Modules`,
+            label: "Scheduled",
+            dotColor: "bg-blue-600",
+          },
+          {
+            value: "Live Hybrid",
+            label: "In Session",
+            dotColor: "bg-emerald-500",
+          },
+          {
+            value: "Mon - Fri",
+            label: studentTiming,
+            dotColor: "bg-purple-500",
+          },
+          {
+            value: isAndheri ? "Andheri" : "Borivali",
+            label: "Campus",
+            dotColor: "bg-rose-500",
+          },
         ]}
       />
 
-      {/* 1. Enrolled Batch & Schedule Card (LATEST UI) */}
+      {/* 1. Enrolled Batch & Schedule Card (Dynamic from CRM) */}
       <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-2.5">
@@ -165,7 +169,7 @@ export const SchedulePage = () => {
           </div>
         </div>
 
-        {/* 2x2 Meta Grid matching LATEST UI */}
+        {/* 2x2 Meta Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 text-xs">
           <div className="space-y-1">
             <div className="flex items-center space-x-1.5 text-slate-400 dark:text-slate-500 font-bold uppercase text-[10px]">
@@ -173,10 +177,10 @@ export const SchedulePage = () => {
               <span>TIMING:</span>
             </div>
             <div className="font-extrabold text-slate-900 dark:text-white text-sm">
-              9:00 AM - 10:00 AM
+              {studentTiming}
             </div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              Daily 1-Hour Lecture
+              Daily Scheduled Lectures
             </div>
           </div>
 
@@ -199,7 +203,7 @@ export const SchedulePage = () => {
               <span>BRANCH / CENTER:</span>
             </div>
             <div className="font-extrabold text-slate-900 dark:text-white text-sm">
-              {crmProfile.branch || "Borivali Center"}
+              {branchDisplayName}
             </div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
               Classroom + Live Zoom Hybrid
@@ -212,10 +216,10 @@ export const SchedulePage = () => {
               <span>FACULTY LEAD:</span>
             </div>
             <div className="font-extrabold text-slate-900 dark:text-white text-sm truncate">
-              {(crmProfile.branch || "").toLowerCase().includes("andheri") ? "Nilkamal Mukharjee" : "Rahul Shende"}
+              {facultyLead}
             </div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              {(crmProfile.branch || "").toLowerCase().includes("andheri") ? "Lead Faculty - Andheri Center" : "Lead Faculty - Borivali Center"}
+              {facultyLeadRole}
             </div>
           </div>
         </div>
@@ -231,14 +235,14 @@ export const SchedulePage = () => {
                 CURRENT TOPIC IN SESSION
               </span>
               <h4 className="font-black text-slate-900 dark:text-white text-sm sm:text-base mt-0.5">
-                Data Science & Advanced Python for Marketers
+                {activeTopicTitle}
               </h4>
             </div>
           </div>
 
           <div className="flex items-center space-x-2">
             <span className="text-xs font-bold text-blue-700 dark:text-blue-400 bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-800/60 px-3 py-1.5 rounded-lg shadow-2xs">
-              22 Apr 2026 - 24 Apr 2026
+              {activeTopicDates}
             </span>
             <button
               onClick={() => navigate("/lesson-player?courseId=course-8")}
@@ -251,7 +255,7 @@ export const SchedulePage = () => {
         </div>
       </div>
 
-      {/* 2. Schedule Details: Weekly Timetable & Curriculum Sessions */}
+      {/* 2. Schedule Details: 7-Day Timetable & Curriculum Sessions */}
       <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-2xs space-y-5">
         {/* Section Header with View Switcher Toggle */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
@@ -267,28 +271,28 @@ export const SchedulePage = () => {
               <div className="flex items-center gap-2">
                 <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                   {activeTab === "timetable"
-                    ? "Weekly Class Timetable"
-                    : "Upcoming Curriculum Sessions"}
+                    ? "7-Day Class Timetable"
+                    : "Curriculum Sessions Roadmap"}
                 </h3>
                 {activeTab === "timetable" ? (
                   <span className="hidden sm:inline-flex text-[11px] font-extrabold text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/60 px-2 py-0.5 rounded-md">
-                    Mon – Fri Active Batch
+                    7 Days Active Batch
                   </span>
                 ) : (
                   <span className="hidden sm:inline-flex text-[11px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-md">
-                    {upcomingSessions.length} Modules Scheduled
+                    {scheduleData.schedules.length} Modules in Roadmap
                   </span>
                 )}
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 {activeTab === "timetable"
-                  ? "Daily lecture times, topics, and interactive lab sessions"
-                  : "Planned module roadmap and chronological class timelines"}
+                  ? "7 consecutive days starting from today with dynamically assigned topics"
+                  : "Planned module roadmap and chronological class timelines from CRM"}
               </p>
             </div>
           </div>
 
-          {/* Toggle: Weekly Timetable | Curriculum Sessions */}
+          {/* Toggle: 7-Day Timetable | Curriculum Sessions */}
           <div className="flex items-center space-x-1.5 shrink-0 bg-slate-100/90 dark:bg-slate-900/80 p-1.5 rounded-xl border border-slate-200/80 dark:border-slate-750 self-start sm:self-auto shadow-2xs">
             <button
               type="button"
@@ -300,7 +304,7 @@ export const SchedulePage = () => {
               }`}
             >
               <Calendar size={13} />
-              <span>Weekly Timetable</span>
+              <span>7-Day Timetable</span>
             </button>
             <button
               type="button"
@@ -317,156 +321,218 @@ export const SchedulePage = () => {
           </div>
         </div>
 
-        {/* Tab Content: Upcoming Curriculum Sessions OR Weekly Timetable */}
+        {/* Tab Content: Upcoming Curriculum Sessions OR 7-Day Timetable */}
         {activeTab === "upcoming" ? (
           <div className="space-y-3 pt-1">
-            {upcomingSessions.map((session) => (
-              <div
-                key={session.id}
-                className="p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-750 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-blue-50/20 dark:hover:bg-slate-800/50 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
-              >
-                <div className="flex items-start sm:items-center space-x-3.5 min-w-0">
-                  <span className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-black text-xs flex items-center justify-center shrink-0">
-                    {session.id}
-                  </span>
-                  <div className="min-w-0">
-                    <div className="flex items-center space-x-2">
-                      <h4 className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                        {session.title}
-                      </h4>
-                      {session.isLive && (
-                        <span className="text-[9.5px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 px-1.5 py-0.2 rounded uppercase">
-                          Active
+            {scheduleData.schedules.map((session, idx) => {
+              const isSessionActive =
+                session.topic === scheduleData.activeModule?.topic;
+              const displayId = String(idx + 1).padStart(2, "0");
+
+              return (
+                <div
+                  key={session.id || idx}
+                  className="p-4 rounded-xl border border-slate-200/80 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-750 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-blue-50/20 dark:hover:bg-slate-800/50 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 group"
+                >
+                  <div className="flex items-start sm:items-center space-x-3.5 min-w-0">
+                    <span className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-black text-xs flex items-center justify-center shrink-0">
+                      {displayId}
+                    </span>
+                    <div className="min-w-0">
+                      <div className="flex items-center space-x-2">
+                        <h4 className="font-bold text-slate-900 dark:text-white text-sm group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          {session.topic}
+                        </h4>
+                        {isSessionActive && (
+                          <span className="text-[9.5px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 px-1.5 py-0.2 rounded uppercase">
+                            Active
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+                        <span>
+                          Faculty:{" "}
+                          <strong className="text-slate-700 dark:text-slate-300">
+                            {facultyLead}
+                          </strong>
                         </span>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
-                      <span>
-                        Faculty:{" "}
-                        <strong className="text-slate-700 dark:text-slate-300">
-                          {session.faculty}
-                        </strong>
-                      </span>
-                      <span>•</span>
-                      <span>
-                        Location:{" "}
-                        <strong className="text-slate-700 dark:text-slate-300">
-                          {session.room}
-                        </strong>
-                      </span>
+                        <span>•</span>
+                        <span>
+                          Location:{" "}
+                          <strong className="text-slate-700 dark:text-slate-300">
+                            {isAndheri
+                              ? "Room 302 & Zoom Live Link"
+                              : "Lab 2 & Zoom Hybrid"}
+                          </strong>
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-center space-x-3 shrink-0 self-end md:self-auto">
-                  <span className="text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg shadow-2xs">
-                    {session.dates}
-                  </span>
-                  <button
-                    onClick={() => navigate("/enrolled-courses")}
-                    className="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
-                  >
-                    <span>Syllabus</span>
-                    <ChevronRight size={13} />
-                  </button>
+                  <div className="flex items-center space-x-3 shrink-0 self-end md:self-auto">
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-1.5 rounded-lg shadow-2xs">
+                      {session.date_range}
+                    </span>
+                    <button
+                      onClick={() => navigate("/enrolled-courses")}
+                      className="bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors flex items-center space-x-1 cursor-pointer"
+                    >
+                      <span>Syllabus</span>
+                      <ChevronRight size={13} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-slate-300/80 dark:border-slate-800 shadow-xs">
-            <table className="w-full text-center text-xs border-collapse">
-              {/* Attribute Background Header */}
-              <thead className="bg-[#1e293b] dark:bg-slate-950 text-white">
-                <tr>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
-                    Lecture Date
-                  </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
-                    Time
-                  </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
-                    Lecture Subject / Topic
-                  </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
-                    Faculty
-                  </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              {/* Body with distinct alternating colors & styled chips */}
-              <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-                {weeklySchedule.map((row, rIdx) => {
-                  const isEven = rIdx % 2 === 0;
-                  return (
-                    <tr
-                      key={rIdx}
-                      className={`transition-colors ${
-                        isEven
-                          ? "bg-white dark:bg-[#0b1329] hover:bg-blue-50/40 dark:hover:bg-slate-800/50"
-                          : "bg-slate-50/80 dark:bg-slate-900/60 hover:bg-blue-50/40 dark:hover:bg-slate-800/50"
-                      }`}
-                    >
-                      {/* Lecture Date with Calendar Icon & Category Color */}
-                      <td className="py-4 px-4 whitespace-nowrap text-center">
-                        <span
-                          className={`inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-tight px-3 py-1.5 rounded-lg border shadow-2xs ${getDayBadgeClass(
-                            row.day
-                          )}`}
-                        >
-                          <Calendar size={13} className="shrink-0" />
-                          <span>{row.date}</span>
-                        </span>
-                      </td>
+          <div className="space-y-4">
+            {/* 7-Day Navigation Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70 dark:bg-slate-900/40 p-3 rounded-xl border border-slate-200/70 dark:border-slate-800">
+              <div className="flex items-center space-x-2">
+                <Calendar size={15} className="text-blue-600 dark:text-blue-400 shrink-0" />
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Showing 7 Days:{" "}
+                  <strong className="text-slate-900 dark:text-white">
+                    {formatLectureDate(windowStartDate)} – {formatLectureDate(windowEndDate)}
+                  </strong>
+                </span>
+                {dayOffset === 0 && (
+                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 px-2 py-0.5 rounded-md">
+                    Starts Today
+                  </span>
+                )}
+              </div>
 
-                      {/* Time with Clock Icon */}
-                      <td className="py-4 px-4 whitespace-nowrap text-center">
-                        <span className="inline-flex items-center justify-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700 px-2.5 py-1 rounded-md text-[11.5px] shadow-2xs">
-                          <Clock
-                            size={12}
-                            className="text-blue-600 dark:text-blue-400"
-                          />
-                          <span>{row.time}</span>
-                        </span>
-                      </td>
+              <div className="flex items-center space-x-2 self-end sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => setDayOffset((prev) => prev - 7)}
+                  className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 transition-colors flex items-center space-x-1 cursor-pointer"
+                  title="Previous 7 Days"
+                >
+                  <ChevronLeft size={13} />
+                  <span>Prev 7 Days</span>
+                </button>
 
-                      {/* Topic - Bold & High Contrast, Centered */}
-                      <td className="py-4 px-4 min-w-[220px] text-center">
-                        <span className="font-extrabold text-slate-900 dark:text-white text-xs sm:text-[13px] leading-snug block text-center">
-                          {row.topic}
-                        </span>
-                      </td>
+                {dayOffset !== 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setDayOffset(0)}
+                    className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800 transition-colors flex items-center space-x-1 cursor-pointer"
+                  >
+                    <RefreshCw size={11} />
+                    <span>Reset to Today</span>
+                  </button>
+                )}
 
-                      {/* Faculty with User Avatar Icon, Centered */}
-                      <td className="py-4 px-4 whitespace-nowrap text-center">
-                        <span className="inline-flex items-center justify-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300 text-xs">
-                          <User
-                            size={13}
-                            className="text-slate-400 dark:text-slate-500"
-                          />
-                          <span>{row.faculty}</span>
-                        </span>
-                      </td>
+                <button
+                  type="button"
+                  onClick={() => setDayOffset((prev) => prev + 7)}
+                  className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-750 border border-slate-200 dark:border-slate-700 transition-colors flex items-center space-x-1 cursor-pointer"
+                  title="Next 7 Days"
+                >
+                  <span>Next 7 Days</span>
+                  <ChevronRight size={13} />
+                </button>
+              </div>
+            </div>
 
-                      {/* Action Button, Centered */}
-                      <td className="py-4 px-4 text-center whitespace-nowrap">
-                        <button
-                          onClick={() =>
-                            navigate("/lesson-player?courseId=course-8")
-                          }
-                          className="inline-flex items-center justify-center gap-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-2xs transition-all cursor-pointer active:scale-95"
-                        >
-                          <span>Enter Room</span>
-                          <ArrowRight size={12} />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            {/* Table Container */}
+            <div className="overflow-x-auto rounded-xl border border-slate-300/80 dark:border-slate-800 shadow-xs">
+              <table className="w-full text-center text-xs border-collapse">
+                {/* Attribute Background Header */}
+                <thead className="bg-[#1e293b] dark:bg-slate-950 text-white">
+                  <tr>
+                    <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
+                      Lecture Date
+                    </th>
+                    <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
+                      Time
+                    </th>
+                    <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
+                      Lecture Subject / Topic
+                    </th>
+                    <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
+                      Faculty
+                    </th>
+                    <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                {/* Body with distinct alternating colors & styled chips */}
+                <tbody className="divide-y divide-slate-200/80 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+                  {timetableRows.map((row, rIdx) => {
+                    const isEven = rIdx % 2 === 0;
+                    return (
+                      <tr
+                        key={rIdx}
+                        className={`transition-colors ${
+                          isEven
+                            ? "bg-white dark:bg-[#0b1329] hover:bg-blue-50/40 dark:hover:bg-slate-800/50"
+                            : "bg-slate-50/80 dark:bg-slate-900/60 hover:bg-blue-50/40 dark:hover:bg-slate-800/50"
+                        }`}
+                      >
+                        {/* Lecture Date with Calendar Icon & Category Color */}
+                        <td className="py-4 px-4 whitespace-nowrap text-center">
+                          <span
+                            className={`inline-flex items-center justify-center gap-1.5 text-xs font-bold tracking-tight px-3 py-1.5 rounded-lg border shadow-2xs ${getDayBadgeClass(
+                              row.day
+                            )}`}
+                          >
+                            <Calendar size={13} className="shrink-0" />
+                            <span>{row.date}</span>
+                          </span>
+                        </td>
+
+                        {/* Time with Clock Icon */}
+                        <td className="py-4 px-4 whitespace-nowrap text-center">
+                          <span className="inline-flex items-center justify-center gap-1.5 font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-700 px-2.5 py-1 rounded-md text-[11.5px] shadow-2xs">
+                            <Clock
+                              size={12}
+                              className="text-blue-600 dark:text-blue-400"
+                            />
+                            <span>{row.time}</span>
+                          </span>
+                        </td>
+
+                        {/* Topic - Bold & High Contrast, Centered */}
+                        <td className="py-4 px-4 min-w-[220px] text-center">
+                          <span className="font-extrabold text-slate-900 dark:text-white text-xs sm:text-[13px] leading-snug block text-center">
+                            {row.topic}
+                          </span>
+                        </td>
+
+                        {/* Faculty with User Avatar Icon, Centered */}
+                        <td className="py-4 px-4 whitespace-nowrap text-center">
+                          <span className="inline-flex items-center justify-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300 text-xs">
+                            <User
+                              size={13}
+                              className="text-slate-400 dark:text-slate-500"
+                            />
+                            <span>{row.faculty}</span>
+                          </span>
+                        </td>
+
+                        {/* Action Button, Centered */}
+                        <td className="py-4 px-4 text-center whitespace-nowrap">
+                          <button
+                            onClick={() =>
+                              navigate("/lesson-player?courseId=course-8")
+                            }
+                            className="inline-flex items-center justify-center gap-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-2xs transition-all cursor-pointer active:scale-95"
+                          >
+                            <span>Enter Room</span>
+                            <ArrowRight size={12} />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
