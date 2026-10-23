@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { 
   Activity, Search, Filter, Clock, Award, BookOpen, 
   CheckCircle2, CheckSquare, MessagesSquare, 
@@ -6,14 +6,18 @@ import {
   ChevronRight, Calendar, UserPlus, GraduationCap, User
 } from "lucide-react";
 import { lmsService } from "../services/lmsService";
+import { crmService } from "../services/crmService";
 import { useAuth } from "../context/AuthContext";
 import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
 import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 
 export const ActivityPage = () => {
-  const { isAdmin, currentUser } = useAuth();
-  const [activitiesList, setActivitiesList] = useState(() => lmsService.getActivities());
+  const { isAdmin, currentUser, crmProfile, crmAttendance, crmBatch } = useAuth();
+  const [quizzes, setQuizzes] = useState(() => lmsService.getQuizzes());
+  const [assignments, setAssignments] = useState(() => lmsService.getAssignments());
+  const [isLoading, setIsLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest"); // "newest" | "oldest"
@@ -27,7 +31,7 @@ export const ActivityPage = () => {
           badgeBg: "bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/40",
           iconBg: "bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/40",
           dotColor: "bg-blue-600 dark:bg-blue-400",
-          label: "New Enrollment",
+          label: "Program Enrollment",
         };
       case "quiz":
         return {
@@ -51,7 +55,7 @@ export const ActivityPage = () => {
           badgeBg: "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-500/40",
           iconBg: "bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/40",
           dotColor: "bg-indigo-600 dark:bg-indigo-400",
-          label: "Course Completed",
+          label: "Curriculum Progress",
         };
       case "assignment":
         return {
@@ -61,14 +65,6 @@ export const ActivityPage = () => {
           dotColor: "bg-sky-600 dark:bg-sky-400",
           label: "Assignment Submitted",
         };
-      case "discussion":
-        return {
-          icon: MessagesSquare,
-          badgeBg: "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-500/40",
-          iconBg: "bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/40",
-          dotColor: "bg-amber-500 dark:bg-amber-400",
-          label: "Forum Resolved",
-        };
       case "grading":
         return {
           icon: CheckCircle2,
@@ -77,11 +73,27 @@ export const ActivityPage = () => {
           dotColor: "bg-rose-500 dark:bg-rose-400",
           label: "Assignment Graded",
         };
+      case "lecture":
+        return {
+          icon: BookOpen,
+          badgeBg: "bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-500/40",
+          iconBg: "bg-teal-100 dark:bg-teal-500/20 text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-500/40",
+          dotColor: "bg-teal-600 dark:bg-teal-400",
+          label: "Lecture Attended",
+        };
+      case "discussion":
+        return {
+          icon: MessagesSquare,
+          badgeBg: "bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-500/40",
+          iconBg: "bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/40",
+          dotColor: "bg-amber-500 dark:bg-amber-400",
+          label: "Forum Resolved",
+        };
       default:
         return {
           icon: Activity,
-          badgeBg: "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700",
-          iconBg: "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700",
+          badgeBg: "bg-slate-100 dark:bg-slate-850 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700",
+          iconBg: "bg-slate-100 dark:bg-slate-850 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700",
           dotColor: "bg-slate-500 dark:bg-slate-400",
           label: "System Event",
         };
@@ -89,47 +101,74 @@ export const ActivityPage = () => {
   };
 
   // Student Profile bindings
-  const currentStudentName = currentUser?.name || "Sahil Hasolkar";
+  const currentStudentName = currentUser?.name || crmProfile?.name || "Student";
   const currentStudentAvatar =
-    currentUser?.avatar && !currentUser?.avatar?.includes("avatar-card")
+    (currentUser?.avatar && !currentUser?.avatar?.includes("avatar-card"))
       ? currentUser.avatar
-      : null;
+      : crmProfile?.photo || null;
 
-  // Filter activities: strictly the logged-in student's milestones (excluding enrollment & certificate)
+  const studentId =
+    crmProfile?.id ||
+    currentUser?.admissionId ||
+    currentUser?.id ||
+    crmService.getSelectedStudentId();
+
+  // Load fresh student quizzes and batch assignments
+  const loadFreshData = async () => {
+    if (!studentId) return;
+    try {
+      const [qRes, aRes] = await Promise.allSettled([
+        lmsService.fetchStudentQuizzes(studentId),
+        lmsService.fetchStudentBatchAssignments(studentId),
+      ]);
+      if (qRes.status === "fulfilled" && Array.isArray(qRes.value) && qRes.value.length > 0) {
+        setQuizzes(qRes.value);
+      }
+      if (aRes.status === "fulfilled" && Array.isArray(aRes.value) && aRes.value.length > 0) {
+        setAssignments(aRes.value);
+      }
+    } catch (err) {
+      console.warn("Could not fetch fresh student activity data:", err);
+    }
+  };
+
+  useEffect(() => {
+    loadFreshData();
+  }, [studentId]);
+
+  const handleRefresh = async () => {
+    setIsLoading(true);
+    await loadFreshData();
+    setRefreshKey((k) => k + 1);
+    setIsLoading(false);
+  };
+
+  // Filter activities: dynamically synthesized from student milestones
   const scopedActivities = useMemo(() => {
     if (isAdmin) {
-      return activitiesList;
+      return lmsService.getActivities();
     }
 
-    return activitiesList
-      .filter(
-        (act) =>
-          (act.studentId === "std-375" ||
-            act.id?.startsWith("act-sahil-") ||
-            act.user?.name?.toLowerCase().includes("sahil") ||
-            !act.id?.startsWith("act-peer-")) &&
-          act.type !== "enrollment" &&
-          act.type !== "certificate" &&
-          act.type !== "completion"
-      )
-      .map((act) => ({
-        ...act,
-        user: {
-          ...act.user,
-          name: currentStudentName,
-          avatar: currentStudentAvatar || act.user?.avatar,
-        },
-      }));
-  }, [activitiesList, isAdmin, currentStudentName, currentStudentAvatar]);
+    return lmsService.getStudentActivities({
+      studentId,
+      currentUser,
+      crmProfile,
+      crmAttendance,
+      crmBatch,
+      quizzes,
+      assignments,
+    });
+  }, [isAdmin, studentId, currentUser, crmProfile, crmAttendance, crmBatch, quizzes, assignments, refreshKey]);
 
   // Counts for filter pills
   const counts = useMemo(() => {
     return {
       all: scopedActivities.length,
-      enrollment: scopedActivities.filter((a) => a.type === "enrollment").length,
       quiz: scopedActivities.filter((a) => a.type === "quiz").length,
-      certificate: scopedActivities.filter((a) => a.type === "certificate" || a.type === "completion").length,
       assignment: scopedActivities.filter((a) => a.type === "assignment" || a.type === "grading").length,
+      completion: scopedActivities.filter((a) => a.type === "completion" || a.type === "certificate").length,
+      lecture: scopedActivities.filter((a) => a.type === "lecture").length,
+      enrollment: scopedActivities.filter((a) => a.type === "enrollment").length,
       discussion: scopedActivities.filter((a) => a.type === "discussion").length,
     };
   }, [scopedActivities]);
@@ -139,8 +178,8 @@ export const ActivityPage = () => {
     let list = scopedActivities.filter((act) => {
       // Type filter
       if (selectedFilter !== "all") {
-        if (selectedFilter === "certificate") {
-          if (act.type !== "certificate" && act.type !== "completion") return false;
+        if (selectedFilter === "completion") {
+          if (act.type !== "completion" && act.type !== "certificate") return false;
         } else if (selectedFilter === "assignment") {
           if (act.type !== "assignment" && act.type !== "grading") return false;
         } else if (act.type !== selectedFilter) {
@@ -165,9 +204,9 @@ export const ActivityPage = () => {
     });
 
     if (sortBy === "oldest") {
-      return [...list].reverse();
+      return [...list].sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
     }
-    return list;
+    return [...list].sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
   }, [scopedActivities, selectedFilter, searchQuery, sortBy]);
 
   return (
@@ -198,7 +237,7 @@ export const ActivityPage = () => {
             <div className="flex flex-wrap items-center gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs sm:text-sm font-medium">
               <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
                 <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block shadow-[0_0_8px_rgba(244,63,94,0.4)]" />
-                <span className="font-black text-slate-900 dark:text-white">{activitiesList.length}</span>
+                <span className="font-black text-slate-900 dark:text-white">{scopedActivities.length}</span>
                 <span className="font-semibold">Logged Events</span>
               </div>
               <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
@@ -208,8 +247,8 @@ export const ActivityPage = () => {
               </div>
               <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-                <span className="font-black text-slate-900 dark:text-white">{counts.certificate + counts.quiz}</span>
-                <span className="font-semibold">Certificates & Quizzes</span>
+                <span className="font-black text-slate-900 dark:text-white">{counts.completion + counts.quiz}</span>
+                <span className="font-semibold">Progress & Quizzes</span>
               </div>
               <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 rounded-full px-3 py-1 text-slate-700 dark:text-slate-200 shadow-2xs">
                 <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block shadow-[0_0_8px_rgba(168,85,247,0.4)]" />
@@ -221,11 +260,12 @@ export const ActivityPage = () => {
 
           <div className="w-full sm:w-auto shrink-0 relative z-10">
             <button
-              onClick={() => setActivitiesList(lmsService.getActivities())}
-              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
+              onClick={handleRefresh}
+              disabled={isLoading}
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap disabled:opacity-60"
             >
-              <RefreshCw size={16} className="2xl:w-4.5 2xl:h-4.5" />
-              <span>Refresh Activity</span>
+              <RefreshCw size={16} className={`2xl:w-4.5 2xl:h-4.5 ${isLoading ? "animate-spin" : ""}`} />
+              <span>{isLoading ? "Refreshing..." : "Refresh Activity"}</span>
             </button>
           </div>
         </div>
@@ -239,11 +279,12 @@ export const ActivityPage = () => {
           ]}
           action={
             <button
-              onClick={() => setActivitiesList(lmsService.getActivities())}
-              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
+              onClick={handleRefresh}
+              disabled={isLoading}
+              className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap disabled:opacity-60"
             >
-              <RefreshCw size={16} className="2xl:w-4.5 2xl:h-4.5" />
-              <span>Refresh Activity</span>
+              <RefreshCw size={16} className={`2xl:w-4.5 2xl:h-4.5 ${isLoading ? "animate-spin" : ""}`} />
+              <span>{isLoading ? "Refreshing..." : "Refresh Activity"}</span>
             </button>
           }
         />
@@ -304,7 +345,55 @@ export const ActivityPage = () => {
             >
               All Activities ({counts.all})
             </button>
-            {isAdmin && counts.enrollment > 0 && (
+            {counts.quiz > 0 && (
+              <button
+                onClick={() => setSelectedFilter("quiz")}
+                className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
+                  selectedFilter === "quiz"
+                    ? "bg-purple-600 text-white shadow-xs dark:shadow-[0_0_12px_rgba(168,85,247,0.4)]"
+                    : "bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 border border-purple-200/60 dark:border-purple-500/30"
+                }`}
+              >
+                Quizzes ({counts.quiz})
+              </button>
+            )}
+            {counts.assignment > 0 && (
+              <button
+                onClick={() => setSelectedFilter("assignment")}
+                className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
+                  selectedFilter === "assignment"
+                    ? "bg-sky-600 text-white shadow-xs dark:shadow-[0_0_12px_rgba(14,165,233,0.4)]"
+                    : "bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/40 border border-sky-200/60 dark:border-sky-500/30"
+                }`}
+              >
+                Submissions ({counts.assignment})
+              </button>
+            )}
+            {counts.completion > 0 && (
+              <button
+                onClick={() => setSelectedFilter("completion")}
+                className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
+                  selectedFilter === "completion"
+                    ? "bg-indigo-600 text-white shadow-xs dark:shadow-[0_0_12px_rgba(99,102,241,0.4)]"
+                    : "bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 border border-indigo-200/60 dark:border-indigo-500/30"
+                }`}
+              >
+                Course Progress ({counts.completion})
+              </button>
+            )}
+            {counts.lecture > 0 && (
+              <button
+                onClick={() => setSelectedFilter("lecture")}
+                className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
+                  selectedFilter === "lecture"
+                    ? "bg-teal-600 text-white shadow-xs dark:shadow-[0_0_12px_rgba(13,148,136,0.4)]"
+                    : "bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/40 border border-teal-200/60 dark:border-teal-500/30"
+                }`}
+              >
+                Lectures ({counts.lecture})
+              </button>
+            )}
+            {counts.enrollment > 0 && (
               <button
                 onClick={() => setSelectedFilter("enrollment")}
                 className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
@@ -316,48 +405,18 @@ export const ActivityPage = () => {
                 Enrollments ({counts.enrollment})
               </button>
             )}
-            <button
-              onClick={() => setSelectedFilter("quiz")}
-              className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
-                selectedFilter === "quiz"
-                  ? "bg-purple-600 text-white shadow-xs dark:shadow-[0_0_12px_rgba(168,85,247,0.4)]"
-                  : "bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/40 border border-purple-200/60 dark:border-purple-500/30"
-              }`}
-            >
-              Quizzes ({counts.quiz})
-            </button>
-            {isAdmin && counts.certificate > 0 && (
+            {counts.discussion > 0 && (
               <button
-                onClick={() => setSelectedFilter("certificate")}
+                onClick={() => setSelectedFilter("discussion")}
                 className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
-                  selectedFilter === "certificate"
-                    ? "bg-emerald-600 text-white shadow-xs dark:shadow-[0_0_12px_rgba(16,185,129,0.4)]"
-                    : "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 border border-emerald-200/60 dark:border-emerald-500/30"
+                  selectedFilter === "discussion"
+                    ? "bg-amber-500 text-slate-950 font-black shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)]"
+                    : "bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-amber-200/60 dark:border-amber-500/30"
                 }`}
               >
-                Certificates ({counts.certificate})
+                Forums ({counts.discussion})
               </button>
             )}
-            <button
-              onClick={() => setSelectedFilter("assignment")}
-              className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
-                selectedFilter === "assignment"
-                  ? "bg-sky-600 text-white shadow-xs dark:shadow-[0_0_12px_rgba(14,165,233,0.4)]"
-                  : "bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-900/40 border border-sky-200/60 dark:border-sky-500/30"
-              }`}
-            >
-              Submissions ({counts.assignment})
-            </button>
-            <button
-              onClick={() => setSelectedFilter("discussion")}
-              className={`px-3.5 py-1.5 2xl:px-4 2xl:py-2 rounded-xl text-xs sm:text-sm 2xl:text-[13.5px] font-bold transition-all cursor-pointer ${
-                selectedFilter === "discussion"
-                  ? "bg-amber-500 text-slate-950 font-black shadow-xs dark:shadow-[0_0_12px_rgba(245,158,11,0.4)]"
-                  : "bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-amber-200/60 dark:border-amber-500/30"
-              }`}
-            >
-              Forums ({counts.discussion})
-            </button>
           </div>
 
           <div className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
@@ -437,10 +496,10 @@ export const ActivityPage = () => {
 
                       {/* Middle Row: User Details, Action, and Target */}
                       <div className="flex items-center space-x-3 pt-2">
-                        {(act.user.avatar || currentStudentAvatar) ? (
+                        {(act.user?.avatar || currentStudentAvatar) ? (
                           <img
-                            src={act.user.avatar || currentStudentAvatar}
-                            alt={act.user.name}
+                            src={act.user?.avatar || currentStudentAvatar}
+                            alt={act.user?.name || currentStudentName}
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
                               if (e.currentTarget.nextElementSibling) {
@@ -452,15 +511,15 @@ export const ActivityPage = () => {
                         ) : null}
                         <div
                           className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-[10px] sm:text-xs ring-1 ring-slate-200 dark:ring-slate-700 shrink-0 items-center justify-center ${
-                            (act.user.avatar || currentStudentAvatar) ? 'hidden' : 'flex'
+                            (act.user?.avatar || currentStudentAvatar) ? 'hidden' : 'flex'
                           }`}
                         >
-                          {act.user.name ? act.user.name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase() : <User size={15} />}
+                          {(act.user?.name || currentStudentName) ? (act.user?.name || currentStudentName).split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase() : <User size={15} />}
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm">
                             <span className="font-extrabold text-slate-900 dark:text-white">
-                              {act.user.name}
+                              {act.user?.name || currentStudentName}
                             </span>
                             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/70 dark:border-blue-800/60">
                               Student
@@ -482,7 +541,7 @@ export const ActivityPage = () => {
           </div>
         </div>
       ) : (
-        /* ADMIN VIEW: KEPT ORIGINAL CARDS FORMAT */
+        /* ADMIN VIEW: AUDIT LOG CARDS FORMAT */
         <div className="bg-white dark:bg-[#0b1329]/95 rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-slate-800/80 p-4 sm:p-6 2xl:p-7 shadow-xs dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] space-y-3 sm:space-y-3.5 2xl:space-y-4 transition-colors duration-200">
           {filteredActivities.map((act) => {
             const theme = getActivityTheme(act.type);
@@ -497,10 +556,10 @@ export const ActivityPage = () => {
                 <div className="flex items-start sm:items-center space-x-3.5 sm:space-x-4 min-w-0 flex-1">
                   {/* Avatar with relative pulse indicator */}
                   <div className="relative shrink-0">
-                    {(act.user.avatar || currentStudentAvatar) ? (
+                    {(act.user?.avatar || currentStudentAvatar) ? (
                       <img
-                        src={act.user.avatar || currentStudentAvatar}
-                        alt={act.user.name}
+                        src={act.user?.avatar || currentStudentAvatar}
+                        alt={act.user?.name || currentStudentName}
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
                           if (e.currentTarget.nextElementSibling) {
@@ -512,10 +571,10 @@ export const ActivityPage = () => {
                     ) : null}
                     <div
                       className={`w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-xs ring-2 ring-slate-100 dark:ring-slate-800 group-hover:ring-blue-300 dark:group-hover:ring-blue-500/70 transition-all items-center justify-center ${
-                        (act.user.avatar || currentStudentAvatar) ? 'hidden' : 'flex'
+                        (act.user?.avatar || currentStudentAvatar) ? 'hidden' : 'flex'
                       }`}
                     >
-                      {act.user.name ? act.user.name.split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase() : <User size={18} />}
+                      {(act.user?.name || currentStudentName) ? (act.user?.name || currentStudentName).split(' ').map((n) => n[0]).slice(0, 2).join('').toUpperCase() : <User size={18} />}
                     </div>
                     <span
                       className={`absolute bottom-0 right-0 w-3.5 h-3.5 2xl:w-4 2xl:h-4 rounded-full border-2 border-white dark:border-slate-900 shadow-2xs ${theme.dotColor}`}
@@ -527,7 +586,7 @@ export const ActivityPage = () => {
                   <div className="min-w-0 space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base 2xl:text-lg">
-                        {act.user.name}
+                        {act.user?.name || currentStudentName}
                       </span>
                       <span className="text-xs sm:text-sm 2xl:text-base text-slate-600 dark:text-slate-300 font-medium">
                         {act.action}

@@ -355,9 +355,36 @@ export const LessonPlayerPage = () => {
     status = !currentLesson.isCompleted,
     silent = false,
   ) => {
-    lmsService.updateUnit(currentLesson.id, { isCompleted: status });
-    const updatedUnits = lmsService.getUnitsByCourse(currentCourse.id);
+    const nowIso = new Date().toISOString();
+    lmsService.updateUnit(currentLesson.id, {
+      isCompleted: status,
+      completedAt: status ? nowIso : null,
+    });
+    const updatedUnits = lmsService.getUnitsByCourse(currentCourse?.id);
     setUnits(updatedUnits);
+
+    if (status) {
+      const activeStudentId = studentId || crmProfile?.id || currentUser?.admissionId || currentUser?.id || "";
+      lmsService.recordStudentActivity(activeStudentId, {
+        id: `act-unit-${currentLesson.id}-${Date.now()}`,
+        type: "completion",
+        action: "completed curriculum lesson",
+        target: `${currentLesson.title}${currentCourse?.title ? ` in ${currentCourse.title}` : ""}`,
+        timestamp: nowIso,
+      });
+
+      const allCompleted = updatedUnits.length > 0 && updatedUnits.every((u) => u.isCompleted);
+      if (allCompleted) {
+        lmsService.recordStudentActivity(activeStudentId, {
+          id: `act-course-${currentCourse?.id}-${Date.now()}`,
+          type: "completion",
+          action: "completed full curriculum for",
+          target: currentCourse?.title || "Course",
+          timestamp: nowIso,
+        });
+      }
+    }
+
     if (!silent) {
       showToast(
         status ? "Lesson marked as completed!" : "Lesson marked as incomplete",

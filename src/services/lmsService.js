@@ -13,6 +13,7 @@ import {
   INITIAL_REVIEWS,
 } from "../data/mockData";
 import { IMPORTED_LMS_QUIZZES } from "../data/importedLmsQuizzes";
+import { crmService } from "./crmService";
 // Helper for persistent local storage mock service
 const STORAGE_PREFIX = "om_lms_v12_";
 export const R2_STORAGE_BASE =
@@ -454,13 +455,14 @@ export const lmsService = {
     setStored("quizzes", [newQuiz, ...quizzes]);
     return newQuiz;
   },
-  submitQuizAttempt: (quizId, score = 90, resultsDetail = null) => {
+  submitQuizAttempt: (quizId, score = 90, resultsDetail = null, studentId = null) => {
     const quizzes = lmsService.getQuizzes();
     const index = quizzes.findIndex(
       (q) => String(q.id) === String(quizId) || String(q.numericId) === String(quizId)
     );
     const passThreshold = index !== -1 ? (quizzes[index].passScorePercentage || 75) : 75;
     const isPassed = score >= passThreshold;
+    const nowIso = new Date().toISOString();
     const completedDate = new Date().toLocaleDateString("en-US", {
       day: "2-digit",
       month: "short",
@@ -470,24 +472,56 @@ export const lmsService = {
       resultsDetail?.timeSpent ||
       `${Math.max(1, ((quizzes[index]?.durationMinutes || 20) - 5))} mins`;
 
+    const cachedProfile = JSON.parse(localStorage.getItem("om_lms_crm_cached_profile") || "{}");
+    const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
+    const targetStudentId = studentId || studentUser.id || studentUser.student_id || cachedProfile.id || cachedProfile.crmAdmissionId || "";
+
     // Persist attempt in dedicated attempts cache so it survives any network fetches
     try {
-      const attemptsCache = JSON.parse(localStorage.getItem("om_lms_quiz_attempts_cache") || "{}");
       const attemptData = {
         status: isPassed ? "passed" : "failed",
         score,
         completedDate,
+        completedAtIso: nowIso,
         timeSpent,
         isPassed,
         resultsDetail,
       };
+
+      const attemptsCache = JSON.parse(localStorage.getItem("om_lms_quiz_attempts_cache") || "{}");
       attemptsCache[String(quizId)] = attemptData;
       if (index !== -1 && quizzes[index].numericId) {
         attemptsCache[String(quizzes[index].numericId)] = attemptData;
       }
       localStorage.setItem("om_lms_quiz_attempts_cache", JSON.stringify(attemptsCache));
+
+      if (targetStudentId) {
+        const studentCacheKey = `om_lms_quiz_attempts_cache_${targetStudentId}`;
+        const studentCache = JSON.parse(localStorage.getItem(studentCacheKey) || "{}");
+        studentCache[String(quizId)] = attemptData;
+        if (index !== -1 && quizzes[index].numericId) {
+          studentCache[String(quizzes[index].numericId)] = attemptData;
+        }
+        localStorage.setItem(studentCacheKey, JSON.stringify(studentCache));
+      }
     } catch (e) {
       console.warn("Could not cache quiz attempt:", e);
+    }
+
+    // Automatically record student activity milestone
+    try {
+      const quizTitle = index !== -1 ? quizzes[index].title : "Assessment Quiz";
+      lmsService.recordStudentActivity(targetStudentId, {
+        id: `act-quiz-${quizId}-${Date.now()}`,
+        type: "quiz",
+        action: isPassed ? `passed examination with ${score}% on` : `completed assessment with ${score}% on`,
+        target: quizTitle,
+        score,
+        timestamp: nowIso,
+        details: resultsDetail,
+      });
+    } catch (e) {
+      console.warn("Could not record quiz activity:", e);
     }
 
     if (index !== -1) {
@@ -596,6 +630,24 @@ export const lmsService = {
   },
 
   submitStudentBatchAssignment: async (assignmentId, studentId, { file, linkUrl = "", notes = "" }) => {
+    const nowIso = new Date().toISOString();
+
+    // Persist local submission cache for this student
+    try {
+      const subKey = studentId ? `om_lms_assignment_submissions_${studentId}` : "om_lms_assignment_submissions";
+      const subs = JSON.parse(localStorage.getItem(subKey) || "{}");
+      subs[String(assignmentId)] = {
+        submittedAt: nowIso,
+        submissionLink: linkUrl,
+        submissionNotes: notes,
+        fileName: file?.name || "assignment_project.pdf",
+        status: "submitted",
+      };
+      localStorage.setItem(subKey, JSON.stringify(subs));
+    } catch (e) {
+      console.warn("Could not cache assignment submission:", e);
+    }
+
     try {
       const formData = new FormData();
       formData.append("student_id", String(studentId));
@@ -616,6 +668,17 @@ export const lmsService = {
           if (res.ok) {
             const json = await res.json();
             if (json && json.success) {
+              // Record activity milestone
+              const localAssignments = lmsService.getAssignments();
+              const found = localAssignments.find((a) => String(a.id) === String(assignmentId));
+              const title = found?.title || "Practical Project Assignment";
+              lmsService.recordStudentActivity(studentId, {
+                id: `act-assign-${assignmentId}-${Date.now()}`,
+                type: "assignment",
+                action: "submitted practical assignment for",
+                target: title,
+                timestamp: nowIso,
+              });
               return json;
             }
           }
@@ -628,11 +691,24 @@ export const lmsService = {
     }
 
     // Local fallback
-    return lmsService.submitAssignment(assignmentId, {
+    const res = lmsService.submitAssignment(assignmentId, {
       submissionLink: linkUrl,
       submissionNotes: notes,
       submittedFileName: file?.name || "assignment_project.pdf",
     });
+
+    const localAssignments = lmsService.getAssignments();
+    const found = localAssignments.find((a) => String(a.id) === String(assignmentId));
+    const title = found?.title || "Practical Project Assignment";
+    lmsService.recordStudentActivity(studentId, {
+      id: `act-assign-${assignmentId}-${Date.now()}`,
+      type: "assignment",
+      action: "submitted practical assignment for",
+      target: title,
+      timestamp: nowIso,
+    });
+
+    return res;
   },
 
   // Assignments
@@ -652,6 +728,7 @@ export const lmsService = {
     const items = lmsService.getAssignments();
     const index = items.findIndex((a) => a.id === id);
     if (index === -1) return undefined;
+    const nowIso = new Date().toISOString();
     items[index] = {
       ...items[index],
       status: "submitted",
@@ -660,9 +737,27 @@ export const lmsService = {
         day: "numeric",
         year: "numeric",
       }),
+      submittedAtIso: nowIso,
       ...submission,
     };
     setStored("assignments", items);
+
+    // Record activity milestone
+    try {
+      const cachedProfile = JSON.parse(localStorage.getItem("om_lms_crm_cached_profile") || "{}");
+      const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
+      const targetId = cachedProfile.id || studentUser.id || "";
+      lmsService.recordStudentActivity(targetId, {
+        id: `act-assign-${id}-${Date.now()}`,
+        type: "assignment",
+        action: "submitted practical assignment for",
+        target: items[index].title || "Practical Assignment",
+        timestamp: nowIso,
+      });
+    } catch (e) {
+      console.warn("Could not record assignment activity:", e);
+    }
+
     return items[index];
   },
   getAssignmentById: (id) => {
@@ -1011,6 +1106,288 @@ export const lmsService = {
     setStored("discussions", items);
     return newReply;
   },
+  formatRelativeTime: (dateInput) => {
+    if (!dateInput) return "Recently";
+    try {
+      const date = new Date(dateInput);
+      if (isNaN(date.getTime())) return String(dateInput);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      if (diffMs < 0) return "Just now";
+      const diffSec = Math.floor(diffMs / 1000);
+      const diffMin = Math.floor(diffSec / 60);
+      const diffHour = Math.floor(diffMin / 60);
+      const diffDay = Math.floor(diffHour / 24);
+
+      if (diffMin < 1) return "Just now";
+      if (diffMin < 60) return `${diffMin} min ago`;
+      if (diffHour === 1) return "1 hour ago";
+      if (diffHour < 24) return `${diffHour} hours ago`;
+      if (diffDay === 1) return "Yesterday";
+      if (diffDay < 7) return `${diffDay} days ago`;
+      if (diffDay < 30) {
+        const weeks = Math.floor(diffDay / 7);
+        return `${weeks} week${weeks > 1 ? "s" : ""} ago`;
+      }
+      return date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    } catch {
+      return "Recently";
+    }
+  },
+
+  recordStudentActivity: (studentId, activity) => {
+    if (!activity) return null;
+    const targetId = studentId || crmService.getSelectedStudentId() || "default";
+    const storageKey = `om_lms_student_activities_${targetId}`;
+    let existing = [];
+    try {
+      const raw = localStorage.getItem(storageKey);
+      if (raw) existing = JSON.parse(raw);
+    } catch {}
+    if (!Array.isArray(existing)) existing = [];
+
+    const newActivity = {
+      id: activity.id || `act-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+      studentId: targetId,
+      timestamp: activity.timestamp || new Date().toISOString(),
+      timeAgo: activity.timeAgo || lmsService.formatRelativeTime(activity.timestamp),
+      type: activity.type || "system",
+      action: activity.action || "",
+      target: activity.target || "",
+      user: activity.user || null,
+      score: activity.score,
+      details: activity.details || null,
+    };
+
+    const updated = [newActivity, ...existing.filter((a) => a.id !== newActivity.id)].slice(0, 100);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(updated));
+    } catch (e) {
+      console.warn("Could not save student activity:", e);
+    }
+    return newActivity;
+  },
+
+  getStudentActivities: ({
+    studentId,
+    currentUser,
+    crmProfile,
+    crmAttendance,
+    crmBatch,
+    courses = [],
+    quizzes = [],
+    assignments = [],
+  } = {}) => {
+    const targetId = studentId || crmProfile?.id || currentUser?.admissionId || currentUser?.id || crmService.getSelectedStudentId() || "";
+    const studentName = currentUser?.name || crmProfile?.name || "Student";
+    const studentAvatar = currentUser?.avatar || crmProfile?.photo || null;
+
+    const activities = [];
+    const seenKeys = new Set();
+
+    // 1. Explicitly recorded activities in localStorage
+    try {
+      const storageKey = `om_lms_student_activities_${targetId}`;
+      const recorded = JSON.parse(localStorage.getItem(storageKey) || "[]");
+      if (Array.isArray(recorded)) {
+        recorded.forEach((act) => {
+          if (act && act.id && !seenKeys.has(act.id)) {
+            seenKeys.add(act.id);
+            activities.push({
+              ...act,
+              user: act.user || {
+                name: studentName,
+                avatar: studentAvatar,
+                role: "Student",
+              },
+              timeAgo: act.timestamp ? lmsService.formatRelativeTime(act.timestamp) : (act.timeAgo || "Recently"),
+            });
+          }
+        });
+      }
+    } catch {}
+
+    // 2. Real Quizzes Completed/Attempted
+    let attemptsCache = {};
+    try {
+      const cacheKey = targetId ? `om_lms_quiz_attempts_cache_${targetId}` : "om_lms_quiz_attempts_cache";
+      attemptsCache = {
+        ...JSON.parse(localStorage.getItem("om_lms_quiz_attempts_cache") || "{}"),
+        ...JSON.parse(localStorage.getItem(cacheKey) || "{}"),
+      };
+    } catch {}
+
+    const allQuizzes = Array.isArray(quizzes) && quizzes.length > 0 ? quizzes : lmsService.getQuizzes();
+    allQuizzes.forEach((q) => {
+      const qKey = String(q.numericId || q.id);
+      const attempt = attemptsCache[qKey] || (q.studentStatus && q.studentStatus !== "pending" ? {
+        status: q.studentStatus,
+        score: q.studentScore,
+        completedDate: q.completedDate,
+      } : null);
+
+      if (attempt && (attempt.status === "passed" || attempt.status === "failed" || (attempt.score !== null && attempt.score !== undefined))) {
+        const actId = `act-quiz-${qKey}`;
+        if (!seenKeys.has(actId)) {
+          seenKeys.add(actId);
+          const isPassed = attempt.status === "passed" || (attempt.score >= (q.passScorePercentage || 75));
+          const scoreStr = attempt.score !== null && attempt.score !== undefined ? `${attempt.score}%` : "Passed";
+          const parsedTime = attempt.completedDate ? new Date(attempt.completedDate).toISOString() : new Date().toISOString();
+          activities.push({
+            id: actId,
+            studentId: targetId,
+            timestamp: parsedTime,
+            timeAgo: lmsService.formatRelativeTime(attempt.completedDate || parsedTime),
+            type: "quiz",
+            action: isPassed ? `passed examination with ${scoreStr} on` : `completed assessment with ${scoreStr} on`,
+            target: q.title || "Assessment Quiz",
+            score: attempt.score,
+            user: {
+              name: studentName,
+              avatar: studentAvatar,
+              role: "Student",
+            },
+          });
+        }
+      }
+    });
+
+    // 3. Real Assignment Submissions
+    let submissionsCache = {};
+    try {
+      const subKey = targetId ? `om_lms_assignment_submissions_${targetId}` : "om_lms_assignment_submissions";
+      submissionsCache = {
+        ...JSON.parse(localStorage.getItem("om_lms_assignment_submissions") || "{}"),
+        ...JSON.parse(localStorage.getItem(subKey) || "{}"),
+      };
+    } catch {}
+
+    const allAssignments = Array.isArray(assignments) && assignments.length > 0 ? assignments : lmsService.getAssignments();
+    allAssignments.forEach((a) => {
+      const aKey = String(a.id);
+      const cachedSub = submissionsCache[aKey];
+      const isSubmitted = a.status === "submitted" || a.status === "graded" || a.submittedAt || Boolean(cachedSub);
+
+      if (isSubmitted) {
+        const isGraded = a.status === "graded" || Boolean(a.score);
+        const actId = `act-assign-${a.id}`;
+        if (!seenKeys.has(actId)) {
+          seenKeys.add(actId);
+          const subDate = cachedSub?.submittedAt || a.submittedAt || a.submittedAtIso;
+          const parsedTime = subDate ? new Date(subDate).toISOString() : new Date().toISOString();
+          activities.push({
+            id: actId,
+            studentId: targetId,
+            timestamp: parsedTime,
+            timeAgo: lmsService.formatRelativeTime(subDate || parsedTime),
+            type: isGraded ? "grading" : "assignment",
+            action: isGraded ? `received Grade ${a.score ? a.score + '%' : 'A+'} on` : `submitted practical assignment for`,
+            target: a.title || "Practical Assignment",
+            score: a.score,
+            user: {
+              name: studentName,
+              avatar: studentAvatar,
+              role: "Student",
+            },
+          });
+        }
+      }
+    });
+
+    // 4. Completed Units / Curriculum Lessons
+    const units = lmsService.getUnits();
+    const courseTitleMap = {};
+    (courses && courses.length > 0 ? courses : lmsService.getCourses()).forEach((c) => {
+      courseTitleMap[c.id] = c.title;
+    });
+
+    units.forEach((u) => {
+      if (u.isCompleted) {
+        const actId = `act-unit-${u.id}`;
+        if (!seenKeys.has(actId)) {
+          seenKeys.add(actId);
+          const courseName = courseTitleMap[u.courseId] || "Course Curriculum";
+          const parsedTime = u.completedAt ? new Date(u.completedAt).toISOString() : new Date().toISOString();
+          activities.push({
+            id: actId,
+            studentId: targetId,
+            timestamp: parsedTime,
+            timeAgo: lmsService.formatRelativeTime(u.completedAt || parsedTime),
+            type: "completion",
+            action: "completed curriculum lesson",
+            target: `${u.title} in ${courseName}`,
+            user: {
+              name: studentName,
+              avatar: studentAvatar,
+              role: "Student",
+            },
+          });
+        }
+      }
+    });
+
+    // 5. Attended CRM Lectures (Real present sessions)
+    if (crmAttendance && Array.isArray(crmAttendance.logs)) {
+      const batchName = crmBatch?.name || crmProfile?.batch || "Classroom Session";
+      crmAttendance.logs.forEach((log, idx) => {
+        if (log.status === "PRESENT") {
+          const actId = `act-att-${log.id || log.lecture_id || log.date || idx}`;
+          if (!seenKeys.has(actId)) {
+            seenKeys.add(actId);
+            const parsedTime = log.date ? new Date(log.date).toISOString() : new Date().toISOString();
+            activities.push({
+              id: actId,
+              studentId: targetId,
+              timestamp: parsedTime,
+              timeAgo: lmsService.formatRelativeTime(log.date || parsedTime),
+              type: "lecture",
+              action: "attended live classroom session on",
+              target: `${log.topic || log.lecture_name || 'Class Session'} (${log.batch_name || batchName})`,
+              user: {
+                name: studentName,
+                avatar: studentAvatar,
+                role: "Student",
+              },
+            });
+          }
+        }
+      });
+    }
+
+    // 6. Program Enrollment Milestone
+    if (crmProfile && (crmProfile.registrationDate || crmProfile.joiningDate || crmProfile.course)) {
+      const enrollDate = crmProfile.registrationDate || crmProfile.joiningDate || "2026-04-20";
+      const actId = `act-enroll-${targetId || 'student'}`;
+      if (!seenKeys.has(actId)) {
+        seenKeys.add(actId);
+        const parsedTime = new Date(enrollDate).toISOString();
+        activities.push({
+          id: actId,
+          studentId: targetId,
+          timestamp: parsedTime,
+          timeAgo: lmsService.formatRelativeTime(enrollDate),
+          type: "enrollment",
+          action: "enrolled in program",
+          target: crmProfile.course || "Digital Marketing & AI Master Program",
+          user: {
+            name: studentName,
+            avatar: studentAvatar,
+            role: "Student",
+          },
+        });
+      }
+    }
+
+    // Sort by timestamp newest first
+    activities.sort((a, b) => {
+      const tA = new Date(a.timestamp || 0).getTime();
+      const tB = new Date(b.timestamp || 0).getTime();
+      return tB - tA;
+    });
+
+    return activities;
+  },
+
   // Activities
   getActivities: () => {
     const stored = getStored("activities", null);
