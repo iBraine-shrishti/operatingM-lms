@@ -211,7 +211,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
       </div>
 
       {/* Nav List */}
-      <div className="flex-1 overflow-y-auto py-5 px-3 space-y-6 custom-scrollbar">
+      <div className={`flex-1 overflow-y-auto overflow-x-hidden py-5 ${collapsed ? "px-2" : "px-3"} space-y-6 custom-scrollbar`}>
         {sections.map((section, sIdx) => (
           <div key={sIdx} className="space-y-1">
             {!collapsed && (
@@ -234,16 +234,20 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
                       isLinkActive ||
                       (item.path === "/manage-courses" &&
                         location.pathname === "/");
-                    return `group relative flex items-center px-3.5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm transition-all duration-150 ${
+                    return `group relative flex items-center ${
+                      collapsed
+                        ? "justify-center px-2 py-2.5"
+                        : "justify-between px-3.5 py-2.5"
+                    } rounded-xl font-semibold text-xs sm:text-sm transition-all duration-150 ${
                       active
                         ? "bg-[#eff6ff] text-[#2563eb] dark:bg-blue-600/15 dark:text-cyan-400 dark:border dark:border-blue-500/30 dark:shadow-[0_0_12px_rgba(37,99,235,0.25)] shadow-2xs"
                         : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white"
-                    } ${collapsed ? "justify-center" : "justify-between"}`;
+                    }`;
                   }}
                   title={collapsed ? item.name : undefined}
                 >
                   <div
-                    className={`flex items-center space-x-3 ${collapsed ? "justify-center" : ""}`}
+                    className={`flex items-center ${collapsed ? "justify-center" : "space-x-3"}`}
                   >
                     <Icon
                       size={18}
@@ -270,12 +274,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
                     </span>
                   )}
 
-                  {/* Tooltip for collapsed mode */}
-                  {collapsed && (
-                    <div className="absolute left-full ml-3 px-2.5 py-1 bg-slate-900 dark:bg-slate-800 text-white text-xs font-medium rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 shadow-md border border-transparent dark:border-slate-700">
-                      {item.name}
-                    </div>
-                  )}
+
                 </NavLink>
               );
             })}
@@ -284,16 +283,17 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
       </div>
 
       {/* Footer / Sign Out (matching DASHBOARD.png) */}
-      <div className="p-3 border-t border-slate-100 dark:border-slate-800/90 shrink-0">
+      <div className={`border-t border-slate-100 dark:border-slate-800/90 shrink-0 ${collapsed ? "p-2" : "p-3"}`}>
         <button
           onClick={() => {
             logout();
             navigate("/login");
           }}
-          className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer ${
-            collapsed ? "justify-center" : ""
-          }`}
-          title={collapsed ? "Logout" : undefined}
+          className={`w-full flex items-center ${
+            collapsed ? "justify-center px-2 py-2.5" : "space-x-3 px-3.5 py-2.5"
+          } rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer`}
+          title={collapsed ? "Sign Out" : undefined}
+
         >
           <LogOut
             size={18}

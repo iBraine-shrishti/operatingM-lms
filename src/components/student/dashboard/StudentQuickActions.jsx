@@ -116,7 +116,7 @@ export const StudentQuickActions = ({
   };
 
   return (
-    <div className="flex lg:col-span-5 xl:col-span-5 2xl:col-span-5 bg-white dark:bg-[#0f172a]/95 border border-slate-100/90 dark:border-slate-800 hover:dark:border-slate-700 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.25)] p-2.5 sm:p-3.5 lg:p-4 xl:p-4.5 2xl:p-6 flex-col justify-between space-y-2 rounded-2xl transition-all duration-200">
+    <div className="flex w-full bg-white dark:bg-[#0f172a]/95 border border-slate-100/90 dark:border-slate-800 hover:dark:border-slate-700 shadow-[0_4px_24px_rgba(0,0,0,0.03)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.25)] p-2.5 sm:p-3.5 lg:p-3.5 xl:p-4 2xl:p-5 flex-col justify-between space-y-2 rounded-2xl transition-all duration-200 h-full">
       {/* Header */}
       <div className="flex items-center justify-between gap-2 px-0.5">
         <div className="flex items-center gap-1.5 sm:gap-2">
@@ -137,7 +137,7 @@ export const StudentQuickActions = ({
 
       {/* Actions: distinct styled responsive items */}
       <div
-        className={`grid ${actions.length >= 4 ? "grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 2xl:grid-cols-4" : "grid-cols-3"} gap-1.5 sm:gap-2.5 xl:gap-2.5 2xl:gap-3.5 w-full flex-1`}
+        className="grid grid-cols-2 gap-1.5 sm:gap-2.5 xl:gap-2.5 2xl:gap-3 w-full flex-1"
       >
         {actions.map((act) => {
           const colorKey = act.color || "blue";

@@ -133,24 +133,24 @@ export const StudentDashboardHub = ({
   return (
     <div className="flex-1 flex flex-col justify-between gap-3.5 lg:gap-4 xl:gap-4.5 2xl:gap-5 w-full min-h-0 lg:min-h-[calc(100vh-6rem)]">
       {/* ============================================================== */}
-      {/* 1. TOP ROW: WELCOME BANNER (LEFT) & QUICK ACTIONS (RIGHT)      */}
+      {/* 1. TOP ROW: WELCOME BANNER (FULLY STRETCHED)                   */}
       {/* ============================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 lg:gap-4 xl:gap-4 2xl:gap-5 items-stretch">
-        <StudentWelcomeBanner
-          currentUser={currentUser}
-          crmProfile={crmProfile}
-        />
+      <StudentWelcomeBanner
+        currentUser={currentUser}
+        crmProfile={crmProfile}
+      />
+
+      {/* ============================================================== */}
+      {/* 2. SECOND ROW: 2 GRIDS SIDE BY SIDE (QUICK ACTIONS & STATS)    */}
+      {/* ============================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3.5 lg:gap-4 xl:gap-4 2xl:gap-5 items-stretch">
         <StudentQuickActions
           actions={dashboardData.quickActions}
         />
+        <StudentStatCards
+          stats={dashboardData.stats}
+        />
       </div>
-
-      {/* ============================================================== */}
-      {/* 2. STAT CARDS: 2x2 on mobile/tablet, 4 in a row on desktop     */}
-      {/* ============================================================== */}
-      <StudentStatCards
-        stats={dashboardData.stats}
-      />
 
       {/* ============================================================== */}
       {/* 3. TWO-COLUMN MAIN WORKSPACE                                   */}

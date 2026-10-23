@@ -57,7 +57,7 @@ export const StudentStatCard = ({
   return (
     <div
       onClick={onClick}
-      className={`border rounded-2xl p-3 sm:p-3.5 lg:p-3.5 xl:p-4 2xl:p-5 hover:-translate-y-1 transition-all duration-200 flex items-center justify-between min-w-0 cursor-pointer group ${theme.card}`}
+      className={`border rounded-2xl p-2.5 sm:p-3 lg:p-3 xl:p-3.5 2xl:p-4 hover:-translate-y-1 transition-all duration-200 flex items-center justify-between min-w-0 cursor-pointer group h-full ${theme.card}`}
     >
       <div className="flex items-center space-x-2.5 sm:space-x-3.5 2xl:space-x-4 min-w-0">
         <div

@@ -34,7 +34,7 @@ export const StudentWelcomeBanner = ({
 
   return (
     <div
-      className={`lg:col-span-7 xl:col-span-7 2xl:col-span-7 relative bg-cover bg-center dashboard-hero-banner border border-blue-100/70 dark:border-blue-500/30 shadow-2xs hover:shadow-xs p-3.5 sm:p-5 lg:p-6 xl:p-7 flex items-center justify-between overflow-hidden rounded-3xl transition-all duration-200 min-h-[150px] sm:min-h-[185px] gap-2.5 sm:gap-4`}
+      className={`w-full relative bg-cover bg-center dashboard-hero-banner border border-blue-100/70 dark:border-blue-500/30 shadow-2xs hover:shadow-xs p-3.5 sm:p-5 lg:p-6 xl:p-7 flex items-center justify-between overflow-hidden rounded-3xl transition-all duration-200 min-h-[150px] sm:min-h-[180px] gap-2.5 sm:gap-4`}
       style={headerBgFromBackend ? { backgroundImage: `url(${headerBgFromBackend})` } : undefined}
     >
       {/* Left Column: Greeting, Student Name, Specialization & Identity Pills */}
