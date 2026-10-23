@@ -233,8 +233,22 @@ export const AuthProvider = ({ children }) => {
                 }));
             }
 
+            const hasEnrolled = Boolean(
+                attendance?.hasEnrolledBatch ||
+                (attendance?.enrolledBatches && attendance.enrolledBatches.length > 0) ||
+                profile?.batchName
+            );
+
             if (attendance) setCrmAttendance(attendance);
-            if (batch) setCrmBatch(batch);
+            if (batch) {
+                setCrmBatch({
+                    ...batch,
+                    isEnrolled: hasEnrolled,
+                    batchName: hasEnrolled
+                        ? (attendance?.primaryBatchName || profile?.batchName || batch.batchName)
+                        : null,
+                });
+            }
             if (certs) setCrmCertificates(certs);
             if (studentsList) setAvailableStudents(studentsList);
         } catch (err) {
@@ -333,6 +347,12 @@ export const AuthProvider = ({ children }) => {
             crmProfile,
             crmAttendance,
             crmBatch,
+            hasEnrolledBatch: Boolean(
+                crmAttendance?.hasEnrolledBatch ||
+                (crmAttendance?.enrolledBatches && crmAttendance.enrolledBatches.length > 0) ||
+                crmProfile?.batchName ||
+                crmBatch?.isEnrolled
+            ),
             crmCertificates,
             availableStudents,
             assignedCourseIds,
