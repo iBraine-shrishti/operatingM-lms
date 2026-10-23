@@ -760,7 +760,7 @@ class CrmService {
   /**
    * Fetch attendance stats and monthly graph trends
    */
-  async getStudentAttendance(studentId = 1039) {
+  async getStudentAttendance(studentId = this.getSelectedStudentId()) {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 6000);
@@ -778,27 +778,20 @@ class CrmService {
         const d = await res.json();
         const logs = d.logs || [];
 
-        // Logical counts
-        let total = d.total_lectures || logs.length || 28;
-        let present =
-          d.present_count ?? logs.filter((l) => l.status === "PRESENT").length;
-        let absent =
-          d.absent_count ?? logs.filter((l) => l.status === "ABSENT").length;
-
-        // If mock/test student has 0 lectures attended out of 5, provide realistic active cohort metrics
-        if (total <= 5 && present === 0) {
-          total = 28;
-          present = 25;
-          absent = 3;
-        }
-
-        if (present > total) {
-          total = present + absent;
-        }
+        // Real counts directly from CRM attendance chart
+        const total = d.total_lectures !== undefined ? d.total_lectures : logs.length;
+        const present =
+          d.present_count !== undefined
+            ? d.present_count
+            : logs.filter((l) => l.status === "PRESENT").length;
+        const absent =
+          d.absent_count !== undefined
+            ? d.absent_count
+            : logs.filter((l) => l.status !== "PRESENT").length;
 
         let pct = d.attendance_percentage;
-        if (pct === undefined || pct === null || pct <= 0 || pct > 100) {
-          pct = total > 0 ? Math.round((present / total) * 1000) / 10 : 89.3;
+        if (pct === undefined || pct === null) {
+          pct = total > 0 ? Math.round((present / total) * 1000) / 10 : 0;
         }
         pct = Math.min(100, Math.max(0, pct));
 
@@ -806,19 +799,17 @@ class CrmService {
 
         const attendance = {
           studentId: d.student_id || studentId,
-          studentName: d.student_name || "Aditya Jadhav",
+          studentName: d.student_name || "Student",
           course:
             d.course !== "N/A" && d.course
               ? d.course
-              : "Masters in Digital Marketing",
+              : "",
           totalLectures: total,
           presentCount: present,
           absentCount: absent,
           attendancePercentage: pct,
           standing,
-          monthlyTrend: DEFAULT_CRM_ATTENDANCE.monthlyTrend,
-          weeklyTimeline: DEFAULT_CRM_ATTENDANCE.weeklyTimeline,
-          logs: logs.length > 0 ? logs : DEFAULT_CRM_ATTENDANCE.logs,
+          logs: logs,
         };
 
         this.cachedAttendance = attendance;

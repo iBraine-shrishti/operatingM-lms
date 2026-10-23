@@ -176,7 +176,7 @@ export const AuthProvider = ({ children }) => {
             const studentName = profile?.name || 'Aditya Jadhav';
 
             const [attendance, batch, certs, studentsList, permissions, batchAssignments] = await Promise.all([
-                crmService.getStudentAttendance(1039), // maps to active attendance cohort
+                crmService.getStudentAttendance(targetId),
                 crmService.getBatchSchedule('Andheri'),
                 crmService.getCertificates(studentName),
                 crmService.getAvailableStudents(),
