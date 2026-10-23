@@ -146,41 +146,69 @@ export const AttendanceFeesPage = () => {
           <div className="pt-2">
             <AttendanceComparisonChart
               enrolledCourseTitle={crmProfile.course || "Diploma in Digital Marketing"}
+              crmAttendance={crmAttendance}
+              studentData={crmProfile}
             />
           </div>
         ) : (
           /* Class Logs List */
-          <div className="space-y-2 pt-1 max-h-[322px] overflow-y-auto pr-1.5 custom-scrollbar">
-            {(crmAttendance.logs || []).map((log, lIdx) => (
-              <div
-                key={lIdx}
-                className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-xs"
-              >
-                <div className="flex items-center space-x-3">
-                  <span
-                    className={`w-2.5 h-2.5 rounded-full ${log.status === "PRESENT" ? "bg-emerald-500" : "bg-rose-500"}`}
-                  />
-                  <div>
-                    <span className="font-bold text-slate-900 dark:text-white block">
-                      {log.topic}
-                    </span>
-                    <span className="text-slate-400 dark:text-slate-500 text-[11px]">
-                      {log.date} • {log.batch_name || "Masters Weekday Morning"}{" "}
-                      • Faculty: {log.trainer_name && log.trainer_name !== "Harsh Pareek" ? log.trainer_name : ((crmProfile?.branch || "").toLowerCase().includes("andheri") ? "Nilkamal Mukharjee" : "Rahul Shende")}
-                    </span>
-                  </div>
-                </div>
-                <span
-                  className={`font-bold px-2.5 py-1 rounded text-xs ${
-                    log.status === "PRESENT"
-                      ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300"
-                      : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300"
-                  }`}
+          <div className="space-y-2 pt-1 max-h-[360px] overflow-y-auto pr-1.5 custom-scrollbar">
+            {crmAttendance.logs && crmAttendance.logs.length > 0 ? (
+              crmAttendance.logs.map((log, lIdx) => (
+                <div
+                  key={lIdx}
+                  className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between text-xs transition-colors hover:bg-slate-100/60 dark:hover:bg-slate-800/60"
                 >
-                  {log.status}
-                </span>
+                  <div className="flex items-center space-x-3">
+                    <span
+                      className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                        log.status === "PRESENT"
+                          ? "bg-emerald-500"
+                          : log.status === "LEAVE"
+                          ? "bg-amber-500"
+                          : "bg-rose-500"
+                      }`}
+                    />
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-slate-900 dark:text-white text-xs">
+                          {log.topic || "General Lecture"}
+                        </span>
+                        {log.sub_topic && (
+                          <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
+                            {log.sub_topic}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-slate-400 dark:text-slate-500 text-[11px] mt-0.5 block">
+                        {log.date} • {log.batch_name || crmProfile.batch || "Classroom"} • Faculty:{" "}
+                        {log.trainer_name || crmProfile.facultyLead || "Faculty Trainer"}
+                      </span>
+                      {log.assignment && (
+                        <span className="text-blue-600 dark:text-blue-400 text-[10px] font-semibold mt-0.5 block">
+                          Assignment: {log.assignment}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <span
+                    className={`font-bold px-2.5 py-1 rounded text-xs shrink-0 ${
+                      log.status === "PRESENT"
+                        ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300"
+                        : log.status === "LEAVE"
+                        ? "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300"
+                        : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300"
+                    }`}
+                  >
+                    {log.status}
+                  </span>
+                </div>
+              ))
+            ) : (
+              <div className="p-8 text-center text-slate-400 dark:text-slate-500 text-xs font-semibold">
+                No attendance logs recorded yet for this student in the CRM Attendance Chart.
               </div>
-            ))}
+            )}
           </div>
         )}
       </div>

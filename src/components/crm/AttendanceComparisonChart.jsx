@@ -534,41 +534,188 @@ const CustomComparisonTooltip = ({ active, payload, label }) => {
 
 export const AttendanceComparisonChart = ({
   enrolledCourseTitle = "Diploma in Digital Marketing",
+  crmAttendance = {},
+  studentData = {},
 }) => {
-  // Find default selected degree matching student's enrolled course
-  const defaultDegreeId = useMemo(() => {
-    if (enrolledCourseTitle?.toLowerCase().includes("master")) return "masters";
-    if (
-      enrolledCourseTitle?.toLowerCase().includes("advanced") ||
-      enrolledCourseTitle?.toLowerCase().includes("adv")
-    )
-      return "adv_diploma";
-    return "diploma";
-  }, [enrolledCourseTitle]);
+  const courseStr = (
+    enrolledCourseTitle ||
+    studentData?.course ||
+    crmAttendance?.course ||
+    ""
+  ).toLowerCase();
 
-  const [selectedDegreeId, setSelectedDegreeId] = useState(defaultDegreeId);
+  // Student only has ONE enrolled degree tier: show their actual enrolled program
+  const activeProgram = useMemo(() => {
+    if (courseStr.includes("master")) {
+      return (
+        DEGREE_PROGRAMS.find((p) => p.id === "masters") || DEGREE_PROGRAMS[2]
+      );
+    }
+    if (courseStr.includes("advanced") || courseStr.includes("adv")) {
+      return (
+        DEGREE_PROGRAMS.find((p) => p.id === "adv_diploma") || DEGREE_PROGRAMS[1]
+      );
+    }
+    return (
+      DEGREE_PROGRAMS.find((p) => p.id === "diploma") || DEGREE_PROGRAMS[0]
+    );
+  }, [courseStr]);
+
   const [breakdownMode, setBreakdownMode] = useState("monthly"); // "weekly" | "monthly" | "total"
 
-  // Selected degree program object
-  const activeProgram = useMemo(() => {
-    return (
-      DEGREE_PROGRAMS.find((p) => p.id === selectedDegreeId) ||
-      DEGREE_PROGRAMS[0]
-    );
-  }, [selectedDegreeId]);
+  const realLogs = useMemo(
+    () => crmAttendance?.logs || [],
+    [crmAttendance?.logs]
+  );
+  const hasRealAttendance = Boolean(
+    crmAttendance &&
+      (realLogs.length > 0 || crmAttendance.totalLectures !== undefined)
+  );
 
-  // Chart data according to breakdown mode
+  const totalConducted = hasRealAttendance
+    ? (crmAttendance.totalLectures ?? realLogs.length)
+    : activeProgram.totalLectures;
+
+  const totalAttended = hasRealAttendance
+    ? (crmAttendance.presentCount ??
+      realLogs.filter((l) => l.status === "PRESENT").length)
+    : activeProgram.attendedCount;
+
+  const totalMissed = hasRealAttendance
+    ? (crmAttendance.absentCount ??
+      realLogs.filter((l) => l.status !== "PRESENT").length)
+    : activeProgram.missedCount;
+
+  const overallRate = hasRealAttendance
+    ? (crmAttendance.attendancePercentage ??
+      (totalConducted > 0
+        ? Math.round((totalAttended / totalConducted) * 100)
+        : 0))
+    : Math.round((totalAttended / totalConducted) * 100);
+
+  const absentRate =
+    totalConducted > 0
+      ? Math.round((totalMissed / totalConducted) * 100)
+      : 0;
+
+  // Chart data according to breakdown mode - computed dynamically from real CRM attendance logs
   const chartData = useMemo(() => {
-    if (breakdownMode === "weekly") return activeProgram.weeklyData;
-    if (breakdownMode === "total") return activeProgram.totalData;
-    return activeProgram.monthlyData;
-  }, [activeProgram, breakdownMode]);
+    if (!realLogs || realLogs.length === 0) {
+      if (breakdownMode === "weekly") return activeProgram.weeklyData;
+      if (breakdownMode === "total") return activeProgram.totalData;
+      return activeProgram.monthlyData;
+    }
 
-  // Totals for the current program
-  const totalAttended = activeProgram.attendedCount;
-  const totalMissed = activeProgram.missedCount;
-  const totalConducted = activeProgram.totalLectures;
-  const overallRate = Math.round((totalAttended / totalConducted) * 100);
+    // Sort chronologically ascending (oldest to newest)
+    const sorted = [...realLogs].sort(
+      (a, b) => new Date(a.raw_date || a.date) - new Date(b.raw_date || b.date)
+    );
+    const firstDate = new Date(sorted[0].raw_date || sorted[0].date);
+    const durationMonths = activeProgram.durationMonths || 2;
+    const durationWeeks = activeProgram.durationWeeks || 8;
+
+    if (breakdownMode === "total") {
+      return [
+        {
+          period: "Total Program",
+          label: `${activeProgram.durationText} Overall Attendance`,
+          attended: totalAttended,
+          missed: totalMissed,
+          total: totalConducted,
+          rate: overallRate,
+        },
+      ];
+    }
+
+    if (breakdownMode === "weekly") {
+      const weekMap = {};
+      sorted.forEach((log) => {
+        const logDate = new Date(log.raw_date || log.date);
+        const diffDays = Math.max(
+          0,
+          Math.floor((logDate - firstDate) / (1000 * 60 * 60 * 24))
+        );
+        const weekNum = Math.min(durationWeeks, Math.floor(diffDays / 7) + 1);
+        const key = `Wk ${weekNum}`;
+        if (!weekMap[key]) {
+          weekMap[key] = {
+            period: key,
+            label: `Week ${weekNum}`,
+            attended: 0,
+            missed: 0,
+            total: 0,
+          };
+        }
+        weekMap[key].total += 1;
+        if (log.status === "PRESENT") weekMap[key].attended += 1;
+        else weekMap[key].missed += 1;
+      });
+
+      const list = Object.values(weekMap).map((w) => ({
+        ...w,
+        rate: w.total > 0 ? Math.round((w.attended / w.total) * 100) : 0,
+      }));
+
+      return list.length > 0
+        ? list
+        : [
+            {
+              period: "Wk 1",
+              label: "Week 1",
+              attended: totalAttended,
+              missed: totalMissed,
+              total: totalConducted,
+              rate: overallRate,
+            },
+          ];
+    }
+
+    // Monthly Mode (Default)
+    const monthMap = {};
+    for (let m = 1; m <= durationMonths; m++) {
+      monthMap[m] = {
+        period: `Month ${m}`,
+        label: `Month ${m}`,
+        attended: 0,
+        missed: 0,
+        total: 0,
+      };
+    }
+
+    sorted.forEach((log) => {
+      const logDate = new Date(log.raw_date || log.date);
+      const diffDays = Math.max(
+        0,
+        Math.floor((logDate - firstDate) / (1000 * 60 * 60 * 24))
+      );
+      const monthNum = Math.min(durationMonths, Math.floor(diffDays / 30) + 1);
+      if (!monthMap[monthNum]) {
+        monthMap[monthNum] = {
+          period: `Month ${monthNum}`,
+          label: `Month ${monthNum}`,
+          attended: 0,
+          missed: 0,
+          total: 0,
+        };
+      }
+      monthMap[monthNum].total += 1;
+      if (log.status === "PRESENT") monthMap[monthNum].attended += 1;
+      else monthMap[monthNum].missed += 1;
+    });
+
+    return Object.values(monthMap).map((m) => ({
+      ...m,
+      rate: m.total > 0 ? Math.round((m.attended / m.total) * 100) : 0,
+    }));
+  }, [
+    realLogs,
+    breakdownMode,
+    activeProgram,
+    totalAttended,
+    totalMissed,
+    totalConducted,
+    overallRate,
+  ]);
 
   return (
     <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] space-y-5">
@@ -596,37 +743,17 @@ export const AttendanceComparisonChart = ({
           </p>
         </div>
 
-        {/* Degree Program Selector based on DEGREEE-TYPE.png */}
-        <div className="flex flex-wrap items-center gap-1.5 bg-slate-50 dark:bg-slate-900/80 p-1.5 rounded-xl border border-slate-200/80 dark:border-slate-800">
-          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 px-2 hidden sm:inline-block">
+        {/* Single Degree Tier matching enrolled program */}
+        <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-200/80 dark:border-slate-800">
+          <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Degree Tier:
           </span>
-          {DEGREE_PROGRAMS.map((prog) => {
-            const isSelected = prog.id === selectedDegreeId;
-            return (
-              <button
-                key={prog.id}
-                type="button"
-                onClick={() => setSelectedDegreeId(prog.id)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-black transition-all cursor-pointer flex items-center space-x-1.5 ${
-                  isSelected
-                    ? "bg-[#2563eb] text-white shadow-xs"
-                    : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/70 dark:border-slate-700"
-                }`}
-              >
-                <span>{prog.shortName}</span>
-                <span
-                  className={`text-[10px] px-1.5 py-0.2 rounded font-extrabold ${
-                    isSelected
-                      ? "bg-white/20 text-white"
-                      : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
-                  }`}
-                >
-                  {prog.durationText}
-                </span>
-              </button>
-            );
-          })}
+          <div className="px-3 py-1.5 rounded-lg text-xs font-black bg-[#2563eb] text-white flex items-center space-x-1.5 shadow-xs">
+            <span>{activeProgram.shortName}</span>
+            <span className="text-[10px] px-1.5 py-0.2 rounded font-extrabold bg-white/20 text-white">
+              {activeProgram.durationText}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -664,7 +791,7 @@ export const AttendanceComparisonChart = ({
             {totalConducted} Sessions
           </div>
           <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            Scheduled in Curriculum
+            {hasRealAttendance ? "Tracked in CRM Attendance Chart" : "Scheduled in Curriculum"}
           </div>
         </div>
 
@@ -692,7 +819,7 @@ export const AttendanceComparisonChart = ({
             {totalMissed} Lectures
           </div>
           <div className="text-xs font-bold text-rose-700 dark:text-rose-400">
-            {Math.round((totalMissed / totalConducted) * 100)}% Absent Rate
+            {absentRate}% Absent Rate
           </div>
         </div>
       </div>
@@ -851,12 +978,16 @@ export const AttendanceComparisonChart = ({
           <span className="text-slate-500 dark:text-slate-400 font-medium">
             Cohort Standing:
           </span>
-          <span className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40 shadow-2xs">
+          <span className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-black shadow-2xs ${
+            overallRate >= 85
+              ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40"
+              : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-500/40"
+          }`}>
             <CheckCircle2
               size={13}
-              className="text-emerald-700 dark:text-emerald-400"
+              className={overallRate >= 85 ? "text-emerald-700 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}
             />
-            <span>Eligible ({overallRate}%)</span>
+            <span>{overallRate >= 85 ? "Eligible" : "Attendance Shortage"} ({overallRate}%)</span>
           </span>
         </div>
       </div>
