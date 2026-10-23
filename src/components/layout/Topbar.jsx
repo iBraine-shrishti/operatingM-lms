@@ -64,7 +64,7 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
           <input
             type="text"
             readOnly
-            placeholder="Search courses, students, or anything..."
+            placeholder="Search courses, exams, assignments, quizzes..."
             className="w-full bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 rounded-xl pl-10 pr-14 py-2 text-sm text-slate-700 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 cursor-pointer focus:outline-hidden transition-all shadow-xs"
           />
           <kbd className="absolute right-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-300 font-sans text-xs px-2 py-0.5 rounded-md shadow-2xs font-semibold">

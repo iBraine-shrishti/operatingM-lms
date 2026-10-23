@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
+
 export default defineConfig({
     plugins: [react()],
     resolve: {
@@ -12,5 +13,8 @@ export default defineConfig({
         watch: {
             ignored: ['**/*.png', '**/*.jpg', '**/*.jpeg']
         }
+    },
+    build: {
+        chunkSizeWarningLimit: 2500
     }
 });

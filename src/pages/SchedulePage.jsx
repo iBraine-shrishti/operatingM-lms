@@ -389,9 +389,6 @@ export const SchedulePage = () => {
                     Lecture Subject / Topic
                   </th>
                   <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
-                    Format
-                  </th>
-                  <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
                     Faculty
                   </th>
                   <th className="py-3.5 px-4 font-black uppercase tracking-wider text-[11px] text-slate-100 dark:text-slate-200 text-center">
@@ -439,14 +436,6 @@ export const SchedulePage = () => {
                       <td className="py-4 px-4 min-w-[220px] text-center">
                         <span className="font-extrabold text-slate-900 dark:text-white text-xs sm:text-[13px] leading-snug block text-center">
                           {row.topic}
-                        </span>
-                      </td>
-
-                      {/* Format Badge with indicator dot, Centered */}
-                      <td className="py-4 px-4 whitespace-nowrap text-center">
-                        <span className="inline-flex items-center justify-center gap-1.5 bg-blue-50/90 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/60 px-2.5 py-1 rounded-md font-bold text-[11px]">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                          <span>{row.type}</span>
                         </span>
                       </td>
 
