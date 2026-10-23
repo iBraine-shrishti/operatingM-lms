@@ -635,11 +635,6 @@ export const CourseDetailPage = () => {
         {[
           { key: "overview", label: "Overview", icon: BookOpen },
           { key: "outline", label: "Modules & Lessons", icon: Layers },
-          {
-            key: "assessments",
-            label: `Quizzes & Assignments (${courseQuizzes.length + courseAssignments.length})`,
-            icon: CheckSquare,
-          },
           { key: "notes", label: "Notes", icon: BookMarked },
           ...(isAdmin
             ? [
