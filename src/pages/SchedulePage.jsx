@@ -321,8 +321,9 @@ export const SchedulePage = () => {
 
         {/* Tab Content: Upcoming Curriculum Sessions OR 7-Day Timetable */}
         {activeTab === "upcoming" ? (
-          <div className="space-y-3 pt-1">
-            {scheduleData.schedules.map((session, idx) => {
+          <div className="pt-1">
+            <div className="space-y-3 max-h-[440px] overflow-y-auto no-scrollbar pr-1">
+              {scheduleData.schedules.map((session, idx) => {
               const isSessionActive =
                 session.topic === scheduleData.activeModule?.topic;
               const displayId = String(idx + 1).padStart(2, "0");
@@ -366,6 +367,7 @@ export const SchedulePage = () => {
                 </div>
               );
             })}
+            </div>
           </div>
         ) : (
           /* Table Container */
