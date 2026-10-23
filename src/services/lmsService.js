@@ -1162,6 +1162,9 @@ export const lmsService = {
     const updated = [newActivity, ...existing.filter((a) => a.id !== newActivity.id)].slice(0, 100);
     try {
       localStorage.setItem(storageKey, JSON.stringify(updated));
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("om_lms_activity_updated", { detail: newActivity }));
+      }
     } catch (e) {
       console.warn("Could not save student activity:", e);
     }

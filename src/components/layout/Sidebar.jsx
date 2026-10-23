@@ -37,7 +37,7 @@ import {
 export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isStudent, logout, enrolledCoursesCount, assignmentsCount, crmProfile, currentUser } = useAuth();
+  const { isStudent, logout, enrolledCoursesCount, assignmentsCount, crmProfile, crmAttendance, crmBatch, currentUser } = useAuth();
   const { isDark } = useTheme();
   const [liveAssignmentsCount, setLiveAssignmentsCount] = useState(assignmentsCount ?? 0);
   const [liveQuizzesCount, setLiveQuizzesCount] = useState(() => {
@@ -46,6 +46,21 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
       return Array.isArray(q) && q.length > 0 ? q.length : 3;
     } catch {
       return 3;
+    }
+  });
+  const [liveActivitiesCount, setLiveActivitiesCount] = useState(() => {
+    try {
+      const studentId = crmService.getSelectedStudentId() || crmProfile?.id || currentUser?.crmAdmissionId;
+      const acts = lmsService.getStudentActivities({
+        studentId,
+        currentUser,
+        crmProfile,
+        crmAttendance,
+        crmBatch,
+      });
+      return Array.isArray(acts) ? acts.length : 0;
+    } catch {
+      return 0;
     }
   });
 
@@ -111,12 +126,45 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
     };
   }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId]);
 
+  useEffect(() => {
+    const updateActivitiesCount = () => {
+      try {
+        const studentId = crmService.getSelectedStudentId() || crmProfile?.id || currentUser?.crmAdmissionId;
+        const acts = lmsService.getStudentActivities({
+          studentId,
+          currentUser,
+          crmProfile,
+          crmAttendance,
+          crmBatch,
+        });
+        if (Array.isArray(acts)) {
+          setLiveActivitiesCount(acts.length);
+        }
+      } catch (err) {
+        console.warn("Could not calculate activities count in sidebar:", err);
+      }
+    };
+
+    updateActivitiesCount();
+    window.addEventListener("om_lms_activity_updated", updateActivitiesCount);
+    window.addEventListener("storage", updateActivitiesCount);
+    return () => {
+      window.removeEventListener("om_lms_activity_updated", updateActivitiesCount);
+      window.removeEventListener("storage", updateActivitiesCount);
+    };
+  }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId, crmAttendance, crmBatch]);
+
   const sections = [
     {
       title: "MAIN",
       items: [
         { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-        { name: "Activity", path: "/activity", icon: Activity },
+        { 
+          name: "Activity", 
+          path: "/activity", 
+          icon: Activity, 
+          badge: String(liveActivitiesCount ?? 0) 
+        },
         { name: "Profile", path: "/profile", icon: User },
       ],
     },
