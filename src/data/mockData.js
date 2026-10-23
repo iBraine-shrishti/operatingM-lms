@@ -332,10 +332,7 @@ export const INITIAL_ASSIGNMENTS = [
         totalSubmissions: 68,
         pendingGrading: 5,
         maxScore: 100,
-        status: 'graded',
-        score: 92,
-        feedback: 'Superb Figma design system and typography hierarchy tokens. Clean auto-layouts throughout!',
-        submittedAt: 'Sep 29, 2026',
+        status: 'pending',
         instructions: 'Provide public Figma link with component library, color styles, typography tokens, and 6 ad variations.'
     },
     {
@@ -347,8 +344,7 @@ export const INITIAL_ASSIGNMENTS = [
         totalSubmissions: 140,
         pendingGrading: 14,
         maxScore: 100,
-        status: 'submitted',
-        submittedAt: 'Oct 01, 2026',
+        status: 'pending',
         instructions: 'Complete the digital marketing specialization selection matrix based on your career goals.'
     },
     {
@@ -360,10 +356,7 @@ export const INITIAL_ASSIGNMENTS = [
         totalSubmissions: 72,
         pendingGrading: 7,
         maxScore: 100,
-        status: 'graded',
-        score: 96,
-        feedback: 'Exceptional viral hook structure and comprehensive multi-channel distribution plan!',
-        submittedAt: 'Sep 26, 2026',
+        status: 'pending',
         instructions: 'Build an omnichannel editorial calendar with caption copywriting and visual references.'
     },
     {
@@ -399,8 +392,7 @@ export const INITIAL_ASSIGNMENTS = [
         totalSubmissions: 33,
         pendingGrading: 4,
         maxScore: 100,
-        status: 'submitted',
-        submittedAt: 'Oct 03, 2026',
+        status: 'pending',
         instructions: 'Implement GA4 tracking for a demo website and submit event tracking report.'
     },
     {
@@ -1188,98 +1180,7 @@ export const INITIAL_DISCUSSIONS = [
         ]
     }
 ];
-export const INITIAL_ACTIVITIES = [
-    {
-        id: 'act-sahil-2',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
-        action: 'passed examination with 95% on',
-        target: 'Google Ads Campaign Setup & Quality Score Exam',
-        timeAgo: '45 min ago',
-        type: 'quiz'
-    },
-    {
-        id: 'act-sahil-3',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
-        action: 'submitted practical audit for',
-        target: 'Live Client SEO Audit & Keyword Strategy',
-        timeAgo: '2 hours ago',
-        type: 'assignment'
-    },
-    {
-        id: 'act-sahil-6',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
-        action: 'received Grade A+ from Rahul Shende on',
-        target: 'PMax Strategy Blueprint Assignment',
-        timeAgo: 'Yesterday',
-        type: 'grading'
-    },
-    {
-        id: 'act-sahil-7',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
-        action: 'posted technical question in forums on',
-        target: 'Core Web Vitals LCP Latency on WordPress',
-        timeAgo: '2 days ago',
-        type: 'discussion'
-    },
-    {
-        id: 'act-sahil-8',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
-        action: 'passed examination with 94% on',
-        target: 'WordPress Core & Elementor Layout Test',
-        timeAgo: '3 days ago',
-        type: 'quiz'
-    },
-    {
-        id: 'act-sahil-11',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
-        action: 'submitted practical capstone on',
-        target: 'Meta Ads Campaign Setup & Audience Persona',
-        timeAgo: '1 week ago',
-        type: 'assignment'
-    },
-    {
-        id: 'act-sahil-12',
-        studentId: 'std-375',
-        isStudent: true,
-        user: { name: 'Sahil Hasolkar', avatar: null, role: 'Student' },
-        action: 'resolved technical doubt on',
-        target: 'PMax vs Search Campaigns Budget Allocation',
-        timeAgo: '1 week ago',
-        type: 'discussion'
-    },
-    {
-        id: 'act-peer-2',
-        studentId: 'std-377',
-        isStudent: true,
-        user: { name: 'Priya Sharma', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80', role: 'Student' },
-        action: 'passed quiz with 92% on',
-        target: 'WordPress Core & Elementor Layout Test',
-        timeAgo: '1 hour ago',
-        type: 'quiz'
-    },
-    {
-        id: 'act-peer-4',
-        studentId: 'std-379',
-        isStudent: true,
-        user: { name: 'Ananya Gupta', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80', role: 'Student' },
-        action: 'submitted assignment for',
-        target: 'Google Ads Masterclass',
-        timeAgo: '6 hours ago',
-        type: 'assignment'
-    }
-];
+export const INITIAL_ACTIVITIES = [];
 export const INITIAL_ACHIEVEMENTS = [
     {
         id: 'ach-1',

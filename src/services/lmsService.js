@@ -715,14 +715,21 @@ export const lmsService = {
   getAssignments: () => {
     const stored = getStored("assignments", INITIAL_ASSIGNMENTS);
     const filtered = (stored || []).filter((a) => a.courseId !== "course-2");
-    if (!filtered || filtered.length < 18 || !filtered.some((a) => a.status)) {
-      setStored("assignments", INITIAL_ASSIGNMENTS);
-      return INITIAL_ASSIGNMENTS;
-    }
-    return filtered.map((a) => ({
-      ...a,
-      status: a.status || "pending",
-    }));
+    return (filtered.length > 0 ? filtered : INITIAL_ASSIGNMENTS).map((a) => {
+      if (a.id?.startsWith("a-") && a.status !== "pending") {
+        return {
+          ...a,
+          status: "pending",
+          submittedAt: undefined,
+          score: undefined,
+          feedback: undefined,
+        };
+      }
+      return {
+        ...a,
+        status: a.status || "pending",
+      };
+    });
   },
   submitAssignment: (id, submission = {}) => {
     const items = lmsService.getAssignments();
@@ -1188,13 +1195,21 @@ export const lmsService = {
     const activities = [];
     const seenKeys = new Set();
 
-    // 1. Explicitly recorded activities in localStorage
+    // 1. Explicitly recorded real activities in localStorage for this student
     try {
       const storageKey = `om_lms_student_activities_${targetId}`;
       const recorded = JSON.parse(localStorage.getItem(storageKey) || "[]");
       if (Array.isArray(recorded)) {
         recorded.forEach((act) => {
           if (act && act.id && !seenKeys.has(act.id)) {
+            // Filter out any obsolete mock entries
+            if (act.target?.includes("Google Ads Campaign Setup & Quality Score Exam") ||
+                act.target?.includes("Live Client SEO Audit & Keyword Strategy") ||
+                act.target?.includes("PMax Strategy Blueprint Assignment") ||
+                act.target?.includes("Career Roadmap & Goal Setting Worksheet") ||
+                act.target?.includes("Google Analytics 4 Tracking Implementation")) {
+              return;
+            }
             seenKeys.add(act.id);
             activities.push({
               ...act,
@@ -1214,14 +1229,15 @@ export const lmsService = {
     let attemptsCache = {};
     try {
       const cacheKey = targetId ? `om_lms_quiz_attempts_cache_${targetId}` : "om_lms_quiz_attempts_cache";
-      attemptsCache = {
-        ...JSON.parse(localStorage.getItem("om_lms_quiz_attempts_cache") || "{}"),
-        ...JSON.parse(localStorage.getItem(cacheKey) || "{}"),
-      };
+      attemptsCache = JSON.parse(localStorage.getItem(cacheKey) || "{}");
     } catch {}
 
-    const allQuizzes = Array.isArray(quizzes) && quizzes.length > 0 ? quizzes : lmsService.getQuizzes();
-    allQuizzes.forEach((q) => {
+    // Only process real quizzes from backend fetchStudentQuizzes or in this student's attemptsCache
+    const candidateQuizzes = Array.isArray(quizzes)
+      ? quizzes.filter((q) => q.numericId || attemptsCache[String(q.id)] || attemptsCache[String(q.numericId)])
+      : [];
+
+    candidateQuizzes.forEach((q) => {
       const qKey = String(q.numericId || q.id);
       const attempt = attemptsCache[qKey] || (q.studentStatus && q.studentStatus !== "pending" ? {
         status: q.studentStatus,
@@ -1256,22 +1272,37 @@ export const lmsService = {
     });
 
     // 3. Real Assignment Submissions
+    // ONLY assignments from the backend batch API or student's own submissions.
+    // NEVER inspect or fallback to mockData template assignments!
     let submissionsCache = {};
     try {
       const subKey = targetId ? `om_lms_assignment_submissions_${targetId}` : "om_lms_assignment_submissions";
-      submissionsCache = {
-        ...JSON.parse(localStorage.getItem("om_lms_assignment_submissions") || "{}"),
-        ...JSON.parse(localStorage.getItem(subKey) || "{}"),
-      };
+      submissionsCache = JSON.parse(localStorage.getItem(subKey) || "{}");
     } catch {}
 
-    const allAssignments = Array.isArray(assignments) && assignments.length > 0 ? assignments : lmsService.getAssignments();
-    allAssignments.forEach((a) => {
+    const realBatchAssignments = Array.isArray(assignments)
+      ? assignments.filter((a) => a.batchId || submissionsCache[String(a.id)])
+      : [];
+
+    // Also include any assignment that exists in submissionsCache
+    const seenBatchIds = new Set(realBatchAssignments.map((a) => String(a.id)));
+    Object.keys(submissionsCache).forEach((subId) => {
+      if (!seenBatchIds.has(String(subId))) {
+        realBatchAssignments.push({
+          id: subId,
+          title: submissionsCache[subId].title || "Practical Project Assignment",
+          status: "submitted",
+          submittedAt: submissionsCache[subId].submittedAt,
+        });
+      }
+    });
+
+    realBatchAssignments.forEach((a) => {
       const aKey = String(a.id);
       const cachedSub = submissionsCache[aKey];
-      const isSubmitted = a.status === "submitted" || a.status === "graded" || a.submittedAt || Boolean(cachedSub);
+      const isRealSub = Boolean(cachedSub) || (a.batchId && (a.status === "submitted" || a.status === "graded"));
 
-      if (isSubmitted) {
+      if (isRealSub) {
         const isGraded = a.status === "graded" || Boolean(a.score);
         const actId = `act-assign-${a.id}`;
         if (!seenKeys.has(actId)) {
@@ -1298,6 +1329,7 @@ export const lmsService = {
     });
 
     // 4. Completed Units / Curriculum Lessons
+    // Only units where the student explicitly marked them completed with a valid completedAt date
     const units = lmsService.getUnits();
     const courseTitleMap = {};
     (courses && courses.length > 0 ? courses : lmsService.getCourses()).forEach((c) => {
@@ -1305,17 +1337,17 @@ export const lmsService = {
     });
 
     units.forEach((u) => {
-      if (u.isCompleted) {
+      if (u.isCompleted && u.completedAt) {
         const actId = `act-unit-${u.id}`;
         if (!seenKeys.has(actId)) {
           seenKeys.add(actId);
           const courseName = courseTitleMap[u.courseId] || "Course Curriculum";
-          const parsedTime = u.completedAt ? new Date(u.completedAt).toISOString() : new Date().toISOString();
+          const parsedTime = new Date(u.completedAt).toISOString();
           activities.push({
             id: actId,
             studentId: targetId,
             timestamp: parsedTime,
-            timeAgo: lmsService.formatRelativeTime(u.completedAt || parsedTime),
+            timeAgo: lmsService.formatRelativeTime(u.completedAt),
             type: "completion",
             action: "completed curriculum lesson",
             target: `${u.title} in ${courseName}`,
@@ -1329,8 +1361,16 @@ export const lmsService = {
       }
     });
 
-    // 5. Attended CRM Lectures (Real present sessions)
-    if (crmAttendance && Array.isArray(crmAttendance.logs)) {
+    // 5. Attended CRM Lectures (Real present sessions from CRM database)
+    // Guard against mock Sahil Hasolkar fallback attendance
+    const isRealStudentAttendance =
+      crmAttendance &&
+      Array.isArray(crmAttendance.logs) &&
+      crmAttendance.logs.length > 0 &&
+      (crmAttendance.studentName !== "Sahil Hasolkar" || studentName.toLowerCase().includes("sahil")) &&
+      (String(crmAttendance.studentId) === String(targetId) || crmAttendance.studentName === studentName);
+
+    if (isRealStudentAttendance) {
       const batchName = crmBatch?.name || crmProfile?.batch || "Classroom Session";
       crmAttendance.logs.forEach((log, idx) => {
         if (log.status === "PRESENT") {
@@ -1358,8 +1398,14 @@ export const lmsService = {
     }
 
     // 6. Program Enrollment Milestone
-    if (crmProfile && (crmProfile.registrationDate || crmProfile.joiningDate || crmProfile.course)) {
-      const enrollDate = crmProfile.registrationDate || crmProfile.joiningDate || "2026-04-20";
+    // Guard against mock Sahil Hasolkar fallback profile
+    const isRealProfile =
+      crmProfile &&
+      (crmProfile.name !== "Sahil Hasolkar" || studentName.toLowerCase().includes("sahil")) &&
+      (crmProfile.registrationDate || crmProfile.joiningDate);
+
+    if (isRealProfile) {
+      const enrollDate = crmProfile.registrationDate || crmProfile.joiningDate;
       const actId = `act-enroll-${targetId || 'student'}`;
       if (!seenKeys.has(actId)) {
         seenKeys.add(actId);
@@ -1393,42 +1439,16 @@ export const lmsService = {
 
   // Activities
   getActivities: () => {
-    const stored = getStored("activities", null);
-    const hasSahil =
-      stored &&
-      stored.some(
-        (a) =>
-          a.studentId === "std-375" ||
-          a.id?.startsWith("act-sahil-") ||
-          a.user?.name === "Sahil Hasolkar",
-      );
-    const hasOldFaculty =
-      stored &&
-      stored.some(
-        (a) =>
-          a.user?.name === "Harsh Pareek" ||
-          a.user?.name === "Vikram Malhotra" ||
-          a.user?.name === "Hiteshpuri Goswami",
-      );
-    const hasEnrollmentOrCert =
-      stored &&
-      stored.some(
-        (a) =>
-          a.type === 'enrollment' ||
-          a.type === 'certificate' ||
-          a.type === 'completion'
-      );
-    if (
-      !stored ||
-      !hasSahil ||
-      hasOldFaculty ||
-      hasEnrollmentOrCert ||
-      stored.length < INITIAL_ACTIVITIES.length
-    ) {
-      setStored("activities", INITIAL_ACTIVITIES);
-      return INITIAL_ACTIVITIES;
-    }
-    return stored;
+    const stored = getStored("activities", []);
+    const clean = Array.isArray(stored)
+      ? stored.filter(
+          (a) =>
+            !a.id?.startsWith("act-sahil-") &&
+            !a.id?.startsWith("act-peer-") &&
+            a.user?.name !== "Sahil Hasolkar",
+        )
+      : [];
+    return clean;
   },
   // Achievements
   getAchievements: () => getStored("achievements", INITIAL_ACHIEVEMENTS),

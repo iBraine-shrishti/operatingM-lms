@@ -14,8 +14,8 @@ import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 
 export const ActivityPage = () => {
   const { isAdmin, currentUser, crmProfile, crmAttendance, crmBatch } = useAuth();
-  const [quizzes, setQuizzes] = useState(() => lmsService.getQuizzes());
-  const [assignments, setAssignments] = useState(() => lmsService.getAssignments());
+  const [quizzes, setQuizzes] = useState([]);
+  const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
@@ -499,7 +499,7 @@ export const ActivityPage = () => {
                         {(act.user?.avatar || currentStudentAvatar) ? (
                           <img
                             src={act.user?.avatar || currentStudentAvatar}
-                            alt={act.user?.name || currentStudentName}
+                            alt="" aria-hidden="true"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
                               if (e.currentTarget.nextElementSibling) {
