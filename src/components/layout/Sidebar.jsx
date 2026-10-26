@@ -56,6 +56,19 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
       return 0;
     }
   });
+  const [liveNotesCount, setLiveNotesCount] = useState(() => {
+    try {
+      const studentId =
+        crmService.getSelectedStudentId() ||
+        crmProfile?.id ||
+        currentUser?.crmAdmissionId ||
+        "375";
+      const notes = lmsService.getNotes(studentId);
+      return Array.isArray(notes) ? notes.length : 0;
+    } catch {
+      return 0;
+    }
+  });
 
   useEffect(() => {
     if (typeof assignmentsCount === "number") {
@@ -147,6 +160,37 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
     };
   }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId, crmAttendance, crmBatch]);
 
+  useEffect(() => {
+    const updateNotesCount = () => {
+      try {
+        const studentId =
+          crmService.getSelectedStudentId() ||
+          crmProfile?.id ||
+          currentUser?.crmAdmissionId ||
+          "375";
+        const notes = lmsService.getNotes(studentId);
+        if (Array.isArray(notes)) {
+          setLiveNotesCount(notes.length);
+        }
+        lmsService.fetchStudentNotes(studentId).then((live) => {
+          if (Array.isArray(live)) {
+            setLiveNotesCount(live.length);
+          }
+        });
+      } catch (err) {
+        console.warn("Could not calculate notes count in sidebar:", err);
+      }
+    };
+
+    updateNotesCount();
+    window.addEventListener("lms_notes_changed", updateNotesCount);
+    window.addEventListener("storage", updateNotesCount);
+    return () => {
+      window.removeEventListener("lms_notes_changed", updateNotesCount);
+      window.removeEventListener("storage", updateNotesCount);
+    };
+  }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId]);
+
   const sections = [
     {
       title: "MAIN",
@@ -194,7 +238,12 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           icon: CheckSquare,
           badge: String(liveQuizzesCount ?? 0),
         },
-        { name: "Notes", path: "/notes", icon: FileText },
+        {
+          name: "Notes",
+          path: "/notes",
+          icon: FileText,
+          badge: String(liveNotesCount ?? 0),
+        },
         { name: "Forums", path: "/forums", icon: MessagesSquare },
         { name: "Schedule", path: "/schedule", icon: Calendar },
       ],
