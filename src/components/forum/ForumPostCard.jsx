@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  MessageSquare,
-  Pin,
-  ExternalLink,
-  Tag,
-  ImageIcon,
-} from "lucide-react";
+import { MessageSquare, Pin, ExternalLink, Tag, ImageIcon, Clock, AlertCircle } from "lucide-react";
 import { ForumVoteButtons } from "./ForumVoteButtons";
 import { getTopicLabel, cleanAuthorHandle } from "./ForumSidebar";
 
@@ -99,6 +93,20 @@ export const ForumPostCard = ({
               <span className="inline-flex items-center space-x-1 text-emerald-600 dark:text-emerald-400 font-bold ml-1">
                 <Pin size={11} className="fill-emerald-500" />
                 <span>Pinned</span>
+              </span>
+            )}
+
+            {post.status === "pending_approval" && (
+              <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-bold text-[10px] border border-amber-200 dark:border-amber-800 ml-1">
+                <Clock size={10} />
+                <span>Under Review</span>
+              </span>
+            )}
+
+            {post.status === "rejected" && (
+              <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 font-bold text-[10px] border border-rose-200 dark:border-rose-800 ml-1">
+                <AlertCircle size={10} />
+                <span>Rejected</span>
               </span>
             )}
 

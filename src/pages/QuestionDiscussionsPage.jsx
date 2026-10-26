@@ -21,9 +21,10 @@ export const QuestionDiscussionsPage = () => {
   const { showToast } = useToast();
 
   const courses = useMemo(() => lmsService.getCourses(), []);
-  const [discussions, setDiscussions] = useState(() =>
-    lmsService.getDiscussions(),
-  );
+  const [discussions, setDiscussions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activePostDetail, setActivePostDetail] = useState(null);
+  const [loadingDetail, setLoadingDetail] = useState(false);
 
   // Filters & Navigation State
   const [selectedCommunity, setSelectedCommunity] = useState("all");
@@ -34,26 +35,65 @@ export const QuestionDiscussionsPage = () => {
   const [lightboxData, setLightboxData] = useState(null); // { url, title }
 
   // User Reactions & Bookmarks
-  const [userReactions, setUserReactions] = useState(() => {
-    const initial = {};
-    discussions.forEach((d) => {
-      if (d.userReaction) initial[d.id] = d.userReaction;
-    });
-    return initial;
-  });
-
+  const [userReactions, setUserReactions] = useState({});
   const [commentVotes, setCommentVotes] = useState({});
 
-  // Current Active Single Post (derived from URL param or local state)
+  const studentId = currentUser?.id || currentUser?.admissionNo || currentUser?.student_id || "std-267";
+
+  // Fetch discussions from live API
+  const loadDiscussions = async () => {
+    setLoading(true);
+    try {
+      const posts = await lmsService.fetchDiscussions(studentId, {
+        community: selectedCommunity,
+        search: searchQuery,
+      });
+      setDiscussions(posts);
+      const initialReactions = {};
+      posts.forEach((d) => {
+        if (d.userReaction) initialReactions[d.id] = d.userReaction;
+      });
+      setUserReactions(initialReactions);
+    } catch (err) {
+      console.warn("Could not load discussions:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadDiscussions();
+  }, [studentId, selectedCommunity, searchQuery]);
+
+  // Fetch single post detail when postId param is in URL
+  useEffect(() => {
+    if (!postId) {
+      setActivePostDetail(null);
+      return;
+    }
+    let isMounted = true;
+    const loadDetail = async () => {
+      setLoadingDetail(true);
+      try {
+        const full = await lmsService.fetchDiscussionDetail(postId, studentId);
+        if (isMounted && full) {
+          setActivePostDetail(full);
+        }
+      } catch (err) {
+        console.warn("Could not load post detail:", err);
+      } finally {
+        if (isMounted) setLoadingDetail(false);
+      }
+    };
+    loadDetail();
+    return () => { isMounted = false; };
+  }, [postId, studentId]);
+
+  // Current Active Single Post
   const currentPost = useMemo(() => {
     if (!postId) return null;
-    return discussions.find((d) => d.id === postId) || null;
-  }, [postId, discussions]);
-
-  // Keep discussions updated if service updates
-  useEffect(() => {
-    setDiscussions(lmsService.getDiscussions());
-  }, []);
+    return activePostDetail || discussions.find((d) => d.id === postId) || null;
+  }, [postId, activePostDetail, discussions]);
 
   // Filter & Sort Discussions
   const filteredDiscussions = useMemo(() => {
@@ -101,42 +141,44 @@ export const QuestionDiscussionsPage = () => {
   }, [discussions, selectedCommunity, searchQuery]);
 
   // Handle Thumbs Up / Down reaction on Posts
-  const handlePostVote = (targetPostId, type) => {
-    const updated = lmsService.toggleDiscussionReaction(targetPostId, type);
-    if (updated) {
-      setUserReactions((prev) => ({
-        ...prev,
-        [targetPostId]: updated.userReaction,
-      }));
-      setDiscussions((prev) =>
-        prev.map((d) => (d.id === targetPostId ? updated : d)),
-      );
+  const handlePostVote = async (targetPostId, type) => {
+    const currentReaction = userReactions[targetPostId];
+    const newReaction = currentReaction === type ? null : type;
+    setUserReactions((prev) => ({ ...prev, [targetPostId]: newReaction }));
+
+    try {
+      const res = await lmsService.toggleDiscussionReaction("post", targetPostId, studentId, type);
+      if (res && res.success) {
+        setDiscussions((prev) =>
+          prev.map((d) => (d.id === targetPostId ? { ...d, upvotes: res.upvotes, score: res.upvotes, userReaction: res.vote_type } : d))
+        );
+        if (activePostDetail && activePostDetail.id === targetPostId) {
+          setActivePostDetail((prev) => ({
+            ...prev,
+            upvotes: res.upvotes,
+            score: res.upvotes,
+            userReaction: res.vote_type,
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn("Post vote error:", err);
     }
   };
 
   // Handle Thumbs Up / Down reaction on Comments
-  const handleCommentVote = (commentId, type) => {
-    setCommentVotes((prev) => {
-      const existing = prev[commentId] || { score: 0, reaction: null };
-      let newReaction = type;
-      let newScore = existing.score;
-
-      if (existing.reaction === type) {
-        newReaction = null;
-        newScore = type === "up" ? existing.score - 1 : existing.score + 1;
-      } else if (existing.reaction === "up" && type === "down") {
-        newScore = existing.score - 2;
-      } else if (existing.reaction === "down" && type === "up") {
-        newScore = existing.score + 2;
-      } else {
-        newScore = type === "up" ? existing.score + 1 : existing.score - 1;
+  const handleCommentVote = async (commentId, type) => {
+    try {
+      const res = await lmsService.toggleDiscussionReaction("reply", commentId, studentId, type);
+      if (res && res.success) {
+        setCommentVotes((prev) => ({
+          ...prev,
+          [commentId]: { score: res.upvotes, reaction: res.vote_type },
+        }));
       }
-
-      return {
-        ...prev,
-        [commentId]: { score: newScore, reaction: newReaction },
-      };
-    });
+    } catch (err) {
+      console.warn("Comment vote error:", err);
+    }
   };
 
   // Navigation: Open Single Post Detail Page
@@ -148,16 +190,24 @@ export const QuestionDiscussionsPage = () => {
     navigate("/forums");
   };
 
-  // Handle Post Creation (with Image Upload)
-  const handleCreatePostSubmit = (newPostData) => {
-    const created = lmsService.addDiscussion(newPostData);
-    setDiscussions((prev) => [created, ...prev]);
-    showToast("Post published to community!", "success", "Forums");
-    navigate(`/forums/${created.id}`);
+  // Handle Post Creation (with Image Upload to VPS and CRM moderation status)
+  const handleCreatePostSubmit = async (newPostData) => {
+    try {
+      const created = await lmsService.createDiscussion({
+        ...newPostData,
+        studentId,
+      });
+      setDiscussions((prev) => [created, ...prev.filter(d => d.id !== created.id)]);
+      showToast("Question submitted for review! Visible after faculty approval.", "success", "Forums");
+      setIsCreateModalOpen(false);
+      navigate(`/forums/${created.id}`);
+    } catch (err) {
+      showToast(err.message || "Failed to submit post", "error");
+    }
   };
 
   // Handle Comment Submission
-  const handleReplySubmit = ({
+  const handleReplySubmit = async ({
     parentId,
     content,
     authorName,
@@ -167,20 +217,29 @@ export const QuestionDiscussionsPage = () => {
   }) => {
     if (!currentPost) return;
 
-    const newReply = {
-      authorName,
-      authorRole,
-      authorAvatar,
-      content,
-      replyToAuthor: replyToAuthor || null,
-      likesCount: 0,
-      isOfficial: authorRole.toLowerCase().includes("instructor"),
-    };
+    try {
+      const newReply = {
+        studentId,
+        authorName,
+        authorRole,
+        authorAvatar,
+        content,
+        parentId: parentId || null,
+        replyToAuthor: replyToAuthor || null,
+        isOfficial: (authorRole || "").toLowerCase().includes("instructor"),
+      };
 
-    lmsService.addDiscussionReply(currentPost.id, newReply, parentId);
-    const updatedDiscussions = lmsService.getDiscussions();
-    setDiscussions(updatedDiscussions);
-    showToast("Comment posted!", "success");
+      await lmsService.createDiscussionReply(currentPost.id, newReply);
+      showToast("Comment posted!", "success");
+
+      // Refetch current post detail
+      const refreshed = await lmsService.fetchDiscussionDetail(currentPost.id, studentId);
+      if (refreshed) {
+        setActivePostDetail(refreshed);
+      }
+    } catch (err) {
+      showToast(err.message || "Failed to post comment", "error");
+    }
   };
 
   // Image Lightbox zoom
@@ -253,7 +312,12 @@ export const QuestionDiscussionsPage = () => {
           </div>
 
           {/* Posts Feed - ONLY QUESTIONS SCROLL, SCROLLBAR HIDDEN */}
-          {filteredDiscussions.length === 0 ? (
+          {loading ? (
+            <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-12 text-center shadow-2xs space-y-3">
+              <div className="w-8 h-8 border-3 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Loading discussions from server...</p>
+            </div>
+          ) : filteredDiscussions.length === 0 ? (
             <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-10 text-center shadow-2xs space-y-3">
               <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center mx-auto">
                 <MessagesSquare size={22} />

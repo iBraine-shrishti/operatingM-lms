@@ -6,7 +6,6 @@ import {
   INITIAL_ASSIGNMENTS,
   INITIAL_STUDENTS,
   INITIAL_QUESTIONS,
-  INITIAL_DISCUSSIONS,
   INITIAL_ACTIVITIES,
   INITIAL_ACHIEVEMENTS,
   INITIAL_NOTES,
@@ -938,76 +937,145 @@ export const lmsService = {
     setStored("questions", [newQ, ...questions]);
     return newQ;
   },
-  // Discussions
+  // Discussions (Live Backend - Zero Mock Data)
   getDiscussions: () => {
-    const stored = getStored("discussions", null);
-    if (!stored || stored.length < INITIAL_DISCUSSIONS.length) {
-      setStored("discussions", INITIAL_DISCUSSIONS);
-      return INITIAL_DISCUSSIONS;
+    return getStored("discussions", []);
+  },
+  fetchDiscussions: async (studentId = null, params = {}) => {
+    try {
+      const q = new URLSearchParams();
+      if (studentId) q.append("student_id", studentId);
+      if (params.community && params.community !== "all") q.append("community", params.community);
+      if (params.category && params.category !== "all") q.append("category", params.category);
+      if (params.courseId && params.courseId !== "all") q.append("course_id", params.courseId);
+      if (params.search) q.append("search", params.search);
+
+      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/?${q.toString()}`);
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      const data = await res.json();
+      if (data && data.success && Array.isArray(data.posts)) {
+        setStored("discussions", data.posts);
+        return data.posts;
+      }
+      return [];
+    } catch (err) {
+      console.warn("fetchDiscussions error:", err);
+      return getStored("discussions", []);
     }
-
-    // Backfill courseId, community, authorHandle, upvotes, and imageUrl if missing
-    let modified = false;
-    const normalized = stored.map((d) => {
-      let item = { ...d };
-      const initMatch = INITIAL_DISCUSSIONS.find((init) => init.id === item.id);
-
-      if (!item.courseId) {
-        modified = true;
-        if (initMatch?.courseId) item.courseId = initMatch.courseId;
-        else {
-          const t = (item.courseTitle || "").toLowerCase();
-          if (t.includes("seo")) item.courseId = "course-8";
-          else if (t.includes("ads")) item.courseId = "course-6";
-          else if (t.includes("social")) item.courseId = "course-1";
-          else if (t.includes("analytics")) item.courseId = "course-5";
-          else if (t.includes("wordpress")) item.courseId = "course-7";
-          else if (t.includes("design")) item.courseId = "course-4";
-          else item.courseId = "course-1";
-        }
+  },
+  fetchDiscussionDetail: async (postId, studentId = null) => {
+    try {
+      const q = studentId ? `?student_id=${studentId}` : "";
+      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/${postId}/${q}`);
+      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+      const data = await res.json();
+      if (data && data.success && data.post) {
+        return data.post;
       }
-
-      if (!item.community) {
-        item.community = initMatch?.community || "general-doubts";
-        modified = true;
-      } else if (item.community.startsWith("r/")) {
-        item.community = item.community.replace(/^r\//, "");
-        modified = true;
-      }
-      if (!item.authorHandle) {
-        item.authorHandle =
-          initMatch?.authorHandle ||
-          (item.authorName || "student").toLowerCase().replace(/\s+/g, "_");
-        modified = true;
-      } else if (item.authorHandle.startsWith("u/")) {
-        item.authorHandle = item.authorHandle.replace(/^u\//, "");
-        modified = true;
-      }
-      if (item.upvotes === undefined && item.score === undefined) {
-        item.upvotes = initMatch?.upvotes || 12;
-        modified = true;
-      }
-      if (!item.imageUrl && initMatch?.imageUrl) {
-        item.imageUrl = initMatch.imageUrl;
-        modified = true;
-      }
-
-      return item;
-    });
-
-    // Ensure newly added initial discussions are present
-    const storedIds = new Set(normalized.map((d) => d.id));
-    const missing = INITIAL_DISCUSSIONS.filter((d) => !storedIds.has(d.id));
-    if (missing.length > 0) {
-      const merged = [...normalized, ...missing];
-      setStored("discussions", merged);
-      return merged;
+      return null;
+    } catch (err) {
+      console.warn("fetchDiscussionDetail error:", err);
+      const items = lmsService.getDiscussions();
+      return items.find((d) => d.id === postId) || null;
     }
+  },
+  createDiscussion: async (discData) => {
+    try {
+      const payload = {
+        student_id: discData.studentId || discData.student_id,
+        author_name: discData.authorName,
+        author_role: discData.authorRole || "Student",
+        author_avatar: discData.authorAvatar,
+        author_handle: discData.authorHandle,
+        title: discData.title,
+        content: discData.content,
+        course_id: discData.courseId,
+        course_title: discData.courseTitle,
+        category: discData.category,
+        flair: discData.flair,
+        community: discData.community,
+        image_url: discData.imageUrl || null,
+      };
 
-    if (modified) {
-      setStored("discussions", normalized);
+      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (data && data.success && data.post) {
+        const current = getStored("discussions", []);
+        setStored("discussions", [data.post, ...current.filter((d) => d.id !== data.post.id)]);
+        return data.post;
+      }
+      throw new Error(data?.message || "Failed to submit post");
+    } catch (err) {
+      console.error("createDiscussion error:", err);
+      throw err;
     }
-    return normalized;
+  },
+  createDiscussionReply: async (postId, replyData) => {
+    try {
+      const payload = {
+        student_id: replyData.studentId || replyData.student_id,
+        author_name: replyData.authorName,
+        author_role: replyData.authorRole || "Student",
+        author_avatar: replyData.authorAvatar,
+        content: replyData.content,
+        parent_id: replyData.parentId || null,
+        reply_to_author: replyData.replyToAuthor || null,
+        is_official: replyData.isOfficial || false,
+      };
+
+      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/${postId}/reply/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (data && data.success && data.reply) {
+        return data.reply;
+      }
+      throw new Error(data?.message || "Failed to post comment");
+    } catch (err) {
+      console.error("createDiscussionReply error:", err);
+      throw err;
+    }
+  },
+  toggleDiscussionReaction: async (targetType, targetId, studentId, voteType) => {
+    try {
+      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/${targetType}/${targetId}/vote/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_id: studentId,
+          vote_type: voteType,
+        }),
+      });
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      console.warn("toggleDiscussionReaction error:", err);
+      return null;
+    }
+  },
+  uploadForumImage: async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/upload-image/`, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      if (data && data.success && data.url) {
+        return data.url;
+      }
+      throw new Error(data?.message || "Failed to upload image");
+    } catch (err) {
+      console.error("uploadForumImage error:", err);
+      throw err;
+    }
   },
   addDiscussion: (disc) => {
     const items = lmsService.getDiscussions();
@@ -1030,35 +1098,6 @@ export const lmsService = {
     };
     setStored("discussions", [newItem, ...items]);
     return newItem;
-  },
-  toggleDiscussionReaction: (discussionId, reactionType) => {
-    const items = lmsService.getDiscussions();
-    const index = items.findIndex((d) => d.id === discussionId);
-    if (index === -1) return null;
-
-    const currentScore = items[index].upvotes ?? items[index].score ?? 0;
-    const currentReaction = items[index].userReaction;
-
-    let newReaction = reactionType;
-    let newScore = currentScore;
-
-    if (currentReaction === reactionType) {
-      // Toggle off
-      newReaction = null;
-      newScore = reactionType === "up" ? currentScore - 1 : currentScore + 1;
-    } else if (currentReaction === "up" && reactionType === "down") {
-      newScore = currentScore - 2;
-    } else if (currentReaction === "down" && reactionType === "up") {
-      newScore = currentScore + 2;
-    } else {
-      newScore = reactionType === "up" ? currentScore + 1 : currentScore - 1;
-    }
-
-    items[index].userReaction = newReaction;
-    items[index].upvotes = newScore;
-    items[index].score = newScore;
-    setStored("discussions", items);
-    return items[index];
   },
   addDiscussionReply: (discussionId, reply, parentReplyId = null) => {
     const items = lmsService.getDiscussions();

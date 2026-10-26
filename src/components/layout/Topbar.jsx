@@ -1,36 +1,99 @@
-import React, { useState } from "react";
-import {
-  ChevronRight,
-  Search,
-  Bell,
-  ChevronDown,
-  User,
-  Settings,
-  LogOut,
-  Check,
-  Shield,
-  GraduationCap,
-  Sun,
-  Moon,
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { db } from "../../firebase";
+import { ref, onValue, update } from "firebase/database";
+import { CRM_BACKEND_API } from "../../services/lmsService";
+import { ChevronRight, Search, Bell, ChevronDown, User, Settings, LogOut, Check, Shield, GraduationCap, Sun, Moon, AlertCircle, MessageSquare, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
-  const { isDark, toggleTheme } = useTheme();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [unreadNotifications, setUnreadNotifications] = useState(3);
-  const [notifOpen, setNotifOpen] = useState(false);
-  const navigate = useNavigate();
-  const {
-    currentUser,
-    role,
-    isAdmin,
-    isStudent,
-    switchRole,
-    logout,
-    crmProfile,
+  const { isDark, toggleTheme } = useTheme();
+  const navigate = useNavigate();
+  const {
+    currentUser,
+    role,
+    isAdmin,
+    isStudent,
+    switchRole,
+    logout,
+    crmProfile,
   } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [notificationsList, setNotificationsList] = useState([]);
+  const [notifOpen, setNotifOpen] = useState(false);
+
+  // Student ID for Firebase channel
+  const cleanSid = String(
+    currentUser?.id || currentUser?.admissionNo || currentUser?.student_id || ""
+  ).replace("std-", "");
+
+  // Real-time Firebase notification listener
+  useEffect(() => {
+    if (!cleanSid) return;
+
+    const notifRef = ref(db, `lms_notifications/${cleanSid}`);
+    const unsubscribe = onValue(
+      notifRef,
+      (snapshot) => {
+        const data = snapshot.val();
+        if (data && typeof data === "object") {
+          const list = Object.entries(data)
+            .map(([k, v]) => ({ key: k, ...v }))
+            .reverse();
+          setNotificationsList(list);
+          const unread = list.filter((n) => !n.isRead).length;
+          setUnreadNotifications(unread);
+        } else {
+          setNotificationsList([]);
+          setUnreadNotifications(0);
+        }
+      },
+      (err) => {
+        console.warn("Firebase notifications listener error:", err);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [cleanSid]);
+
+  // Mark single notification read
+  const handleMarkNotificationRead = async (notif) => {
+    if (cleanSid && notif.key) {
+      try {
+        await update(ref(db, `lms_notifications/${cleanSid}/${notif.key}`), {
+          isRead: true,
+        });
+      } catch (err) {}
+    }
+    if (notif.linkUrl) {
+      setNotifOpen(false);
+      navigate(notif.linkUrl);
+    }
+  };
+
+  // Mark all notifications read
+  const handleMarkAllRead = async () => {
+    if (!cleanSid || notificationsList.length === 0) {
+      setUnreadNotifications(0);
+      return;
+    }
+    try {
+      const updates = {};
+      notificationsList.forEach((n) => {
+        if (!n.isRead && n.key) {
+          updates[`lms_notifications/${cleanSid}/${n.key}/isRead`] = true;
+        }
+      });
+      if (Object.keys(updates).length > 0) {
+        await update(ref(db), updates);
+      }
+      setUnreadNotifications(0);
+    } catch (err) {
+      console.warn("Mark all read error:", err);
+    }
+  };
+
 
   const currentAvatar =
     role === "ADMIN"
@@ -102,76 +165,84 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
           {notifOpen && (
             <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-[#0f172a] rounded-xl shadow-xl border border-slate-100 dark:border-slate-800 py-3 z-50 animate-in fade-in slide-in-from-top-2">
               <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <h4 className="font-bold text-sm text-slate-900 dark:text-white">
-                  Notifications
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <span>Notifications</span>
+                  {unreadNotifications > 0 && (
+                    <span className="px-1.5 py-0.5 rounded-full bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 text-[10px] font-extrabold">
+                      {unreadNotifications} new
+                    </span>
+                  )}
                 </h4>
-                <button
-                  onClick={() => setUnreadNotifications(0)}
-                  className="text-xs text-blue-600 dark:text-cyan-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
-                >
-                  <Check size={12} /> Mark all read
-                </button>
+                {unreadNotifications > 0 && (
+                  <button
+                    onClick={handleMarkAllRead}
+                    className="text-xs text-blue-600 dark:text-cyan-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    <Check size={12} /> Mark all read
+                  </button>
+                )}
               </div>
-              <div className="divide-y divide-slate-50 dark:divide-slate-800/60 max-h-64 overflow-y-auto">
-                {isAdmin ? (
-                  <>
-                    <div className="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors flex space-x-3 items-start">
-                      <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 font-bold text-xs">
-                        SEO
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                          New student enrolled in SEO Masterclass
-                        </p>
-                        <span className="text-[10px] text-slate-400">
-                          10 mins ago
-                        </span>
-                      </div>
-                    </div>
-                    <div className="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors flex space-x-3 items-start">
-                      <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 font-bold text-xs">
-                        WP
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                          WordPress Quiz 2 submitted by Aarav
-                        </p>
-                        <span className="text-[10px] text-slate-400">
-                          1 hour ago
-                        </span>
-                      </div>
-                    </div>
-                  </>
+              <div className="divide-y divide-slate-100 dark:divide-slate-800/60 max-h-80 overflow-y-auto">
+                {notificationsList.length === 0 ? (
+                  <div className="py-8 text-center text-slate-400 dark:text-slate-500 space-y-1">
+                    <Bell size={24} className="mx-auto opacity-40 mb-1" />
+                    <p className="text-xs font-semibold">No notifications right now</p>
+                    <p className="text-[10px]">You're all caught up!</p>
+                  </div>
                 ) : (
-                  <>
-                    <div className="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors flex space-x-3 items-start">
-                      <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                        <Check size={14} />
+                  notificationsList.map((notif) => {
+                    const isApproval = notif.type === "forum_approval";
+                    const isRejection = notif.type === "forum_rejection";
+                    return (
+                      <div
+                        key={notif.key || notif.id}
+                        onClick={() => handleMarkNotificationRead(notif)}
+                        className={`px-4 py-3 transition-colors flex space-x-3 items-start cursor-pointer ${
+                          !notif.isRead
+                            ? "bg-blue-50/50 dark:bg-blue-950/30 hover:bg-blue-50 dark:hover:bg-blue-950/50"
+                            : "hover:bg-slate-50 dark:hover:bg-slate-850"
+                        }`}
+                      >
+                        <div
+                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold ${
+                            isApproval
+                              ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400"
+                              : isRejection
+                              ? "bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400"
+                              : "bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400"
+                          }`}
+                        >
+                          {isApproval ? (
+                            <Sparkles size={14} />
+                          ) : isRejection ? (
+                            <AlertCircle size={14} />
+                          ) : (
+                            <MessageSquare size={14} />
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p
+                            className={`text-xs leading-snug ${
+                              !notif.isRead
+                                ? "font-bold text-slate-900 dark:text-white"
+                                : "font-medium text-slate-700 dark:text-slate-300"
+                            }`}
+                          >
+                            {notif.title || "Notification"}
+                          </p>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-0.5">
+                            {notif.message}
+                          </p>
+                          <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">
+                            {notif.createdAt ? new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
+                          </span>
+                        </div>
+                        {!notif.isRead && (
+                          <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-1.5" />
+                        )}
                       </div>
-                      <div>
-                        <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                          Congratulations! You earned "GA4 Master Certified"
-                          badge
-                        </p>
-                        <span className="text-[10px] text-slate-400">
-                          2 hours ago
-                        </span>
-                      </div>
-                    </div>
-                    <div className="px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors flex space-x-3 items-start">
-                      <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 font-bold text-xs">
-                        QZ
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                          New Quiz available in Website Development
-                        </p>
-                        <span className="text-[10px] text-slate-400">
-                          Yesterday
-                        </span>
-                      </div>
-                    </div>
-                  </>
+                    );
+                  })
                 )}
               </div>
             </div>

@@ -1,14 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-  ArrowLeft,
-  MessageSquare,
-  Pin,
-  Tag,
-  Send,
-  ImageIcon,
-  ShieldCheck,
-  ExternalLink,
-} from "lucide-react";
+import { ArrowLeft, MessageSquare, Pin, Tag, Send, ImageIcon, ShieldCheck, ExternalLink, AlertCircle, Clock } from "lucide-react";
 import { ForumVoteButtons } from "./ForumVoteButtons";
 import { ForumCommentNode } from "./ForumCommentNode";
 import { ForumSidebar, getTopicLabel, cleanAuthorHandle } from "./ForumSidebar";
@@ -106,6 +97,30 @@ export const ForumPostDetailView = ({
         {/* Left Column: Full Thread & Comments (8 cols) - ONLY THIS SCROLLS WITH NO-SCROLLBAR */}
         <div className="lg:col-span-8 flex flex-col h-full min-h-0">
           <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar space-y-4 pr-1 pb-6">
+            {/* Status Banner for Pending / Rejected */}
+            {post.status === "pending_approval" && (
+              <div className="bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 rounded-2xl p-4 flex items-start space-x-3 text-amber-900 dark:text-amber-200 shadow-2xs">
+                <Clock className="shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" size={18} />
+                <div className="text-xs space-y-0.5">
+                  <p className="font-bold text-amber-800 dark:text-amber-300">Under Faculty Review</p>
+                  <p className="text-amber-700 dark:text-amber-400">
+                    Your question has been submitted and is currently pending faculty approval in the CRM moderation portal. It is visible only to you. Once approved, it will be published to the full student community.
+                  </p>
+                </div>
+              </div>
+            )}
+            {post.status === "rejected" && (
+              <div className="bg-rose-50/90 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/80 rounded-2xl p-4 flex items-start space-x-3 text-rose-900 dark:text-rose-200 shadow-2xs">
+                <AlertCircle className="shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" size={18} />
+                <div className="text-xs space-y-0.5">
+                  <p className="font-bold text-rose-800 dark:text-rose-300">Submission Rejected by Moderator</p>
+                  <p className="text-rose-700 dark:text-rose-400">
+                    Reason: {post.rejectionReason || post.rejectReason || "Violates community guidelines or incomplete details."}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Main Post Card */}
             <article className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xs flex overflow-hidden">
               {/* Left Vote Gutter */}

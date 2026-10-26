@@ -1,35 +1,6 @@
 import React, { useState, useRef } from "react";
-import {
-  X,
-  Upload,
-  ImageIcon,
-  Tag,
-  Sparkles,
-  Check,
-  AlertCircle,
-  Trash2,
-  MessageSquare,
-} from "lucide-react";
-
-// Presets for instant marketing screenshots
-const SAMPLE_MARKETING_SCREENSHOTS = [
-  {
-    label: "Google Ads ROAS Audit",
-    url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&auto=format&fit=crop&q=80",
-  },
-  {
-    label: "PageSpeed LCP Metrics",
-    url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1000&auto=format&fit=crop&q=80",
-  },
-  {
-    label: "Meta Ads Dashboard",
-    url: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1000&auto=format&fit=crop&q=80",
-  },
-  {
-    label: "GA4 Event Analytics",
-    url: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1000&auto=format&fit=crop&q=80",
-  },
-];
+import { X, Upload, ImageIcon, Tag, Sparkles, Check, AlertCircle, Trash2, MessageSquare, Loader2 } from "lucide-react";
+import { lmsService } from "../../services/lmsService";
 
 export const ForumCreatePostModal = ({
   isOpen,
@@ -47,19 +18,29 @@ export const ForumCreatePostModal = ({
   const [imageUrl, setImageUrl] = useState("");
   const [imageFileName, setImageFileName] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const fileInputRef = useRef(null);
 
   if (!isOpen) return null;
 
-  // Process uploaded image file via FileReader (Base64)
-  const processImageFile = (file) => {
+  // Process uploaded image file directly to VPS storage
+  const processImageFile = async (file) => {
     if (!file || !file.type.startsWith("image/")) return;
     setImageFileName(file.name);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setImageUrl(e.target.result);
-    };
-    reader.readAsDataURL(file);
+    setIsUploadingImage(true);
+    try {
+      const serverUrl = await lmsService.uploadForumImage(file);
+      setImageUrl(serverUrl);
+    } catch (err) {
+      console.warn("VPS upload error:", err);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImageUrl(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setIsUploadingImage(false);
+    }
   };
 
   const handleFileChange = (e) => {
@@ -232,15 +213,29 @@ export const ForumCreatePostModal = ({
                     : "border-slate-200 dark:border-slate-700 hover:border-slate-400 bg-slate-50/60 dark:bg-slate-900/40"
                 }`}
               >
-                <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center mx-auto mb-2 shadow-2xs">
-                  <Upload size={18} />
-                </div>
-                <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                  Click to upload screenshot or drag and drop
-                </p>
-                <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
-                  PNG, JPG, WebP, GIF supported
-                </p>
+                {isUploadingImage ? (
+                  <div className="py-2">
+                    <Loader2 size={24} className="animate-spin text-[#3b49df] mx-auto mb-2" />
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                      Uploading screenshot to VPS server...
+                    </p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
+                      Please wait a moment
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center mx-auto mb-2 shadow-2xs">
+                      <Upload size={18} />
+                    </div>
+                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                      Click to upload screenshot or drag and drop
+                    </p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
+                      PNG, JPG, WebP, GIF supported
+                    </p>
+                  </>
+                )}
               </div>
             ) : (
               <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 max-h-56 bg-slate-950/30 flex items-center justify-center group/preview">
@@ -263,24 +258,6 @@ export const ForumCreatePostModal = ({
                 </button>
               </div>
             )}
-
-            {/* Quick Sample Presets */}
-            <div className="flex items-center space-x-1.5 flex-wrap gap-y-1 pt-1 text-[11px] text-slate-500">
-              <span className="font-semibold text-slate-400">Or use sample:</span>
-              {SAMPLE_MARKETING_SCREENSHOTS.map((s, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => {
-                    setImageUrl(s.url);
-                    setImageFileName(s.label);
-                  }}
-                  className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-medium transition-colors cursor-pointer"
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* Modal Footer Actions */}
