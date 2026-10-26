@@ -1567,11 +1567,6 @@ export const lmsService = {
           }));
           const key = `notes_${sId}`;
           setStored(key, normalized);
-          if (typeof window !== "undefined") {
-            try {
-              window.dispatchEvent(new Event("lms_notes_changed"));
-            } catch (e) {}
-          }
           return normalized;
         }
       }

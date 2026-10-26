@@ -161,35 +161,40 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId, crmAttendance, crmBatch]);
 
   useEffect(() => {
-    const updateNotesCount = () => {
+    const studentId =
+      crmService.getSelectedStudentId() ||
+      crmProfile?.id ||
+      currentUser?.crmAdmissionId ||
+      "375";
+
+    const updateNotesFromCache = () => {
       try {
-        const studentId =
-          crmService.getSelectedStudentId() ||
-          crmProfile?.id ||
-          currentUser?.crmAdmissionId ||
-          "375";
         const notes = lmsService.getNotes(studentId);
         if (Array.isArray(notes)) {
           setLiveNotesCount(notes.length);
         }
-        lmsService.fetchStudentNotes(studentId).then((live) => {
-          if (Array.isArray(live)) {
-            setLiveNotesCount(live.length);
-          }
-        });
       } catch (err) {
         console.warn("Could not calculate notes count in sidebar:", err);
       }
     };
 
-    updateNotesCount();
-    window.addEventListener("lms_notes_changed", updateNotesCount);
-    window.addEventListener("storage", updateNotesCount);
+    // Initialize from local cache immediately
+    updateNotesFromCache();
+
+    // Fetch once in background from backend
+    lmsService.fetchStudentNotes(studentId).then((live) => {
+      if (Array.isArray(live)) {
+        setLiveNotesCount(live.length);
+      }
+    });
+
+    window.addEventListener("lms_notes_changed", updateNotesFromCache);
+    window.addEventListener("storage", updateNotesFromCache);
     return () => {
-      window.removeEventListener("lms_notes_changed", updateNotesCount);
-      window.removeEventListener("storage", updateNotesCount);
+      window.removeEventListener("lms_notes_changed", updateNotesFromCache);
+      window.removeEventListener("storage", updateNotesFromCache);
     };
-  }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId]);
+  }, [crmProfile?.id, currentUser?.crmAdmissionId]);
 
   const sections = [
     {
