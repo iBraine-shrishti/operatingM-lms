@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { lmsService } from "../services/lmsService";
 import {
   FileText,
@@ -215,6 +215,17 @@ export const NotesReviewsPage = () => {
   const [sortBy, setSortBy] = useState("newest"); // 'newest' | 'oldest' | 'title'
   const [copiedId, setCopiedId] = useState(null);
 
+  // Synchronize notes across app events
+  useEffect(() => {
+    const handleSync = () => setNotes(lmsService.getNotes());
+    window.addEventListener("lms_notes_changed", handleSync);
+    window.addEventListener("storage", handleSync);
+    return () => {
+      window.removeEventListener("lms_notes_changed", handleSync);
+      window.removeEventListener("storage", handleSync);
+    };
+  }, []);
+
   // New Note Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newCourseId, setNewCourseId] = useState(courses[0]?.id || "course-1");
@@ -245,10 +256,11 @@ export const NotesReviewsPage = () => {
       // Search text query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const matchesContent = n.content?.toLowerCase().includes(q);
-        const matchesLesson = n.lessonTitle?.toLowerCase().includes(q);
-        const matchesCourse = n.courseTitle?.toLowerCase().includes(q);
-        const matchesCat = n.category?.toLowerCase().includes(q);
+        const bodyText = (ENHANCED_NOTE_CONTENT[n.id] || n.content || n.text || "").toLowerCase();
+        const matchesContent = bodyText.includes(q);
+        const matchesLesson = ((n.lessonTitle || n.lessonTag || "")).toLowerCase().includes(q);
+        const matchesCourse = (n.courseTitle || "").toLowerCase().includes(q);
+        const matchesCat = (n.category || "").toLowerCase().includes(q);
         if (
           !matchesContent &&
           !matchesLesson &&
@@ -261,19 +273,21 @@ export const NotesReviewsPage = () => {
 
       // Course filter
       if (selectedCourse !== "all") {
-        const courseObj = courses.find((c) => c.id === selectedCourse);
-        if (
-          courseObj &&
-          n.courseTitle !== courseObj.title &&
-          n.courseId !== selectedCourse
-        ) {
+        const courseObj = courses.find((c) => c.id === selectedCourse || String(c.id) === String(selectedCourse));
+        const matchesId = n.courseId === selectedCourse || String(n.courseId) === String(selectedCourse);
+        const matchesTitle = courseObj && n.courseTitle && (
+          n.courseTitle.trim().toLowerCase() === courseObj.title.trim().toLowerCase()
+        );
+        if (!matchesId && !matchesTitle) {
           return false;
         }
       }
 
       // Category filter
       if (selectedCategory !== "all" && selectedCategory !== "All Notes") {
-        if (n.category !== selectedCategory) {
+        const nCat = (n.category || "").toLowerCase();
+        const sCat = selectedCategory.toLowerCase();
+        if (nCat !== sCat && !nCat.includes(sCat) && !sCat.includes(nCat)) {
           return false;
         }
       }
@@ -333,15 +347,17 @@ export const NotesReviewsPage = () => {
       return;
     }
 
-    const courseObj = courses.find((c) => c.id === newCourseId);
+    const courseObj = courses.find((c) => c.id === newCourseId || String(c.id) === String(newCourseId));
     const courseTitle = courseObj ? courseObj.title : "Digital Marketing";
 
     lmsService.addNote({
       courseId: newCourseId,
       courseTitle,
       lessonTitle: newLessonTitle.trim(),
-      category: newCategory,
+      lessonTag: newLessonTitle.trim(),
+      category: newCategory || courseObj?.category || "General",
       content: newContent.trim(),
+      text: newContent.trim(),
     });
 
     setNotes(lmsService.getNotes());

@@ -1497,31 +1497,80 @@ export const lmsService = {
   getAchievements: () => getStored("achievements", INITIAL_ACHIEVEMENTS),
   // Notes
   getNotes: () => {
-    const stored = getStored("notes", INITIAL_NOTES);
-    if (!stored || stored.length < INITIAL_NOTES.length) {
-      setStored("notes", INITIAL_NOTES);
-      return INITIAL_NOTES;
+    let stored = getStored("notes", null);
+    if (!stored) {
+      stored = INITIAL_NOTES.map((n) => ({
+        ...n,
+        lessonTag: n.lessonTag || n.lessonTitle || "General",
+        lessonTitle: n.lessonTitle || n.lessonTag || "General Lesson",
+        text: n.text || n.content || "",
+        content: n.content || n.text || "",
+        date: n.date || n.createdAt || "Recent",
+        createdAt: n.createdAt || n.date || "Recent",
+      }));
+      setStored("notes", stored);
+      return stored;
     }
-    return stored;
+    return stored.map((n) => ({
+      ...n,
+      lessonTag: n.lessonTag || n.lessonTitle || "General",
+      lessonTitle: n.lessonTitle || n.lessonTag || "General Lesson",
+      text: n.text || n.content || "",
+      content: n.content || n.text || "",
+      date: n.date || n.createdAt || "Recent",
+      createdAt: n.createdAt || n.date || "Recent",
+    }));
   },
   addNote: (note) => {
     const notes = lmsService.getNotes();
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
     const newNote = {
+      id: note.id || `note-${Date.now()}`,
+      courseId: note.courseId || "",
+      courseTitle: note.courseTitle || "",
+      lessonTitle: note.lessonTitle || note.lessonTag || "General Lesson",
+      lessonTag: note.lessonTag || note.lessonTitle || "General",
+      category: note.category || "General",
+      content: note.content || note.text || "",
+      text: note.text || note.content || "",
+      createdAt: note.createdAt || note.date || formattedDate,
+      date: note.date || note.createdAt || "Today",
       ...note,
-      id: `note-${Date.now()}`,
-      createdAt: new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }),
     };
-    setStored("notes", [newNote, ...notes]);
+    if (!newNote.content && newNote.text) newNote.content = newNote.text;
+    if (!newNote.text && newNote.content) newNote.text = newNote.content;
+    if (!newNote.lessonTitle && newNote.lessonTag) newNote.lessonTitle = newNote.lessonTag;
+    if (!newNote.lessonTag && newNote.lessonTitle) newNote.lessonTag = newNote.lessonTitle;
+    if (!newNote.createdAt && newNote.date) newNote.createdAt = newNote.date;
+    if (!newNote.date && newNote.createdAt) newNote.date = newNote.createdAt;
+
+    const updated = [newNote, ...notes];
+    setStored("notes", updated);
+    if (typeof window !== "undefined") {
+      try {
+        window.dispatchEvent(new Event("lms_notes_changed"));
+      } catch (e) {
+        // ignore
+      }
+    }
     return newNote;
   },
   deleteNote: (id) => {
     const notes = lmsService.getNotes();
     const filtered = notes.filter((n) => n.id !== id);
     setStored("notes", filtered);
+    if (typeof window !== "undefined") {
+      try {
+        window.dispatchEvent(new Event("lms_notes_changed"));
+      } catch (e) {
+        // ignore
+      }
+    }
     return filtered;
   },
   // Reviews

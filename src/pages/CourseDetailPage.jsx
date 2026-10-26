@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import {
@@ -41,6 +41,7 @@ import {
   Globe,
   Lock,
   CheckSquare,
+  Copy,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -181,43 +182,38 @@ export const CourseDetailPage = () => {
   const [showQnaModal, setShowQnaModal] = useState(false);
   const [replyInput, setReplyInput] = useState({});
 
-  // Notes state
-  const [notesList, setNotesList] = useState([
-    {
-      id: "n-1",
-      date: "24 Sep 2026",
-      lessonTag: "Viral Video Hooks",
-      text: "Remember the 3-second hook rule: introduce the visual pattern interrupt before delivering the core proposition.",
-    },
-    {
-      id: "n-2",
-      date: "22 Sep 2026",
-      lessonTag: "Content Pillars",
-      text: "Topic Cluster model: 1 Core Pillar (Educational/Proof) feeding 4 secondary supporting posts each week.",
-    },
-  ]);
+  // Notes state - fully connected to lmsService
+  const [allNotes, setAllNotes] = useState(() => lmsService.getNotes());
   const [newNoteText, setNewNoteText] = useState("");
-  const [newNoteTag, setNewNoteTag] = useState("Viral Video Hooks");
+  const [newNoteTag, setNewNoteTag] = useState("");
   const [courseNotesSearch, setCourseNotesSearch] = useState("");
   const [courseNotesFilterTag, setCourseNotesFilterTag] = useState("all");
+  const [copiedNoteId, setCopiedNoteId] = useState(null);
 
-  const filteredCourseNotes = useMemo(() => {
-    return notesList.filter((note) => {
-      if (courseNotesSearch.trim()) {
-        const q = courseNotesSearch.toLowerCase();
-        const matchesText = note.text?.toLowerCase().includes(q);
-        const matchesTag = note.lessonTag?.toLowerCase().includes(q);
-        if (!matchesText && !matchesTag) return false;
-      }
-      if (
-        courseNotesFilterTag !== "all" &&
-        note.lessonTag !== courseNotesFilterTag
-      ) {
-        return false;
-      }
-      return true;
+  // Sync notes across tabs and actions
+  useEffect(() => {
+    const handleSync = () => setAllNotes(lmsService.getNotes());
+    window.addEventListener("lms_notes_changed", handleSync);
+    window.addEventListener("storage", handleSync);
+    return () => {
+      window.removeEventListener("lms_notes_changed", handleSync);
+      window.removeEventListener("storage", handleSync);
+    };
+  }, []);
+
+  // Filter notes belonging to this course
+  const courseNotes = useMemo(() => {
+    if (!course) return [];
+    return allNotes.filter((n) => {
+      const nCId = String(n.courseId || "").trim();
+      const cId = String(course.id || "").trim();
+      const nTitle = (n.courseTitle || "").trim().toLowerCase();
+      const cTitle = (course.title || "").trim().toLowerCase();
+      if (nCId && cId && nCId === cId) return true;
+      if (nTitle && cTitle && (nTitle === cTitle || nTitle.includes(cTitle) || cTitle.includes(nTitle))) return true;
+      return false;
     });
-  }, [notesList, courseNotesSearch, courseNotesFilterTag]);
+  }, [allNotes, course]);
 
   const [assessmentsVersion, setAssessmentsVersion] = useState(0);
 
@@ -272,6 +268,41 @@ export const CourseDetailPage = () => {
 
     return result;
   }, [units]);
+
+  // Set default module tag when sections load
+  useEffect(() => {
+    if (sections.length > 0 && !newNoteTag) {
+      setNewNoteTag(sections[0].name);
+    }
+  }, [sections, newNoteTag]);
+
+  // Available tags in this course (modules + existing notes tags)
+  const availableNoteTags = useMemo(() => {
+    const set = new Set();
+    sections.forEach((s) => s.name && set.add(s.name));
+    courseNotes.forEach((n) => {
+      const tag = n.lessonTag || n.lessonTitle;
+      if (tag) set.add(tag);
+    });
+    return Array.from(set);
+  }, [sections, courseNotes]);
+
+  // Filtered course notes
+  const filteredCourseNotes = useMemo(() => {
+    return courseNotes.filter((note) => {
+      if (courseNotesSearch.trim()) {
+        const q = courseNotesSearch.toLowerCase();
+        const matchesText = (note.text || note.content || "").toLowerCase().includes(q);
+        const matchesTag = (note.lessonTag || note.lessonTitle || "").toLowerCase().includes(q);
+        if (!matchesText && !matchesTag) return false;
+      }
+      if (courseNotesFilterTag !== "all") {
+        const tag = note.lessonTag || note.lessonTitle;
+        if (tag !== courseNotesFilterTag) return false;
+      }
+      return true;
+    });
+  }, [courseNotes, courseNotesSearch, courseNotesFilterTag]);
 
   // Separate Entities: Course Quizzes & Assignments
   const courseQuizzes = useMemo(() => {
@@ -419,15 +450,39 @@ export const CourseDetailPage = () => {
   const handleSaveNote = (e) => {
     e.preventDefault();
     if (!newNoteText.trim()) return;
-    const newNote = {
-      id: `n-${Date.now()}`,
-      date: "Today",
-      lessonTag: newNoteTag,
+    const tagToUse = newNoteTag || (sections[0]?.name) || "General Notes";
+    lmsService.addNote({
+      courseId: course.id,
+      courseTitle: course.title,
+      category: course.category || "General",
+      lessonTitle: tagToUse,
+      lessonTag: tagToUse,
+      content: newNoteText.trim(),
       text: newNoteText.trim(),
-    };
-    setNotesList([newNote, ...notesList]);
+      date: "Today",
+      createdAt: new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+    });
+    setAllNotes(lmsService.getNotes());
     setNewNoteText("");
     showToast("Note saved to your course notebook!", "success");
+  };
+
+  const handleDeleteNote = (noteId) => {
+    lmsService.deleteNote(noteId);
+    setAllNotes(lmsService.getNotes());
+    showToast("Note deleted", "info");
+  };
+
+  const handleCopyNote = (text, id) => {
+    if (!text) return;
+    navigator.clipboard?.writeText(text);
+    setCopiedNoteId(id);
+    showToast("Note copied to clipboard!", "success");
+    setTimeout(() => setCopiedNoteId(null), 2000);
   };
 
   const toggleSection = (idx) => {
@@ -1420,9 +1475,9 @@ export const CourseDetailPage = () => {
                 className="w-full bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-700 dark:text-slate-200 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 focus:border-[#3b49df] cursor-pointer"
               >
                 <option value="all">All Modules & Tags</option>
-                {sections.map((s) => (
-                  <option key={s.name} value={s.name}>
-                    {s.name}
+                {availableNoteTags.map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
                   </option>
                 ))}
               </select>
@@ -1433,10 +1488,14 @@ export const CourseDetailPage = () => {
             {filteredCourseNotes.length === 0 ? (
               <div className="p-8 bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 text-center space-y-2">
                 <p className="text-xs font-semibold text-slate-700 dark:text-slate-200">
-                  No matching notes found
+                  {courseNotes.length === 0
+                    ? "You haven't added any notes for this course yet."
+                    : "No matching notes found"}
                 </p>
                 <p className="text-[11px] text-slate-400 dark:text-slate-500">
-                  Try adjusting your search terms or filter.
+                  {courseNotes.length === 0
+                    ? "Use the form above to capture key insights, timestamps, or strategies."
+                    : "Try adjusting your search terms or filter."}
                 </p>
                 {(courseNotesSearch || courseNotesFilterTag !== "all") && (
                   <button
@@ -1451,38 +1510,54 @@ export const CourseDetailPage = () => {
                 )}
               </div>
             ) : (
-              filteredCourseNotes.map((note) => (
-                <div
-                  key={note.id}
-                  className="p-4 bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-start justify-between gap-4"
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center space-x-2">
-                      <span className="text-[10px] font-bold bg-blue-50 dark:bg-blue-950/40 text-[#3b49df] dark:text-blue-400 border border-blue-200/80 dark:border-blue-800/60 px-2 py-0.5 rounded-full">
-                        {note.lessonTag}
-                      </span>
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500">
-                        {note.date}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-normal">
-                      {note.text}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setNotesList((prev) =>
-                        prev.filter((n) => n.id !== note.id),
-                      );
-                      showToast("Note deleted", "info");
-                    }}
-                    className="p-1 text-slate-400 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 rounded transition-colors cursor-pointer"
-                    title="Delete Note"
+              filteredCourseNotes.map((note) => {
+                const noteText = note.text || note.content || "";
+                const noteTag = note.lessonTag || note.lessonTitle || "General";
+                const noteDate = note.date || note.createdAt || "Recently";
+                const isCopied = copiedNoteId === note.id;
+
+                return (
+                  <div
+                    key={note.id}
+                    className="p-4 bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-xs flex items-start justify-between gap-4 group hover:border-slate-300 dark:hover:border-slate-700 transition-all"
                   >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              ))
+                    <div className="space-y-1.5 flex-1 min-w-0">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-[10px] font-bold bg-blue-50 dark:bg-blue-950/40 text-[#3b49df] dark:text-blue-400 border border-blue-200/80 dark:border-blue-800/60 px-2.5 py-0.5 rounded-full">
+                          {noteTag}
+                        </span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium">
+                          {noteDate}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-normal whitespace-pre-line break-words">
+                        {noteText}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center space-x-1 shrink-0">
+                      <button
+                        onClick={() => handleCopyNote(noteText, note.id)}
+                        className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-[#3b49df] dark:hover:text-blue-400 rounded-lg transition-colors cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800"
+                        title="Copy Note"
+                      >
+                        {isCopied ? (
+                          <Check size={14} className="text-emerald-500" />
+                        ) : (
+                          <Copy size={14} />
+                        )}
+                      </button>
+                      <button
+                        onClick={() => handleDeleteNote(note.id)}
+                        className="p-1.5 text-slate-400 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 rounded-lg transition-colors cursor-pointer hover:bg-red-50 dark:hover:bg-red-950/30"
+                        title="Delete Note"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
