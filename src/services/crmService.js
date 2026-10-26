@@ -15,8 +15,7 @@ export const CRM_BASE_URL =
   (typeof window !== "undefined" &&
   (window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1" ||
-    window.location.hostname === "::1" ||
-    window.location.hostname.includes("vercel.app"))
+    window.location.hostname === "::1")
     ? "https://crm.dmsoi.org/api"
     : "https://operatingmedia.org/api");
 const CRM_STORAGE_KEY_STUDENT_ID = "om_lms_selected_crm_student_id";
@@ -565,7 +564,7 @@ class CrmService {
               ) {
                 return raw;
               } else if (raw.startsWith("/media") || raw.startsWith("media/")) {
-                return `https://crm.dmsoi.org${raw.startsWith("/") ? "" : "/"}${raw}`;
+                const mediaHost = CRM_BASE_URL.replace(/\/api\/?$/, ''); return `${mediaHost}${raw.startsWith('/') ? '' : '/'}${raw}`;
               }
               return raw;
             }
@@ -585,7 +584,7 @@ class CrmService {
               ) {
                 return raw;
               } else if (raw.startsWith("/media") || raw.startsWith("media/")) {
-                return `https://crm.dmsoi.org${raw.startsWith("/") ? "" : "/"}${raw}`;
+                const mediaHost = CRM_BASE_URL.replace(/\/api\/?$/, ''); return `${mediaHost}${raw.startsWith('/') ? '' : '/'}${raw}`;
               }
               return raw;
             }
