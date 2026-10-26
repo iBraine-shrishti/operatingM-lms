@@ -399,8 +399,9 @@ export const SchedulePage = () => {
                   {activeTopicDates}
                 </span>
                 <button
-                  onClick={() => navigate("/lesson-player?courseId=course-8")}
-                  className="bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg transition-all shadow-xs flex items-center space-x-1 cursor-pointer"
+                  type="button"
+                  disabled
+                  className="bg-[#2563eb] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-xs flex items-center space-x-1 cursor-default select-none pointer-events-none"
                 >
                   <span>Join Lecture</span>
                   <Video size={13} />
@@ -606,10 +607,9 @@ export const SchedulePage = () => {
                           {/* Action Button, Centered */}
                           <td className="py-4 px-4 text-center whitespace-nowrap">
                             <button
-                              onClick={() =>
-                                navigate("/lesson-player?courseId=course-8")
-                              }
-                              className="inline-flex items-center justify-center gap-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-2xs transition-all cursor-pointer active:scale-95"
+                              type="button"
+                              disabled
+                              className="inline-flex items-center justify-center gap-1.5 bg-[#2563eb] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-2xs cursor-default select-none pointer-events-none"
                             >
                               <span>Enter Room</span>
                               <ArrowRight size={12} />
