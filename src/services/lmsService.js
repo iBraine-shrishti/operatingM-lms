@@ -1018,11 +1018,13 @@ export const lmsService = {
     try {
       const payload = {
         student_id: replyData.studentId || replyData.student_id,
+        author_id: replyData.studentId || replyData.student_id,
         author_name: replyData.authorName,
         author_role: replyData.authorRole || "Student",
         author_avatar: replyData.authorAvatar,
         content: replyData.content,
-        parent_id: replyData.parentId || null,
+        parent_id: replyData.parentId || replyData.parent_id || null,
+        parent_reply_id: replyData.parentId || replyData.parent_id || null,
         reply_to_author: replyData.replyToAuthor || null,
         is_official: replyData.isOfficial || false,
       };

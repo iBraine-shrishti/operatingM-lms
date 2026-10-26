@@ -38,7 +38,9 @@ export const QuestionDiscussionsPage = () => {
   const [userReactions, setUserReactions] = useState({});
   const [commentVotes, setCommentVotes] = useState({});
 
-  const studentId = currentUser?.id || currentUser?.admissionNo || currentUser?.student_id || "std-267";
+  const studentId = currentUser?.crmAdmissionId
+    ? `std-${currentUser.crmAdmissionId}`
+    : (currentUser?.id || currentUser?.admissionNo || currentUser?.student_id || "std-267");
 
   // Fetch discussions from live API
   const loadDiscussions = async () => {

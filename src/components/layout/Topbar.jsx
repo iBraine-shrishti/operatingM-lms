@@ -57,8 +57,8 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
         mergedMap[idKey] = { ...n, key: idKey };
       });
 
-      // 2. Add broadcast and personal from Firebase
-      Object.entries({ ...broadcastNotifs, ...personalNotifs }).forEach(([k, v]) => {
+      // 2. Add personal real-time notifications from Firebase (broadcasts strictly managed per-student via MySQL)
+      Object.entries(personalNotifs).forEach(([k, v]) => {
         mergedMap[k] = { key: k, ...v };
       });
 

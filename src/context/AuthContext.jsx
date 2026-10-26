@@ -131,7 +131,10 @@ export const AuthProvider = ({ children }) => {
                 if (cached?.course) initial.course = cached.course;
                 if (cached?.branch) initial.branch = cached.branch;
                 if (cached?.center) initial.center = cached.center;
-                if (cached?.id) initial.crmAdmissionId = cached.id;
+                if (cached?.id) {
+                    initial.crmAdmissionId = cached.id;
+                    initial.id = `std-${cached.id}`;
+                }
             } else if (savedAvatar) {
                 initial.avatar = savedAvatar;
             } else {
@@ -211,6 +214,7 @@ export const AuthProvider = ({ children }) => {
 
                     return {
                         ...prev,
+                        id: profile.id ? `std-${profile.id}` : prev.id,
                         crmAdmissionId: profile.id || prev.crmAdmissionId,
                         admissionNo: profile.admissionNo || prev.admissionNo,
                         name: profile.name || prev.name,
