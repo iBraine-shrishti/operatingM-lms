@@ -42,40 +42,83 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
     "267"
   ).replace("std-", "");
 
-  // Real-time Firebase notification listener (personal + all students broadcast)
+  // Real-time notification listener (dual sync: Backend MySQL + Firebase)
   useEffect(() => {
     let personalNotifs = {};
     let broadcastNotifs = {};
+    let backendNotifs = [];
 
     const updateCombined = () => {
-      const merged = { ...broadcastNotifs, ...personalNotifs };
-      const list = Object.entries(merged)
-        .map(([k, v]) => ({ key: k, ...v }))
-        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      const mergedMap = {};
+
+      // 1. Add backend notifications first
+      backendNotifs.forEach((n) => {
+        const idKey = `b_${n.id}`;
+        mergedMap[idKey] = { ...n, key: idKey };
+      });
+
+      // 2. Add broadcast and personal from Firebase
+      Object.entries({ ...broadcastNotifs, ...personalNotifs }).forEach(([k, v]) => {
+        mergedMap[k] = { key: k, ...v };
+      });
+
+      const list = Object.values(mergedMap).sort(
+        (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+      );
       setNotificationsList(list);
       const unread = list.filter((n) => !n.isRead).length;
       setUnreadNotifications(unread);
     };
 
-    const unsubPersonal = onValue(
-      ref(db, `lms_notifications/${cleanSid || "267"}`),
-      (snap) => {
-        personalNotifs = snap.val() || {};
-        updateCombined();
-      },
-      (err) => console.warn("Firebase personal listener error:", err)
-    );
+    // Live Backend polling (100% resilient across networks and Firebase permissions)
+    const fetchBackend = async () => {
+      try {
+        const res = await fetch(`${CRM_BACKEND_API}/lms/notifications/?student_id=${cleanSid || "267"}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.notifications)) {
+            backendNotifs = data.notifications;
+            updateCombined();
+          }
+        }
+      } catch (err) {
+        console.warn("Backend notification fetch warning:", err);
+      }
+    };
 
-    const unsubBroadcast = onValue(
-      ref(db, `lms_notifications/all`),
-      (snap) => {
-        broadcastNotifs = snap.val() || {};
-        updateCombined();
-      },
-      (err) => console.warn("Firebase broadcast listener error:", err)
-    );
+    fetchBackend();
+    const interval = setInterval(fetchBackend, 8000);
+    const onFocus = () => fetchBackend();
+    window.addEventListener("focus", onFocus);
+
+    // Optional Firebase RTDB listeners
+    let unsubPersonal = () => {};
+    let unsubBroadcast = () => {};
+    try {
+      unsubPersonal = onValue(
+        ref(db, `lms_notifications/${cleanSid || "267"}`),
+        (snap) => {
+          personalNotifs = snap.val() || {};
+          updateCombined();
+        },
+        (err) => console.warn("Firebase personal listener error:", err)
+      );
+
+      unsubBroadcast = onValue(
+        ref(db, `lms_notifications/all`),
+        (snap) => {
+          broadcastNotifs = snap.val() || {};
+          updateCombined();
+        },
+        (err) => console.warn("Firebase broadcast listener error:", err)
+      );
+    } catch (fbErr) {
+      console.warn("Firebase listener setup:", fbErr);
+    }
 
     return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
       unsubPersonal();
       unsubBroadcast();
     };
@@ -83,13 +126,35 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
 
   // Mark single notification read
   const handleMarkNotificationRead = async (notif) => {
-    if (cleanSid && notif.key) {
+    // 1. Mark in backend
+    if (notif.id) {
+      try {
+        await fetch(`${CRM_BACKEND_API}/lms/notifications/mark-read/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            student_id: cleanSid || "267",
+            notification_id: notif.id,
+          }),
+        });
+      } catch (e) {}
+    }
+
+    // 2. Mark in Firebase if applicable
+    if (cleanSid && notif.key && !notif.key.startsWith("b_")) {
       try {
         await update(ref(db, `lms_notifications/${cleanSid}/${notif.key}`), {
           isRead: true,
         });
       } catch (err) {}
     }
+
+    // Update local state immediately
+    setNotificationsList((prev) =>
+      prev.map((n) => (n.key === notif.key ? { ...n, isRead: true } : n))
+    );
+    setUnreadNotifications((prev) => Math.max(0, prev - 1));
+
     if (notif.linkUrl) {
       setNotifOpen(false);
       navigate(notif.linkUrl);
@@ -98,25 +163,32 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
 
   // Mark all notifications read
   const handleMarkAllRead = async () => {
-    if (!cleanSid || notificationsList.length === 0) {
-      setUnreadNotifications(0);
-      return;
-    }
     try {
-      const updates = {};
-      notificationsList.forEach((n) => {
-        if (!n.isRead && n.key) {
-          updates[`lms_notifications/${cleanSid}/${n.key}/isRead`] = true;
-        }
+      await fetch(`${CRM_BACKEND_API}/lms/notifications/mark-read/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ student_id: cleanSid || "267" }),
       });
-      if (Object.keys(updates).length > 0) {
-        await update(ref(db), updates);
-      }
-      setUnreadNotifications(0);
-    } catch (err) {
-      console.warn("Mark all read error:", err);
+    } catch (e) {}
+
+    if (cleanSid && notificationsList.length > 0) {
+      try {
+        const updates = {};
+        notificationsList.forEach((n) => {
+          if (!n.isRead && n.key && !n.key.startsWith("b_")) {
+            updates[`lms_notifications/${cleanSid}/${n.key}/isRead`] = true;
+          }
+        });
+        if (Object.keys(updates).length > 0) {
+          await update(ref(db), updates);
+        }
+      } catch (e) {}
     }
+
+    setNotificationsList((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    setUnreadNotifications(0);
   };
+
 
 
   const currentAvatar =
@@ -258,7 +330,11 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
                             {notif.message}
                           </p>
                           <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">
-                            {notif.createdAt ? new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
+                            {notif.createdAt
+                              ? isNaN(new Date(notif.createdAt).getTime())
+                                ? notif.createdAt
+                                : new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                              : "Just now"}
                           </span>
                         </div>
                         {!notif.isRead && (
