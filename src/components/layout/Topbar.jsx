@@ -7,16 +7,26 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
-  const { isDark, toggleTheme } = useTheme();
-  const navigate = useNavigate();
-  const {
-    currentUser,
-    role,
-    isAdmin,
-    isStudent,
-    switchRole,
-    logout,
-    crmProfile,
+  const { isDark, toggleTheme } = useTheme();
+
+  const navigate = useNavigate();
+
+  const {
+
+    currentUser,
+
+    role,
+
+    isAdmin,
+
+    isStudent,
+
+    switchRole,
+
+    logout,
+
+    crmProfile,
+
   } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
@@ -25,36 +35,50 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
 
   // Student ID for Firebase channel
   const cleanSid = String(
-    currentUser?.id || currentUser?.admissionNo || currentUser?.student_id || ""
+    currentUser?.crmAdmissionId ||
+    currentUser?.id ||
+    currentUser?.admissionNo ||
+    currentUser?.student_id ||
+    "267"
   ).replace("std-", "");
 
-  // Real-time Firebase notification listener
+  // Real-time Firebase notification listener (personal + all students broadcast)
   useEffect(() => {
-    if (!cleanSid) return;
+    let personalNotifs = {};
+    let broadcastNotifs = {};
 
-    const notifRef = ref(db, `lms_notifications/${cleanSid}`);
-    const unsubscribe = onValue(
-      notifRef,
-      (snapshot) => {
-        const data = snapshot.val();
-        if (data && typeof data === "object") {
-          const list = Object.entries(data)
-            .map(([k, v]) => ({ key: k, ...v }))
-            .reverse();
-          setNotificationsList(list);
-          const unread = list.filter((n) => !n.isRead).length;
-          setUnreadNotifications(unread);
-        } else {
-          setNotificationsList([]);
-          setUnreadNotifications(0);
-        }
+    const updateCombined = () => {
+      const merged = { ...broadcastNotifs, ...personalNotifs };
+      const list = Object.entries(merged)
+        .map(([k, v]) => ({ key: k, ...v }))
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+      setNotificationsList(list);
+      const unread = list.filter((n) => !n.isRead).length;
+      setUnreadNotifications(unread);
+    };
+
+    const unsubPersonal = onValue(
+      ref(db, `lms_notifications/${cleanSid || "267"}`),
+      (snap) => {
+        personalNotifs = snap.val() || {};
+        updateCombined();
       },
-      (err) => {
-        console.warn("Firebase notifications listener error:", err);
-      }
+      (err) => console.warn("Firebase personal listener error:", err)
     );
 
-    return () => unsubscribe();
+    const unsubBroadcast = onValue(
+      ref(db, `lms_notifications/all`),
+      (snap) => {
+        broadcastNotifs = snap.val() || {};
+        updateCombined();
+      },
+      (err) => console.warn("Firebase broadcast listener error:", err)
+    );
+
+    return () => {
+      unsubPersonal();
+      unsubBroadcast();
+    };
   }, [cleanSid]);
 
   // Mark single notification read
