@@ -15,7 +15,8 @@ export const CRM_BASE_URL =
   (typeof window !== "undefined" &&
   (window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1" ||
-    window.location.hostname === "::1")
+    window.location.hostname === "::1" ||
+    window.location.hostname.includes("vercel.app"))
     ? "https://crm.dmsoi.org/api"
     : "https://operatingmedia.org/api");
 const CRM_STORAGE_KEY_STUDENT_ID = "om_lms_selected_crm_student_id";

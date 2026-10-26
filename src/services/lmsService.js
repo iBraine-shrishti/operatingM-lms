@@ -23,7 +23,8 @@ export const CRM_BACKEND_API =
   (typeof window !== "undefined" &&
   (window.location.hostname === "localhost" ||
     window.location.hostname === "127.0.0.1" ||
-    window.location.hostname === "::1")
+    window.location.hostname === "::1" ||
+    window.location.hostname.includes("vercel.app"))
     ? "https://crm.dmsoi.org/api"
     : "https://operatingmedia.org/api");
 const getStored = (key, initial) => {
