@@ -1068,10 +1068,11 @@ export const lmsService = {
         body: formData,
       });
       const data = await res.json();
-      if (data && data.success && data.url) {
-        return data.url;
+      const finalUrl = data?.imageUrl || data?.url;
+      if (data && data.success && finalUrl) {
+        return finalUrl;
       }
-      throw new Error(data?.message || "Failed to upload image");
+      throw new Error(data?.error || data?.message || "Failed to upload image");
     } catch (err) {
       console.error("uploadForumImage error:", err);
       throw err;

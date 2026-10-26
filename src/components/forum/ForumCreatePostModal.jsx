@@ -32,12 +32,8 @@ export const ForumCreatePostModal = ({
       const serverUrl = await lmsService.uploadForumImage(file);
       setImageUrl(serverUrl);
     } catch (err) {
-      console.warn("VPS upload error:", err);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImageUrl(e.target.result);
-      };
-      reader.readAsDataURL(file);
+      console.warn("Server upload error:", err);
+      alert("Failed to upload image to server. Please ensure the image is under 8MB.");
     } finally {
       setIsUploadingImage(false);
     }
