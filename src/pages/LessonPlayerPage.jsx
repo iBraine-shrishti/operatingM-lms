@@ -222,7 +222,23 @@ export const LessonPlayerPage = () => {
   // Tab & Notes states
   const [activeTab, setActiveTab] = useState("overview"); // overview | notes | resources | discussion
   const [noteContent, setNoteContent] = useState("");
-  const [userNotes, setUserNotes] = useState(() => lmsService.getNotes());
+  const [userNotes, setUserNotes] = useState(() => lmsService.getNotes(studentId));
+
+  useEffect(() => {
+    lmsService.fetchStudentNotes(studentId, currentCourse?.id).then((live) => {
+      if (live) setUserNotes(live);
+    });
+  }, [studentId, currentCourse?.id]);
+
+  useEffect(() => {
+    const handleSync = () => setUserNotes(lmsService.getNotes(studentId));
+    window.addEventListener("lms_notes_changed", handleSync);
+    window.addEventListener("storage", handleSync);
+    return () => {
+      window.removeEventListener("lms_notes_changed", handleSync);
+      window.removeEventListener("storage", handleSync);
+    };
+  }, [studentId]);
   const [playlistSearch, setPlaylistSearch] = useState("");
 
   // Course selector dropdown state
@@ -403,13 +419,15 @@ export const LessonPlayerPage = () => {
     }
     const timestampStr = formatTime(currentTime);
     lmsService.addNote({
+      studentId,
+      studentName: currentUser?.name || currentUser?.fullName || "",
       courseId: currentCourse.id,
       courseTitle: currentCourse.title,
       lessonTitle: currentLesson.title,
       timestamp: timestampStr,
       content: noteContent,
     });
-    setUserNotes(lmsService.getNotes());
+    setUserNotes(lmsService.getNotes(studentId));
     setNoteContent("");
     showToast(`Note saved with timestamp [${timestampStr}]!`, "success");
   };

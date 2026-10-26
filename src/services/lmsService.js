@@ -1495,24 +1495,46 @@ export const lmsService = {
   },
   // Achievements
   getAchievements: () => getStored("achievements", INITIAL_ACHIEVEMENTS),
-  // Notes
-  getNotes: () => {
-    let stored = getStored("notes", null);
-    if (!stored) {
-      stored = INITIAL_NOTES.map((n) => ({
-        ...n,
-        lessonTag: n.lessonTag || n.lessonTitle || "General",
-        lessonTitle: n.lessonTitle || n.lessonTag || "General Lesson",
-        text: n.text || n.content || "",
-        content: n.content || n.text || "",
-        date: n.date || n.createdAt || "Recent",
-        createdAt: n.createdAt || n.date || "Recent",
-      }));
-      setStored("notes", stored);
-      return stored;
+  // Notes - Backed by MySQL Database Table & Per-Student Local Cache
+  getActiveStudentId: (providedId = null) => {
+    if (providedId) return String(providedId).replace("std-", "");
+    if (typeof window !== "undefined") {
+      try {
+        const sel = localStorage.getItem("om_lms_selected_student_id");
+        if (sel) return String(sel).replace("std-", "");
+        const cached = localStorage.getItem("om_lms_crm_cached_profile");
+        if (cached) {
+          const p = JSON.parse(cached);
+          const id = p.id || p.admissionNumber || p.admission_number || p.crmAdmissionId;
+          if (id) return String(id).replace("std-", "");
+        }
+      } catch {}
     }
+    return "375";
+  },
+
+  getNotes: (studentId = null) => {
+    const sId = lmsService.getActiveStudentId(studentId);
+    const key = `notes_${sId}`;
+    let stored = getStored(key, null);
+
+    if (stored === null) {
+      stored = [];
+      setStored(key, []);
+    }
+
+    // Exclude any residual mock notes
+    stored = (stored || []).filter(
+      (n) =>
+        n &&
+        !["note-1", "note-2", "note-3", "note-4", "note-5", "note-6"].includes(
+          n.id,
+        ),
+    );
+
     return stored.map((n) => ({
       ...n,
+      studentId: n.studentId || sId,
       lessonTag: n.lessonTag || n.lessonTitle || "General",
       lessonTitle: n.lessonTitle || n.lessonTag || "General Lesson",
       text: n.text || n.content || "",
@@ -1521,18 +1543,59 @@ export const lmsService = {
       createdAt: n.createdAt || n.date || "Recent",
     }));
   },
+
+  fetchStudentNotes: async (studentId = null, courseId = null) => {
+    const sId = lmsService.getActiveStudentId(studentId);
+    try {
+      let url = `${CRM_BACKEND_API}/lms/notes/?student_id=${encodeURIComponent(sId)}`;
+      if (courseId && courseId !== "all") {
+        url += `&course_id=${encodeURIComponent(courseId)}`;
+      }
+      const resp = await fetch(url);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data && data.success && Array.isArray(data.notes)) {
+          const normalized = data.notes.map((n) => ({
+            ...n,
+            studentId: n.studentId || sId,
+            lessonTag: n.lessonTag || n.lessonTitle || "General",
+            lessonTitle: n.lessonTitle || n.lessonTag || "General Lesson",
+            text: n.text || n.content || "",
+            content: n.content || n.text || "",
+            date: n.date || n.createdAt || "Recent",
+            createdAt: n.createdAt || n.date || "Recent",
+          }));
+          const key = `notes_${sId}`;
+          setStored(key, normalized);
+          if (typeof window !== "undefined") {
+            try {
+              window.dispatchEvent(new Event("lms_notes_changed"));
+            } catch (e) {}
+          }
+          return normalized;
+        }
+      }
+    } catch (err) {
+      console.warn("fetchStudentNotes backend error:", err);
+    }
+    return lmsService.getNotes(sId);
+  },
+
   addNote: (note) => {
-    const notes = lmsService.getNotes();
+    const sId = lmsService.getActiveStudentId(note.studentId || note.student_id);
     const now = new Date();
     const formattedDate = now.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
     });
+
+    const localId = `local-${Date.now()}`;
     const newNote = {
-      id: note.id || `note-${Date.now()}`,
-      courseId: note.courseId || "",
-      courseTitle: note.courseTitle || "",
+      id: note.id || localId,
+      studentId: sId,
+      courseId: note.courseId || note.course_id || "",
+      courseTitle: note.courseTitle || note.course_title || "",
       lessonTitle: note.lessonTitle || note.lessonTag || "General Lesson",
       lessonTag: note.lessonTag || note.lessonTitle || "General",
       category: note.category || "General",
@@ -1542,6 +1605,7 @@ export const lmsService = {
       date: note.date || note.createdAt || "Today",
       ...note,
     };
+
     if (!newNote.content && newNote.text) newNote.content = newNote.text;
     if (!newNote.text && newNote.content) newNote.text = newNote.content;
     if (!newNote.lessonTitle && newNote.lessonTag) newNote.lessonTitle = newNote.lessonTag;
@@ -1549,30 +1613,80 @@ export const lmsService = {
     if (!newNote.createdAt && newNote.date) newNote.createdAt = newNote.date;
     if (!newNote.date && newNote.createdAt) newNote.date = newNote.createdAt;
 
-    const updated = [newNote, ...notes];
-    setStored("notes", updated);
+    const currentNotes = lmsService.getNotes(sId);
+    const updated = [newNote, ...currentNotes];
+    setStored(`notes_${sId}`, updated);
+
     if (typeof window !== "undefined") {
       try {
         window.dispatchEvent(new Event("lms_notes_changed"));
-      } catch (e) {
-        // ignore
-      }
+      } catch (e) {}
     }
+
+    // Persist to backend database asynchronously
+    fetch(`${CRM_BACKEND_API}/lms/notes/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        student_id: sId,
+        student_name: note.studentName || note.student_name || "",
+        course_id: newNote.courseId,
+        course_title: newNote.courseTitle,
+        lesson_title: newNote.lessonTitle,
+        lesson_tag: newNote.lessonTag,
+        category: newNote.category,
+        content: newNote.content,
+        timestamp: note.timestamp || "",
+      }),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data && data.success && data.note) {
+          const serverNote = {
+            ...newNote,
+            id: data.note.id,
+            dbId: data.note.dbId,
+          };
+          const fresh = lmsService
+            .getNotes(sId)
+            .map((n) => (n.id === localId ? serverNote : n));
+          setStored(`notes_${sId}`, fresh);
+          if (typeof window !== "undefined") {
+            try {
+              window.dispatchEvent(new Event("lms_notes_changed"));
+            } catch (e) {}
+          }
+        }
+      })
+      .catch((err) => {
+        console.warn("Backend note save error:", err);
+      });
+
     return newNote;
   },
-  deleteNote: (id) => {
-    const notes = lmsService.getNotes();
-    const filtered = notes.filter((n) => n.id !== id);
-    setStored("notes", filtered);
+
+  deleteNote: (id, studentId = null) => {
+    const sId = lmsService.getActiveStudentId(studentId);
+    const currentNotes = lmsService.getNotes(sId);
+    const filtered = currentNotes.filter((n) => n.id !== id);
+    setStored(`notes_${sId}`, filtered);
+
     if (typeof window !== "undefined") {
       try {
         window.dispatchEvent(new Event("lms_notes_changed"));
-      } catch (e) {
-        // ignore
-      }
+      } catch (e) {}
     }
+
+    // Delete from backend database
+    fetch(
+      `${CRM_BACKEND_API}/lms/notes/${encodeURIComponent(id)}/?student_id=${encodeURIComponent(sId)}`,
+      { method: "DELETE" },
+    ).catch((err) => {
+      console.warn("Backend note delete error:", err);
+    });
+
     return filtered;
   },
-  // Reviews
+  // Reviews  // Reviews
   getReviews: () => getStored("reviews", INITIAL_REVIEWS),
 };

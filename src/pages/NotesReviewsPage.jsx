@@ -23,6 +23,8 @@ import {
   Palette,
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
+import { useAuth } from "../context/AuthContext";
+import { crmService } from "../services/crmService";
 import dashboardHeaderBg from "../assets/header-bg/dashboard-header.png";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
 import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
@@ -178,35 +180,14 @@ const getNoteCategoryTheme = (category = "", courseTitle = "") => {
 };
 
 // Rich practical descriptions for standard study notes
-const ENHANCED_NOTE_CONTENT = {
-  "note-1": `• Vertical 9:16 Video Framework: Short-form Reels and TikToks require a decisive 3-second hook before user drop-off exceeds 60%.
-• Audio Trends & Algorithms: Always test trending original sounds within their initial 7 days of algorithmic surge to capitalize on Discovery feed visibility.
-• Creative Cadence: Publish 4–5 Reels weekly with high-contrast subtitles centered in the 1080x1920 safe zone for optimal engagement.`,
-
-  "note-2": `• Search Intent Hierarchy: Informational keywords generate broad top-of-funnel traffic but yield lower conversion rates. Focus commercial long-tail queries onto dedicated high-converting product pages.
-• SERP Feature Competition: Inspect whether the top 5 ranking positions feature featured snippets, People Also Ask boxes, or video carousels before finalizing headings.
-• Keyword Difficulty Rule: Prioritize KD < 35 keywords during initial sprint phases to secure rapid topical authority on Google.`,
-
-  "note-3": `• Conversion Event Setup: Always designate custom GTM trigger events as 'Key Events' within GA4 Admin properties prior to publishing Looker Studio dashboards.
-• Attribution Stability: Allow 24–48 hours for data attribution backfill and cross-device modeling to stabilize before reporting to stakeholders.
-• DebugView Protocol: Validate all data layer variables inside Tag Assistant and the live GA4 DebugView stream before deploying container changes to production.`,
-
-  "note-4": `• Smart Bidding Calibration: Ensure Performance Max campaigns accrue at least 30 conversions over a 30-day window before switching to Target ROAS bidding to prevent volatility.
-• Comprehensive Asset Group: Upload full asset sets (at least 5 punchy headlines, 5 long descriptions, 1200x628 landscape banners, and square brand logos).
-• Account Exclusions: Implement account-level placement exclusion lists to avoid wasting ad spend on low-intent mobile gaming apps.`,
-
-  "note-5": `• DOM Tree Optimization: Convert legacy section and column wrappers into modern CSS Flexbox containers to reduce total DOM depth by up to 40%.
-• LCP Optimization: Preload the hero banner using fetchpriority="high" and convert high-resolution assets into next-gen WebP format.
-• Script Deferral: Dequeue unused block stylesheets and defer non-critical JavaScript to guarantee a Largest Contentful Paint under 1.2 seconds.`,
-
-  "note-6": `• 8pt Grid Discipline: Maintain a strict 8-point spatial system for margin, padding, and layout bounding boxes to preserve visual rhythm and design consistency.
-• Color Space Fidelity: Export all web and social media ad creatives using sRGB color profiles to eliminate desaturation discrepancies across iOS Safari and Android screens.
-• Typographic Scale: Utilize a 1.25 major-third scale (12px, 14px, 16px, 20px, 24px, 32px, 40px) with minimum 140% line-height for clean readability.`,
-};
+const ENHANCED_NOTE_CONTENT = {};
 
 export const NotesReviewsPage = () => {
   const { showToast } = useToast();
-  const [notes, setNotes] = useState(() => lmsService.getNotes());
+  const { currentUser } = useAuth();
+  const studentId = currentUser?.crmAdmissionId || currentUser?.id || crmService.getSelectedStudentId() || "375";
+
+  const [notes, setNotes] = useState(() => lmsService.getNotes(studentId));
   const courses = lmsService.getCourses();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -215,16 +196,23 @@ export const NotesReviewsPage = () => {
   const [sortBy, setSortBy] = useState("newest"); // 'newest' | 'oldest' | 'title'
   const [copiedId, setCopiedId] = useState(null);
 
+  // Fetch live student notes from database table on mount and when student changes
+  useEffect(() => {
+    lmsService.fetchStudentNotes(studentId).then((live) => {
+      if (live) setNotes(live);
+    });
+  }, [studentId]);
+
   // Synchronize notes across app events
   useEffect(() => {
-    const handleSync = () => setNotes(lmsService.getNotes());
+    const handleSync = () => setNotes(lmsService.getNotes(studentId));
     window.addEventListener("lms_notes_changed", handleSync);
     window.addEventListener("storage", handleSync);
     return () => {
       window.removeEventListener("lms_notes_changed", handleSync);
       window.removeEventListener("storage", handleSync);
     };
-  }, []);
+  }, [studentId]);
 
   // New Note Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -331,9 +319,9 @@ export const NotesReviewsPage = () => {
   };
 
   const handleDeleteNote = (id, lessonTitle) => {
-    lmsService.deleteNote(id);
-    setNotes(lmsService.getNotes());
-    showToast(`Note for "${lessonTitle}" removed.`, "info", "Note Deleted");
+    lmsService.deleteNote(id, studentId);
+    setNotes(lmsService.getNotes(studentId));
+    showToast(`Note for "${lessonTitle || "lesson"}" removed.`, "info", "Note Deleted");
   };
 
   const handleCreateNote = (e) => {
@@ -351,6 +339,8 @@ export const NotesReviewsPage = () => {
     const courseTitle = courseObj ? courseObj.title : "Digital Marketing";
 
     lmsService.addNote({
+      studentId,
+      studentName: currentUser?.name || currentUser?.fullName || "",
       courseId: newCourseId,
       courseTitle,
       lessonTitle: newLessonTitle.trim(),
@@ -360,7 +350,7 @@ export const NotesReviewsPage = () => {
       text: newContent.trim(),
     });
 
-    setNotes(lmsService.getNotes());
+    setNotes(lmsService.getNotes(studentId));
     setIsModalOpen(false);
     setNewLessonTitle("");
     setNewContent("");

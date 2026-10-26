@@ -1228,62 +1228,7 @@ export const INITIAL_ACHIEVEMENTS = [
         unlocked: false
     }
 ];
-export const INITIAL_NOTES = [
-    {
-        id: 'note-1',
-        courseId: 'course-1',
-        courseTitle: 'Social Media Marketing',
-        lessonTitle: '01 Overview & Channel Architecture Setup',
-        category: 'Social Media',
-        content: `• Vertical 9:16 Video Framework: Short-form Reels and TikToks require a decisive 3-second hook before user drop-off exceeds 60%.\n• Audio Trends & Algorithms: Always test trending original sounds within their initial 7 days of algorithmic surge to capitalize on Discovery feed visibility.\n• Creative Cadence: Publish 4–5 Reels weekly with high-contrast subtitles centered in the 1080x1920 safe zone for optimal engagement.`,
-        createdAt: 'Sep 20, 2026'
-    },
-    {
-        id: 'note-2',
-        courseId: 'course-8',
-        courseTitle: 'Search Engine Optimization (SEO)',
-        lessonTitle: '1.2 Keyword Research & Search Intent Mapping',
-        category: 'SEO',
-        content: `• Search Intent Hierarchy: Informational keywords generate broad top-of-funnel traffic but yield lower conversion rates. Focus commercial long-tail queries onto dedicated high-converting product pages.\n• SERP Feature Competition: Inspect whether the top 5 ranking positions feature featured snippets, People Also Ask boxes, or video carousels before finalizing headings.\n• Keyword Difficulty Rule: Prioritize KD < 35 keywords during initial sprint phases to secure rapid topical authority on Google.`,
-        createdAt: 'Sep 22, 2026'
-    },
-    {
-        id: 'note-3',
-        courseId: 'course-5',
-        courseTitle: 'Google Analytics Course',
-        lessonTitle: 'GA4 Event Tracking & Conversion Modeling',
-        category: 'Analytics',
-        content: `• Conversion Event Setup: Always designate custom GTM trigger events as 'Key Events' within GA4 Admin properties prior to publishing Looker Studio dashboards.\n• Attribution Stability: Allow 24–48 hours for data attribution backfill and cross-device modeling to stabilize before reporting to stakeholders.\n• DebugView Protocol: Validate all data layer variables inside Tag Assistant and the live GA4 DebugView stream before deploying container changes to production.`,
-        createdAt: 'Sep 25, 2026'
-    },
-    {
-        id: 'note-4',
-        courseId: 'course-6',
-        courseTitle: 'Google Ads',
-        lessonTitle: 'PMAX Bidding & Target ROAS Scaling',
-        category: 'Google Ads',
-        content: `• Smart Bidding Calibration: Ensure Performance Max campaigns accrue at least 30 conversions over a 30-day window before switching to Target ROAS bidding to prevent volatility.\n• Comprehensive Asset Group: Upload full asset sets (at least 5 punchy headlines, 5 long descriptions, 1200x628 landscape banners, and square brand logos).\n• Account Exclusions: Implement account-level placement exclusion lists to avoid wasting ad spend on low-intent mobile gaming apps.`,
-        createdAt: 'Oct 01, 2026'
-    },
-    {
-        id: 'note-5',
-        courseId: 'course-7',
-        courseTitle: 'Website Development With WordPress',
-        lessonTitle: 'Core Web Vitals & Elementor Layouts',
-        category: 'WordPress',
-        content: `• DOM Tree Optimization: Convert legacy section and column wrappers into modern CSS Flexbox containers to reduce total DOM depth by up to 40%.\n• LCP Optimization: Preload the hero banner using fetchpriority="high" and convert high-resolution assets into next-gen WebP format.\n• Script Deferral: Dequeue unused block stylesheets and defer non-critical JavaScript to guarantee a Largest Contentful Paint under 1.2 seconds.`,
-        createdAt: 'Oct 03, 2026'
-    },
-    {
-        id: 'note-6',
-        courseId: 'course-4',
-        courseTitle: 'Creative Designing',
-        lessonTitle: 'Figma Typography Hierarchy & Auto Layout',
-        category: 'Design',
-        content: `• 8pt Grid Discipline: Maintain a strict 8-point spatial system for margin, padding, and layout bounding boxes to preserve visual rhythm and design consistency.\n• Color Space Fidelity: Export all web and social media ad creatives using sRGB color profiles to eliminate desaturation discrepancies across iOS Safari and Android screens.\n• Typographic Scale: Utilize a 1.25 major-third scale (12px, 14px, 16px, 20px, 24px, 32px, 40px) with minimum 140% line-height for clean readability.`,
-        createdAt: 'Oct 05, 2026'
-    }
-];
+export const INITIAL_NOTES = [];
 export const INITIAL_REVIEWS = [
     {
         id: 'rev-1',

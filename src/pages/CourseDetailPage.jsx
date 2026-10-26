@@ -182,24 +182,36 @@ export const CourseDetailPage = () => {
   const [showQnaModal, setShowQnaModal] = useState(false);
   const [replyInput, setReplyInput] = useState({});
 
-  // Notes state - fully connected to lmsService
-  const [allNotes, setAllNotes] = useState(() => lmsService.getNotes());
+  const studentId =
+    currentUser?.crmAdmissionId || currentUser?.id || "375";
+
+  // Notes state - fully connected to lmsService and per-student database
+  const [allNotes, setAllNotes] = useState(() =>
+    lmsService.getNotes(studentId),
+  );
   const [newNoteText, setNewNoteText] = useState("");
   const [newNoteTag, setNewNoteTag] = useState("");
   const [courseNotesSearch, setCourseNotesSearch] = useState("");
   const [courseNotesFilterTag, setCourseNotesFilterTag] = useState("all");
   const [copiedNoteId, setCopiedNoteId] = useState(null);
 
+  // Fetch live student notes from backend on mount and student change
+  useEffect(() => {
+    lmsService.fetchStudentNotes(studentId, course?.id).then((live) => {
+      if (live) setAllNotes(live);
+    });
+  }, [studentId, course?.id]);
+
   // Sync notes across tabs and actions
   useEffect(() => {
-    const handleSync = () => setAllNotes(lmsService.getNotes());
+    const handleSync = () => setAllNotes(lmsService.getNotes(studentId));
     window.addEventListener("lms_notes_changed", handleSync);
     window.addEventListener("storage", handleSync);
     return () => {
       window.removeEventListener("lms_notes_changed", handleSync);
       window.removeEventListener("storage", handleSync);
     };
-  }, []);
+  }, [studentId]);
 
   // Filter notes belonging to this course
   const courseNotes = useMemo(() => {
@@ -452,6 +464,8 @@ export const CourseDetailPage = () => {
     if (!newNoteText.trim()) return;
     const tagToUse = newNoteTag || (sections[0]?.name) || "General Notes";
     lmsService.addNote({
+      studentId,
+      studentName: currentUser?.name || currentUser?.fullName || "",
       courseId: course.id,
       courseTitle: course.title,
       category: course.category || "General",
@@ -466,14 +480,14 @@ export const CourseDetailPage = () => {
         year: "numeric",
       }),
     });
-    setAllNotes(lmsService.getNotes());
+    setAllNotes(lmsService.getNotes(studentId));
     setNewNoteText("");
     showToast("Note saved to your course notebook!", "success");
   };
 
   const handleDeleteNote = (noteId) => {
-    lmsService.deleteNote(noteId);
-    setAllNotes(lmsService.getNotes());
+    lmsService.deleteNote(noteId, studentId);
+    setAllNotes(lmsService.getNotes(studentId));
     showToast("Note deleted", "info");
   };
 
