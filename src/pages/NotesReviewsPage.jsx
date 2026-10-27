@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { lmsService } from "../services/lmsService";
 import {
   FileText,
@@ -21,6 +21,27 @@ import {
   BarChart3,
   Layout,
   Palette,
+  Bold,
+  Italic,
+  Underline,
+  Strikethrough,
+  Heading1,
+  Heading2,
+  Heading3,
+  List,
+  ListOrdered,
+  Quote,
+  Code,
+  Table,
+  Image,
+  Link,
+  Minus,
+  Eraser,
+  Edit,
+  Undo,
+  Redo,
+  Eye,
+  Maximize2,
 } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 import { useAuth } from "../context/AuthContext";
@@ -179,13 +200,35 @@ const getNoteCategoryTheme = (category = "", courseTitle = "") => {
   return NOTE_CATEGORY_THEMES.general;
 };
 
-// Rich practical descriptions for standard study notes
+// Text helpers for HTML notes
+const stripHtml = (html) => {
+  if (!html) return "";
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || "";
+};
+
+const getWordCount = (html) => {
+  const text = stripHtml(html).trim();
+  if (!text) return 0;
+  return text.split(/\s+/).filter(Boolean).length;
+};
+
+const getCharCount = (html) => {
+  const text = stripHtml(html);
+  return text.length;
+};
+
 const ENHANCED_NOTE_CONTENT = {};
 
 export const NotesReviewsPage = () => {
   const { showToast } = useToast();
   const { currentUser } = useAuth();
-  const studentId = currentUser?.crmAdmissionId || currentUser?.id || crmService.getSelectedStudentId() || "375";
+  const studentId =
+    currentUser?.crmAdmissionId ||
+    currentUser?.id ||
+    crmService.getSelectedStudentId() ||
+    "375";
 
   const [notes, setNotes] = useState(() => lmsService.getNotes(studentId));
   const courses = lmsService.getCourses();
@@ -195,6 +238,18 @@ export const NotesReviewsPage = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("newest"); // 'newest' | 'oldest' | 'title'
   const [copiedId, setCopiedId] = useState(null);
+
+  // Modal & Editor state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingNoteId, setEditingNoteId] = useState(null);
+  const [viewingNote, setViewingNote] = useState(null);
+
+  const [newCourseId, setNewCourseId] = useState(courses[0]?.id || "");
+  const [newLessonTitle, setNewLessonTitle] = useState("");
+  const [newContent, setNewContent] = useState("");
+
+  const editorRef = useRef(null);
+  const imageInputRef = useRef(null);
 
   // Fetch live student notes from database table on mount and when student changes
   useEffect(() => {
@@ -214,12 +269,21 @@ export const NotesReviewsPage = () => {
     };
   }, [studentId]);
 
-  // New Note Modal state
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newCourseId, setNewCourseId] = useState(courses[0]?.id || "course-1");
-  const [newCategory, setNewCategory] = useState("General");
-  const [newLessonTitle, setNewLessonTitle] = useState("");
-  const [newContent, setNewContent] = useState("");
+  // Populate editor content when modal opens
+  useEffect(() => {
+    if (isModalOpen && editorRef.current) {
+      editorRef.current.innerHTML = newContent || "";
+      // Place cursor at end
+      try {
+        const range = document.createRange();
+        const sel = window.getSelection();
+        range.selectNodeContents(editorRef.current);
+        range.collapse(false);
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } catch (e) {}
+    }
+  }, [isModalOpen]);
 
   // Extract categories dynamically
   const categories = useMemo(() => {
@@ -244,9 +308,12 @@ export const NotesReviewsPage = () => {
       // Search text query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
-        const bodyText = (ENHANCED_NOTE_CONTENT[n.id] || n.content || n.text || "").toLowerCase();
-        const matchesContent = bodyText.includes(q);
-        const matchesLesson = ((n.lessonTitle || n.lessonTag || "")).toLowerCase().includes(q);
+        const rawContent = n.content || n.text || "";
+        const cleanBody = (stripHtml(rawContent) || rawContent).toLowerCase();
+        const matchesContent = cleanBody.includes(q);
+        const matchesLesson = (n.lessonTitle || n.lessonTag || "")
+          .toLowerCase()
+          .includes(q);
         const matchesCourse = (n.courseTitle || "").toLowerCase().includes(q);
         const matchesCat = (n.category || "").toLowerCase().includes(q);
         if (
@@ -261,11 +328,17 @@ export const NotesReviewsPage = () => {
 
       // Course filter
       if (selectedCourse !== "all") {
-        const courseObj = courses.find((c) => c.id === selectedCourse || String(c.id) === String(selectedCourse));
-        const matchesId = n.courseId === selectedCourse || String(n.courseId) === String(selectedCourse);
-        const matchesTitle = courseObj && n.courseTitle && (
-          n.courseTitle.trim().toLowerCase() === courseObj.title.trim().toLowerCase()
+        const courseObj = courses.find(
+          (c) => c.id === selectedCourse || String(c.id) === String(selectedCourse)
         );
+        const matchesId =
+          n.courseId === selectedCourse ||
+          String(n.courseId) === String(selectedCourse);
+        const matchesTitle =
+          courseObj &&
+          n.courseTitle &&
+          n.courseTitle.trim().toLowerCase() ===
+            courseObj.title.trim().toLowerCase();
         if (!matchesId && !matchesTitle) {
           return false;
         }
@@ -311,7 +384,8 @@ export const NotesReviewsPage = () => {
   };
 
   const handleCopyNote = (note) => {
-    const textToCopy = ENHANCED_NOTE_CONTENT[note.id] || note.content;
+    const rawContent = note.content || note.text || "";
+    const textToCopy = stripHtml(rawContent) || rawContent;
     navigator.clipboard.writeText(textToCopy);
     setCopiedId(note.id);
     showToast("Note content copied to clipboard!", "success", "Copied");
@@ -321,41 +395,234 @@ export const NotesReviewsPage = () => {
   const handleDeleteNote = (id, lessonTitle) => {
     lmsService.deleteNote(id, studentId);
     setNotes(lmsService.getNotes(studentId));
-    showToast(`Note for "${lessonTitle || "lesson"}" removed.`, "info", "Note Deleted");
+    showToast(
+      `Note for "${lessonTitle || "lesson"}" removed.`,
+      "info",
+      "Note Deleted"
+    );
   };
 
-  const handleCreateNote = (e) => {
-    e.preventDefault();
-    if (!newLessonTitle.trim() || !newContent.trim()) {
-      showToast(
-        "Please provide both a lesson topic and note content.",
-        "warning",
-        "Incomplete Form",
-      );
+  // Open Add Modal
+  const handleOpenAddModal = () => {
+    setEditingNoteId(null);
+    setNewCourseId(courses[0]?.id || "");
+    setNewLessonTitle("");
+    setNewContent("");
+    setIsModalOpen(true);
+  };
+
+  // Open Edit Modal
+  const handleOpenEditModal = (note) => {
+    setEditingNoteId(note.id);
+    setNewCourseId(note.courseId || "");
+    setNewLessonTitle(note.lessonTitle || "");
+    setNewContent(note.content || note.text || "");
+    setIsModalOpen(true);
+  };
+
+  // Rich Text Editor Helpers
+  const exec = (command, value = null) => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+    document.execCommand(command, false, value);
+    if (editorRef.current) {
+      setNewContent(editorRef.current.innerHTML);
+    }
+  };
+
+  const handleEditorInput = () => {
+    if (editorRef.current) {
+      setNewContent(editorRef.current.innerHTML);
+    }
+  };
+
+  // Image insertion via file selection
+  const handleImageFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("Image must be smaller than 5MB", "warning", "Image Too Large");
       return;
     }
 
-    const courseObj = courses.find((c) => c.id === newCourseId || String(c.id) === String(newCourseId));
-    const courseTitle = courseObj ? courseObj.title : "Digital Marketing";
-
-    lmsService.addNote({
-      studentId,
-      studentName: currentUser?.name || currentUser?.fullName || "",
-      courseId: newCourseId,
-      courseTitle,
-      lessonTitle: newLessonTitle.trim(),
-      lessonTag: newLessonTitle.trim(),
-      category: newCategory || courseObj?.category || "General",
-      content: newContent.trim(),
-      text: newContent.trim(),
-    });
-
-    setNotes(lmsService.getNotes(studentId));
-    setIsModalOpen(false);
-    setNewLessonTitle("");
-    setNewContent("");
-    showToast("New study note saved successfully!", "success", "Note Created");
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target.result;
+      if (editorRef.current) {
+        editorRef.current.focus();
+      }
+      document.execCommand(
+        "insertHTML",
+        false,
+        `<img src="${dataUrl}" alt="Study Diagram" style="max-width: 100%; height: auto; border-radius: 8px; margin: 12px 0; border: 1px solid #cbd5e1; display: block;" /><p><br></p>`
+      );
+      if (editorRef.current) {
+        setNewContent(editorRef.current.innerHTML);
+      }
+      showToast("Image inserted into note!", "success", "Image Added");
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
   };
+
+  // Image insertion via URL prompt
+  const handleInsertImageUrl = () => {
+    const url = window.prompt("Enter image URL:");
+    if (url && url.trim()) {
+      if (editorRef.current) {
+        editorRef.current.focus();
+      }
+      document.execCommand(
+        "insertHTML",
+        false,
+        `<img src="${url.trim()}" alt="Note diagram" style="max-width: 100%; height: auto; border-radius: 8px; margin: 12px 0; border: 1px solid #cbd5e1; display: block;" /><p><br></p>`
+      );
+      if (editorRef.current) {
+        setNewContent(editorRef.current.innerHTML);
+      }
+    }
+  };
+
+  // Direct paste support for screenshots / images from clipboard
+  const handleEditorPaste = (e) => {
+    const items = e.clipboardData?.items;
+    if (items) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+          e.preventDefault();
+          const file = items[i].getAsFile();
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              const dataUrl = event.target.result;
+              document.execCommand(
+                "insertHTML",
+                false,
+                `<img src="${dataUrl}" alt="Pasted Diagram" style="max-width: 100%; height: auto; border-radius: 8px; margin: 12px 0; border: 1px solid #cbd5e1; display: block;" /><p><br></p>`
+              );
+              if (editorRef.current) {
+                setNewContent(editorRef.current.innerHTML);
+              }
+              showToast("Pasted image added to note!", "success", "Image Pasted");
+            };
+            reader.readAsDataURL(file);
+          }
+          return;
+        }
+      }
+    }
+  };
+
+  // Table insertion helper
+  const handleInsertTable = () => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+    const tableHtml = `
+      <table style="width: 100%; border-collapse: collapse; margin: 12px 0; border: 1px solid #cbd5e1;">
+        <thead>
+          <tr style="background-color: rgba(241, 245, 249, 0.85);">
+            <th style="border: 1px solid #cbd5e1; padding: 8px 12px; font-weight: bold; text-align: left;">Topic / Metric</th>
+            <th style="border: 1px solid #cbd5e1; padding: 8px 12px; font-weight: bold; text-align: left;">Description</th>
+            <th style="border: 1px solid #cbd5e1; padding: 8px 12px; font-weight: bold; text-align: left;">Key Formula / Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="border: 1px solid #cbd5e1; padding: 8px 12px;">Concept A</td>
+            <td style="border: 1px solid #cbd5e1; padding: 8px 12px;">Details & explanation</td>
+            <td style="border: 1px solid #cbd5e1; padding: 8px 12px;">Formula / Takeaway</td>
+          </tr>
+          <tr>
+            <td style="border: 1px solid #cbd5e1; padding: 8px 12px;">Concept B</td>
+            <td style="border: 1px solid #cbd5e1; padding: 8px 12px;">Details & explanation</td>
+            <td style="border: 1px solid #cbd5e1; padding: 8px 12px;">Formula / Takeaway</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><br></p>
+    `;
+    document.execCommand("insertHTML", false, tableHtml);
+    if (editorRef.current) {
+      setNewContent(editorRef.current.innerHTML);
+    }
+  };
+
+  // Save / Update Note
+  const handleSaveNote = (e) => {
+    if (e) e.preventDefault();
+
+    let contentToSave = newContent;
+    if (editorRef.current) {
+      contentToSave = editorRef.current.innerHTML;
+    }
+
+    const courseObj = courses.find(
+      (c) => c.id === newCourseId || String(c.id) === String(newCourseId)
+    );
+    const courseTitle = courseObj
+      ? courseObj.title
+      : newCourseId
+      ? "General Course"
+      : "General";
+
+    // Non-mandatory fallback: default title if blank
+    const nowStr = new Date().toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+    const lessonTitle = newLessonTitle.trim() || `Study Note - ${nowStr}`;
+    const category = courseObj?.category || "General";
+
+    if (editingNoteId) {
+      // Update existing note
+      lmsService.updateNote(
+        editingNoteId,
+        {
+          courseId: newCourseId,
+          courseTitle,
+          lessonTitle,
+          lessonTag: lessonTitle,
+          category,
+          content: contentToSave,
+          text: stripHtml(contentToSave),
+        },
+        studentId
+      );
+
+      setNotes(lmsService.getNotes(studentId));
+      setIsModalOpen(false);
+      setEditingNoteId(null);
+      setNewLessonTitle("");
+      setNewContent("");
+      showToast("Study note updated successfully!", "success", "Note Updated");
+    } else {
+      // Create new note
+      lmsService.addNote({
+        studentId,
+        studentName: currentUser?.name || currentUser?.fullName || "",
+        courseId: newCourseId,
+        courseTitle,
+        lessonTitle,
+        lessonTag: lessonTitle,
+        category,
+        content: contentToSave,
+        text: stripHtml(contentToSave),
+      });
+
+      setNotes(lmsService.getNotes(studentId));
+      setIsModalOpen(false);
+      setEditingNoteId(null);
+      setNewLessonTitle("");
+      setNewContent("");
+      showToast("New study note saved successfully!", "success", "Note Created");
+    }
+  };
+
+  const wordCount = useMemo(() => getWordCount(newContent), [newContent]);
+  const charCount = useMemo(() => getCharCount(newContent), [newContent]);
 
   return (
     <div className="space-y-6">
@@ -384,7 +651,7 @@ export const NotesReviewsPage = () => {
         ]}
         action={
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleOpenAddModal}
             className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
           >
             <Plus size={16} className="2xl:w-4.5 2xl:h-4.5" />
@@ -448,56 +715,53 @@ export const NotesReviewsPage = () => {
                 className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 cursor-pointer"
               >
                 <option value="newest">Sort: Newest Added</option>
-                <option value="oldest">Sort: Oldest Added</option>
-                <option value="title">Sort: Title (A-Z)</option>
+                <option value="oldest">Sort: Oldest First</option>
+                <option value="title">Sort: Topic Alphabetical</option>
               </select>
             </div>
           </div>
         </div>
 
-        {/* Second Row: Topic/Category Filter Pills (Horizontal Scroll on Mobile) */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
-          <div className="flex items-center space-x-1.5 overflow-x-auto custom-scrollbar pb-1.5 sm:pb-0 w-full sm:w-auto">
-            <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mr-1 hidden sm:inline-block shrink-0">
-              Categories:
-            </span>
-            {categories.map((cat) => {
-              const isActive =
-                (cat === "All Notes" && selectedCategory === "all") ||
-                selectedCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() =>
-                    setSelectedCategory(cat === "All Notes" ? "all" : cat)
-                  }
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
-                    isActive
-                      ? "bg-[#3b49df] text-white shadow-2xs"
-                      : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
-          </div>
+        {/* Categories Pills Row */}
+        <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 flex items-center gap-1.5 mr-1">
+            <Tag size={13} />
+            <span>Category:</span>
+          </span>
+          {categories.map((cat) => {
+            const isAll = cat === "All Notes";
+            const isSelected = isAll
+              ? selectedCategory === "all" || selectedCategory === "All Notes"
+              : selectedCategory.toLowerCase() === cat.toLowerCase();
 
-          {/* Active Filter Clear action */}
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(isAll ? "all" : cat)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  isSelected
+                    ? "bg-[#3b49df] text-white shadow-xs"
+                    : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                }`}
+              >
+                {cat}
+              </button>
+            );
+          })}
+
           {hasActiveFilters && (
             <button
               onClick={handleClearFilters}
-              className="text-xs font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:underline flex items-center space-x-1 self-start sm:self-auto cursor-pointer shrink-0"
+              className="ml-auto text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
             >
-              <X size={13} />
-              <span>Reset Filters</span>
+              Reset Filters
             </button>
           )}
         </div>
       </div>
 
       {/* ------------------------------------------------------------- */}
-      {/* NOTES GRID - DIFFERENTIATED CARDS WITH RICH DESCRIPTIONS      */}
+      {/* NOTES GRID - WITH RICH PREVIEWS & EDIT SUPPORT                */}
       {/* ------------------------------------------------------------- */}
       {filteredNotes.length === 0 ? (
         <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-8 sm:p-12 text-center shadow-xs">
@@ -510,7 +774,7 @@ export const NotesReviewsPage = () => {
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
             {hasActiveFilters
               ? "Try broadening your keywords or clearing the category and course filters to view more notes."
-              : "You haven't created any lecture notes yet. Click the button below to add your first note!"}
+              : "You haven't created any study notes yet. Click the button below to add your first rich note!"}
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             {hasActiveFilters && (
@@ -522,7 +786,7 @@ export const NotesReviewsPage = () => {
               </button>
             )}
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={handleOpenAddModal}
               className="px-4 py-2 text-xs font-semibold rounded-xl bg-[#3b49df] text-white hover:bg-[#2f3cb3] transition-colors cursor-pointer"
             >
               + Add New Note
@@ -534,7 +798,7 @@ export const NotesReviewsPage = () => {
           {filteredNotes.map((note) => {
             const theme = getNoteCategoryTheme(note.category, note.courseTitle);
             const CategoryIcon = theme.icon;
-            const contentText = ENHANCED_NOTE_CONTENT[note.id] || note.content;
+            const contentText = note.content || note.text || "";
 
             return (
               <div
@@ -561,14 +825,14 @@ export const NotesReviewsPage = () => {
 
                       <span className="flex items-center space-x-1 text-[11px] font-semibold text-slate-400 dark:text-slate-500">
                         <Calendar size={12} />
-                        <span>{note.createdAt}</span>
+                        <span>{note.createdAt || note.date || "Today"}</span>
                       </span>
                     </div>
 
                     {/* Course Title Badge */}
                     <div className="pt-0.5">
                       <span className="text-[11px] font-bold text-slate-600 dark:text-slate-200 bg-slate-100/90 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 px-2.5 py-0.5 rounded-md inline-block">
-                        {note.courseTitle}
+                        {note.courseTitle || "General Course"}
                       </span>
                     </div>
 
@@ -581,58 +845,88 @@ export const NotesReviewsPage = () => {
                       </div>
                       <div className="min-w-0 flex-1">
                         <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-snug group-hover:text-[#3b49df] dark:group-hover:text-blue-400 transition-colors break-words">
-                          {note.lessonTitle}
+                          {note.lessonTitle || "Untitled Note"}
                         </h3>
                       </div>
                     </div>
 
-                    {/* Note Body Box: Increased Font Size & Rich Description */}
+                    {/* Note Body Box: Rich Formatted Preview */}
                     <div
-                      className={`text-sm sm:text-[13.5px] text-slate-700 dark:text-slate-300 ${theme.contentBg} border p-4 rounded-xl leading-relaxed whitespace-pre-line break-words font-medium`}
+                      onClick={() => setViewingNote(note)}
+                      className={`text-sm sm:text-[13.5px] text-slate-700 dark:text-slate-300 ${theme.contentBg} border p-4 rounded-xl leading-relaxed break-words font-medium overflow-hidden max-h-52 relative group/content cursor-pointer transition-colors hover:border-blue-300 dark:hover:border-blue-700/60`}
+                      title="Click to view full note"
                     >
-                      {contentText}
+                      <div
+                        className="prose-note"
+                        dangerouslySetInnerHTML={{
+                          __html:
+                            contentText ||
+                            "<p class='italic text-slate-400'>Empty note</p>",
+                        }}
+                      />
+                      <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white/90 dark:from-[#0b1329]/90 to-transparent pointer-events-none" />
+                    </div>
+
+                    <div className="flex justify-end pt-0.5">
+                      <button
+                        type="button"
+                        onClick={() => setViewingNote(note)}
+                        className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 cursor-pointer"
+                      >
+                        <Eye size={12} />
+                        <span>View Full Note</span>
+                      </button>
                     </div>
                   </div>
                 </div>
 
-                {/* Action Buttons Footer */}
+                {/* Action Buttons Footer: Copy, Edit, Delete */}
                 <div className="px-5 py-3.5 bg-slate-50/70 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
-                  <button
-                    onClick={() =>
-                      handleCopyNote({ ...note, content: contentText })
-                    }
-                    className="flex items-center space-x-1.5 text-slate-700 dark:text-slate-200 hover:text-[#3b49df] dark:hover:text-blue-400 font-bold py-1.5 px-3 rounded-lg hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-pointer active:scale-95 shadow-2xs"
-                  >
-                    {copiedId === note.id ? (
-                      <>
-                        <Check
-                          size={14}
-                          className="text-emerald-600 dark:text-emerald-400"
-                        />
-                        <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                          Copied!
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={14} />
-                        <span>Copy Note</span>
-                      </>
-                    )}
-                  </button>
+                  <div className="flex items-center space-x-1.5">
+                    <button
+                      onClick={() =>
+                        handleCopyNote({ ...note, content: contentText })
+                      }
+                      className="flex items-center space-x-1 text-slate-700 dark:text-slate-200 hover:text-[#3b49df] dark:hover:text-blue-400 font-bold py-1 px-2.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-pointer active:scale-95 shadow-2xs"
+                      title="Copy note text"
+                    >
+                      {copiedId === note.id ? (
+                        <>
+                          <Check
+                            size={13}
+                            className="text-emerald-600 dark:text-emerald-400"
+                          />
+                          <span className="text-emerald-600 dark:text-emerald-400 font-bold text-[11px]">
+                            Copied!
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy size={13} />
+                          <span className="text-[11px]">Copy</span>
+                        </>
+                      )}
+                    </button>
 
-                  <div className="flex items-center space-x-3">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 hidden sm:inline-block">
-                      {theme.tag}
-                    </span>
+                    <button
+                      onClick={() => handleOpenEditModal(note)}
+                      className="flex items-center space-x-1 text-slate-700 dark:text-slate-200 hover:text-indigo-600 dark:hover:text-indigo-400 font-bold py-1 px-2.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all cursor-pointer active:scale-95 shadow-2xs"
+                      title="Edit note"
+                    >
+                      <Edit size={13} />
+                      <span className="text-[11px]">Edit</span>
+                    </button>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
                     <button
                       onClick={() =>
                         handleDeleteNote(note.id, note.lessonTitle)
                       }
-                      className="flex items-center space-x-1 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 font-semibold py-1.5 px-2 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer active:scale-95"
+                      className="flex items-center space-x-1 text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 font-semibold py-1 px-2 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer active:scale-95"
                       title="Delete note"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={13} />
                       <span className="text-[11px]">Delete</span>
                     </button>
                   </div>
@@ -644,117 +938,384 @@ export const NotesReviewsPage = () => {
       )}
 
       {/* ------------------------------------------------------------- */}
-      {/* ADD NEW NOTE MODAL - FULLY RESPONSIVE                         */}
+      {/* FULL-SIZE STUDY NOTE MODAL (ADD & EDIT)                       */}
       {/* ------------------------------------------------------------- */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-          <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 sm:p-6 shadow-xl border border-slate-200 dark:border-slate-800 space-y-4 animate-in fade-in zoom-in duration-150">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-              <div className="flex items-center space-x-2.5">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-[#3b49df] dark:text-blue-400 flex items-center justify-center shrink-0">
-                  <Bookmark size={18} />
+        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-150">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl w-full max-w-6xl h-[92vh] max-h-[96vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            {/* Header: Title + Close */}
+            <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
+              <div className="flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center shrink-0 shadow-2xs">
+                  {editingNoteId ? <Edit size={18} /> : <Bookmark size={18} />}
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-base">
-                    Add New Study Note
+                  <h3 className="font-bold text-slate-900 dark:text-white text-base sm:text-lg">
+                    {editingNoteId ? "Edit Study Note" : "Create Study Note"}
                   </h3>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Capture important ideas, formulas, or strategies.
+                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
+                    Capture important lecture points, format with bold/italic, insert tables, and add diagrams.
                   </p>
                 </div>
               </div>
               <button
-                onClick={() => setIsModalOpen(false)}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                type="button"
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setEditingNoteId(null);
+                }}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                title="Close modal"
               >
-                <X size={18} />
+                <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleCreateNote} className="space-y-3.5 text-xs">
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Related Course *
-                </label>
-                <select
-                  value={newCourseId}
-                  onChange={(e) => setNewCourseId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500"
-                >
-                  {courses.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            {/* Form & Workspace */}
+            <form
+              onSubmit={handleSaveNote}
+              className="flex-1 flex flex-col overflow-hidden"
+            >
+              {/* Metadata Inputs Row: Related Course + Lesson Title (Category Tag removed!) */}
+              <div className="px-5 sm:px-6 pt-4 pb-3 grid grid-cols-1 sm:grid-cols-12 gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/30 border-b border-slate-100 dark:border-slate-800/80">
+                <div className="sm:col-span-5">
+                  <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mb-1">
+                    Related Course
+                  </label>
+                  <select
+                    value={newCourseId}
+                    onChange={(e) => setNewCourseId(e.target.value)}
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 cursor-pointer shadow-2xs"
+                  >
+                    <option value="">General (No specific course)</option>
+                    {courses.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                    Lesson Topic / Title *
+                <div className="sm:col-span-7">
+                  <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mb-1">
+                    Note Title / Topic
                   </label>
                   <input
                     type="text"
-                    required
                     value={newLessonTitle}
                     onChange={(e) => setNewLessonTitle(e.target.value)}
-                    placeholder="e.g. 02 Keyword Intent Mapping"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500"
+                    placeholder="e.g. 02 Keyword Intent Mapping & Competitor Audit"
+                    className="w-full px-3.5 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 shadow-2xs"
                   />
-                </div>
-
-                <div>
-                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                    Category Tag
-                  </label>
-                  <select
-                    value={newCategory}
-                    onChange={(e) => setNewCategory(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500"
-                  >
-                    <option value="General">General</option>
-                    <option value="Social Media">Social Media</option>
-                    <option value="SEO">SEO</option>
-                    <option value="Analytics">Analytics</option>
-                    <option value="Google Ads">Google Ads</option>
-                    <option value="WordPress">WordPress</option>
-                    <option value="Design">Design</option>
-                  </select>
                 </div>
               </div>
 
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Note Content / Summary *
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={newContent}
-                  onChange={(e) => setNewContent(e.target.value)}
-                  placeholder="Jot down formulas, framework steps, code snippets, or lecture insights..."
-                  className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500"
+              {/* Rich Text Editor Toolbar */}
+              <div className="px-5 sm:px-6 py-2 bg-slate-100/70 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700/80 flex flex-wrap items-center gap-1 shrink-0 text-slate-700 dark:text-slate-300 select-none">
+                {/* Text Formatting Group */}
+                <div className="flex items-center space-x-0.5 pr-2 border-r border-slate-200 dark:border-slate-700">
+                  <button
+                    type="button"
+                    onClick={() => exec("bold")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Bold (Ctrl+B)"
+                  >
+                    <Bold size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("italic")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Italic (Ctrl+I)"
+                  >
+                    <Italic size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("underline")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Underline (Ctrl+U)"
+                  >
+                    <Underline size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("strikeThrough")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Strikethrough"
+                  >
+                    <Strikethrough size={15} />
+                  </button>
+                </div>
+
+                {/* Headings Buttons */}
+                <div className="flex items-center space-x-0.5 px-2 border-r border-slate-200 dark:border-slate-700">
+                  <button
+                    type="button"
+                    onClick={() => exec("formatBlock", "<h1>")}
+                    className="px-2 py-1 rounded-lg text-xs font-black hover:bg-white dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 transition-colors"
+                    title="Heading 1"
+                  >
+                    H1
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("formatBlock", "<h2>")}
+                    className="px-2 py-1 rounded-lg text-xs font-black hover:bg-white dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 transition-colors"
+                    title="Heading 2"
+                  >
+                    H2
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("formatBlock", "<h3>")}
+                    className="px-2 py-1 rounded-lg text-xs font-black hover:bg-white dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 transition-colors"
+                    title="Heading 3"
+                  >
+                    H3
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("formatBlock", "<p>")}
+                    className="px-2 py-1 rounded-lg text-xs font-semibold hover:bg-white dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
+                    title="Normal Paragraph"
+                  >
+                    Normal
+                  </button>
+                </div>
+
+                {/* Lists & Callouts */}
+                <div className="flex items-center space-x-0.5 px-2 border-r border-slate-200 dark:border-slate-700">
+                  <button
+                    type="button"
+                    onClick={() => exec("insertUnorderedList")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Bullet List"
+                  >
+                    <List size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("insertOrderedList")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Numbered List"
+                  >
+                    <ListOrdered size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("formatBlock", "<blockquote>")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Quote / Concept Callout"
+                  >
+                    <Quote size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("formatBlock", "<pre>")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Code Snippet"
+                  >
+                    <Code size={15} />
+                  </button>
+                </div>
+
+                {/* Table & Images Insertion */}
+                <div className="flex items-center space-x-1 px-2 border-r border-slate-200 dark:border-slate-700">
+                  <button
+                    type="button"
+                    onClick={handleInsertTable}
+                    className="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 hover:bg-blue-50 dark:hover:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer shadow-2xs"
+                    title="Insert 3-Column Table"
+                  >
+                    <Table size={14} />
+                    <span>Table</span>
+                  </button>
+
+                  {/* Hidden image file input */}
+                  <input
+                    type="file"
+                    ref={imageInputRef}
+                    accept="image/*"
+                    onChange={handleImageFileSelect}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => imageInputRef.current?.click()}
+                    className="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer shadow-2xs"
+                    title="Upload Image from computer"
+                  >
+                    <Image size={14} />
+                    <span>Image</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleInsertImageUrl}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Insert Image by Web URL"
+                  >
+                    <Link size={14} />
+                  </button>
+                </div>
+
+                {/* Actions: Divider, Undo, Redo, Clear */}
+                <div className="flex items-center space-x-0.5 pl-2">
+                  <button
+                    type="button"
+                    onClick={() => exec("insertHorizontalRule")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Horizontal Divider"
+                  >
+                    <Minus size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("undo")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Undo (Ctrl+Z)"
+                  >
+                    <Undo size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("redo")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                    title="Redo (Ctrl+Y)"
+                  >
+                    <Redo size={14} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => exec("removeFormat")}
+                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                    title="Clear Formatting"
+                  >
+                    <Eraser size={14} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Large Scrollable Document Canvas (contentEditable) */}
+              <div className="flex-1 p-5 sm:p-7 overflow-y-auto bg-slate-50/40 dark:bg-slate-900/30">
+                <div
+                  ref={editorRef}
+                  contentEditable="true"
+                  onInput={handleEditorInput}
+                  onPaste={handleEditorPaste}
+                  data-placeholder="Start typing your study notes here... Use the toolbar above to make text bold, italic, insert tables, upload diagrams, and paste screenshots with Ctrl+V."
+                  className="min-h-full p-6 sm:p-8 bg-white dark:bg-[#0b1329] text-slate-900 dark:text-slate-100 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 leading-relaxed text-sm sm:text-base prose-note selection:bg-blue-500/20"
                 />
               </div>
 
-              <div className="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-[#3b49df] hover:bg-[#2f3cb3] text-white font-semibold shadow-xs transition-all cursor-pointer flex items-center space-x-1.5"
-                >
-                  <Plus size={15} />
-                  <span>Save Note</span>
-                </button>
+              {/* Footer Bar: Stats + Cancel + Save */}
+              <div className="px-5 sm:px-6 py-3.5 bg-white dark:bg-[#0b1329] border-t border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+                <div className="text-xs text-slate-400 dark:text-slate-500 flex items-center space-x-2">
+                  <span>{wordCount} words</span>
+                  <span>•</span>
+                  <span>{charCount} characters</span>
+                </div>
+
+                <div className="flex items-center space-x-2.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsModalOpen(false);
+                      setEditingNoteId(null);
+                    }}
+                    className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center space-x-1.5 active:scale-98"
+                  >
+                    {editingNoteId ? <Check size={16} /> : <Plus size={16} />}
+                    <span>{editingNoteId ? "Save Changes" : "Save Note"}</span>
+                  </button>
+                </div>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ------------------------------------------------------------- */}
+      {/* FULL NOTE VIEWER MODAL                                        */}
+      {/* ------------------------------------------------------------- */}
+      {viewingNote && (
+        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-150">
+          <div className="bg-white dark:bg-[#0b1329] rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md">
+                    {viewingNote.courseTitle || "General Course"}
+                  </span>
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500">
+                    {viewingNote.createdAt || viewingNote.date || "Today"}
+                  </span>
+                </div>
+                <h2 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+                  {viewingNote.lessonTitle || "Untitled Note"}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setViewingNote(null)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Note Full Content Body */}
+            <div className="flex-1 p-6 sm:p-8 overflow-y-auto prose-note text-slate-800 dark:text-slate-100 leading-relaxed text-sm sm:text-base">
+              <div
+                dangerouslySetInnerHTML={{
+                  __html:
+                    viewingNote.content ||
+                    viewingNote.text ||
+                    "<p class='italic text-slate-400'>No content recorded.</p>",
+                }}
+              />
+            </div>
+
+            {/* Viewer Footer */}
+            <div className="px-6 py-3.5 bg-slate-50/70 dark:bg-slate-900/40 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+              <button
+                type="button"
+                onClick={() => handleCopyNote(viewingNote)}
+                className="flex items-center space-x-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-blue-600 transition-colors"
+              >
+                <Copy size={14} />
+                <span>Copy Note</span>
+              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const note = viewingNote;
+                    setViewingNote(null);
+                    handleOpenEditModal(note);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs"
+                >
+                  <Edit size={14} />
+                  <span>Edit Note</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewingNote(null)}
+                  className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

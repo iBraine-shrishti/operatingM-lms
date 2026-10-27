@@ -1708,6 +1708,64 @@ export const lmsService = {
     return newNote;
   },
 
+  updateNote: (id, note, studentId = null) => {
+    const sId = lmsService.getActiveStudentId(studentId || note.studentId || note.student_id);
+    const currentNotes = lmsService.getNotes(sId);
+    let updatedNote = null;
+
+    const updated = currentNotes.map((n) => {
+      if (n.id === id) {
+        updatedNote = {
+          ...n,
+          ...note,
+          id,
+          studentId: sId,
+          content: note.content !== undefined ? note.content : n.content,
+          text: note.content !== undefined ? note.content : n.text,
+          lessonTitle: note.lessonTitle !== undefined ? note.lessonTitle : n.lessonTitle,
+          lessonTag: note.lessonTitle !== undefined ? note.lessonTitle : n.lessonTag,
+          courseId: note.courseId !== undefined ? note.courseId : n.courseId,
+          courseTitle: note.courseTitle !== undefined ? note.courseTitle : n.courseTitle,
+          category: note.category || n.category || "General",
+          updatedAt: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+        };
+        return updatedNote;
+      }
+      return n;
+    });
+
+    setStored(`notes_${sId}`, updated);
+
+    if (typeof window !== "undefined") {
+      try {
+        window.dispatchEvent(new Event("lms_notes_changed"));
+      } catch (e) {}
+    }
+
+    // Persist to backend
+    fetch(`${CRM_BACKEND_API}/lms/notes/${encodeURIComponent(id)}/`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        student_id: sId,
+        course_id: updatedNote?.courseId || note.courseId || "",
+        course_title: updatedNote?.courseTitle || note.courseTitle || "",
+        lesson_title: updatedNote?.lessonTitle || note.lessonTitle || "",
+        lesson_tag: updatedNote?.lessonTag || note.lessonTitle || "",
+        category: updatedNote?.category || note.category || "General",
+        content: updatedNote?.content || note.content || "",
+      }),
+    }).catch((err) => {
+      console.warn("Backend note update error:", err);
+    });
+
+    return updatedNote;
+  },
+
   deleteNote: (id, studentId = null) => {
     const sId = lmsService.getActiveStudentId(studentId);
     const currentNotes = lmsService.getNotes(sId);
