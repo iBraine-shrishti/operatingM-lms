@@ -94,7 +94,7 @@ export const QuestionDiscussionsPage = () => {
   // Current Active Single Post
   const currentPost = useMemo(() => {
     if (!postId) return null;
-    return activePostDetail || discussions.find((d) => d.id === postId) || null;
+    return activePostDetail || discussions.find((d) => String(d.id).replace('disc-', '') === String(postId).replace('disc-', '')) || null;
   }, [postId, activePostDetail, discussions]);
 
   // Filter & Sort Discussions

@@ -965,8 +965,9 @@ export const lmsService = {
   },
   fetchDiscussionDetail: async (postId, studentId = null) => {
     try {
+      const cleanPostId = String(postId).replace(/^disc-/, "").trim();
       const q = studentId ? `?student_id=${studentId}` : "";
-      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/${postId}/${q}`);
+      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/${cleanPostId}/${q}`);
       if (!res.ok) throw new Error(`HTTP error ${res.status}`);
       const data = await res.json();
       if (data && data.success && data.post) {
@@ -1016,6 +1017,7 @@ export const lmsService = {
   },
   createDiscussionReply: async (postId, replyData) => {
     try {
+      const cleanPostId = String(postId).replace(/^disc-/, "").trim();
       const payload = {
         student_id: replyData.studentId || replyData.student_id,
         author_id: replyData.studentId || replyData.student_id,
@@ -1029,7 +1031,7 @@ export const lmsService = {
         is_official: replyData.isOfficial || false,
       };
 
-      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/${postId}/reply/`, {
+      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/${cleanPostId}/reply/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
