@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useMemo } from "react";
 import { ArrowLeft, MessageSquare, Pin, Tag, Send, ImageIcon, ShieldCheck, ExternalLink, AlertCircle, Clock } from "lucide-react";
 import { ForumVoteButtons } from "./ForumVoteButtons";
 import { ForumCommentNode } from "./ForumCommentNode";
@@ -45,6 +45,20 @@ export const ForumPostDetailView = ({
   const authorDisplay = cleanAuthorHandle(post.authorHandle, post.authorName);
   const replies = Array.isArray(post.replies) ? post.replies : [];
 
+  const threadAuthors = useMemo(() => {
+    const set = new Set();
+    if (post.authorName) set.add(post.authorName);
+    const extract = (list) => {
+      if (!Array.isArray(list)) return;
+      list.forEach((item) => {
+        if (item.authorName) set.add(item.authorName);
+        if (item.replies) extract(item.replies);
+      });
+    };
+    extract(replies);
+    return Array.from(set);
+  }, [post.authorName, replies]);
+
   const handlePostTopComment = (e) => {
     e.preventDefault();
     if (!commentInput.trim()) return;
@@ -56,11 +70,12 @@ export const ForumPostDetailView = ({
         content: isReplyingToPost
           ? `@${authorDisplay} ${commentInput.trim()}`
           : commentInput.trim(),
-        authorName: currentUser?.name || "Sahil Hasolkar",
+        authorName: currentUser?.name || "Student",
         authorRole: currentUser?.role || "Student",
         authorAvatar:
           currentUser?.avatar ||
-          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+          currentUser?.photo ||
+          null,
       });
 
     setCommentInput("");
@@ -358,6 +373,7 @@ export const ForumPostDetailView = ({
                       onCommentVote={onCommentVote}
                       commentVotes={commentVotes}
                       currentUser={currentUser}
+                      threadAuthors={threadAuthors}
                     />
                   ))}
                 </div>

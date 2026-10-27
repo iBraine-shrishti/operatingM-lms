@@ -9,6 +9,9 @@ export const sanitizeMockAvatar = (url) => {
     if (!url || typeof url !== 'string') return null;
     const lower = url.toLowerCase();
     if (
+        lower.includes('photo-1472099645785') ||
+        lower.includes('photo-1534528741775') ||
+        lower.includes('unsplash.com') ||
         lower.includes('boy.png') ||
         lower.includes('girl.png') ||
         lower.includes('prem_photo') ||
@@ -57,7 +60,7 @@ export const ADMIN_USER = {
     email: 'vishal.c@operatingmedia.com',
     role: 'ADMIN',
     roleLabel: 'HR_ADMIN',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    avatar: null,
     designation: 'Head of Operations & Lead Instructor'
 };
 

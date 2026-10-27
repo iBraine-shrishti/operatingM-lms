@@ -4,21 +4,115 @@ import { ForumVoteButtons } from "./ForumVoteButtons";
 import { cleanAuthorHandle } from "./ForumSidebar";
 
 const KNOWN_AUTHORS = [
+  "Aryan Jawale",
+  "Ayesha Chunawala",
+  "Sahil Hasolkar",
+  "Prem Chaurasiya",
   "Vikram Malhotra",
   "Rohan Mehta",
   "Harsh Pareek",
   "Sneha Roy",
   "Aarav Sharma",
-  "Sahil Hasolkar",
-  "Prem Chaurasiya",
   "Pooja Hegde",
   "Karan Patel",
 ];
 
+/**
+ * Resolves avatar URL:
+ * - If base64 data URL: returns as-is
+ * - If mock image (unsplash, default boy/girl): returns null
+ * - If absolute URL: returns as-is
+ * - If relative URL: prefixes with CRM API host (operatingmedia.org or localhost)
+ */
+export const resolveAvatarUrl = (url) => {
+  if (!url || typeof url !== "string") return null;
+  const lower = url.toLowerCase().trim();
+  if (
+    lower.includes("photo-1472099645785") ||
+    lower.includes("photo-1534528741775") ||
+    lower.includes("unsplash.com") ||
+    lower.includes("boy.png") ||
+    lower.includes("girl.png") ||
+    lower.includes("profile-pic.png") ||
+    lower.includes("sahil-clean-avatar") ||
+    lower.includes("sahil-profile")
+  ) {
+    return null;
+  }
+  if (url.startsWith("data:image")) return url;
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  if (url.startsWith("/")) {
+    const isLocal =
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1");
+    const apiHost = isLocal
+      ? "https://crm.dmsoi.org"
+      : "https://operatingmedia.org";
+    return `${apiHost}${url}`;
+  }
+  return url;
+};
+
+/**
+ * ForumAvatar: Renders image with onError fallback to stylish initials badge.
+ * Eliminates broken image icons.
+ */
+export const ForumAvatar = ({
+  src,
+  name = "User",
+  role = "Student",
+  className = "w-5 h-5 rounded-full object-cover shrink-0",
+}) => {
+  const [hasError, setHasError] = useState(false);
+  const resolved = resolveAvatarUrl(src);
+
+  const getInitials = (n) => {
+    if (!n) return "U";
+    const parts = n.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return n.slice(0, 2).toUpperCase();
+  };
+
+  const isOfficial =
+    role &&
+    (role.toLowerCase().includes("instructor") ||
+      role.toLowerCase().includes("admin") ||
+      role.toLowerCase().includes("faculty"));
+
+  if (!resolved || hasError) {
+    return (
+      <div
+        className={`${className} flex items-center justify-center font-bold text-[9px] select-none text-white shrink-0 ${
+          isOfficial
+            ? "bg-gradient-to-tr from-amber-500 to-orange-500"
+            : "bg-gradient-to-tr from-blue-600 to-indigo-600"
+        }`}
+        title={name}
+      >
+        {isOfficial && (name || "").toLowerCase().includes("admin")
+          ? "AD"
+          : getInitials(name)}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={resolved}
+      alt={name}
+      className={className}
+      onError={() => setHasError(true)}
+    />
+  );
+};
+
 // Formats inline @mentions in any comment text
 const formatInlineMentions = (text = "") => {
   if (!text) return null;
-  const parts = text.split(/(@[A-Za-z0-9_]+)/g);
+  const parts = text.split(/(@[A-Za-z0-9_\.]+)/g);
   return parts.map((part, idx) =>
     part && part.startsWith("@") ? (
       <span
@@ -33,32 +127,46 @@ const formatInlineMentions = (text = "") => {
   );
 };
 
-// Helper to highlight @mentions inside comments
-export const formatCommentContent = (content = "", replyToAuthor = null) => {
+// Helper to highlight @mentions inside comments (full name + surname highlighted together)
+export const formatCommentContent = (content = "", replyToAuthor = null, threadAuthors = []) => {
   if (!content) return null;
 
-  // 1. If explicit replyToAuthor is provided
+  // 1. If explicit replyToAuthor is provided (e.g. "Aryan Jawale")
   if (replyToAuthor) {
     const cleanMention = `@${replyToAuthor.replace(/^@/, "").trim()}`;
     const escaped = cleanMention.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const regex = new RegExp(`^${escaped}\\s*`, "i");
-    const restText = content.replace(regex, "");
-
-    return (
-      <span>
-        <span className="inline-flex items-center font-bold text-[#3b49df] dark:text-blue-300 bg-blue-100/90 dark:bg-blue-950/90 border border-blue-200/90 dark:border-blue-800/80 px-2 py-0.5 rounded-md text-[11px] sm:text-xs mr-1.5 shadow-2xs select-none">
-          {cleanMention}
+    if (regex.test(content)) {
+      const restText = content.replace(regex, "");
+      return (
+        <span>
+          <span className="inline-flex items-center font-bold text-[#3b49df] dark:text-blue-300 bg-blue-100/90 dark:bg-blue-950/90 border border-blue-200/90 dark:border-blue-800/80 px-2 py-0.5 rounded-md text-[11px] sm:text-xs mr-1.5 shadow-2xs select-none">
+            {cleanMention}
+          </span>
+          {formatInlineMentions(restText)}
         </span>
-        {formatInlineMentions(restText)}
-      </span>
-    );
+      );
+    }
   }
 
-  // 2. Check known authors prefixed with @
-  for (const author of KNOWN_AUTHORS) {
-    const prefix = `@${author}`;
-    if (content.startsWith(prefix)) {
-      const restText = content.slice(prefix.length).trimStart();
+  // 2. Check candidate authors (thread authors + known students & staff)
+  const candidateAuthors = [
+    ...(Array.isArray(threadAuthors) ? threadAuthors : []),
+    ...KNOWN_AUTHORS,
+  ].filter(Boolean);
+
+  // Sort by length descending so longer full names match first
+  const sortedCandidates = Array.from(new Set(candidateAuthors)).sort(
+    (a, b) => b.length - a.length
+  );
+
+  for (const author of sortedCandidates) {
+    const prefix = `@${author.replace(/^@/, "").trim()}`;
+    const escaped = prefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const reg = new RegExp(`^${escaped}(\\s+.*|$)`, "i");
+    const match = content.match(reg);
+    if (match) {
+      const restText = (match[1] || "").trimStart();
       return (
         <span>
           <span className="inline-flex items-center font-bold text-[#3b49df] dark:text-blue-300 bg-blue-100/90 dark:bg-blue-950/90 border border-blue-200/90 dark:border-blue-800/80 px-2 py-0.5 rounded-md text-[11px] sm:text-xs mr-1.5 shadow-2xs select-none">
@@ -70,11 +178,28 @@ export const formatCommentContent = (content = "", replyToAuthor = null) => {
     }
   }
 
-  // 3. Fallback: Check if starts with @mention (e.g. @username)
-  const match = content.match(/^(@[A-Za-z0-9_\.]+)(?:\s+(.*)|$)/s);
-  if (match) {
-    const mention = match[1];
-    const rest = match[2] || "";
+  // 3. Fallback: match full name mentions (@FirstName LastName)
+  const fullMentionMatch = content.match(
+    /^(@[A-Z][a-zA-Z0-9_.\-]*(?:\s+[A-Z][a-zA-Z0-9_.\-]*)+)(?:\s+(.*)|$)/s
+  );
+  if (fullMentionMatch) {
+    const mention = fullMentionMatch[1];
+    const rest = fullMentionMatch[2] || "";
+    return (
+      <span>
+        <span className="inline-flex items-center font-bold text-[#3b49df] dark:text-blue-300 bg-blue-100/90 dark:bg-blue-950/90 border border-blue-200/90 dark:border-blue-800/80 px-2 py-0.5 rounded-md text-[11px] sm:text-xs mr-1.5 shadow-2xs select-none">
+          {mention}
+        </span>
+        {formatInlineMentions(rest)}
+      </span>
+    );
+  }
+
+  // 4. Single-word mention fallback (@username)
+  const singleMatch = content.match(/^(@[A-Za-z0-9_\.\-]+)(?:\s+(.*)|$)/s);
+  if (singleMatch) {
+    const mention = singleMatch[1];
+    const rest = singleMatch[2] || "";
     return (
       <span>
         <span className="inline-flex items-center font-bold text-[#3b49df] dark:text-blue-300 bg-blue-100/90 dark:bg-blue-950/90 border border-blue-200/90 dark:border-blue-800/80 px-2 py-0.5 rounded-md text-[11px] sm:text-xs mr-1.5 shadow-2xs select-none">
@@ -95,6 +220,7 @@ export const ForumCommentNode = ({
   onCommentVote,
   commentVotes = {},
   currentUser,
+  threadAuthors = [],
 }) => {
   const [isReplying, setIsReplying] = useState(false);
   const [replyText, setReplyText] = useState("");
@@ -117,11 +243,9 @@ export const ForumCommentNode = ({
         parentId: comment.id,
         replyToAuthor: targetAuthor,
         content: `@${targetAuthor} ${replyText.trim()}`,
-        authorName: currentUser?.name || "Sahil Hasolkar",
+        authorName: currentUser?.name || "Student",
         authorRole: currentUser?.role || "Student",
-        authorAvatar:
-          currentUser?.avatar ||
-          "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        authorAvatar: currentUser?.avatar || currentUser?.photo || null,
       });
 
     setReplyText("");
@@ -129,17 +253,21 @@ export const ForumCommentNode = ({
   };
 
   return (
-    <div className={`relative ${depth > 0 ? "ml-4 sm:ml-7 pl-3 border-l-2 border-slate-200/80 dark:border-slate-800" : ""}`}>
+    <div
+      className={`relative ${
+        depth > 0
+          ? "ml-4 sm:ml-7 pl-3 border-l-2 border-slate-200/80 dark:border-slate-800"
+          : ""
+      }`}
+    >
       {/* Comment Card */}
       <div className="py-2.5 space-y-1.5 group/comment">
         {/* Comment Header: Avatar, Author, Role Flair, Date */}
         <div className="flex items-center space-x-2 text-[11px] text-slate-500 dark:text-slate-400">
-          <img
-            src={
-              comment.authorAvatar ||
-              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
-            }
-            alt={comment.authorName}
+          <ForumAvatar
+            src={comment.authorAvatar}
+            name={comment.authorName}
+            role={comment.authorRole}
             className="w-5 h-5 rounded-full object-cover shrink-0"
           />
           <span className="font-bold text-slate-900 dark:text-white truncate">
@@ -183,7 +311,11 @@ export const ForumCommentNode = ({
         {!isCollapsed && (
           <>
             <div className="text-[12px] sm:text-[13px] text-slate-700 dark:text-slate-300 leading-relaxed pl-7">
-              {formatCommentContent(comment.content, comment.replyToAuthor)}
+              {formatCommentContent(
+                comment.content,
+                comment.replyToAuthor,
+                threadAuthors
+              )}
             </div>
 
             {/* Comment Action Footer: Thumbs up / down + Reply button */}
@@ -191,7 +323,9 @@ export const ForumCommentNode = ({
               <ForumVoteButtons
                 score={voteData.score}
                 userReaction={voteData.reaction}
-                onVote={(type) => onCommentVote && onCommentVote(comment.id, type)}
+                onVote={(type) =>
+                  onCommentVote && onCommentVote(comment.id, type)
+                }
                 layout="horizontal"
                 size="sm"
               />
@@ -238,7 +372,10 @@ export const ForumCommentNode = ({
                   <span className="text-[11px] text-slate-400 dark:text-slate-500 flex items-center space-x-1">
                     <CornerDownRight size={12} />
                     <span>
-                      Replying to <strong className="text-slate-700 dark:text-slate-200 font-semibold">@{targetAuthor}</strong>
+                      Replying to{" "}
+                      <strong className="text-slate-700 dark:text-slate-200 font-semibold">
+                        @{targetAuthor}
+                      </strong>
                     </span>
                   </span>
 
@@ -278,6 +415,7 @@ export const ForumCommentNode = ({
                     onCommentVote={onCommentVote}
                     commentVotes={commentVotes}
                     currentUser={currentUser}
+                    threadAuthors={threadAuthors}
                   />
                 ))}
               </div>
