@@ -269,17 +269,26 @@ export const AuthProvider = ({ children }) => {
         loadCrmDataForStudent();
     }, [loadCrmDataForStudent]);
 
-    // Live heartbeat: keeps student logged-in session active in CRM
+    // Live heartbeat: keeps student logged-in session active in CRM only when actively authenticated
     useEffect(() => {
-        const studentId = crmProfile?.id || crmService.getSelectedStudentId();
-        if (studentId) {
-            lmsService.pingStudentActivity(studentId);
-            const interval = setInterval(() => {
-                lmsService.pingStudentActivity(studentId);
-            }, 120000); // Heartbeat every 2 minutes while active
-            return () => clearInterval(interval);
+        if (!isAuthenticated || role !== 'STUDENT') {
+            return;
         }
-    }, [crmProfile]);
+        const studentId = crmProfile?.id || crmService.getSelectedStudentId();
+        if (!studentId) {
+            return;
+        }
+
+        // Send immediate heartbeat on login / mount
+        lmsService.pingStudentActivity(studentId);
+
+        // Ping every 60 seconds while authenticated and active
+        const interval = setInterval(() => {
+            lmsService.pingStudentActivity(studentId);
+        }, 60000);
+
+        return () => clearInterval(interval);
+    }, [isAuthenticated, role, crmProfile?.id]);
 
     useEffect(() => {
         try {
@@ -315,9 +324,25 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
+        const studentId = crmProfile?.id || (role === 'STUDENT' ? crmService.getSelectedStudentId() : null);
+        if (studentId) {
+            lmsService.logoutStudentActivity(studentId).catch(() => {});
+        }
+
         setIsAuthenticated(false);
+        setCrmProfile(null);
+        setCrmAttendance(null);
+        setCrmBatch(null);
+        setCrmCertificates([]);
+        setStudentCoursesAccess([]);
+        setAssignedCourseIds([]);
+        setStudentUser(STUDENT_USER);
+
         try {
             localStorage.removeItem(AUTH_KEY);
+            localStorage.removeItem('om_lms_crm_cached_profile');
+            localStorage.removeItem('om_lms_student_avatar');
+            localStorage.removeItem('crm_selected_student_id');
         } catch (e) {
             console.error('Failed to clear auth state from localStorage', e);
         }
