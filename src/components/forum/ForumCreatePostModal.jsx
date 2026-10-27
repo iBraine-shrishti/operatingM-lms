@@ -69,7 +69,8 @@ export const ForumCreatePostModal = ({
       authorRole: currentUser?.role || "Student",
       authorAvatar:
         currentUser?.avatar ||
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+        currentUser?.photo ||
+        null,
       authorHandle: (currentUser?.name || "student")
         .toLowerCase()
         .replace(/\s+/g, "_"),
