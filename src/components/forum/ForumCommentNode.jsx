@@ -230,8 +230,8 @@ export const ForumCommentNode = ({
   const authorDisplay = cleanAuthorHandle(comment.authorHandle, comment.authorName);
   const targetAuthor = cleanAuthorHandle(comment.authorHandle, comment.authorName);
   const voteData = commentVotes[comment.id] || {
-    score: comment.likesCount || comment.score || 0,
-    reaction: null,
+    score: comment.likesCount ?? comment.score ?? comment.upvotes ?? 0,
+    reaction: comment.userReaction || (comment.userVote === 1 ? "up" : (comment.userVote === -1 ? "down" : null)),
   };
 
   const handleSendReply = (e) => {
