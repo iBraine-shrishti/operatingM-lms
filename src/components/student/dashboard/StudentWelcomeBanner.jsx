@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Calendar, MapPin, User } from "lucide-react";
+import { Calendar, MapPin, User, Sparkles } from "lucide-react";
 import dashboardHeaderBg from "../../../assets/header-bg/dashboard-header.png";
 import dashboardHeaderDarkBg from "../../../assets/header-bg/dashboard-header-dark.png";
 
@@ -11,6 +11,7 @@ export const StudentWelcomeBanner = ({
   currentUser = {},
   crmProfile = {},
   onNavigate,
+  onOpenGlance,
 }) => {
   const navigate = useNavigate();
 
@@ -75,6 +76,21 @@ export const StudentWelcomeBanner = ({
               </strong>
             </span>
           </div>
+
+          {onOpenGlance && (
+            <button
+              type="button"
+              onClick={onOpenGlance}
+              className="bg-white/95 dark:bg-slate-900/90 hover:bg-blue-50 dark:hover:bg-slate-800 backdrop-blur-xs border border-blue-200/80 dark:border-blue-500/40 shadow-2xs hover:shadow-xs rounded-full px-2 sm:px-3.5 py-0.5 sm:py-1.5 flex items-center space-x-1 sm:space-x-1.5 text-[10px] sm:text-xs md:text-[13px] font-bold text-blue-700 dark:text-blue-300 transition-all cursor-pointer group"
+              title="Open First-Time Summary & Overview Glance"
+            >
+              <Sparkles
+                size={12}
+                className="text-amber-500 dark:text-amber-400 group-hover:rotate-12 transition-transform shrink-0"
+              />
+              <span>Dashboard Glance</span>
+            </button>
+          )}
         </div>
       </div>
 

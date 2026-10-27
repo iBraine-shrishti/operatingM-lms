@@ -10,6 +10,7 @@ import {
   NotificationsDeadlinesHub,
   PendingAssignmentsModal,
   PaymentDueModal,
+  FirstLoginGlanceModal,
 } from "./dashboard";
 
 /**
@@ -35,6 +36,39 @@ export const StudentDashboardHub = ({
   const navigate = useNavigate();
 
   // Modal & reminder UI state
+  const studentId =
+    crmProfile?.id ||
+    currentUser?.admissionId ||
+    currentUser?.id ||
+    crmProfile?.admissionNo ||
+    "student";
+  const glanceStorageKey = `om_lms_first_login_glance_seen_${studentId}`;
+
+  const [isFirstLoginGlanceOpen, setIsFirstLoginGlanceOpen] = useState(false);
+
+  // Auto-trigger on first login if not dismissed previously
+  useEffect(() => {
+    try {
+      const hasSeen = localStorage.getItem(glanceStorageKey);
+      if (!hasSeen) {
+        setIsFirstLoginGlanceOpen(true);
+      }
+    } catch (e) {
+      console.warn("Could not check first login glance status:", e);
+    }
+  }, [glanceStorageKey]);
+
+  const handleDismissGlance = (dontShowAgain = true) => {
+    if (dontShowAgain) {
+      try {
+        localStorage.setItem(glanceStorageKey, "true");
+      } catch (e) {
+        console.warn("Could not save glance seen flag:", e);
+      }
+    }
+    setIsFirstLoginGlanceOpen(false);
+  };
+
   const [isAssignmentsModalOpen, setIsAssignmentsModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedReminderDays, setSelectedReminderDays] = useState(3);
@@ -198,6 +232,23 @@ export const StudentDashboardHub = ({
         isRemindDropdownOpen={isRemindDropdownOpen}
         onToggleRemindDropdown={() => setIsRemindDropdownOpen((prev) => !prev)}
         onSetReminder={handleSetReminder}
+      />
+      {/* ============================================================== */}
+      {/* MODAL 3: FIRST LOGIN OVERVIEW GLANCE (ALL-IN-ONE POPUP)        */}
+      {/* ============================================================== */}
+      <FirstLoginGlanceModal
+        isOpen={isFirstLoginGlanceOpen}
+        onClose={() => setIsFirstLoginGlanceOpen(false)}
+        onDismissForever={handleDismissGlance}
+        currentUser={currentUser}
+        crmProfile={crmProfile}
+        paymentInfo={dashboardData.paymentInfo}
+        pendingAssignments={dashboardData.pendingAssignments}
+        quizzes={quizzes}
+        onOpenPaymentModal={() => {
+          setIsFirstLoginGlanceOpen(false);
+          setIsPaymentModalOpen(true);
+        }}
       />
     </div>
   );

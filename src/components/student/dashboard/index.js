@@ -7,3 +7,4 @@ export { ContinueLearningCard } from "./ContinueLearningCard";
 export { NotificationsDeadlinesHub } from "./NotificationsDeadlinesHub";
 export { PendingAssignmentsModal } from "./PendingAssignmentsModal";
 export { PaymentDueModal } from "./PaymentDueModal";
+export { FirstLoginGlanceModal } from "./FirstLoginGlanceModal";
