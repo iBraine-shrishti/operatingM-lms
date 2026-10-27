@@ -1,0 +1,10 @@
+export { CourseDetailHeader } from "./CourseDetailHeader";
+export { CourseDetailTabs } from "./CourseDetailTabs";
+export { CourseOverviewTab } from "./CourseOverviewTab";
+export { CourseActivityRow } from "./CourseActivityRow";
+export { CourseSectionItem } from "./CourseSectionItem";
+export { CourseOutlineTab } from "./CourseOutlineTab";
+export { CourseAssessmentsTab } from "./CourseAssessmentsTab";
+export { CourseNotesTab } from "./CourseNotesTab";
+export { CourseStudentsTab } from "./CourseStudentsTab";
+export { AiSyllabusModal } from "./AiSyllabusModal";
