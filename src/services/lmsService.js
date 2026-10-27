@@ -1048,12 +1048,16 @@ export const lmsService = {
   },
   toggleDiscussionReaction: async (targetType, targetId, studentId, voteType) => {
     try {
-      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/${targetType}/${targetId}/vote/`, {
+      const cleanId = String(targetId).replace("disc-", "");
+      const voteVal = voteType === "down" ? -1 : 1;
+      const res = await fetch(`${CRM_BACKEND_API}/lms/forums/${targetType}/${cleanId}/vote/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           student_id: studentId,
+          user_id: studentId,
           vote_type: voteType,
+          vote_value: voteVal,
         }),
       });
       const data = await res.json();
