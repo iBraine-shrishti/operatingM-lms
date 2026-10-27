@@ -1730,6 +1730,19 @@ export const lmsService = {
 
     return filtered;
   },
+  logoutStudentActivity: async (studentId) => {
+    try {
+      if (!studentId) return;
+      const cleanId = String(studentId).replace("std-", "").replace("OMC-", "").replace(/^0+/, "");
+      await fetch(`${CRM_BACKEND_API}/lms/student-activity/logout/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ student_id: cleanId }),
+      });
+    } catch (err) {
+      // silent
+    }
+  },
   pingStudentActivity: async (studentId) => {
     try {
       if (!studentId) return;
