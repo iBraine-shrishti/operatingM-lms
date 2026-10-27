@@ -269,6 +269,18 @@ export const AuthProvider = ({ children }) => {
         loadCrmDataForStudent();
     }, [loadCrmDataForStudent]);
 
+    // Live heartbeat: keeps student logged-in session active in CRM
+    useEffect(() => {
+        const studentId = crmProfile?.id || crmService.getSelectedStudentId();
+        if (studentId) {
+            lmsService.pingStudentActivity(studentId);
+            const interval = setInterval(() => {
+                lmsService.pingStudentActivity(studentId);
+            }, 120000); // Heartbeat every 2 minutes while active
+            return () => clearInterval(interval);
+        }
+    }, [crmProfile]);
+
     useEffect(() => {
         try {
             localStorage.setItem(STORAGE_KEY, role);
