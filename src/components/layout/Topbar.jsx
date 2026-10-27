@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { db } from "../../firebase";
 import { ref, onValue, update } from "firebase/database";
 import { CRM_BACKEND_API } from "../../services/lmsService";
-import { ChevronRight, Search, Bell, ChevronDown, User, Settings, LogOut, Check, Shield, GraduationCap, Sun, Moon, AlertCircle, MessageSquare, Sparkles } from "lucide-react";
+import { ChevronRight, Search, Bell, ChevronDown, User, Settings, LogOut, Check, Shield, GraduationCap, Sun, Moon, AlertCircle, MessageSquare, Sparkles, Volume2, VolumeX } from "lucide-react";
+import { playNotificationSound, isNotificationSoundMuted, toggleNotificationSound } from "../../utils/notificationSound";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
@@ -32,6 +33,8 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [notificationsList, setNotificationsList] = useState([]);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [soundMuted, setSoundMuted] = useState(isNotificationSoundMuted());
+  const prevUnreadRef = useRef(null);
 
   // Student ID for Firebase channel
   const cleanSid = String(
@@ -67,6 +70,10 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
       );
       setNotificationsList(list);
       const unread = list.filter((n) => !n.isRead).length;
+      if (prevUnreadRef.current !== null && unread > prevUnreadRef.current) {
+        playNotificationSound();
+      }
+      prevUnreadRef.current = unread;
       setUnreadNotifications(unread);
     };
 
@@ -261,14 +268,28 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
           {notifOpen && (
             <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-[#0f172a] rounded-xl shadow-xl border border-slate-100 dark:border-slate-800 py-3 z-50 animate-in fade-in slide-in-from-top-2">
               <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <span>Notifications</span>
-                  {unreadNotifications > 0 && (
-                    <span className="px-1.5 py-0.5 rounded-full bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 text-[10px] font-extrabold">
-                      {unreadNotifications} new
-                    </span>
-                  )}
-                </h4>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <span>Notifications</span>
+                    {unreadNotifications > 0 && (
+                      <span className="px-1.5 py-0.5 rounded-full bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 text-[10px] font-extrabold">
+                        {unreadNotifications} new
+                      </span>
+                    )}
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const next = toggleNotificationSound();
+                      setSoundMuted(next);
+                    }}
+                    title={soundMuted ? "Notification sound is muted (Click to enable & test sound)" : "Notification sound is active (Click to test/mute)"}
+                    className="p-1 rounded-md text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 transition-colors cursor-pointer"
+                  >
+                    {soundMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+                  </button>
+                </div>
                 {unreadNotifications > 0 && (
                   <button
                     onClick={handleMarkAllRead}
