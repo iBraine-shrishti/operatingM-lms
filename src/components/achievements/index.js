@@ -5,3 +5,5 @@ export { ExamCertificatesSection } from "./ExamCertificatesSection";
 export { MilestoneBadgeCard } from "./MilestoneBadgeCard";
 export { MilestoneBadgesSection } from "./MilestoneBadgesSection";
 export { AchievementsFilterBar } from "./AchievementsFilterBar";
+export { AchievementsHeader } from "./AchievementsHeader";
+export { AchievementsEmptyState } from "./AchievementsEmptyState";
