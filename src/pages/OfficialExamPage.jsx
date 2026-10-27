@@ -286,6 +286,8 @@ export const OfficialExamPage = () => {
     const percentage = Number(((finalScore / maxScore) * 100).toFixed(1));
     const passed = !isDisqualified && percentage >= (selectedTrack.passingScorePercent || 85.0);
 
+    const certId = `${selectedTrack.code}-${Math.floor(100000 + Math.random() * 900000)}`;
+
     setExamResult({
       isDisqualified,
       totalCorrect,
@@ -303,8 +305,71 @@ export const OfficialExamPage = () => {
         dateStyle: "full",
         timeStyle: "medium",
       }),
-      certificateId: `${selectedTrack.code}-${Math.floor(100000 + Math.random() * 900000)}`,
+      certificateId: certId,
     });
+
+    if (passed) {
+      try {
+        const certObj = {
+          id: certId,
+          certificate_id: certId,
+          course: selectedTrack.title,
+          category: selectedTrack.badgeText || "Specialist Track",
+          date: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          rating: Number((percentage / 10).toFixed(1)),
+          grade:
+            percentage >= 95
+              ? "A+ Distinction"
+              : percentage >= 90
+              ? "Honors with Distinction"
+              : "Certified Specialist",
+          badgeType:
+            selectedTrack.categoryKey === "seo"
+              ? "green"
+              : selectedTrack.categoryKey === "wordpress"
+              ? "purple"
+              : selectedTrack.categoryKey === "google-ads"
+              ? "gold"
+              : "blue",
+          badgeTitle: selectedTrack.shortTitle
+            ? `${selectedTrack.shortTitle.toUpperCase()}`
+            : "CERTIFIED",
+          shortDetail: selectedTrack.description
+            ? selectedTrack.description.slice(0, 52) + "..."
+            : "Official examination completed",
+          unlocked: true,
+          percentage,
+          examTrackId: selectedTrack.id,
+          categoryBadgeColor:
+            selectedTrack.categoryKey === "seo"
+              ? "border-emerald-200 bg-emerald-50/80 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-700/80"
+              : selectedTrack.categoryKey === "wordpress"
+              ? "border-purple-200 bg-purple-50/80 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-700/80"
+              : "border-blue-200 bg-blue-50/80 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-700/80",
+          gradeBadgeColor:
+            "border-amber-200 bg-amber-50/80 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-700/80",
+          glowColor:
+            selectedTrack.categoryKey === "seo"
+              ? "from-white via-white to-emerald-50/50 dark:from-[#0b1329] dark:to-emerald-950/30"
+              : selectedTrack.categoryKey === "wordpress"
+              ? "from-white via-white to-purple-50/50 dark:from-[#0b1329] dark:to-purple-950/30"
+              : "from-white via-white to-blue-50/50 dark:from-[#0b1329] dark:to-blue-950/30",
+        };
+        const existingRaw = localStorage.getItem("om_lms_exam_certificates");
+        const existing = existingRaw ? JSON.parse(existingRaw) : [];
+        const filtered = existing.filter((c) => c.examTrackId !== selectedTrack.id);
+        localStorage.setItem(
+          "om_lms_exam_certificates",
+          JSON.stringify([certObj, ...filtered])
+        );
+      } catch (err) {
+        console.warn("Could not save exam certificate to localStorage:", err);
+      }
+    }
 
     setStrikeAlert(null);
     strikeAlertRef.current = null;
