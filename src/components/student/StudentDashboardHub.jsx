@@ -35,36 +35,37 @@ export const StudentDashboardHub = ({
   const { showToast } = useToast();
   const navigate = useNavigate();
 
-  // Modal & reminder UI state
+  // Daily overview glance modal state - triggers once per calendar day on first login
   const studentId =
-    crmProfile?.id ||
+    currentUser?.crmAdmissionId ||
     currentUser?.admissionId ||
     currentUser?.id ||
+    crmProfile?.id ||
     crmProfile?.admissionNo ||
     "student";
-  const glanceStorageKey = `om_lms_first_login_glance_seen_${studentId}`;
+  const dailyGlanceStorageKey = `om_lms_daily_overview_${studentId}`;
+  const todayDateStr = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD local format
 
   const [isFirstLoginGlanceOpen, setIsFirstLoginGlanceOpen] = useState(false);
 
-  // Auto-trigger on first login if not dismissed previously
+  // Auto-trigger on first login of each day
   useEffect(() => {
+    if (!studentId || studentId === "student") return;
     try {
-      const hasSeen = localStorage.getItem(glanceStorageKey);
-      if (!hasSeen) {
+      const lastShownDate = localStorage.getItem(dailyGlanceStorageKey);
+      if (lastShownDate !== todayDateStr) {
         setIsFirstLoginGlanceOpen(true);
       }
     } catch (e) {
-      console.warn("Could not check first login glance status:", e);
+      console.warn("Could not check daily glance status:", e);
     }
-  }, [glanceStorageKey]);
+  }, [dailyGlanceStorageKey, todayDateStr, studentId]);
 
-  const handleDismissGlance = (dontShowAgain = true) => {
-    if (dontShowAgain) {
-      try {
-        localStorage.setItem(glanceStorageKey, "true");
-      } catch (e) {
-        console.warn("Could not save glance seen flag:", e);
-      }
+  const handleDismissGlance = () => {
+    try {
+      localStorage.setItem(dailyGlanceStorageKey, todayDateStr);
+    } catch (e) {
+      console.warn("Could not save daily glance seen flag:", e);
     }
     setIsFirstLoginGlanceOpen(false);
   };
@@ -238,7 +239,7 @@ export const StudentDashboardHub = ({
       {/* ============================================================== */}
       <FirstLoginGlanceModal
         isOpen={isFirstLoginGlanceOpen}
-        onClose={() => setIsFirstLoginGlanceOpen(false)}
+        onClose={handleDismissGlance}
         onDismissForever={handleDismissGlance}
         currentUser={currentUser}
         crmProfile={crmProfile}
@@ -246,7 +247,7 @@ export const StudentDashboardHub = ({
         pendingAssignments={dashboardData.pendingAssignments}
         quizzes={quizzes}
         onOpenPaymentModal={() => {
-          setIsFirstLoginGlanceOpen(false);
+          handleDismissGlance();
           setIsPaymentModalOpen(true);
         }}
       />

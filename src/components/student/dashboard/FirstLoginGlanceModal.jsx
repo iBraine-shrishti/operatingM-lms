@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Sparkles,
@@ -19,18 +19,16 @@ import {
   HelpCircle,
   ExternalLink,
 } from "lucide-react";
-import { INITIAL_PENDING_ASSIGNMENTS } from "../../../data/studentDashboardData";
-import { IMPORTED_LMS_QUIZZES } from "../../../data/importedLmsQuizzes";
 
 /**
- * FirstLoginGlanceModal
- * Executive single-glance overview modal presented on student's first login
+ * FirstLoginGlanceModal (Daily Student Overview Modal)
+ * Dynamic executive overview presented once per day on student's first login
  * Displays:
- * 1. Pending Assignments (counts, overdue alerts, direct submission links)
- * 2. Pending Quizzes & Assessments (counts, active quizzes, direct take links)
+ * 1. Pending Assignments (live dynamic batch assignments, real due dates)
+ * 2. Pending Quizzes & Assessments (live dynamic quizzes for enrolled courses)
  * 3. Fees Notice (Conditional: prominent alert if dues pending, clean verified badge if cleared)
  * 4. Executive KPI bar & student identity info
- * 5. Persistence checkbox to remember student's dismissal
+ * 5. Daily briefing indicator
  */
 export const FirstLoginGlanceModal = ({
   isOpen = false,
@@ -44,49 +42,57 @@ export const FirstLoginGlanceModal = ({
   onDismissForever,
 }) => {
   const navigate = useNavigate();
-  const [dontShowAgain, setDontShowAgain] = useState(true);
 
-  // Fallback defaults for realistic, robust display
+  // Dynamic student identity from CRM / Auth Context
   const studentName =
     currentUser?.name ||
     crmProfile?.studentName ||
     crmProfile?.name ||
+    currentUser?.fullName ||
     "Student";
   const studentCourse =
     crmProfile?.course ||
     currentUser?.course ||
-    "Masters in Digital Marketing";
+    "Digital Marketing";
   const admissionId =
-    crmProfile?.admissionNo || currentUser?.admissionNo || "OMC-0375";
+    crmProfile?.admissionNo ||
+    currentUser?.admissionNo ||
+    currentUser?.crmAdmissionId ||
+    currentUser?.id ||
+    "OMC-0000";
   const centerBranch =
-    crmProfile?.branch || currentUser?.branch || "Borivali Center";
+    crmProfile?.branch ||
+    currentUser?.branch ||
+    "Center";
   const progressPercent =
-    currentUser?.overallProgress ?? crmProfile?.progress ?? 68;
+    currentUser?.overallProgress ?? crmProfile?.progress ?? 0;
 
-  // Pending assignments resolution
+  // Dynamic assignments resolution (100% live - no fake static fallbacks)
   const assignmentsList = useMemo(() => {
-    if (Array.isArray(pendingAssignments) && pendingAssignments.length > 0) {
+    if (Array.isArray(pendingAssignments)) {
       return pendingAssignments;
     }
-    return INITIAL_PENDING_ASSIGNMENTS;
+    return [];
   }, [pendingAssignments]);
 
   const overdueAssignments = useMemo(
     () =>
       assignmentsList.filter(
-        (a) => a.isOverdue || a.status === "overdue" || (a.daysLeft !== undefined && a.daysLeft < 0)
+        (a) =>
+          a.isOverdue ||
+          a.status === "overdue" ||
+          (a.daysLeft !== undefined && a.daysLeft < 0)
       ),
     [assignmentsList]
   );
 
-  // Pending quizzes resolution
+  // Dynamic pending quizzes resolution (100% live - no fake static fallbacks)
   const pendingQuizzesList = useMemo(() => {
-    const pool =
-      Array.isArray(quizzes) && quizzes.length > 0
-        ? quizzes
-        : IMPORTED_LMS_QUIZZES;
+    if (!Array.isArray(quizzes) || quizzes.length === 0) {
+      return [];
+    }
 
-    return pool.filter((q) => {
+    return quizzes.filter((q) => {
       const isPassed = q.studentStatus === "passed" || q.isCompleted;
       const isPending =
         !q.studentStatus ||
@@ -110,27 +116,34 @@ export const FirstLoginGlanceModal = ({
       ? paymentInfo.installmentAmount
       : crmProfile?.balanceDue
       ? `₹${Number(crmProfile.balanceDue).toLocaleString("en-IN")}`
-      : "₹12,500";
+      : "₹0";
 
   const dueDateText =
     paymentInfo?.dueDateText ||
     crmProfile?.nextDueDate ||
-    "October 14, 2026";
+    "Upcoming Due Date";
 
   const termText =
     paymentInfo?.termText ||
     (crmProfile?.balanceDue
-      ? `Term Tuition Installment • Balance: ₹${Number(crmProfile.balanceDue).toLocaleString("en-IN")}`
-      : "Term 3 Tuition Fee • 3 of 4 Installments");
+      ? `Tuition Fee Installment • Balance: ₹${Number(crmProfile.balanceDue).toLocaleString("en-IN")}`
+      : "Tuition Fee Installment");
 
   const daysRemainingText =
-    paymentInfo?.daysRemainingText || "Due in 7 Days • Oct 14, 2026";
+    paymentInfo?.daysRemainingText ||
+    (crmProfile?.nextDueDate ? `Due by ${crmProfile.nextDueDate}` : "Payment Due");
+
+  const todayFormatted = new Date().toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
 
   if (!isOpen) return null;
 
   const handleClose = () => {
     if (onDismissForever) {
-      onDismissForever(dontShowAgain);
+      onDismissForever();
     } else if (onClose) {
       onClose();
     }
@@ -169,7 +182,7 @@ export const FirstLoginGlanceModal = ({
     if (onOpenPaymentModal) {
       onOpenPaymentModal();
     } else {
-      navigate("/profile?tab=fees");
+      navigate("/attendance-fees");
     }
   };
 
@@ -188,7 +201,7 @@ export const FirstLoginGlanceModal = ({
             <div className="space-y-1.5 min-w-0">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-[11px] sm:text-xs font-bold text-white tracking-wide border border-white/25">
                 <Sparkles size={12} className="text-amber-300 animate-pulse" />
-                <span>Operating Media Student Overview</span>
+                <span>Daily Student Overview • {todayFormatted}</span>
               </div>
               <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white drop-shadow-xs truncate">
                 Welcome, {studentName}!
@@ -242,7 +255,9 @@ export const FirstLoginGlanceModal = ({
                 <span className="text-[11px] font-bold text-rose-600 dark:text-rose-400">
                   {overdueAssignments.length > 0
                     ? `${overdueAssignments.length} Overdue`
-                    : "Pending"}
+                    : assignmentsList.length > 0
+                    ? "Pending"
+                    : "All Done ✓"}
                 </span>
               </div>
             </div>
@@ -260,7 +275,7 @@ export const FirstLoginGlanceModal = ({
                   {pendingQuizzesList.length}
                 </span>
                 <span className="text-[11px] font-bold text-blue-600 dark:text-blue-400">
-                  Available
+                  {pendingQuizzesList.length > 0 ? "Available" : "Completed ✓"}
                 </span>
               </div>
             </div>
@@ -302,7 +317,7 @@ export const FirstLoginGlanceModal = ({
                   {progressPercent}%
                 </span>
                 <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-                  On Track
+                  {progressPercent >= 75 ? "Excellent" : progressPercent > 0 ? "In Progress" : "Not Started"}
                 </span>
               </div>
             </div>
@@ -396,8 +411,16 @@ export const FirstLoginGlanceModal = ({
             </div>
 
             {assignmentsList.length === 0 ? (
-              <div className="p-4 rounded-xl bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">
-                🎉 No pending assignments! You are all caught up.
+              <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-800 text-center space-y-1.5 shadow-2xs">
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
+                  <CheckCircle2 size={18} />
+                </div>
+                <h4 className="font-bold text-slate-800 dark:text-white text-xs sm:text-sm">
+                  All Caught Up! No Pending Assignments
+                </h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  You have no pending assignments due for your current batch.
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -409,7 +432,7 @@ export const FirstLoginGlanceModal = ({
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 truncate max-w-[160px]">
-                          {assign.course}
+                          {assign.batchName || assign.course || "Assigned Batch"}
                         </span>
                         <span
                           className={`px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${
@@ -420,7 +443,7 @@ export const FirstLoginGlanceModal = ({
                               : "bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-300"
                           }`}
                         >
-                          {assign.badgeText || assign.dueDate}
+                          {assign.badgeText || assign.dueDate || "Pending"}
                         </span>
                       </div>
                       <h4 className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm line-clamp-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -436,7 +459,7 @@ export const FirstLoginGlanceModal = ({
                     <div className="flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800/60">
                       <div className="flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400">
                         <Clock size={12} />
-                        <span>{assign.dueDate}</span>
+                        <span>{assign.dueDate || "No Due Date"}</span>
                       </div>
                       <button
                         onClick={() => handleTakeAssignment(assign.id)}
@@ -478,8 +501,16 @@ export const FirstLoginGlanceModal = ({
             </div>
 
             {pendingQuizzesList.length === 0 ? (
-              <div className="p-4 rounded-xl bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-800 text-center text-xs text-slate-500">
-                🎉 All chapter quizzes completed! Review your scores in My Quizzes.
+              <div className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#0b1329] border border-slate-200 dark:border-slate-800 text-center space-y-1.5 shadow-2xs">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mx-auto">
+                  <CheckCircle2 size={18} />
+                </div>
+                <h4 className="font-bold text-slate-800 dark:text-white text-xs sm:text-sm">
+                  No Pending Quizzes
+                </h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  You are up to date on all quizzes and assessments for your enrolled courses.
+                </p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -491,7 +522,7 @@ export const FirstLoginGlanceModal = ({
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-1">
                         <span className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 truncate max-w-[160px]">
-                          {quiz.category || quiz.courseTitle || "Assessment"}
+                          {quiz.courseTitle || quiz.category || "Assessment"}
                         </span>
                         <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 text-indigo-700 dark:bg-indigo-900/60 dark:text-indigo-300 shrink-0">
                           {quiz.passScorePercentage || 70}% Pass Req.
@@ -501,7 +532,7 @@ export const FirstLoginGlanceModal = ({
                         {quiz.title}
                       </h4>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
-                        {quiz.totalQuestions || 20} Questions •{" "}
+                        {quiz.totalQuestions || quiz.questions?.length || 20} Questions •{" "}
                         {quiz.durationMinutes || 20} Mins
                       </p>
                     </div>
@@ -528,22 +559,17 @@ export const FirstLoginGlanceModal = ({
         </div>
 
         {/* ========================================================== */}
-        {/* MODAL FOOTER: DISMISSAL CHECKBOX & PRIMARY ACTION          */}
+        {/* MODAL FOOTER: DAILY OVERVIEW BADGE & PRIMARY ACTION        */}
         {/* ========================================================== */}
         <div className="p-4 sm:p-5 bg-white dark:bg-[#0b1329] border-t border-slate-200 dark:border-slate-800 shrink-0 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <label className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={dontShowAgain}
-              onChange={(e) => setDontShowAgain(e.target.checked)}
-              className="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 cursor-pointer"
-            />
-            <span>Don't show this popup automatically on login</span>
-          </label>
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400 select-none">
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            <span>Daily Overview • Automatically appears on first login each day</span>
+          </div>
 
           <button
             onClick={handleClose}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
           >
             <span>Go to Dashboard Workspace</span>
             <ArrowRight size={15} />
