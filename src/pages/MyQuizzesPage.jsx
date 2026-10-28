@@ -1,3 +1,4 @@
+import { ModalPortal } from "../components/common/ModalPortal";
 import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { lmsService, CRM_BACKEND_API } from "../services/lmsService";
@@ -438,6 +439,7 @@ export const MyQuizzesPage = () => {
       {/* START / RETAKE QUIZ MODAL                                     */}
       {/* ------------------------------------------------------------- */}
       {activeQuizModal && (
+        <ModalPortal>
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-lg w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-gradient-to-r from-blue-50/50 dark:from-blue-950/40 to-indigo-50/30 dark:to-indigo-950/20">
@@ -533,12 +535,14 @@ export const MyQuizzesPage = () => {
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* ------------------------------------------------------------- */}
       {/* REVIEW RESULT MODAL                                           */}
       {/* ------------------------------------------------------------- */}
       {scoreReviewModal && (
+        <ModalPortal>
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-gradient-to-r from-emerald-50/60 dark:from-emerald-950/40 to-teal-50/40 dark:to-teal-950/20">
@@ -636,12 +640,14 @@ export const MyQuizzesPage = () => {
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* ------------------------------------------------------------- */}
       {/* ALL COMPLETED QUIZZES MODAL                                   */}
       {/* ------------------------------------------------------------- */}
       {showAllCompletedModal && (
+        <ModalPortal>
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white dark:bg-[#0b1329] rounded-3xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col max-h-[88vh]">
             <div className="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-gradient-to-r from-emerald-50/70 dark:from-emerald-950/50 via-teal-50/40 dark:via-teal-950/30 to-blue-50/30 dark:to-blue-950/20 shrink-0">
@@ -767,6 +773,7 @@ export const MyQuizzesPage = () => {
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
   );

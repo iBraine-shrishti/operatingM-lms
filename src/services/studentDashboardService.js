@@ -806,7 +806,7 @@ export const studentDashboardService = {
               studentQuizzes.length) *
               10,
           ) / 10
-        : 88.5;
+        : 0;
 
     const assignmentsList = Array.isArray(options.assignments)
       ? options.assignments

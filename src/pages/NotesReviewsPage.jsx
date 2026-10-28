@@ -1,3 +1,4 @@
+import { ModalPortal } from "../components/common/ModalPortal";
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { lmsService } from "../services/lmsService";
 import {
@@ -941,6 +942,7 @@ export const NotesReviewsPage = () => {
       {/* FULL-SIZE STUDY NOTE MODAL (ADD & EDIT)                       */}
       {/* ------------------------------------------------------------- */}
       {isModalOpen && (
+        <ModalPortal>
         <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-150">
           <div className="bg-white dark:bg-[#0b1329] rounded-2xl w-full max-w-6xl h-[92vh] max-h-[96vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
             {/* Header: Title + Close */}
@@ -1240,12 +1242,14 @@ export const NotesReviewsPage = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* ------------------------------------------------------------- */}
       {/* FULL NOTE VIEWER MODAL                                        */}
       {/* ------------------------------------------------------------- */}
       {viewingNote && (
+        <ModalPortal>
         <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-150">
           <div className="bg-white dark:bg-[#0b1329] rounded-2xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
             {/* Header */}
@@ -1318,6 +1322,7 @@ export const NotesReviewsPage = () => {
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
   );

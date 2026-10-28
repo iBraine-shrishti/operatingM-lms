@@ -1,3 +1,4 @@
+import { ModalPortal } from "../common/ModalPortal";
 import React, { useEffect } from "react";
 import { X, Download, ExternalLink } from "lucide-react";
 
@@ -13,6 +14,7 @@ export const ForumImageModal = ({ imageUrl, title, onClose }) => {
   if (!imageUrl) return null;
 
   return (
+    <ModalPortal>
     <div
       onClick={onClose}
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-xs animate-in fade-in duration-150"
@@ -57,5 +59,6 @@ export const ForumImageModal = ({ imageUrl, title, onClose }) => {
         </div>
       </div>
     </div>
+    </ModalPortal>
   );
 };

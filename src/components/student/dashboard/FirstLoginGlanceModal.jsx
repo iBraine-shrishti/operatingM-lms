@@ -1,3 +1,4 @@
+import { ModalPortal } from "../../common/ModalPortal";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -187,6 +188,7 @@ export const FirstLoginGlanceModal = ({
   };
 
   return (
+    <ModalPortal>
     <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto animate-in fade-in duration-200">
       <div className="bg-white dark:bg-[#0b1329] rounded-2xl sm:rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800/90 overflow-hidden animate-in zoom-in-95 duration-200 my-auto">
         {/* ========================================================== */}
@@ -577,6 +579,7 @@ export const FirstLoginGlanceModal = ({
         </div>
       </div>
     </div>
+    </ModalPortal>
   );
 };
 

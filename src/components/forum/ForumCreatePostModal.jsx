@@ -1,3 +1,4 @@
+import { ModalPortal } from "../common/ModalPortal";
 import React, { useState, useRef } from "react";
 import { X, Upload, ImageIcon, Tag, Sparkles, Check, AlertCircle, Trash2, MessageSquare, Loader2 } from "lucide-react";
 import { lmsService } from "../../services/lmsService";
@@ -86,6 +87,7 @@ export const ForumCreatePostModal = ({
   };
 
   return (
+    <ModalPortal>
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[92vh] overflow-y-auto space-y-4">
         {/* Modal Header */}
@@ -276,5 +278,6 @@ export const ForumCreatePostModal = ({
         </form>
       </div>
     </div>
+    </ModalPortal>
   );
 };

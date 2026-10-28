@@ -41,7 +41,7 @@ export const SharedLayout = () => {
         <Topbar onToggleSidebar={toggleSidebar} onOpenSearch={() => setSearchModalOpen(true)}/>
 
         {/* Page Content View - Pure edge-to-edge fluid responsive workspace */}
-        <main className="flex-1 w-full p-3 sm:p-4 lg:p-4 xl:p-4 2xl:px-6 2xl:py-4 flex flex-col animate-in fade-in duration-200">
+        <main className="flex-1 w-full p-3 sm:p-4 lg:p-4 xl:p-4 2xl:px-6 2xl:py-4 flex flex-col ">
           <Outlet />
         </main>
       </div>

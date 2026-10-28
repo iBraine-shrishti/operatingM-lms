@@ -1,3 +1,4 @@
+import { ModalPortal } from "../components/common/ModalPortal";
 import React, { useState, useMemo, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
@@ -387,6 +388,7 @@ export const MyAssignmentsPage = () => {
       {/* SUBMISSION MODAL                                              */}
       {/* ------------------------------------------------------------- */}
       {isSubmitModalOpen && (
+        <ModalPortal>
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
           <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-5 sm:p-6 shadow-xl border border-slate-200 dark:border-slate-800 space-y-4 animate-in fade-in zoom-in duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -526,12 +528,14 @@ export const MyAssignmentsPage = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
 
       {/* ------------------------------------------------------------- */}
       {/* VIEW FEEDBACK MODAL                                           */}
       {/* ------------------------------------------------------------- */}
       {feedbackModalAssignment && (
+        <ModalPortal>
         <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
           <div className="bg-white dark:bg-[#0b1329] rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 shadow-xl border border-slate-200 dark:border-slate-800 space-y-4 animate-in fade-in zoom-in duration-150">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
@@ -596,6 +600,7 @@ export const MyAssignmentsPage = () => {
             </div>
           </div>
         </div>
+        </ModalPortal>
       )}
     </div>
   );

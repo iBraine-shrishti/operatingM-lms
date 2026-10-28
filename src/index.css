@@ -645,3 +645,21 @@ html.dark .hover\:border-slate-300:hover {
   pointer-events: none;
   display: block;
 }
+
+
+/* ==========================================================================
+   FIX TAILWIND SPACE-Y INHERITANCE ON FIXED OVERLAYS / MODALS
+   Tailwind's .space-y-* selector applies margin-top to sibling elements:
+   .space-y-* > :not([hidden]) ~ :not([hidden]) { margin-top: ... }
+   When a fixed inset-0 modal is rendered as a child of a space-y container,
+   it inherits margin-top, shifting the modal down and creating a white patch
+   at the top of the viewport.
+   ========================================================================== */
+.fixed,
+[class*="fixed inset-0"],
+[class*="fixed"] {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}

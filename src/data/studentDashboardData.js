@@ -233,7 +233,7 @@ export const STUDENT_STATS_SUMMARY = [
   {
     id: "stat-quiz",
     title: "QUIZ SCORE",
-    value: "88.5%",
+    value: "0%",
     subtitle: "Average Score",
     color: "purple",
     link: "/my-quizzes",
