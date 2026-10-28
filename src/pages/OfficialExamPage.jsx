@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { mapStudentDataFromCrm } from "../components/profile";
+import { lmsService } from "../services/lmsService";
 
 import {
   EXAM_TRACKS,
@@ -37,36 +38,46 @@ export const OfficialExamPage = () => {
   const centerNode = `${studentData?.center || "Borivali Center"} • Assessment Node`;
   const sessionHash = "SHA256: 9e887f4c10a30b2e847d91";
 
-  // Check URL params for pre-selected track (e.g., /exam?track=track-seo or /exam?courseId=course-1)
-  const initialTrack = useMemo(() => {
-    const trackParam = searchParams.get("track");
-    const courseParam = searchParams.get("courseId");
-    if (trackParam) {
-      return EXAM_TRACKS.find((t) => t.id === trackParam) || null;
-    }
-    if (courseParam) {
-      return EXAM_TRACKS.find((t) => t.courseId === courseParam) || null;
-    }
-    return null;
-  }, [searchParams]);
+  const cleanSid = String(
+    currentUser?.crmAdmissionId ||
+    currentUser?.id ||
+    currentUser?.admissionNo ||
+    currentUser?.student_id ||
+    "267"
+  ).replace("std-", "");
 
-  const stageParam = searchParams.get("stage");
+  const [assignedTracks, setAssignedTracks] = useState([]);
+  const [isLoadingTracks, setIsLoadingTracks] = useState(true);
+
   // Stage state: "CATALOG" | "BRIEFING" | "LIVE_EXAM" | "SCORECARD"
-  const [examStage, setExamStage] = useState(
-    stageParam === "LIVE_EXAM"
-      ? "LIVE_EXAM"
-      : stageParam === "SCORECARD"
-      ? "SCORECARD"
-      : initialTrack
-      ? "BRIEFING"
-      : "CATALOG"
-  );
-  const [selectedTrack, setSelectedTrack] = useState(initialTrack || EXAM_TRACKS[0]);
+  const [examStage, setExamStage] = useState("CATALOG");
+  const [selectedTrack, setSelectedTrack] = useState(null);
+  const [questions, setQuestions] = useState([]);
 
-  // Curated questions list for active track
-  const [questions, setQuestions] = useState(() =>
-    getQuestionsForTrack(initialTrack?.id || EXAM_TRACKS[0].id)
-  );
+  // Fetch dynamic assigned exams for this student
+  useEffect(() => {
+    let isMounted = true;
+    const loadAssignedExams = async () => {
+      try {
+        setIsLoadingTracks(true);
+        const dynamicExams = await lmsService.fetchStudentExams(cleanSid);
+        if (isMounted) {
+          setAssignedTracks(dynamicExams || []);
+          if (dynamicExams && dynamicExams.length > 0) {
+            const trackParam = searchParams.get("track");
+            const matched = trackParam ? dynamicExams.find(t => String(t.id) === String(trackParam)) : null;
+            setSelectedTrack(matched || dynamicExams[0]);
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load assigned exams:", err);
+      } finally {
+        if (isMounted) setIsLoadingTracks(false);
+      }
+    };
+    loadAssignedExams();
+    return () => { isMounted = false; };
+  }, [cleanSid, searchParams]);
 
   // Security lockdown state (3 Warnings Total)
   const MAX_WARNINGS = 3;
@@ -80,9 +91,7 @@ export const OfficialExamPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [markedForReview, setMarkedForReview] = useState({});
-  const [timeRemaining, setTimeRemaining] = useState(
-    (initialTrack?.durationSeconds) || (EXAM_TRACKS[0].durationSeconds)
-  );
+  const [timeRemaining, setTimeRemaining] = useState(3600);
 
   // Final evaluation result
   const [examResult, setExamResult] = useState(null);
@@ -183,20 +192,44 @@ export const OfficialExamPage = () => {
   };
 
   // 1. SELECT TRACK FROM CATALOG
-  const handleSelectTrack = (track) => {
+  const handleSelectTrack = async (track) => {
     setSelectedTrack(track);
-    const trackQuestions = getQuestionsForTrack(track.id);
-    setQuestions(trackQuestions);
-    setTimeRemaining(track.durationSeconds);
-    setCurrentQuestionIndex(0);
     setSelectedAnswers({});
     setMarkedForReview({});
-    setPledgeAccepted(false);
+    setCurrentQuestionIndex(0);
     setSecurityStrikes(0);
     setStrikeAlert(null);
     setExamResult(null);
+    setPledgeAccepted(false);
 
-    // Request native browser fullscreen upon course selection
+    // Fetch dynamic questions for this exam
+    try {
+      const detail = await lmsService.fetchExamDetail(track.id || track.numericId);
+      if (detail && detail.questions && detail.questions.length > 0) {
+        const mappedQuestions = detail.questions.map((q, idx) => ({
+          id: q.id || idx + 1,
+          text: q.question || q.text || "",
+          question: q.question || q.text || "",
+          marks: q.marks || 1,
+          options: (q.options || []).map((opt) => ({
+            id: opt.id || opt.key || "A",
+            text: opt.text || opt.label || "",
+          })),
+          correctAnswer: q.correctAnswer || q.correct_answer || "A",
+          explanation: q.explanation || "",
+          difficulty: q.difficulty || "Advanced",
+        }));
+        setQuestions(mappedQuestions);
+      } else {
+        setQuestions(getQuestionsForTrack(track.id));
+      }
+    } catch (err) {
+      console.warn("Could not fetch exam questions from backend:", err);
+      setQuestions(getQuestionsForTrack(track.id));
+    }
+
+    setTimeRemaining(track.durationSeconds || (track.durationMinutes ? track.durationMinutes * 60 : 3600));
+
     try {
       if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen().catch(() => {});
@@ -371,6 +404,18 @@ export const OfficialExamPage = () => {
       }
     }
 
+    // Submit to backend dynamically
+    try {
+      lmsService.submitStudentExam(
+        cleanSid,
+        selectedTrack.id || selectedTrack.numericId,
+        selectedAnswers,
+        (selectedTrack.durationSeconds || 3600) - timeRemaining
+      );
+    } catch (err) {
+      console.warn("Could not submit exam to backend:", err);
+    }
+
     setStrikeAlert(null);
     strikeAlertRef.current = null;
     setExamStage("SCORECARD");
@@ -438,7 +483,13 @@ export const OfficialExamPage = () => {
 
   // Stage 1: COURSE / TRACK CATALOG -> Standard layout with regular LMS Sidebar and Topbar (not fullscreen)
   if (examStage === "CATALOG") {
-    return <ExamCourseSelector onSelectTrack={handleSelectTrack} />;
+    return (
+      <ExamCourseSelector
+        tracks={assignedTracks}
+        isLoading={isLoadingTracks}
+        onSelectTrack={handleSelectTrack}
+      />
+    );
   }
 
   // Stages 2, 3, 4: BRIEFING, LIVE_EXAM, SCORECARD -> Dedicated Fullscreen Exam Hall

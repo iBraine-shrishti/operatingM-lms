@@ -571,6 +571,102 @@ export const lmsService = {
     setStored("quizzes", filtered);
     return true;
   },
+
+  // --------------------------------------------------------------------------
+  // OFFICIAL EXAMS ENGINE (Dynamically Assigned from CRM)
+  // --------------------------------------------------------------------------
+  fetchStudentExams: async (studentId) => {
+    if (!studentId) return [];
+    try {
+      const targetId = String(studentId).replace("std-", "");
+      const res = await fetch(
+        `${CRM_BACKEND_API}/lms/student/exams/?student_id=${encodeURIComponent(targetId)}`,
+        { headers: { Accept: "application/json" } }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && Array.isArray(data.exams)) {
+          const formatted = data.exams.map((e) => ({
+            id: String(e.id),
+            numericId: e.id,
+            title: e.title,
+            courseId: e.course_id || "course-dm",
+            courseIds: e.course_ids || [],
+            courseTitle: e.course_title || "Official Examination",
+            category: e.category || "Official Certification",
+            description: e.description || "",
+            durationMinutes: e.duration_minutes || 60,
+            durationSeconds: (e.duration_minutes || 60) * 60,
+            passingPercentage: e.passing_percentage || 75,
+            passScorePercentage: e.passing_percentage || 75,
+            retakesAllowed: e.retakes_allowed || 1,
+            randomizeQuestions: e.randomize_questions !== false,
+            badgeTitle: e.badge_title || "Certified Professional",
+            badgeTheme: e.badge_theme || "gold",
+            totalQuestions: e.total_questions || 0,
+            totalMarks: e.total_marks || 0,
+            studentScore: e.student_score,
+            studentPercentage: e.student_percentage,
+            studentStatus: e.student_status || "pending",
+            attemptsCount: e.attempts_count || 0,
+            lastAttemptAt: e.last_attempt_at,
+          }));
+          localStorage.setItem("om_lms_student_exams_cache", JSON.stringify(formatted));
+          try {
+            window.dispatchEvent(new CustomEvent("om_lms_exams_updated", { detail: formatted }));
+          } catch {}
+          return formatted;
+        }
+      }
+    } catch (err) {
+      console.warn("Could not fetch backend exams:", err);
+    }
+    const cached = localStorage.getItem("om_lms_student_exams_cache");
+    return cached ? JSON.parse(cached) : [];
+  },
+
+  fetchExamDetail: async (examId) => {
+    try {
+      const res = await fetch(`${CRM_BACKEND_API}/lms/exams/${examId}/`, {
+        headers: { Accept: "application/json" },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && data.exam) {
+          return data.exam;
+        }
+      }
+    } catch (err) {
+      console.warn("Could not fetch exam detail:", err);
+    }
+    return null;
+  },
+
+  submitStudentExam: async (studentId, examId, answers, timeSpentSeconds = 0) => {
+    try {
+      const targetId = String(studentId).replace("std-", "");
+      const res = await fetch(`${CRM_BACKEND_API}/lms/student/exams/${examId}/submit/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          student_id: targetId,
+          answers,
+          time_spent_seconds: timeSpentSeconds,
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data;
+      }
+    } catch (err) {
+      console.error("Could not submit exam attempt:", err);
+    }
+    return { success: false, error: "Network error" };
+  },
+
   // Batch Assignments (from CRM backend)
   fetchStudentBatchAssignments: async (studentId) => {
     if (!studentId) return [];

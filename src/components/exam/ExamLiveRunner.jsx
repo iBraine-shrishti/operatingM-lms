@@ -217,12 +217,12 @@ export const ExamLiveRunner = ({
           <div className="flex-1 min-h-0 overflow-y-auto px-5 py-6 sm:px-8 sm:py-7 space-y-6 custom-scrollbar">
             {/* Question Text with Prominent, Crisp Font Size */}
             <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-950 dark:text-white leading-relaxed tracking-tight">
-              {currentQ.text}
+              {currentQ?.question || currentQ?.text}
             </h3>
 
             {/* Multiple Choice Options in Clean, High-Contrast Cards */}
             <div className="space-y-3.5 pt-2 max-w-4xl">
-              {currentQ.options.map((opt) => {
+              {(currentQ?.options || []).map((opt) => {
                 const isSelected = currentSelectedOption === opt.id;
                 return (
                   <div

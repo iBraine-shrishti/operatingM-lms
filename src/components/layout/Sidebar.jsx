@@ -41,6 +41,14 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const { isDark } = useTheme();
   const [liveAssignmentsCount, setLiveAssignmentsCount] = useState(assignmentsCount ?? 0);
   const [liveQuizzesCount, setLiveQuizzesCount] = useState(0);
+  const [liveExamsCount, setLiveExamsCount] = useState(() => {
+    try {
+      const cached = localStorage.getItem("om_lms_student_exams_cache");
+      return cached ? JSON.parse(cached).length : 0;
+    } catch {
+      return 0;
+    }
+  });
   const [liveActivitiesCount, setLiveActivitiesCount] = useState(() => {
     try {
       const studentId = crmService.getSelectedStudentId() || crmProfile?.id || currentUser?.crmAdmissionId;
@@ -129,6 +137,49 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
 
     return () => {
       isMounted = false;
+    };
+  }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchExams = async () => {
+      try {
+        const studentUser = JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
+        const studentId =
+          crmService.getSelectedStudentId() ||
+          crmProfile?.id ||
+          currentUser?.crmAdmissionId ||
+          studentUser.id ||
+          studentUser.student_id ||
+          "";
+
+        if (!studentId) {
+          if (isMounted) setLiveExamsCount(0);
+          return;
+        }
+
+        const exams = await lmsService.fetchStudentExams(studentId);
+        if (isMounted && Array.isArray(exams)) {
+          setLiveExamsCount(exams.length);
+        }
+      } catch (err) {
+        console.warn("Could not load exams count in sidebar:", err);
+      }
+    };
+
+    fetchExams();
+
+    const handleUpdate = () => {
+      fetchExams();
+    };
+
+    window.addEventListener("om_lms_exams_updated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener("om_lms_exams_updated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
     };
   }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId]);
 
@@ -223,7 +274,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           name: "Exams",
           path: "/exam",
           icon: Award,
-          badge: "8",
+          badge: String(liveExamsCount ?? 0),
         },
         {
           name: "Achievements",
