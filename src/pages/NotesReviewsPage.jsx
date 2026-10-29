@@ -235,6 +235,7 @@ export const NotesReviewsPage = () => {
 
   const [notes, setNotes] = useState(() => lmsService.getNotes(studentId));
   const courses = lmsService.getCourses();
+  const [manageCourses, setManageCourses] = useState(() => lmsService.getManageCourses());
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCourse, setSelectedCourse] = useState("all");
@@ -247,7 +248,7 @@ export const NotesReviewsPage = () => {
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [viewingNote, setViewingNote] = useState(null);
 
-  const [newCourseId, setNewCourseId] = useState(courses[0]?.id || "");
+  const [newCourseId, setNewCourseId] = useState(manageCourses[0]?.id || courses[0]?.id || "");
   const [newLessonTitle, setNewLessonTitle] = useState("");
   const [newContent, setNewContent] = useState("");
 
@@ -278,6 +279,15 @@ export const NotesReviewsPage = () => {
       scrollContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+
+  // Synchronize live manage courses from CRM Database
+  useEffect(() => {
+    lmsService.fetchManageCourses().then((live) => {
+      if (live && live.length > 0) {
+        setManageCourses(live);
+      }
+    });
+  }, []);
 
   // Keep editor visible on mobile virtual keyboard resize
   useEffect(() => {
@@ -380,12 +390,19 @@ export const NotesReviewsPage = () => {
 
       // Course filter
       if (selectedCourse !== "all") {
-        const courseObj = courses.find(
-          (c) =>
-            c.id === selectedCourse ||
-            String(c.id).replace(/^course-/, "") ===
-              String(selectedCourse).replace(/^course-/, "")
-        );
+        const courseObj =
+          manageCourses.find(
+            (c) =>
+              c.id === selectedCourse ||
+              String(c.id).replace(/^course-/, "") ===
+                String(selectedCourse).replace(/^course-/, "")
+          ) ||
+          courses.find(
+            (c) =>
+              c.id === selectedCourse ||
+              String(c.id).replace(/^course-/, "") ===
+                String(selectedCourse).replace(/^course-/, "")
+          );
         if (!lmsService.isNoteMatchingCourse(n, courseObj || selectedCourse)) {
           return false;
         }
@@ -416,7 +433,7 @@ export const NotesReviewsPage = () => {
     });
 
     return result;
-  }, [notes, searchQuery, selectedCourse, selectedCategory, sortBy, courses]);
+  }, [notes, searchQuery, selectedCourse, selectedCategory, sortBy, courses, manageCourses]);
 
   const hasActiveFilters =
     searchQuery.trim() !== "" ||
@@ -452,7 +469,7 @@ export const NotesReviewsPage = () => {
   // Open Add Modal
   const handleOpenAddModal = () => {
     setEditingNoteId(null);
-    setNewCourseId(courses[0]?.id || "");
+    setNewCourseId(manageCourses[0]?.id || courses[0]?.id || "");
     setNewLessonTitle("");
     setNewContent("");
     setIsModalOpen(true);
@@ -606,11 +623,15 @@ export const NotesReviewsPage = () => {
       contentToSave = editorRef.current.innerHTML;
     }
 
-    const courseObj = courses.find(
-      (c) => c.id === newCourseId || String(c.id) === String(newCourseId)
-    );
+    const courseObj =
+      manageCourses.find(
+        (c) => c.id === newCourseId || String(c.id) === String(newCourseId)
+      ) ||
+      courses.find(
+        (c) => c.id === newCourseId || String(c.id) === String(newCourseId)
+      );
     const courseTitle = courseObj
-      ? courseObj.title
+      ? courseObj.title || courseObj.name
       : newCourseId
       ? "General Course"
       : "General";
@@ -745,9 +766,9 @@ export const NotesReviewsPage = () => {
               className="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 cursor-pointer"
             >
               <option value="all">All Enrolled Courses ({notes.length})</option>
-              {courses.map((c) => (
+              {manageCourses.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.title}
+                  {c.title || c.name}
                 </option>
               ))}
             </select>
@@ -1044,9 +1065,9 @@ export const NotesReviewsPage = () => {
                       className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 cursor-pointer shadow-2xs"
                     >
                       <option value="">General (No specific course)</option>
-                      {courses.map((c) => (
+                      {manageCourses.map((c) => (
                         <option key={c.id} value={c.id}>
-                          {c.title}
+                          {c.title || c.name}
                         </option>
                       ))}
                     </select>

@@ -18,6 +18,74 @@ const STORAGE_PREFIX = "om_lms_v12_";
 export const R2_STORAGE_BASE =
   "https://pub-e12f5dbd15e94f87bcde01ce90c0043e.r2.dev";
 
+export const CRM_MANAGE_COURSES_API =
+  "https://operatingmedia.org/api/courses/manage/?page=1&size=100&name=Admin&updated_by=Admin";
+
+export const deriveCourseCategory = (name = "") => {
+  const n = String(name || "").toLowerCase();
+  if (n.includes("seo") || n.includes("search console")) return "SEO";
+  if (n.includes("ad") || n.includes("ppc") || n.includes("monetization")) return "Google Ads";
+  if (n.includes("social") || n.includes("smm") || n.includes("smo") || n.includes("influencer") || n.includes("viral")) return "Social Media";
+  if (n.includes("word") || n.includes("blog") || n.includes("commerce") || n.includes("shopify") || n.includes("web") || n.includes("landing")) return "WordPress";
+  if (n.includes("analytic") || n.includes("ga4") || n.includes("gtm")) return "Analytics";
+  if (n.includes("design") || n.includes("canva") || n.includes("video")) return "Design";
+  return "Digital Marketing";
+};
+
+export const CRM_DEFAULT_COURSES = [
+  { id: "24", title: "WordPress", name: "WordPress", fee: "9000", duration: "6 hrs", status: "published", category: "WordPress" },
+  { id: "26", title: "Blog Creation", name: "Blog Creation", fee: "5000", duration: "2 hrs", status: "published", category: "WordPress" },
+  { id: "27", title: "Email Marketing", name: "Email Marketing", fee: "5000", duration: "4 hrs", status: "published", category: "Digital Marketing" },
+  { id: "28", title: "WhatsApp Marketing", name: "WhatsApp Marketing", fee: "5000", duration: "2 hrs", status: "published", category: "Social Media" },
+  { id: "29", title: "Drip Marketing & Email Automation", name: "Drip Marketing & Email Automation", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "31", title: "SEO", name: "SEO", fee: "9000", duration: "8 hrs", status: "published", category: "SEO" },
+  { id: "34", title: "Google Ads (PPC)", name: "Google Ads (PPC)", fee: "9000", duration: "8 hrs", status: "published", category: "Google Ads" },
+  { id: "35", title: "Mobile Marketing", name: "Mobile Marketing", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "37", title: "Media Buying & Planning", name: "Media Buying & Planning", fee: "5000", duration: "2 hrs", status: "published", category: "Google Ads" },
+  { id: "38", title: "Google AdSense Monetization", name: "Google AdSense Monetization", fee: "5000", duration: "2 hrs", status: "published", category: "Google Ads" },
+  { id: "39", title: "Graphic Designing (Canva)", name: "Graphic Designing (Canva)", fee: "5000", duration: "4 hrs", status: "published", category: "Design" },
+  { id: "41", title: "SMM", name: "SMM", fee: "9000", duration: "8 hrs", status: "published", category: "Social Media" },
+  { id: "42", title: "ORM", name: "ORM", fee: "5000", duration: "2 hrs", status: "published", category: "Social Media" },
+  { id: "43", title: "Influencer Marketing", name: "Influencer Marketing", fee: "5000", duration: "2 hrs", status: "published", category: "Social Media" },
+  { id: "44", title: "Viral Marketing", name: "Viral Marketing", fee: "5000", duration: "2 hrs", status: "published", category: "Social Media" },
+  { id: "45", title: "Content Marketing", name: "Content Marketing", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "46", title: "Affiliate Marketing", name: "Affiliate Marketing", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "47", title: "GA4", name: "GA4", fee: "9000", duration: "6 hrs", status: "published", category: "Analytics" },
+  { id: "48", title: "Digital Planning and Strategy", name: "Digital Planning and Strategy", fee: "5000", duration: "4 hrs", status: "published", category: "Digital Marketing" },
+  { id: "49", title: "Digital Marketing Freelancing", name: "Digital Marketing Freelancing", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "50", title: "AI in DM & Generative AI - Prompt Engineering", name: "AI in DM & Generative AI - Prompt Engineering", fee: "6000", duration: "4 hrs", status: "published", category: "Digital Marketing" },
+  { id: "51", title: "Woo Commerce", name: "Woo Commerce", fee: "5000", duration: "2 hrs", status: "published", category: "WordPress" },
+  { id: "52", title: "Shopify Shop Creation", name: "Shopify Shop Creation", fee: "5000", duration: "4 hrs", status: "published", category: "WordPress" },
+  { id: "53", title: "Dropshipping", name: "Dropshipping", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "54", title: "Shop Creation on Marketplaces", name: "Shop Creation on Marketplaces", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "55", title: "E-commerce", name: "E-commerce", fee: "5000", duration: "4 hrs", status: "published", category: "Digital Marketing" },
+  { id: "56", title: "Performance Marketing", name: "Performance Marketing", fee: "6000", duration: "4 hrs", status: "published", category: "Google Ads" },
+  { id: "57", title: "Lead Generation", name: "Lead Generation", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "58", title: "Video Editing", name: "Video Editing", fee: "5000", duration: "4 hrs", status: "published", category: "Design" },
+  { id: "59", title: "Customer Journey & Behaviour", name: "Customer Journey & Behaviour", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "60", title: "Growth Marketing Strategies", name: "Growth Marketing Strategies", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "61", title: "Brand Communication & Management", name: "Brand Communication & Management", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "62", title: "International Digital Marketing", name: "International Digital Marketing", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "63", title: "Webinar Creation", name: "Webinar Creation", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "64", title: "Funnels in DM", name: "Funnels in DM", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "65", title: "Drop Servicing", name: "Drop Servicing", fee: "5000", duration: "2 hrs", status: "published", category: "Digital Marketing" },
+  { id: "70", title: "Diploma", name: "Diploma", fee: "35000", duration: "60 hrs", status: "published", category: "Digital Marketing" },
+  { id: "71", title: "Adv Diploma", name: "Adv Diploma", fee: "45000", duration: "90 hrs", status: "published", category: "Digital Marketing" },
+  { id: "72", title: "Master's", name: "Master's", fee: "60000", duration: "120 hrs", status: "published", category: "Digital Marketing" },
+  { id: "73", title: "SEO Proposal and Assignment", name: "SEO Proposal and Assignment", fee: "0", duration: "2 hrs", status: "published", category: "SEO" },
+  { id: "74", title: "Wordpress Assignment", name: "Wordpress Assignment", fee: "0", duration: "2 hrs", status: "published", category: "WordPress" },
+  { id: "75", title: "Google Ads Proposal and Assignment", name: "Google Ads Proposal and Assignment", fee: "0", duration: "2 hrs", status: "published", category: "Google Ads" },
+  { id: "77", title: "Social Media Proposal and Assignment", name: "Social Media Proposal and Assignment", fee: "0", duration: "2 hrs", status: "published", category: "Social Media" },
+  { id: "78", title: "Google My Business", name: "Google My Business", fee: "5000", duration: "2 hrs", status: "published", category: "SEO" },
+  { id: "79", title: "Search Console", name: "Search Console", fee: "5000", duration: "2 hrs", status: "published", category: "SEO" },
+  { id: "80", title: "Youtube SEO", name: "Youtube SEO", fee: "5000", duration: "2 hrs", status: "published", category: "SEO" },
+  { id: "81", title: "YouTube Advertising", name: "YouTube Advertising", fee: "5000", duration: "2 hrs", status: "published", category: "Google Ads" },
+  { id: "82", title: "GTM", name: "GTM", fee: "5000", duration: "2 hrs", status: "published", category: "Analytics" },
+  { id: "83", title: "Landing Page", name: "Landing Page", fee: "5000", duration: "2 hrs", status: "published", category: "WordPress" },
+  { id: "84", title: "SMO", name: "SMO", fee: "5000", duration: "2 hrs", status: "published", category: "Social Media" },
+  { id: "85", title: "Digital Marketing Fundamentals", name: "Digital Marketing Fundamentals", fee: "5000", duration: "4 hrs", status: "published", category: "Digital Marketing" },
+];
+
 export const CRM_BACKEND_API =
   (typeof import.meta !== "undefined" && import.meta.env?.VITE_CRM_API_URL) ||
   (typeof window !== "undefined" &&
@@ -207,6 +275,58 @@ export const lmsService = {
     };
   },
   // Courses (Total 7 active courses with real durations calculated from real units)
+  getManageCourses: () => {
+    try {
+      const cached = localStorage.getItem("om_lms_db_manage_courses_cache");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
+        }
+      }
+    } catch {}
+    return CRM_DEFAULT_COURSES;
+  },
+
+  fetchManageCourses: async () => {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const res = await fetch(
+        CRM_MANAGE_COURSES_API,
+        {
+          signal: controller.signal,
+          headers: { Accept: "application/json" },
+        }
+      );
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.courses) && data.courses.length > 0) {
+          const mapped = data.courses.map((c) => ({
+            id: String(c.id),
+            title: c.name,
+            name: c.name,
+            fee: c.fee,
+            duration: c.duration ? `${c.duration} hrs` : "Flexible",
+            status: c.status === 0 ? "published" : "draft",
+            category: deriveCourseCategory(c.name),
+            dbId: c.id,
+            isDbCourse: true,
+            description: `Comprehensive hands-on curriculum covering ${c.name} fundamentals, application, and real-world projects.`,
+          }));
+          try {
+            localStorage.setItem("om_lms_db_manage_courses_cache", JSON.stringify(mapped));
+          } catch {}
+          return mapped;
+        }
+      }
+    } catch (err) {
+      console.warn("fetchManageCourses API error:", err);
+    }
+    return lmsService.getManageCourses();
+  },
+
   getCourses: () => {
     const stored = getStored("courses", INITIAL_COURSES);
     let modified = false;
@@ -1660,12 +1780,29 @@ export const lmsService = {
       if (cleanNCId && cleanTargetCId && cleanNCId === cleanTargetCId) return true;
     }
 
-    // Title match
+    // Title match & alias normalization
     const nTitle = String(note.courseTitle || note.course_title || note.course_name || "").trim().toLowerCase();
     const targetTitle = String(courseTitle || "").trim().toLowerCase();
     if (nTitle && targetTitle) {
       if (nTitle === targetTitle) return true;
       if (nTitle.includes(targetTitle) || targetTitle.includes(nTitle)) return true;
+
+      // Abbreviation & domain aliases
+      const ALIAS_MAP = {
+        smm: ["social media marketing", "social media", "smm"],
+        seo: ["seo mastery & technical optimization", "seo mastery", "seo"],
+        ga4: ["google analytics 4 (ga4)", "google analytics 4", "google analytics", "ga4", "analytics"],
+        "google ads (ppc)": ["google ads mastery", "google ads", "ppc", "paid advertising"],
+        wordpress: ["wordpress web development", "wordpress", "cms & web dev"],
+        "graphic designing (canva)": ["creative designing essentials", "graphic design", "canva", "creative & ui"],
+        diploma: ["diploma in digital marketing", "diploma"],
+      };
+
+      for (const list of Object.values(ALIAS_MAP)) {
+        const inNote = list.some((term) => nTitle.includes(term));
+        const inTarget = list.some((term) => targetTitle.includes(term));
+        if (inNote && inTarget) return true;
+      }
     }
 
     return false;
