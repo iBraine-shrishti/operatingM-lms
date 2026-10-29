@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { mapStudentDataFromCrm } from "../components/profile";
 import { lmsService } from "../services/lmsService";
+import { crmService } from "../services/crmService";
 
 import {
   EXAM_TRACKS,
@@ -38,11 +39,31 @@ export const OfficialExamPage = () => {
   const centerNode = `${studentData?.center || "Borivali Center"} • Assessment Node`;
   const sessionHash = "SHA256: 9e887f4c10a30b2e847d91";
 
+  const studentUser = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("om_lms_student_user") || "{}");
+    } catch {
+      return {};
+    }
+  }, []);
+
+  const cachedProfile = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("om_lms_crm_cached_profile") || "{}");
+    } catch {
+      return {};
+    }
+  }, []);
+
   const cleanSid = String(
+    crmService.getSelectedStudentId() ||
+    crmProfile?.id ||
     currentUser?.crmAdmissionId ||
     currentUser?.id ||
-    currentUser?.admissionNo ||
-    currentUser?.student_id ||
+    studentUser.id ||
+    studentUser.student_id ||
+    cachedProfile.id ||
+    cachedProfile.crmAdmissionId ||
     "267"
   ).replace("std-", "");
 

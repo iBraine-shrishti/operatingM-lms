@@ -169,17 +169,8 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
 
     fetchExams();
 
-    const handleUpdate = () => {
-      fetchExams();
-    };
-
-    window.addEventListener("om_lms_exams_updated", handleUpdate);
-    window.addEventListener("storage", handleUpdate);
-
     return () => {
       isMounted = false;
-      window.removeEventListener("om_lms_exams_updated", handleUpdate);
-      window.removeEventListener("storage", handleUpdate);
     };
   }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId]);
 

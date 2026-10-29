@@ -612,9 +612,7 @@ export const lmsService = {
             lastAttemptAt: e.last_attempt_at,
           }));
           localStorage.setItem("om_lms_student_exams_cache", JSON.stringify(formatted));
-          try {
-            window.dispatchEvent(new CustomEvent("om_lms_exams_updated", { detail: formatted }));
-          } catch {}
+
           return formatted;
         }
       }
