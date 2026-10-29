@@ -305,7 +305,8 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
     >
       {/* Sidebar Header / Logo */}
       <div className="relative h-18 sm:h-20 flex items-center border-b border-slate-100 dark:border-slate-800/90 shrink-0">
-        {!collapsed ? (
+        {/* When expanded: logo shown inside sidebar. When collapsed: logo shown outside in Topbar (guarantees strictly ONE logo) */}
+        {!collapsed && (
           <NavLink
             to="/dashboard"
             className="flex items-center w-full h-full px-3.5 sm:px-4 py-2 overflow-hidden group"
@@ -315,18 +316,6 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
               src={isDark ? logoHorizontalDarkImg : logoHorizontalImg}
               alt="Operating Media"
               className="h-12 sm:h-13 w-auto max-w-[225px] object-contain transition-transform duration-200 group-hover:scale-[1.02]"
-            />
-          </NavLink>
-        ) : (
-          <NavLink
-            to="/dashboard"
-            className="flex items-center justify-center w-full h-full px-2 overflow-hidden group"
-            title="Operating Media Dashboard"
-          >
-            <img
-              src={logoMarkImg}
-              alt="Operating Media"
-              className="h-10 w-auto max-w-[54px] object-contain transition-transform duration-200 group-hover:scale-105 dark:brightness-110"
             />
           </NavLink>
         )}
