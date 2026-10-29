@@ -57,7 +57,6 @@ export const LessonTabsContainer = ({
         <LessonOverviewTab
           currentLesson={currentLesson}
           currentCourse={currentCourse}
-          onNavigateForums={onNavigateForums}
         />
       )}
 
