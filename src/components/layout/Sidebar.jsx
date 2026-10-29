@@ -326,7 +326,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
             <img
               src={logoMarkImg}
               alt="Operating Media"
-              className="h-10 w-auto max-w-[54px] object-contain transition-transform duration-200 group-hover:scale-105"
+              className="h-10 w-auto max-w-[54px] object-contain transition-transform duration-200 group-hover:scale-105 dark:brightness-110"
             />
           </NavLink>
         )}

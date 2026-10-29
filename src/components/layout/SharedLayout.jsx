@@ -8,9 +8,26 @@ import { useAuth } from '../../context/AuthContext';
 export const SharedLayout = () => {
     const { isAdmin } = useAuth();
     const location = useLocation();
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    // Default to collapsed (<>) on smaller / tablet screens (< 1024px)
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+        if (typeof window !== "undefined") {
+            return window.innerWidth < 1024;
+        }
+        return false;
+    });
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
     const [searchModalOpen, setSearchModalOpen] = useState(false);
+
+    // Auto-collapse sidebar when viewport resizes to tablet / smaller screen
+    React.useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 1024 && window.innerWidth >= 768) {
+                setSidebarCollapsed(true);
+            }
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     const toggleSidebar = () => {
         if (window.innerWidth < 768) {
@@ -38,7 +55,7 @@ export const SharedLayout = () => {
       {/* Main Container */}
       <div className={`min-h-screen flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'md:ml-20' : 'md:ml-64'} overflow-x-hidden`}>
         {/* Topbar */}
-        <Topbar onToggleSidebar={toggleSidebar} onOpenSearch={() => setSearchModalOpen(true)}/>
+        <Topbar sidebarCollapsed={sidebarCollapsed} onToggleSidebar={toggleSidebar} onOpenSearch={() => setSearchModalOpen(true)}/>
 
         {/* Page Content View - Pure edge-to-edge fluid responsive workspace */}
         <main className="flex-1 w-full p-3 sm:p-4 lg:p-4 xl:p-4 2xl:px-6 2xl:py-4 flex flex-col ">

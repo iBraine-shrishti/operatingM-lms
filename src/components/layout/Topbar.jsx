@@ -4,10 +4,12 @@ import { ref, onValue, update } from "firebase/database";
 import { CRM_BACKEND_API } from "../../services/lmsService";
 import { ChevronRight, Search, Bell, ChevronDown, User, Settings, LogOut, Check, Shield, GraduationCap, Sun, Moon, AlertCircle, MessageSquare, Sparkles, Volume2, VolumeX } from "lucide-react";
 import { playNotificationSound, isNotificationSoundMuted, toggleNotificationSound } from "../../utils/notificationSound";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
+import logoHorizontalImg from "../../assets/logo-horizontal.png";
+import logoHorizontalDarkImg from "../../assets/logo-horizontal-dark.png";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
-export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
+export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
   const { isDark, toggleTheme } = useTheme();
 
   const navigate = useNavigate();
@@ -217,6 +219,21 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch }) => {
         >
           <ChevronRight size={20} />
         </button>
+
+        {/* Operating Media Logo shown outside sidebar (on mobile or when sidebar is collapsed) */}
+        <NavLink
+          to="/dashboard"
+          className={`items-center shrink-0 transition-transform duration-200 hover:scale-[1.02] ${
+            sidebarCollapsed ? "flex" : "flex md:hidden"
+          }`}
+          title="Operating Media Dashboard"
+        >
+          <img
+            src={isDark ? logoHorizontalDarkImg : logoHorizontalImg}
+            alt="Operating Media"
+            className="h-8 sm:h-9 w-auto max-w-[160px] sm:max-w-[200px] object-contain"
+          />
+        </NavLink>
 
         {/* Global Search Bar - shown on desktop screens where width permits */}
         <div
