@@ -527,29 +527,30 @@ export const PremiumVideoPlayer = ({
           {/* 5. TOP VIDEO HEADER OVERLAY                                   */}
           {/* ------------------------------------------------------------- */}
           <div
-            className={`absolute top-0 left-0 right-0 p-4 sm:p-5 bg-gradient-to-b from-black/80 via-black/30 to-transparent z-20 transition-opacity duration-300 flex items-start justify-between gap-3 ${
+            className={`absolute top-0 left-0 right-0 p-2 sm:p-4 md:p-5 bg-gradient-to-b from-black/90 via-black/50 to-transparent z-20 transition-opacity duration-300 flex items-start justify-between gap-2 sm:gap-3 ${
               showControls ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
           >
-            <div className="min-w-0 pr-2">
-              <div className="flex items-center space-x-2 text-[11px] font-semibold text-cyan-400 uppercase tracking-wider mb-1">
-                <span>{moduleName}</span>
-                <span className="text-slate-500">•</span>
-                <span className="text-slate-300 font-mono">
+            <div className="min-w-0 flex-1 pr-1 sm:pr-2">
+              <div className="flex items-center gap-1.5 text-[9px] sm:text-[11px] font-semibold text-cyan-400 uppercase tracking-wider mb-0.5 sm:mb-1 truncate">
+                <span className="truncate max-w-[110px] xs:max-w-[180px] sm:max-w-xs">{moduleName}</span>
+                <span className="text-slate-500 shrink-0">•</span>
+                <span className="text-slate-300 font-mono shrink-0">
                   Lesson {lessonNumber} of {totalLessons}
                 </span>
               </div>
-              <h2 className="text-sm sm:text-base font-bold text-white drop-shadow-md truncate">
+              <h2 className="text-[11px] sm:text-base font-bold text-white drop-shadow-md truncate">
                 {title}
               </h2>
             </div>
 
-            <div className="flex items-center space-x-2 shrink-0">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 backdrop-blur-sm shadow-sm">
+            <div className="flex items-center space-x-1 sm:space-x-2 shrink-0">
+              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[9px] sm:text-[11px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 backdrop-blur-sm shadow-sm">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>1080p Full HD</span>
+                <span className="hidden sm:inline">1080p Full HD</span>
+                <span className="sm:hidden font-bold">1080p</span>
               </span>
-              <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-500/15 text-blue-300 border border-blue-500/30 backdrop-blur-sm">
+              <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-500/15 text-blue-300 border border-blue-500/30 backdrop-blur-sm">
                 <Radio size={11} className="text-cyan-400" />
                 <span>FastEdge R2</span>
               </span>
@@ -590,7 +591,7 @@ export const PremiumVideoPlayer = ({
           {/* 7. BOTTOM CUSTOM CONTROLS OVERLAY                            */}
           {/* ------------------------------------------------------------- */}
           <div
-            className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/75 to-transparent px-3 sm:px-5 pt-10 pb-3 sm:pb-4 z-20 transition-opacity duration-300 ${
+            className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/85 to-transparent px-2 sm:px-5 pt-6 sm:pt-10 pb-2 sm:pb-4 z-20 transition-opacity duration-300 ${
               showControls ? "opacity-100" : "opacity-0 pointer-events-none"
             }`}
           >
@@ -600,7 +601,7 @@ export const PremiumVideoPlayer = ({
               onClick={handleScrubberSeek}
               onMouseMove={handleScrubberMouseMove}
               onMouseLeave={handleScrubberMouseLeave}
-              className="relative w-full h-3 flex items-center cursor-pointer group/scrubber mb-2"
+              className="relative w-full h-2.5 sm:h-3 flex items-center cursor-pointer group/scrubber mb-1 sm:mb-2"
             >
               {/* Background Track */}
               <div className="relative w-full h-1 group-hover/scrubber:h-2 bg-white/20 rounded-full overflow-hidden transition-all duration-150">
@@ -618,16 +619,16 @@ export const PremiumVideoPlayer = ({
 
               {/* Glowing Scrubber Thumb */}
               <div
-                className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-white shadow-md shadow-cyan-400/60 ring-2 ring-cyan-400/50 scale-0 group-hover/scrubber:scale-100 transition-transform pointer-events-none"
+                className="absolute top-1/2 -translate-y-1/2 w-3 sm:w-3.5 h-3 sm:h-3.5 rounded-full bg-white shadow-md shadow-cyan-400/60 ring-2 ring-cyan-400/50 scale-0 group-hover/scrubber:scale-100 transition-transform pointer-events-none"
                 style={{
-                  left: `calc(${progressPercent}% - 7px)`,
+                  left: `calc(${progressPercent}% - 6px)`,
                 }}
               />
 
               {/* Hover Tooltip Timestamp */}
               {hoverTime !== null && (
                 <div
-                  className="absolute -top-8 -translate-x-1/2 bg-slate-900/95 text-white text-[11px] font-mono font-bold px-2 py-0.5 rounded-md border border-slate-700/80 shadow-xl pointer-events-none"
+                  className="absolute -top-7 sm:-top-8 -translate-x-1/2 bg-slate-900/95 text-white text-[10px] sm:text-[11px] font-mono font-bold px-2 py-0.5 rounded-md border border-slate-700/80 shadow-xl pointer-events-none"
                   style={{ left: `${hoverPosition}%` }}
                 >
                   {formatTime(hoverTime)}
@@ -636,48 +637,48 @@ export const PremiumVideoPlayer = ({
             </div>
 
             {/* B. ACTION BUTTONS ROW */}
-            <div className="flex items-center justify-between text-white text-xs sm:text-sm">
+            <div className="flex items-center justify-between text-white text-[11px] sm:text-sm gap-1 sm:gap-2">
               {/* LEFT GROUP: Play, Skip, Volume, Time */}
-              <div className="flex items-center space-x-1 sm:space-x-2">
+              <div className="flex items-center space-x-1 sm:space-x-2 min-w-0">
                 {/* Play / Pause */}
                 <button
                   onClick={togglePlay}
-                  className="p-2 sm:p-2.5 rounded-xl hover:bg-white/10 active:scale-95 transition-all cursor-pointer text-white"
+                  className="p-1 sm:p-2.5 rounded-xl hover:bg-white/10 active:scale-95 transition-all cursor-pointer text-white shrink-0"
                   title={isPlaying ? "Pause (Space/K)" : "Play (Space/K)"}
                 >
                   {isPlaying ? (
-                    <Pause size={20} className="fill-current text-white" />
+                    <Pause size={17} className="fill-current text-white sm:w-5 sm:h-5" />
                   ) : (
-                    <Play size={20} className="fill-current text-white ml-0.5" />
+                    <Play size={17} className="fill-current text-white ml-0.5 sm:w-5 sm:h-5" />
                   )}
                 </button>
 
-                {/* Skip -10s */}
+                {/* Skip -10s (hidden on very small viewports) */}
                 <button
                   onClick={() => skipTime(-10)}
-                  className="p-1.5 sm:p-2 rounded-xl hover:bg-white/10 active:scale-95 transition-all text-slate-300 hover:text-white cursor-pointer relative"
+                  className="hidden xs:flex p-1 sm:p-2 rounded-xl hover:bg-white/10 active:scale-95 transition-all text-slate-300 hover:text-white cursor-pointer relative shrink-0"
                   title="Rewind 10s (Left Arrow/J)"
                 >
-                  <RotateCcw size={17} />
-                  <span className="absolute bottom-1 right-1 text-[8px] font-bold font-mono">
+                  <RotateCcw size={14} className="sm:w-[17px] sm:h-[17px]" />
+                  <span className="absolute bottom-0.5 right-0.5 sm:bottom-1 sm:right-1 text-[7px] sm:text-[8px] font-bold font-mono">
                     10
                   </span>
                 </button>
 
-                {/* Skip +10s */}
+                {/* Skip +10s (hidden on very small viewports) */}
                 <button
                   onClick={() => skipTime(10)}
-                  className="p-1.5 sm:p-2 rounded-xl hover:bg-white/10 active:scale-95 transition-all text-slate-300 hover:text-white cursor-pointer relative"
+                  className="hidden xs:flex p-1 sm:p-2 rounded-xl hover:bg-white/10 active:scale-95 transition-all text-slate-300 hover:text-white cursor-pointer relative shrink-0"
                   title="Forward 10s (Right Arrow/L)"
                 >
-                  <RotateCw size={17} />
-                  <span className="absolute bottom-1 right-1 text-[8px] font-bold font-mono">
+                  <RotateCw size={14} className="sm:w-[17px] sm:h-[17px]" />
+                  <span className="absolute bottom-0.5 right-0.5 sm:bottom-1 sm:right-1 text-[7px] sm:text-[8px] font-bold font-mono">
                     10
                   </span>
                 </button>
 
                 {/* Volume Control with Interactive Meter & Level Readout */}
-                <div className="flex items-center space-x-1 sm:space-x-1.5 bg-black/40 hover:bg-black/60 px-1.5 sm:px-2 py-1 rounded-xl border border-white/10 transition-colors group/volume">
+                <div className="flex items-center space-x-1 sm:space-x-1.5 bg-black/40 hover:bg-black/60 px-1 sm:px-2 py-0.5 sm:py-1 rounded-xl border border-white/10 transition-colors group/volume shrink-0">
                   {/* Mute/Unmute Button */}
                   <button
                     type="button"
@@ -686,16 +687,16 @@ export const PremiumVideoPlayer = ({
                     title={isMuted || volume === 0 ? "Unmute (M)" : "Mute (M)"}
                   >
                     {isMuted || volume === 0 ? (
-                      <VolumeX size={17} className="text-red-400" />
+                      <VolumeX size={15} className="text-red-400 sm:w-[17px] sm:h-[17px]" />
                     ) : volume < 0.5 ? (
-                      <Volume1 size={17} className="text-cyan-300" />
+                      <Volume1 size={15} className="text-cyan-300 sm:w-[17px] sm:h-[17px]" />
                     ) : (
-                      <Volume2 size={17} className="text-cyan-400" />
+                      <Volume2 size={15} className="text-cyan-400 sm:w-[17px] sm:h-[17px]" />
                     )}
                   </button>
 
-                  {/* Interactive Volume Slider & Meter Bar */}
-                  <div className="relative w-14 sm:w-18 md:w-22 h-5 flex items-center cursor-pointer group/meter">
+                  {/* Interactive Volume Slider & Meter Bar - visible on sm+ screens */}
+                  <div className="hidden sm:flex relative w-14 sm:w-18 md:w-22 h-5 items-center cursor-pointer group/meter">
                     {/* Background Track */}
                     <div className="w-full h-1.5 group-hover/meter:h-2 bg-white/20 rounded-full overflow-hidden transition-all duration-150 relative">
                       {/* Active Volume Meter Level Fill */}
@@ -736,36 +737,8 @@ export const PremiumVideoPlayer = ({
                     />
                   </div>
 
-                  {/* Audio Level Meter Bars */}
-                  <div
-                    className="hidden md:flex items-end gap-0.5 h-3 px-0.5 cursor-pointer"
-                    onClick={toggleMute}
-                    title={`Audio Level: ${isMuted || volume === 0 ? "0%" : `${Math.round(volume * 100)}%`}`}
-                  >
-                    <span
-                      className={`w-0.5 rounded-full transition-all duration-150 ${
-                        !isMuted && volume > 0 ? "h-1.5 bg-cyan-400" : "h-1.5 bg-white/20"
-                      }`}
-                    />
-                    <span
-                      className={`w-0.5 rounded-full transition-all duration-150 ${
-                        !isMuted && volume >= 0.33 ? "h-2 bg-cyan-400" : "h-2 bg-white/20"
-                      }`}
-                    />
-                    <span
-                      className={`w-0.5 rounded-full transition-all duration-150 ${
-                        !isMuted && volume >= 0.66 ? "h-2.5 bg-cyan-400" : "h-2.5 bg-white/20"
-                      }`}
-                    />
-                    <span
-                      className={`w-0.5 rounded-full transition-all duration-150 ${
-                        !isMuted && volume >= 0.9 ? "h-3 bg-cyan-400" : "h-3 bg-white/20"
-                      }`}
-                    />
-                  </div>
-
-                  {/* Volume Level Percentage */}
-                  <span className="text-[10px] sm:text-[11px] font-mono font-bold text-slate-300 tabular-nums min-w-[24px] sm:min-w-[28px] text-right select-none">
+                  {/* Volume Level Percentage - visible on sm+ screens */}
+                  <span className="hidden sm:inline-block text-[10px] sm:text-[11px] font-mono font-bold text-slate-300 tabular-nums min-w-[24px] sm:min-w-[28px] text-right select-none">
                     {isMuted || volume === 0 ? "0%" : `${Math.round(volume * 100)}%`}
                   </span>
                 </div>
@@ -773,11 +746,11 @@ export const PremiumVideoPlayer = ({
                 {/* Time Display */}
                 <div
                   onClick={() => setShowRemainingTime((prev) => !prev)}
-                  className="px-2 py-1 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white font-mono text-xs cursor-pointer select-none"
+                  className="px-1 sm:px-2 py-0.5 sm:py-1 rounded-lg hover:bg-white/10 text-slate-300 hover:text-white font-mono text-[10px] sm:text-xs cursor-pointer select-none shrink-0"
                   title="Click to toggle elapsed / remaining time"
                 >
                   <span>{formatTime(currentTime)}</span>
-                  <span className="text-slate-500 mx-1">/</span>
+                  <span className="text-slate-500 mx-0.5 sm:mx-1">/</span>
                   <span>
                     {showRemainingTime && duration > 0
                       ? `-${formatTime(Math.max(0, duration - currentTime))}`
@@ -787,7 +760,7 @@ export const PremiumVideoPlayer = ({
               </div>
 
               {/* RIGHT GROUP: Previous/Next, Speed, PiP, Theater, Fullscreen */}
-              <div className="flex items-center space-x-1 sm:space-x-2">
+              <div className="flex items-center space-x-1 sm:space-x-1.5 shrink-0">
                 {/* Previous Lesson */}
                 {onPreviousLesson && (
                   <button
@@ -869,10 +842,10 @@ export const PremiumVideoPlayer = ({
                 {/* Fullscreen Toggle */}
                 <button
                   onClick={toggleFullscreen}
-                  className="p-1.5 sm:p-2 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                  className="p-1 sm:p-2 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
                   title={isFullscreen ? "Exit Fullscreen (F)" : "Fullscreen (F)"}
                 >
-                  {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+                  {isFullscreen ? <Minimize size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Maximize size={16} className="sm:w-[18px] sm:h-[18px]" />}
                 </button>
               </div>
             </div>

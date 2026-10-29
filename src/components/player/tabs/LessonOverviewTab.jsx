@@ -1,5 +1,5 @@
 import React from "react";
-import { Sparkles, MessagesSquare, ExternalLink } from "lucide-react";
+import { MessagesSquare, ExternalLink } from "lucide-react";
 
 /**
  * LessonOverviewTab Component
@@ -26,20 +26,6 @@ export const LessonOverviewTab = ({
         {currentLesson?.description ||
           "In this lecture we cover essential strategies and practical execution steps with step-by-step screen recording and instructor commentary."}
       </p>
-
-      {/* Key Takeaways Card */}
-      <div className="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-2">
-        <h4 className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-          <Sparkles size={14} className="text-blue-600" />
-          <span>Learning Objectives Covered in this Lesson:</span>
-        </h4>
-        <ul className="space-y-1.5 list-disc list-inside text-slate-600 dark:text-slate-300">
-          <li>Core technical foundations & best practices.</li>
-          <li>Industry tool workflows and practical configuration.</li>
-          <li>Avoiding common optimization mistakes & penalties.</li>
-          <li>Actionable implementation checklist for live projects.</li>
-        </ul>
-      </div>
 
       {/* Forum Action Banner */}
       <div className="p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 flex items-center justify-between">

@@ -442,15 +442,24 @@ export const LessonPlayerPage = () => {
   // Section accordion expand/collapse state
   const [expandedSections, setExpandedSections] = useState({});
 
-  // Auto-expand the section containing current active lesson
+  // Initialize all sections as expanded by default, ensuring active lesson module is open
   useEffect(() => {
-    if (currentLesson?.moduleName) {
-      setExpandedSections((prev) => ({
-        ...prev,
-        [currentLesson.moduleName]: true,
-      }));
+    if (sections.length > 0) {
+      setExpandedSections((prev) => {
+        if (Object.keys(prev).length > 0) {
+          if (currentLesson?.moduleName && prev[currentLesson.moduleName] === undefined) {
+            return { ...prev, [currentLesson.moduleName]: true };
+          }
+          return prev;
+        }
+        const initial = {};
+        sections.forEach((s) => {
+          initial[s.name] = true;
+        });
+        return initial;
+      });
     }
-  }, [currentLesson?.id, currentLesson?.moduleName]);
+  }, [sections, currentLesson?.moduleName]);
 
   // Expand all sections when search query is entered
   useEffect(() => {
@@ -464,20 +473,29 @@ export const LessonPlayerPage = () => {
   }, [playlistSearch, sections]);
 
   const toggleSection = (secName) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [secName]: !prev[secName],
-    }));
+    setExpandedSections((prev) => {
+      const isExpanded = prev[secName] !== false;
+      return {
+        ...prev,
+        [secName]: !isExpanded,
+      };
+    });
   };
 
   const expandAllSections = () => {
     const all = {};
-    sections.forEach((s) => (all[s.name] = true));
+    sections.forEach((s) => {
+      all[s.name] = true;
+    });
     setExpandedSections(all);
   };
 
   const collapseAllSections = () => {
-    setExpandedSections({});
+    const all = {};
+    sections.forEach((s) => {
+      all[s.name] = false;
+    });
+    setExpandedSections(all);
   };
 
   // Filtered sections and items by search
