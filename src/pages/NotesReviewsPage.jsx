@@ -253,6 +253,55 @@ export const NotesReviewsPage = () => {
 
   const editorRef = useRef(null);
   const imageInputRef = useRef(null);
+  const scrollContainerRef = useRef(null);
+  const toolbarRef = useRef(null);
+  const courseSectionRef = useRef(null);
+
+  // Auto upward inscroll when editor is focused on mobile
+  const handleEditorFocus = () => {
+    if (typeof window === "undefined") return;
+    const isMobile = window.innerWidth < 768;
+    if (isMobile && scrollContainerRef.current && toolbarRef.current) {
+      setTimeout(() => {
+        if (!scrollContainerRef.current || !toolbarRef.current) return;
+        const targetTop = toolbarRef.current.offsetTop;
+        scrollContainerRef.current.scrollTo({
+          top: Math.max(0, targetTop - 4),
+          behavior: "smooth",
+        });
+      }, 150);
+    }
+  };
+
+  const scrollToCourseDetails = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  // Keep editor visible on mobile virtual keyboard resize
+  useEffect(() => {
+    if (!isModalOpen || typeof window === "undefined" || !window.visualViewport) return;
+
+    const handleViewportResize = () => {
+      if (
+        document.activeElement === editorRef.current &&
+        scrollContainerRef.current &&
+        toolbarRef.current
+      ) {
+        const targetTop = toolbarRef.current.offsetTop;
+        scrollContainerRef.current.scrollTo({
+          top: Math.max(0, targetTop - 4),
+          behavior: "smooth",
+        });
+      }
+    };
+
+    window.visualViewport.addEventListener("resize", handleViewportResize);
+    return () => {
+      window.visualViewport?.removeEventListener("resize", handleViewportResize);
+    };
+  }, [isModalOpen]);
 
   // Fetch live student notes from database table on mount and when student changes
   useEffect(() => {
@@ -940,19 +989,19 @@ export const NotesReviewsPage = () => {
       {/* ------------------------------------------------------------- */}
       {isModalOpen && (
         <ModalPortal>
-        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4 md:p-6 animate-in fade-in duration-150">
-          <div className="bg-white dark:bg-[#0b1329] rounded-2xl w-full max-w-6xl h-[92vh] max-h-[96vh] flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-            {/* Header: Title + Close */}
-            <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
-              <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center shrink-0 shadow-2xs">
-                  {editingNoteId ? <Edit size={18} /> : <Bookmark size={18} />}
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6 animate-in fade-in duration-150">
+          <div className="bg-white dark:bg-[#0b1329] rounded-t-2xl sm:rounded-2xl w-full max-w-6xl h-[100dvh] sm:h-[92vh] max-h-[100dvh] sm:max-h-[96vh] flex flex-col shadow-2xl border-t sm:border border-slate-200 dark:border-slate-800 overflow-hidden">
+            {/* Header: Title + Close (Compact on Mobile) */}
+            <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 dark:border-slate-800 shrink-0 bg-white dark:bg-[#0b1329]">
+              <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#3b49df] dark:text-blue-400 flex items-center justify-center shrink-0 shadow-2xs">
+                  {editingNoteId ? <Edit size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Bookmark size={16} className="sm:w-[18px] sm:h-[18px]" />}
                 </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-base sm:text-lg">
+                <div className="min-w-0">
+                  <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base md:text-lg truncate">
                     {editingNoteId ? "Edit Study Note" : "Create Study Note"}
                   </h3>
-                  <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 hidden xs:block truncate">
                     Capture important lecture points, format with bold/italic, insert tables, and add diagrams.
                   </p>
                 </div>
@@ -963,275 +1012,307 @@ export const NotesReviewsPage = () => {
                   setIsModalOpen(false);
                   setEditingNoteId(null);
                 }}
-                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                className="p-1.5 sm:p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
                 title="Close modal"
               >
-                <X size={20} />
+                <X size={18} className="sm:w-5 sm:h-5" />
               </button>
             </div>
 
-            {/* Form & Workspace */}
+            {/* Form with unified scrollable container */}
             <form
               onSubmit={handleSaveNote}
-              className="flex-1 flex flex-col overflow-hidden"
+              className="flex-1 flex flex-col min-h-0 overflow-hidden"
             >
-              {/* Metadata Inputs Row: Related Course + Lesson Title (Category Tag removed!) */}
-              <div className="px-5 sm:px-6 pt-4 pb-3 grid grid-cols-1 sm:grid-cols-12 gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/30 border-b border-slate-100 dark:border-slate-800/80">
-                <div className="sm:col-span-5">
-                  <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mb-1">
-                    Related Course
-                  </label>
-                  <select
-                    value={newCourseId}
-                    onChange={(e) => setNewCourseId(e.target.value)}
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 cursor-pointer shadow-2xs"
-                  >
-                    <option value="">General (No specific course)</option>
-                    {courses.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="sm:col-span-7">
-                  <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mb-1">
-                    Note Title / Topic
-                  </label>
-                  <input
-                    type="text"
-                    value={newLessonTitle}
-                    onChange={(e) => setNewLessonTitle(e.target.value)}
-                    placeholder="e.g. 02 Keyword Intent Mapping & Competitor Audit"
-                    className="w-full px-3.5 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 shadow-2xs"
-                  />
-                </div>
-              </div>
-
-              {/* Rich Text Editor Toolbar */}
-              <div className="px-5 sm:px-6 py-2 bg-slate-100/70 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-700/80 flex flex-wrap items-center gap-1 shrink-0 text-slate-700 dark:text-slate-300 select-none">
-                {/* Text Formatting Group */}
-                <div className="flex items-center space-x-0.5 pr-2 border-r border-slate-200 dark:border-slate-700">
-                  <button
-                    type="button"
-                    onClick={() => exec("bold")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Bold (Ctrl+B)"
-                  >
-                    <Bold size={15} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("italic")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Italic (Ctrl+I)"
-                  >
-                    <Italic size={15} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("underline")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Underline (Ctrl+U)"
-                  >
-                    <Underline size={15} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("strikeThrough")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Strikethrough"
-                  >
-                    <Strikethrough size={15} />
-                  </button>
-                </div>
-
-                {/* Headings Buttons */}
-                <div className="flex items-center space-x-0.5 px-2 border-r border-slate-200 dark:border-slate-700">
-                  <button
-                    type="button"
-                    onClick={() => exec("formatBlock", "<h1>")}
-                    className="px-2 py-1 rounded-lg text-xs font-black hover:bg-white dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 transition-colors"
-                    title="Heading 1"
-                  >
-                    H1
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("formatBlock", "<h2>")}
-                    className="px-2 py-1 rounded-lg text-xs font-black hover:bg-white dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 transition-colors"
-                    title="Heading 2"
-                  >
-                    H2
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("formatBlock", "<h3>")}
-                    className="px-2 py-1 rounded-lg text-xs font-black hover:bg-white dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 transition-colors"
-                    title="Heading 3"
-                  >
-                    H3
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("formatBlock", "<p>")}
-                    className="px-2 py-1 rounded-lg text-xs font-semibold hover:bg-white dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
-                    title="Normal Paragraph"
-                  >
-                    Normal
-                  </button>
-                </div>
-
-                {/* Lists & Callouts */}
-                <div className="flex items-center space-x-0.5 px-2 border-r border-slate-200 dark:border-slate-700">
-                  <button
-                    type="button"
-                    onClick={() => exec("insertUnorderedList")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Bullet List"
-                  >
-                    <List size={15} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("insertOrderedList")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Numbered List"
-                  >
-                    <ListOrdered size={15} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("formatBlock", "<blockquote>")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Quote / Concept Callout"
-                  >
-                    <Quote size={15} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("formatBlock", "<pre>")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Code Snippet"
-                  >
-                    <Code size={15} />
-                  </button>
-                </div>
-
-                {/* Table & Images Insertion */}
-                <div className="flex items-center space-x-1 px-2 border-r border-slate-200 dark:border-slate-700">
-                  <button
-                    type="button"
-                    onClick={handleInsertTable}
-                    className="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 hover:bg-blue-50 dark:hover:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer shadow-2xs"
-                    title="Insert 3-Column Table"
-                  >
-                    <Table size={14} />
-                    <span>Table</span>
-                  </button>
-
-                  {/* Hidden image file input */}
-                  <input
-                    type="file"
-                    ref={imageInputRef}
-                    accept="image/*"
-                    onChange={handleImageFileSelect}
-                    className="hidden"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => imageInputRef.current?.click()}
-                    className="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer shadow-2xs"
-                    title="Upload Image from computer"
-                  >
-                    <Image size={14} />
-                    <span>Image</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleInsertImageUrl}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Insert Image by Web URL"
-                  >
-                    <Link size={14} />
-                  </button>
-                </div>
-
-                {/* Actions: Divider, Undo, Redo, Clear */}
-                <div className="flex items-center space-x-0.5 pl-2">
-                  <button
-                    type="button"
-                    onClick={() => exec("insertHorizontalRule")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Horizontal Divider"
-                  >
-                    <Minus size={15} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("undo")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Undo (Ctrl+Z)"
-                  >
-                    <Undo size={14} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("redo")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
-                    title="Redo (Ctrl+Y)"
-                  >
-                    <Redo size={14} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => exec("removeFormat")}
-                    className="p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
-                    title="Clear Formatting"
-                  >
-                    <Eraser size={14} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Large Scrollable Document Canvas (contentEditable) */}
-              <div className="flex-1 p-5 sm:p-7 overflow-y-auto bg-slate-50/40 dark:bg-slate-900/30">
+              {/* SCROLLABLE BODY: Contains Course, Title, Sticky Toolbar, and Editor */}
+              <div
+                ref={scrollContainerRef}
+                className="flex-1 overflow-y-auto overscroll-contain bg-slate-50/40 dark:bg-slate-900/30 custom-scrollbar flex flex-col"
+              >
+                {/* 1. Metadata Inputs Section: Related Course + Lesson Title */}
                 <div
-                  ref={editorRef}
-                  contentEditable="true"
-                  onInput={handleEditorInput}
-                  onPaste={handleEditorPaste}
-                  data-placeholder="Start typing your study notes here... Use the toolbar above to make text bold, italic, insert tables, upload diagrams, and paste screenshots with Ctrl+V."
-                  className="min-h-full p-6 sm:p-8 bg-white dark:bg-[#0b1329] text-slate-900 dark:text-slate-100 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 leading-relaxed text-sm sm:text-base prose-note selection:bg-blue-500/20"
-                />
+                  ref={courseSectionRef}
+                  className="px-4 sm:px-6 pt-3.5 pb-3 grid grid-cols-1 sm:grid-cols-12 gap-2.5 sm:gap-3 shrink-0 bg-slate-50/70 dark:bg-slate-900/50 border-b border-slate-100 dark:border-slate-800/80 transition-all"
+                >
+                  <div className="sm:col-span-5">
+                    <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mb-1">
+                      Related Course
+                    </label>
+                    <select
+                      value={newCourseId}
+                      onChange={(e) => setNewCourseId(e.target.value)}
+                      className="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 cursor-pointer shadow-2xs"
+                    >
+                      <option value="">General (No specific course)</option>
+                      {courses.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.title}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="sm:col-span-7">
+                    <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mb-1">
+                      Note Title / Topic
+                    </label>
+                    <input
+                      type="text"
+                      value={newLessonTitle}
+                      onChange={(e) => setNewLessonTitle(e.target.value)}
+                      onFocus={() => {
+                        // Keep top visible when editing title
+                        scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
+                      placeholder="e.g. 02 Keyword Intent Mapping & Competitor Audit"
+                      className="w-full px-3.5 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 shadow-2xs"
+                    />
+                  </div>
+                </div>
+
+                {/* 2. Sticky Formatting Toolbar (Decorators):
+                       - On mobile, horizontal scrollable without wrapping into multiple rows!
+                       - Stays docked at top when scrolled so tools are always within reach */}
+                <div
+                  ref={toolbarRef}
+                  className="sticky top-0 z-20 px-3 sm:px-6 py-1.5 sm:py-2 bg-white/95 dark:bg-[#0b1329]/95 backdrop-blur-md border-b border-slate-200/90 dark:border-slate-800 flex items-center gap-1 overflow-x-auto whitespace-nowrap scrollbar-none text-slate-700 dark:text-slate-300 select-none shadow-2xs shrink-0"
+                >
+                  {/* Text Formatting Group */}
+                  <div className="flex items-center space-x-0.5 pr-2 border-r border-slate-200 dark:border-slate-700 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => exec("bold")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Bold (Ctrl+B)"
+                    >
+                      <Bold size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("italic")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Italic (Ctrl+I)"
+                    >
+                      <Italic size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("underline")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Underline (Ctrl+U)"
+                    >
+                      <Underline size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("strikeThrough")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Strikethrough"
+                    >
+                      <Strikethrough size={15} />
+                    </button>
+                  </div>
+
+                  {/* Headings Buttons */}
+                  <div className="flex items-center space-x-0.5 px-2 border-r border-slate-200 dark:border-slate-700 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => exec("formatBlock", "<h1>")}
+                      className="px-2 py-1 rounded-lg text-xs font-black hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 transition-colors"
+                      title="Heading 1"
+                    >
+                      H1
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("formatBlock", "<h2>")}
+                      className="px-2 py-1 rounded-lg text-xs font-black hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 transition-colors"
+                      title="Heading 2"
+                    >
+                      H2
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("formatBlock", "<h3>")}
+                      className="px-2 py-1 rounded-lg text-xs font-black hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 transition-colors"
+                      title="Heading 3"
+                    >
+                      H3
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("formatBlock", "<p>")}
+                      className="px-2 py-1 rounded-lg text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+                      title="Normal Paragraph"
+                    >
+                      Normal
+                    </button>
+                  </div>
+
+                  {/* Lists & Callouts */}
+                  <div className="flex items-center space-x-0.5 px-2 border-r border-slate-200 dark:border-slate-700 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => exec("insertUnorderedList")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Bullet List"
+                    >
+                      <List size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("insertOrderedList")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Numbered List"
+                    >
+                      <ListOrdered size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("formatBlock", "<blockquote>")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Quote / Concept Callout"
+                    >
+                      <Quote size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("formatBlock", "<pre>")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Code Snippet"
+                    >
+                      <Code size={15} />
+                    </button>
+                  </div>
+
+                  {/* Table & Images Insertion */}
+                  <div className="flex items-center space-x-1 px-2 border-r border-slate-200 dark:border-slate-700 shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleInsertTable}
+                      className="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-50 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer shadow-2xs"
+                      title="Insert 3-Column Table"
+                    >
+                      <Table size={14} />
+                      <span>Table</span>
+                    </button>
+
+                    {/* Hidden image file input */}
+                    <input
+                      type="file"
+                      ref={imageInputRef}
+                      accept="image/*"
+                      onChange={handleImageFileSelect}
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => imageInputRef.current?.click()}
+                      className="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 border border-slate-200 dark:border-slate-700 transition-all cursor-pointer shadow-2xs"
+                      title="Upload Image from computer"
+                    >
+                      <Image size={14} />
+                      <span>Image</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleInsertImageUrl}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Insert Image by Web URL"
+                    >
+                      <Link size={14} />
+                    </button>
+                  </div>
+
+                  {/* Actions: Divider, Undo, Redo, Clear */}
+                  <div className="flex items-center space-x-0.5 pl-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => exec("insertHorizontalRule")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Horizontal Divider"
+                    >
+                      <Minus size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("undo")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Undo (Ctrl+Z)"
+                    >
+                      <Undo size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("redo")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors"
+                      title="Redo (Ctrl+Y)"
+                    >
+                      <Redo size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => exec("removeFormat")}
+                      className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors"
+                      title="Clear Formatting"
+                    >
+                      <Eraser size={14} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* 3. Document Canvas Area */}
+                <div className="flex-1 p-3.5 sm:p-6 flex flex-col min-h-0">
+                  {/* Mobile Quick Navigation Pill */}
+                  <div className="flex sm:hidden items-center justify-between pb-1.5 px-0.5 text-[11px] text-slate-400 font-medium">
+                    <span>Note Workspace</span>
+                    <button
+                      type="button"
+                      onClick={scrollToCourseDetails}
+                      className="text-[10.5px] text-[#2563eb] dark:text-cyan-400 hover:underline flex items-center gap-0.5 cursor-pointer font-bold"
+                    >
+                      <span>↑ Edit Course & Title</span>
+                    </button>
+                  </div>
+
+                  <div
+                    ref={editorRef}
+                    contentEditable="true"
+                    onFocus={handleEditorFocus}
+                    onClick={handleEditorFocus}
+                    onInput={handleEditorInput}
+                    onPaste={handleEditorPaste}
+                    data-placeholder="Start typing your study notes here... Use the toolbar above to make text bold, italic, insert tables, upload diagrams, and paste screenshots with Ctrl+V."
+                    className="flex-1 min-h-[260px] sm:min-h-[380px] p-4 sm:p-8 bg-white dark:bg-[#0b1329] text-slate-900 dark:text-slate-100 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm focus:outline-hidden focus:ring-2 focus:ring-[#3b49df]/20 dark:focus:ring-blue-500/20 focus:border-[#3b49df] dark:focus:border-blue-500 leading-relaxed text-sm sm:text-base prose-note selection:bg-blue-500/20"
+                  />
+                </div>
               </div>
 
-              {/* Footer Bar: Stats + Cancel + Save */}
-              <div className="px-5 sm:px-6 py-3.5 bg-white dark:bg-[#0b1329] border-t border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
-                <div className="text-xs text-slate-400 dark:text-slate-500 flex items-center space-x-2">
+              {/* 4. Footer Bar: Stats + Cancel + Save (Sticky at bottom) */}
+              <div className="px-4 sm:px-6 py-2.5 sm:py-3.5 bg-white dark:bg-[#0b1329] border-t border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0 shadow-sm">
+                <div className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-500 flex items-center space-x-1.5 sm:space-x-2">
                   <span>{wordCount} words</span>
                   <span>•</span>
-                  <span>{charCount} characters</span>
+                  <span>{charCount} chars</span>
                 </div>
 
-                <div className="flex items-center space-x-2.5">
+                <div className="flex items-center space-x-2 sm:space-x-2.5">
                   <button
                     type="button"
                     onClick={() => {
                       setIsModalOpen(false);
                       setEditingNoteId(null);
                     }}
-                    className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                    className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center space-x-1.5 active:scale-98"
+                    className="px-4 sm:px-5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center space-x-1.5 active:scale-98"
                   >
-                    {editingNoteId ? <Check size={16} /> : <Plus size={16} />}
+                    {editingNoteId ? <Check size={15} /> : <Plus size={15} />}
                     <span>{editingNoteId ? "Save Changes" : "Save Note"}</span>
                   </button>
                 </div>
@@ -1242,7 +1323,6 @@ export const NotesReviewsPage = () => {
         </ModalPortal>
       )}
 
-      {/* ------------------------------------------------------------- */}
       {/* FULL NOTE VIEWER MODAL                                        */}
       {/* ------------------------------------------------------------- */}
       {viewingNote && (
