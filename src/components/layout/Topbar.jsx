@@ -4,7 +4,7 @@ import { ref, onValue, update } from "firebase/database";
 import { CRM_BACKEND_API } from "../../services/lmsService";
 import { ChevronRight, Search, Bell, ChevronDown, User, Settings, LogOut, Check, Shield, GraduationCap, Sun, Moon, AlertCircle, MessageSquare, Sparkles, Volume2, VolumeX } from "lucide-react";
 import { playNotificationSound, isNotificationSoundMuted, toggleNotificationSound } from "../../utils/notificationSound";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import logoHorizontalImg from "../../assets/logo-horizontal.png";
 import logoHorizontalDarkImg from "../../assets/logo-horizontal-dark.png";
 import { useAuth } from "../../context/AuthContext";
@@ -13,6 +13,9 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
   const { isDark, toggleTheme } = useTheme();
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const notifRef = useRef(null);
+  const profileRef = useRef(null);
 
   const {
 
@@ -37,6 +40,48 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
   const [notifOpen, setNotifOpen] = useState(false);
   const [soundMuted, setSoundMuted] = useState(isNotificationSoundMuted());
   const prevUnreadRef = useRef(null);
+
+  // Close dropdowns on route changes
+  useEffect(() => {
+    setNotifOpen(false);
+    setDropdownOpen(false);
+  }, [location.pathname]);
+
+  // Click outside to dismiss dropdowns + Escape key support
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setNotifOpen(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setNotifOpen(false);
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  const toggleNotifications = () => {
+    setNotifOpen((prev) => !prev);
+    setDropdownOpen(false);
+  };
+
+  const toggleProfile = () => {
+    setDropdownOpen((prev) => !prev);
+    setNotifOpen(false);
+  };
 
   // Student ID for Firebase channel
   const cleanSid = String(
@@ -268,11 +313,14 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
         </button>
 
         {/* Notifications Dropdown Container */}
-        <div className="relative">
+        <div ref={notifRef} className="relative">
           <button
-            onClick={() => setNotifOpen(!notifOpen)}
-            className="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-hidden cursor-pointer"
+            onClick={toggleNotifications}
+            className={`relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-hidden cursor-pointer ${
+              notifOpen ? "bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-cyan-400" : ""
+            }`}
             aria-label="Notifications"
+            aria-expanded={notifOpen}
           >
             <Bell size={20} />
             {unreadNotifications > 0 && (
@@ -282,8 +330,13 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
             )}
           </button>
 
-          {notifOpen && (
-            <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-[#0f172a] rounded-xl shadow-xl border border-slate-100 dark:border-slate-800 py-3 z-50 animate-in fade-in slide-in-from-top-2">
+          <div
+            className={`absolute right-0 mt-2 w-80 bg-white dark:bg-[#0f172a] rounded-xl shadow-2xl border border-slate-200/80 dark:border-slate-800 py-3 z-50 transition-all duration-200 ease-out origin-top-right transform ${
+              notifOpen
+                ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
+                : "opacity-0 scale-95 -translate-y-1 pointer-events-none"
+            }`}
+          >
               <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
@@ -384,7 +437,6 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
                 )}
               </div>
             </div>
-          )}
         </div>
 
         {/* Dark / Light Theme Toggle Button */}
@@ -403,11 +455,14 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
         </button>
 
         {/* User Profile Menu */}
-        <div className="relative">
+        <div ref={profileRef} className="relative">
           <button
-            onClick={() => setDropdownOpen(!dropdownOpen)}
-            className="flex items-center space-x-2 sm:space-x-2.5 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-hidden cursor-pointer"
+            onClick={toggleProfile}
+            className={`flex items-center space-x-2 sm:space-x-2.5 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-hidden cursor-pointer ${
+              dropdownOpen ? "ring-2 ring-blue-500/30 dark:ring-cyan-500/30 bg-slate-100 dark:bg-slate-800" : ""
+            }`}
             aria-label="User Profile Menu"
+            aria-expanded={dropdownOpen}
           >
             {currentAvatar ? (
               <img
@@ -437,12 +492,19 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
             </div>
             <ChevronDown
               size={14}
-              className="text-slate-400 hidden xl:block mr-0.5"
+              className={`text-slate-400 hidden xl:block mr-0.5 transition-transform duration-200 ${
+                dropdownOpen ? "rotate-180 text-blue-600 dark:text-cyan-400" : ""
+              }`}
             />
           </button>
 
-          {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-[#0f172a] rounded-xl shadow-xl border border-slate-200/90 dark:border-slate-800 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+          <div
+            className={`absolute right-0 mt-2 w-64 bg-white dark:bg-[#0f172a] rounded-xl shadow-2xl border border-slate-200/90 dark:border-slate-800 py-2 z-50 transition-all duration-200 ease-out origin-top-right transform ${
+              dropdownOpen
+                ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
+                : "opacity-0 scale-95 -translate-y-1 pointer-events-none"
+            }`}
+          >
               <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center space-x-3">
                 {currentAvatar ? (
                   <img
@@ -541,7 +603,6 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
                 </button>
               </div>
             </div>
-          )}
         </div>
       </div>
     </header>
