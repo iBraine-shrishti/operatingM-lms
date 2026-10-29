@@ -1638,6 +1638,39 @@ export const lmsService = {
   // Achievements
   getAchievements: () => getStored("achievements", INITIAL_ACHIEVEMENTS),
   // Notes - Backed by MySQL Database Table & Per-Student Local Cache
+  isNoteMatchingCourse: (note, courseOrId) => {
+    if (!note || !courseOrId) return false;
+    const courseId =
+      typeof courseOrId === "object"
+        ? courseOrId.id || courseOrId.courseId || ""
+        : String(courseOrId);
+    const courseTitle =
+      typeof courseOrId === "object"
+        ? courseOrId.title || courseOrId.name || courseOrId.courseTitle || ""
+        : "";
+
+    const nCId = String(note.courseId || note.course_id || "").trim().toLowerCase();
+    const targetCId = String(courseId || "").trim().toLowerCase();
+
+    // Direct or stripped prefix ID match (e.g. "course-1" vs "1")
+    if (nCId && targetCId) {
+      if (nCId === targetCId) return true;
+      const cleanNCId = nCId.replace(/^course-/, "");
+      const cleanTargetCId = targetCId.replace(/^course-/, "");
+      if (cleanNCId && cleanTargetCId && cleanNCId === cleanTargetCId) return true;
+    }
+
+    // Title match
+    const nTitle = String(note.courseTitle || note.course_title || note.course_name || "").trim().toLowerCase();
+    const targetTitle = String(courseTitle || "").trim().toLowerCase();
+    if (nTitle && targetTitle) {
+      if (nTitle === targetTitle) return true;
+      if (nTitle.includes(targetTitle) || targetTitle.includes(nTitle)) return true;
+    }
+
+    return false;
+  },
+
   getActiveStudentId: (providedId = null) => {
     if (providedId) return String(providedId).replace("std-", "");
     if (typeof window !== "undefined") {
@@ -1689,10 +1722,8 @@ export const lmsService = {
   fetchStudentNotes: async (studentId = null, courseId = null) => {
     const sId = lmsService.getActiveStudentId(studentId);
     try {
-      let url = `${CRM_BACKEND_API}/lms/notes/?student_id=${encodeURIComponent(sId)}`;
-      if (courseId && courseId !== "all") {
-        url += `&course_id=${encodeURIComponent(courseId)}`;
-      }
+      // Always fetch all notes for the student so local cache remains complete
+      const url = `${CRM_BACKEND_API}/lms/notes/?student_id=${encodeURIComponent(sId)}`;
       const resp = await fetch(url);
       if (resp.ok) {
         const data = await resp.json();
@@ -1709,13 +1740,20 @@ export const lmsService = {
           }));
           const key = `notes_${sId}`;
           setStored(key, normalized);
+          if (courseId && courseId !== "all") {
+            return normalized.filter((n) => lmsService.isNoteMatchingCourse(n, courseId));
+          }
           return normalized;
         }
       }
     } catch (err) {
       console.warn("fetchStudentNotes backend error:", err);
     }
-    return lmsService.getNotes(sId);
+    const all = lmsService.getNotes(sId);
+    if (courseId && courseId !== "all") {
+      return all.filter((n) => lmsService.isNoteMatchingCourse(n, courseId));
+    }
+    return all;
   },
 
   addNote: (note) => {

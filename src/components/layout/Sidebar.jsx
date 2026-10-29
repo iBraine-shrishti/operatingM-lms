@@ -203,11 +203,12 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   }, [location.pathname, crmProfile?.id, currentUser?.crmAdmissionId, crmAttendance, crmBatch]);
 
   useEffect(() => {
-    const studentId =
+    const studentId = lmsService.getActiveStudentId(
       crmService.getSelectedStudentId() ||
       crmProfile?.id ||
       currentUser?.crmAdmissionId ||
-      "375";
+      currentUser?.id
+    );
 
     const updateNotesFromCache = () => {
       try {

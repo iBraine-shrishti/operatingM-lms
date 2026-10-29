@@ -1,3 +1,4 @@
+import { lmsService } from "../../../services/lmsService";
 import React from "react";
 import { Bookmark, Send } from "lucide-react";
 import { formatTime } from "../../../utils/playerUtils";
@@ -16,7 +17,9 @@ export const LessonNotesTab = ({
   onInsertTimestamp,
   onSaveNote,
 }) => {
-  const courseNotes = userNotes.filter((n) => n.courseId === currentCourse?.id);
+  const courseNotes = userNotes.filter((n) =>
+    lmsService.isNoteMatchingCourse(n, currentCourse)
+  );
 
   return (
     <div className="space-y-4">
@@ -59,22 +62,43 @@ export const LessonNotesTab = ({
         <h4 className="font-bold text-slate-900 dark:text-white text-xs">
           Your Saved Notes ({courseNotes.length})
         </h4>
-        {courseNotes.slice(0, 5).map((note) => (
-          <div
-            key={note.id}
-            className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 text-xs space-y-1"
-          >
-            <div className="flex items-center justify-between text-slate-400 text-[10px]">
-              <span className="font-bold text-blue-600 dark:text-cyan-400">
-                {note.lessonTitle || currentLesson?.title}
-              </span>
-              <span>{note.createdAt || "Recently"}</span>
-            </div>
-            <p className="text-slate-800 dark:text-slate-200 leading-relaxed font-medium">
-              {note.content}
-            </p>
-          </div>
-        ))}
+        {courseNotes.length === 0 ? (
+          <p className="text-xs text-slate-400 dark:text-slate-500 py-3 italic">
+            No notes saved for this course yet. Use the box above to take notes!
+          </p>
+        ) : (
+          courseNotes.map((note) => {
+            const contentText = note.content || note.text || "";
+            const isHtml =
+              typeof contentText === "string" &&
+              contentText.includes("<") &&
+              contentText.includes(">");
+
+            return (
+              <div
+                key={note.id}
+                className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 text-xs space-y-1.5 transition-all hover:border-slate-200 dark:hover:border-slate-700"
+              >
+                <div className="flex items-center justify-between text-slate-400 text-[10px]">
+                  <span className="font-bold text-blue-600 dark:text-cyan-400">
+                    {note.lessonTitle || note.lessonTag || currentLesson?.title}
+                  </span>
+                  <span>{note.createdAt || note.date || "Recently"}</span>
+                </div>
+                {isHtml ? (
+                  <div
+                    className="text-slate-800 dark:text-slate-200 leading-relaxed font-medium break-words prose-note prose-sm dark:prose-invert max-w-none text-xs"
+                    dangerouslySetInnerHTML={{ __html: contentText }}
+                  />
+                ) : (
+                  <p className="text-slate-800 dark:text-slate-200 leading-relaxed font-medium whitespace-pre-line break-words">
+                    {contentText}
+                  </p>
+                )}
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

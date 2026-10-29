@@ -15,6 +15,7 @@ export const CourseDetailTabs = ({
   onTabChange,
   courseQuizzesCount = 0,
   courseAssignmentsCount = 0,
+  courseNotesCount = 0,
   studentsCount = 0,
   isAdmin = false,
 }) => {
@@ -38,7 +39,11 @@ export const CourseDetailTabs = ({
             icon: CheckSquare,
           },
         ]),
-    { key: "notes", label: "Notes", icon: BookMarked },
+    {
+      key: "notes",
+      label: courseNotesCount > 0 ? `Notes (${courseNotesCount})` : "Notes",
+      icon: BookMarked,
+    },
     ...(isAdmin
       ? [
           {

@@ -224,12 +224,14 @@ const ENHANCED_NOTE_CONTENT = {};
 
 export const NotesReviewsPage = () => {
   const { showToast } = useToast();
-  const { currentUser } = useAuth();
-  const studentId =
+  const { currentUser, crmProfile } = useAuth();
+  const studentId = lmsService.getActiveStudentId(
+    crmProfile?.id ||
     currentUser?.crmAdmissionId ||
+    currentUser?.admissionId ||
     currentUser?.id ||
-    crmService.getSelectedStudentId() ||
-    "375";
+    crmService.getSelectedStudentId()
+  );
 
   const [notes, setNotes] = useState(() => lmsService.getNotes(studentId));
   const courses = lmsService.getCourses();
@@ -330,17 +332,12 @@ export const NotesReviewsPage = () => {
       // Course filter
       if (selectedCourse !== "all") {
         const courseObj = courses.find(
-          (c) => c.id === selectedCourse || String(c.id) === String(selectedCourse)
+          (c) =>
+            c.id === selectedCourse ||
+            String(c.id).replace(/^course-/, "") ===
+              String(selectedCourse).replace(/^course-/, "")
         );
-        const matchesId =
-          n.courseId === selectedCourse ||
-          String(n.courseId) === String(selectedCourse);
-        const matchesTitle =
-          courseObj &&
-          n.courseTitle &&
-          n.courseTitle.trim().toLowerCase() ===
-            courseObj.title.trim().toLowerCase();
-        if (!matchesId && !matchesTitle) {
+        if (!lmsService.isNoteMatchingCourse(n, courseObj || selectedCourse)) {
           return false;
         }
       }

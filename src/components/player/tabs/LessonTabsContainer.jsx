@@ -1,3 +1,4 @@
+import { lmsService } from "../../../services/lmsService";
 import React from "react";
 import { LessonOverviewTab } from "./LessonOverviewTab";
 import { LessonNotesTab } from "./LessonNotesTab";
@@ -22,8 +23,8 @@ export const LessonTabsContainer = ({
   onDownloadResource,
   onNavigateForums,
 }) => {
-  const courseNotesCount = userNotes.filter(
-    (n) => n.courseId === currentCourse?.id
+  const courseNotesCount = userNotes.filter((n) =>
+    lmsService.isNoteMatchingCourse(n, currentCourse)
   ).length;
 
   const tabs = [

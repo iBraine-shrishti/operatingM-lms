@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
+import { crmService } from "../services/crmService";
 import { useToast } from "../context/ToastContext";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
 import { useAuth } from "../context/AuthContext";
@@ -21,7 +22,13 @@ import {
  */
 export const LessonPlayerPage = () => {
   const { currentUser, crmProfile } = useAuth();
-  const studentId = crmProfile?.id || currentUser?.crmAdmissionId || 375;
+  const studentId = lmsService.getActiveStudentId(
+    crmProfile?.id ||
+    currentUser?.crmAdmissionId ||
+    currentUser?.admissionId ||
+    currentUser?.id ||
+    crmService.getSelectedStudentId()
+  );
   const { showToast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -31,13 +38,28 @@ export const LessonPlayerPage = () => {
   const courseIdParam = searchParams.get("courseId");
   const unitIdParam = searchParams.get("unitId");
 
-  // Determine current course
+  // Determine current course with flexible ID matching and student course fallback
   const currentCourse = useMemo(() => {
     if (courseIdParam) {
-      return courses.find((c) => c.id === courseIdParam) || courses[0];
+      return (
+        courses.find(
+          (c) =>
+            c.id === courseIdParam ||
+            String(c.id).replace(/^course-/, "") ===
+              String(courseIdParam).replace(/^course-/, "")
+        ) || courses[0]
+      );
     }
-    return courses.find((c) => c.id === "course-8") || courses[0];
-  }, [courses, courseIdParam]);
+    if (crmProfile?.course) {
+      const match = courses.find(
+        (c) =>
+          c.title.toLowerCase().includes(crmProfile.course.toLowerCase()) ||
+          crmProfile.course.toLowerCase().includes(c.title.toLowerCase())
+      );
+      if (match) return match;
+    }
+    return courses.find((c) => c.id === "course-1") || courses[0];
+  }, [courses, courseIdParam, crmProfile?.course]);
 
   // Load units for current course
   const [units, setUnits] = useState(() =>
@@ -205,10 +227,10 @@ export const LessonPlayerPage = () => {
   const [userNotes, setUserNotes] = useState(() => lmsService.getNotes(studentId));
 
   useEffect(() => {
-    lmsService.fetchStudentNotes(studentId, currentCourse?.id).then((live) => {
+    lmsService.fetchStudentNotes(studentId).then((live) => {
       if (live) setUserNotes(live);
     });
-  }, [studentId, currentCourse?.id]);
+  }, [studentId]);
 
   useEffect(() => {
     const handleSync = () => setUserNotes(lmsService.getNotes(studentId));

@@ -17,13 +17,17 @@ import {
 export const CourseDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAdmin, currentUser, assignedCourseIds } = useAuth();
+  const { isAdmin, currentUser, crmProfile, assignedCourseIds } = useAuth();
   const { showToast } = useToast();
 
   const courses = lmsService.getCourses();
   // Default to course matching id, or first course
   const course =
-    courses.find((c) => c.id === id) ||
+    courses.find(
+      (c) =>
+        c.id === id ||
+        String(c.id).replace(/^course-/, "") === String(id).replace(/^course-/, "")
+    ) ||
     courses.find((c) => c.title.toLowerCase().includes("social")) ||
     courses[0];
 
@@ -54,7 +58,13 @@ export const CourseDetailPage = () => {
   const [aiPrompt, setAiPrompt] = useState("");
   const [aiGenerating, setAiGenerating] = useState(false);
 
-  const studentId = currentUser?.crmAdmissionId || currentUser?.id || "375";
+  const studentId = lmsService.getActiveStudentId(
+    crmProfile?.id ||
+    currentUser?.crmAdmissionId ||
+    currentUser?.admissionId ||
+    currentUser?.id ||
+    crmService.getSelectedStudentId()
+  );
 
   // Notes state - fully connected to lmsService and per-student database
   const [allNotes, setAllNotes] = useState(() =>
@@ -68,10 +78,10 @@ export const CourseDetailPage = () => {
 
   // Fetch live student notes from backend on mount and student change
   useEffect(() => {
-    lmsService.fetchStudentNotes(studentId, course?.id).then((live) => {
+    lmsService.fetchStudentNotes(studentId).then((live) => {
       if (live) setAllNotes(live);
     });
-  }, [studentId, course?.id]);
+  }, [studentId]);
 
   // Sync notes across tabs and actions
   useEffect(() => {
@@ -84,23 +94,10 @@ export const CourseDetailPage = () => {
     };
   }, [studentId]);
 
-  // Filter notes belonging to this course
+  // Filter notes belonging to this course using flexible matching
   const courseNotes = useMemo(() => {
     if (!course) return [];
-    return allNotes.filter((n) => {
-      const nCId = String(n.courseId || "").trim();
-      const cId = String(course.id || "").trim();
-      const nTitle = (n.courseTitle || "").trim().toLowerCase();
-      const cTitle = (course.title || "").trim().toLowerCase();
-      if (nCId && cId && nCId === cId) return true;
-      if (
-        nTitle &&
-        cTitle &&
-        (nTitle === cTitle || nTitle.includes(cTitle) || cTitle.includes(nTitle))
-      )
-        return true;
-      return false;
-    });
+    return allNotes.filter((n) => lmsService.isNoteMatchingCourse(n, course));
   }, [allNotes, course]);
 
   const [assessmentsVersion, setAssessmentsVersion] = useState(0);
@@ -420,6 +417,7 @@ export const CourseDetailPage = () => {
         onTabChange={setActiveTab}
         courseQuizzesCount={courseQuizzes.length}
         courseAssignmentsCount={courseAssignments.length}
+        courseNotesCount={courseNotes.length}
         studentsCount={students.length}
         isAdmin={isAdmin}
       />

@@ -161,9 +161,16 @@ export const CourseNotesTab = ({
                       {noteDate}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-normal whitespace-pre-line break-words">
-                    {noteText}
-                  </p>
+                  {typeof noteText === "string" && noteText.includes("<") && noteText.includes(">") ? (
+                    <div
+                      className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-normal break-words prose-note prose-sm dark:prose-invert max-w-none"
+                      dangerouslySetInnerHTML={{ __html: noteText }}
+                    />
+                  ) : (
+                    <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-normal whitespace-pre-line break-words">
+                      {noteText}
+                    </p>
+                  )}
                 </div>
 
                 <div className="flex items-center space-x-1 shrink-0">
