@@ -1153,40 +1153,7 @@ export const INITIAL_DISCUSSIONS = [
         ]
     },
     {
-        id: 'disc-8',
-        courseId: 'course-1',
-        courseTitle: 'General Career & Industry Guidance',
-        authorName: 'Ritu Sen',
-        authorRole: 'Student',
-        authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-        authorHandle: 'ritu_sen',
-        title: 'Tips for landing your first agency digital marketing internship in Mumbai?',
-        content: 'Hi fellows! What are the best portfolio strategies for an entry-level performance marketing role? Should I include live campaign screenshots or case studies from course assignments?',
-        repliesCount: 3,
-        createdAt: '4 hours ago',
-        category: 'Career Guidance',
-        community: 'general-doubts',
-        upvotes: 42,
-        isPinned: false,
-        replies: [
-            {
-                id: 'rep-8-1',
-                authorName: 'Nilkamal Mukharjee',
-                authorRole: 'Instructor',
-                authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
-                content: 'Always showcase live campaign data! Even with a small ₹500 test budget, showing real ROAS, CTR, and negative keyword optimization proves you understand practical execution over theory.',
-                createdAt: '2 hours ago',
-                isOfficial: true,
-                likesCount: 14,
-                replies: []
-            }
-        ]
-    },
-    {
         id: 'disc-7',
-        community: 'analytics',
-        authorHandle: 'aarav_patel',
-        upvotes: 38,
         courseId: 'course-3',
         courseTitle: 'Growth Marketing & Specialized Channels',
         authorName: 'Aarav Patel',
