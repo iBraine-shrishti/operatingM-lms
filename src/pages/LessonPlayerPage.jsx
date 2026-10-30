@@ -243,33 +243,7 @@ export const LessonPlayerPage = () => {
   }, [studentId]);
   const [playlistSearch, setPlaylistSearch] = useState("");
 
-  // Course selector dropdown state
-  const [isCourseDropdownOpen, setIsCourseDropdownOpen] = useState(false);
-  const courseDropdownRef = useRef(null);
 
-  // Close course dropdown on outside click
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (
-        courseDropdownRef.current &&
-        !courseDropdownRef.current.contains(e.target)
-      ) {
-        setIsCourseDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Handle switching actual course
-  const handleSelectCourse = (newCourse) => {
-    setIsCourseDropdownOpen(false);
-    navigate(`/lesson-player?courseId=${newCourse.id}`);
-    const newUnits = lmsService.getUnitsByCourse(newCourse.id);
-    setUnits(newUnits);
-    setActiveLessonIdx(0);
-    showToast(`Switched to "${newCourse.title}"`, "info");
-  };
 
   // Storage key for video progress
   const progressStorageKey = `om_video_progress_${currentCourse.id}_${currentLesson?.id}`;
@@ -693,11 +667,6 @@ export const LessonPlayerPage = () => {
         {/* RIGHT COLUMN: COURSE SYLLABUS PLAYLIST WITH FOLDER & SECTION ACCORDIONS */}
         <LessonPlaylist
           currentCourse={currentCourse}
-          courses={courses}
-          isCourseDropdownOpen={isCourseDropdownOpen}
-          setIsCourseDropdownOpen={setIsCourseDropdownOpen}
-          courseDropdownRef={courseDropdownRef}
-          onSelectCourse={handleSelectCourse}
           allPlayerItemsCount={allPlayerItems.length}
           sections={sections}
           filteredSections={filteredSections}
