@@ -28,11 +28,12 @@ const TEMPLATE_SECTIONS_MAP = {
   "dual-arch-creative": [
     { id: "personal", label: "1. Profile Photo & Contact Details", icon: User },
     { id: "summary", label: "2. About Me / Summary", icon: FileText },
-    { id: "experience", label: "3. Work Experience", icon: Briefcase },
-    { id: "skillsSummary", label: "4. Skills Summary (Progress Bars)", icon: Sliders },
-    { id: "expertise", label: "5. Expertise (2/3-Column Bullet Grid)", icon: CheckCircle2 },
-    { id: "education", label: "6. Education (Bottom Arch Capsule)", icon: GraduationCap },
-    { id: "footer", label: "7. Document Footer Settings (Word-Style)", icon: PanelBottom },
+    { id: "projects", label: "3. Key Projects & Case Studies", icon: FolderGit2 },
+    { id: "experience", label: "4. Work Experience", icon: Briefcase },
+    { id: "skillsSummary", label: "5. Skills Summary (Progress Bars)", icon: Sliders },
+    { id: "expertise", label: "6. Expertise (2/3-Column Bullet Grid)", icon: CheckCircle2 },
+    { id: "education", label: "7. Education (Bottom Arch Capsule)", icon: GraduationCap },
+    { id: "footer", label: "8. Document Footer Settings (Word-Style)", icon: PanelBottom },
   ],
   "creative-marketer": [
     { id: "personal", label: "1. Photo, Header Eyebrow & Contact", icon: User },

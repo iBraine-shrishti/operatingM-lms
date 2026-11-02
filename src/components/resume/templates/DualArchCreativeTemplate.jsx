@@ -13,6 +13,7 @@ export const DualArchCreativeTemplate = ({
   data,
   theme,
   onUpdateHeading,
+  onUpdateProject,
   page = 1,
   totalPages = 1,
 }) => {
@@ -25,6 +26,7 @@ export const DualArchCreativeTemplate = ({
     expertiseList = [],
     skills = {},
     projects = [],
+    certifications = [],
     sectionHeadings = {},
   } = data;
 
@@ -48,9 +50,10 @@ export const DualArchCreativeTemplate = ({
           ...(skills.seoContent || ["Technical SEO", "Keyword Research"]),
         ];
 
-  const gridColsClass = data.expertiseGridCols === 3 ? "grid-cols-3" : "grid-cols-2";
+  const gridColsClass =
+    data.expertiseGridCols === 3 ? "grid-cols-3" : "grid-cols-2";
 
-  // SUB-RENDERER: Top Arch
+  // SUB-RENDERER: Top Arch (Page 1: Photo, Name, Job Title)
   const renderTopArch = (isContinuation = false) => (
     <div className="w-full flex justify-center pt-0">
       <div
@@ -61,7 +64,7 @@ export const DualArchCreativeTemplate = ({
           {personalInfo.fullName}
         </h1>
         <div className="text-[10px] sm:text-[10.5px] font-extrabold uppercase tracking-[2px] text-white/85 mt-1">
-          {personalInfo.jobTitle} {isContinuation && "(Page 2)"}
+          {personalInfo.jobTitle}
         </div>
 
         {/* CIRCULAR PROFILE PHOTO */}
@@ -94,7 +97,37 @@ export const DualArchCreativeTemplate = ({
     </div>
   );
 
-  // SUB-RENDERER: Contact Info (inside gray column)
+  // SUB-RENDERER: Top Arch for Page 2 (Skills Summary inside sleek Arch)
+  const renderTopArchPage2 = () => (
+    <div className="w-full flex justify-center pt-0">
+      <div
+        className="w-[82%] sm:w-[84%] rounded-b-[85px] sm:rounded-b-[105px] pt-6 pb-7 px-4 text-center text-white shadow-xs space-y-2.5"
+        style={{ backgroundColor: theme.primary }}
+      >
+        <div className="text-xs font-black uppercase tracking-[2px] text-white">
+          SKILLS SUMMARY
+        </div>
+        <div className="space-y-2 text-left pt-1">
+          {displaySkillsSummary.slice(0, 3).map((item, idx) => (
+            <div key={idx} className="space-y-0.5">
+              <div className="flex justify-between text-[10px] font-bold text-white/90">
+                <span className="truncate">{item.name}</span>
+                <span>{item.level}%</span>
+              </div>
+              <div className="w-full h-1.5 bg-white/25 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-white rounded-full"
+                  style={{ width: `${item.level}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  // SUB-RENDERER: Contact Info (inside gray column, right below top arch)
   const renderContactInfo = () => (
     <div className="w-[82%] sm:w-[84%] mx-auto py-4 space-y-2.5 text-slate-800 dark:text-slate-100 text-[11px] font-semibold">
       {personalInfo.phone && (
@@ -147,7 +180,7 @@ export const DualArchCreativeTemplate = ({
     </div>
   );
 
-  // SUB-RENDERER: Bottom Arch (Education)
+  // SUB-RENDERER: Bottom Arch (Education & Certifications)
   const renderBottomArchEducation = () => (
     <div className="w-full flex justify-center pb-0">
       <div
@@ -172,13 +205,13 @@ export const DualArchCreativeTemplate = ({
                 <div className="text-white/85 text-[10.5px] font-medium">
                   {edu.institution}
                 </div>
-                <div className="text-white/60 text-[10px]">
-                  {edu.year}
-                </div>
+                <div className="text-white/60 text-[10px]">{edu.year}</div>
               </div>
             ))
           ) : (
-            <div className="text-white/70 text-xs">Education history prefilled</div>
+            <div className="text-white/70 text-xs">
+              Education history prefilled
+            </div>
           )}
         </div>
       </div>
@@ -201,6 +234,79 @@ export const DualArchCreativeTemplate = ({
         <p className="text-[12px] text-slate-700 leading-relaxed text-justify">
           {summary}
         </p>
+      </section>
+    );
+  };
+
+  // SUB-RENDERER: Key Projects & Case Studies (ABOVE WORK EXPERIENCE)
+  const renderProjects = () => {
+    if (!projects || projects.length === 0) return null;
+    return (
+      <section className="space-y-2.5 pt-1">
+        <div className="flex items-center gap-2">
+          <FolderGit2 size={16} style={{ color: theme.primary }} />
+          <EditableHeading
+            value={sectionHeadings.projects}
+            fallback="KEY PROJECTS & CASE STUDIES"
+            onChange={(val) => onUpdateHeading?.("projects", val)}
+            className="text-sm font-black uppercase tracking-[2px]"
+            style={{ color: theme.primary }}
+            tag="h2"
+          />
+        </div>
+        <div className="space-y-2.5">
+          {projects.map((proj) => (
+            <div
+              key={proj.id}
+              className="p-3.5 rounded-xl border space-y-1.5 transition-all"
+              style={{
+                borderColor: theme.border,
+                backgroundColor: theme.lightBg,
+              }}
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                <EditableHeading
+                  value={proj.title}
+                  fallback="Project Title"
+                  onChange={(val) => onUpdateProject?.(proj.id, "title", val)}
+                  className="font-bold text-slate-900 text-[12.5px]"
+                  tag="span"
+                />
+                {proj.metricHighlight && (
+                  <EditableHeading
+                    value={proj.metricHighlight}
+                    fallback=""
+                    onChange={(val) =>
+                      onUpdateProject?.(proj.id, "metricHighlight", val)
+                    }
+                    className="text-[10px] font-bold px-2 py-0.5 rounded text-white self-start sm:self-auto"
+                    style={{ backgroundColor: theme.primary }}
+                    tag="span"
+                  />
+                )}
+              </div>
+              {proj.clientOrType && (
+                <div
+                  className="text-[10.5px] font-bold"
+                  style={{ color: theme.secondary }}
+                >
+                  <EditableHeading
+                    value={proj.clientOrType}
+                    fallback=""
+                    onChange={(val) =>
+                      onUpdateProject?.(proj.id, "clientOrType", val)
+                    }
+                    className="inline-block"
+                    tag="span"
+                  />
+                </div>
+              )}
+              <p className="text-[11.5px] text-slate-700 leading-snug">
+                {proj.description}
+              </p>
+            </div>
+          ))}
+        </div>
       </section>
     );
   };
@@ -286,41 +392,6 @@ export const DualArchCreativeTemplate = ({
     </section>
   );
 
-  // SUB-RENDERER: Projects (if present)
-  const renderProjects = () => {
-    if (!projects || projects.length === 0) return null;
-    return (
-      <section className="space-y-2.5 pt-1">
-        <div className="flex items-center gap-2">
-          <FolderGit2 size={15} style={{ color: theme.primary }} />
-          <EditableHeading
-            value={sectionHeadings.projects}
-            fallback="PORTFOLIO & PROJECTS"
-            onChange={(val) => onUpdateHeading?.("projects", val)}
-            className="text-sm font-black uppercase tracking-[2px]"
-            style={{ color: theme.primary }}
-            tag="h2"
-          />
-        </div>
-        <div className="space-y-2.5">
-          {projects.map((proj) => (
-            <div key={proj.id} className="p-3 rounded-lg border space-y-1" style={{ borderColor: theme.border, backgroundColor: theme.lightBg }}>
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-900 text-[12px]">{proj.title}</span>
-                {proj.metricHighlight && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded text-white" style={{ backgroundColor: theme.primary }}>
-                    {proj.metricHighlight}
-                  </span>
-                )}
-              </div>
-              <p className="text-[11px] text-slate-600 leading-snug">{proj.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-    );
-  };
-
   // SUB-RENDERER: Expertise
   const renderExpertise = () => (
     <section className="space-y-2.5 pt-1">
@@ -333,8 +404,12 @@ export const DualArchCreativeTemplate = ({
         tag="h2"
       />
 
-      {(data.showExpertiseColHeaders || sectionHeadings.expertiseCol1 || sectionHeadings.expertiseCol2) && (
-        <div className={`grid ${gridColsClass} gap-x-6 pb-1 border-b border-slate-200 text-[10px] font-black uppercase text-slate-500`}>
+      {(data.showExpertiseColHeaders ||
+        sectionHeadings.expertiseCol1 ||
+        sectionHeadings.expertiseCol2) && (
+        <div
+          className={`grid ${gridColsClass} gap-x-6 pb-1 border-b border-slate-200 text-[10px] font-black uppercase text-slate-500`}
+        >
           <EditableHeading
             value={sectionHeadings.expertiseCol1}
             fallback="Core Specialization"
@@ -361,7 +436,9 @@ export const DualArchCreativeTemplate = ({
         </div>
       )}
 
-      <div className={`grid ${gridColsClass} gap-x-6 gap-y-1.5 text-[11.5px] text-slate-800`}>
+      <div
+        className={`grid ${gridColsClass} gap-x-6 gap-y-1.5 text-[11.5px] text-slate-800`}
+      >
         {displayExpertise.map((item, idx) => (
           <div key={idx} className="flex items-center gap-2">
             <span
@@ -383,16 +460,27 @@ export const DualArchCreativeTemplate = ({
         <aside className="w-full md:w-[38%] bg-[#cfd4dc] dark:bg-slate-800/90 flex flex-col justify-between shrink-0 print:w-[38%] py-0 relative">
           {page === 1 ? (
             <>
-              {renderTopArch(false)}
-              {renderContactInfo()}
-              {renderBottomArchEducation()}
+              {/* TOP SECTION: Top Arch + Contact Details (connected naturally) */}
+              <div className="flex flex-col">
+                {renderTopArch(false)}
+                {renderContactInfo()}
+              </div>
+
+              {/* BOTTOM SECTION: Bottom Arch (Education) flush to bottom */}
+              <div className="mt-auto">
+                {renderBottomArchEducation()}
+              </div>
             </>
           ) : (
             <>
-              <div className="pt-6">
+              {/* PAGE 2 SIDEBAR: Top Arch with Skills Summary + Contact Info */}
+              <div className="flex flex-col">
+                {renderTopArchPage2()}
                 {renderContactInfo()}
               </div>
-              <div className="w-[82%] sm:w-[84%] mx-auto pb-4">
+
+              {/* BOTTOM SECTION: Bottom Arch (Education & Credentials) */}
+              <div className="mt-auto">
                 {renderBottomArchEducation()}
               </div>
             </>
@@ -403,8 +491,16 @@ export const DualArchCreativeTemplate = ({
         <main className="w-full md:w-[62%] p-6 sm:p-8 space-y-5 flex-1 bg-white text-slate-800 print:w-[62%]">
           {page === 1 ? (
             <>
+              {/* 1. ABOUT ME */}
               {renderAboutMe()}
+
+              {/* 2. KEY PROJECTS & CASE STUDIES (ABOVE WORK EXPERIENCE) */}
+              {renderProjects()}
+
+              {/* 3. WORK EXPERIENCE */}
               {renderWorkExperience()}
+
+              {/* 4 & 5. SKILLS & EXPERTISE (WHEN 1 PAGE) */}
               {totalPages === 1 ? (
                 <>
                   {renderSkillsSummary()}
@@ -414,8 +510,8 @@ export const DualArchCreativeTemplate = ({
             </>
           ) : (
             <>
-              {renderProjects()}
-              {renderSkillsSummary()}
+              {/* PAGE 2 RIGHT COLUMN */}
+              {renderWorkExperience()}
               {renderExpertise()}
             </>
           )}
