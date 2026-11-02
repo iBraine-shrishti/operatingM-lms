@@ -530,14 +530,6 @@ export const ModernExecutiveTemplate = ({
             </>
           ) : (
             <>
-              <div
-                className="pb-2 border-b"
-                style={{ borderColor: theme.border }}
-              >
-                <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                  Academic & Credentials Dossier
-                </span>
-              </div>
               {renderEducation()}
               {renderCertifications()}
               {renderLanguages()}
@@ -556,7 +548,6 @@ export const ModernExecutiveTemplate = ({
             </>
           ) : (
             <>
-              {renderMainHeader(true)}
               {renderProjects()}
             </>
           )}
@@ -569,6 +560,7 @@ export const ModernExecutiveTemplate = ({
         totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
+        footerInfo={data.footerInfo}
       />
     </div>
   );

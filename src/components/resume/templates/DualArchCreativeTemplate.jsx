@@ -389,9 +389,10 @@ export const DualArchCreativeTemplate = ({
             </>
           ) : (
             <>
-              {renderTopArch(true)}
-              {renderContactInfo()}
-              <div className="w-[82%] sm:w-[84%] mx-auto pb-6">
+              <div className="pt-6">
+                {renderContactInfo()}
+              </div>
+              <div className="w-[82%] sm:w-[84%] mx-auto pb-4">
                 {renderBottomArchEducation()}
               </div>
             </>
@@ -427,6 +428,7 @@ export const DualArchCreativeTemplate = ({
         totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
+        footerInfo={data.footerInfo}
       />
     </div>
   );

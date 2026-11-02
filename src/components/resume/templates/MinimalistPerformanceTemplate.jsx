@@ -413,7 +413,8 @@ export const MinimalistPerformanceTemplate = ({
   return (
     <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] w-full min-h-[1050px] p-6 sm:p-8 flex flex-col justify-between print:min-h-0 print:p-5 print:m-0">
       <div className="space-y-5 flex-1">
-        {renderHeader(page === 2)}
+        {/* HEADER (PAGE 1 ONLY - NO HEADER ON PAGE 2) */}
+        {page === 1 && renderHeader(false)}
 
         {page === 1 ? (
           <>
@@ -453,6 +454,7 @@ export const MinimalistPerformanceTemplate = ({
         totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
+        footerInfo={data.footerInfo}
       />
     </div>
   );

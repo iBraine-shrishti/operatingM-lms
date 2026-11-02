@@ -352,10 +352,9 @@ export const ClassicATSTemplate = ({
         </div>
       )}
 
-      {/* PAGE 2 CONTENT */}
+      {/* PAGE 2 CONTENT (NO HEADER - JUST CONTENT & FOOTER) */}
       {page === 2 && (
         <div className="space-y-1">
-          {renderHeader(true)}
           {renderProjects()}
           {renderEducation()}
           {renderCertificationsAndLanguages()}
@@ -368,6 +367,7 @@ export const ClassicATSTemplate = ({
         totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
+        footerInfo={data.footerInfo}
       />
     </div>
   );

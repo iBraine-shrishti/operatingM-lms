@@ -182,6 +182,13 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
     showSpecializationBadge: true,
     showExpertiseColHeaders: false,
     expertiseGridCols: 2,
+    footerInfo: {
+      fullName: studentName,
+      jobTitle: "Performance Marketing & SEO Strategist",
+      companyLocation: `iBraine Digital LLP, ${studentBranch || "Mumbai"}`,
+      showLogo: true,
+      showPageNumber: true,
+    },
     sectionHeadings: {
       eyebrow: "Creative & Growth Strategist",
       summary: "About Me",

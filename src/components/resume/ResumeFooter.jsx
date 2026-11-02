@@ -1,5 +1,6 @@
 import React from "react";
 import logoHorizontalImg from "../../assets/logo-horizontal.png";
+import { EditableHeading } from "./EditableHeading";
 
 /**
  * Word-like official document footer for resume sheets
@@ -12,9 +13,11 @@ export const ResumeFooter = ({
   totalPages = 1,
   personalInfo = {},
   experience = [],
+  footerInfo = {},
+  onUpdateFooter,
 }) => {
-  const name = personalInfo?.fullName || "Operating Media Student";
-  const title = personalInfo?.jobTitle || "Professional";
+  const defaultName = personalInfo?.fullName || "Operating Media Student";
+  const defaultTitle = personalInfo?.jobTitle || "Professional";
 
   // Derive current company or location
   const firstExp =
@@ -22,19 +25,27 @@ export const ResumeFooter = ({
   const company = firstExp?.company || "";
   const location = personalInfo?.location || firstExp?.location || "Mumbai";
 
-  let companyLoc = "";
+  let defaultCompanyLoc = "";
   if (company && location) {
-    companyLoc = `${company}, ${location}`;
+    defaultCompanyLoc = `${company}, ${location}`;
   } else if (company) {
-    companyLoc = company;
+    defaultCompanyLoc = company;
   } else if (location) {
-    companyLoc = location;
+    defaultCompanyLoc = location;
+  } else {
+    defaultCompanyLoc = "Mumbai, India";
   }
 
+  const name = footerInfo?.fullName ?? defaultName;
+  const title = footerInfo?.jobTitle ?? defaultTitle;
+  const companyLoc = footerInfo?.companyLocation ?? defaultCompanyLoc;
+  const showLogo = footerInfo?.showLogo !== false;
+  const showPageNumber = footerInfo?.showPageNumber !== false;
+
   return (
-    <footer className="resume-footer mt-auto pt-2.5 pb-1 px-4 sm:px-6 border-t border-slate-200/90 text-slate-500 font-sans flex items-center justify-between text-[10px] w-full print:pt-2 print:pb-0 print:px-6 shrink-0 select-none">
+    <footer className="resume-footer mt-auto pt-2 pb-1 px-4 sm:px-6 border-t border-slate-200/90 text-slate-500 font-sans flex items-center justify-between text-[10px] w-full print:pt-1.5 print:pb-0 print:px-6 shrink-0 select-none">
       {/* LEFT: {name} • {title} – {company, location} */}
-      <div className="flex items-center gap-1.5 truncate max-w-[58%] text-slate-700">
+      <div className="flex items-center gap-1.5 truncate max-w-[62%] text-slate-700">
         <span className="font-bold text-slate-900 truncate shrink-0">
           {name}
         </span>
@@ -49,18 +60,22 @@ export const ResumeFooter = ({
       </div>
 
       {/* MIDDLE: Page X of Y */}
-      <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0 px-2 text-center">
-        Page {pageNumber} of {totalPages}
-      </div>
+      {showPageNumber && (
+        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0 px-2 text-center">
+          Page {pageNumber} of {totalPages}
+        </div>
+      )}
 
       {/* RIGHT: Operating Media Logo */}
-      <div className="flex items-center justify-end shrink-0">
-        <img
-          src={logoHorizontalImg}
-          alt="Operating Media"
-          className="h-3.5 sm:h-4 w-auto max-w-[120px] object-contain opacity-85"
-        />
-      </div>
+      {showLogo && (
+        <div className="flex items-center justify-end shrink-0">
+          <img
+            src={logoHorizontalImg}
+            alt="Operating Media"
+            className="h-3.5 sm:h-4 w-auto max-w-[120px] object-contain opacity-85"
+          />
+        </div>
+      )}
     </footer>
   );
 };

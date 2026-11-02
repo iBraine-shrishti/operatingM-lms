@@ -439,8 +439,8 @@ export const CreativeMarketerTemplate = ({
 
   return (
     <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] w-full min-h-[1050px] flex flex-col justify-between print:min-h-0 print:p-0 print:m-0">
-      {/* HEADER BANNER */}
-      {renderHeroBanner(page === 2)}
+      {/* HEADER BANNER (PAGE 1 ONLY - NO HEADER ON PAGE 2) */}
+      {page === 1 && renderHeroBanner(false)}
 
       {/* BODY CONTENT */}
       <div className="p-6 sm:p-8 space-y-6 flex-1">
@@ -474,6 +474,7 @@ export const CreativeMarketerTemplate = ({
         totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
+        footerInfo={data.footerInfo}
       />
     </div>
   );

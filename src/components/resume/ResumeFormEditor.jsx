@@ -21,6 +21,7 @@ import {
   Filter,
   X,
   Columns,
+  PanelBottom,
 } from "lucide-react";
 
 const TEMPLATE_SECTIONS_MAP = {
@@ -31,6 +32,7 @@ const TEMPLATE_SECTIONS_MAP = {
     { id: "skillsSummary", label: "4. Skills Summary (Progress Bars)", icon: Sliders },
     { id: "expertise", label: "5. Expertise (2/3-Column Bullet Grid)", icon: CheckCircle2 },
     { id: "education", label: "6. Education (Bottom Arch Capsule)", icon: GraduationCap },
+    { id: "footer", label: "7. Document Footer Settings (Word-Style)", icon: PanelBottom },
   ],
   "creative-marketer": [
     { id: "personal", label: "1. Photo, Header Eyebrow & Contact", icon: User },
@@ -40,6 +42,7 @@ const TEMPLATE_SECTIONS_MAP = {
     { id: "skills", label: "5. Core Skills (Campaign & SEO Categories)", icon: Layers },
     { id: "education", label: "6. Education & Academic Background", icon: GraduationCap },
     { id: "certifications", label: "7. Certifications & Badges", icon: Award },
+    { id: "footer", label: "8. Document Footer Settings (Word-Style)", icon: PanelBottom },
   ],
   "modern-executive": [
     { id: "personal", label: "1. Profile Photo & Contact Dossier", icon: User },
@@ -50,6 +53,7 @@ const TEMPLATE_SECTIONS_MAP = {
     { id: "projects", label: "6. Key Projects & Deliverables", icon: FolderGit2 },
     { id: "certifications", label: "7. Certifications & Credentials", icon: Award },
     { id: "languages", label: "8. Languages & Communication", icon: Languages },
+    { id: "footer", label: "9. Document Footer Settings (Word-Style)", icon: PanelBottom },
   ],
   "minimalist-tech": [
     { id: "personal", label: "1. Top Tagline Badge & Contact Info", icon: User },
@@ -59,6 +63,7 @@ const TEMPLATE_SECTIONS_MAP = {
     { id: "skills", label: "5. Core Skills & Tech Stack (Categories)", icon: Layers },
     { id: "education", label: "6. Education", icon: GraduationCap },
     { id: "certifications", label: "7. Certifications & Badges", icon: Award },
+    { id: "footer", label: "8. Document Footer Settings (Word-Style)", icon: PanelBottom },
   ],
   "classic-ats": [
     { id: "personal", label: "1. ATS Header & Contact Details", icon: User },
@@ -69,6 +74,7 @@ const TEMPLATE_SECTIONS_MAP = {
     { id: "education", label: "6. Education & Academic Background", icon: GraduationCap },
     { id: "certifications", label: "7. Certifications & Credentials", icon: Award },
     { id: "languages", label: "8. Languages", icon: Languages },
+    { id: "footer", label: "9. Document Footer Settings (Word-Style)", icon: PanelBottom },
   ],
 };
 
@@ -83,6 +89,7 @@ const ALL_SECTIONS_FALLBACK = [
   { id: "projects", label: "8. Projects & Case Studies", icon: FolderGit2 },
   { id: "certifications", label: "9. Certifications & Badges", icon: Award },
   { id: "languages", label: "10. Languages & Fluency", icon: Languages },
+  { id: "footer", label: "11. Document Footer Settings (Word-Style)", icon: PanelBottom },
 ];
 
 const getTemplateName = (id) => {
@@ -1699,6 +1706,178 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     </div>
   );
 
+  const updateFooterField = (field, value) => {
+    onChange({
+      ...data,
+      footerInfo: {
+        ...(data.footerInfo || {}),
+        [field]: value,
+      },
+    });
+  };
+
+  const renderFooterSection = (sec) => {
+    const isOpen = openSection === sec.id;
+    const footerInfo = data.footerInfo || {};
+    const defaultName = data.personalInfo?.fullName || "";
+    const defaultTitle = data.personalInfo?.jobTitle || "";
+    const firstCompany = data.experiences?.[0]?.company || "";
+    const loc = data.personalInfo?.location || "";
+    const defaultCompLoc =
+      firstCompany && loc
+        ? `${firstCompany}, ${loc}`
+        : firstCompany || loc || "Mumbai, India";
+
+    const currentName = footerInfo.fullName ?? defaultName;
+    const currentTitle = footerInfo.jobTitle ?? defaultTitle;
+    const currentCompLoc = footerInfo.companyLocation ?? defaultCompLoc;
+
+    return (
+      <div
+        key={sec.id}
+        className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 overflow-hidden shadow-2xs"
+      >
+        <button
+          type="button"
+          onClick={() => toggleSection(sec.id)}
+          className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors cursor-pointer"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-[#003873] dark:text-sky-400 flex items-center justify-center shrink-0">
+              <PanelBottom size={16} />
+            </div>
+            <div>
+              <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white block">
+                {sec.label}
+              </span>
+              <span className="text-[11px] text-slate-500 line-clamp-1">
+                Customize Word-like A4 footer (name, position, location, logo & page count)
+              </span>
+            </div>
+          </div>
+          {isOpen ? (
+            <ChevronUp size={16} className="text-slate-400" />
+          ) : (
+            <ChevronDown size={16} className="text-slate-400" />
+          )}
+        </button>
+
+        {isOpen && (
+          <div className="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800/90 space-y-4">
+            {/* LIVE PREVIEW BANNER OF THE FOOTER */}
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700 space-y-1">
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 block">
+                Live Document Footer Preview:
+              </span>
+              <div className="text-[11.5px] text-slate-800 dark:text-slate-200 font-medium flex flex-wrap items-center gap-1.5 pt-0.5">
+                <strong className="text-slate-900 dark:text-white">
+                  {currentName || "Student Name"}
+                </strong>
+                <span className="text-slate-400">•</span>
+                <span>{currentTitle || "Position"}</span>
+                {currentCompLoc && (
+                  <>
+                    <span className="text-slate-400">–</span>
+                    <span className="text-slate-600 dark:text-slate-300">
+                      {currentCompLoc}
+                    </span>
+                  </>
+                )}
+                {footerInfo.showPageNumber !== false && (
+                  <span className="ml-auto text-[10px] font-bold uppercase text-slate-500 bg-white dark:bg-slate-800 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+                    Page 1 of 1
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                  Footer Full Name
+                </label>
+                <input
+                  type="text"
+                  value={footerInfo.fullName ?? ""}
+                  placeholder={defaultName || "Student Name"}
+                  onChange={(e) => updateFooterField("fullName", e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
+                />
+                <span className="text-[10px] text-slate-400 mt-1 block">
+                  Leave empty to auto-use profile name: {defaultName}
+                </span>
+              </div>
+
+              <div>
+                <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                  Footer Job Title / Position
+                </label>
+                <input
+                  type="text"
+                  value={footerInfo.jobTitle ?? ""}
+                  placeholder={defaultTitle || "e.g. Website Developer"}
+                  onChange={(e) => updateFooterField("jobTitle", e.target.value)}
+                  className="w-full text-xs p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
+                />
+                <span className="text-[10px] text-slate-400 mt-1 block">
+                  Leave empty to auto-use profile title: {defaultTitle}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                Company & Location Text
+              </label>
+              <input
+                type="text"
+                value={footerInfo.companyLocation ?? ""}
+                placeholder={defaultCompLoc || "e.g. iBraine Digital LLP, Mumbai"}
+                onChange={(e) =>
+                  updateFooterField("companyLocation", e.target.value)
+                }
+                className="w-full text-xs p-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
+              />
+              <span className="text-[10px] text-slate-400 mt-1 block">
+                Leave empty to auto-use latest agency & city: {defaultCompLoc}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <label className="flex items-center gap-2 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={footerInfo.showLogo !== false}
+                  onChange={(e) =>
+                    updateFooterField("showLogo", e.target.checked)
+                  }
+                  className="rounded text-[#003873] focus:ring-0"
+                />
+                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  Show Operating Media Logo
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={footerInfo.showPageNumber !== false}
+                  onChange={(e) =>
+                    updateFooterField("showPageNumber", e.target.checked)
+                  }
+                  className="rounded text-[#003873] focus:ring-0"
+                />
+                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  Show Page Number (Page X of Y)
+                </span>
+              </label>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const renderSectionById = (sec) => {
     switch (sec.id) {
       case "personal":
@@ -1721,6 +1900,8 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
         return renderCertificationsSection(sec);
       case "languages":
         return renderLanguagesSection(sec);
+      case "footer":
+        return renderFooterSection(sec);
       default:
         return null;
     }
