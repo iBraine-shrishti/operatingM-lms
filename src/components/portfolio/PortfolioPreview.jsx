@@ -26,7 +26,36 @@ import {
   CheckCircle2,
   Sparkles,
   SlidersHorizontal,
+  Printer,
+  Code2,
+  Settings,
+  Linkedin,
+  Twitter,
+  Instagram,
+  Github,
+  MessageCircle,
 } from "lucide-react";
+
+
+const renderSocialIcon = (platform) => {
+  switch (platform?.toLowerCase()) {
+    case "linkedin":
+      return <Linkedin size={13} />;
+    case "twitter":
+    case "x":
+      return <Twitter size={13} />;
+    case "instagram":
+      return <Instagram size={13} />;
+    case "github":
+      return <Github size={13} />;
+    case "whatsapp":
+      return <MessageCircle size={13} className="text-emerald-400" />;
+    case "behance":
+      return <span className="text-[10px] font-black font-mono">Bē</span>;
+    default:
+      return <Globe size={13} />;
+  }
+};
 
 export const PortfolioPreview = ({
   portfolioData,
@@ -75,141 +104,298 @@ export const PortfolioPreview = ({
 
   return (
     <div className="bg-slate-50 text-slate-900 min-h-screen font-sans selection:bg-amber-400 selection:text-slate-950">
-      {/* 1. TOPBAR HEADER */}
+      {/* 1. TOPBAR HEADER (Matching reference: Aarav Sharma / DM initials / Center links / Developer Specs / Customize / Print — "Hire Marketer" REMOVED) */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+        <div className="max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+          {/* Left Brand Badge */}
+          <div className="flex items-center space-x-3 shrink-0">
             <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-xs"
+              className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-white text-xs shadow-xs tracking-wider"
               style={{ backgroundColor: theme.primary }}
             >
-              {student.name.charAt(0)}
+              {student.name.split(" ").map((n) => n[0]).slice(0, 2).join("") || "DM"}
             </div>
             <div>
-              <div className="flex items-center space-x-2">
-                <span className="font-extrabold text-slate-900 text-sm sm:text-base leading-tight">
-                  {student.name}
-                </span>
-                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
-                  Graduate Portfolio
-                </span>
+              <div className="font-extrabold text-slate-900 text-sm leading-tight">
+                {student.name}
               </div>
-              <span className="text-xs text-slate-500 font-medium hidden sm:block">
-                Operating Media Certified Digital Marketer
-              </span>
+              <div className="text-[11px] text-slate-500 font-medium leading-tight">
+                Digital Marketing Portfolio
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
+          {/* Center Links (Desktop) */}
+          <nav className="hidden xl:flex items-center space-x-6 text-xs font-semibold text-slate-600">
+            <button
+              type="button"
+              onClick={() => scrollToSection("wordpress")}
+              className="hover:text-blue-600 transition-colors cursor-pointer"
+            >
+              WordPress
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("canva")}
+              className="hover:text-blue-600 transition-colors cursor-pointer"
+            >
+              Canva & Video
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("socialMarketing")}
+              className="hover:text-blue-600 transition-colors cursor-pointer"
+            >
+              Meta Ads
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("googleAds")}
+              className="hover:text-blue-600 transition-colors cursor-pointer"
+            >
+              Google Ads
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("seo")}
+              className="hover:text-blue-600 transition-colors cursor-pointer"
+            >
+              SEO & GBP
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("digitalPlanning")}
+              className="hover:text-blue-600 transition-colors cursor-pointer"
+            >
+              Strategy
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("performanceMarketing")}
+              className="hover:text-blue-600 transition-colors cursor-pointer"
+            >
+              Performance
+            </button>
+          </nav>
+
+          {/* Right Action Buttons - Developer Specs, Customize, Print ("Hire Marketer" REMOVED) */}
+          <div className="flex items-center space-x-2 sm:space-x-2.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => window.open("/portfolio-live", "_blank")}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 sm:py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-300/70 cursor-pointer shadow-2xs"
+              title="View Live Standalone Portfolio"
+            >
+              <Code2 size={13} className="text-blue-600" />
+              <span className="hidden sm:inline">Developer Specs</span>
+            </button>
+
             {onOpenCustomizer && (
               <button
                 type="button"
                 onClick={onOpenCustomizer}
-                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white shadow-xs hover:opacity-90 transition-opacity cursor-pointer"
-                style={{ backgroundColor: theme.primary }}
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 sm:py-2 text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors shadow-xs border border-amber-500/50 cursor-pointer"
+                title="Edit student details & customize theme"
               >
-                <SlidersHorizontal size={14} />
-                <span>Customize Bio & Theme</span>
+                <Settings size={13} />
+                <span>Customize</span>
               </button>
             )}
-            <a
-              href={`mailto:${student.email}`}
-              className="hidden md:inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors"
+
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="inline-flex items-center p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 cursor-pointer shadow-2xs"
+              title="Print or Save Portfolio as PDF"
             >
-              <Mail size={13} />
-              <span>Hire Marketer</span>
-            </a>
+              <Printer size={15} />
+            </button>
           </div>
         </div>
       </header>
 
-      {/* 2. HERO SECTION */}
-      <section className={`py-12 sm:py-16 text-white bg-gradient-to-br ${theme.heroGradient} relative overflow-hidden`}>
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
+      {/* 2. HERO SECTION (INCREASED SIZE & EXACT REFERENCE STYLING) */}
+      <section className="bg-[#090e1a] text-white border-b border-slate-800 relative overflow-hidden py-14 sm:py-20 lg:py-24">
+        {/* Subtle grid pattern background */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none opacity-40" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left: Bio & Details */}
-            <div className="lg:col-span-8 space-y-4">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md border border-white/20 text-white">
-                <Sparkles size={13} style={{ color: theme.primary }} />
-                <span>Operating Media Verified Portfolio Showcase</span>
+        {/* Ambient glow orbs */}
+        <div className="absolute top-10 right-10 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-10 left-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            {/* Left Content Column (7 cols) - INCREASED SIZE */}
+            <div className="lg:col-span-7 space-y-6">
+              {/* Top Badges */}
+              <div className="flex flex-wrap items-center gap-3 text-xs">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-400/10 text-amber-300 border border-amber-400/30 rounded-full font-medium">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  <span>Open to Full-Time & Client Contracts</span>
+                </span>
+                <span className="text-slate-400 flex items-center gap-1.5 font-medium">
+                  <Award size={14} className="text-amber-400" />
+                  <span>Academy Graduate Cohort 2026</span>
+                </span>
               </div>
 
-              <h1 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-                {student.name}
-              </h1>
-
-              <div
-                className="text-lg sm:text-xl font-bold"
-                style={{ color: theme.primary }}
-              >
-                {student.headline}
+              {/* Student Name & Titles (LARGE TYPOGRAPHY) */}
+              <div>
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
+                  {student.name}
+                </h1>
+                <p className="mt-2 text-xl sm:text-2xl font-bold text-amber-400 leading-snug">
+                  {student.headline}
+                </p>
+                <p className="mt-1 text-sm sm:text-base text-slate-300 font-normal">
+                  {student.subheadline}
+                </p>
               </div>
 
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-3xl font-normal">
+              {/* Bio Paragraph */}
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl font-light">
                 {student.bio}
               </p>
 
-              {/* Contact meta row */}
-              <div className="flex flex-wrap items-center gap-3 pt-2 text-xs text-slate-300">
-                <div className="flex items-center space-x-1.5 bg-white/10 px-3 py-1 rounded-lg border border-white/10">
-                  <Mail size={12} style={{ color: theme.primary }} />
-                  <span>{student.email}</span>
+              {/* Contact Meta Row */}
+              <div className="flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-slate-300 pt-1">
+                <div className="flex items-center gap-1.5">
+                  <Mail size={14} className="text-amber-400 shrink-0" />
+                  <a
+                    href={`mailto:${student.email}`}
+                    className="hover:text-white transition-colors underline-offset-4 hover:underline"
+                  >
+                    {student.email}
+                  </a>
                 </div>
-                <div className="flex items-center space-x-1.5 bg-white/10 px-3 py-1 rounded-lg border border-white/10">
-                  <Phone size={12} style={{ color: theme.primary }} />
-                  <span>{student.phone}</span>
+                <div className="flex items-center gap-1.5">
+                  <Phone size={14} className="text-amber-400 shrink-0" />
+                  <a
+                    href={`tel:${student.phone}`}
+                    className="hover:text-white transition-colors"
+                  >
+                    {student.phone}
+                  </a>
                 </div>
-                <div className="flex items-center space-x-1.5 bg-white/10 px-3 py-1 rounded-lg border border-white/10">
-                  <MapPin size={12} style={{ color: theme.primary }} />
+                <div className="flex items-center gap-1.5">
+                  <MapPin size={14} className="text-amber-400 shrink-0" />
                   <span>{student.location}</span>
                 </div>
               </div>
+
+              {/* Verified Social & Portfolio Profiles */}
+              <div className="pt-2">
+                <div className="text-xs uppercase tracking-wider text-slate-400 font-bold mb-2.5">
+                  Verified Social & Portfolio Profiles
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {(student.socials || []).map((social, sIdx) => (
+                    <a
+                      key={sIdx}
+                      href={social.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-200 bg-slate-800/80 hover:bg-blue-600 hover:text-white rounded-lg border border-slate-700/80 transition-all duration-200 shadow-xs hover:border-blue-500 hover:-translate-y-0.5"
+                    >
+                      {renderSocialIcon(social.platform)}
+                      <span>{social.label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTA Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3 pt-3">
+                <button
+                  type="button"
+                  onClick={() => scrollToSection("wordpress")}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 rounded-lg shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
+                >
+                  <TrendingUp size={16} />
+                  <span>Explore Projects (13 Modules)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors cursor-pointer"
+                >
+                  <Printer size={16} className="text-amber-400" />
+                  <span>Save / Print Portfolio</span>
+                </button>
+              </div>
             </div>
 
-            {/* Right: Avatar Photo */}
-            <div className="lg:col-span-4 flex justify-center lg:justify-end">
-              <div className="relative">
-                <div
-                  className="w-40 h-40 sm:w-48 sm:h-48 rounded-3xl overflow-hidden border-4 shadow-2xl p-1 bg-white/10 backdrop-blur-md"
-                  style={{ borderColor: theme.primary }}
-                >
+            {/* Right Column (5 cols) - LARGER AVATAR PHOTO CARD ("INCREASE THE SIZE") */}
+            <div className="lg:col-span-5 flex flex-col items-center lg:items-end">
+              <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg">
+                {/* Luminous Glow Ring */}
+                <div className="absolute -inset-2.5 rounded-2xl bg-gradient-to-tr from-amber-400 via-blue-500 to-indigo-600 opacity-60 blur-xs" />
+
+                {/* Main Card Body */}
+                <div className="relative bg-slate-900 rounded-2xl p-2 border border-slate-700/80 shadow-2xl overflow-hidden group">
                   <img
                     src={student.avatarUrl}
                     alt={student.name}
-                    className="w-full h-full object-cover rounded-2xl"
+                    referrerPolicy="no-referrer"
+                    className="w-full aspect-[4/4.2] sm:aspect-square object-cover rounded-xl transition-transform duration-500 group-hover:scale-102"
                   />
+
+                  {/* Floating Glass Bottom Bar Over Photo */}
+                  <div className="absolute bottom-4 left-4 right-4 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-xl p-3 shadow-lg flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-blue-600/30 border border-blue-500 text-blue-400 flex items-center justify-center shrink-0">
+                        <CheckCircle2 size={16} className="text-amber-400" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white">Full-Stack Certified</div>
+                        <div className="text-[11px] text-slate-400">Meta · Google · HubSpot · Shopify</div>
+                      </div>
+                    </div>
+                    {onOpenCustomizer && (
+                      <button
+                        type="button"
+                        onClick={onOpenCustomizer}
+                        className="text-[11px] text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2 cursor-pointer"
+                      >
+                        Edit Info
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white p-2 rounded-xl shadow-lg flex items-center space-x-1 text-[11px] font-black uppercase tracking-wider">
-                  <CheckCircle2 size={14} />
-                  <span>Open for Roles</span>
+
+                {/* Trainer Verification Pill Bar Under Card */}
+                <div className="mt-4 bg-slate-800/70 border border-slate-700/60 rounded-xl p-3.5 text-xs text-slate-300 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>Portfolio Verified by Trainer</span>
+                  </div>
+                  <span className="text-amber-400 font-mono font-bold">100% Practical Coursework</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* 4 Stat Highlights Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mt-10 pt-8 border-t border-white/15">
-            {student.highlights.map((stat, sIdx) => (
-              <div
-                key={sIdx}
-                className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/15"
-              >
-                <div className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-300">
-                  {stat.label}
-                </div>
+          {/* 4 Stat Highlights Grid (EXACT FROM REFERENCE) */}
+          <div className="mt-14 pt-8 border-t border-slate-800/80">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+              {(student.highlights || []).map((stat, sIdx) => (
                 <div
-                  className="text-xl sm:text-2xl font-black mt-1"
-                  style={{ color: theme.primary }}
+                  key={sIdx}
+                  className="bg-slate-800/50 hover:bg-slate-800/90 border border-slate-700/70 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 group"
                 >
-                  {stat.value}
+                  <div className="text-xs text-slate-400 font-medium mb-1">
+                    {stat.label}
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono group-hover:text-amber-400 transition-colors">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs text-slate-400 mt-1 line-clamp-1">
+                    {stat.detail}
+                  </div>
                 </div>
-                <div className="text-[11px] text-slate-300 font-medium mt-0.5">
-                  {stat.detail}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
