@@ -19,6 +19,8 @@ import {
   ExternalLink,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   ArrowUp,
   Award,
   CheckCircle2,
@@ -31,9 +33,12 @@ export const PortfolioPreview = ({
   theme,
   moduleVisibility = {},
   onOpenCustomizer,
+  isStandalone = false,
 }) => {
   const { student, modules } = portfolioData;
   const [activeTab, setActiveTab] = useState("wordpress");
+  const [openMetaIdx, setOpenMetaIdx] = useState(0);
+  const [openGoogleIdx, setOpenGoogleIdx] = useState(0);
 
   const scrollToSection = (id) => {
     setActiveTab(id);
@@ -51,20 +56,21 @@ export const PortfolioPreview = ({
     }
   };
 
+  // 13 Modules exactly matching curriculum & user screenshot
   const navItems = [
-    { id: "wordpress", label: "01. WordPress", icon: Globe },
-    { id: "canva", label: "02. Canva Creatives", icon: Palette },
-    { id: "socialOrganic", label: "03. Social Organic", icon: Share2 },
-    { id: "socialMarketing", label: "04. Meta Ads", icon: TrendingUp },
-    { id: "googleAds", label: "05. Google Ads", icon: Search },
-    { id: "seo", label: "06. SEO & GBP", icon: BarChart3 },
-    { id: "digitalPlanning", label: "07. Brand Strategy", icon: Briefcase },
-    { id: "influencerMarketing", label: "08. Influencers", icon: Users },
-    { id: "shopify", label: "09. Shopify E-Comm", icon: ShoppingBag },
+    { id: "wordpress", label: "01. WordPress Web Design", icon: Globe },
+    { id: "canva", label: "02. Canva Design & Video", icon: Palette },
+    { id: "socialOrganic", label: "03. Social Media Organic", icon: Share2 },
+    { id: "socialMarketing", label: "04. Meta Ads (Accordions)", icon: TrendingUp },
+    { id: "googleAds", label: "05. Google Ads (Accordions)", icon: Search },
+    { id: "seo", label: "06. SEO & Local GBP", icon: BarChart3 },
+    { id: "digitalPlanning", label: "07. Digital Planning Deck", icon: Briefcase },
+    { id: "influencerMarketing", label: "08. Influencer Marketing", icon: Users },
+    { id: "shopify", label: "09. Shopify Store", icon: ShoppingBag },
     { id: "videoEditing", label: "10. Video Editing", icon: Video },
-    { id: "dropshipping", label: "11. Dropshipping", icon: Box },
-    { id: "aiApp", label: "12. AI Marketing", icon: Cpu },
-    { id: "performanceMarketing", label: "13. Performance Scale", icon: Zap },
+    { id: "dropshipping", label: "11. Dropshipping Store", icon: Box },
+    { id: "aiApp", label: "12. AI Marketing App", icon: Cpu },
+    { id: "performanceMarketing", label: "13. Performance Marketing", icon: Zap },
   ].filter((item) => moduleVisibility[item.id] !== false);
 
   return (
@@ -208,10 +214,10 @@ export const PortfolioPreview = ({
         </div>
       </section>
 
-      {/* 3. STICKY MODULE NAVIGATION SLIDER (STRETCHED FULL WIDTH - NOT CONSTRAINED BY PARENT) */}
+      {/* 3. STICKY 13-MODULE NAVIGATION SLIDER (FULL WIDTH STRETCHED) */}
       <nav className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-md">
         <div className="w-full px-2 sm:px-4 flex items-center space-x-1.5">
-          {/* Scroll Left Indicator */}
+          {/* Scroll Left Button */}
           <button
             type="button"
             onClick={() => scrollSlider("left")}
@@ -234,7 +240,7 @@ export const PortfolioPreview = ({
                   key={item.id}
                   type="button"
                   onClick={() => scrollToSection(item.id)}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap flex items-center space-x-2 transition-all cursor-pointer shrink-0 ${
+                  className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap flex items-center space-x-2 transition-all cursor-pointer shrink-0 shadow-2xs ${
                     isActive
                       ? "text-white shadow-sm ring-2 ring-blue-500/20"
                       : "text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/90 border border-slate-200/60"
@@ -248,7 +254,7 @@ export const PortfolioPreview = ({
             })}
           </div>
 
-          {/* Scroll Right Indicator */}
+          {/* Scroll Right Button */}
           <button
             type="button"
             onClick={() => scrollSlider("right")}
@@ -260,9 +266,9 @@ export const PortfolioPreview = ({
         </div>
       </nav>
 
-      {/* 4. MAIN MODULE CONTENT SHOWCASE (WIDE & EXPANDED) */}
+      {/* 4. MAIN ALL 13 MODULES CONTENT SHOWCASE */}
       <main className="w-full max-w-[1550px] mx-auto px-4 sm:px-8 py-12 space-y-16">
-        {/* MODULE 1: WORDPRESS */}
+        {/* MODULE 1: WORDPRESS WEB DESIGN */}
         {moduleVisibility.wordpress !== false && (
           <section id="wordpress" className="space-y-6 scroll-mt-28">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -275,7 +281,7 @@ export const PortfolioPreview = ({
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                    01. WordPress & CMS Architecture
+                    01. WordPress Web Design
                   </h2>
                   <p className="text-xs text-slate-500 font-medium">
                     Custom themes, Elementor Pro layouts, speed optimization & WooCommerce checkouts
@@ -356,7 +362,7 @@ export const PortfolioPreview = ({
           </section>
         )}
 
-        {/* MODULE 2: CANVA & CREATIVES */}
+        {/* MODULE 2: CANVA DESIGN & VIDEO */}
         {moduleVisibility.canva !== false && (
           <section id="canva" className="space-y-6 scroll-mt-28">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -369,7 +375,7 @@ export const PortfolioPreview = ({
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                    02. Canva & Visual Assets
+                    02. Canva Design & Video
                   </h2>
                   <p className="text-xs text-slate-500 font-medium">
                     Viral Instagram carousels, ad creatives, brand style guides & video reels
@@ -425,7 +431,7 @@ export const PortfolioPreview = ({
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                    03. Social Media Organic Engine
+                    03. Social Media Organic
                   </h2>
                   <p className="text-xs text-slate-500 font-medium">
                     Organic audience building, viral Reels frameworks, and engagement growth
@@ -477,7 +483,7 @@ export const PortfolioPreview = ({
           </section>
         )}
 
-        {/* MODULE 4: META ADS */}
+        {/* MODULE 4: META ADS (ACCORDIONS) */}
         {moduleVisibility.socialMarketing !== false && (
           <section id="socialMarketing" className="space-y-6 scroll-mt-28">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -490,58 +496,89 @@ export const PortfolioPreview = ({
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                    04. Meta Ads & Paid Acquisition
+                    04. Meta Ads (Accordions)
                   </h2>
                   <p className="text-xs text-slate-500 font-medium">
-                    Advantage+ Shopping campaigns, full-funnel media buying, CPA optimization & ROAS scaling
+                    Collapsible Advantage+ Shopping campaigns, CPA optimization & ROAS scaling
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {modules.socialMarketing.map((ad) => (
-                <div
-                  key={ad.id}
-                  className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4"
-                >
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-extrabold text-slate-900 flex-1 mr-2">
-                      {ad.campaignName}
-                    </h3>
-                    <div
-                      className="px-2.5 py-1 rounded-lg text-white font-black text-xs shrink-0"
-                      style={{ backgroundColor: theme.primary }}
+            <div className="space-y-3">
+              {modules.socialMarketing.map((ad, idx) => {
+                const isOpen = openMetaIdx === idx;
+                return (
+                  <div
+                    key={ad.id}
+                    className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs"
+                  >
+                    {/* Accordion Header */}
+                    <button
+                      type="button"
+                      onClick={() => setOpenMetaIdx(isOpen ? -1 : idx)}
+                      className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-50/80 transition-colors cursor-pointer"
                     >
-                      {ad.roas} ROAS
-                    </div>
-                  </div>
+                      <div className="flex items-center space-x-3 flex-1 mr-3">
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-black shrink-0"
+                          style={{ backgroundColor: theme.primary }}
+                        >
+                          #{idx + 1}
+                        </div>
+                        <div>
+                          <h3 className="text-sm sm:text-base font-extrabold text-slate-900 leading-snug">
+                            {ad.campaignName}
+                          </h3>
+                          <span className="text-[11px] text-slate-500 font-medium">
+                            {ad.objective}
+                          </span>
+                        </div>
+                      </div>
 
-                  <div className="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl text-center text-xs">
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-bold block">SPEND</span>
-                      <span className="font-black text-slate-900">{ad.adSpend}</span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-bold block">REVENUE</span>
-                      <span className="font-black text-emerald-600">{ad.revenueGenerated}</span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-bold block">CPA</span>
-                      <span className="font-black text-slate-900">{ad.cpa}</span>
-                    </div>
-                  </div>
+                      <div className="flex items-center space-x-3">
+                        <span className="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-lg shrink-0">
+                          {ad.roas} ROAS
+                        </span>
+                        {isOpen ? <ChevronUp size={18} className="text-slate-400" /> : <ChevronDown size={18} className="text-slate-400" />}
+                      </div>
+                    </button>
 
-                  <p className="text-xs text-slate-600 leading-relaxed bg-blue-50/60 p-2.5 rounded-lg border border-blue-100">
-                    <strong>Growth Insight: </strong>{ad.keyLearning}
-                  </p>
-                </div>
-              ))}
+                    {/* Accordion Body */}
+                    {isOpen && (
+                      <div className="p-5 pt-0 border-t border-slate-100 space-y-4 mt-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3.5 rounded-xl text-center text-xs">
+                          <div>
+                            <span className="text-[10px] text-slate-400 font-bold block">AD SPEND</span>
+                            <span className="font-black text-slate-900">{ad.adSpend}</span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-slate-400 font-bold block">REVENUE</span>
+                            <span className="font-black text-emerald-600">{ad.revenueGenerated}</span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-slate-400 font-bold block">CPA</span>
+                            <span className="font-black text-slate-900">{ad.cpa}</span>
+                          </div>
+                          <div>
+                            <span className="text-[10px] text-slate-400 font-bold block">HOOK RATE</span>
+                            <span className="font-black text-blue-600">{ad.hookRatePct}%</span>
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-slate-700 leading-relaxed bg-blue-50/60 p-3 rounded-xl border border-blue-100">
+                          <strong className="text-blue-900">Optimization Takeaway: </strong>{ad.keyLearning}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </section>
         )}
 
-        {/* MODULE 5: GOOGLE ADS */}
+        {/* MODULE 5: GOOGLE ADS (ACCORDIONS) */}
         {moduleVisibility.googleAds !== false && (
           <section id="googleAds" className="space-y-6 scroll-mt-28">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -554,71 +591,101 @@ export const PortfolioPreview = ({
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                    05. Google Ads (Search & PMax)
+                    05. Google Ads (Accordions)
                   </h2>
                   <p className="text-xs text-slate-500 font-medium">
-                    SKAG architecture, High Quality Scores (9/10), Shopping feeds, and Negative keyword lists
+                    Collapsible Search & PMax campaigns, Quality Scores (9/10) & CPC metrics
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {modules.googleAds.map((gads) => (
-                <div
-                  key={gads.id}
-                  className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4"
-                >
-                  <div>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-blue-600">
-                      {gads.industry}
-                    </span>
-                    <h3 className="text-base font-extrabold text-slate-900 mt-0.5">
-                      {gads.campaignType}
-                    </h3>
-                  </div>
-
-                  <div className="grid grid-cols-4 gap-2 bg-slate-50 p-3 rounded-xl text-center text-xs">
-                    <div>
-                      <span className="text-[9px] text-slate-400 font-bold block">CTR</span>
-                      <span className="font-extrabold text-slate-900">{gads.ctrPct}</span>
-                    </div>
-                    <div>
-                      <span className="text-[9px] text-slate-400 font-bold block">AVG CPC</span>
-                      <span className="font-extrabold text-slate-900">{gads.cpcAvg}</span>
-                    </div>
-                    <div>
-                      <span className="text-[9px] text-slate-400 font-bold block">CONVERSIONS</span>
-                      <span className="font-extrabold text-emerald-600">{gads.conversions}</span>
-                    </div>
-                    <div>
-                      <span className="text-[9px] text-slate-400 font-bold block">QS</span>
-                      <span className="font-black text-blue-600">{gads.qualityScoreAvg}</span>
-                    </div>
-                  </div>
-
-                  <div className="text-xs">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block mb-1">
-                      Target Search Terms:
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {gads.topSearchTerms.map((term, tIdx) => (
-                        <span
-                          key={tIdx}
-                          className="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[11px] font-semibold"
+            <div className="space-y-3">
+              {modules.googleAds.map((gads, idx) => {
+                const isOpen = openGoogleIdx === idx;
+                return (
+                  <div
+                    key={gads.id}
+                    className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs"
+                  >
+                    {/* Accordion Header */}
+                    <button
+                      type="button"
+                      onClick={() => setOpenGoogleIdx(isOpen ? -1 : idx)}
+                      className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-50/80 transition-colors cursor-pointer"
+                    >
+                      <div className="flex items-center space-x-3 flex-1 mr-3">
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-black shrink-0"
+                          style={{ backgroundColor: theme.primary }}
                         >
-                          "{term}"
+                          #{idx + 1}
+                        </div>
+                        <div>
+                          <h3 className="text-sm sm:text-base font-extrabold text-slate-900 leading-snug">
+                            {gads.campaignType}
+                          </h3>
+                          <span className="text-[11px] text-blue-600 font-bold uppercase tracking-wider">
+                            {gads.industry}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-3">
+                        <span className="text-xs font-black text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg shrink-0">
+                          QS: {gads.qualityScoreAvg}
                         </span>
-                      ))}
-                    </div>
+                        {isOpen ? <ChevronUp size={18} className="text-slate-400" /> : <ChevronDown size={18} className="text-slate-400" />}
+                      </div>
+                    </button>
+
+                    {/* Accordion Body */}
+                    {isOpen && (
+                      <div className="p-5 pt-0 border-t border-slate-100 space-y-4 mt-3">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3.5 rounded-xl text-center text-xs">
+                          <div>
+                            <span className="text-[9px] text-slate-400 font-bold block">CTR</span>
+                            <span className="font-extrabold text-slate-900">{gads.ctrPct}</span>
+                          </div>
+                          <div>
+                            <span className="text-[9px] text-slate-400 font-bold block">AVG CPC</span>
+                            <span className="font-extrabold text-slate-900">{gads.cpcAvg}</span>
+                          </div>
+                          <div>
+                            <span className="text-[9px] text-slate-400 font-bold block">CONVERSIONS</span>
+                            <span className="font-extrabold text-emerald-600">{gads.conversions}</span>
+                          </div>
+                          <div>
+                            <span className="text-[9px] text-slate-400 font-bold block">BUDGET</span>
+                            <span className="font-extrabold text-slate-900">{gads.monthlyBudget}</span>
+                          </div>
+                        </div>
+
+                        <div>
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block mb-1">
+                            Target Search Terms:
+                          </span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {gads.topSearchTerms.map((term, tIdx) => (
+                              <span
+                                key={tIdx}
+                                className="bg-slate-100 text-slate-800 px-2 py-0.5 rounded text-[11px] font-semibold"
+                              >
+                                "{term}"
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         )}
 
-        {/* MODULE 6: SEO & LOCAL MAP PACK */}
+        {/* MODULE 6: SEO & LOCAL GBP */}
         {moduleVisibility.seo !== false && (
           <section id="seo" className="space-y-6 scroll-mt-28">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -631,7 +698,7 @@ export const PortfolioPreview = ({
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                    06. SEO & Google Business Profile
+                    06. SEO & Local GBP
                   </h2>
                   <p className="text-xs text-slate-500 font-medium">
                     Technical audits, Core Web Vitals optimization, Top 10 rankings & Google Map Pack
@@ -676,7 +743,109 @@ export const PortfolioPreview = ({
           </section>
         )}
 
-        {/* MODULE 7: SHOPIFY E-COMMERCE */}
+        {/* MODULE 7: DIGITAL PLANNING DECK */}
+        {moduleVisibility.digitalPlanning !== false && (
+          <section id="digitalPlanning" className="space-y-6 scroll-mt-28">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div className="flex items-center space-x-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
+                  style={{ backgroundColor: theme.primary }}
+                >
+                  <Briefcase size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+                    07. Digital Planning Deck
+                  </h2>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Executive brand audit decks, competitor analysis & 3-month growth roadmap
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {modules.digitalPlanning.brandAuditDeck.map((slide, sIdx) => (
+                <div
+                  key={sIdx}
+                  className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-2 flex flex-col justify-between"
+                >
+                  <div>
+                    <span className="text-[10px] font-black uppercase text-blue-600 block">
+                      Slide 0{slide.slideNumber}
+                    </span>
+                    <h3 className="text-sm font-extrabold text-slate-900 mt-1">
+                      {slide.title}
+                    </h3>
+                  </div>
+                  <p className="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed mt-2">
+                    {slide.takeaway}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* MODULE 8: INFLUENCER MARKETING */}
+        {moduleVisibility.influencerMarketing !== false && (
+          <section id="influencerMarketing" className="space-y-6 scroll-mt-28">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div className="flex items-center space-x-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
+                  style={{ backgroundColor: theme.primary }}
+                >
+                  <Users size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+                    08. Influencer Marketing
+                  </h2>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Creator tiering, contract deliverables, cost-per-engagement & revenue attribution
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {modules.influencerMarketing.map((inf) => (
+                <div
+                  key={inf.id}
+                  className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-black text-slate-900">
+                      {inf.tier}
+                    </h3>
+                    <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+                      {inf.revenueDrawn} Revenue
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl text-center text-xs">
+                    <div>
+                      <span className="text-[9px] text-slate-400 font-bold block">CREATORS</span>
+                      <span className="font-extrabold text-slate-900">{inf.countHired}</span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] text-slate-400 font-bold block">TOTAL SPEND</span>
+                      <span className="font-extrabold text-slate-900">{inf.totalSpend}</span>
+                    </div>
+                    <div>
+                      <span className="text-[9px] text-slate-400 font-bold block">REACH</span>
+                      <span className="font-extrabold text-blue-600">{inf.reach}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* MODULE 9: SHOPIFY STORE */}
         {moduleVisibility.shopify !== false && (
           <section id="shopify" className="space-y-6 scroll-mt-28">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -689,7 +858,7 @@ export const PortfolioPreview = ({
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                    09. Shopify E-Commerce Store
+                    09. Shopify Store
                   </h2>
                   <p className="text-xs text-slate-500 font-medium">
                     High AOV architecture, custom cart upsells, and payment gateway integration
@@ -739,7 +908,165 @@ export const PortfolioPreview = ({
           </section>
         )}
 
-        {/* MODULE 8: PERFORMANCE MARKETING */}
+        {/* MODULE 10: VIDEO EDITING */}
+        {moduleVisibility.videoEditing !== false && (
+          <section id="videoEditing" className="space-y-6 scroll-mt-28">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div className="flex items-center space-x-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
+                  style={{ backgroundColor: theme.primary }}
+                >
+                  <Video size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+                    10. Video Editing
+                  </h2>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Short-form viral hook structures, dynamic kinetic typography, and motion ad cuts
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {modules.videoEditing.map((vid) => (
+                <div
+                  key={vid.id}
+                  className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-2"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase text-purple-600">
+                      {vid.software}
+                    </span>
+                    <span className="text-xs font-bold text-emerald-600">
+                      {vid.retentionRate}
+                    </span>
+                  </div>
+                  <h3 className="text-sm font-extrabold text-slate-900">
+                    {vid.title}
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Hook Strategy: <strong className="text-slate-700">{vid.hookTime}</strong>
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* MODULE 11: DROPSHIPPING STORE */}
+        {moduleVisibility.dropshipping !== false && (
+          <section id="dropshipping" className="space-y-6 scroll-mt-28">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div className="flex items-center space-x-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
+                  style={{ backgroundColor: theme.primary }}
+                >
+                  <Box size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+                    11. Dropshipping Store
+                  </h2>
+                  <p className="text-xs text-slate-500 font-medium">
+                    Product validation economics, supplier procurement, gross margins & ad angles
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <span className="text-[10px] font-black uppercase text-amber-600">
+                    {modules.dropshipping.supplierPlatform}
+                  </span>
+                  <h3 className="text-base font-black text-slate-900">
+                    Winning Product: {modules.dropshipping.winningProduct}
+                  </h3>
+                </div>
+                <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">
+                  {modules.dropshipping.grossMarginPct} Gross Margin
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-xl text-center text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold block">COGS</span>
+                  <span className="font-extrabold text-slate-900">{modules.dropshipping.cogs}</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-400 font-bold block">RETAIL</span>
+                  <span className="font-extrabold text-slate-900">{modules.dropshipping.retailPrice}</span>
+                </div>
+                <div className="col-span-2">
+                  <span className="text-[10px] text-slate-400 font-bold block">VALIDATION</span>
+                  <span className="font-bold text-slate-800">{modules.dropshipping.validationMetrics}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* MODULE 12: AI MARKETING APP */}
+        {moduleVisibility.aiApp !== false && (
+          <section id="aiApp" className="space-y-6 scroll-mt-28">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div className="flex items-center space-x-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
+                  style={{ backgroundColor: theme.primary }}
+                >
+                  <Cpu size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+                    12. AI Marketing App
+                  </h2>
+                  <p className="text-xs text-slate-500 font-medium">
+                    AI prompt engineering systems, automated copy generators & custom GPT pipelines
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <span className="text-[10px] font-black uppercase text-purple-600">
+                    {modules.aiApp.aiModelUsed}
+                  </span>
+                  <h3 className="text-base font-black text-slate-900">
+                    {modules.aiApp.appName}
+                  </h3>
+                </div>
+                <a
+                  href={modules.aiApp.demoUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 shadow-xs"
+                >
+                  <span>Launch Live AI App</span>
+                  <ExternalLink size={12} />
+                </a>
+              </div>
+
+              <p className="text-xs text-slate-600 leading-relaxed">
+                {modules.aiApp.tagline}
+              </p>
+
+              <div className="bg-slate-900 text-slate-200 p-3.5 rounded-xl text-xs font-mono">
+                <span className="text-slate-400 block text-[10px] font-bold mb-1">// SYSTEM PROMPT ARCHITECTURE</span>
+                "{modules.aiApp.samplePromptSystem}"
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* MODULE 13: PERFORMANCE MARKETING */}
         {moduleVisibility.performanceMarketing !== false && (
           <section id="performanceMarketing" className="space-y-6 scroll-mt-28">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -752,7 +1079,7 @@ export const PortfolioPreview = ({
                 </div>
                 <div>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                    13. Performance Marketing & Scaling
+                    13. Performance Marketing
                   </h2>
                   <p className="text-xs text-slate-500 font-medium">
                     Multi-channel attribution, blended CAC reduction, and budget scaling economics

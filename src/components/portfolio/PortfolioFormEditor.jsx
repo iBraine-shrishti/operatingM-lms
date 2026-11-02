@@ -341,7 +341,7 @@ export const PortfolioFormEditor = ({
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {MODULES_CATALOG.map((mod) => {
                 const isVisible = moduleVisibility[mod.id] !== false;
                 return (
@@ -349,29 +349,31 @@ export const PortfolioFormEditor = ({
                     key={mod.id}
                     type="button"
                     onClick={() => onToggleModule(mod.id)}
-                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                    className={`px-4 py-2.5 sm:py-3 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer shadow-2xs ${
                       isVisible
-                        ? "border-blue-300 bg-blue-50/50"
-                        : "border-slate-200 bg-slate-50 opacity-60"
+                        ? "border-blue-400 bg-white hover:bg-blue-50/30 hover:border-blue-500"
+                        : "border-slate-200 bg-slate-50/60 opacity-60 hover:opacity-80"
                     }`}
                   >
-                    <div>
-                      <div className="font-black text-xs text-slate-900">
-                        {mod.number}. {mod.title}
-                      </div>
-                      <div className="text-[11px] text-slate-500 truncate mt-0.5">
-                        {mod.description}
-                      </div>
+                    <div className="flex items-center space-x-2 truncate mr-3">
+                      <span className="font-mono text-xs sm:text-sm font-black text-amber-500 shrink-0">
+                        {mod.number}.
+                      </span>
+                      <span
+                        className={`text-xs sm:text-sm font-bold truncate ${
+                          isVisible ? "text-slate-800" : "text-slate-400 line-through"
+                        }`}
+                      >
+                        {mod.title}
+                      </span>
                     </div>
-                    <div
-                      className={`w-5 h-5 rounded-md flex items-center justify-center text-xs font-bold ${
-                        isVisible
-                          ? "bg-blue-600 text-white"
-                          : "bg-slate-200 text-slate-400"
+                    <span
+                      className={`text-xs sm:text-sm font-bold shrink-0 ${
+                        isVisible ? "text-blue-600" : "text-slate-400"
                       }`}
                     >
-                      {isVisible ? "✓" : "–"}
-                    </div>
+                      {isVisible ? "Active" : "Inactive"}
+                    </span>
                   </button>
                 );
               })}

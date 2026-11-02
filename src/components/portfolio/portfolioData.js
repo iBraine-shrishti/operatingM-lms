@@ -2,18 +2,18 @@
 // Derived from D:\operating-media\lms\Portfolio Sample 3.html and student CRM context
 
 export const MODULES_CATALOG = [
-  { id: "wordpress", title: "WordPress & CMS", number: "01", icon: "Globe", description: "Custom Theme, Elementor Pro & E-commerce" },
-  { id: "canva", title: "Canva & Creatives", number: "02", icon: "Palette", description: "Branded Social Media Decks & Video Reels" },
+  { id: "wordpress", title: "WordPress Web Design", number: "01", icon: "Globe", description: "Custom Theme, Elementor Pro & E-commerce" },
+  { id: "canva", title: "Canva Design & Video", number: "02", icon: "Palette", description: "Branded Social Media Decks & Video Reels" },
   { id: "socialOrganic", title: "Social Media Organic", number: "03", icon: "Share2", description: "Instagram & LinkedIn Grid Growth" },
-  { id: "socialMarketing", title: "Meta Ads & Paid Social", number: "04", icon: "TrendingUp", description: "Full-Funnel Meta Ads & Scaling" },
-  { id: "googleAds", title: "Google Ads (PPC)", number: "05", icon: "Search", description: "Search, Shopping & PMax Campaigns" },
-  { id: "seo", title: "SEO & Local Map Pack", number: "06", icon: "BarChart3", description: "Technical Screaming Frog Audit & Top 10 Keywords" },
-  { id: "digitalPlanning", title: "Brand Strategy & Decks", number: "07", icon: "Briefcase", description: "Competitor Audits & 360° Growth Roadmap" },
+  { id: "socialMarketing", title: "Meta Ads (Accordions)", number: "04", icon: "TrendingUp", description: "Full-Funnel Meta Ads & Scaling" },
+  { id: "googleAds", title: "Google Ads (Accordions)", number: "05", icon: "Search", description: "Search, Shopping & PMax Campaigns" },
+  { id: "seo", title: "SEO & Local GBP", number: "06", icon: "BarChart3", description: "Technical Screaming Frog Audit & Top 10 Keywords" },
+  { id: "digitalPlanning", title: "Digital Planning Deck", number: "07", icon: "Briefcase", description: "Competitor Audits & 360° Growth Roadmap" },
   { id: "influencerMarketing", title: "Influencer Marketing", number: "08", icon: "Users", description: "Creator Campaign Briefs & Cost-per-Engagement" },
-  { id: "shopify", title: "Shopify E-Commerce", number: "09", icon: "ShoppingBag", description: "DTC Store Build, High AOV & CRO Checkouts" },
-  { id: "videoEditing", title: "Short-Form Video & Reels", number: "10", icon: "Video", description: "High-Retention Hook Formats & Motion Ad Cuts" },
-  { id: "dropshipping", title: "Dropshipping Economics", number: "11", icon: "Box", description: "Product Research, COGS Validation & Scaling" },
-  { id: "aiApp", title: "AI Marketing Workflows", number: "12", icon: "Cpu", description: "Custom AI Copy Assistants & Automation Pipelines" },
+  { id: "shopify", title: "Shopify Store", number: "09", icon: "ShoppingBag", description: "DTC Store Build, High AOV & CRO Checkouts" },
+  { id: "videoEditing", title: "Video Editing", number: "10", icon: "Video", description: "High-Retention Hook Formats & Motion Ad Cuts" },
+  { id: "dropshipping", title: "Dropshipping Store", number: "11", icon: "Box", description: "Product Research, COGS Validation & Scaling" },
+  { id: "aiApp", title: "AI Marketing App", number: "12", icon: "Cpu", description: "Custom AI Copy Assistants & Automation Pipelines" },
   { id: "performanceMarketing", title: "Performance Marketing", number: "13", icon: "Zap", description: "Blended CAC, Cohort LTV & ROAS Scaling" },
 ];
 
