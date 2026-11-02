@@ -81,9 +81,9 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center py-2 print:p-0 print:m-0 print:min-h-0 print:h-auto print:block">
+    <div className="resume-preview-wrapper w-full flex flex-col items-center py-2 print:p-0 print:m-0 print:min-h-0 print:h-auto print:block">
       {/* TOOLBAR: A4 PAGE MODE TOGGLE (1-PAGE / 2-PAGES) */}
-      <div className="resume-hide-on-print w-full max-w-[820px] mb-3 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs">
+      <div className="resume-hide-on-print print:hidden w-full max-w-[820px] mb-3 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs">
         <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
           <Files size={15} className="text-[#003873] dark:text-sky-400" />
           <span>A4 Document Pages:</span>
@@ -134,7 +134,7 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
         {/* IF 2 PAGES: WORKSPACE GAP BETWEEN ACTUAL PAGES (HIDDEN ON PRINT) + PAGE 2 SHEET */}
         {totalPages === 2 && (
           <>
-            <div className="resume-page-separator resume-hide-on-print w-full max-w-[820px] my-6 flex items-center justify-center gap-3">
+            <div className="resume-page-separator resume-hide-on-print print:hidden w-full max-w-[820px] my-6 flex items-center justify-center gap-3">
               <div className="h-px bg-slate-300 dark:bg-slate-700 flex-1 border-t border-dashed border-slate-400 dark:border-slate-600" />
               <span className="px-3.5 py-1 rounded-full bg-slate-800 text-white dark:bg-slate-700 text-[11px] font-black uppercase tracking-wider shadow-xs flex items-center gap-1.5">
                 <span>Page 2 of 2</span>

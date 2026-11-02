@@ -680,11 +680,14 @@ html.dark .hover\:border-slate-300:hover {
    ========================================================================== */
 @media print {
   @page {
-    size: A4 portrait;
-    margin: 0;
+    size: 210mm 297mm;
+    margin: 0 !important;
   }
+
   html,
-  body {
+  html.dark,
+  body,
+  html.dark body {
     width: 210mm !important;
     height: auto !important;
     min-height: 0 !important;
@@ -692,28 +695,40 @@ html.dark .hover\:border-slate-300:hover {
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
+    background-color: #ffffff !important;
     color: #000000 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     overflow: visible !important;
   }
+
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  /* Completely hide all application shell UI: Topbar, Sidebar, Drawer, Dialogs */
-  nav.app-navbar,
-  .app-sidebar,
-  .sidebar,
-  .topbar,
-  .app-topbar,
-  header:not(#resume-print-document *),
-  aside:not(#resume-print-document *),
-  nav:not(#resume-print-document *),
+
+  /* Reset Dark Mode Backgrounds so print is always crisp clean white */
+  html.dark .bg-\[\#f8fafc\],
+  html.dark .bg-\[\#0b0f19\],
+  html.dark .bg-\[\#111827\],
+  html.dark .bg-slate-50,
+  html.dark .bg-slate-900,
+  html.dark .bg-slate-950 {
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+  }
+
+  /* Completely eliminate all non-resume elements from layout flow */
   .resume-hide-on-print,
+  .resume-hide-on-print *,
+  .resume-form-editor-column,
   .resume-control-ribbon,
   .resume-page-break-guide,
   .resume-page-separator,
+  .print\:hidden,
+  header:not(#resume-print-document *),
+  aside:not(#resume-print-document *),
+  nav:not(#resume-print-document *),
   [role="dialog"] {
     display: none !important;
     visibility: hidden !important;
@@ -724,34 +739,28 @@ html.dark .hover\:border-slate-300:hover {
     padding: 0 !important;
     opacity: 0 !important;
     overflow: hidden !important;
+    position: absolute !important;
+    left: -99999px !important;
+    top: -99999px !important;
+    pointer-events: none !important;
   }
-  /* Reset ALL ancestor wrappers to zero margins, zero paddings, and zero min-height */
+
+  /* Flow ancestors cleanly down to #resume-print-document with 0 height offset */
   #root,
   #root > div,
   .role-student,
-  .min-h-screen,
-  div[class*="min-h-screen"],
-  div[class*="md:ml-"],
+  .role-student > div,
   main,
-  div[class*="space-y-"],
-  div[class*="pb-"],
-  div[class*="py-"],
-  div[class*="grid-cols-"],
-  div[class*="col-span-"],
-  .sticky {
+  .resume-builder-root,
+  .resume-builder-workspace,
+  .resume-preview-column,
+  .resume-preview-sticky,
+  .resume-preview-wrapper {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
     padding: 0 !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
     min-height: 0 !important;
     height: auto !important;
     max-height: none !important;
@@ -759,8 +768,14 @@ html.dark .hover\:border-slate-300:hover {
     top: auto !important;
     transform: none !important;
     box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
     overflow: visible !important;
+    float: none !important;
+    clear: both !important;
   }
+
+  /* Resume Document Container */
   #resume-print-document {
     position: static !important;
     width: 210mm !important;
@@ -773,6 +788,7 @@ html.dark .hover\:border-slate-300:hover {
     background: #ffffff !important;
     display: block !important;
   }
+
   /* Actual Discrete Page Sheets in Print: exactly 210mm x 296mm */
   .resume-page-sheet {
     width: 210mm !important;
@@ -798,12 +814,14 @@ html.dark .hover\:border-slate-300:hover {
     break-inside: avoid !important;
     position: relative !important;
   }
+
   /* The last sheet must NEVER break to a blank trailing page */
   .resume-page-sheet.resume-page-sheet-last,
   .resume-page-sheet:last-child {
     page-break-after: avoid !important;
     break-after: avoid !important;
   }
+
   /* Direct template root child inside the sheet: forces 100% full height so footer sticks firmly to the bottom */
   .resume-page-sheet > div {
     width: 100% !important;
@@ -817,6 +835,7 @@ html.dark .hover\:border-slate-300:hover {
     box-sizing: border-box !important;
     overflow: hidden !important;
   }
+
   /* Modern Executive 2-Column Sidebar Layout */
   #resume-print-document .resume-modern-body {
     display: flex !important;
@@ -834,6 +853,7 @@ html.dark .hover\:border-slate-300:hover {
     flex: 1 1 0% !important;
     display: block !important;
   }
+
   /* Minimalist Performance 12-Column Grid Layout */
   #resume-print-document .resume-minimalist-grid {
     display: grid !important;
@@ -848,12 +868,14 @@ html.dark .hover\:border-slate-300:hover {
     grid-column: span 5 / span 5 !important;
     display: block !important;
   }
+
   /* Creative Marketer 2-Column Grid */
   #resume-print-document .resume-creative-grid {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 1rem !important;
   }
+
   /* Ensure resume sidebar and header stay fully visible inside the template */
   #resume-print-document aside,
   #resume-print-document header,
@@ -870,6 +892,7 @@ html.dark .hover\:border-slate-300:hover {
   #resume-print-document [class*="print:grid"] {
     display: grid !important;
   }
+
   /* Footer sits firmly at the absolute bottom of each printed page sheet */
   .resume-footer {
     display: flex !important;
@@ -880,6 +903,7 @@ html.dark .hover\:border-slate-300:hover {
     break-inside: avoid !important;
     box-sizing: border-box !important;
   }
+
   /* Prevent awkward page cuts inside individual section cards and items */
   #resume-print-document section,
   #resume-print-document .resume-card,

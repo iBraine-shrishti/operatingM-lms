@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Globe,
   Palette,
@@ -77,8 +77,33 @@ export const PortfolioPreview = ({
     }
   };
 
-    // Scroll listener for sticky navigation sync
-  React.useEffect(() => {
+  // 13 Modules exactly matching curriculum & user screenshot
+  const navItems = [
+    { id: "wordpress", label: "01. WordPress Web Design", icon: Globe },
+    { id: "canva", label: "02. Canva Design & Video", icon: Palette },
+    { id: "socialOrganic", label: "03. Social Media Organic", icon: Share2 },
+    { id: "socialMarketing", label: "04. Meta Ads (Accordions)", icon: TrendingUp },
+    { id: "googleAds", label: "05. Google Ads (Accordions)", icon: Search },
+    { id: "seo", label: "06. SEO & Local GBP", icon: BarChart3 },
+    { id: "digitalPlanning", label: "07. Digital Planning Deck", icon: Briefcase },
+    { id: "influencerMarketing", label: "08. Influencer Marketing", icon: Users },
+    { id: "shopify", label: "09. Shopify Store", icon: ShoppingBag },
+    { id: "videoEditing", label: "10. Video Editing", icon: Video },
+    { id: "dropshipping", label: "11. Dropshipping Store", icon: Box },
+    { id: "aiApp", label: "12. AI Marketing App", icon: Cpu },
+    { id: "performanceMarketing", label: "13. Performance Marketing", icon: Zap },
+  ].filter((item) => moduleVisibility[item.id] !== false);
+
+  const scrollSlider = (direction) => {
+    const slider = document.getElementById("portfolio-module-slider");
+    if (slider) {
+      const scrollAmount = direction === "left" ? -280 : 280;
+      slider.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    }
+  };
+
+  // Scroll listener for sticky navigation sync (navItems defined first)
+  useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY + 140;
       for (const item of navItems) {
@@ -96,31 +121,6 @@ export const PortfolioPreview = ({
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [navItems]);
-
-  const scrollSlider = (direction) => {
-    const slider = document.getElementById("portfolio-module-slider");
-    if (slider) {
-      const scrollAmount = direction === "left" ? -280 : 280;
-      slider.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    }
-  };
-
-  // 13 Modules exactly matching curriculum & user screenshot
-  const navItems = [
-    { id: "wordpress", label: "01. WordPress Web Design", icon: Globe },
-    { id: "canva", label: "02. Canva Design & Video", icon: Palette },
-    { id: "socialOrganic", label: "03. Social Media Organic", icon: Share2 },
-    { id: "socialMarketing", label: "04. Meta Ads (Accordions)", icon: TrendingUp },
-    { id: "googleAds", label: "05. Google Ads (Accordions)", icon: Search },
-    { id: "seo", label: "06. SEO & Local GBP", icon: BarChart3 },
-    { id: "digitalPlanning", label: "07. Digital Planning Deck", icon: Briefcase },
-    { id: "influencerMarketing", label: "08. Influencer Marketing", icon: Users },
-    { id: "shopify", label: "09. Shopify Store", icon: ShoppingBag },
-    { id: "videoEditing", label: "10. Video Editing", icon: Video },
-    { id: "dropshipping", label: "11. Dropshipping Store", icon: Box },
-    { id: "aiApp", label: "12. AI Marketing App", icon: Cpu },
-    { id: "performanceMarketing", label: "13. Performance Marketing", icon: Zap },
-  ].filter((item) => moduleVisibility[item.id] !== false);
 
   return (
     <div className="bg-slate-50 text-slate-900 min-h-screen font-sans selection:bg-amber-400 selection:text-slate-950">

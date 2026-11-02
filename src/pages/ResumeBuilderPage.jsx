@@ -131,9 +131,9 @@ export const ResumeBuilderPage = () => {
   };
 
   return (
-    <div className="space-y-6 pb-12 font-sans print:p-0 print:m-0 print:pb-0 print:space-y-0">
+    <div className="resume-builder-root space-y-6 pb-12 font-sans print:p-0 print:m-0 print:pb-0 print:space-y-0">
       {/* 1. HERO HEADER */}
-      <div className="resume-hide-on-print">
+      <div className="resume-hide-on-print print:hidden">
         <StudentPageHeader
           category="Student Placement & Career Launchpad"
           badgeText="Live AI & ATS Verified"
@@ -160,7 +160,7 @@ export const ResumeBuilderPage = () => {
       </div>
 
       {/* 2. CONTROL RIBBON (TEMPLATES, THEMES & ACTIONS) */}
-      <div className="resume-control-ribbon resume-hide-on-print bg-white dark:bg-[#0b1329] p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-4">
+      <div className="resume-control-ribbon resume-hide-on-print print:hidden bg-white dark:bg-[#0b1329] p-4 sm:p-5 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xs space-y-4">
         {/* ROW 1: TEMPLATE SELECTOR */}
         <div>
           <div className="flex items-center justify-between mb-2.5">
@@ -326,10 +326,10 @@ export const ResumeBuilderPage = () => {
       </div>
 
       {/* 3. MAIN WORKSPACE (SPLIT SCREEN: EDITOR ON LEFT, LIVE A4 PREVIEW ON RIGHT) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start print:block print:w-full print:m-0 print:p-0 print:min-h-0 print:h-auto">
+      <div className="resume-builder-workspace grid grid-cols-1 lg:grid-cols-12 gap-6 items-start print:block print:w-full print:m-0 print:p-0 print:min-h-0 print:h-auto">
         {/* LEFT COLUMN: RESUME FORM EDITOR */}
         <div
-          className={`lg:col-span-5 resume-hide-on-print ${
+          className={`resume-form-editor-column lg:col-span-5 resume-hide-on-print print:hidden ${
             mobileTab === "preview" ? "hidden lg:block" : "block"
           }`}
         >
@@ -343,12 +343,12 @@ export const ResumeBuilderPage = () => {
 
         {/* RIGHT COLUMN: LIVE A4 PREVIEW */}
         <div
-          className={`lg:col-span-7 ${
+          className={`resume-preview-column lg:col-span-7 ${
             mobileTab === "edit" ? "hidden lg:block" : "block"
           } print:block print:w-full print:max-w-none print:m-0 print:p-0 print:min-h-0 print:h-auto`}
         >
-          <div className="sticky top-20 print:static print:top-0 print:m-0 print:p-0 print:min-h-0 print:h-auto">
-            <div className="resume-hide-on-print flex items-center justify-between pb-2 mb-2 text-xs text-slate-500 font-bold uppercase tracking-wider">
+          <div className="resume-preview-sticky sticky top-20 print:static print:top-0 print:m-0 print:p-0 print:min-h-0 print:h-auto">
+            <div className="resume-hide-on-print print:hidden flex items-center justify-between pb-2 mb-2 text-xs text-slate-500 font-bold uppercase tracking-wider">
               <span>A4 Document Preview ({activeTheme.name})</span>
               <span className="text-[11px] text-slate-400 font-semibold lowercase">
                 click headings on preview to quick-edit
