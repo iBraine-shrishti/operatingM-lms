@@ -17,6 +17,7 @@ import {
   Phone,
   MapPin,
   ExternalLink,
+  ChevronLeft,
   ChevronRight,
   ArrowUp,
   Award,
@@ -39,6 +40,14 @@ export const PortfolioPreview = ({
     const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const scrollSlider = (direction) => {
+    const slider = document.getElementById("portfolio-module-slider");
+    if (slider) {
+      const scrollAmount = direction === "left" ? -280 : 280;
+      slider.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
 
@@ -199,12 +208,23 @@ export const PortfolioPreview = ({
         </div>
       </section>
 
-      {/* 3. STICKY MODULE NAVIGATION SLIDER */}
-      <nav className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative flex items-center">
+      {/* 3. STICKY MODULE NAVIGATION SLIDER (STRETCHED FULL WIDTH - NOT CONSTRAINED BY PARENT) */}
+      <nav className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-md">
+        <div className="w-full px-2 sm:px-4 flex items-center space-x-1.5">
+          {/* Scroll Left Indicator */}
+          <button
+            type="button"
+            onClick={() => scrollSlider("left")}
+            aria-label="Scroll modules left"
+            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 shrink-0 cursor-pointer transition-colors shadow-2xs border border-slate-200"
+          >
+            <ChevronLeft size={16} />
+          </button>
+
+          {/* Module Tabs Slider (100% Edge-to-Edge Stretched) */}
           <div
             id="portfolio-module-slider"
-            className="flex items-center space-x-2 py-3 overflow-x-auto scroll-smooth no-scrollbar w-full"
+            className="flex items-center space-x-2.5 py-3 overflow-x-auto scroll-smooth no-scrollbar w-full flex-1"
           >
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -214,10 +234,10 @@ export const PortfolioPreview = ({
                   key={item.id}
                   type="button"
                   onClick={() => scrollToSection(item.id)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap flex items-center space-x-1.5 transition-all cursor-pointer shrink-0 ${
+                  className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap flex items-center space-x-2 transition-all cursor-pointer shrink-0 ${
                     isActive
                       ? "text-white shadow-sm ring-2 ring-blue-500/20"
-                      : "text-slate-600 hover:text-slate-900 bg-slate-100/80 hover:bg-slate-200/80"
+                      : "text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/90 border border-slate-200/60"
                   }`}
                   style={isActive ? { backgroundColor: theme.primary } : {}}
                 >
@@ -227,11 +247,21 @@ export const PortfolioPreview = ({
               );
             })}
           </div>
+
+          {/* Scroll Right Indicator */}
+          <button
+            type="button"
+            onClick={() => scrollSlider("right")}
+            aria-label="Scroll modules right"
+            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 shrink-0 cursor-pointer transition-colors shadow-2xs border border-slate-200"
+          >
+            <ChevronRight size={16} />
+          </button>
         </div>
       </nav>
 
-      {/* 4. MAIN MODULE CONTENT SHOWCASE */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+      {/* 4. MAIN MODULE CONTENT SHOWCASE (WIDE & EXPANDED) */}
+      <main className="w-full max-w-[1550px] mx-auto px-4 sm:px-8 py-12 space-y-16">
         {/* MODULE 1: WORDPRESS */}
         {moduleVisibility.wordpress !== false && (
           <section id="wordpress" className="space-y-6 scroll-mt-28">
