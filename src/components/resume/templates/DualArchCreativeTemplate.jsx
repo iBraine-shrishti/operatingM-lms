@@ -17,7 +17,7 @@ export const DualArchCreativeTemplate = ({ data, theme }) => {
     skills = {},
   } = data;
 
-  // Resolved skills summary with defaults if not present
+  // Resolved skills summary with defaults
   const displaySkillsSummary =
     skillsSummary && skillsSummary.length > 0
       ? skillsSummary
@@ -39,57 +39,59 @@ export const DualArchCreativeTemplate = ({ data, theme }) => {
 
   return (
     <div className="bg-white text-slate-800 font-sans leading-relaxed text-[12.5px] shadow-sm min-h-[1050px] w-full flex flex-col md:flex-row print:shadow-none print:m-0">
-      {/* LEFT COLUMN: DUAL-ARCH CAPSULE SIDEBAR (38%) */}
-      <aside className="w-full md:w-[38%] bg-slate-200/80 dark:bg-slate-800/80 flex flex-col justify-between shrink-0 print:w-[38%]">
-        {/* TOP ARCH CAPSULE */}
-        <div
-          className="rounded-b-[70px] sm:rounded-b-[90px] pt-8 pb-10 px-5 text-center text-white shadow-xs"
-          style={{ backgroundColor: theme.primary }}
-        >
-          <h1 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white leading-tight">
-            {personalInfo.fullName}
-          </h1>
-          <div className="text-[10.5px] sm:text-[11px] font-extrabold uppercase tracking-[2px] text-white/85 mt-1">
-            {personalInfo.jobTitle}
-          </div>
+      {/* LEFT COLUMN: VISIBLE CONTINUOUS GRAY BACKDROP (38%) */}
+      <aside className="w-full md:w-[38%] bg-[#cfd4dc] dark:bg-slate-800/90 flex flex-col justify-between shrink-0 print:w-[38%] py-0 relative">
+        {/* TOP ARCH CAPSULE - DECREASED WIDTH WITH VISIBLE GRAY ON BOTH SIDES */}
+        <div className="w-full flex justify-center pt-0">
+          <div
+            className="w-[82%] sm:w-[84%] rounded-b-[85px] sm:rounded-b-[105px] pt-7 pb-9 px-4 text-center text-white shadow-xs"
+            style={{ backgroundColor: theme.primary }}
+          >
+            <h1 className="text-lg sm:text-xl font-black uppercase tracking-tight text-white leading-tight">
+              {personalInfo.fullName}
+            </h1>
+            <div className="text-[10px] sm:text-[10.5px] font-extrabold uppercase tracking-[2px] text-white/85 mt-1">
+              {personalInfo.jobTitle}
+            </div>
 
-          {/* CIRCULAR PROFILE PHOTO */}
-          <div className="mt-6 flex justify-center">
-            <div className="w-32 h-32 sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-white shadow-md bg-slate-100 shrink-0">
-              {personalInfo.photo ? (
-                <img
-                  src={personalInfo.photo}
-                  alt={personalInfo.fullName}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div
-                  className="w-full h-full flex items-center justify-center font-black text-3xl text-white"
-                  style={{ backgroundColor: theme.secondary }}
-                >
-                  {personalInfo.fullName
-                    ? personalInfo.fullName
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("")
-                        .slice(0, 2)
-                        .toUpperCase()
-                    : "OM"}
-                </div>
-              )}
+            {/* CIRCULAR PROFILE PHOTO */}
+            <div className="mt-5 flex justify-center">
+              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-white shadow-md bg-slate-100 shrink-0">
+                {personalInfo.photo ? (
+                  <img
+                    src={personalInfo.photo}
+                    alt={personalInfo.fullName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div
+                    className="w-full h-full flex items-center justify-center font-black text-2xl text-white"
+                    style={{ backgroundColor: theme.secondary }}
+                  >
+                    {personalInfo.fullName
+                      ? personalInfo.fullName
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .slice(0, 2)
+                          .toUpperCase()
+                      : "OM"}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* MIDDLE: CONTACT DETAILS WITH DARK SQUARE ICONS */}
-        <div className="px-6 sm:px-7 py-6 space-y-3.5 text-slate-800 dark:text-slate-200 text-[11.5px] font-semibold">
+        {/* MIDDLE: CONTACT DETAILS INSIDE GRAY STRIP WITH SQUARE DARK ICONS */}
+        <div className="w-[82%] sm:w-[84%] mx-auto py-5 space-y-3 text-slate-800 dark:text-slate-100 text-[11px] font-semibold">
           {personalInfo.phone && (
             <div className="flex items-center gap-3">
               <div
                 className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
                 style={{ backgroundColor: theme.primary }}
               >
-                <Phone size={12} />
+                <Phone size={11} />
               </div>
               <span>{personalInfo.phone}</span>
             </div>
@@ -101,7 +103,7 @@ export const DualArchCreativeTemplate = ({ data, theme }) => {
                 className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
                 style={{ backgroundColor: theme.primary }}
               >
-                <Mail size={12} />
+                <Mail size={11} />
               </div>
               <span className="truncate">{personalInfo.email}</span>
             </div>
@@ -113,7 +115,7 @@ export const DualArchCreativeTemplate = ({ data, theme }) => {
                 className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
                 style={{ backgroundColor: theme.primary }}
               >
-                <Globe size={12} />
+                <Globe size={11} />
               </div>
               <span className="truncate">{personalInfo.portfolio}</span>
             </div>
@@ -125,40 +127,42 @@ export const DualArchCreativeTemplate = ({ data, theme }) => {
                 className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
                 style={{ backgroundColor: theme.primary }}
               >
-                <MapPin size={12} />
+                <MapPin size={11} />
               </div>
               <span>{personalInfo.location}</span>
             </div>
           )}
         </div>
 
-        {/* BOTTOM ARCH CAPSULE: EDUCATION */}
-        <div
-          className="rounded-t-[70px] sm:rounded-t-[90px] pt-9 pb-8 px-6 sm:px-7 text-white shadow-xs"
-          style={{ backgroundColor: theme.primary }}
-        >
-          <h2 className="text-sm sm:text-base font-black uppercase tracking-[2px] text-center text-white mb-5">
-            EDUCATION
-          </h2>
+        {/* BOTTOM ARCH CAPSULE - DECREASED WIDTH WITH VISIBLE GRAY ON BOTH SIDES */}
+        <div className="w-full flex justify-center pb-0">
+          <div
+            className="w-[82%] sm:w-[84%] rounded-t-[85px] sm:rounded-t-[105px] pt-8 pb-7 px-5 text-white shadow-xs"
+            style={{ backgroundColor: theme.primary }}
+          >
+            <h2 className="text-sm sm:text-base font-black uppercase tracking-[2px] text-center text-white mb-4">
+              EDUCATION
+            </h2>
 
-          <div className="space-y-4 text-center sm:text-left">
-            {education && education.length > 0 ? (
-              education.map((edu) => (
-                <div key={edu.id} className="space-y-0.5">
-                  <div className="font-extrabold text-white text-[12.5px] leading-tight">
-                    {edu.degree}
+            <div className="space-y-3.5 text-center sm:text-left">
+              {education && education.length > 0 ? (
+                education.map((edu) => (
+                  <div key={edu.id} className="space-y-0.5">
+                    <div className="font-extrabold text-white text-[12px] leading-tight">
+                      {edu.degree}
+                    </div>
+                    <div className="text-white/85 text-[11px] font-medium">
+                      {edu.institution}
+                    </div>
+                    <div className="text-white/60 text-[10.5px]">
+                      {edu.year}
+                    </div>
                   </div>
-                  <div className="text-white/85 text-[11.5px] font-medium">
-                    {edu.institution}
-                  </div>
-                  <div className="text-white/60 text-[11px]">
-                    {edu.year}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-white/70 text-xs">Education history prefilled</div>
-            )}
+                ))
+              ) : (
+                <div className="text-white/70 text-xs">Education history prefilled</div>
+              )}
+            </div>
           </div>
         </div>
       </aside>
