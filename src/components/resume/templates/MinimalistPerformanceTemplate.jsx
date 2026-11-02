@@ -411,20 +411,20 @@ export const MinimalistPerformanceTemplate = ({
   };
 
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] w-full min-h-[1050px] p-6 sm:p-8 flex flex-col justify-between print:min-h-0 print:p-5 print:m-0">
-      <div className="space-y-5 flex-1">
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] print:min-h-0 p-6 sm:p-8 print:p-5 flex flex-col justify-between print:m-0">
+      <div className="space-y-5 print:space-y-3 flex-1">
         {/* HEADER (PAGE 1 ONLY - NO HEADER ON PAGE 2) */}
         {page === 1 && renderHeader(false)}
 
         {page === 1 ? (
           <>
             {renderSummary()}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pt-1">
-              <div className="md:col-span-7 space-y-5">
+            <div className="grid grid-cols-1 md:grid-cols-12 print:grid-cols-12 gap-6 print:gap-4 pt-1 resume-minimalist-grid">
+              <div className="md:col-span-7 print:col-span-7 space-y-5 print:space-y-3 resume-minimalist-col-7">
                 {renderExperience()}
                 {totalPages === 1 && renderProjects()}
               </div>
-              <div className="md:col-span-5 space-y-5">
+              <div className="md:col-span-5 print:col-span-5 space-y-5 print:space-y-3 resume-minimalist-col-5">
                 {renderSkills()}
                 {totalPages === 1 && (
                   <>
@@ -436,11 +436,11 @@ export const MinimalistPerformanceTemplate = ({
             </div>
           </>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pt-1">
-            <div className="md:col-span-7 space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-12 print:grid-cols-12 gap-6 print:gap-4 pt-1 resume-minimalist-grid">
+            <div className="md:col-span-7 print:col-span-7 space-y-5 print:space-y-3 resume-minimalist-col-7">
               {renderProjects()}
             </div>
-            <div className="md:col-span-5 space-y-5">
+            <div className="md:col-span-5 print:col-span-5 space-y-5 print:space-y-3 resume-minimalist-col-5">
               {renderEducation()}
               {renderCertifications()}
             </div>

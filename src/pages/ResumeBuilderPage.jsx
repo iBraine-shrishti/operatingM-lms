@@ -326,7 +326,7 @@ export const ResumeBuilderPage = () => {
       </div>
 
       {/* 3. MAIN WORKSPACE (SPLIT SCREEN: EDITOR ON LEFT, LIVE A4 PREVIEW ON RIGHT) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start print:block print:w-full print:m-0 print:p-0">
         {/* LEFT COLUMN: RESUME FORM EDITOR */}
         <div
           className={`lg:col-span-5 resume-hide-on-print ${
@@ -345,9 +345,9 @@ export const ResumeBuilderPage = () => {
         <div
           className={`lg:col-span-7 ${
             mobileTab === "edit" ? "hidden lg:block" : "block"
-          }`}
+          } print:block print:w-full print:max-w-none print:m-0 print:p-0`}
         >
-          <div className="sticky top-20">
+          <div className="sticky top-20 print:static print:top-0 print:m-0 print:p-0">
             <div className="resume-hide-on-print flex items-center justify-between pb-2 mb-2 text-xs text-slate-500 font-bold uppercase tracking-wider">
               <span>A4 Document Preview ({activeTheme.name})</span>
               <span className="text-[11px] text-slate-400 font-semibold lowercase">

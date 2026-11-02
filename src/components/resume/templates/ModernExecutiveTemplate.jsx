@@ -505,12 +505,12 @@ export const ModernExecutiveTemplate = ({
   };
 
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] w-full min-h-[1050px] flex flex-col justify-between print:min-h-0 print:p-0 print:m-0">
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] print:min-h-0 flex flex-col justify-between print:p-0 print:m-0">
       {/* 2-COLUMN BODY */}
-      <div className="w-full flex flex-col md:flex-row flex-1">
+      <div className="w-full flex flex-col md:flex-row print:flex-row flex-1 resume-modern-body">
         {/* LEFT SIDEBAR (36%) */}
         <aside
-          className="w-full md:w-[36%] p-6 sm:p-7 border-r print:border-r space-y-6"
+          className="w-full md:w-[36%] print:w-[36%] print:shrink-0 p-6 sm:p-7 print:p-4 border-r print:border-r space-y-6 print:space-y-3 resume-modern-aside"
           style={{
             backgroundColor: theme.lightBg,
             borderColor: theme.border,
@@ -538,7 +538,7 @@ export const ModernExecutiveTemplate = ({
         </aside>
 
         {/* RIGHT MAIN CONTENT (64%) */}
-        <main className="w-full md:w-[64%] p-7 sm:p-8 space-y-5 flex-1">
+        <main className="w-full md:w-[64%] print:w-[64%] print:flex-1 p-7 sm:p-8 print:p-5 space-y-5 print:space-y-3 flex-1 resume-modern-main">
           {page === 1 ? (
             <>
               {renderMainHeader(false)}

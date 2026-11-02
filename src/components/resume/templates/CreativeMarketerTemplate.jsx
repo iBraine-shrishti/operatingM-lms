@@ -65,7 +65,7 @@ export const CreativeMarketerTemplate = ({
 
     return (
       <header
-        className="p-7 sm:p-9 text-white relative overflow-hidden shrink-0"
+        className="p-7 sm:p-9 print:p-5 text-white relative overflow-hidden shrink-0"
         style={{ backgroundColor: theme.primary }}
       >
         <div
@@ -438,12 +438,12 @@ export const CreativeMarketerTemplate = ({
   );
 
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] w-full min-h-[1050px] flex flex-col justify-between print:min-h-0 print:p-0 print:m-0">
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] print:min-h-0 flex flex-col justify-between print:p-0 print:m-0">
       {/* HEADER BANNER (PAGE 1 ONLY - NO HEADER ON PAGE 2) */}
       {page === 1 && renderHeroBanner(false)}
 
       {/* BODY CONTENT */}
-      <div className="p-6 sm:p-8 space-y-6 flex-1">
+      <div className="p-6 sm:p-8 print:p-5 space-y-6 print:space-y-3 flex-1">
         {page === 1 ? (
           <>
             {renderSummary()}
@@ -451,7 +451,7 @@ export const CreativeMarketerTemplate = ({
             {totalPages === 1 ? (
               <>
                 {renderProjects()}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-6 print:gap-4 pt-2 resume-creative-grid">
                   {renderSkills()}
                   {renderEducationAndCertifications()}
                 </div>

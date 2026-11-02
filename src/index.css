@@ -681,15 +681,18 @@ html.dark .hover\:border-slate-300:hover {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 6mm 6mm 6mm 6mm;
+    margin: 0;
   }
+  html,
   body {
+    width: 210mm !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    margin: 0 !important;
-    padding: 0 !important;
   }
   /* Completely hide all application shell UI: Topbar, Sidebar, Drawer, Dialogs */
   nav.app-navbar,
@@ -711,32 +714,50 @@ html.dark .hover\:border-slate-300:hover {
     opacity: 0 !important;
   }
   #root,
+  #root > div,
   main,
-  .min-h-screen {
-    padding: 0 !important;
+  .min-h-screen,
+  div[class*="min-h-screen"],
+  div[class*="md:ml-"],
+  div[class*="grid-cols-12"],
+  div[class*="col-span-7"],
+  div[class*="col-span-5"],
+  .sticky {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
     margin: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
     min-height: auto !important;
-    background: transparent !important;
+    height: auto !important;
+    position: static !important;
+    top: auto !important;
+    transform: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
   }
   #resume-print-document {
     position: static !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    box-shadow: none !important;
-    border: none !important;
-    border-radius: 0 !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
     margin: 0 auto !important;
+    padding: 0 !important;
     page-break-inside: auto !important;
     break-inside: auto !important;
     overflow: visible !important;
     background: #ffffff !important;
+    display: block !important;
   }
-  /* Actual Discrete Page Sheets in Print */
+  /* Actual Discrete Page Sheets in Print: exactly 210mm x 297mm */
   .resume-page-sheet {
-    page-break-after: always !important;
-    break-after: page !important;
-    min-height: 284mm !important;
-    height: auto !important;
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
     box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
@@ -746,11 +767,54 @@ html.dark .hover\:border-slate-300:hover {
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    position: relative !important;
   }
   .resume-page-sheet:last-child {
     page-break-after: avoid !important;
     break-after: avoid !important;
+  }
+  /* Modern Executive 2-Column Sidebar Layout */
+  #resume-print-document .resume-modern-body {
+    display: flex !important;
+    flex-direction: row !important;
+    flex: 1 1 0% !important;
+    width: 100% !important;
+  }
+  #resume-print-document .resume-modern-aside {
+    width: 36% !important;
+    flex-shrink: 0 !important;
+    display: block !important;
+  }
+  #resume-print-document .resume-modern-main {
+    width: 64% !important;
+    flex: 1 1 0% !important;
+    display: block !important;
+  }
+  /* Minimalist Performance 12-Column Grid Layout */
+  #resume-print-document .resume-minimalist-grid {
+    display: grid !important;
+    grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+    gap: 1rem !important;
+  }
+  #resume-print-document .resume-minimalist-col-7 {
+    grid-column: span 7 / span 7 !important;
+    display: block !important;
+  }
+  #resume-print-document .resume-minimalist-col-5 {
+    grid-column: span 5 / span 5 !important;
+    display: block !important;
+  }
+  /* Creative Marketer 2-Column Grid */
+  #resume-print-document .resume-creative-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 1rem !important;
   }
   /* Ensure resume sidebar and header stay fully visible inside the template */
   #resume-print-document aside,
@@ -760,10 +824,12 @@ html.dark .hover\:border-slate-300:hover {
   }
   #resume-print-document aside.flex,
   #resume-print-document header.flex,
-  #resume-print-document .flex {
+  #resume-print-document .flex,
+  #resume-print-document [class*="print:flex"] {
     display: flex !important;
   }
-  #resume-print-document .grid {
+  #resume-print-document .grid,
+  #resume-print-document [class*="print:grid"] {
     display: grid !important;
   }
   /* Footer sits firmly at the bottom of each printed page sheet */
