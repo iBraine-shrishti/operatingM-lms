@@ -22,6 +22,8 @@ import {
   Edit3,
   FileCode,
   Check,
+  ExternalLink,
+  Copy,
 } from "lucide-react";
 
 export const PortfolioBuilderPage = () => {
@@ -271,7 +273,29 @@ export const PortfolioBuilderPage = () => {
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => window.open("/portfolio-live", "_blank")}
+            className="px-3 py-2 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-xs flex items-center space-x-1.5 transition-colors cursor-pointer"
+          >
+            <ExternalLink size={13} />
+            <span>Live Preview in Tab</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              const url = window.location.origin + "/portfolio-live";
+              navigator.clipboard.writeText(url);
+              showToast("Portfolio live preview link copied to clipboard! Paste in any browser or tab.", "success", "Link Copied");
+            }}
+            className="px-3 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center space-x-1.5 transition-colors cursor-pointer"
+          >
+            <Copy size={13} />
+            <span>Copy Link</span>
+          </button>
+
           <button
             type="button"
             onClick={handleExportHTML}

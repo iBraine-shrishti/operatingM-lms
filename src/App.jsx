@@ -24,6 +24,7 @@ import { OfficialExamPage } from "./pages/OfficialExamPage.jsx";
 import { GrievancePage } from "./pages/GrievancePage.jsx";
 import { ResumeBuilderPage } from "./pages/ResumeBuilderPage.jsx";
 import { PortfolioBuilderPage } from "./pages/PortfolioBuilderPage.jsx";
+import { PortfolioLivePage } from "./pages/PortfolioLivePage.jsx";
 
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
@@ -64,6 +65,10 @@ function AppRoutes() {
 
       {/* Public Certificate Verification */}
       <Route path="/verify-certificate" element={<CertificateVerificationPage />} />
+
+      {/* Public Standalone Portfolio Live Preview */}
+      <Route path="/portfolio-live" element={<PortfolioLivePage />} />
+      <Route path="/portfolio/preview" element={<PortfolioLivePage />} />
 
       {/* Student App Shell Layout (Protected - requires login) */}
       <Route element={<ProtectedAppLayout />}>

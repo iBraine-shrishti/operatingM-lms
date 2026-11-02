@@ -199,10 +199,13 @@ export const PortfolioPreview = ({
         </div>
       </section>
 
-      {/* 3. STICKY MODULE NAVIGATION TABS */}
-      <nav className="sticky top-16 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center space-x-2 py-2.5 overflow-x-auto no-scrollbar">
+      {/* 3. STICKY MODULE NAVIGATION SLIDER */}
+      <nav className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-md">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 relative flex items-center">
+          <div
+            id="portfolio-module-slider"
+            className="flex items-center space-x-2 py-3 overflow-x-auto scroll-smooth no-scrollbar w-full"
+          >
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -211,14 +214,14 @@ export const PortfolioPreview = ({
                   key={item.id}
                   type="button"
                   onClick={() => scrollToSection(item.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap flex items-center space-x-1.5 transition-all cursor-pointer ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap flex items-center space-x-1.5 transition-all cursor-pointer shrink-0 ${
                     isActive
-                      ? "text-white shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200"
+                      ? "text-white shadow-sm ring-2 ring-blue-500/20"
+                      : "text-slate-600 hover:text-slate-900 bg-slate-100/80 hover:bg-slate-200/80"
                   }`}
                   style={isActive ? { backgroundColor: theme.primary } : {}}
                 >
-                  <Icon size={13} />
+                  <Icon size={14} />
                   <span>{item.label}</span>
                 </button>
               );
