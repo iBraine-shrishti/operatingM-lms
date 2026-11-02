@@ -329,7 +329,7 @@ export const PortfolioBuilderPage = () => {
       {viewMode === "split" && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Editor */}
-          <div className="lg:col-span-5 h-[800px] sticky top-24">
+          <div className="lg:col-span-5 h-[550px] sm:h-[700px] lg:h-[820px] xl:h-[860px] lg:sticky lg:top-24">
             <PortfolioFormEditor
               data={portfolioData}
               onChange={handleDataChange}
@@ -342,7 +342,7 @@ export const PortfolioBuilderPage = () => {
           </div>
 
           {/* Right Preview */}
-          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm h-[800px] overflow-y-auto custom-scrollbar">
+          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm h-[550px] sm:h-[700px] lg:h-[820px] xl:h-[860px] overflow-y-auto custom-scrollbar">
             <PortfolioPreview
               portfolioData={portfolioData}
               theme={theme}
@@ -354,7 +354,7 @@ export const PortfolioBuilderPage = () => {
       )}
 
       {viewMode === "edit" && (
-        <div className="max-w-4xl mx-auto h-[800px]">
+        <div className="max-w-4xl mx-auto h-[550px] sm:h-[700px] lg:h-[820px] xl:h-[860px]">
           <PortfolioFormEditor
             data={portfolioData}
             onChange={handleDataChange}

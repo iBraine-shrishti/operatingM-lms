@@ -126,9 +126,9 @@ export const PortfolioPreview = ({
     <div className="bg-slate-50 text-slate-900 min-h-screen font-sans selection:bg-amber-400 selection:text-slate-950">
       {/* 1. TOPBAR HEADER (Matching reference: Aarav Sharma / DM initials / Center links / Developer Specs / Customize / Print — "Hire Marketer" REMOVED) */}
       <header className="relative z-20 bg-white border-b border-slate-200 shadow-2xs">
-        <div className="max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 min-h-16 py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4">
           {/* Left Brand Badge */}
-          <div className="flex items-center space-x-3 shrink-0">
+          <div className="flex items-center space-x-2.5 sm:space-x-3 shrink min-w-0">
             <div
               className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-white text-xs shadow-xs tracking-wider"
               style={{ backgroundColor: theme.primary }}
@@ -136,7 +136,7 @@ export const PortfolioPreview = ({
               {student.name.split(" ").map((n) => n[0]).slice(0, 2).join("") || "DM"}
             </div>
             <div>
-              <div className="font-extrabold text-slate-900 text-sm leading-tight">
+              <div className="font-extrabold text-slate-900 text-xs sm:text-sm leading-tight truncate">
                 {student.name}
               </div>
               <div className="text-[11px] text-slate-500 font-medium leading-tight">
@@ -199,7 +199,7 @@ export const PortfolioPreview = ({
           </nav>
 
           {/* Right Action Buttons - Developer Specs, Customize, Print ("Hire Marketer" REMOVED) */}
-          <div className="flex items-center space-x-2 sm:space-x-2.5 shrink-0">
+          <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
             <button
               type="button"
               onClick={() => window.open("/portfolio-live", "_blank")}
@@ -236,7 +236,7 @@ export const PortfolioPreview = ({
       </header>
 
       {/* 2. HERO SECTION (DYNAMICALLY TIED TO SELECTED THEME PALETTE & CUSTOM COLOR) */}
-      <section className={`text-white border-b border-slate-800 relative overflow-hidden py-14 sm:py-20 lg:py-24 bg-gradient-to-br ${
+      <section className={`text-white border-b border-slate-800 relative overflow-hidden py-10 sm:py-16 lg:py-20 xl:py-24 bg-gradient-to-br ${
         theme.heroGradient || "from-slate-950 via-slate-900 to-slate-950"
       }`}>
         {/* Subtle grid pattern background */}
@@ -252,8 +252,8 @@ export const PortfolioPreview = ({
           style={{ backgroundColor: theme.primary }}
         />
 
-        <div className="relative max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <div className="relative max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-14 items-center">
             {/* Left Content Column (7 cols) - THEMED */}
             <div className="lg:col-span-7 space-y-6">
               {/* Top Badges */}
@@ -280,11 +280,11 @@ export const PortfolioPreview = ({
 
               {/* Student Name & Titles (DYNAMIC THEME ACCENTS) */}
               <div>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight break-words">
                   {student.name}
                 </h1>
                 <p
-                  className="mt-2 text-xl sm:text-2xl font-bold leading-snug transition-colors"
+                  className="mt-1.5 sm:mt-2 text-lg sm:text-xl md:text-2xl font-bold leading-snug transition-colors break-words"
                   style={{ color: theme.primary }}
                 >
                   {student.headline}
@@ -371,7 +371,7 @@ export const PortfolioPreview = ({
 
             {/* Right Column (5 cols) - LARGER AVATAR PHOTO CARD (THEMED GLOW) */}
             <div className="lg:col-span-5 flex flex-col items-center lg:items-end">
-              <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg">
+              <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
                 {/* Luminous Glow Ring tied to theme.primary */}
                 <div
                   className="absolute -inset-2.5 rounded-2xl opacity-70 blur-xs transition-colors"
@@ -437,8 +437,8 @@ export const PortfolioPreview = ({
           </div>
 
           {/* 4 Stat Highlights Grid (THEMED NUMBERS) */}
-          <div className="mt-14 pt-8 border-t border-slate-800/80">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="mt-8 sm:mt-12 lg:mt-14 pt-6 sm:pt-8 border-t border-slate-800/80">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
               {(student.highlights || []).map((stat, sIdx) => (
                 <div
                   key={sIdx}
@@ -465,7 +465,7 @@ export const PortfolioPreview = ({
 
       {/* 3. STICKY 13-MODULE NAVIGATION SLIDER (FULL WIDTH STRETCHED) */}
       <nav id="portfolio-module-slider-nav" className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-md transition-all">
-        <div className="w-full px-2 sm:px-4 flex items-center space-x-1.5">
+        <div className="w-full px-1.5 sm:px-3 lg:px-6 flex items-center space-x-1 sm:space-x-2">
           {/* Scroll Left Button */}
           <button
             type="button"
@@ -479,7 +479,7 @@ export const PortfolioPreview = ({
           {/* Module Tabs Slider (100% Edge-to-Edge Stretched) */}
           <div
             id="portfolio-module-slider"
-            className="flex items-center space-x-2.5 py-3 overflow-x-auto scroll-smooth no-scrollbar w-full flex-1"
+            className="flex items-center space-x-2 sm:space-x-2.5 py-2.5 sm:py-3 overflow-x-auto scroll-smooth no-scrollbar w-full flex-1 touch-pan-x"
           >
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -516,7 +516,7 @@ export const PortfolioPreview = ({
       </nav>
 
       {/* 4. MAIN ALL 13 MODULES CONTENT SHOWCASE */}
-      <main className="w-full max-w-[1550px] mx-auto px-4 sm:px-8 py-12 space-y-16">
+      <main className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12 sm:space-y-16">
         {/* MODULE 1: WORDPRESS WEB DESIGN */}
         {moduleVisibility.wordpress !== false && (
           <section id="wordpress" className="space-y-6 scroll-mt-28">
@@ -963,7 +963,7 @@ export const PortfolioPreview = ({
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+                <table className="w-full min-w-[500px] text-left text-xs">
                   <thead className="bg-slate-100 text-slate-700 font-black uppercase text-[10px] tracking-wider border-b border-slate-200">
                     <tr>
                       <th className="py-3 px-4">Target Keyword</th>
