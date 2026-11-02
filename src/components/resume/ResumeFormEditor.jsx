@@ -15,6 +15,7 @@ import {
   Upload,
   Sliders,
   Type,
+  Languages,
 } from "lucide-react";
 
 export const ResumeFormEditor = ({ data, onChange, onReset }) => {
@@ -272,6 +273,25 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
     });
   };
 
+  // Languages Handlers
+  const addLanguage = (lang) => {
+    if (!lang.trim()) return;
+    const currentLangs = data.languages || [];
+    if (!currentLangs.includes(lang.trim())) {
+      onChange({
+        ...data,
+        languages: [...currentLangs, lang.trim()],
+      });
+    }
+  };
+
+  const removeLanguage = (langToRemove) => {
+    onChange({
+      ...data,
+      languages: (data.languages || []).filter((l) => l !== langToRemove),
+    });
+  };
+
   return (
     <div className="space-y-3 font-sans">
       <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
@@ -280,7 +300,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
             Resume Form Editor
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Edit text, headings, and category tags below or click directly on the live preview document.
+            Edit all headlines, content, and category tags inside each section below, or click directly on the live preview document.
           </p>
         </div>
         <button
@@ -294,167 +314,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         </button>
       </div>
 
-      {/* 0. HEADLINES, SECTION TITLES & CUSTOM TAGS */}
-      <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
-        <button
-          type="button"
-          onClick={() => toggleSection("headings")}
-          className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
-        >
-          <div className="flex items-center gap-2.5">
-            <Type size={16} className="text-[#003873] dark:text-sky-400" />
-            <span>Customize All Section Headings & Tags</span>
-          </div>
-          {openSection === "headings" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </button>
-
-        {openSection === "headings" && (
-          <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-3.5 text-xs">
-            <p className="text-[11px] text-slate-500">
-              Rename any section headline or category tag below to match your role (e.g. "Work Experience" to "Internship History"):
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Summary / About Headline
-                </label>
-                <input
-                  type="text"
-                  value={data.sectionHeadings?.summary || ""}
-                  placeholder="About Me / Executive Summary"
-                  onChange={(e) => updateSectionHeading("summary", e.target.value)}
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
-                />
-              </div>
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Experience Headline
-                </label>
-                <input
-                  type="text"
-                  value={data.sectionHeadings?.experience || ""}
-                  placeholder="Work Experience / Career History"
-                  onChange={(e) => updateSectionHeading("experience", e.target.value)}
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
-                />
-              </div>
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Skills Headline
-                </label>
-                <input
-                  type="text"
-                  value={data.sectionHeadings?.skills || ""}
-                  placeholder="Skills Summary / Core Competencies"
-                  onChange={(e) => updateSectionHeading("skills", e.target.value)}
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
-                />
-              </div>
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Education Headline
-                </label>
-                <input
-                  type="text"
-                  value={data.sectionHeadings?.education || ""}
-                  placeholder="Education / Academic Credentials"
-                  onChange={(e) => updateSectionHeading("education", e.target.value)}
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
-                />
-              </div>
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Projects / Case Studies Headline
-                </label>
-                <input
-                  type="text"
-                  value={data.sectionHeadings?.projects || ""}
-                  placeholder="Key Projects / Live Case Studies"
-                  onChange={(e) => updateSectionHeading("projects", e.target.value)}
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
-                />
-              </div>
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Certifications Headline
-                </label>
-                <input
-                  type="text"
-                  value={data.sectionHeadings?.certifications || ""}
-                  placeholder="Certifications & Badges"
-                  onChange={(e) => updateSectionHeading("certifications", e.target.value)}
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
-                />
-              </div>
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Expertise Headline (Dual-Arch)
-                </label>
-                <input
-                  type="text"
-                  value={data.sectionHeadings?.expertise || ""}
-                  placeholder="Expertise"
-                  onChange={(e) => updateSectionHeading("expertise", e.target.value)}
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
-                />
-              </div>
-              <div>
-                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Contact Header Label
-                </label>
-                <input
-                  type="text"
-                  value={data.sectionHeadings?.contact || ""}
-                  placeholder="Contact Details / Dossier"
-                  onChange={(e) => updateSectionHeading("contact", e.target.value)}
-                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
-                />
-              </div>
-            </div>
-
-            {/* Custom Skill Category Tags */}
-            <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-              <span className="font-bold text-slate-700 dark:text-slate-300 block mb-2">
-                Custom Skill Category Tags
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                <div>
-                  <label className="text-[10px] text-slate-500 block mb-1">Category 1 Tag</label>
-                  <input
-                    type="text"
-                    value={data.sectionHeadings?.skillCat1 || ""}
-                    placeholder="Paid Acquisition & Ads"
-                    onChange={(e) => updateSectionHeading("skillCat1", e.target.value)}
-                    className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white text-xs font-semibold"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] text-slate-500 block mb-1">Category 2 Tag</label>
-                  <input
-                    type="text"
-                    value={data.sectionHeadings?.skillCat2 || ""}
-                    placeholder="SEO & Content Architecture"
-                    onChange={(e) => updateSectionHeading("skillCat2", e.target.value)}
-                    className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white text-xs font-semibold"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] text-slate-500 block mb-1">Category 3 Tag</label>
-                  <input
-                    type="text"
-                    value={data.sectionHeadings?.skillCat3 || ""}
-                    placeholder="Analytics & MarTech Tools"
-                    onChange={(e) => updateSectionHeading("skillCat3", e.target.value)}
-                    className="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white text-xs font-semibold"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* 1. PERSONAL INFORMATION & PHOTO */}
+      {/* 1. PERSONAL INFORMATION, PHOTO & TOP TAGLINE */}
       <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
         <button
           type="button"
@@ -463,13 +323,47 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         >
           <div className="flex items-center gap-2.5">
             <User size={16} className="text-[#003873] dark:text-sky-400" />
-            <span>1. Profile Photo & Contact Information</span>
+            <span>1. Profile Photo, Contact & Header Tagline</span>
           </div>
           {openSection === "personal" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
 
         {openSection === "personal" && (
           <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
+            {/* TOP EYEBROW / TAGLINE & CONTACT HEADING */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                  Topmost Eyebrow / Tagline Badge
+                </label>
+                <input
+                  type="text"
+                  value={data.sectionHeadings?.eyebrow || ""}
+                  placeholder="Creative & Growth Strategist"
+                  onChange={(e) => updateSectionHeading("eyebrow", e.target.value)}
+                  className="w-full px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
+                />
+                <span className="text-[10px] text-slate-500 mt-0.5 block">
+                  Top badge line (e.g. "Creative & Growth Strategist")
+                </span>
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                  Contact Section Heading
+                </label>
+                <input
+                  type="text"
+                  value={data.sectionHeadings?.contact || ""}
+                  placeholder="Contact Details / Dossier"
+                  onChange={(e) => updateSectionHeading("contact", e.target.value)}
+                  className="w-full px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
+                />
+                <span className="text-[10px] text-slate-500 mt-0.5 block">
+                  Sidebar contact title in Executive templates
+                </span>
+              </div>
+            </div>
+
             {/* PHOTO UPLOAD / CHANGE CARD */}
             <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-900/40 flex flex-col sm:flex-row items-center gap-4">
               <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#003873] dark:border-sky-400 shadow-sm shrink-0 bg-white">
@@ -754,7 +648,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
                     <button
                       type="button"
                       onClick={() => addExperienceBullet(exp.id)}
-                      className="text-[11px] font-bold text-[#003873] dark:text-sky-400 hover:underline flex items-center gap-1"
+                      className="text-[11px] font-bold text-[#003873] dark:text-sky-400 hover:underline flex items-center gap-1 cursor-pointer"
                     >
                       <Plus size={12} /> Add Point
                     </button>
@@ -771,7 +665,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
                       <button
                         type="button"
                         onClick={() => removeExperienceBullet(exp.id, bIdx)}
-                        className="p-1 text-slate-400 hover:text-red-500"
+                        className="p-1 text-slate-400 hover:text-red-500 cursor-pointer"
                       >
                         <Trash2 size={13} />
                       </button>
@@ -799,7 +693,19 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         </button>
 
         {openSection === "skillsSummary" && (
-          <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-3 text-xs">
+          <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-3.5 text-xs">
+            <div>
+              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                Section Headline (Dual-Arch Progress Bars)
+              </label>
+              <input
+                type="text"
+                value={data.sectionHeadings?.skills || ""}
+                placeholder="Skills Summary"
+                onChange={(e) => updateSectionHeading("skills", e.target.value)}
+                className="w-full max-w-sm px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
+              />
+            </div>
             <p className="text-[11px] text-slate-500">
               Customize the progress bar labels and percentage levels:
             </p>
@@ -849,42 +755,65 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
 
         {openSection === "skills" && (
           <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                Section Headline
-              </label>
-              <input
-                type="text"
-                value={data.sectionHeadings?.skills || ""}
-                placeholder="Core Competencies / Skills Matrix"
-                onChange={(e) => updateSectionHeading("skills", e.target.value)}
-                className="w-full max-w-sm px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold mb-3"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pb-1 border-b border-slate-200 dark:border-slate-800">
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                  Skills Section Headline
+                </label>
+                <input
+                  type="text"
+                  value={data.sectionHeadings?.skills || ""}
+                  placeholder="Core Competencies / Skills Matrix"
+                  onChange={(e) => updateSectionHeading("skills", e.target.value)}
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
+                />
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                  Expertise Headline (Dual-Arch Template)
+                </label>
+                <input
+                  type="text"
+                  value={data.sectionHeadings?.expertise || ""}
+                  placeholder="Expertise"
+                  onChange={(e) => updateSectionHeading("expertise", e.target.value)}
+                  className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
+                />
+              </div>
             </div>
 
             {Object.entries({
-              paidAds: "skillCat1",
-              seoContent: "skillCat2",
-              analyticsTools: "skillCat3",
-            }).map(([catKey, headingKey]) => {
+              paidAds: { key: "skillCat1", defaultLabel: "Paid Acquisition & Ads" },
+              seoContent: { key: "skillCat2", defaultLabel: "SEO & Content Architecture" },
+              analyticsTools: { key: "skillCat3", defaultLabel: "Analytics & MarTech Tools" },
+            }).map(([catKey, { key: headingKey, defaultLabel }]) => {
               const currentList = data.skills[catKey] || [];
-              const catLabel = data.sectionHeadings?.[headingKey] || catKey;
+              const catLabel = data.sectionHeadings?.[headingKey] || defaultLabel;
               return (
-                <div key={catKey} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-700 dark:text-slate-300">{catLabel}</span>
+                <div key={catKey} className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-900/40 space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1.5 border-b border-slate-200 dark:border-slate-700">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                      Category Tag Name:
+                    </label>
+                    <input
+                      type="text"
+                      value={data.sectionHeadings?.[headingKey] || ""}
+                      placeholder={defaultLabel}
+                      onChange={(e) => updateSectionHeading(headingKey, e.target.value)}
+                      className="px-2.5 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white text-xs font-bold w-full sm:w-64"
+                    />
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {currentList.map((skill, sIdx) => (
                       <span
                         key={sIdx}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-md font-medium text-xs"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-md font-medium text-xs border border-slate-200 dark:border-slate-700"
                       >
                         {skill}
                         <button
                           type="button"
                           onClick={() => removeSkill(catKey, skill)}
-                          className="text-slate-400 hover:text-red-500"
+                          className="text-slate-400 hover:text-red-500 cursor-pointer"
                         >
                           ×
                         </button>
@@ -894,7 +823,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
                   <div className="flex gap-2">
                     <input
                       type="text"
-                      placeholder={`Add new ${catLabel.toLowerCase()} skill...`}
+                      placeholder={`Add skill under ${catLabel}...`}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
@@ -903,7 +832,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
                         }
                       }}
                       id={`input-${catKey}`}
-                      className="flex-1 px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                      className="flex-1 px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
                     />
                     <button
                       type="button"
@@ -914,7 +843,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
                           input.value = "";
                         }
                       }}
-                      className="px-3 py-1.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-bold"
+                      className="px-3 py-1.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-bold cursor-pointer"
                     >
                       Add
                     </button>
@@ -1193,12 +1122,91 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
                 <button
                   type="button"
                   onClick={() => removeCert(cert.id)}
-                  className="p-1 text-slate-400 hover:text-red-500"
+                  className="p-1 text-slate-400 hover:text-red-500 cursor-pointer"
                 >
                   <Trash2 size={14} />
                 </button>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      {/* 9. LANGUAGES */}
+      <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
+        <button
+          type="button"
+          onClick={() => toggleSection("languages")}
+          className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
+        >
+          <div className="flex items-center gap-2.5">
+            <Languages size={16} className="text-[#003873] dark:text-sky-400" />
+            <span>9. Languages & Fluency ({(data.languages || []).length})</span>
+          </div>
+          {openSection === "languages" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
+
+        {openSection === "languages" && (
+          <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-3.5 text-xs">
+            <div>
+              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                Section Headline
+              </label>
+              <input
+                type="text"
+                value={data.sectionHeadings?.languages || ""}
+                placeholder="Languages / Communication"
+                onChange={(e) => updateSectionHeading("languages", e.target.value)}
+                className="w-full max-w-sm px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold mb-2"
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-1.5">
+              {(data.languages || []).map((lang, lIdx) => (
+                <span
+                  key={lIdx}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-md font-medium text-xs"
+                >
+                  {lang}
+                  <button
+                    type="button"
+                    onClick={() => removeLanguage(lang)}
+                    className="text-slate-400 hover:text-red-500 cursor-pointer"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="Add language (e.g. English (Fluent), German)..."
+                id="input-new-language"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addLanguage(e.target.value);
+                    e.target.value = "";
+                  }
+                }}
+                className="flex-1 px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  const input = document.getElementById("input-new-language");
+                  if (input && input.value) {
+                    addLanguage(input.value);
+                    input.value = "";
+                  }
+                }}
+                className="px-3 py-1.5 bg-[#003873] text-white rounded-lg font-bold cursor-pointer"
+              >
+                Add
+              </button>
+            </div>
           </div>
         )}
       </div>

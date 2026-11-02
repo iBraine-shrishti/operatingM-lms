@@ -178,6 +178,7 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
     certifications: defaultCerts,
     languages: ["English (Professional)", "Hindi (Fluent)", "Marathi (Conversational)"],
     sectionHeadings: {
+      eyebrow: "Creative & Growth Strategist",
       summary: "About Me",
       experience: "Work Experience",
       skills: "Skills Summary",

@@ -32,12 +32,14 @@ export const MinimalistPerformanceTemplate = ({ data, theme, onUpdateHeading }) 
       <header className="pb-6 border-b-2" style={{ borderColor: theme.primary }}>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div>
-            <span
+            <EditableHeading
+              value={sectionHeadings.eyebrow}
+              fallback="Professional Portfolio • ATS Verified"
+              onChange={(val) => onUpdateHeading?.("eyebrow", val)}
               className="text-[10px] font-extrabold uppercase tracking-[2px] block mb-1"
               style={{ color: theme.secondary }}
-            >
-              Professional Portfolio • ATS Verified
-            </span>
+              tag="span"
+            />
             <h1
               className="text-3xl sm:text-4xl font-black uppercase tracking-tight"
               style={{ color: theme.primary }}

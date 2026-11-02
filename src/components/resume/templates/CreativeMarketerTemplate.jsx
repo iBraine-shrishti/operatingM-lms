@@ -54,11 +54,13 @@ export const CreativeMarketerTemplate = ({ data, theme, onUpdateHeading }) => {
               </div>
             )}
             <div className="space-y-1">
-              <span
+              <EditableHeading
+                value={sectionHeadings.eyebrow}
+                fallback="Creative & Growth Strategist"
+                onChange={(val) => onUpdateHeading?.("eyebrow", val)}
                 className="text-[11px] font-extrabold uppercase tracking-[2.5px] px-2.5 py-1 rounded-md inline-block bg-white/15 backdrop-blur-xs text-white"
-              >
-                Creative & Growth Strategist
-              </span>
+                tag="span"
+              />
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white">
                 {personalInfo.fullName}
               </h1>
