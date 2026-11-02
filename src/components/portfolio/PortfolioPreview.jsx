@@ -77,6 +77,26 @@ export const PortfolioPreview = ({
     }
   };
 
+    // Scroll listener for sticky navigation sync
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + 140;
+      for (const item of navItems) {
+        const el = document.getElementById(item.id);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPos >= top && scrollPos < top + height) {
+            setActiveTab(item.id);
+            break;
+          }
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [navItems]);
+
   const scrollSlider = (direction) => {
     const slider = document.getElementById("portfolio-module-slider");
     if (slider) {
@@ -105,7 +125,7 @@ export const PortfolioPreview = ({
   return (
     <div className="bg-slate-50 text-slate-900 min-h-screen font-sans selection:bg-amber-400 selection:text-slate-950">
       {/* 1. TOPBAR HEADER (Matching reference: Aarav Sharma / DM initials / Center links / Developer Specs / Customize / Print — "Hire Marketer" REMOVED) */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xs">
+      <header className="relative z-20 bg-white border-b border-slate-200 shadow-2xs">
         <div className="max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           {/* Left Brand Badge */}
           <div className="flex items-center space-x-3 shrink-0">
@@ -401,7 +421,7 @@ export const PortfolioPreview = ({
       </section>
 
       {/* 3. STICKY 13-MODULE NAVIGATION SLIDER (FULL WIDTH STRETCHED) */}
-      <nav className="sticky top-0 z-30 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-md">
+      <nav id="portfolio-module-slider-nav" className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-md transition-all">
         <div className="w-full px-2 sm:px-4 flex items-center space-x-1.5">
           {/* Scroll Left Button */}
           <button

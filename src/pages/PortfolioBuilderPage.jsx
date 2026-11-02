@@ -368,7 +368,7 @@ export const PortfolioBuilderPage = () => {
       )}
 
       {viewMode === "preview" && (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-lg">
+        <div className="bg-white rounded-2xl border border-slate-200 overflow-visible shadow-lg">
           <PortfolioPreview
             portfolioData={portfolioData}
             theme={theme}
