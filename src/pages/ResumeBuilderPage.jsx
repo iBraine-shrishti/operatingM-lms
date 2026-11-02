@@ -92,7 +92,9 @@ export const ResumeBuilderPage = () => {
 
   // 2. Template Selector State
   const [selectedTemplate, setSelectedTemplate] = useState(() => {
-    return localStorage.getItem("om_lms_resume_template") || "modern-executive";
+    const saved = localStorage.getItem("om_lms_resume_template");
+    if (!saved || saved === "dual-arch-creative") return "modern-executive";
+    return saved;
   });
 
   const handleTemplateChange = (templateId) => {
@@ -139,7 +141,7 @@ export const ResumeBuilderPage = () => {
           description="Build industry-standard, ATS-optimized resumes prefilled with your Operating Media certifications, real agency projects, and custom multi-tone color branding."
           metrics={[
             {
-              value: "5 Templates",
+              value: "4 Templates",
               label: "Available",
               dotColor: "bg-[#003873]",
             },
@@ -170,7 +172,7 @@ export const ResumeBuilderPage = () => {
               Switching templates preserves all your edits
             </span>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
             {TEMPLATES_CONFIG.map((tmpl) => {
               const isSelected = selectedTemplate === tmpl.id;
               return (

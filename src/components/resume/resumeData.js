@@ -221,13 +221,6 @@ export const TEMPLATES_CONFIG = [
     thumbnailColor: "#003873",
   },
   {
-    id: "dual-arch-creative",
-    name: "Dual-Arch Creative",
-    tagline: "Modern Capsule Sidebar • Profile Photo & Progress Bars",
-    badge: "New 5th Template",
-    thumbnailColor: "#1e293b",
-  },
-  {
     id: "creative-marketer",
     name: "Creative Marketer",
     tagline: "Dynamic Accent Header • Portfolio Cards & Photo",
