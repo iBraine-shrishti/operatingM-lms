@@ -20,6 +20,7 @@ export default {
         "3xl": "1750px",
       },
       fontFamily: {
+        jakarta: ['"Plus Jakarta Sans"', 'sans-serif'],
         sans: [
           '"Geist"',
           '"Inter"',
