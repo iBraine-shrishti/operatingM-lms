@@ -81,7 +81,7 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
   };
 
   return (
-    <div className="w-full flex flex-col items-center py-2 print:p-0 print:m-0">
+    <div className="w-full flex flex-col items-center py-2 print:p-0 print:m-0 print:min-h-0 print:h-auto print:block">
       {/* TOOLBAR: A4 PAGE MODE TOGGLE (1-PAGE / 2-PAGES) */}
       <div className="resume-hide-on-print w-full max-w-[820px] mb-3 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs">
         <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">

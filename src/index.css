@@ -687,7 +687,7 @@ html.dark .hover\:border-slate-300:hover {
   body {
     width: 210mm !important;
     height: auto !important;
-    min-height: auto !important;
+    min-height: 0 !important;
     max-height: none !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -696,6 +696,10 @@ html.dark .hover\:border-slate-300:hover {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     overflow: visible !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   /* Completely hide all application shell UI: Topbar, Sidebar, Drawer, Dialogs */
   nav.app-navbar,
@@ -714,23 +718,26 @@ html.dark .hover\:border-slate-300:hover {
     display: none !important;
     visibility: hidden !important;
     height: 0 !important;
+    min-height: 0 !important;
+    max-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
     opacity: 0 !important;
+    overflow: hidden !important;
   }
-  /* Reset all ancestor wrappers to zero margins, zero paddings, and no constraints */
+  /* Reset ALL ancestor wrappers to zero margins, zero paddings, and zero min-height */
   #root,
   #root > div,
-  main,
+  .role-student,
   .min-h-screen,
   div[class*="min-h-screen"],
   div[class*="md:ml-"],
-  div[class*="grid-cols-12"],
-  div[class*="col-span-7"],
-  div[class*="col-span-5"],
+  main,
   div[class*="space-y-"],
   div[class*="pb-"],
   div[class*="py-"],
+  div[class*="grid-cols-"],
+  div[class*="col-span-"],
   .sticky {
     display: block !important;
     width: 100% !important;
@@ -745,7 +752,7 @@ html.dark .hover\:border-slate-300:hover {
     padding-bottom: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-    min-height: auto !important;
+    min-height: 0 !important;
     height: auto !important;
     max-height: none !important;
     position: static !important;
@@ -766,7 +773,7 @@ html.dark .hover\:border-slate-300:hover {
     background: #ffffff !important;
     display: block !important;
   }
-  /* Actual Discrete Page Sheets in Print: exactly 210mm x 296mm (prevents 0.5px subpixel overflow extra pages) */
+  /* Actual Discrete Page Sheets in Print: exactly 210mm x 296mm */
   .resume-page-sheet {
     width: 210mm !important;
     min-width: 210mm !important;

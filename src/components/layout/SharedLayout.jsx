@@ -39,7 +39,7 @@ export const SharedLayout = () => {
 
   return (
     <div
-      className={`min-h-screen bg-[#f8fafc] dark:bg-[#0b0f19] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors duration-200 role-student print:bg-white print:overflow-visible`}
+      className={`min-h-screen bg-[#f8fafc] dark:bg-[#0b0f19] font-sans text-slate-900 dark:text-slate-100 overflow-x-hidden transition-colors duration-200 role-student print:bg-white print:overflow-visible print:min-h-0 print:h-auto`}
     >
       {/* Sidebar Desktop */}
       <div className="hidden md:block resume-hide-on-print print:hidden">
@@ -68,7 +68,7 @@ export const SharedLayout = () => {
 
       {/* Main Container */}
       <div
-        className={`min-h-screen flex flex-col transition-all duration-300 ${sidebarCollapsed ? "md:ml-20" : "md:ml-64"} overflow-x-hidden print:ml-0 print:m-0 print:p-0 print:overflow-visible`}
+        className={`min-h-screen flex flex-col transition-all duration-300 ${sidebarCollapsed ? "md:ml-20" : "md:ml-64"} overflow-x-hidden print:ml-0 print:m-0 print:p-0 print:overflow-visible print:min-h-0 print:h-auto`}
       >
         {/* Topbar */}
         <div className="resume-hide-on-print print:hidden">
@@ -80,7 +80,7 @@ export const SharedLayout = () => {
         </div>
 
         {/* Page Content View - Pure edge-to-edge fluid responsive workspace */}
-        <main className="flex-1 w-full p-3 sm:p-4 lg:p-4 xl:p-4 2xl:px-6 2xl:py-4 flex flex-col print:p-0 print:m-0 print:overflow-visible">
+        <main className="flex-1 w-full p-3 sm:p-4 lg:p-4 xl:p-4 2xl:px-6 2xl:py-4 flex flex-col print:p-0 print:m-0 print:overflow-visible print:min-h-0 print:h-auto">
           <Outlet />
         </main>
       </div>
