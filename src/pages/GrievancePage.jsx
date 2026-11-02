@@ -3,23 +3,24 @@ import { useSearchParams } from "react-router-dom";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
 import { CourseFeedbackForm } from "../components/grievance/CourseFeedbackForm";
 import { TrainerFeedbackForm } from "../components/grievance/TrainerFeedbackForm";
-import { GeneralGrievanceForm } from "../components/grievance/GeneralGrievanceForm";
 import {
   Sparkles,
   Award,
-  ShieldAlert,
 } from "lucide-react";
 
 export const GrievancePage = ({ initialTab = "trainer" }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromQuery = searchParams.get("tab");
   
-  const [activeTab, setActiveTab] = useState(
-    tabFromQuery || initialTab || "trainer"
-  );
+  const [activeTab, setActiveTab] = useState(() => {
+    if (tabFromQuery === "course" || tabFromQuery === "trainer") {
+      return tabFromQuery;
+    }
+    return initialTab === "course" ? "course" : "trainer";
+  });
 
   useEffect(() => {
-    if (tabFromQuery) {
+    if (tabFromQuery === "course" || tabFromQuery === "trainer") {
       setActiveTab(tabFromQuery);
     }
   }, [tabFromQuery]);
@@ -44,13 +45,6 @@ export const GrievancePage = ({ initialTab = "trainer" }) => {
       badge: "Curriculum",
       color: "text-blue-600 dark:text-blue-400",
     },
-    {
-      id: "grievance",
-      label: "Formal Grievance",
-      icon: ShieldAlert,
-      badge: "Confidential",
-      color: "text-red-600 dark:text-red-400",
-    },
   ];
 
   return (
@@ -60,7 +54,7 @@ export const GrievancePage = ({ initialTab = "trainer" }) => {
         category="Student Quality & Academic Resolution"
         badgeText="Official CRM Integration"
         title="Student Grievance & Feedback Portal"
-        description="Share official course evaluations, trainer performance reviews, or register confidential academic grievances directly with Operating Media administration."
+        description="Share official course evaluations and trainer performance reviews directly with Operating Media administration."
         metrics={[
           {
             value: "Live CRM Sync",
@@ -68,7 +62,7 @@ export const GrievancePage = ({ initialTab = "trainer" }) => {
             dotColor: "bg-emerald-500",
           },
           {
-            value: "3 Forms",
+            value: "2 Forms",
             label: "Available",
             dotColor: "bg-blue-600",
           },
@@ -82,7 +76,7 @@ export const GrievancePage = ({ initialTab = "trainer" }) => {
 
       {/* 2. TAB SWITCHER STRIP */}
       <div className="bg-white dark:bg-[#0b1329] p-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -125,7 +119,6 @@ export const GrievancePage = ({ initialTab = "trainer" }) => {
       <div>
         {activeTab === "trainer" && <TrainerFeedbackForm />}
         {activeTab === "course" && <CourseFeedbackForm />}
-        {activeTab === "grievance" && <GeneralGrievanceForm />}
       </div>
     </div>
   );
