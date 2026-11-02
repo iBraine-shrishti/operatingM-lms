@@ -2,8 +2,30 @@ import React, { useState, useEffect, useRef } from "react";
 import { db } from "../../firebase";
 import { ref, onValue, update } from "firebase/database";
 import { CRM_BACKEND_API } from "../../services/lmsService";
-import { ChevronRight, Search, Bell, ChevronDown, User, Settings, LogOut, Check, Shield, GraduationCap, Sun, Moon, AlertCircle, MessageSquare, Sparkles, Volume2, VolumeX } from "lucide-react";
-import { playNotificationSound, isNotificationSoundMuted, toggleNotificationSound } from "../../utils/notificationSound";
+import {
+  ChevronRight,
+  Search,
+  Bell,
+  ChevronDown,
+  User,
+  Settings,
+  LogOut,
+  Check,
+  Shield,
+  GraduationCap,
+  Sun,
+  Moon,
+  AlertCircle,
+  MessageSquare,
+  Sparkles,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
+import {
+  playNotificationSound,
+  isNotificationSoundMuted,
+  toggleNotificationSound,
+} from "../../utils/notificationSound";
 import { useNavigate, NavLink, useLocation } from "react-router-dom";
 import logoHorizontalImg from "../../assets/logo-horizontal.png";
 import logoHorizontalDarkImg from "../../assets/logo-horizontal-dark.png";
@@ -18,7 +40,6 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
   const profileRef = useRef(null);
 
   const {
-
     currentUser,
 
     role,
@@ -32,7 +53,6 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
     logout,
 
     crmProfile,
-
   } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
@@ -86,10 +106,10 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
   // Student ID for Firebase channel
   const cleanSid = String(
     currentUser?.crmAdmissionId ||
-    currentUser?.id ||
-    currentUser?.admissionNo ||
-    currentUser?.student_id ||
-    "267"
+      currentUser?.id ||
+      currentUser?.admissionNo ||
+      currentUser?.student_id ||
+      "267",
   ).replace("std-", "");
 
   // Real-time notification listener (dual sync: Backend MySQL + Firebase)
@@ -113,7 +133,7 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
       });
 
       const list = Object.values(mergedMap).sort(
-        (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+        (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
       );
       setNotificationsList(list);
       const unread = list.filter((n) => !n.isRead).length;
@@ -127,7 +147,9 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
     // Live Backend polling (100% resilient across networks and Firebase permissions)
     const fetchBackend = async () => {
       try {
-        const res = await fetch(`${CRM_BACKEND_API}/lms/notifications/?student_id=${cleanSid || "267"}`);
+        const res = await fetch(
+          `${CRM_BACKEND_API}/lms/notifications/?student_id=${cleanSid || "267"}`,
+        );
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.notifications)) {
@@ -155,7 +177,7 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
           personalNotifs = snap.val() || {};
           updateCombined();
         },
-        (err) => console.warn("Firebase personal listener error:", err)
+        (err) => console.warn("Firebase personal listener error:", err),
       );
 
       unsubBroadcast = onValue(
@@ -164,7 +186,7 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
           broadcastNotifs = snap.val() || {};
           updateCombined();
         },
-        (err) => console.warn("Firebase broadcast listener error:", err)
+        (err) => console.warn("Firebase broadcast listener error:", err),
       );
     } catch (fbErr) {
       console.warn("Firebase listener setup:", fbErr);
@@ -205,7 +227,7 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
 
     // Update local state immediately
     setNotificationsList((prev) =>
-      prev.map((n) => (n.key === notif.key ? { ...n, isRead: true } : n))
+      prev.map((n) => (n.key === notif.key ? { ...n, isRead: true } : n)),
     );
     setUnreadNotifications((prev) => Math.max(0, prev - 1));
 
@@ -243,17 +265,12 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
     setUnreadNotifications(0);
   };
 
-
-
   const currentAvatar =
     role === "ADMIN"
       ? currentUser?.avatar || null
-      : currentUser?.avatar ||
-        crmProfile?.photo ||
-        crmProfile?.avatar ||
-        null;
+      : currentUser?.avatar || crmProfile?.photo || crmProfile?.avatar || null;
   return (
-    <header className="sticky top-0 z-20 h-16 bg-white dark:bg-[#0b1329] border-b border-slate-200 dark:border-slate-800/90 px-4 md:px-6 flex items-center justify-between shadow-xs transition-colors duration-200">
+    <header className="sticky top-0 z-20 h-16 bg-white dark:bg-[#0b1329] border-b border-slate-200 dark:border-slate-800/90 px-4 md:px-6 flex items-center justify-between shadow-xs transition-colors duration-200 resume-hide-on-print app-topbar print:hidden">
       {/* Left side: Mobile Toggle & Global Search */}
       <div className="flex items-center space-x-3 flex-1 max-w-xl">
         <button
@@ -317,7 +334,9 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
           <button
             onClick={toggleNotifications}
             className={`relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-hidden cursor-pointer ${
-              notifOpen ? "bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-cyan-400" : ""
+              notifOpen
+                ? "bg-slate-100 dark:bg-slate-800 text-blue-600 dark:text-cyan-400"
+                : ""
             }`}
             aria-label="Notifications"
             aria-expanded={notifOpen}
@@ -337,106 +356,115 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
                 : "opacity-0 scale-95 -translate-y-1 pointer-events-none"
             }`}
           >
-              <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                    <span>Notifications</span>
-                    {unreadNotifications > 0 && (
-                      <span className="px-1.5 py-0.5 rounded-full bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 text-[10px] font-extrabold">
-                        {unreadNotifications} new
-                      </span>
-                    )}
-                  </h4>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const next = toggleNotificationSound();
-                      setSoundMuted(next);
-                    }}
-                    title={soundMuted ? "Notification sound is muted (Click to enable & test sound)" : "Notification sound is active (Click to test/mute)"}
-                    className="p-1 rounded-md text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 transition-colors cursor-pointer"
-                  >
-                    {soundMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-                  </button>
-                </div>
-                {unreadNotifications > 0 && (
-                  <button
-                    onClick={handleMarkAllRead}
-                    className="text-xs text-blue-600 dark:text-cyan-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
-                  >
-                    <Check size={12} /> Mark all read
-                  </button>
-                )}
+            <div className="px-4 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h4 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <span>Notifications</span>
+                  {unreadNotifications > 0 && (
+                    <span className="px-1.5 py-0.5 rounded-full bg-red-100 dark:bg-red-950 text-red-600 dark:text-red-400 text-[10px] font-extrabold">
+                      {unreadNotifications} new
+                    </span>
+                  )}
+                </h4>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const next = toggleNotificationSound();
+                    setSoundMuted(next);
+                  }}
+                  title={
+                    soundMuted
+                      ? "Notification sound is muted (Click to enable & test sound)"
+                      : "Notification sound is active (Click to test/mute)"
+                  }
+                  className="p-1 rounded-md text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 transition-colors cursor-pointer"
+                >
+                  {soundMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+                </button>
               </div>
-              <div className="divide-y divide-slate-100 dark:divide-slate-800/60 max-h-80 overflow-y-auto">
-                {notificationsList.length === 0 ? (
-                  <div className="py-8 text-center text-slate-400 dark:text-slate-500 space-y-1">
-                    <Bell size={24} className="mx-auto opacity-40 mb-1" />
-                    <p className="text-xs font-semibold">No notifications right now</p>
-                    <p className="text-[10px]">You're all caught up!</p>
-                  </div>
-                ) : (
-                  notificationsList.map((notif) => {
-                    const isApproval = notif.type === "forum_approval";
-                    const isRejection = notif.type === "forum_rejection";
-                    return (
+              {unreadNotifications > 0 && (
+                <button
+                  onClick={handleMarkAllRead}
+                  className="text-xs text-blue-600 dark:text-cyan-400 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <Check size={12} /> Mark all read
+                </button>
+              )}
+            </div>
+            <div className="divide-y divide-slate-100 dark:divide-slate-800/60 max-h-80 overflow-y-auto">
+              {notificationsList.length === 0 ? (
+                <div className="py-8 text-center text-slate-400 dark:text-slate-500 space-y-1">
+                  <Bell size={24} className="mx-auto opacity-40 mb-1" />
+                  <p className="text-xs font-semibold">
+                    No notifications right now
+                  </p>
+                  <p className="text-[10px]">You're all caught up!</p>
+                </div>
+              ) : (
+                notificationsList.map((notif) => {
+                  const isApproval = notif.type === "forum_approval";
+                  const isRejection = notif.type === "forum_rejection";
+                  return (
+                    <div
+                      key={notif.key || notif.id}
+                      onClick={() => handleMarkNotificationRead(notif)}
+                      className={`px-4 py-3 transition-colors flex space-x-3 items-start cursor-pointer ${
+                        !notif.isRead
+                          ? "bg-blue-50/50 dark:bg-blue-950/30 hover:bg-blue-50 dark:hover:bg-blue-950/50"
+                          : "hover:bg-slate-50 dark:hover:bg-slate-850"
+                      }`}
+                    >
                       <div
-                        key={notif.key || notif.id}
-                        onClick={() => handleMarkNotificationRead(notif)}
-                        className={`px-4 py-3 transition-colors flex space-x-3 items-start cursor-pointer ${
-                          !notif.isRead
-                            ? "bg-blue-50/50 dark:bg-blue-950/30 hover:bg-blue-50 dark:hover:bg-blue-950/50"
-                            : "hover:bg-slate-50 dark:hover:bg-slate-850"
-                        }`}
-                      >
-                        <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold ${
-                            isApproval
-                              ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400"
-                              : isRejection
+                        className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-xs font-bold ${
+                          isApproval
+                            ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400"
+                            : isRejection
                               ? "bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400"
                               : "bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400"
-                          }`}
-                        >
-                          {isApproval ? (
-                            <Sparkles size={14} />
-                          ) : isRejection ? (
-                            <AlertCircle size={14} />
-                          ) : (
-                            <MessageSquare size={14} />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p
-                            className={`text-xs leading-snug ${
-                              !notif.isRead
-                                ? "font-bold text-slate-900 dark:text-white"
-                                : "font-medium text-slate-700 dark:text-slate-300"
-                            }`}
-                          >
-                            {notif.title || "Notification"}
-                          </p>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-0.5">
-                            {notif.message}
-                          </p>
-                          <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">
-                            {notif.createdAt
-                              ? isNaN(new Date(notif.createdAt).getTime())
-                                ? notif.createdAt
-                                : new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                              : "Just now"}
-                          </span>
-                        </div>
-                        {!notif.isRead && (
-                          <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-1.5" />
+                        }`}
+                      >
+                        {isApproval ? (
+                          <Sparkles size={14} />
+                        ) : isRejection ? (
+                          <AlertCircle size={14} />
+                        ) : (
+                          <MessageSquare size={14} />
                         )}
                       </div>
-                    );
-                  })
-                )}
-              </div>
+                      <div className="flex-1 min-w-0">
+                        <p
+                          className={`text-xs leading-snug ${
+                            !notif.isRead
+                              ? "font-bold text-slate-900 dark:text-white"
+                              : "font-medium text-slate-700 dark:text-slate-300"
+                          }`}
+                        >
+                          {notif.title || "Notification"}
+                        </p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-0.5">
+                          {notif.message}
+                        </p>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 block mt-1">
+                          {notif.createdAt
+                            ? isNaN(new Date(notif.createdAt).getTime())
+                              ? notif.createdAt
+                              : new Date(notif.createdAt).toLocaleTimeString(
+                                  [],
+                                  { hour: "2-digit", minute: "2-digit" },
+                                )
+                            : "Just now"}
+                        </span>
+                      </div>
+                      {!notif.isRead && (
+                        <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0 mt-1.5" />
+                      )}
+                    </div>
+                  );
+                })
+              )}
             </div>
+          </div>
         </div>
 
         {/* Dark / Light Theme Toggle Button */}
@@ -459,7 +487,9 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
           <button
             onClick={toggleProfile}
             className={`flex items-center space-x-2 sm:space-x-2.5 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-hidden cursor-pointer ${
-              dropdownOpen ? "ring-2 ring-blue-500/30 dark:ring-cyan-500/30 bg-slate-100 dark:bg-slate-800" : ""
+              dropdownOpen
+                ? "ring-2 ring-blue-500/30 dark:ring-cyan-500/30 bg-slate-100 dark:bg-slate-800"
+                : ""
             }`}
             aria-label="User Profile Menu"
             aria-expanded={dropdownOpen}
@@ -469,18 +499,27 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
                 src={currentAvatar}
                 alt={currentUser?.name || "User"}
                 onError={(e) => {
-                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.style.display = "none";
                   if (e.currentTarget.nextElementSibling) {
-                    e.currentTarget.nextElementSibling.style.display = 'flex';
+                    e.currentTarget.nextElementSibling.style.display = "flex";
                   }
                 }}
                 className="w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full object-cover ring-2 ring-slate-200/90 dark:ring-slate-700 shadow-2xs shrink-0"
               />
             ) : null}
             <div
-              className={`w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-xs ring-2 ring-slate-200/90 dark:ring-slate-700 shadow-2xs shrink-0 items-center justify-center ${currentAvatar ? 'hidden' : 'flex'}`}
+              className={`w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-xs ring-2 ring-slate-200/90 dark:ring-slate-700 shadow-2xs shrink-0 items-center justify-center ${currentAvatar ? "hidden" : "flex"}`}
             >
-              {currentUser?.name ? currentUser.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() : <User size={16} />}
+              {currentUser?.name ? (
+                currentUser.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .slice(0, 2)
+                  .join("")
+                  .toUpperCase()
+              ) : (
+                <User size={16} />
+              )}
             </div>
             <div className="text-left hidden xl:block pr-1">
               <div className="text-xs font-bold text-slate-900 dark:text-white leading-tight">
@@ -493,7 +532,9 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
             <ChevronDown
               size={14}
               className={`text-slate-400 hidden xl:block mr-0.5 transition-transform duration-200 ${
-                dropdownOpen ? "rotate-180 text-blue-600 dark:text-cyan-400" : ""
+                dropdownOpen
+                  ? "rotate-180 text-blue-600 dark:text-cyan-400"
+                  : ""
               }`}
             />
           </button>
@@ -505,104 +546,111 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
                 : "opacity-0 scale-95 -translate-y-1 pointer-events-none"
             }`}
           >
-              <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center space-x-3">
-                {currentAvatar ? (
-                  <img
-                    src={currentAvatar}
-                    alt={currentUser?.name || "User"}
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                      if (e.currentTarget.nextElementSibling) {
-                        e.currentTarget.nextElementSibling.style.display = 'flex';
-                      }
-                    }}
-                    className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700 shrink-0"
-                  />
-                ) : null}
-                <div
-                  className={`w-10 h-10 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-xs ring-2 ring-slate-200 dark:ring-slate-700 shrink-0 items-center justify-center ${currentAvatar ? 'hidden' : 'flex'}`}
-                >
-                  {currentUser?.name ? currentUser.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase() : <User size={18} />}
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
-                    {currentUser.name}
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 font-normal truncate">
-                    {currentUser.email}
-                  </p>
-                  <span className="mt-1 inline-flex items-center space-x-1 text-[10.5px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
-                    {isAdmin ? (
-                      <Shield
-                        size={11}
-                        className="text-slate-600 dark:text-slate-400"
-                      />
-                    ) : (
-                      <GraduationCap
-                        size={11}
-                        className="text-teal-700 dark:text-teal-400"
-                      />
-                    )}
-                    <span>
-                      {isAdmin ? "Administrator" : "Enrolled Student"}
-                    </span>
-                  </span>
-                </div>
+            <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center space-x-3">
+              {currentAvatar ? (
+                <img
+                  src={currentAvatar}
+                  alt={currentUser?.name || "User"}
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                    if (e.currentTarget.nextElementSibling) {
+                      e.currentTarget.nextElementSibling.style.display = "flex";
+                    }
+                  }}
+                  className="w-10 h-10 rounded-full object-cover ring-2 ring-slate-200 dark:ring-slate-700 shrink-0"
+                />
+              ) : null}
+              <div
+                className={`w-10 h-10 rounded-full bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-blue-400 font-bold text-xs ring-2 ring-slate-200 dark:ring-slate-700 shrink-0 items-center justify-center ${currentAvatar ? "hidden" : "flex"}`}
+              >
+                {currentUser?.name ? (
+                  currentUser.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .slice(0, 2)
+                    .join("")
+                    .toUpperCase()
+                ) : (
+                  <User size={18} />
+                )}
               </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-slate-900 dark:text-white truncate">
+                  {currentUser.name}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-normal truncate">
+                  {currentUser.email}
+                </p>
+                <span className="mt-1 inline-flex items-center space-x-1 text-[10.5px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                  {isAdmin ? (
+                    <Shield
+                      size={11}
+                      className="text-slate-600 dark:text-slate-400"
+                    />
+                  ) : (
+                    <GraduationCap
+                      size={11}
+                      className="text-teal-700 dark:text-teal-400"
+                    />
+                  )}
+                  <span>{isAdmin ? "Administrator" : "Enrolled Student"}</span>
+                </span>
+              </div>
+            </div>
 
-              <div className="py-1">
+            <div className="py-1">
+              <button
+                onClick={() => {
+                  setDropdownOpen(false);
+                  navigate("/profile");
+                }}
+                className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white flex items-center space-x-2.5"
+              >
+                <User size={15} className="text-slate-400" />
+                <span>My Profile</span>
+              </button>
+
+              {isAdmin && (
                 <button
                   onClick={() => {
                     setDropdownOpen(false);
-                    navigate("/profile");
+                    navigate("/manage-reports");
                   }}
                   className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white flex items-center space-x-2.5"
                 >
-                  <User size={15} className="text-slate-400" />
-                  <span>My Profile</span>
+                  <Settings size={15} className="text-slate-400" />
+                  <span>System Settings</span>
                 </button>
+              )}
 
-                {isAdmin && (
-                  <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      navigate("/manage-reports");
-                    }}
-                    className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white flex items-center space-x-2.5"
-                  >
-                    <Settings size={15} className="text-slate-400" />
-                    <span>System Settings</span>
-                  </button>
-                )}
-
-                {isStudent && (
-                  <button
-                    onClick={() => {
-                      setDropdownOpen(false);
-                      navigate("/enrolled-courses");
-                    }}
-                    className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white flex items-center space-x-2.5"
-                  >
-                    <GraduationCap size={15} className="text-slate-400" />
-                    <span>My Courses</span>
-                  </button>
-                )}
-              </div>
-
-              <div className="pt-1 border-t border-slate-100 dark:border-slate-800">
+              {isStudent && (
                 <button
                   onClick={() => {
                     setDropdownOpen(false);
-                    logout();
-                    navigate("/login");
+                    navigate("/enrolled-courses");
                   }}
-                  className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white flex items-center space-x-2.5"
+                  className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white flex items-center space-x-2.5"
                 >
-                  <LogOut size={15} className="text-slate-400" />
-                  <span>Sign Out</span>
+                  <GraduationCap size={15} className="text-slate-400" />
+                  <span>My Courses</span>
                 </button>
-              </div>
+              )}
             </div>
+
+            <div className="pt-1 border-t border-slate-100 dark:border-slate-800">
+              <button
+                onClick={() => {
+                  setDropdownOpen(false);
+                  logout();
+                  navigate("/login");
+                }}
+                className="w-full px-4 py-2 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white flex items-center space-x-2.5"
+              >
+                <LogOut size={15} className="text-slate-400" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </header>

@@ -6,10 +6,7 @@ import {
   createInitialResumeData,
   TEMPLATES_CONFIG,
 } from "../components/resume/resumeData";
-import {
-  RESUME_THEMES,
-  getThemeById,
-} from "../components/resume/ResumeThemes";
+import { RESUME_THEMES, getThemeById } from "../components/resume/ResumeThemes";
 import { ResumeFormEditor } from "../components/resume/ResumeFormEditor";
 import { ResumePreview } from "../components/resume/ResumePreview";
 import {
@@ -36,13 +33,25 @@ export const ResumeBuilderPage = () => {
     } catch (e) {
       console.warn("Failed to read saved resume:", e);
     }
-    return createInitialResumeData(currentUser, crmProfile, crmBatch, crmCertificates);
+    return createInitialResumeData(
+      currentUser,
+      crmProfile,
+      crmBatch,
+      crmCertificates,
+    );
   });
 
   // Auto-sync student profile on first load if default was empty
   useEffect(() => {
     if (!localStorage.getItem("om_lms_resume_data")) {
-      setResumeData(createInitialResumeData(currentUser, crmProfile, crmBatch, crmCertificates));
+      setResumeData(
+        createInitialResumeData(
+          currentUser,
+          crmProfile,
+          crmBatch,
+          crmCertificates,
+        ),
+      );
     }
   }, [currentUser?.name, crmProfile?.name, crmBatch?.courseName]);
 
@@ -58,13 +67,26 @@ export const ResumeBuilderPage = () => {
 
   // Reset to initial profile prefill
   const handleReset = () => {
-    if (window.confirm("Reset resume details back to student profile default data?")) {
-      const fresh = createInitialResumeData(currentUser, crmProfile, crmBatch, crmCertificates);
+    if (
+      window.confirm(
+        "Reset resume details back to student profile default data?",
+      )
+    ) {
+      const fresh = createInitialResumeData(
+        currentUser,
+        crmProfile,
+        crmBatch,
+        crmCertificates,
+      );
       setResumeData(fresh);
       try {
         localStorage.setItem("om_lms_resume_data", JSON.stringify(fresh));
       } catch (e) {}
-      showToast("Resume reset to default student credentials", "info", "Reset Complete");
+      showToast(
+        "Resume reset to default student credentials",
+        "info",
+        "Reset Complete",
+      );
     }
   };
 
@@ -96,7 +118,14 @@ export const ResumeBuilderPage = () => {
 
   // 5. Print / PDF Export
   const handlePrint = () => {
+    const originalTitle = document.title;
+    const studentName = resumeData?.personalInfo?.fullName || "Student";
+    const cleanFileName = `${studentName.replace(/[^a-zA-Z0-9_-]/g, "_")}_Resume`;
+    document.title = cleanFileName;
     window.print();
+    setTimeout(() => {
+      document.title = originalTitle;
+    }, 1500);
   };
 
   return (
@@ -167,7 +196,9 @@ export const ResumeBuilderPage = () => {
                   </div>
                   <p
                     className={`text-[10.5px] mt-1 line-clamp-1 ${
-                      isSelected ? "text-blue-100" : "text-slate-500 dark:text-slate-400"
+                      isSelected
+                        ? "text-blue-100"
+                        : "text-slate-500 dark:text-slate-400"
                     }`}
                   >
                     {tmpl.tagline}
