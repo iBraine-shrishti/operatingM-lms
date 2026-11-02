@@ -294,6 +294,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
         },
         { name: "Forums", path: "/forums", icon: MessagesSquare },
         { name: "Schedule", path: "/schedule", icon: Calendar },
+        { name: "Grievance", path: "/grievance", icon: HelpCircle },
       ],
     },
   ];

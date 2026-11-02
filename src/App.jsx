@@ -21,6 +21,7 @@ import { QuestionDiscussionsPage } from "./pages/QuestionDiscussionsPage";
 import { LoginPage } from "./pages/LoginPage.jsx";
 import { CertificateVerificationPage } from "./pages/CertificateVerificationPage.jsx";
 import { OfficialExamPage } from "./pages/OfficialExamPage.jsx";
+import { GrievancePage } from "./pages/GrievancePage.jsx";
 
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
@@ -87,6 +88,9 @@ function AppRoutes() {
         <Route path="attendance-fees" element={<Navigate to="/profile?tab=attendance" replace />} />
         <Route path="gallery" element={<GalleryPage />} />
         <Route path="exam" element={<OfficialExamPage />} />
+        <Route path="grievance" element={<GrievancePage />} />
+        <Route path="course-feedback-form" element={<GrievancePage initialTab="course" />} />
+        <Route path="trainer-feedback-form" element={<GrievancePage initialTab="trainer" />} />
       </Route>
 
       {/* Wildcard: redirects to RootRoute */}
