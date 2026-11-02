@@ -110,7 +110,7 @@ export const ResumeBuilderPage = () => {
           description="Build industry-standard, ATS-optimized resumes prefilled with your Operating Media certifications, real agency projects, and custom multi-tone color branding."
           metrics={[
             {
-              value: "4 Templates",
+              value: "5 Templates",
               label: "Available",
               dotColor: "bg-[#003873]",
             },
@@ -141,7 +141,7 @@ export const ResumeBuilderPage = () => {
               Switching templates preserves all your edits
             </span>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
             {TEMPLATES_CONFIG.map((tmpl) => {
               const isSelected = selectedTemplate === tmpl.id;
               return (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   User,
   Briefcase,
@@ -11,11 +11,14 @@ import {
   Plus,
   Trash2,
   RotateCcw,
-  Languages,
+  Camera,
+  Upload,
+  Sliders,
 } from "lucide-react";
 
 export const ResumeFormEditor = ({ data, onChange, onReset }) => {
   const [openSection, setOpenSection] = useState("personal");
+  const fileInputRef = useRef(null);
 
   const toggleSection = (section) => {
     setOpenSection((prev) => (prev === section ? null : section));
@@ -32,6 +35,23 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
     });
   };
 
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2.5 * 1024 * 1024) {
+        alert("Image size exceeds 2.5MB. Please choose a smaller photo.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          updatePersonalInfo("photo", event.target.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const updateSummary = (value) => {
     onChange({
       ...data,
@@ -46,7 +66,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
       role: "Digital Marketing Specialist",
       company: "Company Name",
       location: "Mumbai, India",
-      startDate: "Jan 2025",
+      startDate: "2025",
       endDate: "Present",
       current: true,
       bullets: ["Led key digital marketing initiatives and managed ad campaigns."],
@@ -105,6 +125,21 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         return { ...exp, bullets: newBullets };
       }),
     });
+  };
+
+  // Skills Summary Handlers (for progress bars)
+  const updateSkillLevel = (idx, field, value) => {
+    const currentList = [...(data.skillsSummary || [])];
+    if (currentList[idx]) {
+      currentList[idx] = {
+        ...currentList[idx],
+        [field]: field === "level" ? Number(value) : value,
+      };
+      onChange({
+        ...data,
+        skillsSummary: currentList,
+      });
+    }
   };
 
   // Education Handlers
@@ -248,7 +283,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         </button>
       </div>
 
-      {/* 1. PERSONAL INFORMATION */}
+      {/* 1. PERSONAL INFORMATION & PHOTO */}
       <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
         <button
           type="button"
@@ -257,75 +292,134 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         >
           <div className="flex items-center gap-2.5">
             <User size={16} className="text-[#003873] dark:text-sky-400" />
-            <span>1. Personal & Contact Information</span>
+            <span>1. Profile Photo & Contact Information</span>
           </div>
           {openSection === "personal" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
 
         {openSection === "personal" && (
-          <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Full Name</label>
-              <input
-                type="text"
-                value={data.personalInfo.fullName}
-                onChange={(e) => updatePersonalInfo("fullName", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
+          <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
+            {/* PHOTO UPLOAD / CHANGE CARD */}
+            <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-900/40 flex flex-col sm:flex-row items-center gap-4">
+              <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#003873] dark:border-sky-400 shadow-sm shrink-0 bg-white">
+                {data.personalInfo.photo ? (
+                  <img
+                    src={data.personalInfo.photo}
+                    alt="Student Preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center font-bold text-slate-400">
+                    <Camera size={20} />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex-1 space-y-2 text-center sm:text-left w-full">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handlePhotoUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#003873] hover:bg-[#002d5c] text-white rounded-lg font-bold text-xs transition-colors cursor-pointer"
+                  >
+                    <Upload size={13} />
+                    <span>Upload New Photo</span>
+                  </button>
+
+                  {data.personalInfo.photo && (
+                    <button
+                      type="button"
+                      onClick={() => updatePersonalInfo("photo", "")}
+                      className="px-2.5 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg border border-red-200 dark:border-red-900 transition-colors"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    value={data.personalInfo.photo || ""}
+                    onChange={(e) => updatePersonalInfo("photo", e.target.value)}
+                    placeholder="Or paste direct image URL (https://...)"
+                    className="w-full px-2.5 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200 text-[11px]"
+                  />
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Target Job Title</label>
-              <input
-                type="text"
-                value={data.personalInfo.jobTitle}
-                onChange={(e) => updatePersonalInfo("jobTitle", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Email Address</label>
-              <input
-                type="email"
-                value={data.personalInfo.email}
-                onChange={(e) => updatePersonalInfo("email", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Phone Number</label>
-              <input
-                type="text"
-                value={data.personalInfo.phone}
-                onChange={(e) => updatePersonalInfo("phone", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Location / Branch</label>
-              <input
-                type="text"
-                value={data.personalInfo.location}
-                onChange={(e) => updatePersonalInfo("location", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">LinkedIn Profile</label>
-              <input
-                type="text"
-                value={data.personalInfo.linkedin}
-                onChange={(e) => updatePersonalInfo("linkedin", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Portfolio / Website</label>
-              <input
-                type="text"
-                value={data.personalInfo.portfolio}
-                onChange={(e) => updatePersonalInfo("portfolio", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
+
+            {/* CONTACT FIELDS */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Full Name</label>
+                <input
+                  type="text"
+                  value={data.personalInfo.fullName}
+                  onChange={(e) => updatePersonalInfo("fullName", e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
+                />
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Target Job Title</label>
+                <input
+                  type="text"
+                  value={data.personalInfo.jobTitle}
+                  onChange={(e) => updatePersonalInfo("jobTitle", e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
+                />
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Email Address</label>
+                <input
+                  type="email"
+                  value={data.personalInfo.email}
+                  onChange={(e) => updatePersonalInfo("email", e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
+                />
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Phone Number</label>
+                <input
+                  type="text"
+                  value={data.personalInfo.phone}
+                  onChange={(e) => updatePersonalInfo("phone", e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
+                />
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Location / Branch</label>
+                <input
+                  type="text"
+                  value={data.personalInfo.location}
+                  onChange={(e) => updatePersonalInfo("location", e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
+                />
+              </div>
+              <div>
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">LinkedIn Profile</label>
+                <input
+                  type="text"
+                  value={data.personalInfo.linkedin}
+                  onChange={(e) => updatePersonalInfo("linkedin", e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Portfolio / Website</label>
+                <input
+                  type="text"
+                  value={data.personalInfo.portfolio}
+                  onChange={(e) => updatePersonalInfo("portfolio", e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
+                />
+              </div>
             </div>
           </div>
         )}
@@ -340,7 +434,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         >
           <div className="flex items-center gap-2.5">
             <Sparkles size={16} className="text-[#003873] dark:text-sky-400" />
-            <span>2. Executive Summary</span>
+            <span>2. Executive Summary / About Me</span>
           </div>
           {openSection === "summary" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
@@ -427,7 +521,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
                     />
                   </div>
                   <div>
-                    <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Duration (e.g. Jan 2025 - Present)</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Duration (e.g. 2024 - Present)</label>
                     <div className="flex gap-2">
                       <input
                         type="text"
@@ -493,7 +587,56 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         )}
       </div>
 
-      {/* 4. CORE SKILLS */}
+      {/* 4. SKILLS SUMMARY & PROGRESS BARS (FOR DUAL-ARCH TEMPLATE) */}
+      <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
+        <button
+          type="button"
+          onClick={() => toggleSection("skillsSummary")}
+          className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
+        >
+          <div className="flex items-center gap-2.5">
+            <Sliders size={16} className="text-[#003873] dark:text-sky-400" />
+            <span>4. Skills Summary & Progress Levels (Dual-Arch Template)</span>
+          </div>
+          {openSection === "skillsSummary" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
+
+        {openSection === "skillsSummary" && (
+          <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-3 text-xs">
+            <p className="text-[11px] text-slate-500">
+              Customize the progress bar values displayed in the Dual-Arch Creative template:
+            </p>
+            {(data.skillsSummary || []).map((skillItem, idx) => (
+              <div
+                key={idx}
+                className="p-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex flex-col sm:flex-row items-center gap-3"
+              >
+                <input
+                  type="text"
+                  value={skillItem.name}
+                  onChange={(e) => updateSkillLevel(idx, "name", e.target.value)}
+                  className="w-full sm:w-2/3 px-2.5 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-slate-900 dark:text-white font-bold"
+                />
+                <div className="w-full sm:w-1/3 flex items-center gap-2">
+                  <input
+                    type="range"
+                    min="40"
+                    max="100"
+                    value={skillItem.level}
+                    onChange={(e) => updateSkillLevel(idx, "level", e.target.value)}
+                    className="flex-1 cursor-pointer"
+                  />
+                  <span className="font-extrabold text-[#003873] dark:text-sky-400 min-w-[35px] text-right">
+                    {skillItem.level}%
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 5. CORE SKILLS & CATEGORIES */}
       <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
         <button
           type="button"
@@ -502,7 +645,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         >
           <div className="flex items-center gap-2.5">
             <Sparkles size={16} className="text-[#003873] dark:text-sky-400" />
-            <span>4. Core Skills & Competencies</span>
+            <span>5. Core Skills & Competency Tags</span>
           </div>
           {openSection === "skills" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
@@ -572,7 +715,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         )}
       </div>
 
-      {/* 5. EDUCATION */}
+      {/* 6. EDUCATION */}
       <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
         <button
           type="button"
@@ -581,7 +724,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         >
           <div className="flex items-center gap-2.5">
             <GraduationCap size={16} className="text-[#003873] dark:text-sky-400" />
-            <span>5. Education ({data.education.length})</span>
+            <span>6. Education ({data.education.length})</span>
           </div>
           {openSection === "education" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
@@ -662,7 +805,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         )}
       </div>
 
-      {/* 6. PROJECTS */}
+      {/* 7. PROJECTS */}
       <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
         <button
           type="button"
@@ -671,7 +814,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         >
           <div className="flex items-center gap-2.5">
             <FolderGit2 size={16} className="text-[#003873] dark:text-sky-400" />
-            <span>6. Projects & Case Studies ({data.projects.length})</span>
+            <span>7. Projects & Case Studies ({data.projects.length})</span>
           </div>
           {openSection === "projects" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
@@ -752,7 +895,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         )}
       </div>
 
-      {/* 7. CERTIFICATIONS */}
+      {/* 8. CERTIFICATIONS */}
       <div className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
         <button
           type="button"
@@ -761,7 +904,7 @@ export const ResumeFormEditor = ({ data, onChange, onReset }) => {
         >
           <div className="flex items-center gap-2.5">
             <Award size={16} className="text-[#003873] dark:text-sky-400" />
-            <span>7. Certifications & Badges ({data.certifications.length})</span>
+            <span>8. Certifications & Badges ({data.certifications.length})</span>
           </div>
           {openSection === "certifications" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>

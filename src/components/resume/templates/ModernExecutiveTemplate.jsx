@@ -37,19 +37,32 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
       >
         {/* Profile Avatar / Initials Badge */}
         <div className="flex flex-col items-center md:items-start space-y-3 pb-4 border-b" style={{ borderColor: theme.border }}>
-          <div
-            className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-sm"
-            style={{ backgroundColor: theme.primary }}
-          >
-            {personalInfo.fullName
-              ? personalInfo.fullName
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase()
-              : "OM"}
-          </div>
+          {personalInfo.photo ? (
+            <div
+              className="w-20 h-20 rounded-2xl overflow-hidden border-2 shadow-sm shrink-0 bg-white"
+              style={{ borderColor: theme.primary }}
+            >
+              <img
+                src={personalInfo.photo}
+                alt={personalInfo.fullName}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-sm"
+              style={{ backgroundColor: theme.primary }}
+            >
+              {personalInfo.fullName
+                ? personalInfo.fullName
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()
+                : "OM"}
+            </div>
+          )}
           <div>
             <span
               className="text-[10px] font-extrabold uppercase tracking-widest block"

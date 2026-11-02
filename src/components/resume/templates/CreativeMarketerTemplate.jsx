@@ -42,18 +42,29 @@ export const CreativeMarketerTemplate = ({ data, theme }) => {
         />
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div className="space-y-1">
-            <span
-              className="text-[11px] font-extrabold uppercase tracking-[2.5px] px-2.5 py-1 rounded-md inline-block bg-white/15 backdrop-blur-xs text-white"
-            >
-              Creative & Growth Strategist
-            </span>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white">
-              {personalInfo.fullName}
-            </h1>
-            <p className="text-base sm:text-lg font-medium text-white/90">
-              {personalInfo.jobTitle}
-            </p>
+          <div className="flex items-center gap-5">
+            {personalInfo.photo && (
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-3 border-white/90 shadow-md bg-white shrink-0">
+                <img
+                  src={personalInfo.photo}
+                  alt={personalInfo.fullName}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            <div className="space-y-1">
+              <span
+                className="text-[11px] font-extrabold uppercase tracking-[2.5px] px-2.5 py-1 rounded-md inline-block bg-white/15 backdrop-blur-xs text-white"
+              >
+                Creative & Growth Strategist
+              </span>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-white">
+                {personalInfo.fullName}
+              </h1>
+              <p className="text-base sm:text-lg font-medium text-white/90">
+                {personalInfo.jobTitle}
+              </p>
+            </div>
           </div>
 
           {/* Social & Contact Strip in Hero */}

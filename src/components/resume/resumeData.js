@@ -29,6 +29,14 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
     crmProfile?.course ||
     "Diploma in Advanced Digital Marketing & AI Strategy";
 
+  // Fetch avatar from backend/CRM/localStorage or fallback to sample portrait
+  const backendAvatar =
+    currentUser?.avatar ||
+    crmProfile?.photo ||
+    crmProfile?.avatar ||
+    localStorage.getItem("om_lms_student_avatar") ||
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400";
+
   // Real certificates from student CRM record if present, otherwise professional industry certificates
   const defaultCerts = (crmCertificates && crmCertificates.length > 0)
     ? crmCertificates.map((cert, index) => ({
@@ -68,6 +76,7 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
     personalInfo: {
       fullName: studentName,
       jobTitle: "Performance Marketing & SEO Strategist",
+      photo: backendAvatar,
       email: studentEmail,
       phone: studentPhone,
       location: studentBranch,
@@ -83,12 +92,12 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
         role: "Digital Marketing & Performance Associate",
         company: "MediaPulse Digital Agency",
         location: "Mumbai, India",
-        startDate: "Jan 2025",
+        startDate: "2025",
         endDate: "Present",
         current: true,
         bullets: [
           "Architected Google Search, Display, and Performance Max ad campaigns delivering an average 4.2x ROAS across 6 direct-to-consumer e-commerce brands.",
-          "Conducted comprehensive technical SEO audits, site speed optimizations, and keyword gap mapping, increasing quarterly organic organic sessions by 65%.",
+          "Conducted comprehensive technical SEO audits, site speed optimizations, and keyword gap mapping, increasing quarterly organic sessions by 65%.",
           "Managed Meta Ads testing frameworks (A/B testing creatives, copy, custom audiences, and lookalikes) with monthly ad spend exceeding ₹2,50,000.",
           "Integrated Google Analytics 4 (GA4) custom event tracking and Looker Studio dashboards for real-time stakeholder KPI reporting.",
         ],
@@ -98,8 +107,8 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
         role: "SEO & Content Marketing Intern",
         company: "Aura Growth Partners",
         location: "Mumbai, India",
-        startDate: "Jun 2024",
-        endDate: "Dec 2024",
+        startDate: "2024",
+        endDate: "2025",
         current: false,
         bullets: [
           "Developed data-driven on-page SEO strategies for 45+ pillar articles, ranking 18 target keywords on page 1 of Google within 90 days.",
@@ -134,6 +143,22 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
       analyticsTools: ["Google Analytics 4 (GA4)", "Google Tag Manager", "Looker Studio", "WordPress", "Canva", "Shopify"],
       coreMarketing: ["Conversion Rate Optimization (CRO)", "Email Marketing", "A/B Testing", "Funnel Architecture"],
     },
+    skillsSummary: [
+      { name: "Performance Marketing & Ads", level: 90 },
+      { name: "Technical SEO & Keyword Mapping", level: 85 },
+      { name: "Data Analytics & GA4 Tracking", level: 85 },
+      { name: "Content Architecture & Funnels", level: 80 },
+    ],
+    expertiseList: [
+      "Google Ads (PMax)",
+      "Meta Ads Manager",
+      "Technical SEO Audits",
+      "Keyword Research",
+      "Conversion Optimization",
+      "Google Analytics 4",
+      "Looker Studio Dashboards",
+      "WordPress Development",
+    ],
     projects: [
       {
         id: "proj-1",
@@ -159,9 +184,23 @@ export const TEMPLATES_CONFIG = [
   {
     id: "modern-executive",
     name: "Modern Executive",
-    tagline: "2-Column Sidebar • High-Impact Corporate Layout",
-    badge: "Most Popular",
+    tagline: "2-Column Sidebar • Photo Badge & Corporate Layout",
+    badge: "Photo Ready",
     thumbnailColor: "#003873",
+  },
+  {
+    id: "dual-arch-creative",
+    name: "Dual-Arch Creative",
+    tagline: "Modern Capsule Sidebar • Profile Photo & Progress Bars",
+    badge: "New 5th Template",
+    thumbnailColor: "#1e293b",
+  },
+  {
+    id: "creative-marketer",
+    name: "Creative Marketer",
+    tagline: "Dynamic Accent Header • Portfolio Cards & Photo",
+    badge: "Photo Ready",
+    thumbnailColor: "#7c3aed",
   },
   {
     id: "minimalist-tech",
@@ -169,13 +208,6 @@ export const TEMPLATES_CONFIG = [
     tagline: "Clean Header Banner • Metric & Skill Centered",
     badge: "High ATS Score",
     thumbnailColor: "#065f46",
-  },
-  {
-    id: "creative-marketer",
-    name: "Creative Marketer",
-    tagline: "Dynamic Accent Header • Portfolio & Project Cards",
-    badge: "Agency Favorite",
-    thumbnailColor: "#7c3aed",
   },
   {
     id: "classic-ats",

@@ -3,10 +3,13 @@ import { ModernExecutiveTemplate } from "./templates/ModernExecutiveTemplate";
 import { MinimalistPerformanceTemplate } from "./templates/MinimalistPerformanceTemplate";
 import { CreativeMarketerTemplate } from "./templates/CreativeMarketerTemplate";
 import { ClassicATSTemplate } from "./templates/ClassicATSTemplate";
+import { DualArchCreativeTemplate } from "./templates/DualArchCreativeTemplate";
 
 export const ResumePreview = ({ data, templateId, theme }) => {
   const renderTemplate = () => {
     switch (templateId) {
+      case "dual-arch-creative":
+        return <DualArchCreativeTemplate data={data} theme={theme} />;
       case "minimalist-tech":
         return <MinimalistPerformanceTemplate data={data} theme={theme} />;
       case "creative-marketer":
