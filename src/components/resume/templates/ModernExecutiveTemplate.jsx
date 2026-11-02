@@ -123,86 +123,46 @@ export const ModernExecutiveTemplate = ({ data, theme, onUpdateHeading }) => {
             />
           </div>
 
-          {skills.paidAds && skills.paidAds.length > 0 && (
-            <div>
-              <EditableHeading
-                value={sectionHeadings.skillCat1}
-                fallback="Paid Acquisition & Ads"
-                onChange={(val) => onUpdateHeading?.("skillCat1", val)}
-                className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1"
-                tag="span"
-              />
-              <div className="flex flex-wrap gap-1.5">
-                {skills.paidAds.map((s, idx) => (
-                  <span
-                    key={idx}
-                    className="text-[11px] font-semibold px-2 py-0.5 rounded-md border"
-                    style={{
-                      backgroundColor: theme.badgeBg,
-                      color: theme.badgeText,
-                      borderColor: theme.border,
-                    }}
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
+          {Object.entries(skills || {}).map(([catKey, skillList], idx) => {
+            if (!skillList || skillList.length === 0) return null;
+            const headingKey = `skillCat_${catKey}`;
+            const fallbackKey = `skillCat${idx + 1}`;
+            const defaultLabel =
+              catKey === "paidAds"
+                ? "Paid Acquisition & Ads"
+                : catKey === "seoContent"
+                ? "SEO & Content Architecture"
+                : catKey === "analyticsTools"
+                ? "Analytics & MarTech Tools"
+                : catKey.charAt(0).toUpperCase() + catKey.slice(1);
 
-          {skills.seoContent && skills.seoContent.length > 0 && (
-            <div>
-              <EditableHeading
-                value={sectionHeadings.skillCat2}
-                fallback="SEO & Content"
-                onChange={(val) => onUpdateHeading?.("skillCat2", val)}
-                className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1"
-                tag="span"
-              />
-              <div className="flex flex-wrap gap-1.5">
-                {skills.seoContent.map((s, idx) => (
-                  <span
-                    key={idx}
-                    className="text-[11px] font-semibold px-2 py-0.5 rounded-md border"
-                    style={{
-                      backgroundColor: theme.badgeBg,
-                      color: theme.badgeText,
-                      borderColor: theme.border,
-                    }}
-                  >
-                    {s}
-                  </span>
-                ))}
+            return (
+              <div key={catKey}>
+                <EditableHeading
+                  value={sectionHeadings[headingKey] || sectionHeadings[fallbackKey]}
+                  fallback={defaultLabel}
+                  onChange={(val) => onUpdateHeading?.(headingKey, val)}
+                  className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1"
+                  tag="span"
+                />
+                <div className="flex flex-wrap gap-1.5">
+                  {skillList.map((s, sIdx) => (
+                    <span
+                      key={sIdx}
+                      className="text-[11px] font-semibold px-2 py-0.5 rounded-md border"
+                      style={{
+                        backgroundColor: theme.badgeBg,
+                        color: theme.badgeText,
+                        borderColor: theme.border,
+                      }}
+                    >
+                      {s}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-
-          {skills.analyticsTools && skills.analyticsTools.length > 0 && (
-            <div>
-              <EditableHeading
-                value={sectionHeadings.skillCat3}
-                fallback="Analytics & MarTech"
-                onChange={(val) => onUpdateHeading?.("skillCat3", val)}
-                className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1"
-                tag="span"
-              />
-              <div className="flex flex-wrap gap-1.5">
-                {skills.analyticsTools.map((s, idx) => (
-                  <span
-                    key={idx}
-                    className="text-[11px] font-semibold px-2 py-0.5 rounded-md border"
-                    style={{
-                      backgroundColor: theme.badgeBg,
-                      color: theme.badgeText,
-                      borderColor: theme.border,
-                    }}
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
+            );
+          })}
         </div>
 
         {/* EDUCATION */}

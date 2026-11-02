@@ -684,13 +684,14 @@ html.dark .hover\:border-slate-300:hover {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  aside,
-  nav,
-  header,
+  /* Hide application shell UI, but NEVER hide resume template elements */
+  nav.app-navbar,
+  .app-sidebar,
   .sidebar,
   .topbar,
   .resume-hide-on-print,
-  .resume-control-ribbon {
+  .resume-control-ribbon,
+  .resume-page-break-guide {
     display: none !important;
   }
   #root,
@@ -709,6 +710,30 @@ html.dark .hover\:border-slate-300:hover {
     border: none !important;
     border-radius: 0 !important;
     margin: 0 auto !important;
-    page-break-inside: avoid;
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+    overflow: visible !important;
+  }
+  /* Ensure resume sidebar and header stay fully visible */
+  #resume-print-document aside,
+  #resume-print-document header,
+  #resume-print-document main {
+    display: block !important;
+  }
+  #resume-print-document aside.flex,
+  #resume-print-document header.flex,
+  #resume-print-document .flex {
+    display: flex !important;
+  }
+  #resume-print-document .grid {
+    display: grid !important;
+  }
+  /* Prevent awkward page cuts inside individual section cards and items */
+  #resume-print-document section,
+  #resume-print-document .resume-card,
+  #resume-print-document article,
+  #resume-print-document li {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 }

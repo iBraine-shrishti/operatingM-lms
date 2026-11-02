@@ -75,46 +75,42 @@ export const ClassicATSTemplate = ({ data, theme, onUpdateHeading }) => {
           style={{ color: theme.primary, borderColor: theme.border }}
           tag="h2"
         />
+
+        {/* Optional Skills Summary Pitch */}
+        {data.skillsSummaryText && (
+          <p className="text-[12px] text-slate-800 leading-relaxed mb-2 pb-1 border-b border-slate-100">
+            {data.skillsSummaryText}
+          </p>
+        )}
+
         <div className="space-y-1 text-[12px]">
-          {skills.paidAds && (
-            <div>
-              <EditableHeading
-                value={sectionHeadings.skillCat1}
-                fallback="Paid Advertising"
-                onChange={(val) => onUpdateHeading?.("skillCat1", val)}
-                className="font-bold inline-block mr-1"
-                style={{ color: theme.secondary }}
-                tag="strong"
-              />
-              <span className="text-slate-700">: {skills.paidAds.join(", ")}</span>
-            </div>
-          )}
-          {skills.seoContent && (
-            <div>
-              <EditableHeading
-                value={sectionHeadings.skillCat2}
-                fallback="SEO & Content"
-                onChange={(val) => onUpdateHeading?.("skillCat2", val)}
-                className="font-bold inline-block mr-1"
-                style={{ color: theme.secondary }}
-                tag="strong"
-              />
-              <span className="text-slate-700">: {skills.seoContent.join(", ")}</span>
-            </div>
-          )}
-          {skills.analyticsTools && (
-            <div>
-              <EditableHeading
-                value={sectionHeadings.skillCat3}
-                fallback="Analytics & Platforms"
-                onChange={(val) => onUpdateHeading?.("skillCat3", val)}
-                className="font-bold inline-block mr-1"
-                style={{ color: theme.secondary }}
-                tag="strong"
-              />
-              <span className="text-slate-700">: {skills.analyticsTools.join(", ")}</span>
-            </div>
-          )}
+          {Object.entries(skills || {}).map(([catKey, skillList], idx) => {
+            if (!skillList || skillList.length === 0) return null;
+            const headingKey = `skillCat_${catKey}`;
+            const fallbackKey = `skillCat${idx + 1}`;
+            const defaultLabel =
+              catKey === "paidAds"
+                ? "Paid Advertising"
+                : catKey === "seoContent"
+                ? "SEO & Content Architecture"
+                : catKey === "analyticsTools"
+                ? "Analytics & Platforms"
+                : catKey.charAt(0).toUpperCase() + catKey.slice(1);
+
+            return (
+              <div key={catKey}>
+                <EditableHeading
+                  value={sectionHeadings[headingKey] || sectionHeadings[fallbackKey]}
+                  fallback={defaultLabel}
+                  onChange={(val) => onUpdateHeading?.(headingKey, val)}
+                  className="font-bold inline-block mr-1"
+                  style={{ color: theme.secondary }}
+                  tag="strong"
+                />
+                <span className="text-slate-700">: {skillList.join(", ")}</span>
+              </div>
+            );
+          })}
         </div>
       </section>
 

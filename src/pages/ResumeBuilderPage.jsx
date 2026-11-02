@@ -317,13 +317,9 @@ export const ResumeBuilderPage = () => {
           <div className="sticky top-20">
             <div className="resume-hide-on-print flex items-center justify-between pb-2 mb-2 text-xs text-slate-500 font-bold uppercase tracking-wider">
               <span>A4 Document Preview ({activeTheme.name})</span>
-              <button
-                type="button"
-                onClick={handlePrint}
-                className="text-[#003873] dark:text-sky-400 hover:underline flex items-center gap-1"
-              >
-                <Printer size={13} /> Print to PDF
-              </button>
+              <span className="text-[11px] text-slate-400 font-semibold lowercase">
+                click headings on preview to quick-edit
+              </span>
             </div>
             <ResumePreview
               data={resumeData}

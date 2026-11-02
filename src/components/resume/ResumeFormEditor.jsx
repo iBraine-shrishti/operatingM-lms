@@ -19,6 +19,8 @@ import {
   Layers,
   FileText,
   Filter,
+  X,
+  Columns,
 } from "lucide-react";
 
 const TEMPLATE_SECTIONS_MAP = {
@@ -27,7 +29,7 @@ const TEMPLATE_SECTIONS_MAP = {
     { id: "summary", label: "2. About Me / Summary", icon: FileText },
     { id: "experience", label: "3. Work Experience", icon: Briefcase },
     { id: "skillsSummary", label: "4. Skills Summary (Progress Bars)", icon: Sliders },
-    { id: "expertise", label: "5. Expertise (2-Column Grid Bullets)", icon: CheckCircle2 },
+    { id: "expertise", label: "5. Expertise (2/3-Column Bullet Grid)", icon: CheckCircle2 },
     { id: "education", label: "6. Education (Bottom Arch Capsule)", icon: GraduationCap },
   ],
   "creative-marketer": [
@@ -43,7 +45,7 @@ const TEMPLATE_SECTIONS_MAP = {
     { id: "personal", label: "1. Profile Photo & Contact Dossier", icon: User },
     { id: "summary", label: "2. Executive Summary", icon: FileText },
     { id: "experience", label: "3. Professional Experience", icon: Briefcase },
-    { id: "skills", label: "4. Core Competencies & Tools (3 Categories)", icon: Layers },
+    { id: "skills", label: "4. Core Competencies & Tools (Categories)", icon: Layers },
     { id: "education", label: "5. Education", icon: GraduationCap },
     { id: "projects", label: "6. Key Projects & Deliverables", icon: FolderGit2 },
     { id: "certifications", label: "7. Certifications & Credentials", icon: Award },
@@ -54,14 +56,14 @@ const TEMPLATE_SECTIONS_MAP = {
     { id: "summary", label: "2. Professional Summary", icon: FileText },
     { id: "experience", label: "3. Work Experience", icon: Briefcase },
     { id: "projects", label: "4. Key Projects & Deliverables", icon: FolderGit2 },
-    { id: "skills", label: "5. Core Skills & Tech Stack (3 Categories)", icon: Layers },
+    { id: "skills", label: "5. Core Skills & Tech Stack (Categories)", icon: Layers },
     { id: "education", label: "6. Education", icon: GraduationCap },
     { id: "certifications", label: "7. Certifications & Badges", icon: Award },
   ],
   "classic-ats": [
     { id: "personal", label: "1. ATS Header & Contact Details", icon: User },
     { id: "summary", label: "2. Professional Summary", icon: FileText },
-    { id: "skills", label: "3. Core Competencies & Tools (3 Categories)", icon: Layers },
+    { id: "skills", label: "3. Core Competencies & Tools (Unlimited Categories)", icon: Layers },
     { id: "experience", label: "4. Professional Experience", icon: Briefcase },
     { id: "projects", label: "5. Key Projects & Case Studies", icon: FolderGit2 },
     { id: "education", label: "6. Education & Academic Background", icon: GraduationCap },
@@ -75,8 +77,8 @@ const ALL_SECTIONS_FALLBACK = [
   { id: "summary", label: "2. Executive Summary / About Me", icon: FileText },
   { id: "experience", label: "3. Work Experience", icon: Briefcase },
   { id: "skillsSummary", label: "4. Skills Summary (Dual-Arch Progress Bars)", icon: Sliders },
-  { id: "expertise", label: "5. Expertise (Dual-Arch Grid Bullets)", icon: CheckCircle2 },
-  { id: "skills", label: "6. Core Skills & Competency Tags", icon: Layers },
+  { id: "expertise", label: "5. Expertise (Dual-Arch Bullet Grid)", icon: CheckCircle2 },
+  { id: "skills", label: "6. Core Skills & Competency Categories", icon: Layers },
   { id: "education", label: "7. Education", icon: GraduationCap },
   { id: "projects", label: "8. Projects & Case Studies", icon: FolderGit2 },
   { id: "certifications", label: "9. Certifications & Badges", icon: Award },
@@ -102,13 +104,13 @@ const getTemplateName = (id) => {
 export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChange, onReset }) => {
   const [openSection, setOpenSection] = useState("personal");
   const [filterByTemplate, setFilterByTemplate] = useState(true);
+  const [newCatName, setNewCatName] = useState("");
   const fileInputRef = useRef(null);
 
   const toggleSection = (section) => {
     setOpenSection((prev) => (prev === section ? null : section));
   };
 
-  // Determine sections based on currently active template
   const activeSections = filterByTemplate
     ? TEMPLATE_SECTIONS_MAP[templateId] || ALL_SECTIONS_FALLBACK
     : ALL_SECTIONS_FALLBACK;
@@ -266,6 +268,60 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     });
   };
 
+  // Dynamic Skill Category Handlers
+  const addSkillCategory = (name) => {
+    if (!name || !name.trim()) return;
+    const cleanName = name.trim();
+    const key = cleanName.toLowerCase().replace(/[^a-z0-9]/g, "");
+    if (!key) return;
+
+    onChange({
+      ...data,
+      skills: {
+        ...(data.skills || {}),
+        [key]: ["Core Competency 1", "Core Competency 2"],
+      },
+      sectionHeadings: {
+        ...(data.sectionHeadings || {}),
+        [`skillCat_${key}`]: cleanName,
+      },
+    });
+    setNewCatName("");
+  };
+
+  const removeSkillCategory = (catKey) => {
+    const updatedSkills = { ...(data.skills || {}) };
+    delete updatedSkills[catKey];
+    onChange({
+      ...data,
+      skills: updatedSkills,
+    });
+  };
+
+  const addSkill = (category, skill) => {
+    if (!skill.trim()) return;
+    const catSkills = data.skills[category] || [];
+    if (!catSkills.includes(skill.trim())) {
+      onChange({
+        ...data,
+        skills: {
+          ...data.skills,
+          [category]: [...catSkills, skill.trim()],
+        },
+      });
+    }
+  };
+
+  const removeSkill = (category, skillToRemove) => {
+    onChange({
+      ...data,
+      skills: {
+        ...data.skills,
+        [category]: (data.skills[category] || []).filter((s) => s !== skillToRemove),
+      },
+    });
+  };
+
   // Education Handlers
   const addEducation = () => {
     const newEdu = {
@@ -296,31 +352,6 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     onChange({
       ...data,
       education: data.education.filter((edu) => edu.id !== id),
-    });
-  };
-
-  // Skills Handlers
-  const addSkill = (category, skill) => {
-    if (!skill.trim()) return;
-    const catSkills = data.skills[category] || [];
-    if (!catSkills.includes(skill.trim())) {
-      onChange({
-        ...data,
-        skills: {
-          ...data.skills,
-          [category]: [...catSkills, skill.trim()],
-        },
-      });
-    }
-  };
-
-  const removeSkill = (category, skillToRemove) => {
-    onChange({
-      ...data,
-      skills: {
-        ...data.skills,
-        [category]: (data.skills[category] || []).filter((s) => s !== skillToRemove),
-      },
     });
   };
 
@@ -404,7 +435,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     });
   };
 
-  // Section Renderers
+  // 1. PERSONAL SECTION RENDERER
   const renderPersonalSection = (meta) => (
     <div key="personal" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
       <button
@@ -421,6 +452,72 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
 
       {openSection === "personal" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
+          {/* SPECIALIZATION BADGE CONTROLS (for Minimalist Tech) */}
+          {(isMinimalist || !filterByTemplate) && (
+            <div className="p-3.5 rounded-xl bg-sky-50/70 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/50 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <label className="font-extrabold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={data.showSpecializationBadge !== false}
+                    onChange={(e) =>
+                      onChange({
+                        ...data,
+                        showSpecializationBadge: e.target.checked,
+                      })
+                    }
+                    className="rounded border-slate-300 text-[#003873] focus:ring-[#003873] cursor-pointer"
+                  />
+                  <span>Show Specialization Badge (Top Right)</span>
+                </label>
+
+                {data.showSpecializationBadge !== false && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onChange({
+                        ...data,
+                        showSpecializationBadge: false,
+                      })
+                    }
+                    className="text-[10px] font-bold text-red-500 hover:underline cursor-pointer"
+                  >
+                    Remove Box
+                  </button>
+                )}
+              </div>
+
+              {data.showSpecializationBadge !== false && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                  <div>
+                    <label className="text-[10.5px] font-bold text-slate-600 dark:text-slate-400 block mb-0.5">
+                      Badge Label
+                    </label>
+                    <input
+                      type="text"
+                      value={data.sectionHeadings?.specializationTitle || ""}
+                      placeholder="Specialization"
+                      onChange={(e) => updateSectionHeading("specializationTitle", e.target.value)}
+                      className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10.5px] font-bold text-slate-600 dark:text-slate-400 block mb-0.5">
+                      Specialization Value
+                    </label>
+                    <input
+                      type="text"
+                      value={data.sectionHeadings?.specializationValue || ""}
+                      placeholder="Digital Acquisition & Growth"
+                      onChange={(e) => updateSectionHeading("specializationValue", e.target.value)}
+                      className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* TOP EYEBROW / TAGLINE (for Creative & Minimalist templates) */}
           {(isCreativeMarketer || isMinimalist || !filterByTemplate) && (
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
@@ -435,7 +532,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
                 className="w-full px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
               />
               <span className="text-[10px] text-slate-500 mt-0.5 block">
-                Top badge line displayed above your name in this template
+                Top line displayed above your name in this template
               </span>
             </div>
           )}
@@ -454,12 +551,12 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
                 className="w-full px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
               />
               <span className="text-[10px] text-slate-500 mt-0.5 block">
-                Sidebar contact title above your communication channels
+                Sidebar contact title above communication channels
               </span>
             </div>
           )}
 
-          {/* PHOTO UPLOAD / CHANGE CARD (For photo-enabled templates) */}
+          {/* PHOTO UPLOAD / CHANGE CARD */}
           {(isDualArch || isCreativeMarketer || isExecutive || !filterByTemplate) && (
             <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-900/40 flex flex-col sm:flex-row items-center gap-4">
               <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#003873] dark:border-sky-400 shadow-sm shrink-0 bg-white">
@@ -520,7 +617,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
           {/* ATS FORMAT NOTE */}
           {(isClassicATS || isMinimalist) && filterByTemplate && (
             <div className="p-2.5 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/40 text-[11px] text-sky-800 dark:text-sky-300">
-              💡 <strong>ATS Standard Tip:</strong> This template is scanner-optimized and focuses purely on structured text data without graphics or photos.
+              💡 <strong>ATS Standard Tip:</strong> This template is scanner-optimized and uses standard text fields without photos for seamless applicant tracking parsing.
             </div>
           )}
 
@@ -595,6 +692,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     </div>
   );
 
+  // 2. SUMMARY SECTION
   const renderSummarySection = (meta) => (
     <div key="summary" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
       <button
@@ -640,6 +738,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     </div>
   );
 
+  // 3. EXPERIENCE SECTION
   const renderExperienceSection = (meta) => (
     <div key="experience" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
       <button
@@ -785,6 +884,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     </div>
   );
 
+  // 4. SKILLS SUMMARY (DUAL-ARCH PROGRESS BARS)
   const renderSkillsSummarySection = (meta) => (
     <div key="skillsSummary" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
       <button
@@ -847,6 +947,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     </div>
   );
 
+  // 5. EXPERTISE (DUAL-ARCH GRID WITH COLUMN HEADINGS & COLUMN CONTROLS)
   const renderExpertiseSection = (meta) => (
     <div key="expertise" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
       <button
@@ -856,53 +957,138 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
       >
         <div className="flex items-center gap-2.5">
           <CheckCircle2 size={16} className="text-[#003873] dark:text-sky-400" />
-          <span>{meta.label} ({(data.expertiseList || []).length})</span>
+          <span>{meta.label} ({(data.expertiseList || []).length} Items)</span>
         </div>
         {openSection === "expertise" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
       </button>
 
       {openSection === "expertise" && (
-        <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-3.5 text-xs">
-          <div>
-            <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-              Section Headline
-            </label>
-            <input
-              type="text"
-              value={data.sectionHeadings?.expertise || ""}
-              placeholder="EXPERTISE"
-              onChange={(e) => updateSectionHeading("expertise", e.target.value)}
-              className="w-full max-w-sm px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold mb-2"
-            />
-          </div>
+        <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                Main Section Headline
+              </label>
+              <input
+                type="text"
+                value={data.sectionHeadings?.expertise || ""}
+                placeholder="EXPERTISE"
+                onChange={(e) => updateSectionHeading("expertise", e.target.value)}
+                className="w-full px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
+              />
+            </div>
 
-          <p className="text-[11px] text-slate-500">
-            Items rendered in the 2-column expertise bullet grid on the Dual-Arch template:
-          </p>
-
-          <div className="flex flex-wrap gap-1.5">
-            {(data.expertiseList || []).map((item, idx) => (
-              <span
-                key={idx}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-md font-medium text-xs"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-[#003873] dark:bg-sky-400" />
-                {item}
+            <div>
+              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                Grid Width Layout
+              </label>
+              <div className="flex rounded-lg border border-slate-200 dark:border-slate-700 p-0.5 bg-slate-100 dark:bg-slate-900">
                 <button
                   type="button"
-                  onClick={() => removeExpertiseItem(item)}
-                  className="text-slate-400 hover:text-red-500 cursor-pointer"
+                  onClick={() => onChange({ ...data, expertiseGridCols: 2 })}
+                  className={`flex-1 py-1.5 font-bold rounded-md transition-all ${
+                    (data.expertiseGridCols || 2) === 2
+                      ? "bg-white dark:bg-slate-800 text-[#003873] dark:text-sky-400 shadow-xs"
+                      : "text-slate-500 hover:text-slate-900"
+                  }`}
                 >
-                  ×
+                  2 Columns
                 </button>
-              </span>
-            ))}
+                <button
+                  type="button"
+                  onClick={() => onChange({ ...data, expertiseGridCols: 3 })}
+                  className={`flex-1 py-1.5 font-bold rounded-md transition-all ${
+                    data.expertiseGridCols === 3
+                      ? "bg-white dark:bg-slate-800 text-[#003873] dark:text-sky-400 shadow-xs"
+                      : "text-slate-500 hover:text-slate-900"
+                  }`}
+                >
+                  3 Columns (Wider)
+                </button>
+              </div>
+            </div>
           </div>
 
+          {/* COLUMN SUB-HEADINGS TOGGLE */}
+          <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2">
+            <label className="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={!!data.showExpertiseColHeaders}
+                onChange={(e) => onChange({ ...data, showExpertiseColHeaders: e.target.checked })}
+                className="rounded border-slate-300 text-[#003873] focus:ring-[#003873]"
+              />
+              <span>Enable Column Sub-Headings Above Grid</span>
+            </label>
+
+            {data.showExpertiseColHeaders && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 pt-1">
+                <div>
+                  <label className="text-[10px] text-slate-500 block mb-0.5">Column 1 Header</label>
+                  <input
+                    type="text"
+                    value={data.sectionHeadings?.expertiseCol1 || ""}
+                    placeholder="Core Specialization"
+                    onChange={(e) => updateSectionHeading("expertiseCol1", e.target.value)}
+                    className="w-full px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-xs font-semibold"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-slate-500 block mb-0.5">Column 2 Header</label>
+                  <input
+                    type="text"
+                    value={data.sectionHeadings?.expertiseCol2 || ""}
+                    placeholder="Tools & Execution"
+                    onChange={(e) => updateSectionHeading("expertiseCol2", e.target.value)}
+                    className="w-full px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-xs font-semibold"
+                  />
+                </div>
+                {data.expertiseGridCols === 3 && (
+                  <div>
+                    <label className="text-[10px] text-slate-500 block mb-0.5">Column 3 Header</label>
+                    <input
+                      type="text"
+                      value={data.sectionHeadings?.expertiseCol3 || ""}
+                      placeholder="Additional Expertise"
+                      onChange={(e) => updateSectionHeading("expertiseCol3", e.target.value)}
+                      className="w-full px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md text-xs font-semibold"
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* BULLET ITEMS LIST */}
+          <div className="space-y-1.5">
+            <label className="font-bold text-slate-700 dark:text-slate-300 block">
+              Expertise Items (Unlimited Grid Bullets)
+            </label>
+            <div className="flex flex-wrap gap-1.5">
+              {(data.expertiseList || []).map((item, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-md font-medium text-xs border border-slate-200 dark:border-slate-700 shadow-2xs"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#003873] dark:bg-sky-400" />
+                  {item}
+                  <button
+                    type="button"
+                    onClick={() => removeExpertiseItem(item)}
+                    className="text-slate-400 hover:text-red-500 cursor-pointer ml-1"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* ADD ITEM INPUT */}
           <div className="flex gap-2">
             <input
               type="text"
-              placeholder="Add expertise item (e.g. UX Design, Google Ads, Logo Design)..."
+              placeholder="Add expertise item (e.g. UX Design, Video Editing, Conversion CRO)..."
               id="input-new-expertise"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -922,7 +1108,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
                   input.value = "";
                 }
               }}
-              className="px-3 py-1.5 bg-[#003873] text-white rounded-lg font-bold cursor-pointer"
+              className="px-3.5 py-1.5 bg-[#003873] hover:bg-[#002d5c] text-white rounded-lg font-bold cursor-pointer transition-colors"
             >
               Add
             </button>
@@ -932,6 +1118,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     </div>
   );
 
+  // 6. CORE SKILLS (UNLIMITED DYNAMIC CATEGORIES FOR ATS & ALL TEMPLATES)
   const renderSkillsSection = (meta) => (
     <div key="skills" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
       <button
@@ -948,6 +1135,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
 
       {openSection === "skills" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
+          {/* SKILLS SECTION HEADLINE */}
           <div>
             <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
               Skills Section Headline
@@ -957,84 +1145,177 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
               value={data.sectionHeadings?.skills || ""}
               placeholder="Core Competencies / Skills Matrix"
               onChange={(e) => updateSectionHeading("skills", e.target.value)}
-              className="w-full max-w-sm px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold mb-1"
+              className="w-full max-w-sm px-3 py-1.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-semibold"
             />
           </div>
 
-          {Object.entries({
-            paidAds: { key: "skillCat1", defaultLabel: "Paid Acquisition & Ads" },
-            seoContent: { key: "skillCat2", defaultLabel: "SEO & Content Architecture" },
-            ...(isCreativeMarketer ? {} : { analyticsTools: { key: "skillCat3", defaultLabel: "Analytics & MarTech Tools" } }),
-          }).map(([catKey, { key: headingKey, defaultLabel }]) => {
-            const currentList = data.skills[catKey] || [];
-            const catLabel = data.sectionHeadings?.[headingKey] || defaultLabel;
-            return (
-              <div key={catKey} className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-900/40 space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1.5 border-b border-slate-200 dark:border-slate-700">
-                  <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                    Category Tag Name:
-                  </label>
-                  <input
-                    type="text"
-                    value={data.sectionHeadings?.[headingKey] || ""}
-                    placeholder={defaultLabel}
-                    onChange={(e) => updateSectionHeading(headingKey, e.target.value)}
-                    className="px-2.5 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white text-xs font-bold w-full sm:w-64"
-                  />
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {currentList.map((skill, sIdx) => (
-                    <span
-                      key={sIdx}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-md font-medium text-xs border border-slate-200 dark:border-slate-700"
-                    >
-                      {skill}
+          {/* OPTIONAL SKILLS SUMMARY PITCH (FOR ATS & SINGLE-COLUMN TEMPLATES) */}
+          <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className="font-bold text-slate-700 dark:text-slate-300">
+                Skills Summary Statement (ATS Competency Highlights)
+              </label>
+              {data.skillsSummaryText && (
+                <button
+                  type="button"
+                  onClick={() => onChange({ ...data, skillsSummaryText: "" })}
+                  className="text-[10px] font-bold text-red-500 hover:underline cursor-pointer"
+                >
+                  Clear Summary
+                </button>
+              )}
+            </div>
+            <textarea
+              rows={2}
+              value={data.skillsSummaryText || ""}
+              placeholder="High-impact technical skills overview paragraph (appears directly under Skills heading in ATS templates)..."
+              onChange={(e) => onChange({ ...data, skillsSummaryText: e.target.value })}
+              className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-800 dark:text-slate-200"
+            />
+          </div>
+
+          {/* DYNAMIC CATEGORY BLOCKS */}
+          <div className="space-y-3 pt-1">
+            <div className="flex items-center justify-between">
+              <label className="font-extrabold text-slate-800 dark:text-slate-200 text-xs">
+                Skill Categories ({Object.keys(data.skills || {}).length})
+              </label>
+            </div>
+
+            {Object.entries(data.skills || {}).map(([catKey, skillList], idx) => {
+              const headingKey = `skillCat_${catKey}`;
+              const fallbackKey = `skillCat${idx + 1}`;
+              const defaultLabel =
+                catKey === "paidAds"
+                  ? "Paid Acquisition & Ads"
+                  : catKey === "seoContent"
+                  ? "SEO & Content Architecture"
+                  : catKey === "analyticsTools"
+                  ? "Analytics & MarTech Tools"
+                  : catKey.charAt(0).toUpperCase() + catKey.slice(1);
+
+              const catLabel =
+                data.sectionHeadings?.[headingKey] ||
+                data.sectionHeadings?.[fallbackKey] ||
+                defaultLabel;
+
+              return (
+                <div
+                  key={catKey}
+                  className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-900/40 space-y-3"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1.5 border-b border-slate-200 dark:border-slate-700">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#003873] dark:bg-sky-400" />
+                      <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Category Tag:
+                      </label>
+                      <input
+                        type="text"
+                        value={catLabel}
+                        placeholder={defaultLabel}
+                        onChange={(e) => updateSectionHeading(headingKey, e.target.value)}
+                        className="px-2.5 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white text-xs font-bold w-full sm:w-60"
+                      />
+                    </div>
+
+                    {Object.keys(data.skills || {}).length > 1 && (
                       <button
                         type="button"
-                        onClick={() => removeSkill(catKey, skill)}
-                        className="text-slate-400 hover:text-red-500 cursor-pointer"
+                        onClick={() => removeSkillCategory(catKey)}
+                        className="text-[11px] font-bold text-red-500 hover:text-red-700 self-end sm:self-auto flex items-center gap-1 cursor-pointer"
+                        title="Delete this entire skill category"
                       >
-                        ×
+                        <Trash2 size={12} />
+                        <span>Delete Category</span>
                       </button>
-                    </span>
-                  ))}
+                    )}
+                  </div>
+
+                  {/* SKILL PILLS */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {(skillList || []).map((skill, sIdx) => (
+                      <span
+                        key={sIdx}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-md font-medium text-xs border border-slate-200 dark:border-slate-700"
+                      >
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => removeSkill(catKey, skill)}
+                          className="text-slate-400 hover:text-red-500 cursor-pointer ml-0.5"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* ADD SKILL INPUT */}
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder={`Add skill under ${catLabel}...`}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          addSkill(catKey, e.target.value);
+                          e.target.value = "";
+                        }
+                      }}
+                      id={`input-${catKey}`}
+                      className="flex-1 px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const input = document.getElementById(`input-${catKey}`);
+                        if (input && input.value) {
+                          addSkill(catKey, input.value);
+                          input.value = "";
+                        }
+                      }}
+                      className="px-3 py-1.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-bold cursor-pointer"
+                    >
+                      Add
+                    </button>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder={`Add skill under ${catLabel}...`}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addSkill(catKey, e.target.value);
-                        e.target.value = "";
-                      }
-                    }}
-                    id={`input-${catKey}`}
-                    className="flex-1 px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const input = document.getElementById(`input-${catKey}`);
-                      if (input && input.value) {
-                        addSkill(catKey, input.value);
-                        input.value = "";
-                      }
-                    }}
-                    className="px-3 py-1.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg font-bold cursor-pointer"
-                  >
-                    Add
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+
+            {/* ADD NEW CATEGORY BUTTON */}
+            <div className="p-3 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30 flex flex-col sm:flex-row items-center gap-2">
+              <input
+                type="text"
+                placeholder="New Category Name (e.g. CRM & Automation, Creative Design)..."
+                value={newCatName}
+                onChange={(e) => setNewCatName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addSkillCategory(newCatName);
+                  }
+                }}
+                className="flex-1 px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs"
+              />
+              <button
+                type="button"
+                onClick={() => addSkillCategory(newCatName)}
+                disabled={!newCatName.trim()}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-[#003873] hover:bg-[#002d5c] disabled:opacity-50 text-white rounded-lg font-bold text-xs transition-colors cursor-pointer"
+              >
+                <Plus size={13} />
+                <span>Add Skill Category</span>
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
 
+  // 7. EDUCATION SECTION
   const renderEducationSection = (meta) => (
     <div key="education" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
       <button
@@ -1138,6 +1419,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     </div>
   );
 
+  // 8. PROJECTS SECTION (WITH LIVE CAPSTONE TAG CLEAR / REMOVE)
   const renderProjectsSection = (meta) => (
     <div key="projects" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
       <button
@@ -1189,10 +1471,11 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
                 <button
                   type="button"
                   onClick={() => removeProject(proj.id)}
-                  className="text-red-500 hover:text-red-700 p-1 cursor-pointer"
+                  className="text-red-500 hover:text-red-700 p-1 cursor-pointer flex items-center gap-1 text-[11px] font-bold"
                   title="Delete project"
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={13} />
+                  <span>Delete Project</span>
                 </button>
               </div>
 
@@ -1215,15 +1498,34 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
                     className="w-full px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
                   />
                 </div>
+
+                {/* CLIENT / CONTEXT TAG (WITH ONE-CLICK REMOVE / CLEAR BUTTON) */}
                 <div className="sm:col-span-2">
-                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Client / Context</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="font-bold text-slate-700 dark:text-slate-300">
+                      Client / Context Tag (e.g. "Live Capstone Project")
+                    </label>
+                    {proj.clientOrType ? (
+                      <button
+                        type="button"
+                        onClick={() => updateProject(proj.id, "clientOrType", "")}
+                        className="text-[10px] font-bold text-red-500 hover:underline cursor-pointer flex items-center gap-0.5"
+                      >
+                        <X size={11} /> Remove Tag
+                      </button>
+                    ) : (
+                      <span className="text-[10px] text-slate-400">Tag is currently hidden</span>
+                    )}
+                  </div>
                   <input
                     type="text"
-                    value={proj.clientOrType}
+                    value={proj.clientOrType || ""}
+                    placeholder="Leave empty if you don't want a context tag on this project"
                     onChange={(e) => updateProject(proj.id, "clientOrType", e.target.value)}
                     className="w-full px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
                   />
                 </div>
+
                 <div className="sm:col-span-2">
                   <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Description & Strategy</label>
                   <textarea
@@ -1241,6 +1543,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     </div>
   );
 
+  // 9. CERTIFICATIONS SECTION
   const renderCertificationsSection = (meta) => (
     <div key="certifications" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
       <button
@@ -1315,6 +1618,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     </div>
   );
 
+  // 10. LANGUAGES SECTION
   const renderLanguagesSection = (meta) => (
     <div key="languages" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
       <button

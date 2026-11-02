@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { EditableHeading } from "../EditableHeading";
 
-export const CreativeMarketerTemplate = ({ data, theme, onUpdateHeading }) => {
+export const CreativeMarketerTemplate = ({ data, theme, onUpdateHeading, onUpdateProject }) => {
   const {
     personalInfo,
     summary,
@@ -226,26 +226,40 @@ export const CreativeMarketerTemplate = ({ data, theme, onUpdateHeading }) => {
                 >
                   <div>
                     <div className="flex items-start justify-between gap-2 mb-1">
-                      <h4 className="font-bold text-slate-900 text-[12.5px]">{proj.title}</h4>
+                      <EditableHeading
+                        value={proj.title}
+                        fallback="Project Title"
+                        onChange={(val) => onUpdateProject?.(proj.id, "title", val)}
+                        className="font-bold text-slate-900 text-[12.5px]"
+                        tag="h4"
+                      />
                     </div>
-                    {proj.metricHighlight && (
-                      <span
-                        className="inline-block text-[10px] font-black uppercase px-2 py-0.5 rounded-md mb-2"
-                        style={{
-                          backgroundColor: theme.primary,
-                          color: "#ffffff",
-                        }}
-                      >
-                        {proj.metricHighlight}
-                      </span>
-                    )}
+                    {proj.metricHighlight ? (
+                      <EditableHeading
+                        value={proj.metricHighlight}
+                        fallback=""
+                        onChange={(val) => onUpdateProject?.(proj.id, "metricHighlight", val)}
+                        className="inline-block text-[10px] font-black uppercase px-2 py-0.5 rounded-md mb-2 text-white"
+                        style={{ backgroundColor: theme.primary }}
+                        tag="span"
+                      />
+                    ) : null}
                     <p className="text-[11.5px] text-slate-700 leading-snug">
                       {proj.description}
                     </p>
                   </div>
-                  <div className="text-[10.5px] font-bold pt-1" style={{ color: theme.secondary }}>
-                    {proj.clientOrType}
-                  </div>
+                  {proj.clientOrType ? (
+                    <div className="pt-1">
+                      <EditableHeading
+                        value={proj.clientOrType}
+                        fallback=""
+                        onChange={(val) => onUpdateProject?.(proj.id, "clientOrType", val)}
+                        className="text-[10.5px] font-bold inline-block cursor-text hover:underline"
+                        style={{ color: theme.secondary }}
+                        tag="span"
+                      />
+                    </div>
+                  ) : null}
                 </div>
               ))}
             </div>
@@ -268,58 +282,46 @@ export const CreativeMarketerTemplate = ({ data, theme, onUpdateHeading }) => {
               />
             </div>
             <div className="space-y-2.5">
-              {skills.paidAds && (
-                <div>
-                  <EditableHeading
-                    value={sectionHeadings.skillCat1}
-                    fallback="Paid Ads & Funnels"
-                    onChange={(val) => onUpdateHeading?.("skillCat1", val)}
-                    className="text-[10px] font-bold uppercase text-slate-500 block mb-1"
-                    tag="span"
-                  />
-                  <div className="flex flex-wrap gap-1.5">
-                    {skills.paidAds.map((s, idx) => (
-                      <span
-                        key={idx}
-                        className="text-[11px] font-bold px-2 py-0.5 rounded-md border"
-                        style={{
-                          backgroundColor: theme.badgeBg,
-                          color: theme.badgeText,
-                          borderColor: theme.border,
-                        }}
-                      >
-                        {s}
-                      </span>
-                    ))}
+              {Object.entries(skills || {}).map(([catKey, skillList], idx) => {
+                if (!skillList || skillList.length === 0) return null;
+                const headingKey = `skillCat_${catKey}`;
+                const fallbackKey = `skillCat${idx + 1}`;
+                const defaultLabel =
+                  catKey === "paidAds"
+                    ? "Paid Ads & Acquisition"
+                    : catKey === "seoContent"
+                    ? "SEO & Content Architecture"
+                    : catKey === "analyticsTools"
+                    ? "Analytics & MarTech Tools"
+                    : catKey.charAt(0).toUpperCase() + catKey.slice(1);
+
+                return (
+                  <div key={catKey}>
+                    <EditableHeading
+                      value={sectionHeadings[headingKey] || sectionHeadings[fallbackKey]}
+                      fallback={defaultLabel}
+                      onChange={(val) => onUpdateHeading?.(headingKey, val)}
+                      className="text-[10px] font-bold uppercase text-slate-500 block mb-1"
+                      tag="span"
+                    />
+                    <div className="flex flex-wrap gap-1.5">
+                      {skillList.map((s, sIdx) => (
+                        <span
+                          key={sIdx}
+                          className="text-[11px] font-bold px-2 py-0.5 rounded-md border"
+                          style={{
+                            backgroundColor: theme.badgeBg,
+                            color: theme.badgeText,
+                            borderColor: theme.border,
+                          }}
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-              {skills.seoContent && (
-                <div>
-                  <EditableHeading
-                    value={sectionHeadings.skillCat2}
-                    fallback="SEO & Tech MarTech"
-                    onChange={(val) => onUpdateHeading?.("skillCat2", val)}
-                    className="text-[10px] font-bold uppercase text-slate-500 block mb-1"
-                    tag="span"
-                  />
-                  <div className="flex flex-wrap gap-1.5">
-                    {skills.seoContent.map((s, idx) => (
-                      <span
-                        key={idx}
-                        className="text-[11px] font-bold px-2 py-0.5 rounded-md border"
-                        style={{
-                          backgroundColor: theme.badgeBg,
-                          color: theme.badgeText,
-                          borderColor: theme.border,
-                        }}
-                      >
-                        {s}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+                );
+              })}
             </div>
           </section>
 

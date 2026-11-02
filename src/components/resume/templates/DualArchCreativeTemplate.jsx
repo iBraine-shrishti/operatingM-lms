@@ -30,14 +30,16 @@ export const DualArchCreativeTemplate = ({ data, theme, onUpdateHeading }) => {
           { name: "Conversion Optimization", level: 85 },
         ];
 
-  // Resolved expertise bullets
+  // Resolved expertise bullets (unlimited, no arbitrary cap)
   const displayExpertise =
     expertiseList && expertiseList.length > 0
       ? expertiseList
       : [
           ...(skills.paidAds || ["Google Ads", "Meta Ads"]),
           ...(skills.seoContent || ["Technical SEO", "Keyword Research"]),
-        ].slice(0, 8);
+        ];
+
+  const gridColsClass = data.expertiseGridCols === 3 ? "grid-cols-3" : "grid-cols-2";
 
   return (
     <div className="bg-white text-slate-800 font-sans leading-relaxed text-[12.5px] shadow-sm min-h-[1050px] w-full flex flex-col md:flex-row print:shadow-none print:m-0">
@@ -268,7 +270,7 @@ export const DualArchCreativeTemplate = ({ data, theme, onUpdateHeading }) => {
           </div>
         </section>
 
-        {/* 4. EXPERTISE (2-COLUMN BULLETED GRID) */}
+        {/* 4. EXPERTISE (2-COLUMN / 3-COLUMN BULLETED GRID) */}
         <section className="space-y-3 pt-1">
           <EditableHeading
             value={sectionHeadings.expertise}
@@ -279,7 +281,36 @@ export const DualArchCreativeTemplate = ({ data, theme, onUpdateHeading }) => {
             tag="h2"
           />
 
-          <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-[12px] text-slate-800">
+          {/* Optional column headings */}
+          {(data.showExpertiseColHeaders || sectionHeadings.expertiseCol1 || sectionHeadings.expertiseCol2) && (
+            <div className={`grid ${gridColsClass} gap-x-6 pb-1 border-b border-slate-200 text-[10.5px] font-black uppercase text-slate-500`}>
+              <EditableHeading
+                value={sectionHeadings.expertiseCol1}
+                fallback="Core Specialization"
+                onChange={(val) => onUpdateHeading?.("expertiseCol1", val)}
+                className="block"
+                tag="span"
+              />
+              <EditableHeading
+                value={sectionHeadings.expertiseCol2}
+                fallback="Tools & Execution"
+                onChange={(val) => onUpdateHeading?.("expertiseCol2", val)}
+                className="block"
+                tag="span"
+              />
+              {data.expertiseGridCols === 3 && (
+                <EditableHeading
+                  value={sectionHeadings.expertiseCol3}
+                  fallback="Additional Expertise"
+                  onChange={(val) => onUpdateHeading?.("expertiseCol3", val)}
+                  className="block"
+                  tag="span"
+                />
+              )}
+            </div>
+          )}
+
+          <div className={`grid ${gridColsClass} gap-x-6 gap-y-2 text-[12px] text-slate-800`}>
             {displayExpertise.map((item, idx) => (
               <div key={idx} className="flex items-center gap-2">
                 <span
