@@ -22,6 +22,7 @@ import { LoginPage } from "./pages/LoginPage.jsx";
 import { CertificateVerificationPage } from "./pages/CertificateVerificationPage.jsx";
 import { OfficialExamPage } from "./pages/OfficialExamPage.jsx";
 import { GrievancePage } from "./pages/GrievancePage.jsx";
+import { ResumeBuilderPage } from "./pages/ResumeBuilderPage.jsx";
 
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
@@ -91,6 +92,7 @@ function AppRoutes() {
         <Route path="grievance" element={<GrievancePage />} />
         <Route path="course-feedback-form" element={<GrievancePage initialTab="course" />} />
         <Route path="trainer-feedback-form" element={<GrievancePage initialTab="trainer" />} />
+        <Route path="resume-builder" element={<ResumeBuilderPage />} />
       </Route>
 
       {/* Wildcard: redirects to RootRoute */}

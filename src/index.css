@@ -669,3 +669,46 @@ html.dark .hover\:border-slate-300:hover {
   margin-left: 0 !important;
   margin-right: 0 !important;
 }
+
+/* ==========================================================================
+   RESUME BUILDER CLEAN A4 PRINT STYLES
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 6mm;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  aside,
+  nav,
+  header,
+  .sidebar,
+  .topbar,
+  .resume-hide-on-print,
+  .resume-control-ribbon {
+    display: none !important;
+  }
+  #root,
+  main,
+  .min-h-screen {
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: auto !important;
+    background: transparent !important;
+  }
+  #resume-print-document {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    margin: 0 auto !important;
+    page-break-inside: avoid;
+  }
+}

@@ -32,6 +32,7 @@ import {
   Calendar,
   Images,
   MessagesSquare,
+  Briefcase,
 } from "lucide-react";
 
 export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
@@ -295,6 +296,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
         { name: "Forums", path: "/forums", icon: MessagesSquare },
         { name: "Schedule", path: "/schedule", icon: Calendar },
         { name: "Grievance", path: "/grievance", icon: HelpCircle },
+        { name: "Resume Builder", path: "/resume-builder", icon: Briefcase },
       ],
     },
   ];

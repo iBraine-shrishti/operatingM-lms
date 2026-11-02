@@ -1,0 +1,392 @@
+import React from "react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Linkedin,
+  Globe,
+  Briefcase,
+  GraduationCap,
+  Award,
+  Sparkles,
+  FolderGit2,
+  Languages,
+} from "lucide-react";
+
+export const ModernExecutiveTemplate = ({ data, theme }) => {
+  const {
+    personalInfo,
+    summary,
+    experiences = [],
+    education = [],
+    skills = {},
+    projects = [],
+    certifications = [],
+    languages = [],
+  } = data;
+
+  return (
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] shadow-sm min-h-[1050px] w-full flex flex-col md:flex-row print:shadow-none print:m-0 print:p-0">
+      {/* LEFT SIDEBAR (35%) */}
+      <aside
+        className="w-full md:w-[36%] p-6 sm:p-7 border-r print:border-r space-y-6"
+        style={{
+          backgroundColor: theme.lightBg,
+          borderColor: theme.border,
+        }}
+      >
+        {/* Profile Avatar / Initials Badge */}
+        <div className="flex flex-col items-center md:items-start space-y-3 pb-4 border-b" style={{ borderColor: theme.border }}>
+          <div
+            className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-sm"
+            style={{ backgroundColor: theme.primary }}
+          >
+            {personalInfo.fullName
+              ? personalInfo.fullName
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase()
+              : "OM"}
+          </div>
+          <div>
+            <span
+              className="text-[10px] font-extrabold uppercase tracking-widest block"
+              style={{ color: theme.secondary }}
+            >
+              Contact Dossier
+            </span>
+            <div className="space-y-1.5 mt-2 text-[12px] text-slate-700">
+              {personalInfo.email && (
+                <div className="flex items-center gap-2">
+                  <Mail size={13} style={{ color: theme.primary }} className="shrink-0" />
+                  <span className="truncate">{personalInfo.email}</span>
+                </div>
+              )}
+              {personalInfo.phone && (
+                <div className="flex items-center gap-2">
+                  <Phone size={13} style={{ color: theme.primary }} className="shrink-0" />
+                  <span>{personalInfo.phone}</span>
+                </div>
+              )}
+              {personalInfo.location && (
+                <div className="flex items-center gap-2">
+                  <MapPin size={13} style={{ color: theme.primary }} className="shrink-0" />
+                  <span>{personalInfo.location}</span>
+                </div>
+              )}
+              {personalInfo.linkedin && (
+                <div className="flex items-center gap-2">
+                  <Linkedin size={13} style={{ color: theme.primary }} className="shrink-0" />
+                  <span className="truncate">{personalInfo.linkedin}</span>
+                </div>
+              )}
+              {personalInfo.portfolio && (
+                <div className="flex items-center gap-2">
+                  <Globe size={13} style={{ color: theme.primary }} className="shrink-0" />
+                  <span className="truncate">{personalInfo.portfolio}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* SKILLS SECTION */}
+        <div className="space-y-3">
+          <h3
+            className="text-xs font-black uppercase tracking-wider pb-1.5 border-b flex items-center gap-2"
+            style={{ color: theme.primary, borderColor: theme.border }}
+          >
+            <Sparkles size={14} style={{ color: theme.secondary }} />
+            Core Competencies
+          </h3>
+
+          {skills.paidAds && skills.paidAds.length > 0 && (
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                Paid Acquisition & Ads
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {skills.paidAds.map((s, idx) => (
+                  <span
+                    key={idx}
+                    className="text-[11px] font-semibold px-2 py-0.5 rounded-md border"
+                    style={{
+                      backgroundColor: theme.badgeBg,
+                      color: theme.badgeText,
+                      borderColor: theme.border,
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {skills.seoContent && skills.seoContent.length > 0 && (
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                SEO & Content
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {skills.seoContent.map((s, idx) => (
+                  <span
+                    key={idx}
+                    className="text-[11px] font-semibold px-2 py-0.5 rounded-md border"
+                    style={{
+                      backgroundColor: theme.badgeBg,
+                      color: theme.badgeText,
+                      borderColor: theme.border,
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {skills.analyticsTools && skills.analyticsTools.length > 0 && (
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
+                Analytics & MarTech
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {skills.analyticsTools.map((s, idx) => (
+                  <span
+                    key={idx}
+                    className="text-[11px] font-semibold px-2 py-0.5 rounded-md border"
+                    style={{
+                      backgroundColor: theme.badgeBg,
+                      color: theme.badgeText,
+                      borderColor: theme.border,
+                    }}
+                  >
+                    {s}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* EDUCATION */}
+        {education && education.length > 0 && (
+          <div className="space-y-3">
+            <h3
+              className="text-xs font-black uppercase tracking-wider pb-1.5 border-b flex items-center gap-2"
+              style={{ color: theme.primary, borderColor: theme.border }}
+            >
+              <GraduationCap size={14} style={{ color: theme.secondary }} />
+              Education
+            </h3>
+            <div className="space-y-3 text-[12px]">
+              {education.map((edu) => (
+                <div key={edu.id} className="space-y-0.5">
+                  <div className="font-bold text-slate-900 leading-snug">{edu.degree}</div>
+                  <div className="text-slate-600 font-medium">{edu.institution}</div>
+                  <div className="flex items-center justify-between text-[11px] pt-0.5">
+                    <span className="text-slate-500">{edu.year}</span>
+                    {edu.score && (
+                      <span className="font-bold" style={{ color: theme.secondary }}>
+                        {edu.score}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* CERTIFICATIONS */}
+        {certifications && certifications.length > 0 && (
+          <div className="space-y-2.5">
+            <h3
+              className="text-xs font-black uppercase tracking-wider pb-1.5 border-b flex items-center gap-2"
+              style={{ color: theme.primary, borderColor: theme.border }}
+            >
+              <Award size={14} style={{ color: theme.secondary }} />
+              Credentials & Badges
+            </h3>
+            <div className="space-y-2 text-[11.5px]">
+              {certifications.map((cert) => (
+                <div key={cert.id} className="flex items-start gap-2">
+                  <span
+                    className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0"
+                    style={{ backgroundColor: theme.accent }}
+                  />
+                  <div>
+                    <div className="font-bold text-slate-800 leading-tight">{cert.name}</div>
+                    <div className="text-[10.5px] text-slate-500">
+                      {cert.issuer} • {cert.year}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* LANGUAGES */}
+        {languages && languages.length > 0 && (
+          <div className="space-y-1.5">
+            <h3
+              className="text-xs font-black uppercase tracking-wider pb-1.5 border-b flex items-center gap-2"
+              style={{ color: theme.primary, borderColor: theme.border }}
+            >
+              <Languages size={14} style={{ color: theme.secondary }} />
+              Languages
+            </h3>
+            <div className="flex flex-wrap gap-1.5 text-[11px] text-slate-600 font-medium">
+              {languages.map((lang, idx) => (
+                <span key={idx} className="bg-white/80 px-2 py-0.5 rounded border border-slate-200">
+                  {lang}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </aside>
+
+      {/* RIGHT MAIN CONTENT (65%) */}
+      <main className="w-full md:w-[64%] p-7 sm:p-9 space-y-6 flex-1">
+        {/* HEADER */}
+        <header className="pb-5 border-b" style={{ borderColor: theme.border }}>
+          <h1
+            className="text-3xl sm:text-4xl font-extrabold tracking-tight uppercase"
+            style={{ color: theme.primary }}
+          >
+            {personalInfo.fullName}
+          </h1>
+          <div
+            className="text-base sm:text-lg font-bold tracking-wide mt-1"
+            style={{ color: theme.secondary }}
+          >
+            {personalInfo.jobTitle}
+          </div>
+        </header>
+
+        {/* SUMMARY */}
+        {summary && (
+          <section className="space-y-2">
+            <h2
+              className="text-xs font-black uppercase tracking-wider flex items-center gap-2"
+              style={{ color: theme.primary }}
+            >
+              <span
+                className="w-2.5 h-0.5 rounded-full inline-block"
+                style={{ backgroundColor: theme.secondary }}
+              />
+              Executive Summary
+            </h2>
+            <p className="text-[12.5px] text-slate-700 leading-relaxed text-justify">
+              {summary}
+            </p>
+          </section>
+        )}
+
+        {/* WORK EXPERIENCE */}
+        {experiences && experiences.length > 0 && (
+          <section className="space-y-4">
+            <h2
+              className="text-xs font-black uppercase tracking-wider flex items-center gap-2"
+              style={{ color: theme.primary }}
+            >
+              <Briefcase size={14} style={{ color: theme.secondary }} />
+              Professional Experience
+            </h2>
+
+            <div className="space-y-4">
+              {experiences.map((exp) => (
+                <div key={exp.id} className="relative pl-3.5 border-l-2" style={{ borderColor: theme.border }}>
+                  <span
+                    className="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full border-2 border-white shadow-2xs"
+                    style={{ backgroundColor: theme.accent }}
+                  />
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                    <h4 className="font-bold text-slate-900 text-[13.5px]">{exp.role}</h4>
+                    <span
+                      className="text-[11px] font-bold px-2 py-0.5 rounded-md inline-block self-start sm:self-auto"
+                      style={{
+                        backgroundColor: theme.badgeBg,
+                        color: theme.badgeText,
+                      }}
+                    >
+                      {exp.startDate} – {exp.endDate}
+                    </span>
+                  </div>
+                  <div className="text-[12px] font-semibold text-slate-600 mb-2">
+                    {exp.company} • {exp.location}
+                  </div>
+                  {exp.bullets && exp.bullets.length > 0 && (
+                    <ul className="space-y-1.5 text-[12px] text-slate-700">
+                      {exp.bullets.map((b, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <span
+                            className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0"
+                            style={{ backgroundColor: theme.secondary }}
+                          />
+                          <span className="leading-snug">{b}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* PROJECTS / CAMPAIGNS */}
+        {projects && projects.length > 0 && (
+          <section className="space-y-3 pt-2">
+            <h2
+              className="text-xs font-black uppercase tracking-wider flex items-center gap-2"
+              style={{ color: theme.primary }}
+            >
+              <FolderGit2 size={14} style={{ color: theme.secondary }} />
+              Key Projects & Campaign Case Studies
+            </h2>
+
+            <div className="grid grid-cols-1 gap-3">
+              {projects.map((proj) => (
+                <div
+                  key={proj.id}
+                  className="p-3.5 rounded-xl border space-y-1"
+                  style={{
+                    backgroundColor: theme.lightBg,
+                    borderColor: theme.border,
+                  }}
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                    <div className="font-bold text-slate-900 text-[12.5px]">{proj.title}</div>
+                    {proj.metricHighlight && (
+                      <span
+                        className="text-[11px] font-extrabold uppercase px-2 py-0.5 rounded self-start sm:self-auto"
+                        style={{
+                          backgroundColor: theme.primary,
+                          color: "#ffffff",
+                        }}
+                      >
+                        {proj.metricHighlight}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[11px] font-semibold text-slate-500">
+                    {proj.clientOrType}
+                  </div>
+                  <p className="text-[11.5px] text-slate-700 leading-snug">
+                    {proj.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </main>
+    </div>
+  );
+};
