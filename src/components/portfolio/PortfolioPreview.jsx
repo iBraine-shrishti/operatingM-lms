@@ -206,7 +206,7 @@ export const PortfolioPreview = ({
               className="inline-flex items-center space-x-1.5 px-3 py-1.5 sm:py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-300/70 cursor-pointer shadow-2xs"
               title="View Live Standalone Portfolio"
             >
-              <Code2 size={13} className="text-blue-600" />
+              <Code2 size={13} style={{ color: theme.primary }} />
               <span className="hidden sm:inline">Developer Specs</span>
             </button>
 
@@ -214,7 +214,8 @@ export const PortfolioPreview = ({
               <button
                 type="button"
                 onClick={onOpenCustomizer}
-                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 sm:py-2 text-xs font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 rounded-lg transition-colors shadow-xs border border-amber-500/50 cursor-pointer"
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 sm:py-2 text-xs font-bold text-slate-950 rounded-lg transition-colors shadow-xs cursor-pointer"
+                style={{ backgroundColor: theme.primary }}
                 title="Edit student details & customize theme"
               >
                 <Settings size={13} />
@@ -234,37 +235,58 @@ export const PortfolioPreview = ({
         </div>
       </header>
 
-      {/* 2. HERO SECTION (INCREASED SIZE & EXACT REFERENCE STYLING) */}
-      <section className="bg-[#090e1a] text-white border-b border-slate-800 relative overflow-hidden py-14 sm:py-20 lg:py-24">
+      {/* 2. HERO SECTION (DYNAMICALLY TIED TO SELECTED THEME PALETTE & CUSTOM COLOR) */}
+      <section className={`text-white border-b border-slate-800 relative overflow-hidden py-14 sm:py-20 lg:py-24 bg-gradient-to-br ${
+        theme.heroGradient || "from-slate-950 via-slate-900 to-slate-950"
+      }`}>
         {/* Subtle grid pattern background */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none opacity-40" />
 
-        {/* Ambient glow orbs */}
-        <div className="absolute top-10 right-10 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-10 left-10 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Dynamic theme ambient glow orbs */}
+        <div
+          className="absolute top-10 right-10 w-96 h-96 rounded-full blur-3xl pointer-events-none opacity-15"
+          style={{ backgroundColor: theme.primary }}
+        />
+        <div
+          className="absolute bottom-10 left-10 w-80 h-80 rounded-full blur-3xl pointer-events-none opacity-20"
+          style={{ backgroundColor: theme.primary }}
+        />
 
         <div className="relative max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            {/* Left Content Column (7 cols) - INCREASED SIZE */}
+            {/* Left Content Column (7 cols) - THEMED */}
             <div className="lg:col-span-7 space-y-6">
               {/* Top Badges */}
               <div className="flex flex-wrap items-center gap-3 text-xs">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-400/10 text-amber-300 border border-amber-400/30 rounded-full font-medium">
-                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                <span
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium border"
+                  style={{
+                    backgroundColor: `${theme.primary}18`,
+                    color: theme.primary,
+                    borderColor: `${theme.primary}45`,
+                  }}
+                >
+                  <span
+                    className="w-2 h-2 rounded-full animate-pulse"
+                    style={{ backgroundColor: theme.primary }}
+                  />
                   <span>Open to Full-Time & Client Contracts</span>
                 </span>
                 <span className="text-slate-400 flex items-center gap-1.5 font-medium">
-                  <Award size={14} className="text-amber-400" />
+                  <Award size={14} style={{ color: theme.primary }} />
                   <span>Academy Graduate Cohort 2026</span>
                 </span>
               </div>
 
-              {/* Student Name & Titles (LARGE TYPOGRAPHY) */}
+              {/* Student Name & Titles (DYNAMIC THEME ACCENTS) */}
               <div>
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
                   {student.name}
                 </h1>
-                <p className="mt-2 text-xl sm:text-2xl font-bold text-amber-400 leading-snug">
+                <p
+                  className="mt-2 text-xl sm:text-2xl font-bold leading-snug transition-colors"
+                  style={{ color: theme.primary }}
+                >
                   {student.headline}
                 </p>
                 <p className="mt-1 text-sm sm:text-base text-slate-300 font-normal">
@@ -280,7 +302,7 @@ export const PortfolioPreview = ({
               {/* Contact Meta Row */}
               <div className="flex flex-wrap items-center gap-y-2 gap-x-5 text-xs text-slate-300 pt-1">
                 <div className="flex items-center gap-1.5">
-                  <Mail size={14} className="text-amber-400 shrink-0" />
+                  <Mail size={14} style={{ color: theme.primary }} className="shrink-0" />
                   <a
                     href={`mailto:${student.email}`}
                     className="hover:text-white transition-colors underline-offset-4 hover:underline"
@@ -289,7 +311,7 @@ export const PortfolioPreview = ({
                   </a>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Phone size={14} className="text-amber-400 shrink-0" />
+                  <Phone size={14} style={{ color: theme.primary }} className="shrink-0" />
                   <a
                     href={`tel:${student.phone}`}
                     className="hover:text-white transition-colors"
@@ -298,7 +320,7 @@ export const PortfolioPreview = ({
                   </a>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <MapPin size={14} className="text-amber-400 shrink-0" />
+                  <MapPin size={14} style={{ color: theme.primary }} className="shrink-0" />
                   <span>{student.location}</span>
                 </div>
               </div>
@@ -315,7 +337,7 @@ export const PortfolioPreview = ({
                       href={social.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-200 bg-slate-800/80 hover:bg-blue-600 hover:text-white rounded-lg border border-slate-700/80 transition-all duration-200 shadow-xs hover:border-blue-500 hover:-translate-y-0.5"
+                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-200 bg-slate-800/80 hover:bg-slate-700 hover:text-white rounded-lg border border-slate-700/80 transition-all duration-200 shadow-xs hover:-translate-y-0.5"
                     >
                       {renderSocialIcon(social.platform)}
                       <span>{social.label}</span>
@@ -329,7 +351,8 @@ export const PortfolioPreview = ({
                 <button
                   type="button"
                   onClick={() => scrollToSection("wordpress")}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 rounded-lg shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-slate-950 rounded-lg shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5 cursor-pointer"
+                  style={{ backgroundColor: theme.primary }}
                 >
                   <TrendingUp size={16} />
                   <span>Explore Projects (13 Modules)</span>
@@ -340,17 +363,22 @@ export const PortfolioPreview = ({
                   onClick={() => window.print()}
                   className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors cursor-pointer"
                 >
-                  <Printer size={16} className="text-amber-400" />
+                  <Printer size={16} style={{ color: theme.primary }} />
                   <span>Save / Print Portfolio</span>
                 </button>
               </div>
             </div>
 
-            {/* Right Column (5 cols) - LARGER AVATAR PHOTO CARD ("INCREASE THE SIZE") */}
+            {/* Right Column (5 cols) - LARGER AVATAR PHOTO CARD (THEMED GLOW) */}
             <div className="lg:col-span-5 flex flex-col items-center lg:items-end">
               <div className="relative w-full max-w-sm sm:max-w-md lg:max-w-lg">
-                {/* Luminous Glow Ring */}
-                <div className="absolute -inset-2.5 rounded-2xl bg-gradient-to-tr from-amber-400 via-blue-500 to-indigo-600 opacity-60 blur-xs" />
+                {/* Luminous Glow Ring tied to theme.primary */}
+                <div
+                  className="absolute -inset-2.5 rounded-2xl opacity-70 blur-xs transition-colors"
+                  style={{
+                    background: `linear-gradient(135deg, ${theme.primary}, #3b82f6, #6366f1)`,
+                  }}
+                />
 
                 {/* Main Card Body */}
                 <div className="relative bg-slate-900 rounded-2xl p-2 border border-slate-700/80 shadow-2xl overflow-hidden group">
@@ -364,8 +392,14 @@ export const PortfolioPreview = ({
                   {/* Floating Glass Bottom Bar Over Photo */}
                   <div className="absolute bottom-4 left-4 right-4 bg-slate-900/90 backdrop-blur-md border border-slate-700/80 rounded-xl p-3 shadow-lg flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-blue-600/30 border border-blue-500 text-blue-400 flex items-center justify-center shrink-0">
-                        <CheckCircle2 size={16} className="text-amber-400" />
+                      <div
+                        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border"
+                        style={{
+                          backgroundColor: `${theme.primary}25`,
+                          borderColor: `${theme.primary}60`,
+                        }}
+                      >
+                        <CheckCircle2 size={16} style={{ color: theme.primary }} />
                       </div>
                       <div>
                         <div className="text-xs font-bold text-white">Full-Stack Certified</div>
@@ -376,7 +410,8 @@ export const PortfolioPreview = ({
                       <button
                         type="button"
                         onClick={onOpenCustomizer}
-                        className="text-[11px] text-amber-400 hover:text-amber-300 font-semibold underline underline-offset-2 cursor-pointer"
+                        className="text-[11px] font-semibold underline underline-offset-2 cursor-pointer transition-colors"
+                        style={{ color: theme.primary }}
                       >
                         Edit Info
                       </button>
@@ -390,13 +425,18 @@ export const PortfolioPreview = ({
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                     <span>Portfolio Verified by Trainer</span>
                   </div>
-                  <span className="text-amber-400 font-mono font-bold">100% Practical Coursework</span>
+                  <span
+                    className="font-mono font-bold transition-colors"
+                    style={{ color: theme.primary }}
+                  >
+                    100% Practical Coursework
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* 4 Stat Highlights Grid (EXACT FROM REFERENCE) */}
+          {/* 4 Stat Highlights Grid (THEMED NUMBERS) */}
           <div className="mt-14 pt-8 border-t border-slate-800/80">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {(student.highlights || []).map((stat, sIdx) => (
@@ -407,7 +447,10 @@ export const PortfolioPreview = ({
                   <div className="text-xs text-slate-400 font-medium mb-1">
                     {stat.label}
                   </div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-mono group-hover:text-amber-400 transition-colors">
+                  <div
+                    className="text-2xl sm:text-3xl font-extrabold tracking-tight font-mono transition-colors"
+                    style={{ color: theme.primary }}
+                  >
                     {stat.value}
                   </div>
                   <div className="text-xs text-slate-400 mt-1 line-clamp-1">
