@@ -8,7 +8,7 @@ import {
   Briefcase,
   GraduationCap,
   Award,
-  Sparkles,
+  Target,
   Layers,
   ChevronRight,
   TrendingUp,
@@ -115,7 +115,7 @@ export const CreativeMarketerTemplate = ({ data, theme, onUpdateHeading }) => {
               className="w-9 h-9 rounded-xl flex items-center justify-center text-white shrink-0 shadow-2xs"
               style={{ backgroundColor: theme.secondary }}
             >
-              <Sparkles size={18} />
+              <Target size={18} />
             </div>
             <div>
               <EditableHeading

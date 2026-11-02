@@ -302,6 +302,7 @@ export const ResumeBuilderPage = () => {
         >
           <ResumeFormEditor
             data={resumeData}
+            templateId={selectedTemplate}
             onChange={handleDataChange}
             onReset={handleReset}
           />

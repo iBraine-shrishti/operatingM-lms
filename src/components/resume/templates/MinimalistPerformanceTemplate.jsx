@@ -8,7 +8,7 @@ import {
   Briefcase,
   GraduationCap,
   Award,
-  Sparkles,
+  Layers,
   FolderGit2,
   CheckCircle2,
 } from "lucide-react";
@@ -223,7 +223,7 @@ export const MinimalistPerformanceTemplate = ({ data, theme, onUpdateHeading }) 
           {/* SKILLS */}
           <section className="space-y-3">
             <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
-              <Sparkles size={16} style={{ color: theme.primary }} />
+              <Layers size={16} style={{ color: theme.primary }} />
               <EditableHeading
                 value={sectionHeadings.skills}
                 fallback="Skills & Tech Stack"

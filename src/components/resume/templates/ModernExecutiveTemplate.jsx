@@ -8,7 +8,7 @@ import {
   Briefcase,
   GraduationCap,
   Award,
-  Sparkles,
+  Layers,
   FolderGit2,
   Languages,
 } from "lucide-react";
@@ -112,7 +112,7 @@ export const ModernExecutiveTemplate = ({ data, theme, onUpdateHeading }) => {
         {/* SKILLS SECTION */}
         <div className="space-y-3">
           <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
-            <Sparkles size={14} style={{ color: theme.secondary }} />
+            <Layers size={14} style={{ color: theme.secondary }} />
             <EditableHeading
               value={sectionHeadings.skills}
               fallback="Core Competencies"
