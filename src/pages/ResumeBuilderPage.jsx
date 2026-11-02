@@ -328,6 +328,7 @@ export const ResumeBuilderPage = () => {
               data={resumeData}
               templateId={selectedTemplate}
               theme={activeTheme}
+              onChange={handleDataChange}
             />
           </div>
         </div>

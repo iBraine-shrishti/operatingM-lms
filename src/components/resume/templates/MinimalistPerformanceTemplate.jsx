@@ -12,8 +12,9 @@ import {
   FolderGit2,
   CheckCircle2,
 } from "lucide-react";
+import { EditableHeading } from "../EditableHeading";
 
-export const MinimalistPerformanceTemplate = ({ data, theme }) => {
+export const MinimalistPerformanceTemplate = ({ data, theme, onUpdateHeading }) => {
   const {
     personalInfo,
     summary,
@@ -22,6 +23,7 @@ export const MinimalistPerformanceTemplate = ({ data, theme }) => {
     skills = {},
     projects = [],
     certifications = [],
+    sectionHeadings = {},
   } = data;
 
   return (
@@ -100,10 +102,17 @@ export const MinimalistPerformanceTemplate = ({ data, theme }) => {
       {/* SUMMARY BAR */}
       {summary && (
         <section className="py-4 border-b text-[12.5px] text-slate-700 text-justify" style={{ borderColor: theme.border }}>
-          <p className="leading-relaxed">
-            <strong style={{ color: theme.primary }}>Profile Overview: </strong>
-            {summary}
-          </p>
+          <div className="flex items-start gap-2">
+            <EditableHeading
+              value={sectionHeadings.summary}
+              fallback="Profile Overview"
+              onChange={(val) => onUpdateHeading?.("summary", val)}
+              className="font-bold shrink-0"
+              style={{ color: theme.primary }}
+              tag="span"
+            />
+            <p className="leading-relaxed">: {summary}</p>
+          </div>
         </section>
       )}
 
@@ -115,12 +124,14 @@ export const MinimalistPerformanceTemplate = ({ data, theme }) => {
           <section className="space-y-4">
             <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
               <Briefcase size={16} style={{ color: theme.primary }} />
-              <h2
+              <EditableHeading
+                value={sectionHeadings.experience}
+                fallback="Work Experience & Impact"
+                onChange={(val) => onUpdateHeading?.("experience", val)}
                 className="text-xs font-black uppercase tracking-wider"
                 style={{ color: theme.primary }}
-              >
-                Work Experience & Impact
-              </h2>
+                tag="h2"
+              />
             </div>
 
             <div className="space-y-5">
@@ -161,12 +172,14 @@ export const MinimalistPerformanceTemplate = ({ data, theme }) => {
             <section className="space-y-3.5 pt-2">
               <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
                 <FolderGit2 size={16} style={{ color: theme.primary }} />
-                <h2
+                <EditableHeading
+                  value={sectionHeadings.projects}
+                  fallback="Featured Campaign Case Studies"
+                  onChange={(val) => onUpdateHeading?.("projects", val)}
                   className="text-xs font-black uppercase tracking-wider"
                   style={{ color: theme.primary }}
-                >
-                  Featured Campaign Case Studies
-                </h2>
+                  tag="h2"
+                />
               </div>
 
               <div className="space-y-3">
@@ -209,20 +222,26 @@ export const MinimalistPerformanceTemplate = ({ data, theme }) => {
           <section className="space-y-3">
             <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
               <Sparkles size={16} style={{ color: theme.primary }} />
-              <h2
+              <EditableHeading
+                value={sectionHeadings.skills}
+                fallback="Skills & Tech Stack"
+                onChange={(val) => onUpdateHeading?.("skills", val)}
                 className="text-xs font-black uppercase tracking-wider"
                 style={{ color: theme.primary }}
-              >
-                Skills & Tech Stack
-              </h2>
+                tag="h2"
+              />
             </div>
 
             <div className="space-y-3">
               {skills.paidAds && (
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-wide text-slate-500 block mb-1.5">
-                    Performance Ads & Media
-                  </span>
+                  <EditableHeading
+                    value={sectionHeadings.skillCat1}
+                    fallback="Performance Ads & Media"
+                    onChange={(val) => onUpdateHeading?.("skillCat1", val)}
+                    className="text-[10px] font-black uppercase tracking-wide text-slate-500 block mb-1.5"
+                    tag="span"
+                  />
                   <div className="flex flex-wrap gap-1.5">
                     {skills.paidAds.map((s, idx) => (
                       <span
@@ -243,9 +262,13 @@ export const MinimalistPerformanceTemplate = ({ data, theme }) => {
 
               {skills.seoContent && (
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-wide text-slate-500 block mb-1.5">
-                    SEO & Content Architecture
-                  </span>
+                  <EditableHeading
+                    value={sectionHeadings.skillCat2}
+                    fallback="SEO & Content Architecture"
+                    onChange={(val) => onUpdateHeading?.("skillCat2", val)}
+                    className="text-[10px] font-black uppercase tracking-wide text-slate-500 block mb-1.5"
+                    tag="span"
+                  />
                   <div className="flex flex-wrap gap-1.5">
                     {skills.seoContent.map((s, idx) => (
                       <span
@@ -266,9 +289,13 @@ export const MinimalistPerformanceTemplate = ({ data, theme }) => {
 
               {skills.analyticsTools && (
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-wide text-slate-500 block mb-1.5">
-                    Analytics & Web MarTech
-                  </span>
+                  <EditableHeading
+                    value={sectionHeadings.skillCat3}
+                    fallback="Analytics & Web MarTech"
+                    onChange={(val) => onUpdateHeading?.("skillCat3", val)}
+                    className="text-[10px] font-black uppercase tracking-wide text-slate-500 block mb-1.5"
+                    tag="span"
+                  />
                   <div className="flex flex-wrap gap-1.5">
                     {skills.analyticsTools.map((s, idx) => (
                       <span
@@ -294,12 +321,14 @@ export const MinimalistPerformanceTemplate = ({ data, theme }) => {
             <section className="space-y-3">
               <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
                 <GraduationCap size={16} style={{ color: theme.primary }} />
-                <h2
+                <EditableHeading
+                  value={sectionHeadings.education}
+                  fallback="Education & Qualifications"
+                  onChange={(val) => onUpdateHeading?.("education", val)}
                   className="text-xs font-black uppercase tracking-wider"
                   style={{ color: theme.primary }}
-                >
-                  Education & Qualifications
-                </h2>
+                  tag="h2"
+                />
               </div>
 
               <div className="space-y-3 text-[12px]">
@@ -326,12 +355,14 @@ export const MinimalistPerformanceTemplate = ({ data, theme }) => {
             <section className="space-y-3">
               <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
                 <Award size={16} style={{ color: theme.primary }} />
-                <h2
+                <EditableHeading
+                  value={sectionHeadings.certifications}
+                  fallback="Certifications & Licenses"
+                  onChange={(val) => onUpdateHeading?.("certifications", val)}
                   className="text-xs font-black uppercase tracking-wider"
                   style={{ color: theme.primary }}
-                >
-                  Certifications & Licenses
-                </h2>
+                  tag="h2"
+                />
               </div>
 
               <div className="space-y-2 text-[12px]">

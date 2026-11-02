@@ -177,6 +177,20 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
     ],
     certifications: defaultCerts,
     languages: ["English (Professional)", "Hindi (Fluent)", "Marathi (Conversational)"],
+    sectionHeadings: {
+      summary: "About Me",
+      experience: "Work Experience",
+      skills: "Skills Summary",
+      education: "Education",
+      projects: "Key Projects & Case Studies",
+      certifications: "Certifications & Badges",
+      expertise: "Expertise",
+      languages: "Languages",
+      contact: "Contact Details",
+      skillCat1: "Paid Acquisition & Ads",
+      skillCat2: "SEO & Content Architecture",
+      skillCat3: "Analytics & MarTech Tools",
+    },
   };
 };
 

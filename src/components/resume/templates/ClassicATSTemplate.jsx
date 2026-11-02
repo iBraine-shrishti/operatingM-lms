@@ -1,6 +1,7 @@
 import React from "react";
+import { EditableHeading } from "../EditableHeading";
 
-export const ClassicATSTemplate = ({ data, theme }) => {
+export const ClassicATSTemplate = ({ data, theme, onUpdateHeading }) => {
   const {
     personalInfo,
     summary,
@@ -10,6 +11,7 @@ export const ClassicATSTemplate = ({ data, theme }) => {
     projects = [],
     certifications = [],
     languages = [],
+    sectionHeadings = {},
   } = data;
 
   const contactItems = [
@@ -49,12 +51,14 @@ export const ClassicATSTemplate = ({ data, theme }) => {
       {/* SUMMARY */}
       {summary && (
         <section className="mt-4">
-          <h2
+          <EditableHeading
+            value={sectionHeadings.summary}
+            fallback="Professional Summary"
+            onChange={(val) => onUpdateHeading?.("summary", val)}
             className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-2"
             style={{ color: theme.primary, borderColor: theme.border }}
-          >
-            Professional Summary
-          </h2>
+            tag="h2"
+          />
           <p className="text-[12px] text-slate-800 text-justify leading-relaxed">
             {summary}
           </p>
@@ -63,35 +67,52 @@ export const ClassicATSTemplate = ({ data, theme }) => {
 
       {/* CORE SKILLS */}
       <section className="mt-4">
-        <h2
+        <EditableHeading
+          value={sectionHeadings.skills}
+          fallback="Core Competencies & Tools"
+          onChange={(val) => onUpdateHeading?.("skills", val)}
           className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-2"
           style={{ color: theme.primary, borderColor: theme.border }}
-        >
-          Core Competencies & Tools
-        </h2>
+          tag="h2"
+        />
         <div className="space-y-1 text-[12px]">
           {skills.paidAds && (
             <div>
-              <strong style={{ color: theme.secondary }}>Paid Advertising: </strong>
-              <span className="text-slate-700">{skills.paidAds.join(", ")}</span>
+              <EditableHeading
+                value={sectionHeadings.skillCat1}
+                fallback="Paid Advertising"
+                onChange={(val) => onUpdateHeading?.("skillCat1", val)}
+                className="font-bold inline-block mr-1"
+                style={{ color: theme.secondary }}
+                tag="strong"
+              />
+              <span className="text-slate-700">: {skills.paidAds.join(", ")}</span>
             </div>
           )}
           {skills.seoContent && (
             <div>
-              <strong style={{ color: theme.secondary }}>SEO & Content: </strong>
-              <span className="text-slate-700">{skills.seoContent.join(", ")}</span>
+              <EditableHeading
+                value={sectionHeadings.skillCat2}
+                fallback="SEO & Content"
+                onChange={(val) => onUpdateHeading?.("skillCat2", val)}
+                className="font-bold inline-block mr-1"
+                style={{ color: theme.secondary }}
+                tag="strong"
+              />
+              <span className="text-slate-700">: {skills.seoContent.join(", ")}</span>
             </div>
           )}
           {skills.analyticsTools && (
             <div>
-              <strong style={{ color: theme.secondary }}>Analytics & Platforms: </strong>
-              <span className="text-slate-700">{skills.analyticsTools.join(", ")}</span>
-            </div>
-          )}
-          {skills.coreMarketing && (
-            <div>
-              <strong style={{ color: theme.secondary }}>Marketing Strategy: </strong>
-              <span className="text-slate-700">{skills.coreMarketing.join(", ")}</span>
+              <EditableHeading
+                value={sectionHeadings.skillCat3}
+                fallback="Analytics & Platforms"
+                onChange={(val) => onUpdateHeading?.("skillCat3", val)}
+                className="font-bold inline-block mr-1"
+                style={{ color: theme.secondary }}
+                tag="strong"
+              />
+              <span className="text-slate-700">: {skills.analyticsTools.join(", ")}</span>
             </div>
           )}
         </div>
@@ -100,12 +121,14 @@ export const ClassicATSTemplate = ({ data, theme }) => {
       {/* PROFESSIONAL EXPERIENCE */}
       {experiences && experiences.length > 0 && (
         <section className="mt-4">
-          <h2
+          <EditableHeading
+            value={sectionHeadings.experience}
+            fallback="Work Experience"
+            onChange={(val) => onUpdateHeading?.("experience", val)}
             className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-3"
             style={{ color: theme.primary, borderColor: theme.border }}
-          >
-            Work Experience
-          </h2>
+            tag="h2"
+          />
           <div className="space-y-4">
             {experiences.map((exp) => (
               <div key={exp.id} className="space-y-1">
@@ -139,12 +162,14 @@ export const ClassicATSTemplate = ({ data, theme }) => {
       {/* PROJECTS & CASE STUDIES */}
       {projects && projects.length > 0 && (
         <section className="mt-4">
-          <h2
+          <EditableHeading
+            value={sectionHeadings.projects}
+            fallback="Featured Projects & Case Studies"
+            onChange={(val) => onUpdateHeading?.("projects", val)}
             className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-2"
             style={{ color: theme.primary, borderColor: theme.border }}
-          >
-            Featured Projects & Case Studies
-          </h2>
+            tag="h2"
+          />
           <div className="space-y-2.5">
             {projects.map((proj) => (
               <div key={proj.id} className="text-[11.5px]">
@@ -171,12 +196,14 @@ export const ClassicATSTemplate = ({ data, theme }) => {
       {/* EDUCATION */}
       {education && education.length > 0 && (
         <section className="mt-4">
-          <h2
+          <EditableHeading
+            value={sectionHeadings.education}
+            fallback="Education & Training"
+            onChange={(val) => onUpdateHeading?.("education", val)}
             className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-2"
             style={{ color: theme.primary, borderColor: theme.border }}
-          >
-            Education & Training
-          </h2>
+            tag="h2"
+          />
           <div className="space-y-2.5 text-[12px]">
             {education.map((edu) => (
               <div key={edu.id} className="space-y-0.5">
@@ -199,12 +226,14 @@ export const ClassicATSTemplate = ({ data, theme }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
         {certifications && certifications.length > 0 && (
           <section>
-            <h2
+            <EditableHeading
+              value={sectionHeadings.certifications}
+              fallback="Certifications"
+              onChange={(val) => onUpdateHeading?.("certifications", val)}
               className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-2"
               style={{ color: theme.primary, borderColor: theme.border }}
-            >
-              Certifications
-            </h2>
+              tag="h2"
+            />
             <ul className="space-y-1 text-[11px] text-slate-700 list-disc list-outside pl-4">
               {certifications.map((c) => (
                 <li key={c.id}>
@@ -217,12 +246,14 @@ export const ClassicATSTemplate = ({ data, theme }) => {
 
         {languages && languages.length > 0 && (
           <section>
-            <h2
+            <EditableHeading
+              value={sectionHeadings.languages}
+              fallback="Languages"
+              onChange={(val) => onUpdateHeading?.("languages", val)}
               className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-2"
               style={{ color: theme.primary, borderColor: theme.border }}
-            >
-              Languages
-            </h2>
+              tag="h2"
+            />
             <p className="text-[11.5px] text-slate-700">
               {languages.join(" • ")}
             </p>

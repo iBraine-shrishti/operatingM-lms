@@ -5,8 +5,9 @@ import {
   Globe,
   MapPin,
 } from "lucide-react";
+import { EditableHeading } from "../EditableHeading";
 
-export const DualArchCreativeTemplate = ({ data, theme }) => {
+export const DualArchCreativeTemplate = ({ data, theme, onUpdateHeading }) => {
   const {
     personalInfo,
     summary,
@@ -15,6 +16,7 @@ export const DualArchCreativeTemplate = ({ data, theme }) => {
     skillsSummary = [],
     expertiseList = [],
     skills = {},
+    sectionHeadings = {},
   } = data;
 
   // Resolved skills summary with defaults
@@ -140,9 +142,13 @@ export const DualArchCreativeTemplate = ({ data, theme }) => {
             className="w-[82%] sm:w-[84%] rounded-t-[85px] sm:rounded-t-[105px] pt-8 pb-7 px-5 text-white shadow-xs"
             style={{ backgroundColor: theme.primary }}
           >
-            <h2 className="text-sm sm:text-base font-black uppercase tracking-[2px] text-center text-white mb-4">
-              EDUCATION
-            </h2>
+            <EditableHeading
+              value={sectionHeadings.education}
+              fallback="EDUCATION"
+              onChange={(val) => onUpdateHeading?.("education", val)}
+              className="text-sm sm:text-base font-black uppercase tracking-[2px] text-center text-white mb-4"
+              tag="h2"
+            />
 
             <div className="space-y-3.5 text-center sm:text-left">
               {education && education.length > 0 ? (
@@ -169,15 +175,17 @@ export const DualArchCreativeTemplate = ({ data, theme }) => {
 
       {/* RIGHT COLUMN: MAIN CONTENT (62%) */}
       <main className="w-full md:w-[62%] p-8 sm:p-10 space-y-6 flex-1 bg-white text-slate-800 print:w-[62%]">
-        {/* 1. ABOUT ME */}
+        {/* 1. ABOUT ME / SUMMARY */}
         {summary && (
           <section className="space-y-2">
-            <h2
+            <EditableHeading
+              value={sectionHeadings.summary}
+              fallback="ABOUT ME"
+              onChange={(val) => onUpdateHeading?.("summary", val)}
               className="text-sm sm:text-base font-black uppercase tracking-[2px]"
               style={{ color: theme.primary }}
-            >
-              ABOUT ME
-            </h2>
+              tag="h2"
+            />
             <p className="text-[12px] text-slate-700 leading-relaxed text-justify">
               {summary}
             </p>
@@ -187,12 +195,14 @@ export const DualArchCreativeTemplate = ({ data, theme }) => {
         {/* 2. WORK EXPERIENCE */}
         {experiences && experiences.length > 0 && (
           <section className="space-y-3 pt-1">
-            <h2
+            <EditableHeading
+              value={sectionHeadings.experience}
+              fallback="WORK EXPERIENCE"
+              onChange={(val) => onUpdateHeading?.("experience", val)}
               className="text-sm sm:text-base font-black uppercase tracking-[2px]"
               style={{ color: theme.primary }}
-            >
-              WORK EXPERIENCE
-            </h2>
+              tag="h2"
+            />
 
             <div className="space-y-4">
               {experiences.map((exp) => (
@@ -224,12 +234,14 @@ export const DualArchCreativeTemplate = ({ data, theme }) => {
 
         {/* 3. SKILLS SUMMARY (WITH HORIZONTAL PROGRESS BARS) */}
         <section className="space-y-3 pt-1">
-          <h2
+          <EditableHeading
+            value={sectionHeadings.skills}
+            fallback="SKILLS SUMMARY"
+            onChange={(val) => onUpdateHeading?.("skills", val)}
             className="text-sm sm:text-base font-black uppercase tracking-[2px]"
             style={{ color: theme.primary }}
-          >
-            SKILLS SUMMARY
-          </h2>
+            tag="h2"
+          />
 
           <div className="space-y-2.5">
             {displaySkillsSummary.map((item, idx) => (
@@ -258,12 +270,14 @@ export const DualArchCreativeTemplate = ({ data, theme }) => {
 
         {/* 4. EXPERTISE (2-COLUMN BULLETED GRID) */}
         <section className="space-y-3 pt-1">
-          <h2
+          <EditableHeading
+            value={sectionHeadings.expertise}
+            fallback="EXPERTISE"
+            onChange={(val) => onUpdateHeading?.("expertise", val)}
             className="text-sm sm:text-base font-black uppercase tracking-[2px]"
             style={{ color: theme.primary }}
-          >
-            EXPERTISE
-          </h2>
+            tag="h2"
+          />
 
           <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-[12px] text-slate-800">
             {displayExpertise.map((item, idx) => (

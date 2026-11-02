@@ -13,8 +13,9 @@ import {
   ChevronRight,
   TrendingUp,
 } from "lucide-react";
+import { EditableHeading } from "../EditableHeading";
 
-export const CreativeMarketerTemplate = ({ data, theme }) => {
+export const CreativeMarketerTemplate = ({ data, theme, onUpdateHeading }) => {
   const {
     personalInfo,
     summary,
@@ -23,7 +24,7 @@ export const CreativeMarketerTemplate = ({ data, theme }) => {
     skills = {},
     projects = [],
     certifications = [],
-    languages = [],
+    sectionHeadings = {},
   } = data;
 
   return (
@@ -115,12 +116,14 @@ export const CreativeMarketerTemplate = ({ data, theme }) => {
               <Sparkles size={18} />
             </div>
             <div>
-              <h2
+              <EditableHeading
+                value={sectionHeadings.summary}
+                fallback="Executive Vision & Strategic Impact"
+                onChange={(val) => onUpdateHeading?.("summary", val)}
                 className="text-xs font-black uppercase tracking-wider mb-1"
                 style={{ color: theme.primary }}
-              >
-                Executive Vision & Strategic Impact
-              </h2>
+                tag="h2"
+              />
               <p className="text-[12.5px] text-slate-700 leading-relaxed text-justify">
                 {summary}
               </p>
@@ -134,12 +137,14 @@ export const CreativeMarketerTemplate = ({ data, theme }) => {
             <div className="flex items-center justify-between pb-2 border-b-2" style={{ borderColor: theme.primary }}>
               <div className="flex items-center gap-2">
                 <Briefcase size={17} style={{ color: theme.primary }} />
-                <h2
+                <EditableHeading
+                  value={sectionHeadings.experience}
+                  fallback="Experience & Track Record"
+                  onChange={(val) => onUpdateHeading?.("experience", val)}
                   className="text-sm font-black uppercase tracking-wider"
                   style={{ color: theme.primary }}
-                >
-                  Experience & Track Record
-                </h2>
+                  tag="h2"
+                />
               </div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Performance Chronology
@@ -193,12 +198,14 @@ export const CreativeMarketerTemplate = ({ data, theme }) => {
             <div className="flex items-center justify-between pb-2 border-b-2" style={{ borderColor: theme.primary }}>
               <div className="flex items-center gap-2">
                 <TrendingUp size={17} style={{ color: theme.primary }} />
-                <h2
+                <EditableHeading
+                  value={sectionHeadings.projects}
+                  fallback="Live Agency Case Studies"
+                  onChange={(val) => onUpdateHeading?.("projects", val)}
                   className="text-sm font-black uppercase tracking-wider"
                   style={{ color: theme.primary }}
-                >
-                  Live Agency Case Studies
-                </h2>
+                  tag="h2"
+                />
               </div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Verified Outcomes
@@ -219,15 +226,17 @@ export const CreativeMarketerTemplate = ({ data, theme }) => {
                     <div className="flex items-start justify-between gap-2 mb-1">
                       <h4 className="font-bold text-slate-900 text-[12.5px]">{proj.title}</h4>
                     </div>
-                    <span
-                      className="inline-block text-[10px] font-black uppercase px-2 py-0.5 rounded-md mb-2"
-                      style={{
-                        backgroundColor: theme.primary,
-                        color: "#ffffff",
-                      }}
-                    >
-                      {proj.metricHighlight}
-                    </span>
+                    {proj.metricHighlight && (
+                      <span
+                        className="inline-block text-[10px] font-black uppercase px-2 py-0.5 rounded-md mb-2"
+                        style={{
+                          backgroundColor: theme.primary,
+                          color: "#ffffff",
+                        }}
+                      >
+                        {proj.metricHighlight}
+                      </span>
+                    )}
                     <p className="text-[11.5px] text-slate-700 leading-snug">
                       {proj.description}
                     </p>
@@ -247,17 +256,25 @@ export const CreativeMarketerTemplate = ({ data, theme }) => {
           <section className="space-y-3">
             <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
               <Layers size={16} style={{ color: theme.primary }} />
-              <h2
+              <EditableHeading
+                value={sectionHeadings.skills}
+                fallback="Skills Matrix"
+                onChange={(val) => onUpdateHeading?.("skills", val)}
                 className="text-xs font-black uppercase tracking-wider"
                 style={{ color: theme.primary }}
-              >
-                Skills Matrix
-              </h2>
+                tag="h2"
+              />
             </div>
             <div className="space-y-2.5">
               {skills.paidAds && (
                 <div>
-                  <span className="text-[10px] font-bold uppercase text-slate-500 block mb-1">Paid Ads & Funnels</span>
+                  <EditableHeading
+                    value={sectionHeadings.skillCat1}
+                    fallback="Paid Ads & Funnels"
+                    onChange={(val) => onUpdateHeading?.("skillCat1", val)}
+                    className="text-[10px] font-bold uppercase text-slate-500 block mb-1"
+                    tag="span"
+                  />
                   <div className="flex flex-wrap gap-1.5">
                     {skills.paidAds.map((s, idx) => (
                       <span
@@ -277,7 +294,13 @@ export const CreativeMarketerTemplate = ({ data, theme }) => {
               )}
               {skills.seoContent && (
                 <div>
-                  <span className="text-[10px] font-bold uppercase text-slate-500 block mb-1">SEO & Tech MarTech</span>
+                  <EditableHeading
+                    value={sectionHeadings.skillCat2}
+                    fallback="SEO & Tech MarTech"
+                    onChange={(val) => onUpdateHeading?.("skillCat2", val)}
+                    className="text-[10px] font-bold uppercase text-slate-500 block mb-1"
+                    tag="span"
+                  />
                   <div className="flex flex-wrap gap-1.5">
                     {skills.seoContent.map((s, idx) => (
                       <span
@@ -302,12 +325,14 @@ export const CreativeMarketerTemplate = ({ data, theme }) => {
           <section className="space-y-3">
             <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
               <GraduationCap size={16} style={{ color: theme.primary }} />
-              <h2
+              <EditableHeading
+                value={sectionHeadings.education}
+                fallback="Education & Credentials"
+                onChange={(val) => onUpdateHeading?.("education", val)}
                 className="text-xs font-black uppercase tracking-wider"
                 style={{ color: theme.primary }}
-              >
-                Education & Certifications
-              </h2>
+                tag="h2"
+              />
             </div>
             <div className="space-y-3 text-[12px]">
               {education && education.slice(0, 1).map((edu) => (

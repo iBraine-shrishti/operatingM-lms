@@ -12,8 +12,9 @@ import {
   FolderGit2,
   Languages,
 } from "lucide-react";
+import { EditableHeading } from "../EditableHeading";
 
-export const ModernExecutiveTemplate = ({ data, theme }) => {
+export const ModernExecutiveTemplate = ({ data, theme, onUpdateHeading }) => {
   const {
     personalInfo,
     summary,
@@ -23,6 +24,7 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
     projects = [],
     certifications = [],
     languages = [],
+    sectionHeadings = {},
   } = data;
 
   return (
@@ -35,7 +37,7 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
           borderColor: theme.border,
         }}
       >
-        {/* Profile Avatar / Initials Badge */}
+        {/* Profile Avatar / Photo */}
         <div className="flex flex-col items-center md:items-start space-y-3 pb-4 border-b" style={{ borderColor: theme.border }}>
           {personalInfo.photo ? (
             <div
@@ -64,12 +66,14 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
             </div>
           )}
           <div>
-            <span
+            <EditableHeading
+              value={sectionHeadings.contact}
+              fallback="Contact Dossier"
+              onChange={(val) => onUpdateHeading?.("contact", val)}
               className="text-[10px] font-extrabold uppercase tracking-widest block"
               style={{ color: theme.secondary }}
-            >
-              Contact Dossier
-            </span>
+              tag="span"
+            />
             <div className="space-y-1.5 mt-2 text-[12px] text-slate-700">
               {personalInfo.email && (
                 <div className="flex items-center gap-2">
@@ -107,19 +111,27 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
 
         {/* SKILLS SECTION */}
         <div className="space-y-3">
-          <h3
-            className="text-xs font-black uppercase tracking-wider pb-1.5 border-b flex items-center gap-2"
-            style={{ color: theme.primary, borderColor: theme.border }}
-          >
+          <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
             <Sparkles size={14} style={{ color: theme.secondary }} />
-            Core Competencies
-          </h3>
+            <EditableHeading
+              value={sectionHeadings.skills}
+              fallback="Core Competencies"
+              onChange={(val) => onUpdateHeading?.("skills", val)}
+              className="text-xs font-black uppercase tracking-wider"
+              style={{ color: theme.primary }}
+              tag="h3"
+            />
+          </div>
 
           {skills.paidAds && skills.paidAds.length > 0 && (
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
-                Paid Acquisition & Ads
-              </span>
+              <EditableHeading
+                value={sectionHeadings.skillCat1}
+                fallback="Paid Acquisition & Ads"
+                onChange={(val) => onUpdateHeading?.("skillCat1", val)}
+                className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1"
+                tag="span"
+              />
               <div className="flex flex-wrap gap-1.5">
                 {skills.paidAds.map((s, idx) => (
                   <span
@@ -140,9 +152,13 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
 
           {skills.seoContent && skills.seoContent.length > 0 && (
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
-                SEO & Content
-              </span>
+              <EditableHeading
+                value={sectionHeadings.skillCat2}
+                fallback="SEO & Content"
+                onChange={(val) => onUpdateHeading?.("skillCat2", val)}
+                className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1"
+                tag="span"
+              />
               <div className="flex flex-wrap gap-1.5">
                 {skills.seoContent.map((s, idx) => (
                   <span
@@ -163,9 +179,13 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
 
           {skills.analyticsTools && skills.analyticsTools.length > 0 && (
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
-                Analytics & MarTech
-              </span>
+              <EditableHeading
+                value={sectionHeadings.skillCat3}
+                fallback="Analytics & MarTech"
+                onChange={(val) => onUpdateHeading?.("skillCat3", val)}
+                className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1"
+                tag="span"
+              />
               <div className="flex flex-wrap gap-1.5">
                 {skills.analyticsTools.map((s, idx) => (
                   <span
@@ -188,13 +208,17 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
         {/* EDUCATION */}
         {education && education.length > 0 && (
           <div className="space-y-3">
-            <h3
-              className="text-xs font-black uppercase tracking-wider pb-1.5 border-b flex items-center gap-2"
-              style={{ color: theme.primary, borderColor: theme.border }}
-            >
+            <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
               <GraduationCap size={14} style={{ color: theme.secondary }} />
-              Education
-            </h3>
+              <EditableHeading
+                value={sectionHeadings.education}
+                fallback="Education"
+                onChange={(val) => onUpdateHeading?.("education", val)}
+                className="text-xs font-black uppercase tracking-wider"
+                style={{ color: theme.primary }}
+                tag="h3"
+              />
+            </div>
             <div className="space-y-3 text-[12px]">
               {education.map((edu) => (
                 <div key={edu.id} className="space-y-0.5">
@@ -217,13 +241,17 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
         {/* CERTIFICATIONS */}
         {certifications && certifications.length > 0 && (
           <div className="space-y-2.5">
-            <h3
-              className="text-xs font-black uppercase tracking-wider pb-1.5 border-b flex items-center gap-2"
-              style={{ color: theme.primary, borderColor: theme.border }}
-            >
+            <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
               <Award size={14} style={{ color: theme.secondary }} />
-              Credentials & Badges
-            </h3>
+              <EditableHeading
+                value={sectionHeadings.certifications}
+                fallback="Credentials & Badges"
+                onChange={(val) => onUpdateHeading?.("certifications", val)}
+                className="text-xs font-black uppercase tracking-wider"
+                style={{ color: theme.primary }}
+                tag="h3"
+              />
+            </div>
             <div className="space-y-2 text-[11.5px]">
               {certifications.map((cert) => (
                 <div key={cert.id} className="flex items-start gap-2">
@@ -246,13 +274,17 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
         {/* LANGUAGES */}
         {languages && languages.length > 0 && (
           <div className="space-y-1.5">
-            <h3
-              className="text-xs font-black uppercase tracking-wider pb-1.5 border-b flex items-center gap-2"
-              style={{ color: theme.primary, borderColor: theme.border }}
-            >
+            <div className="flex items-center gap-2 pb-1.5 border-b" style={{ borderColor: theme.border }}>
               <Languages size={14} style={{ color: theme.secondary }} />
-              Languages
-            </h3>
+              <EditableHeading
+                value={sectionHeadings.languages}
+                fallback="Languages"
+                onChange={(val) => onUpdateHeading?.("languages", val)}
+                className="text-xs font-black uppercase tracking-wider"
+                style={{ color: theme.primary }}
+                tag="h3"
+              />
+            </div>
             <div className="flex flex-wrap gap-1.5 text-[11px] text-slate-600 font-medium">
               {languages.map((lang, idx) => (
                 <span key={idx} className="bg-white/80 px-2 py-0.5 rounded border border-slate-200">
@@ -285,16 +317,20 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
         {/* SUMMARY */}
         {summary && (
           <section className="space-y-2">
-            <h2
-              className="text-xs font-black uppercase tracking-wider flex items-center gap-2"
-              style={{ color: theme.primary }}
-            >
+            <div className="flex items-center gap-2">
               <span
                 className="w-2.5 h-0.5 rounded-full inline-block"
                 style={{ backgroundColor: theme.secondary }}
               />
-              Executive Summary
-            </h2>
+              <EditableHeading
+                value={sectionHeadings.summary}
+                fallback="Executive Summary"
+                onChange={(val) => onUpdateHeading?.("summary", val)}
+                className="text-xs font-black uppercase tracking-wider"
+                style={{ color: theme.primary }}
+                tag="h2"
+              />
+            </div>
             <p className="text-[12.5px] text-slate-700 leading-relaxed text-justify">
               {summary}
             </p>
@@ -304,13 +340,17 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
         {/* WORK EXPERIENCE */}
         {experiences && experiences.length > 0 && (
           <section className="space-y-4">
-            <h2
-              className="text-xs font-black uppercase tracking-wider flex items-center gap-2"
-              style={{ color: theme.primary }}
-            >
+            <div className="flex items-center gap-2">
               <Briefcase size={14} style={{ color: theme.secondary }} />
-              Professional Experience
-            </h2>
+              <EditableHeading
+                value={sectionHeadings.experience}
+                fallback="Professional Experience"
+                onChange={(val) => onUpdateHeading?.("experience", val)}
+                className="text-xs font-black uppercase tracking-wider"
+                style={{ color: theme.primary }}
+                tag="h2"
+              />
+            </div>
 
             <div className="space-y-4">
               {experiences.map((exp) => (
@@ -356,13 +396,17 @@ export const ModernExecutiveTemplate = ({ data, theme }) => {
         {/* PROJECTS / CAMPAIGNS */}
         {projects && projects.length > 0 && (
           <section className="space-y-3 pt-2">
-            <h2
-              className="text-xs font-black uppercase tracking-wider flex items-center gap-2"
-              style={{ color: theme.primary }}
-            >
+            <div className="flex items-center gap-2">
               <FolderGit2 size={14} style={{ color: theme.secondary }} />
-              Key Projects & Campaign Case Studies
-            </h2>
+              <EditableHeading
+                value={sectionHeadings.projects}
+                fallback="Key Projects & Campaign Case Studies"
+                onChange={(val) => onUpdateHeading?.("projects", val)}
+                className="text-xs font-black uppercase tracking-wider"
+                style={{ color: theme.primary }}
+                tag="h2"
+              />
+            </div>
 
             <div className="grid grid-cols-1 gap-3">
               {projects.map((proj) => (

@@ -5,20 +5,38 @@ import { CreativeMarketerTemplate } from "./templates/CreativeMarketerTemplate";
 import { ClassicATSTemplate } from "./templates/ClassicATSTemplate";
 import { DualArchCreativeTemplate } from "./templates/DualArchCreativeTemplate";
 
-export const ResumePreview = ({ data, templateId, theme }) => {
+export const ResumePreview = ({ data, templateId, theme, onChange }) => {
+  const handleUpdateHeading = (key, val) => {
+    if (onChange) {
+      onChange({
+        ...data,
+        sectionHeadings: {
+          ...(data.sectionHeadings || {}),
+          [key]: val,
+        },
+      });
+    }
+  };
+
   const renderTemplate = () => {
+    const props = {
+      data,
+      theme,
+      onUpdateHeading: handleUpdateHeading,
+    };
+
     switch (templateId) {
       case "dual-arch-creative":
-        return <DualArchCreativeTemplate data={data} theme={theme} />;
+        return <DualArchCreativeTemplate {...props} />;
       case "minimalist-tech":
-        return <MinimalistPerformanceTemplate data={data} theme={theme} />;
+        return <MinimalistPerformanceTemplate {...props} />;
       case "creative-marketer":
-        return <CreativeMarketerTemplate data={data} theme={theme} />;
+        return <CreativeMarketerTemplate {...props} />;
       case "classic-ats":
-        return <ClassicATSTemplate data={data} theme={theme} />;
+        return <ClassicATSTemplate {...props} />;
       case "modern-executive":
       default:
-        return <ModernExecutiveTemplate data={data} theme={theme} />;
+        return <ModernExecutiveTemplate {...props} />;
     }
   };
 
