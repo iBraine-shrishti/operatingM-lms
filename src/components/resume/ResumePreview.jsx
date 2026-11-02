@@ -123,7 +123,11 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
       {/* A4 DOCUMENT ROOT CONTAINER */}
       <div id="resume-print-document" className="w-full flex flex-col items-center print:block print:w-full print:m-0 print:p-0">
         {/* PAGE 1 SHEET */}
-        <div className="resume-page-sheet w-full max-w-[820px] bg-white rounded-2xl shadow-md border border-slate-200/90 overflow-hidden transition-all flex flex-col justify-between print:border-none print:shadow-none print:rounded-none print:max-w-none print:w-full">
+        <div
+          className={`resume-page-sheet w-full max-w-[820px] min-h-[1120px] bg-white rounded-2xl shadow-md border border-slate-200/90 overflow-hidden transition-all flex flex-col justify-between print:border-none print:shadow-none print:rounded-none print:max-w-none print:w-full ${
+            totalPages === 1 ? "resume-page-sheet-last" : ""
+          }`}
+        >
           {renderTemplateSheet(1, totalPages)}
         </div>
 
@@ -138,7 +142,7 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
               <div className="h-px bg-slate-300 dark:bg-slate-700 flex-1 border-t border-dashed border-slate-400 dark:border-slate-600" />
             </div>
 
-            <div className="resume-page-sheet w-full max-w-[820px] bg-white rounded-2xl shadow-md border border-slate-200/90 overflow-hidden transition-all flex flex-col justify-between print:border-none print:shadow-none print:rounded-none print:max-w-none print:w-full">
+            <div className="resume-page-sheet resume-page-sheet-last w-full max-w-[820px] min-h-[1120px] bg-white rounded-2xl shadow-md border border-slate-200/90 overflow-hidden transition-all flex flex-col justify-between print:border-none print:shadow-none print:rounded-none print:max-w-none print:w-full">
               {renderTemplateSheet(2, totalPages)}
             </div>
           </>

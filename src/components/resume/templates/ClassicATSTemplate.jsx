@@ -333,10 +333,10 @@ export const ClassicATSTemplate = ({
   );
 
   return (
-    <div className="bg-white text-slate-900 font-sans leading-relaxed text-[12.5px] print:text-[11px] w-full min-h-[1050px] print:min-h-0 p-8 sm:p-10 print:p-6 flex flex-col justify-between print:m-0">
+    <div className="bg-white text-slate-900 font-sans leading-relaxed text-[12.5px] print:text-[11px] w-full min-h-[1050px] h-full print:h-full print:min-h-0 p-8 sm:p-10 print:p-6 flex flex-col justify-between print:m-0">
       {/* PAGE 1 CONTENT */}
       {page === 1 && (
-        <div className="space-y-1">
+        <div className="space-y-1 flex-1">
           {renderHeader(false)}
           {renderSummary()}
           {renderSkills()}
@@ -354,7 +354,7 @@ export const ClassicATSTemplate = ({
 
       {/* PAGE 2 CONTENT (NO HEADER - JUST CONTENT & FOOTER) */}
       {page === 2 && (
-        <div className="space-y-1">
+        <div className="space-y-1 flex-1">
           {renderProjects()}
           {renderEducation()}
           {renderCertificationsAndLanguages()}

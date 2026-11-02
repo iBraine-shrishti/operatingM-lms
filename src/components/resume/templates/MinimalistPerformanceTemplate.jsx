@@ -411,7 +411,7 @@ export const MinimalistPerformanceTemplate = ({
   };
 
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] print:min-h-0 p-6 sm:p-8 print:p-5 flex flex-col justify-between print:m-0">
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] h-full print:h-full print:min-h-0 p-6 sm:p-8 print:p-5 flex flex-col justify-between print:m-0">
       <div className="space-y-5 print:space-y-3 flex-1">
         {/* HEADER (PAGE 1 ONLY - NO HEADER ON PAGE 2) */}
         {page === 1 && renderHeader(false)}

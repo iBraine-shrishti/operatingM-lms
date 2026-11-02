@@ -686,13 +686,16 @@ html.dark .hover\:border-slate-300:hover {
   html,
   body {
     width: 210mm !important;
-    height: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    overflow: visible !important;
   }
   /* Completely hide all application shell UI: Topbar, Sidebar, Drawer, Dialogs */
   nav.app-navbar,
@@ -711,8 +714,11 @@ html.dark .hover\:border-slate-300:hover {
     display: none !important;
     visibility: hidden !important;
     height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
     opacity: 0 !important;
   }
+  /* Reset all ancestor wrappers to zero margins, zero paddings, and no constraints */
   #root,
   #root > div,
   main,
@@ -722,16 +728,26 @@ html.dark .hover\:border-slate-300:hover {
   div[class*="grid-cols-12"],
   div[class*="col-span-7"],
   div[class*="col-span-5"],
+  div[class*="space-y-"],
+  div[class*="pb-"],
+  div[class*="py-"],
   .sticky {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
     padding: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     min-height: auto !important;
     height: auto !important;
+    max-height: none !important;
     position: static !important;
     top: auto !important;
     transform: none !important;
@@ -742,7 +758,7 @@ html.dark .hover\:border-slate-300:hover {
     position: static !important;
     width: 210mm !important;
     max-width: 210mm !important;
-    margin: 0 auto !important;
+    margin: 0 !important;
     padding: 0 !important;
     page-break-inside: auto !important;
     break-inside: auto !important;
@@ -750,14 +766,14 @@ html.dark .hover\:border-slate-300:hover {
     background: #ffffff !important;
     display: block !important;
   }
-  /* Actual Discrete Page Sheets in Print: exactly 210mm x 297mm */
+  /* Actual Discrete Page Sheets in Print: exactly 210mm x 296mm (prevents 0.5px subpixel overflow extra pages) */
   .resume-page-sheet {
     width: 210mm !important;
     min-width: 210mm !important;
     max-width: 210mm !important;
-    height: 297mm !important;
-    min-height: 297mm !important;
-    max-height: 297mm !important;
+    height: 296mm !important;
+    min-height: 296mm !important;
+    max-height: 296mm !important;
     box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
@@ -767,7 +783,7 @@ html.dark .hover\:border-slate-300:hover {
     box-shadow: none !important;
     border: none !important;
     border-radius: 0 !important;
-    margin: 0 auto !important;
+    margin: 0 !important;
     padding: 0 !important;
     page-break-after: always !important;
     break-after: page !important;
@@ -775,9 +791,24 @@ html.dark .hover\:border-slate-300:hover {
     break-inside: avoid !important;
     position: relative !important;
   }
+  /* The last sheet must NEVER break to a blank trailing page */
+  .resume-page-sheet.resume-page-sheet-last,
   .resume-page-sheet:last-child {
     page-break-after: avoid !important;
     break-after: avoid !important;
+  }
+  /* Direct template root child inside the sheet: forces 100% full height so footer sticks firmly to the bottom */
+  .resume-page-sheet > div {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    flex: 1 1 0% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
   }
   /* Modern Executive 2-Column Sidebar Layout */
   #resume-print-document .resume-modern-body {
@@ -832,12 +863,15 @@ html.dark .hover\:border-slate-300:hover {
   #resume-print-document [class*="print:grid"] {
     display: grid !important;
   }
-  /* Footer sits firmly at the bottom of each printed page sheet */
+  /* Footer sits firmly at the absolute bottom of each printed page sheet */
   .resume-footer {
     display: flex !important;
+    width: 100% !important;
     margin-top: auto !important;
+    flex-shrink: 0 !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    box-sizing: border-box !important;
   }
   /* Prevent awkward page cuts inside individual section cards and items */
   #resume-print-document section,

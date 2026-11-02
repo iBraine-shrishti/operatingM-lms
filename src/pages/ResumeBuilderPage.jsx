@@ -131,7 +131,7 @@ export const ResumeBuilderPage = () => {
   };
 
   return (
-    <div className="space-y-6 pb-12 font-sans">
+    <div className="space-y-6 pb-12 font-sans print:p-0 print:m-0 print:pb-0 print:space-y-0">
       {/* 1. HERO HEADER */}
       <div className="resume-hide-on-print">
         <StudentPageHeader

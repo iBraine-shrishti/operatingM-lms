@@ -505,7 +505,7 @@ export const ModernExecutiveTemplate = ({
   };
 
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] print:min-h-0 flex flex-col justify-between print:p-0 print:m-0">
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] h-full print:h-full print:min-h-0 flex flex-col justify-between print:p-0 print:m-0">
       {/* 2-COLUMN BODY */}
       <div className="w-full flex flex-col md:flex-row print:flex-row flex-1 resume-modern-body">
         {/* LEFT SIDEBAR (36%) */}
