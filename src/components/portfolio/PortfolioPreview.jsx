@@ -1649,7 +1649,7 @@ export const PortfolioPreview = ({
                 © {new Date().getFullYear()} Operating Media. All Rights Reserved.
               </p>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                ISO 9001:2015 Certified Curriculum • Training Centers: Andheri • Borivali • Dadar • Thane
+                ISO 9001:2015 Certified Curriculum • Training Centers: Andheri • Borivali
               </p>
             </div>
 

@@ -188,10 +188,7 @@ export const ClassicATSTemplate = ({
         />
         <div className={isOnePage ? "space-y-2.5" : "space-y-4"}>
           {experiences.map((exp) => {
-            const bulletsToRender =
-              isOnePage && exp.bullets?.length > 2
-                ? exp.bullets.slice(0, 2)
-                : exp.bullets || [];
+            const bulletsToRender = exp.bullets || [];
 
             return (
               <div key={exp.id} className="space-y-0.5">

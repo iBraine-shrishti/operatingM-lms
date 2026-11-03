@@ -189,7 +189,7 @@ export const CreativeMarketerTemplate = ({
           <p
             className={`${
               isOnePage
-                ? "text-[11.5px] print:text-[10px] leading-snug line-clamp-3"
+                ? "text-[11.5px] print:text-[10px] leading-snug "
                 : "text-[12.5px] leading-relaxed"
             } text-slate-700 text-justify`}
           >
@@ -234,10 +234,7 @@ export const CreativeMarketerTemplate = ({
 
         <div className={`grid grid-cols-1 ${isOnePage ? "gap-2" : "gap-4"}`}>
           {experiences.map((exp) => {
-            const bulletsToRender =
-              isOnePage && exp.bullets?.length > 2
-                ? exp.bullets.slice(0, 2)
-                : exp.bullets || [];
+            const bulletsToRender = exp.bullets || [];
 
             return (
               <div
@@ -386,7 +383,7 @@ export const CreativeMarketerTemplate = ({
                 <p
                   className={`text-slate-700 leading-snug ${
                     isOnePage
-                      ? "text-[11px] print:text-[9.5px] line-clamp-2"
+                      ? "text-[11px] print:text-[9.5px] "
                       : "text-[11.5px]"
                   }`}
                 >
