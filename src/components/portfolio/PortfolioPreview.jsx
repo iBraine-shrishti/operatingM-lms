@@ -627,12 +627,12 @@ export const PortfolioPreview = ({
                     </div>
                   </div>
                   <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full self-start sm:self-auto">
-                    {modules.wordpress.length} Client Builds
+                    {(Array.isArray(modules.wordpress) ? modules.wordpress : []).length} Client Builds
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {modules.wordpress.map((proj, pIdx) => (
+                  {(Array.isArray(modules.wordpress) ? modules.wordpress : []).map((proj, pIdx) => (
                     <div
                       key={proj.id}
                       className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col group"
@@ -763,6 +763,29 @@ export const PortfolioPreview = ({
 
           // MODULE 02: CANVA
           if (modId === "canva") {
+            const canvaDesigns = Array.isArray(modules.canva)
+              ? modules.canva
+              : Array.isArray(modules.canva?.designs)
+              ? modules.canva.designs
+              : [];
+
+            const handleUpdateCanvaDesign = (dIdx, field, val) => {
+              if (!onChange) return;
+              const updated = [...canvaDesigns];
+              updated[dIdx] = { ...updated[dIdx], [field]: val };
+              if (Array.isArray(modules.canva)) {
+                onChange({ ...portfolioData, modules: { ...modules, canva: updated } });
+              } else {
+                onChange({
+                  ...portfolioData,
+                  modules: {
+                    ...modules,
+                    canva: { ...(modules.canva || {}), designs: updated },
+                  },
+                });
+              }
+            };
+
             return (
               <section key={modId} id="canva" className="space-y-6 scroll-mt-28">
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
@@ -782,12 +805,15 @@ export const PortfolioPreview = ({
                       </p>
                     </div>
                   </div>
+                  <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
+                    {canvaDesigns.length} Creative Decks
+                  </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {modules.canva.map((design, dIdx) => (
+                  {canvaDesigns.map((design, dIdx) => (
                     <div
-                      key={design.id}
+                      key={design.id || dIdx}
                       className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3 flex flex-col justify-between group"
                     >
                       <div className="h-40 rounded-xl overflow-hidden bg-slate-100 relative">
@@ -803,19 +829,10 @@ export const PortfolioPreview = ({
                               `Change Graphic: ${design.title}`,
                               design.imageUrl,
                               false,
-                              (newUrl) => {
-                                if (onChange) {
-                                  const updated = [...modules.canva];
-                                  updated[dIdx] = { ...updated[dIdx], imageUrl: newUrl };
-                                  onChange({
-                                    ...portfolioData,
-                                    modules: { ...modules, canva: updated },
-                                  });
-                                }
-                              }
+                              (newUrl) => handleUpdateCanvaDesign(dIdx, "imageUrl", newUrl)
                             )
                           }
-                          className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-slate-950/70 text-white text-[9px] font-bold flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-slate-950/70 text-white text-[9px] font-bold flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                         >
                           <Camera size={10} />
                           <span>Change Graphic</span>
@@ -829,25 +846,13 @@ export const PortfolioPreview = ({
                         <EditableText
                           tag="h3"
                           value={design.title}
-                          onChange={(val) => {
-                            if (onChange) {
-                              const updated = [...modules.canva];
-                              updated[dIdx] = { ...updated[dIdx], title: val };
-                              onChange({ ...portfolioData, modules: { ...modules, canva: updated } });
-                            }
-                          }}
+                          onChange={(val) => handleUpdateCanvaDesign(dIdx, "title", val)}
                           className="text-sm font-extrabold text-slate-900 mt-0.5 block"
                         />
                         <EditableText
                           tag="p"
                           value={design.conceptNote}
-                          onChange={(val) => {
-                            if (onChange) {
-                              const updated = [...modules.canva];
-                              updated[dIdx] = { ...updated[dIdx], conceptNote: val };
-                              onChange({ ...portfolioData, modules: { ...modules, canva: updated } });
-                            }
-                          }}
+                          onChange={(val) => handleUpdateCanvaDesign(dIdx, "conceptNote", val)}
                           className="text-xs text-slate-600 mt-1 leading-relaxed block"
                         />
                       </div>
@@ -886,7 +891,7 @@ export const PortfolioPreview = ({
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {modules.socialOrganic.map((so) => (
+                  {(Array.isArray(modules.socialOrganic) ? modules.socialOrganic : []).map((so) => (
                     <div
                       key={so.id}
                       className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4"
@@ -953,7 +958,7 @@ export const PortfolioPreview = ({
                 </div>
 
                 <div className="space-y-3">
-                  {modules.socialMarketing.map((ad, idx) => {
+                  {(Array.isArray(modules.socialMarketing) ? modules.socialMarketing : []).map((ad, idx) => {
                     const isOpen = openMetaIdx === idx;
                     return (
                       <div
@@ -1048,7 +1053,7 @@ export const PortfolioPreview = ({
                 </div>
 
                 <div className="space-y-3">
-                  {modules.googleAds.map((gads, idx) => {
+                  {(Array.isArray(modules.googleAds) ? modules.googleAds : []).map((gads, idx) => {
                     const isOpen = openGoogleIdx === idx;
                     return (
                       <div
@@ -1156,8 +1161,8 @@ export const PortfolioPreview = ({
 
                 <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
                   <div className="p-4 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-3 text-xs font-bold">
-                    <span>Rankings Audit Report: {modules.seo.audit.organicTrafficGrowth} Organic Traffic Growth</span>
-                    <span>DA: {modules.seo.audit.domainAuthorityBefore} → {modules.seo.audit.domainAuthorityAfter}</span>
+                    <span>Rankings Audit Report: {modules.seo?.audit?.organicTrafficGrowth || "+380%"} Organic Traffic Growth</span>
+                    <span>DA: {modules.seo?.audit?.domainAuthorityBefore ?? 14} → {modules.seo?.audit?.domainAuthorityAfter ?? 38}</span>
                   </div>
 
                   <div className="overflow-x-auto custom-scrollbar w-full">
@@ -1171,7 +1176,7 @@ export const PortfolioPreview = ({
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 font-medium">
-                        {modules.seo.keywords.map((kw, kIdx) => (
+                        {(Array.isArray(modules.seo?.keywords) ? modules.seo.keywords : []).map((kw, kIdx) => (
                           <tr key={kIdx} className="hover:bg-slate-50">
                             <td className="py-3 px-4 font-bold text-slate-900">{kw.keyword}</td>
                             <td className="py-3 px-4 text-slate-600">{kw.volume}/mo</td>
