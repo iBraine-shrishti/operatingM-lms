@@ -48,6 +48,7 @@ import {
   ShieldCheck,
   Target,
   Calendar,
+  Truck,
   Star,
   Store,
 } from "lucide-react";
@@ -3295,197 +3296,402 @@ export const PortfolioPreview = ({
             );
           }
 
-          // MODULE 09: SHOPIFY STORE
+          // MODULE 09: SHOPIFY E-COMMERCE STORE & CRO ARCHITECTURE
           if (modId === "shopify") {
             return (
               <section
                 key={modId}
                 id="shopify"
-                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+                className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <ShoppingBag size={20} />
-                    </div>
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-1 sm:px-2 space-y-8">
+                  {/* Module 09 Header */}
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        Shopify Store
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+                        Module 09 · E-Commerce Architecture
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        Shopify E-Commerce Store & CRO Architecture
                       </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        High AOV architecture, custom cart upsells, and payment gateway integration
+                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        End-to-end Shopify merchant deployment designed for high Average Order Value (AOV), seamless 1-click checkout, and automated retention loops.
                       </p>
                     </div>
-                  </div>
-                </div>
 
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600">
-                        {modules.shopify.niche}
-                      </span>
-                      <h3 className="text-lg font-black text-slate-900">
-                        {modules.shopify.storeName}
-                      </h3>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-xs font-bold bg-slate-100 text-slate-700 px-3 py-1 rounded-lg">
-                        CR: {modules.shopify.conversionRateAchieved}
-                      </span>
-                      <span className="text-xs font-bold bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg border border-emerald-200">
-                        AOV: {modules.shopify.aovAchieved}
-                      </span>
+                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-2xs shrink-0">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      <span>Shopify Partner Certified · Liquid Customized</span>
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    {modules.shopify.description}
-                  </p>
+                  {/* Store Showcase Card */}
+                  <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                      {/* Left: Store Screenshot Mockup */}
+                      <div className="lg:col-span-6 space-y-3">
+                        <div className="relative bg-slate-950 aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 shadow-xs group">
+                          <img
+                            src={mockupCreativesImg}
+                            alt="Terra & Tide Apparel Shopify Store"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                          />
+                          <div className="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-xs text-amber-400 font-mono text-[10px] px-2.5 py-1 rounded-md border border-slate-700 shadow-xs font-bold">
+                            Customized Dawn 2.0 with liquid micro-optimizations
+                          </div>
+                        </div>
+                      </div>
 
-                  <div className="space-y-2 pt-2 border-t border-slate-100">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-                      Conversion Rate Optimization (CRO) Features Built:
-                    </span>
-                    <ul className="text-xs text-slate-600 space-y-1">
-                      {(Array.isArray(modules.shopify?.croFeatures) ? modules.shopify.croFeatures : []).map((feat, fIdx) => (
-                        <li key={fIdx} className="flex items-start">
-                          <span className="text-emerald-500 mr-2 font-bold">✓</span>
-                          <span>{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
+                      {/* Right: Store Details, KPIs & CRO */}
+                      <div className="lg:col-span-6 space-y-4">
+                        <div>
+                          <div className="text-xs font-bold uppercase tracking-wider text-amber-600">
+                            SUSTAINABLE ORGANIC OUTDOOR APPAREL & GEAR
+                          </div>
+                          <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+                            Terra & Tide Apparel
+                          </h3>
+                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-2">
+                            Complete Shopify store setup from scratch. Configured product collections, payment gateways, automated tax settings, shipping zones, and integrated post-purchase cross-sell flows that immediately increased average order value by 30%.
+                          </p>
+                        </div>
+
+                        {/* 2 Stat Boxes */}
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="bg-blue-50/60 border border-blue-200 p-3.5 rounded-xl">
+                            <div className="text-[11px] font-bold text-blue-700 uppercase tracking-wider">
+                              CONVERSION RATE
+                            </div>
+                            <div className="font-mono font-bold text-sm sm:text-base text-slate-900 mt-1">
+                              3.84% <span className="text-xs font-medium text-slate-500">(up from 1.9% store baseline)</span>
+                            </div>
+                          </div>
+                          <div className="bg-amber-50/60 border border-amber-200 p-3.5 rounded-xl">
+                            <div className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">
+                              ACHIEVED AOV
+                            </div>
+                            <div className="font-mono font-bold text-sm sm:text-base text-slate-900 mt-1">
+                              $89.50 <span className="text-xs font-medium text-amber-700">(+$21 lift via cart cross-sells)</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* CRO Features */}
+                        <div className="space-y-2 pt-1">
+                          <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                            CONVERSION RATE OPTIMIZATION (CRO) FEATURES:
+                          </div>
+                          <div className="space-y-1.5 text-xs text-slate-700 font-medium">
+                            <div className="flex items-start gap-2">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+                              <span>Slide-out Smart Cart with progress bar toward free shipping</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+                              <span>Instant 1-Click Shopify Pay & Apple Pay express checkout</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+                              <span>Sticky mobile buy bar with real-time stock scarcity notice</span>
+                            </div>
+                            <div className="flex items-start gap-2">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+                              <span>Size guide interactive modal with 98% fit confidence</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Integrated Shopify Apps */}
+                        <div className="space-y-2 pt-2 border-t border-slate-100">
+                          <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                            INTEGRATED SHOPIFY APPS:
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {[
+                              "Klaviyo: Email Marketing & SMS",
+                              "Rebuy Engine: Smart Cart & AI Upsells",
+                              "Judge.me: Verified Product Reviews",
+                              "Matrixify: Bulk Inventory Automation",
+                              "Loox: Photo Reviews & UGC Carousel",
+                            ].map((app, aIdx) => (
+                              <span
+                                key={aIdx}
+                                className="px-2.5 py-1 text-[11px] font-medium bg-slate-100 text-slate-700 rounded-lg border border-slate-200"
+                              >
+                                {app}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              
                 </div>
               </section>
             );
           }
 
-          // MODULE 10: VIDEO EDITING
+          // MODULE 10: VIDEO EDITING, UGC CREATIVES & COMMERCIAL REELS
           if (modId === "videoEditing") {
+            const reels = [
+              {
+                formatTag: "Reels / TikTok",
+                duration: "0:24",
+                title: "High-Retention UGC Hook: The 'Stop Scrolling' Skincare Teardown",
+                description: "Engineered a TikTok-native UGC video ad featuring jump cuts every 1.2 seconds, dynamic auto-synced subtitles, sound design (whooshes, pop-ups), and a clear call-to-action.",
+                hookStrategy: "0-3s visual pattern interrupt (rapid zoom on textured skin) paired with curiosity headline text and dynamic sound effects.",
+                retentionMetric: "62% completion rate at 15s mark (4.1x benchmark)",
+                tools: ["Adobe Premiere Pro", "CapCut Desktop", "After Effects"],
+              },
+              {
+                formatTag: "Brand Teaser",
+                duration: "0:45",
+                title: "Cinematic Product Commercial: Matte Black Espresso Machine",
+                description: "Commercial-grade promotional video focusing on product textures, precision engineering, and lifestyle aspiration. Used as top-of-funnel brand anchor for Meta and YouTube campaigns.",
+                hookStrategy: "Slow-motion espresso extraction shot at 120fps with tactile ASMR audio and atmospheric golden hour backlight.",
+                retentionMetric: "54% 30-second retention rate on YouTube In-Stream",
+                tools: ["DaVinci Resolve", "Color Grading with Film LUTs", "Sound FX Library"],
+              },
+            ];
+
             return (
               <section
                 key={modId}
                 id="videoEditing"
-                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+                className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <Video size={20} />
-                    </div>
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-1 sm:px-2 space-y-8">
+                  {/* Module 10 Header */}
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        Video Editing
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+                        Module 10 · Post-Production & Motion
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        Video Editing, UGC Creatives & Commercial Reels
                       </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Short-form viral hook structures, dynamic kinetic typography, and motion ad cuts
+                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        Short-form video assets engineered for algorithm retention, featuring dynamic jump-cut pacing, kinetic subtitles, and psycho-acoustic sound design.
                       </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-2xs shrink-0">
+                      <Video className="w-4 h-4 text-blue-600" />
+                      <span>CapCut Desktop · Premiere Pro · 4K Color Graded</span>
                     </div>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {(Array.isArray(modules.videoEditing) ? modules.videoEditing : []).map((vid) => (
-                    <div
-                      key={vid.id}
-                      className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-2"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black uppercase text-purple-600">
-                          {vid.software}
-                        </span>
-                        <span className="text-xs font-bold text-emerald-600">
-                          {vid.retentionRate}
-                        </span>
+                  {/* 2 Video Cards Grid */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {reels.map((reel, rIdx) => (
+                      <div
+                        key={rIdx}
+                        className="bg-slate-900 text-white rounded-2xl border border-slate-800 overflow-hidden shadow-md flex flex-col justify-between group"
+                      >
+                        {/* Video Thumbnail Area */}
+                        <div className="relative aspect-[16/9] bg-black overflow-hidden group/vid">
+                          <img
+                            src={mockupCreativesImg}
+                            alt={reel.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85"
+                          />
+                          <div className="absolute top-3 left-3 bg-slate-900/90 text-amber-400 font-mono text-[10px] px-2.5 py-1 rounded font-bold shadow-xs">
+                            {reel.formatTag}
+                          </div>
+                          <div className="absolute top-3 right-3 flex items-center gap-1 bg-slate-900/90 text-slate-300 font-mono text-[10px] px-2.5 py-1 rounded shadow-xs">
+                            <Clock className="w-3 h-3 text-slate-400" />
+                            <span>{reel.duration}</span>
+                          </div>
+
+                          {/* Center Play Button */}
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-12 h-12 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform cursor-pointer">
+                              <Play className="w-5 h-5 fill-slate-950 ml-0.5" />
+                            </div>
+                          </div>
+
+                          {/* Yellow Accent Bar */}
+                          <div className="absolute bottom-0 left-0 right-0 h-1 bg-amber-400" />
+                        </div>
+
+                        {/* Video Details */}
+                        <div className="p-5 sm:p-6 space-y-4 flex-1 flex flex-col justify-between">
+                          <div className="space-y-2">
+                            <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
+                              {reel.title}
+                            </h3>
+                            <p className="text-xs text-slate-300 leading-relaxed font-normal">
+                              {reel.description}
+                            </p>
+                          </div>
+
+                          {/* Hook & Retention Architecture Box */}
+                          <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 space-y-2 text-xs">
+                            <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                              <Sparkles className="w-3 h-3 text-amber-400" />
+                              <span>HOOK & RETENTION ARCHITECTURE (0-3S):</span>
+                            </div>
+                            <p className="text-slate-200 italic leading-relaxed">
+                              "{reel.hookStrategy}"
+                            </p>
+                            <div className="flex items-center justify-between text-[11px] pt-2 border-t border-slate-800/80">
+                              <span className="text-slate-400">Verified Retention:</span>
+                              <span className="text-emerald-400 font-mono font-bold">
+                                {reel.retentionMetric}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Footer with Tools & Enlarge link */}
+                          <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/60">
+                            <div className="flex flex-wrap gap-1.5">
+                              {reel.tools.map((tool, tIdx) => (
+                                <span
+                                  key={tIdx}
+                                  className="px-2 py-0.5 text-[11px] font-medium bg-slate-800 text-slate-300 rounded-md border border-slate-700"
+                                >
+                                  {tool}
+                                </span>
+                              ))}
+                            </div>
+                            <span className="text-xs font-semibold text-amber-400 hover:text-amber-300 cursor-pointer">
+                              Enlarge Player
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <h3 className="text-sm font-extrabold text-slate-900">
-                        {vid.title}
-                      </h3>
-                      <p className="text-xs text-slate-500">
-                        Hook Strategy: <strong className="text-slate-700">{vid.hookTime}</strong>
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              
+                    ))}
+                  </div>
                 </div>
               </section>
             );
           }
 
-          // MODULE 11: DROPSHIPPING STORE
+          // MODULE 11: DROPSHIPPING STORE & WINNING PRODUCT VALIDATION
           if (modId === "dropshipping") {
             return (
               <section
                 key={modId}
                 id="dropshipping"
-                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+                className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <Box size={20} />
-                    </div>
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-1 sm:px-2 space-y-8">
+                  {/* Module 11 Header */}
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        Dropshipping Store
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+                        Module 11 · Direct-To-Consumer Fulfillment
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        Dropshipping Store & Winning Product Validation
                       </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Product validation economics, supplier procurement, gross margins & ad angles
+                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        Product discovery research, supplier supply chain integration, margin modeling, and TikTok/Meta ad testing for rapid profitable scaling.
                       </p>
                     </div>
-                  </div>
-                </div>
 
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div>
-                      <span className="text-[10px] font-black uppercase text-amber-600">
-                        {modules.dropshipping.supplierPlatform}
-                      </span>
-                      <h3 className="text-base font-black text-slate-900">
-                        Winning Product: {modules.dropshipping.winningProduct}
-                      </h3>
+                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-2xs shrink-0">
+                      <Truck className="w-4 h-4 text-emerald-600" />
+                      <span>Fast 5-Day US Fulfillment · 76.3% Gross Margin</span>
                     </div>
-                    <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">
-                      {modules.dropshipping.grossMarginPct} Gross Margin
-                    </span>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3 rounded-xl text-center text-xs">
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-bold block">COGS</span>
-                      <span className="font-extrabold text-slate-900">{modules.dropshipping.cogs}</span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-bold block">RETAIL</span>
-                      <span className="font-extrabold text-slate-900">{modules.dropshipping.retailPrice}</span>
-                    </div>
-                    <div className="col-span-2">
-                      <span className="text-[10px] text-slate-400 font-bold block">VALIDATION</span>
-                      <span className="font-bold text-slate-800">{modules.dropshipping.validationMetrics}</span>
+                  {/* Winning Product Case Study Card */}
+                  <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                      {/* Left: Store Screenshot Mockup */}
+                      <div className="lg:col-span-6 space-y-3">
+                        <div className="relative bg-slate-950 aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 shadow-xs group">
+                          <img
+                            src={mockupCreativesImg}
+                            alt="Smart Ergonomic Contour Pillow"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                          />
+                          <div className="absolute top-3 left-3 bg-emerald-600 text-white font-mono text-[11px] font-bold px-3 py-1 rounded-md shadow-xs">
+                            76.3% Gross Margin
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Product Case Study & Unit Economics */}
+                      <div className="lg:col-span-6 space-y-4">
+                        <div>
+                          <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                            WINNING PRODUCT CASE STUDY
+                          </div>
+                          <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+                            Smart Ergonomic Cervical Contour Pillow with Cooling Gel
+                          </h3>
+                          <p className="text-xs text-slate-500 mt-1 font-medium">
+                            Storefront: Lumina Sleep Lab · Fulfilled via CJ Dropshipping & Direct Private Agent (5-8 day US delivery)
+                          </p>
+                        </div>
+
+                        {/* 3 Unit Economics KPI Boxes */}
+                        <div className="grid grid-cols-3 gap-3 my-4">
+                          <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl text-center">
+                            <div className="text-[10px] font-bold text-slate-500 uppercase">
+                              UNIT COGS
+                            </div>
+                            <div className="font-mono font-bold text-xs sm:text-sm text-slate-900 mt-1 leading-snug">
+                              $14.20 <span className="block text-[10px] font-normal text-slate-500">(including ePacket express fulfillment)</span>
+                            </div>
+                          </div>
+                          <div className="bg-blue-50/50 border border-blue-200 p-3 rounded-xl text-center flex flex-col justify-center">
+                            <div className="text-[10px] font-bold text-blue-700 uppercase">
+                              RETAIL PRICE
+                            </div>
+                            <div className="font-mono font-bold text-sm sm:text-base text-blue-700 mt-1">
+                              $59.95
+                            </div>
+                          </div>
+                          <div className="bg-amber-50/60 border border-amber-300 p-3 rounded-xl text-center flex flex-col justify-center">
+                            <div className="text-[10px] font-bold text-amber-800 uppercase">
+                              NET PROFIT/UNIT
+                            </div>
+                            <div className="font-mono font-extrabold text-sm sm:text-base text-amber-800 mt-1">
+                              +$45.75
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Winning Ad Creative Hook & Angle */}
+                        <div className="space-y-1">
+                          <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
+                            WINNING AD CREATIVE HOOK & ANGLE:
+                          </div>
+                          <p className="text-xs text-slate-600 leading-relaxed">
+                            Tackled widespread neck stiffness and morning migraines caused by smartphone posture. Ad creative demonstrated side-by-side spine alignment using 3D medical animation vs traditional flat pillows.
+                          </p>
+                        </div>
+
+                        {/* Pilot Test Validation Performance (14-Day Sprint) */}
+                        <div className="space-y-2 pt-2 border-t border-slate-100">
+                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                            PILOT TEST VALIDATION PERFORMANCE (14-DAY SPRINT):
+                          </div>
+                          <div className="grid grid-cols-4 gap-2 text-center">
+                            <div className="bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                              <span className="text-[10px] text-slate-400 font-medium block">Units Sold</span>
+                              <span className="font-mono font-bold text-xs text-slate-800">420</span>
+                            </div>
+                            <div className="bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                              <span className="text-[10px] text-slate-400 font-medium block">Ad Spend</span>
+                              <span className="font-mono font-bold text-xs text-slate-800">$3,800</span>
+                            </div>
+                            <div className="bg-blue-50/60 border border-blue-200 p-2 rounded-lg">
+                              <span className="text-[10px] text-blue-600 font-medium block">Revenue</span>
+                              <span className="font-mono font-bold text-xs text-blue-700">$25,179</span>
+                            </div>
+                            <div className="bg-emerald-50/80 border border-emerald-300 p-2 rounded-lg">
+                              <span className="text-[10px] text-emerald-700 font-medium block">Net Profit</span>
+                              <span className="font-mono font-bold text-xs text-emerald-700">$8,950</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              
                 </div>
               </section>
             );
