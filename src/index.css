@@ -832,65 +832,60 @@ html.dark #resume-print-document .border-slate-200\/90 {
     clear: both !important;
   }
 
-  /* Resume Document Container */
+  /* Resume Document Container in Print: Natural A4 flow */
   #resume-print-document {
     position: static !important;
     width: 210mm !important;
+    min-width: 210mm !important;
     max-width: 210mm !important;
+    min-height: 296.5mm !important;
+    height: auto !important;
+    max-height: none !important;
     margin: 0 !important;
     padding: 0 !important;
     page-break-inside: auto !important;
     break-inside: auto !important;
     overflow: visible !important;
     background: #ffffff !important;
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
   }
 
-  /* Actual Discrete Page Sheets in Print: exactly 210mm x 296mm */
-  .resume-page-sheet {
+  /* Direct template root child inside #resume-print-document */
+  #resume-print-document > div {
     width: 210mm !important;
     min-width: 210mm !important;
     max-width: 210mm !important;
-    height: 296mm !important;
-    min-height: 296mm !important;
-    max-height: 296mm !important;
-    box-sizing: border-box !important;
+    min-height: 296.5mm !important;
+    height: auto !important;
+    max-height: none !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: space-between !important;
-    overflow: hidden !important;
-    background: #ffffff !important;
-    box-shadow: none !important;
-    border: none !important;
-    border-radius: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    page-break-after: always !important;
-    break-after: page !important;
-    page-break-inside: avoid !important;
+    flex: 1 1 auto !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  /* Footer in Print: sticky to bottom via flex margin-top: auto, never breaks internally */
+  #resume-print-document footer,
+  #resume-print-document .resume-footer {
     break-inside: avoid !important;
-    position: relative !important;
+    page-break-inside: avoid !important;
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
   }
 
-  /* The last sheet must NEVER break to a blank trailing page */
-  .resume-page-sheet.resume-page-sheet-last,
-  .resume-page-sheet:last-child {
-    page-break-after: avoid !important;
-    break-after: avoid !important;
-  }
-
-  /* Direct template root child inside the sheet: forces 100% full height so footer sticks firmly to the bottom */
-  .resume-page-sheet > div {
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 100% !important;
-    max-height: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: space-between !important;
-    flex: 1 1 0% !important;
-    box-sizing: border-box !important;
-    overflow: hidden !important;
+  /* Prevent awkward page cuts inside individual section cards and items */
+  #resume-print-document section,
+  #resume-print-document article,
+  #resume-print-document .resume-section,
+  #resume-print-document .resume-section-item,
+  #resume-print-document .resume-card,
+  #resume-print-document .break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 
   /* Modern Executive 2-Column Sidebar Layout */

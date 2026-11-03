@@ -6,12 +6,10 @@ export const ClassicATSTemplate = ({
   data,
   theme,
   onUpdateHeading,
-  page = 1,
-  totalPages = 1,
 }) => {
   const {
-    personalInfo,
-    summary,
+    personalInfo = {},
+    summary = "",
     experiences = [],
     education = [],
     skills = {},
@@ -19,7 +17,7 @@ export const ClassicATSTemplate = ({
     certifications = [],
     languages = [],
     sectionHeadings = {},
-  } = data;
+  } = data || {};
 
   const contactItems = [
     personalInfo.phone,
@@ -30,37 +28,10 @@ export const ClassicATSTemplate = ({
   ].filter(Boolean);
 
   // SECTION: Header
-  const renderHeader = (isContinuation = false) => {
-    if (isContinuation) {
-      return (
-        <header
-          className="pb-3 border-b-2 mb-4"
-          style={{ borderColor: theme.primary }}
-        >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-slate-700">
-            <div>
-              <span
-                className="text-base font-black uppercase"
-                style={{ color: theme.primary }}
-              >
-                {personalInfo.fullName}
-              </span>
-              <span className="text-xs font-bold ml-2 text-slate-500">
-                • {personalInfo.jobTitle} (Page 2)
-              </span>
-            </div>
-            <div className="text-[11px] text-slate-500 font-medium">
-              {personalInfo.email}{" "}
-              {personalInfo.phone && `• ${personalInfo.phone}`}
-            </div>
-          </div>
-        </header>
-      );
-    }
-
+  const renderHeader = () => {
     return (
       <header
-        className="text-center pb-4 border-b-2"
+        className="text-center pb-3.5 border-b-2 resume-section break-inside-avoid print:break-inside-avoid"
         style={{ borderColor: theme.primary }}
       >
         <h1
@@ -92,9 +63,8 @@ export const ClassicATSTemplate = ({
   // SECTION: Summary
   const renderSummary = () => {
     if (data.hiddenSections?.summary || !summary || !summary.trim()) return null;
-    const isOnePage = totalPages === 1;
     return (
-      <section className={isOnePage ? "mt-2.5 print:mt-1.5" : "mt-4"}>
+      <section className="mt-2.5 print:mt-2 resume-section break-inside-avoid print:break-inside-avoid">
         <EditableHeading
           value={sectionHeadings.summary}
           fallback="Professional Summary"
@@ -103,7 +73,7 @@ export const ClassicATSTemplate = ({
           style={{ color: theme.primary, borderColor: theme.border }}
           tag="h2"
         />
-        <p className={`${isOnePage ? "text-[11.5px] print:text-[10px] leading-snug" : "text-[12px] leading-relaxed"} text-slate-800 text-justify`}>
+        <p className="text-[11.5px] print:text-[10px] leading-snug text-slate-800 text-justify">
           {summary}
         </p>
       </section>
@@ -118,10 +88,9 @@ export const ClassicATSTemplate = ({
         (list) => Array.isArray(list) && list.length > 0
       );
     if (data.hiddenSections?.skills || !hasAnySkills) return null;
-    const isOnePage = totalPages === 1;
 
     return (
-      <section className={isOnePage ? "mt-2.5 print:mt-1.5" : "mt-4"}>
+      <section className="mt-2.5 print:mt-2 resume-section break-inside-avoid print:break-inside-avoid">
         <EditableHeading
           value={sectionHeadings.skills}
           fallback="Core Competencies & Tools"
@@ -131,7 +100,7 @@ export const ClassicATSTemplate = ({
           tag="h2"
         />
 
-        <div className={`space-y-1 ${isOnePage ? "text-[11px] print:text-[10px]" : "text-[12px]"}`}>
+        <div className="space-y-1 text-[11px] print:text-[10px]">
           {Object.entries(skills || {}).map(([catKey, skillList], idx) => {
             if (!skillList || skillList.length === 0) return null;
             const headingKey = `skillCat_${catKey}`;
@@ -174,10 +143,9 @@ export const ClassicATSTemplate = ({
       experiences.length === 0
     )
       return null;
-    const isOnePage = totalPages === 1;
 
     return (
-      <section className={isOnePage ? "mt-2.5 print:mt-1.5" : "mt-4"}>
+      <section className="mt-2.5 print:mt-2 resume-section break-inside-avoid print:break-inside-avoid">
         <EditableHeading
           value={sectionHeadings.experience}
           fallback="Work Experience"
@@ -186,14 +154,14 @@ export const ClassicATSTemplate = ({
           style={{ color: theme.primary, borderColor: theme.border }}
           tag="h2"
         />
-        <div className={isOnePage ? "space-y-2.5" : "space-y-4"}>
+        <div className="space-y-2.5">
           {experiences.map((exp) => {
             const bulletsToRender = exp.bullets || [];
 
             return (
-              <div key={exp.id} className="space-y-0.5">
+              <div key={exp.id} className="space-y-0.5 resume-section-item break-inside-avoid print:break-inside-avoid">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between font-bold text-slate-900">
-                  <span className={isOnePage ? "text-[12px]" : "text-[13px]"}>
+                  <span className="text-[12px]">
                     {exp.role}
                   </span>
                   <span className="text-[11px] print:text-[10px] font-semibold text-slate-600">
@@ -227,10 +195,9 @@ export const ClassicATSTemplate = ({
   const renderProjects = () => {
     if (data.hiddenSections?.projects || !projects || projects.length === 0)
       return null;
-    const isOnePage = totalPages === 1;
 
     return (
-      <section className={isOnePage ? "mt-2.5 print:mt-1.5" : "mt-4"}>
+      <section className="mt-2.5 print:mt-2 resume-section break-inside-avoid print:break-inside-avoid">
         <EditableHeading
           value={sectionHeadings.projects}
           fallback="Featured Projects & Case Studies"
@@ -239,9 +206,9 @@ export const ClassicATSTemplate = ({
           style={{ color: theme.primary, borderColor: theme.border }}
           tag="h2"
         />
-        <div className={isOnePage ? "space-y-1.5" : "space-y-2.5"}>
+        <div className="space-y-1.5">
           {projects.map((proj) => (
-            <div key={proj.id} className="text-[11px] print:text-[10px]">
+            <div key={proj.id} className="text-[11px] print:text-[10px] resume-section-item break-inside-avoid print:break-inside-avoid">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between font-bold">
                 <span className="text-slate-900">{proj.title}</span>
                 {proj.metricHighlight && (
@@ -273,10 +240,9 @@ export const ClassicATSTemplate = ({
   const renderEducation = () => {
     if (data.hiddenSections?.education || !education || education.length === 0)
       return null;
-    const isOnePage = totalPages === 1;
 
     return (
-      <section className={isOnePage ? "mt-2.5 print:mt-1.5" : "mt-4"}>
+      <section className="mt-2.5 print:mt-2 resume-section break-inside-avoid print:break-inside-avoid">
         <EditableHeading
           value={sectionHeadings.education}
           fallback="Education & Training"
@@ -285,9 +251,9 @@ export const ClassicATSTemplate = ({
           style={{ color: theme.primary, borderColor: theme.border }}
           tag="h2"
         />
-        <div className={`space-y-1.5 ${isOnePage ? "text-[11px] print:text-[10px]" : "text-[12px]"}`}>
+        <div className="space-y-1.5 text-[11px] print:text-[10px]">
           {education.map((edu) => (
-            <div key={edu.id} className="space-y-0.5">
+            <div key={edu.id} className="space-y-0.5 resume-section-item break-inside-avoid print:break-inside-avoid">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between font-bold text-slate-900">
                 <span>{edu.degree}</span>
                 <span className="text-[10.5px] print:text-[9.5px] font-semibold text-slate-600">
@@ -305,8 +271,8 @@ export const ClassicATSTemplate = ({
                   </span>
                 )}
               </div>
-              {!isOnePage && edu.details && (
-                <p className="text-[11px] text-slate-500">{edu.details}</p>
+              {edu.details && (
+                <p className="text-[10.5px] text-slate-500">{edu.details}</p>
               )}
             </div>
           ))}
@@ -323,10 +289,9 @@ export const ClassicATSTemplate = ({
       certifications.length === 0
     )
       return null;
-    const isOnePage = totalPages === 1;
 
     return (
-      <section className={isOnePage ? "mt-2 print:mt-1.5" : "mt-4"}>
+      <section className="mt-2 print:mt-1.5 resume-section break-inside-avoid print:break-inside-avoid">
         <EditableHeading
           value={sectionHeadings.certifications}
           fallback="Certifications"
@@ -350,10 +315,9 @@ export const ClassicATSTemplate = ({
   const renderLanguages = () => {
     if (data.hiddenSections?.languages || !languages || languages.length === 0)
       return null;
-    const isOnePage = totalPages === 1;
 
     return (
-      <section className={isOnePage ? "mt-2 print:mt-1.5" : "mt-4"}>
+      <section className="mt-2 print:mt-1.5 resume-section break-inside-avoid print:break-inside-avoid">
         <EditableHeading
           value={sectionHeadings.languages}
           fallback="Languages"
@@ -410,43 +374,19 @@ export const ClassicATSTemplate = ({
 
   return (
     <div
-      className={`bg-white text-slate-900 font-sans leading-relaxed text-[12.5px] print:text-[11px] w-full min-h-[1050px] h-full print:h-full print:min-h-0 ${
-        totalPages === 1 ? "p-6 sm:p-7 print:p-4" : "p-8 sm:p-10 print:p-6"
-      } flex flex-col justify-between print:m-0`}
+      className="bg-white text-slate-900 font-sans leading-relaxed text-[12.5px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.5mm] h-auto p-6 sm:p-7 print:p-5 flex flex-col justify-between print:m-0"
     >
-      {/* PAGE 1 CONTENT */}
-      {page === 1 && (
-        <div className="space-y-1 flex-1">
-          {renderHeader(false)}
-          {totalPages === 1
-            ? contentOrder.map((secId) => (
-                <React.Fragment key={secId}>
-                  {renderSectionById(secId)}
-                </React.Fragment>
-              ))
-            : contentOrder.slice(0, 3).map((secId) => (
-                <React.Fragment key={secId}>
-                  {renderSectionById(secId)}
-                </React.Fragment>
-              ))}
-        </div>
-      )}
-
-      {/* PAGE 2 CONTENT (NO HEADER - JUST CONTENT & FOOTER) */}
-      {page === 2 && (
-        <div className="space-y-1 flex-1">
-          {contentOrder.slice(3).map((secId) => (
-            <React.Fragment key={secId}>
-              {renderSectionById(secId)}
-            </React.Fragment>
-          ))}
-        </div>
-      )}
+      <div className="space-y-2 flex-1">
+        {renderHeader()}
+        {contentOrder.map((secId) => (
+          <React.Fragment key={secId}>
+            {renderSectionById(secId)}
+          </React.Fragment>
+        ))}
+      </div>
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}
       <ResumeFooter
-        pageNumber={page}
-        totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
         footerInfo={data.footerInfo}

@@ -44,14 +44,16 @@ export const ResumeBuilderPage = () => {
   // Auto-sync student profile on first load if default was empty
   useEffect(() => {
     if (!localStorage.getItem("om_lms_resume_data")) {
-      setResumeData(
-        createInitialResumeData(
-          currentUser,
-          crmProfile,
-          crmBatch,
-          crmCertificates,
-        ),
+      const initial = createInitialResumeData(
+        currentUser,
+        crmProfile,
+        crmBatch,
+        crmCertificates,
       );
+      setResumeData(initial);
+      try {
+        localStorage.setItem("om_lms_resume_data", JSON.stringify(initial));
+      } catch (e) {}
     }
   }, [currentUser?.name, crmProfile?.name, crmBatch?.courseName]);
 

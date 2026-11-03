@@ -23,8 +23,8 @@ export const ModernExecutiveTemplate = ({
   totalPages = 1,
 }) => {
   const {
-    personalInfo,
-    summary,
+    personalInfo = {},
+    summary = "",
     experiences = [],
     education = [],
     skills = {},
@@ -32,7 +32,7 @@ export const ModernExecutiveTemplate = ({
     certifications = [],
     languages = [],
     sectionHeadings = {},
-  } = data;
+  } = data || {};
 
   // SUB-RENDERER: Contact Info Dossier
   const renderContact = () => {
@@ -453,7 +453,7 @@ export const ModernExecutiveTemplate = ({
     const isOnePage = totalPages === 1;
 
     return (
-      <section className={isOnePage ? "space-y-2.5" : "space-y-4"}>
+      <section className="space-y-2.5 resume-section break-inside-avoid print:break-inside-avoid">
         <div className="flex items-center gap-2">
           <Briefcase size={14} style={{ color: theme.secondary }} />
           <EditableHeading
@@ -466,14 +466,14 @@ export const ModernExecutiveTemplate = ({
           />
         </div>
 
-        <div className={isOnePage ? "space-y-2.5" : "space-y-4"}>
+        <div className="space-y-2.5">
           {experiences.map((exp) => {
             const bulletsToRender = exp.bullets || [];
 
             return (
               <div
                 key={exp.id}
-                className="relative pl-3 border-l-2"
+                className="relative pl-3 border-l-2 resume-section-item break-inside-avoid print:break-inside-avoid"
                 style={{ borderColor: theme.border }}
               >
                 <span
@@ -539,7 +539,7 @@ export const ModernExecutiveTemplate = ({
     const isOnePage = totalPages === 1;
 
     return (
-      <section className={isOnePage ? "space-y-2 pt-1" : "space-y-3 pt-2"}>
+      <section className="space-y-2 pt-1 resume-section break-inside-avoid print:break-inside-avoid">
         <div className="flex items-center gap-2">
           <FolderGit2 size={14} style={{ color: theme.secondary }} />
           <EditableHeading
@@ -552,13 +552,11 @@ export const ModernExecutiveTemplate = ({
           />
         </div>
 
-        <div className={`grid grid-cols-1 ${isOnePage ? "gap-2" : "gap-3"}`}>
+        <div className="grid grid-cols-1 gap-2">
           {projects.map((proj) => (
             <div
               key={proj.id}
-              className={`rounded-xl border ${
-                isOnePage ? "p-2.5 print:p-2 space-y-0.5" : "p-3.5 space-y-1"
-              }`}
+              className="rounded-xl border p-2.5 print:p-2 space-y-0.5 resume-section-item break-inside-avoid print:break-inside-avoid"
               style={{
                 backgroundColor: theme.lightBg,
                 borderColor: theme.border,
@@ -664,86 +662,40 @@ export const ModernExecutiveTemplate = ({
   };
 
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] h-full print:h-full print:min-h-0 flex flex-col justify-between print:p-0 print:m-0">
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.5mm] h-auto flex flex-col justify-between print:p-0 print:m-0">
       {/* 2-COLUMN BODY */}
       <div className="w-full flex flex-col md:flex-row print:flex-row flex-1 resume-modern-body">
         {/* LEFT SIDEBAR (36%) */}
         <aside
-          className={`w-full md:w-[36%] print:w-[36%] print:shrink-0 ${
-            totalPages === 1
-              ? "p-5 sm:p-6 print:p-3 space-y-3 print:space-y-2"
-              : "p-6 sm:p-7 print:p-4 space-y-6 print:space-y-3"
-          } border-r print:border-r resume-modern-aside`}
+          className="w-full md:w-[36%] print:w-[36%] print:shrink-0 p-5 sm:p-6 print:p-3.5 space-y-3.5 print:space-y-2.5 border-r print:border-r resume-modern-aside"
           style={{
             backgroundColor: theme.lightBg,
             borderColor: theme.border,
           }}
         >
-          {page === 1 ? (
-            <>
-              {renderContact()}
-              {totalPages === 1
-                ? sidebarSectionIds.map((id) => (
-                    <React.Fragment key={id}>
-                      {renderSidebarSection(id)}
-                    </React.Fragment>
-                  ))
-                : sidebarSectionIds.slice(0, 1).map((id) => (
-                    <React.Fragment key={id}>
-                      {renderSidebarSection(id)}
-                    </React.Fragment>
-                  ))}
-            </>
-          ) : (
-            <>
-              {sidebarSectionIds.slice(1).map((id) => (
-                <React.Fragment key={id}>
-                  {renderSidebarSection(id)}
-                </React.Fragment>
-              ))}
-            </>
-          )}
+          {renderContact()}
+          {sidebarSectionIds.map((id) => (
+            <React.Fragment key={id}>
+              {renderSidebarSection(id)}
+            </React.Fragment>
+          ))}
         </aside>
 
         {/* RIGHT MAIN CONTENT (64%) */}
         <div
-          className={`w-full md:w-[64%] print:w-[64%] ${
-            totalPages === 1
-              ? "p-5 sm:p-6 print:p-3.5 space-y-3 print:space-y-2 flex-1"
-              : "p-7 sm:p-8 print:p-5 space-y-5 print:space-y-3 flex-1"
-          } resume-modern-main`}
+          className="w-full md:w-[64%] print:w-[64%] p-5 sm:p-6 print:p-4 space-y-3.5 print:space-y-2.5 flex-1 resume-modern-main"
         >
-          {page === 1 ? (
-            <>
-              {renderMainHeader(false)}
-              {totalPages === 1
-                ? mainSectionIds.map((id) => (
-                    <React.Fragment key={id}>
-                      {renderMainSection(id)}
-                    </React.Fragment>
-                  ))
-                : mainSectionIds.slice(0, 2).map((id) => (
-                    <React.Fragment key={id}>
-                      {renderMainSection(id)}
-                    </React.Fragment>
-                  ))}
-            </>
-          ) : (
-            <>
-              {mainSectionIds.slice(2).map((id) => (
-                <React.Fragment key={id}>
-                  {renderMainSection(id)}
-                </React.Fragment>
-              ))}
-            </>
-          )}
+          {renderMainHeader(false)}
+          {mainSectionIds.map((id) => (
+            <React.Fragment key={id}>
+              {renderMainSection(id)}
+            </React.Fragment>
+          ))}
         </div>
       </div>
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}
       <ResumeFooter
-        pageNumber={page}
-        totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
         footerInfo={data.footerInfo}

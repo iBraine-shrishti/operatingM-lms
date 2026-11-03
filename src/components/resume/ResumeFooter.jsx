@@ -59,10 +59,14 @@ export const ResumeFooter = ({
         )}
       </div>
 
-      {/* MIDDLE: Page X of Y */}
+      {/* MIDDLE: Page / Placement Badge */}
       {showPageNumber && (
         <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0 px-2 text-center">
-          Page {pageNumber} of {totalPages}
+          {pageNumber && totalPages && totalPages > 1
+            ? `Page ${pageNumber} of ${totalPages}`
+            : pageNumber && totalPages === 1
+            ? `Page 1 of 1`
+            : "Placement Verified • Official Resume"}
         </div>
       )}
 

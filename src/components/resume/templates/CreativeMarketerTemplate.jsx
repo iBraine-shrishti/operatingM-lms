@@ -24,15 +24,15 @@ export const CreativeMarketerTemplate = ({
   totalPages = 1,
 }) => {
   const {
-    personalInfo,
-    summary,
+    personalInfo = {},
+    summary = "",
     experiences = [],
     education = [],
     skills = {},
     projects = [],
     certifications = [],
     sectionHeadings = {},
-  } = data;
+  } = data || {};
 
   // SUB-RENDERER: Hero Banner
   const renderHeroBanner = (isContinuation = false) => {
@@ -621,65 +621,38 @@ export const CreativeMarketerTemplate = ({
   };
 
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] h-full print:h-full print:min-h-0 flex flex-col justify-between print:p-0 print:m-0">
-      {/* HEADER BANNER (PAGE 1 ONLY - NO HEADER ON PAGE 2) */}
-      {page === 1 && renderHeroBanner(false)}
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.5mm] h-auto flex flex-col justify-between print:p-0 print:m-0">
+      {/* HEADER BANNER */}
+      {renderHeroBanner(false)}
 
       {/* BODY CONTENT */}
-      <div
-        className={`${
-          totalPages === 1
-            ? "p-5 sm:p-6 print:p-3.5 space-y-3.5 print:space-y-2"
-            : "p-6 sm:p-8 print:p-5 space-y-6 print:space-y-3"
-        } flex-1`}
-      >
-        {page === 1 ? (
-          <>
-            {/* Render top sections according to sequence */}
-            {topSections.slice(0, totalPages === 1 ? 3 : 2).map((id) => (
-              <React.Fragment key={id}>{renderTopSection(id)}</React.Fragment>
-            ))}
+      <div className="p-4.5 sm:p-5 print:p-3.5 space-y-2.5 print:space-y-2 flex-1">
+        {/* Render top sections according to sequence */}
+        {topSections.map((id) => (
+          <React.Fragment key={id}>{renderTopSection(id)}</React.Fragment>
+        ))}
 
-            {totalPages === 1 ? (
-              (() => {
-                if (!showSkills && !showEduCert) return null;
-                if (showSkills && !showEduCert)
-                  return <div className="pt-1">{renderSkills()}</div>;
-                if (!showSkills && showEduCert)
-                  return (
-                    <div className="pt-1">
-                      {renderEducationAndCertifications()}
-                    </div>
-                  );
-                return (
-                  <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-4 print:gap-3 pt-1 resume-creative-grid">
-                    {renderSkills()}
-                    {renderEducationAndCertifications()}
-                  </div>
-                );
-              })()
-            ) : (
-              showSkills && <div className="pt-2">{renderSkills()}</div>
-            )}
-          </>
-        ) : (
-          <>
-            {topSections.slice(2).map((id) => (
-              <React.Fragment key={id}>{renderTopSection(id)}</React.Fragment>
-            ))}
-            {showEduCert && (
-              <div className="pt-2">
+        {(() => {
+          if (!showSkills && !showEduCert) return null;
+          if (showSkills && !showEduCert)
+            return <div className="pt-1">{renderSkills()}</div>;
+          if (!showSkills && showEduCert)
+            return (
+              <div className="pt-1">
                 {renderEducationAndCertifications()}
               </div>
-            )}
-          </>
-        )}
+            );
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-4 print:gap-3 pt-1 resume-creative-grid">
+              {renderSkills()}
+              {renderEducationAndCertifications()}
+            </div>
+          );
+        })()}
       </div>
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}
       <ResumeFooter
-        pageNumber={page}
-        totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
         footerInfo={data.footerInfo}

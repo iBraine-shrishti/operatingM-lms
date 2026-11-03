@@ -453,75 +453,42 @@ export const DualArchCreativeTemplate = ({
   );
 
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[12.5px] w-full min-h-[1050px] flex flex-col justify-between print:min-h-0 print:p-0 print:m-0">
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[12.5px] w-full min-h-[1080px] print:min-h-[296.5mm] h-auto flex flex-col justify-between print:p-0 print:m-0">
       {/* 2-COLUMN LAYOUT */}
       <div className="w-full flex flex-col md:flex-row flex-1">
         {/* LEFT COLUMN: VISIBLE CONTINUOUS GRAY BACKDROP (38%) */}
         <aside className="w-full md:w-[38%] bg-[#cfd4dc] dark:bg-slate-800/90 flex flex-col justify-between shrink-0 print:w-[38%] py-0 relative">
-          {page === 1 ? (
-            <>
-              {/* TOP SECTION: Top Arch + Contact Details (connected naturally) */}
-              <div className="flex flex-col">
-                {renderTopArch(false)}
-                {renderContactInfo()}
-              </div>
+          {/* TOP SECTION: Top Arch + Contact Details (connected naturally) */}
+          <div className="flex flex-col">
+            {renderTopArch(false)}
+            {renderContactInfo()}
+          </div>
 
-              {/* BOTTOM SECTION: Bottom Arch (Education) flush to bottom */}
-              <div className="mt-auto">
-                {renderBottomArchEducation()}
-              </div>
-            </>
-          ) : (
-            <>
-              {/* PAGE 2 SIDEBAR: Top Arch with Skills Summary + Contact Info */}
-              <div className="flex flex-col">
-                {renderTopArchPage2()}
-                {renderContactInfo()}
-              </div>
-
-              {/* BOTTOM SECTION: Bottom Arch (Education & Credentials) */}
-              <div className="mt-auto">
-                {renderBottomArchEducation()}
-              </div>
-            </>
-          )}
+          {/* BOTTOM SECTION: Bottom Arch (Education) flush to bottom */}
+          <div className="mt-auto">
+            {renderBottomArchEducation()}
+          </div>
         </aside>
 
         {/* RIGHT COLUMN: MAIN CONTENT (62%) */}
         <div className="w-full md:w-[62%] p-6 sm:p-8 space-y-5 flex-1 bg-white text-slate-800 print:w-[62%]">
-          {page === 1 ? (
-            <>
-              {/* 1. ABOUT ME */}
-              {renderAboutMe()}
+          {/* 1. ABOUT ME */}
+          {renderAboutMe()}
 
-              {/* 2. KEY PROJECTS & CASE STUDIES (ABOVE WORK EXPERIENCE) */}
-              {renderProjects()}
+          {/* 2. KEY PROJECTS & CASE STUDIES (ABOVE WORK EXPERIENCE) */}
+          {renderProjects()}
 
-              {/* 3. WORK EXPERIENCE */}
-              {renderWorkExperience()}
+          {/* 3. WORK EXPERIENCE */}
+          {renderWorkExperience()}
 
-              {/* 4 & 5. SKILLS & EXPERTISE (WHEN 1 PAGE) */}
-              {totalPages === 1 ? (
-                <>
-                  {renderSkillsSummary()}
-                  {renderExpertise()}
-                </>
-              ) : null}
-            </>
-          ) : (
-            <>
-              {/* PAGE 2 RIGHT COLUMN */}
-              {renderWorkExperience()}
-              {renderExpertise()}
-            </>
-          )}
+          {/* 4 & 5. SKILLS & EXPERTISE */}
+          {renderSkillsSummary()}
+          {renderExpertise()}
         </div>
       </div>
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}
       <ResumeFooter
-        pageNumber={page}
-        totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
         footerInfo={data.footerInfo}

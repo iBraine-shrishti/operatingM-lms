@@ -24,15 +24,15 @@ export const MinimalistPerformanceTemplate = ({
   totalPages = 1,
 }) => {
   const {
-    personalInfo,
-    summary,
+    personalInfo = {},
+    summary = "",
     experiences = [],
     education = [],
     skills = {},
     projects = [],
     certifications = [],
     sectionHeadings = {},
-  } = data;
+  } = data || {};
 
   // SUB-RENDERER: Header
   const renderHeader = (isContinuation = false) => {
@@ -531,72 +531,51 @@ export const MinimalistPerformanceTemplate = ({
   const showRightCol = showSkills || showEdu || showCert;
 
   return (
-    <div className={`bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] h-full print:h-full print:min-h-0 ${
-      totalPages === 1 ? "p-5 sm:p-6 print:p-3.5" : "p-6 sm:p-8 print:p-5"
-    } flex flex-col justify-between print:m-0`}>
-      <div className={`${totalPages === 1 ? "space-y-3 print:space-y-2" : "space-y-5 print:space-y-3"} flex-1`}>
-        {/* HEADER (PAGE 1 ONLY - NO HEADER ON PAGE 2) */}
-        {page === 1 && renderHeader(false)}
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.5mm] h-auto p-5 sm:p-6 print:p-4 flex flex-col justify-between print:m-0">
+      <div className="space-y-3 print:space-y-2 flex-1">
+        {/* HEADER */}
+        {renderHeader(false)}
 
-        {page === 1 ? (
-          <>
-            {renderSummary()}
-            {(() => {
-              if (!showLeftCol && !showRightCol) return null;
-              if (showLeftCol && !showRightCol) {
-                return (
-                  <div className="space-y-3">
-                    {leftSectionIds.map((id) => (
-                      <React.Fragment key={id}>{renderLeftSection(id)}</React.Fragment>
-                    ))}
-                  </div>
-                );
-              }
-              if (!showLeftCol && showRightCol) {
-                return (
-                  <div className="space-y-3">
-                    {rightSectionIds.map((id) => (
-                      <React.Fragment key={id}>{renderRightSection(id)}</React.Fragment>
-                    ))}
-                  </div>
-                );
-              }
-              return (
-                <div className="grid grid-cols-1 md:grid-cols-12 print:grid-cols-12 gap-5 print:gap-3.5 pt-0.5 resume-minimalist-grid">
-                  <div className="md:col-span-7 print:col-span-7 space-y-3.5 print:space-y-2 resume-minimalist-col-7">
-                    {leftSectionIds.map((id) => (
-                      <React.Fragment key={id}>{renderLeftSection(id)}</React.Fragment>
-                    ))}
-                  </div>
-                  <div className="md:col-span-5 print:col-span-5 space-y-3.5 print:space-y-2 resume-minimalist-col-5">
-                    {rightSectionIds.map((id) => (
-                      <React.Fragment key={id}>{renderRightSection(id)}</React.Fragment>
-                    ))}
-                  </div>
-                </div>
-              );
-            })()}
-          </>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-12 print:grid-cols-12 gap-5 print:gap-3.5 pt-0.5 resume-minimalist-grid">
-            <div className="md:col-span-7 print:col-span-7 space-y-3.5 print:space-y-2 resume-minimalist-col-7">
-              {leftSectionIds.map((id) => (
-                <React.Fragment key={id}>{renderLeftSection(id)}</React.Fragment>
-              ))}
+        {renderSummary()}
+        {(() => {
+          if (!showLeftCol && !showRightCol) return null;
+          if (showLeftCol && !showRightCol) {
+            return (
+              <div className="space-y-3">
+                {leftSectionIds.map((id) => (
+                  <React.Fragment key={id}>{renderLeftSection(id)}</React.Fragment>
+                ))}
+              </div>
+            );
+          }
+          if (!showLeftCol && showRightCol) {
+            return (
+              <div className="space-y-3">
+                {rightSectionIds.map((id) => (
+                  <React.Fragment key={id}>{renderRightSection(id)}</React.Fragment>
+                ))}
+              </div>
+            );
+          }
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-12 print:grid-cols-12 gap-5 print:gap-3.5 pt-0.5 resume-minimalist-grid">
+              <div className="md:col-span-7 print:col-span-7 space-y-3.5 print:space-y-2 resume-minimalist-col-7">
+                {leftSectionIds.map((id) => (
+                  <React.Fragment key={id}>{renderLeftSection(id)}</React.Fragment>
+                ))}
+              </div>
+              <div className="md:col-span-5 print:col-span-5 space-y-3.5 print:space-y-2 resume-minimalist-col-5">
+                {rightSectionIds.map((id) => (
+                  <React.Fragment key={id}>{renderRightSection(id)}</React.Fragment>
+                ))}
+              </div>
             </div>
-            <div className="md:col-span-5 print:col-span-5 space-y-3.5 print:space-y-2 resume-minimalist-col-5">
-              {rightSectionIds.map((id) => (
-                <React.Fragment key={id}>{renderRightSection(id)}</React.Fragment>
-              ))}
-            </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}
       <ResumeFooter
-        pageNumber={page}
-        totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
         footerInfo={data.footerInfo}
