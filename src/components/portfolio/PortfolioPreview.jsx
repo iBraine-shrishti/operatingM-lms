@@ -1,3 +1,5 @@
+import mockupLaptopImg from "../../assets/mockup-laptop.jpg";
+import mockupCreativesImg from "../../assets/mockup-creatives.jpg";
 import React, { useState, useEffect } from "react";
 import {
   Globe,
@@ -36,6 +38,12 @@ import {
   MessageCircle,
   Camera,
   Edit2,
+  Eye,
+  Play,
+  Clock,
+  DollarSign,
+  Smartphone,
+  ShieldCheck,
 } from "lucide-react";
 import { EditableText } from "./EditableText";
 import { ImageUploadModal } from "./ImageUploadModal";
@@ -100,6 +108,7 @@ export const PortfolioPreview = ({
   const [activeTab, setActiveTab] = useState("wordpress");
   const [openMetaIdx, setOpenMetaIdx] = useState(0);
   const [openGoogleIdx, setOpenGoogleIdx] = useState(0);
+  const [canvaFilter, setCanvaFilter] = useState("all");
 
   // Image editing modal state
   const [imageModalConfig, setImageModalConfig] = useState({
@@ -612,163 +621,209 @@ export const PortfolioPreview = ({
 
           // MODULE 01: WORDPRESS
           if (modId === "wordpress") {
+            const wpProjects = Array.isArray(modules.wordpress) ? modules.wordpress : [];
             return (
               <section
                 key={modId}
                 id="wordpress"
-                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+                className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <Globe size={20} />
-                    </div>
+                <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                  {/* Module Header */}
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        WordPress Web Design
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+                        Module 01 · Full-Stack CMS
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        WordPress Web Design & Development
                       </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Custom themes, Elementor Pro layouts, speed optimization & WooCommerce checkouts
+                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        Custom-built corporate and e-commerce websites focused on high conversion rates, sub-second loading speeds, and responsive mobile architecture.
                       </p>
                     </div>
+                    <div className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-xs shrink-0">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      <span className="font-semibold text-slate-700">Elementor Pro · WooCommerce · Core Web Vitals Tested</span>
+                    </div>
                   </div>
-                  <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full self-start sm:self-auto">
-                    {(Array.isArray(modules.wordpress) ? modules.wordpress : []).length} Client Builds
-                  </span>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {(Array.isArray(modules.wordpress) ? modules.wordpress : []).map((proj, pIdx) => (
-                    <div
-                      key={proj.id}
-                      className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col group"
-                    >
-                      <div className="h-48 overflow-hidden relative bg-slate-100">
-                        <img
-                          src={proj.imageUrl}
-                          alt={proj.title}
-                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-102"
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            openImageModal(
-                              `Change Screenshot: ${proj.title}`,
-                              proj.imageUrl,
-                              false,
-                              (newUrl) => {
-                                if (onChange) {
-                                  const updated = [...modules.wordpress];
-                                  updated[pIdx] = { ...updated[pIdx], imageUrl: newUrl };
-                                  onChange({
-                                    ...portfolioData,
-                                    modules: { ...modules, wordpress: updated },
-                                  });
-                                }
-                              }
-                            )
-                          }
-                          className="absolute bottom-3 left-3 px-2.5 py-1 rounded-lg bg-slate-950/70 hover:bg-slate-950 text-white text-[10px] font-bold flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow-md"
+                  {/* 2-Column Grid */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {wpProjects.map((proj, pIdx) => {
+                      const domainName = proj.title?.toLowerCase().replace(/[^a-z0-9]/g, "-") || "sample";
+                      return (
+                        <div
+                          key={proj.id || pIdx}
+                          className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col group"
                         >
-                          <Camera size={12} />
-                          <span>Change Screenshot</span>
-                        </button>
-                        <div className="absolute top-3 right-3 bg-emerald-600 text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-md flex items-center space-x-1">
-                          <span>Speed {proj.speedScore}/100</span>
-                        </div>
-                      </div>
-
-                      <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                        <div>
-                          <EditableText
-                            value={proj.clientType}
-                            onChange={(val) => {
-                              if (onChange) {
-                                const updated = [...modules.wordpress];
-                                updated[pIdx] = { ...updated[pIdx], clientType: val };
-                                onChange({
-                                  ...portfolioData,
-                                  modules: { ...modules, wordpress: updated },
-                                });
-                              }
-                            }}
-                            className="text-[10px] font-black uppercase tracking-wider block mb-0.5"
-                            style={{ color: theme.primary }}
-                          />
-                          <EditableText
-                            tag="h3"
-                            value={proj.title}
-                            onChange={(val) => {
-                              if (onChange) {
-                                const updated = [...modules.wordpress];
-                                updated[pIdx] = { ...updated[pIdx], title: val };
-                                onChange({
-                                  ...portfolioData,
-                                  modules: { ...modules, wordpress: updated },
-                                });
-                              }
-                            }}
-                            className="text-base font-extrabold text-slate-900 block"
-                          />
-                          <EditableText
-                            tag="p"
-                            value={proj.description}
-                            onChange={(val) => {
-                              if (onChange) {
-                                const updated = [...modules.wordpress];
-                                updated[pIdx] = { ...updated[pIdx], description: val };
-                                onChange({
-                                  ...portfolioData,
-                                  modules: { ...modules, wordpress: updated },
-                                });
-                              }
-                            }}
-                            className="text-xs text-slate-600 leading-relaxed mt-2 block"
-                          />
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="flex flex-wrap gap-1.5">
-                            {proj.techStack.map((tech, tIdx) => (
-                              <span
-                                key={tIdx}
-                                className="text-[10px] font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md"
-                              >
-                                {tech}
-                              </span>
-                            ))}
+                          {/* Mac Chrome Header */}
+                          <div className="bg-slate-900 text-slate-300 px-4 py-2.5 flex items-center justify-between border-b border-slate-800">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div className="flex items-center gap-1.5 shrink-0">
+                                <span className="w-2.5 h-2.5 rounded-full bg-red-500/80 inline-block" />
+                                <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80 inline-block" />
+                                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80 inline-block" />
+                              </div>
+                              <div className="ml-2 sm:ml-3 flex items-center gap-1 bg-slate-800/90 text-[11px] font-mono text-slate-400 px-3 py-1 rounded-md border border-slate-700/60 max-w-[200px] sm:max-w-xs truncate">
+                                <span className="text-emerald-400">https://</span>
+                                <span className="truncate">{domainName}.demo</span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[11px] font-mono font-bold px-2 py-0.5 rounded">
+                                <Zap className="w-3 h-3 text-amber-400" />
+                                <span>Speed {proj.speedScore || 96}/100</span>
+                              </div>
+                              <div className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-300 border border-blue-500/30 text-[11px] font-mono px-2 py-0.5 rounded">
+                                <Smartphone className="w-3 h-3 text-blue-400" />
+                                <span>100% Mobile</span>
+                              </div>
+                            </div>
                           </div>
 
-                          <ul className="text-xs text-slate-600 space-y-1 pt-2 border-t border-slate-100">
-                            {proj.keyFeatures.map((feat, fIdx) => (
-                              <li key={fIdx} className="flex items-start">
-                                <span className="text-emerald-500 mr-1.5 font-bold">✓</span>
-                                <span>{feat}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                          {/* Laptop Mockup Image */}
+                          <div className="relative bg-slate-950 aspect-[16/10] overflow-hidden group/img">
+                            <img
+                              src={proj.imageUrl || mockupLaptopImg}
+                              alt={proj.title}
+                              className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-103"
+                            />
+                            {/* Hover View Screenshot Overlay */}
+                            <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2">
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  openImageModal(
+                                    `Update WordPress Screenshot: ${proj.title}`,
+                                    proj.imageUrl || mockupLaptopImg,
+                                    false,
+                                    (newUrl) => {
+                                      if (onChange) {
+                                        const updated = [...wpProjects];
+                                        updated[pIdx] = { ...updated[pIdx], imageUrl: newUrl };
+                                        onChange({
+                                          ...portfolioData,
+                                          modules: { ...modules, wordpress: updated },
+                                        });
+                                      }
+                                    }
+                                  )
+                                }
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
+                              >
+                                <Eye className="w-3.5 h-3.5 text-blue-600" />
+                                <span>View / Change Screenshot</span>
+                              </button>
+                            </div>
+                          </div>
 
-                        <a
-                          href={proj.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center space-x-1.5 w-full py-2 rounded-xl text-xs font-bold text-white shadow-xs hover:opacity-90 transition-opacity"
-                          style={{ backgroundColor: theme.primary }}
-                        >
-                          <span>Explore Live Website Demo</span>
-                          <ExternalLink size={13} />
-                        </a>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              
+                          {/* Card Body */}
+                          <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                            <div>
+                              <EditableText
+                                value={proj.clientType}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...wpProjects];
+                                    updated[pIdx] = { ...updated[pIdx], clientType: val };
+                                    onChange({
+                                      ...portfolioData,
+                                      modules: { ...modules, wordpress: updated },
+                                    });
+                                  }
+                                }}
+                                className="text-xs font-bold text-amber-600 uppercase tracking-wider block"
+                              />
+                              <EditableText
+                                tag="h3"
+                                value={proj.title}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...wpProjects];
+                                    updated[pIdx] = { ...updated[pIdx], title: val };
+                                    onChange({
+                                      ...portfolioData,
+                                      modules: { ...modules, wordpress: updated },
+                                    });
+                                  }
+                                }}
+                                className="text-xl font-bold text-slate-900 mt-1 block"
+                              />
+                              <EditableText
+                                tag="p"
+                                value={proj.description}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...wpProjects];
+                                    updated[pIdx] = { ...updated[pIdx], description: val };
+                                    onChange({
+                                      ...portfolioData,
+                                      modules: { ...modules, wordpress: updated },
+                                    });
+                                  }
+                                }}
+                                className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed block"
+                              />
+                            </div>
+
+                            {/* Core Technical Implementations */}
+                            <div className="space-y-2 pt-3 border-t border-slate-100">
+                              <div className="text-[11px] font-bold uppercase text-slate-400 tracking-wider">
+                                Core Technical Implementations:
+                              </div>
+                              <div className="space-y-1.5">
+                                {(proj.keyFeatures || []).map((feat, fIdx) => (
+                                  <div key={fIdx} className="flex items-start gap-2 text-xs text-slate-700">
+                                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+                                    <EditableText
+                                      value={feat}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...wpProjects];
+                                          const feats = [...(updated[pIdx].keyFeatures || [])];
+                                          feats[fIdx] = val;
+                                          updated[pIdx] = { ...updated[pIdx], keyFeatures: feats };
+                                          onChange({
+                                            ...portfolioData,
+                                            modules: { ...modules, wordpress: updated },
+                                          });
+                                        }
+                                      }}
+                                      className="flex-1"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Footer tech tags & inspect link */}
+                            <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                              <div className="flex flex-wrap gap-1.5">
+                                {(proj.techStack || []).map((tech, tIdx) => (
+                                  <span
+                                    key={tIdx}
+                                    className="px-2 py-0.5 text-[11px] font-medium bg-slate-100 text-slate-700 rounded-md border border-slate-200"
+                                  >
+                                    {tech}
+                                  </span>
+                                ))}
+                              </div>
+                              <a
+                                href={proj.liveUrl || "#"}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors ml-auto"
+                              >
+                                <span>Inspect Design</span>
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </section>
             );
@@ -776,411 +831,1283 @@ export const PortfolioPreview = ({
 
           // MODULE 02: CANVA
           if (modId === "canva") {
-            const canvaDesigns = Array.isArray(modules.canva)
-              ? modules.canva
-              : Array.isArray(modules.canva?.designs)
+            const canvaDesigns = Array.isArray(modules.canva?.designs)
               ? modules.canva.designs
+              : Array.isArray(modules.canva)
+              ? modules.canva
               : [];
-
-            const handleUpdateCanvaDesign = (dIdx, field, val) => {
-              if (!onChange) return;
-              const updated = [...canvaDesigns];
-              updated[dIdx] = { ...updated[dIdx], [field]: val };
-              if (Array.isArray(modules.canva)) {
-                onChange({ ...portfolioData, modules: { ...modules, canva: updated } });
-              } else {
-                onChange({
-                  ...portfolioData,
-                  modules: {
-                    ...modules,
-                    canva: { ...(modules.canva || {}), designs: updated },
-                  },
-                });
-              }
-            };
+            const canvaVideos = Array.isArray(modules.canva?.videos)
+              ? modules.canva.videos
+              : [];
+            const totalAssets = canvaDesigns.length + canvaVideos.length;
 
             return (
               <section
                 key={modId}
                 id="canva"
-                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+                className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <Palette size={20} />
-                    </div>
+                <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                  {/* Module Header */}
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        Canva Design & Video
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+                        Module 02 · Visual Branding & Motion
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        Canva Graphic Design & Short-Form Video Creatives
                       </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Ad creatives, brand decks, motion reels & carousel architectures
+                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        High-retention social media carousels, performance ad banners, infographic frameworks, and kinetic motion reels engineered for thumb-stopping engagement.
                       </p>
                     </div>
+                    <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl self-start md:self-auto border border-slate-200 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setCanvaFilter("all")}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                          canvaFilter === "all"
+                            ? "bg-blue-600 text-white shadow-xs"
+                            : "text-slate-600 hover:text-slate-900"
+                        }`}
+                      >
+                        All Assets ({totalAssets})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCanvaFilter("designs")}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                          canvaFilter === "designs"
+                            ? "bg-blue-600 text-white shadow-xs"
+                            : "text-slate-600 hover:text-slate-900"
+                        }`}
+                      >
+                        Graphic Designs ({canvaDesigns.length})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setCanvaFilter("videos")}
+                        className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                          canvaFilter === "videos"
+                            ? "bg-blue-600 text-white shadow-xs"
+                            : "text-slate-600 hover:text-slate-900"
+                        }`}
+                      >
+                        Video Reels ({canvaVideos.length})
+                      </button>
+                    </div>
                   </div>
-                  <span className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
-                    {canvaDesigns.length} Creative Decks
-                  </span>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {canvaDesigns.map((design, dIdx) => (
-                    <div
-                      key={design.id || dIdx}
-                      className="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs space-y-3 flex flex-col justify-between group"
-                    >
-                      <div className="h-40 rounded-xl overflow-hidden bg-slate-100 relative">
-                        <img
-                          src={design.imageUrl}
-                          alt={design.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                        />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            openImageModal(
-                              `Change Graphic: ${design.title}`,
-                              design.imageUrl,
-                              false,
-                              (newUrl) => handleUpdateCanvaDesign(dIdx, "imageUrl", newUrl)
-                            )
-                          }
-                          className="absolute bottom-2 left-2 px-2 py-0.5 rounded bg-slate-950/70 text-white text-[9px] font-bold flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                        >
-                          <Camera size={10} />
-                          <span>Change Graphic</span>
-                        </button>
-                      </div>
-
-                      <div>
-                        <span className="text-[10px] font-black uppercase tracking-wider text-purple-600 block">
-                          {design.category}
+                  {/* 4 Graphic Design Showcases */}
+                  {(canvaFilter === "all" || canvaFilter === "designs") && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Box className="w-4 h-4 text-amber-500" />
+                        <h3 className="text-lg font-bold text-slate-900">
+                          Graphic Design Assets & Carousels
+                        </h3>
+                        <span className="text-xs text-slate-500 font-mono">
+                          ({canvaDesigns.length} showcases)
                         </span>
-                        <EditableText
-                          tag="h3"
-                          value={design.title}
-                          onChange={(val) => handleUpdateCanvaDesign(dIdx, "title", val)}
-                          className="text-sm font-extrabold text-slate-900 mt-0.5 block"
-                        />
-                        <EditableText
-                          tag="p"
-                          value={design.conceptNote}
-                          onChange={(val) => handleUpdateCanvaDesign(dIdx, "conceptNote", val)}
-                          className="text-xs text-slate-600 mt-1 leading-relaxed block"
-                        />
                       </div>
-                      <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100 text-slate-500 font-medium">
-                        <span>Reach: <strong className="text-slate-800">{design.impressionsAchieved}</strong></span>
-                        <span>Saves: <strong className="text-slate-800">{design.savesCount}</strong></span>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {canvaDesigns.map((design, dIdx) => (
+                          <div
+                            key={design.id || dIdx}
+                            className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col group"
+                          >
+                            <div className="relative aspect-[4/5] bg-slate-900 overflow-hidden group/img">
+                              <img
+                                src={design.imageUrl || mockupCreativesImg}
+                                alt={design.title}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                              />
+                              <div className="absolute top-2.5 left-2.5 bg-slate-900/80 backdrop-blur-xs text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
+                                {design.category || "Design"}
+                              </div>
+                              {/* Change Screenshot Overlay */}
+                              <div className="absolute inset-0 bg-blue-900/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    openImageModal(
+                                      `Update Canva Design: ${design.title}`,
+                                      design.imageUrl || mockupCreativesImg,
+                                      false,
+                                      (newUrl) => {
+                                        if (onChange) {
+                                          const updatedDesigns = [...canvaDesigns];
+                                          updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], imageUrl: newUrl };
+                                          onChange({
+                                            ...portfolioData,
+                                            modules: {
+                                              ...modules,
+                                              canva: {
+                                                ...modules.canva,
+                                                designs: updatedDesigns,
+                                              },
+                                            },
+                                          });
+                                        }
+                                      }
+                                    )
+                                  }
+                                  className="p-2 rounded-full bg-white text-blue-600 shadow-md hover:bg-slate-100 cursor-pointer"
+                                  title="Change Design Image"
+                                >
+                                  <Camera className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </div>
+
+                            <div className="p-4 flex-1 flex flex-col justify-between">
+                              <div>
+                                <div className="text-[11px] font-mono text-slate-400 font-semibold">
+                                  {design.dimensions}
+                                </div>
+                                <EditableText
+                                  tag="h4"
+                                  value={design.title}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updatedDesigns = [...canvaDesigns];
+                                      updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], title: val };
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: {
+                                          ...modules,
+                                          canva: { ...modules.canva, designs: updatedDesigns },
+                                        },
+                                      });
+                                    }
+                                  }}
+                                  className="text-sm font-bold text-slate-900 mt-1 line-clamp-2 block"
+                                />
+                                <EditableText
+                                  tag="p"
+                                  value={design.description}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updatedDesigns = [...canvaDesigns];
+                                      updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], description: val };
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: {
+                                          ...modules,
+                                          canva: { ...modules.canva, designs: updatedDesigns },
+                                        },
+                                      });
+                                    }
+                                  }}
+                                  className="text-xs text-slate-600 mt-2 line-clamp-3 block"
+                                />
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  openImageModal(
+                                    `View / Edit Canva Design: ${design.title}`,
+                                    design.imageUrl || mockupCreativesImg,
+                                    false,
+                                    (newUrl) => {
+                                      if (onChange) {
+                                        const updatedDesigns = [...canvaDesigns];
+                                        updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], imageUrl: newUrl };
+                                        onChange({
+                                          ...portfolioData,
+                                          modules: {
+                                            ...modules,
+                                            canva: { ...modules.canva, designs: updatedDesigns },
+                                          },
+                                        });
+                                      }
+                                    }
+                                  )
+                                }
+                                className="mt-3 text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 self-start cursor-pointer"
+                              >
+                                <span>Expand Design</span>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </div>
-              
+                  )}
+
+                  {/* 2 Motion & Short-Form Video Ads */}
+                  {(canvaFilter === "all" || canvaFilter === "videos") && (
+                    <div className="space-y-4 pt-4">
+                      <div className="flex items-center gap-2">
+                        <Video className="w-4 h-4 text-blue-600" />
+                        <h3 className="text-lg font-bold text-slate-900">
+                          Motion & Short-Form Video Ads
+                        </h3>
+                        <span className="text-xs text-slate-500 font-mono">
+                          ({canvaVideos.length} videos)
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {canvaVideos.map((video, vIdx) => (
+                          <div
+                            key={video.id || vIdx}
+                            className="bg-slate-900 text-white rounded-2xl border border-slate-800 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col sm:flex-row group"
+                          >
+                            {/* Left Thumbnail */}
+                            <div className="relative w-full sm:w-2/5 aspect-[4/3] sm:aspect-auto bg-black overflow-hidden group/thumb min-h-[200px]">
+                              <img
+                                src={video.thumbnailUrl || mockupCreativesImg}
+                                alt={video.title}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-12 h-12 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                  <Play className="w-5 h-5 fill-slate-950 ml-0.5" />
+                                </div>
+                              </div>
+                              <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1 text-[10px] bg-slate-900/90 text-amber-400 px-2 py-0.5 rounded font-mono">
+                                <Clock className="w-3 h-3" />
+                                <span>{video.duration || "0:30"}</span>
+                              </div>
+                            </div>
+
+                            {/* Right Details */}
+                            <div className="p-5 sm:w-3/5 flex flex-col justify-between space-y-3">
+                              <div>
+                                <span className="text-[11px] font-mono text-amber-400 uppercase font-semibold">
+                                  {video.format}
+                                </span>
+                                <EditableText
+                                  tag="h4"
+                                  value={video.title}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updatedVideos = [...canvaVideos];
+                                      updatedVideos[vIdx] = { ...updatedVideos[vIdx], title: val };
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: {
+                                          ...modules,
+                                          canva: { ...modules.canva, videos: updatedVideos },
+                                        },
+                                      });
+                                    }
+                                  }}
+                                  className="text-base font-bold text-white mt-1 block"
+                                />
+                                <EditableText
+                                  tag="p"
+                                  value={video.description}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updatedVideos = [...canvaVideos];
+                                      updatedVideos[vIdx] = { ...updatedVideos[vIdx], description: val };
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: {
+                                          ...modules,
+                                          canva: { ...modules.canva, videos: updatedVideos },
+                                        },
+                                      });
+                                    }
+                                  }}
+                                  className="text-xs text-slate-300 mt-2 leading-relaxed block"
+                                />
+                              </div>
+
+                              {/* Hook Box */}
+                              <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60 text-xs">
+                                <div className="text-[10px] uppercase font-bold text-amber-400">
+                                  Opening Hook Strategy:
+                                </div>
+                                <EditableText
+                                  value={video.hook}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updatedVideos = [...canvaVideos];
+                                      updatedVideos[vIdx] = { ...updatedVideos[vIdx], hook: val };
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: {
+                                          ...modules,
+                                          canva: { ...modules.canva, videos: updatedVideos },
+                                        },
+                                      });
+                                    }
+                                  }}
+                                  className="text-slate-200 mt-0.5 italic block"
+                                />
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  openImageModal(
+                                    `Change Video Thumbnail: ${video.title}`,
+                                    video.thumbnailUrl || mockupCreativesImg,
+                                    false,
+                                    (newUrl) => {
+                                      if (onChange) {
+                                        const updatedVideos = [...canvaVideos];
+                                        updatedVideos[vIdx] = { ...updatedVideos[vIdx], thumbnailUrl: newUrl };
+                                        onChange({
+                                          ...portfolioData,
+                                          modules: {
+                                            ...modules,
+                                            canva: { ...modules.canva, videos: updatedVideos },
+                                          },
+                                        });
+                                      }
+                                    }
+                                  )
+                                }
+                                className="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 self-start cursor-pointer"
+                              >
+                                <Play className="w-3 h-3 fill-amber-400" />
+                                <span>Preview Reel Storyboard</span>
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </section>
             );
           }
 
-          // MODULE 03: SOCIAL MEDIA ORGANIC
+          // MODULE 03: SOCIAL ORGANIC (SMO)
           if (modId === "socialOrganic") {
+            const smoProfiles = Array.isArray(modules.socialOrganic) ? modules.socialOrganic : [];
             return (
               <section
                 key={modId}
                 id="socialOrganic"
-                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+                className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <Share2 size={20} />
-                    </div>
+                <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                  {/* Module Header */}
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        Social Media Organic
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+                        Module 03 · Organic Growth Engineering
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        Social Media Organic (SMO) Profile Optimization
                       </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Organic audience building, viral Reels frameworks, and engagement growth
+                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        Auditing, restructuring, and scaling organic social presence through strategic bio copywriting, content pillars, aesthetic grid curation, and high-retention community triggers.
                       </p>
                     </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {(Array.isArray(modules.socialOrganic) ? modules.socialOrganic : []).map((so) => (
-                    <div
-                      key={so.id}
-                      className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <span className="text-xs font-black uppercase text-blue-600">
-                            {so.platform}
-                          </span>
-                          <h3 className="text-base font-extrabold text-slate-900">
-                            {so.handle}
-                          </h3>
-                        </div>
-                        <span className="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-lg">
-                          {so.growthPercent} Growth
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl text-xs">
-                        <div>
-                          <span className="text-[10px] text-slate-400 font-bold block">SCALE</span>
-                          <span className="font-extrabold text-slate-900">{so.currentFollowers.toLocaleString()} Followers</span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] text-slate-400 font-bold block">ENGAGEMENT</span>
-                          <span className="font-extrabold text-slate-900">{so.avgEngagementRate}</span>
-                        </div>
-                      </div>
-
-                      <div className="text-xs text-slate-600 space-y-1">
-                        <span className="font-bold text-slate-700 block">Viral Case Study:</span>
-                        <p className="italic bg-amber-50/70 border border-amber-200 p-2.5 rounded-lg text-amber-900">
-                          "{so.viralCaseStudy}"
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              
-                </div>
-              </section>
-            );
-          }
-
-          // MODULE 04: META ADS (ACCORDIONS)
-          if (modId === "socialMarketing") {
-            return (
-              <section
-                key={modId}
-                id="socialMarketing"
-                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
-              >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <TrendingUp size={20} />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        Meta Ads (Accordions)
-                      </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Collapsible Advantage+ Shopping campaigns, CPA optimization & ROAS scaling
-                      </p>
+                    <div className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-xs shrink-0">
+                      <TrendingUp className="w-4 h-4 text-emerald-600" />
+                      <span className="font-semibold text-slate-700">Zero Ad Spend · Pure Organic Inbound Funnels</span>
                     </div>
                   </div>
-                </div>
 
-                <div className="space-y-3">
-                  {(Array.isArray(modules.socialMarketing) ? modules.socialMarketing : []).map((ad, idx) => {
-                    const isOpen = openMetaIdx === idx;
-                    return (
+                  {/* 2 Profile Cards */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {smoProfiles.map((profile, pIdx) => (
                       <div
-                        key={ad.id}
-                        className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs"
+                        key={profile.id || pIdx}
+                        className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-shadow"
                       >
-                        <button
-                          type="button"
-                          onClick={() => setOpenMetaIdx(isOpen ? -1 : idx)}
-                          className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-50/80 transition-colors cursor-pointer"
-                        >
-                          <div className="flex items-center space-x-3 flex-1 mr-3">
-                            <div
-                              className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-black shrink-0"
-                              style={{ backgroundColor: theme.primary }}
-                            >
-                              #{idx + 1}
+                        {/* Header Navy Banner */}
+                        <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-500 text-amber-400 flex items-center justify-center shrink-0">
+                              {profile.platform?.toLowerCase() === "linkedin" ? (
+                                <Linkedin className="w-5 h-5 text-blue-400" />
+                              ) : (
+                                <Instagram className="w-5 h-5 text-pink-400" />
+                              )}
                             </div>
                             <div>
-                              <h3 className="text-sm sm:text-base font-extrabold text-slate-900 leading-snug">
-                                {ad.campaignName}
+                              <h3 className="text-base font-bold text-white flex items-center gap-1.5">
+                                <EditableText
+                                  value={profile.handle}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updated = [...smoProfiles];
+                                      updated[pIdx] = { ...updated[pIdx], handle: val };
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: { ...modules, socialOrganic: updated },
+                                      });
+                                    }
+                                  }}
+                                />
+                                <span className="text-xs text-amber-400 font-normal">
+                                  ({profile.platform})
+                                </span>
                               </h3>
-                              <span className="text-[11px] text-slate-500 font-medium">
-                                {ad.objective}
-                              </span>
+                              <EditableText
+                                value={profile.niche}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...smoProfiles];
+                                    updated[pIdx] = { ...updated[pIdx], niche: val };
+                                    onChange({
+                                      ...portfolioData,
+                                      modules: { ...modules, socialOrganic: updated },
+                                    });
+                                  }
+                                }}
+                                className="text-xs text-slate-400 block"
+                              />
                             </div>
                           </div>
-
-                          <div className="flex items-center space-x-3">
-                            <span className="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-300 px-2.5 py-1 rounded-lg shrink-0">
-                              {ad.roas} ROAS
-                            </span>
-                            {isOpen ? <ChevronUp size={18} className="text-slate-400" /> : <ChevronDown size={18} className="text-slate-400" />}
+                          <div className="text-right">
+                            <EditableText
+                              value={profile.growthRate}
+                              onChange={(val) => {
+                                if (onChange) {
+                                  const updated = [...smoProfiles];
+                                  updated[pIdx] = { ...updated[pIdx], growthRate: val };
+                                  onChange({
+                                    ...portfolioData,
+                                    modules: { ...modules, socialOrganic: updated },
+                                  });
+                                }
+                              }}
+                              className="text-xs text-emerald-400 font-bold font-mono block"
+                            />
+                            <div className="text-[11px] text-slate-400">Verified Analytics</div>
                           </div>
-                        </button>
+                        </div>
 
-                        {isOpen && (
-                          <div className="p-5 pt-0 border-t border-slate-100 space-y-4 mt-3">
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3.5 rounded-xl text-center text-xs">
-                              <div>
-                                <span className="text-[10px] text-slate-400 font-bold block">AD SPEND</span>
-                                <span className="font-black text-slate-900">{ad.adSpend}</span>
-                              </div>
-                              <div>
-                                <span className="text-[10px] text-slate-400 font-bold block">REVENUE</span>
-                                <span className="font-black text-emerald-600">{ad.revenueGenerated}</span>
-                              </div>
-                              <div>
-                                <span className="text-[10px] text-slate-400 font-bold block">CPA</span>
-                                <span className="font-black text-slate-900">{ad.cpa}</span>
-                              </div>
-                              <div>
-                                <span className="text-[10px] text-slate-400 font-bold block">HOOK RATE</span>
-                                <span className="font-black text-blue-600">{ad.hookRatePct}%</span>
-                              </div>
+                        {/* Baseline vs Post-Optimization Stats */}
+                        <div className="grid grid-cols-2 bg-slate-50 border-b border-slate-200 divide-x divide-slate-200">
+                          <div className="p-3.5 text-center">
+                            <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">
+                              Starting Baseline
                             </div>
-
-                            <p className="text-xs text-slate-700 leading-relaxed bg-blue-50/60 p-3 rounded-xl border border-blue-100">
-                              <strong className="text-blue-900">Optimization Takeaway: </strong>{ad.keyLearning}
-                            </p>
+                            <EditableText
+                              value={profile.beforeFollowers}
+                              onChange={(val) => {
+                                if (onChange) {
+                                  const updated = [...smoProfiles];
+                                  updated[pIdx] = { ...updated[pIdx], beforeFollowers: val };
+                                  onChange({
+                                    ...portfolioData,
+                                    modules: { ...modules, socialOrganic: updated },
+                                  });
+                                }
+                              }}
+                              className="text-sm sm:text-base font-mono font-bold text-slate-600 mt-0.5 block"
+                            />
                           </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              
-                </div>
-              </section>
-            );
-          }
+                          <div className="p-3.5 text-center bg-blue-50/50">
+                            <div className="text-[11px] uppercase tracking-wider text-blue-700 font-semibold">
+                              Post-Optimization
+                            </div>
+                            <EditableText
+                              value={profile.afterFollowers}
+                              onChange={(val) => {
+                                if (onChange) {
+                                  const updated = [...smoProfiles];
+                                  updated[pIdx] = { ...updated[pIdx], afterFollowers: val };
+                                  onChange({
+                                    ...portfolioData,
+                                    modules: { ...modules, socialOrganic: updated },
+                                  });
+                                }
+                              }}
+                              className="text-sm sm:text-base font-mono font-bold text-blue-700 mt-0.5 block"
+                            />
+                          </div>
+                        </div>
 
-          // MODULE 05: GOOGLE ADS (ACCORDIONS)
-          if (modId === "googleAds") {
-            return (
-              <section
-                key={modId}
-                id="googleAds"
-                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
-              >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <Search size={20} />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        Google Ads (Accordions)
-                      </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Collapsible Search & PMax campaigns, Quality Scores (9/10) & CPC metrics
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  {(Array.isArray(modules.googleAds) ? modules.googleAds : []).map((gads, idx) => {
-                    const isOpen = openGoogleIdx === idx;
-                    return (
-                      <div
-                        key={gads.id}
-                        className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs"
-                      >
-                        <button
-                          type="button"
-                          onClick={() => setOpenGoogleIdx(isOpen ? -1 : idx)}
-                          className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-50/80 transition-colors cursor-pointer"
-                        >
-                          <div className="flex items-center space-x-3 flex-1 mr-3">
-                            <div
-                              className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-black shrink-0"
-                              style={{ backgroundColor: theme.primary }}
+                        {/* Grid Screenshot Preview */}
+                        <div className="relative bg-slate-950 aspect-[16/9] overflow-hidden group/img">
+                          <img
+                            src={profile.screenshotUrl || mockupCreativesImg}
+                            alt={profile.handle}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                          />
+                          <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                            <button
+                              type="button"
+                              onClick={() =>
+                                openImageModal(
+                                  `Update SMO Profile Screenshot: ${profile.handle}`,
+                                  profile.screenshotUrl || mockupCreativesImg,
+                                  false,
+                                  (newUrl) => {
+                                    if (onChange) {
+                                      const updated = [...smoProfiles];
+                                      updated[pIdx] = { ...updated[pIdx], screenshotUrl: newUrl };
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: { ...modules, socialOrganic: updated },
+                                      });
+                                    }
+                                  }
+                                )
+                              }
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
                             >
-                              #{idx + 1}
-                            </div>
-                            <div>
-                              <h3 className="text-sm sm:text-base font-extrabold text-slate-900 leading-snug">
-                                {gads.campaignType}
-                              </h3>
-                              <span className="text-[11px] text-blue-600 font-bold uppercase tracking-wider">
-                                {gads.industry}
-                              </span>
-                            </div>
+                              <Eye className="w-3.5 h-3.5 text-blue-600" />
+                              <span>Inspect Profile Grid Screenshot</span>
+                            </button>
                           </div>
+                        </div>
 
-                          <div className="flex items-center space-x-3">
-                            <span className="text-xs font-black text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-lg shrink-0">
-                              QS: {gads.qualityScoreAvg}
-                            </span>
-                            {isOpen ? <ChevronUp size={18} className="text-slate-400" /> : <ChevronDown size={18} className="text-slate-400" />}
-                          </div>
-                        </button>
-
-                        {isOpen && (
-                          <div className="p-5 pt-0 border-t border-slate-100 space-y-4 mt-3">
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-50 p-3.5 rounded-xl text-center text-xs">
-                              <div>
-                                <span className="text-[9px] text-slate-400 font-bold block">CTR</span>
-                                <span className="font-extrabold text-slate-900">{gads.ctrPct}</span>
+                        {/* Body */}
+                        <div className="p-6 space-y-4 flex-1 flex flex-col justify-between">
+                          <div>
+                            {/* Bio & CTA Framework Box */}
+                            <div className="p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-xl">
+                              <div className="text-[11px] font-bold uppercase tracking-wider text-amber-800">
+                                Optimized Bio & CTA Framework:
                               </div>
-                              <div>
-                                <span className="text-[9px] text-slate-400 font-bold block">AVG CPC</span>
-                                <span className="font-extrabold text-slate-900">{gads.cpcAvg}</span>
-                              </div>
-                              <div>
-                                <span className="text-[9px] text-slate-400 font-bold block">CONVERSIONS</span>
-                                <span className="font-extrabold text-emerald-600">{gads.conversions}</span>
-                              </div>
-                              <div>
-                                <span className="text-[9px] text-slate-400 font-bold block">BUDGET</span>
-                                <span className="font-extrabold text-slate-900">{gads.monthlyBudget}</span>
-                              </div>
+                              <EditableText
+                                value={profile.bioStrategy}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...smoProfiles];
+                                    updated[pIdx] = { ...updated[pIdx], bioStrategy: val };
+                                    onChange({
+                                      ...portfolioData,
+                                      modules: { ...modules, socialOrganic: updated },
+                                    });
+                                  }
+                                }}
+                                className="text-xs text-slate-700 mt-1 italic block leading-relaxed"
+                              />
                             </div>
 
-                            <div>
-                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block mb-1">
-                                Target Search Terms:
-                              </span>
-                              <div className="flex flex-wrap gap-1.5">
-                                {gads.topSearchTerms.map((term, tIdx) => (
-                                  <span
-                                    key={tIdx}
-                                    className="bg-slate-100 text-slate-800 px-2 py-0.5 rounded text-[11px] font-semibold"
-                                  >
-                                    "{term}"
-                                  </span>
+                            {/* Content Pillars */}
+                            <div className="mt-4 space-y-1.5">
+                              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                                Engineered Content Pillars:
+                              </div>
+                              <div className="space-y-1.5">
+                                {(profile.contentPillars || []).map((pillar, cIdx) => (
+                                  <div key={cIdx} className="flex items-center gap-2 text-xs text-slate-700">
+                                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                    <EditableText
+                                      value={pillar}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...smoProfiles];
+                                          const pillars = [...(updated[pIdx].contentPillars || [])];
+                                          pillars[cIdx] = val;
+                                          updated[pIdx] = { ...updated[pIdx], contentPillars: pillars };
+                                          onChange({
+                                            ...portfolioData,
+                                            modules: { ...modules, socialOrganic: updated },
+                                          });
+                                        }
+                                      }}
+                                      className="flex-1"
+                                    />
+                                  </div>
                                 ))}
                               </div>
                             </div>
                           </div>
-                        )}
+
+                          {/* Student Campaign Impact */}
+                          <div className="pt-3 border-t border-slate-100">
+                            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                              Student Campaign Impact:
+                            </div>
+                            <EditableText
+                              tag="p"
+                              value={profile.resultsSummary}
+                              onChange={(val) => {
+                                if (onChange) {
+                                  const updated = [...smoProfiles];
+                                  updated[pIdx] = { ...updated[pIdx], resultsSummary: val };
+                                  onChange({
+                                    ...portfolioData,
+                                    modules: { ...modules, socialOrganic: updated },
+                                  });
+                                }
+                              }}
+                              className="text-xs text-slate-600 leading-relaxed block"
+                            />
+                          </div>
+                        </div>
                       </div>
-                    );
-                  })}
-                </div>
-              
+                    ))}
+                  </div>
                 </div>
               </section>
             );
           }
 
+          // MODULE 04: META ADS
+          if (modId === "socialMarketing") {
+            const metaAds = Array.isArray(modules.socialMarketing) ? modules.socialMarketing : [];
+            return (
+              <section
+                key={modId}
+                id="socialMarketing"
+                className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                  {/* Module Header */}
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
+                    <div>
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+                        Module 04 · Paid Social Advertising
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        Social Media Marketing (Meta & Paid Ads Accordions)
+                      </h2>
+                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        Performance advertising campaigns deployed across Meta Ads Manager (Advantage+ Shopping, Lead Gen, and Dynamic Retargeting). Click each accordion to review ad screenshots, targeting, and summary teardowns.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-xs shrink-0">
+                      <span className="text-amber-500">👉</span>
+                      <span className="font-semibold text-slate-700">Interactive Accordion Structure</span>
+                    </div>
+                  </div>
+
+                  {/* Accordions */}
+                  <div className="space-y-4">
+                    {metaAds.map((ad, idx) => {
+                      const isOpen = openMetaIdx === idx;
+                      return (
+                        <div
+                          key={ad.id || idx}
+                          className={`border rounded-2xl transition-all duration-200 overflow-hidden ${
+                            isOpen
+                              ? "border-blue-400/80 shadow-md bg-white"
+                              : "border-slate-200 bg-white/80 hover:bg-white hover:border-slate-300"
+                          }`}
+                        >
+                          {/* Accordion Bar */}
+                          <button
+                            type="button"
+                            onClick={() => setOpenMetaIdx(isOpen ? -1 : idx)}
+                            aria-expanded={isOpen}
+                            className="w-full p-5 sm:p-6 text-left flex items-start sm:items-center justify-between gap-4 select-none focus:outline-hidden cursor-pointer"
+                          >
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-1">
+                              <div className="w-8 h-8 rounded-lg bg-blue-600 text-amber-300 font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                                #{idx + 1}
+                              </div>
+                              <div>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="text-[11px] font-mono text-blue-600 font-bold uppercase tracking-wider">
+                                    {ad.campaignType}
+                                  </span>
+                                  <span className="text-slate-300">·</span>
+                                  <span className="text-xs text-slate-500 font-medium">
+                                    {ad.objective}
+                                  </span>
+                                </div>
+                                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-0.5">
+                                  {ad.title}
+                                </h3>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 shrink-0">
+                              <span className="hidden md:inline-flex items-center gap-1 font-mono text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+                                {ad.metrics?.roasOrCpa}
+                              </span>
+                              <div
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform duration-200 ${
+                                  isOpen ? "bg-blue-600 text-white rotate-180" : "bg-slate-200 text-slate-600"
+                                }`}
+                              >
+                                <ChevronDown className="w-4 h-4" />
+                              </div>
+                            </div>
+                          </button>
+
+                          {/* Expanded Content */}
+                          {isOpen && (
+                            <div className="border-t border-slate-200 bg-white p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                              {/* Left Column: Creative Mockup */}
+                              <div className="lg:col-span-5 space-y-3">
+                                <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                  Ad Creative & Placement Screenshot:
+                                </div>
+                                <div className="relative bg-slate-900 rounded-xl overflow-hidden aspect-[4/3] border border-slate-200 shadow-xs group/ad">
+                                  <img
+                                    src={ad.screenshotUrl || mockupCreativesImg}
+                                    alt={ad.title}
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                                  />
+                                  <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/ad:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        openImageModal(
+                                          `Change Meta Ad Creative: ${ad.title}`,
+                                          ad.screenshotUrl || mockupCreativesImg,
+                                          false,
+                                          (newUrl) => {
+                                            if (onChange) {
+                                              const updated = [...metaAds];
+                                              updated[idx] = { ...updated[idx], screenshotUrl: newUrl };
+                                              onChange({
+                                                ...portfolioData,
+                                                modules: { ...modules, socialMarketing: updated },
+                                              });
+                                            }
+                                          }
+                                        )
+                                      }
+                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
+                                    >
+                                      <Camera className="w-3.5 h-3.5 text-blue-600" />
+                                      <span>Change Ad Screenshot</span>
+                                    </button>
+                                  </div>
+                                  <div className="absolute bottom-2.5 right-2.5 bg-slate-900/80 backdrop-blur-xs text-amber-400 text-[10px] font-mono px-2 py-0.5 rounded shadow-xs">
+                                    Meta Ads Manager Verified
+                                  </div>
+                                </div>
+                                <div className="text-[11px] text-slate-500 text-center italic">
+                                  Screenshot of live ad creative tested across Instagram Stories & Facebook Feed.
+                                </div>
+                              </div>
+
+                              {/* Right Column: Details & KPIs */}
+                              <div className="lg:col-span-7 space-y-5">
+                                <div>
+                                  <div className="text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">
+                                    Student Ad Campaign Summary:
+                                  </div>
+                                  <EditableText
+                                    tag="p"
+                                    value={ad.summary}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...metaAds];
+                                        updated[idx] = { ...updated[idx], summary: val };
+                                        onChange({
+                                          ...portfolioData,
+                                          modules: { ...modules, socialMarketing: updated },
+                                        });
+                                      }
+                                    }}
+                                    className="text-sm text-slate-700 leading-relaxed font-normal bg-slate-50 p-4 rounded-xl border border-slate-200/80 block"
+                                  />
+                                </div>
+
+                                {/* Targeting & Budget */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <div className="font-bold text-slate-700 flex items-center gap-1.5 mb-1">
+                                      <Target className="w-3.5 h-3.5 text-blue-600" />
+                                      <span>Audience & Targeting:</span>
+                                    </div>
+                                    <EditableText
+                                      value={ad.audienceTargeting}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...metaAds];
+                                          updated[idx] = { ...updated[idx], audienceTargeting: val };
+                                          onChange({
+                                            ...portfolioData,
+                                            modules: { ...modules, socialMarketing: updated },
+                                          });
+                                        }
+                                      }}
+                                      className="text-slate-600 text-[11px] leading-relaxed block"
+                                    />
+                                  </div>
+
+                                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                                    <div className="font-bold text-slate-700 flex items-center gap-1.5 mb-1">
+                                      <DollarSign className="w-3.5 h-3.5 text-emerald-600" />
+                                      <span>Budget & Flight:</span>
+                                    </div>
+                                    <EditableText
+                                      value={ad.budgetSpend}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...metaAds];
+                                          updated[idx] = { ...updated[idx], budgetSpend: val };
+                                          onChange({
+                                            ...portfolioData,
+                                            modules: { ...modules, socialMarketing: updated },
+                                          });
+                                        }
+                                      }}
+                                      className="text-slate-600 text-[11px] leading-relaxed block"
+                                    />
+                                  </div>
+                                </div>
+
+                                {/* KPI Grid */}
+                                <div>
+                                  <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+                                    <BarChart3 className="w-3.5 h-3.5 text-blue-600" />
+                                    <span>Key Performance Indicators (KPIs):</span>
+                                  </div>
+                                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center">
+                                      <div className="text-[10px] uppercase font-bold text-slate-500">
+                                        Outbound CTR
+                                      </div>
+                                      <EditableText
+                                        value={ad.metrics?.ctr}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...metaAds];
+                                            updated[idx] = {
+                                              ...updated[idx],
+                                              metrics: { ...updated[idx].metrics, ctr: val },
+                                            };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: { ...modules, socialMarketing: updated },
+                                            });
+                                          }
+                                        }}
+                                        className="text-sm font-mono font-bold text-blue-700 mt-0.5 block"
+                                      />
+                                    </div>
+
+                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center">
+                                      <div className="text-[10px] uppercase font-bold text-slate-500">
+                                        Average CPC
+                                      </div>
+                                      <EditableText
+                                        value={ad.metrics?.cpc}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...metaAds];
+                                            updated[idx] = {
+                                              ...updated[idx],
+                                              metrics: { ...updated[idx].metrics, cpc: val },
+                                            };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: { ...modules, socialMarketing: updated },
+                                            });
+                                          }
+                                        }}
+                                        className="text-sm font-mono font-bold text-slate-800 mt-0.5 block"
+                                      />
+                                    </div>
+
+                                    <div className="bg-amber-50 border border-amber-300 rounded-lg p-2.5 text-center">
+                                      <div className="text-[10px] uppercase font-bold text-amber-800">
+                                        ROAS / CPA
+                                      </div>
+                                      <EditableText
+                                        value={ad.metrics?.roasOrCpa}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...metaAds];
+                                            updated[idx] = {
+                                              ...updated[idx],
+                                              metrics: { ...updated[idx].metrics, roasOrCpa: val },
+                                            };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: { ...modules, socialMarketing: updated },
+                                            });
+                                          }
+                                        }}
+                                        className="text-sm font-mono font-bold text-amber-900 mt-0.5 block"
+                                      />
+                                    </div>
+
+                                    <div className="bg-emerald-50/60 border border-emerald-200 rounded-lg p-2.5 text-center">
+                                      <div className="text-[10px] uppercase font-bold text-slate-500">
+                                        Total Conv.
+                                      </div>
+                                      <EditableText
+                                        value={ad.metrics?.conversions}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...metaAds];
+                                            updated[idx] = {
+                                              ...updated[idx],
+                                              metrics: { ...updated[idx].metrics, conversions: val },
+                                            };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: { ...modules, socialMarketing: updated },
+                                            });
+                                          }
+                                        }}
+                                        className="text-sm font-mono font-bold text-emerald-700 mt-0.5 block"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+            );
+          }
+
+          // MODULE 05: GOOGLE ADS
+          if (modId === "googleAds") {
+            const gAds = Array.isArray(modules.googleAds) ? modules.googleAds : [];
+            return (
+              <section
+                key={modId}
+                id="googleAds"
+                className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                  {/* Module Header */}
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
+                    <div>
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+                        Module 05 · Search Engine & Intent Advertising
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        Google Ads Campaigns & Search Architecture
+                      </h2>
+                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        High-intent Google Search, Performance Max, and YouTube video ad campaigns configured with tight STAG ad groups, negative keyword exclusions, and automated bidding strategies.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-xs shrink-0">
+                      <span className="text-amber-500">👉</span>
+                      <span className="font-semibold text-slate-700">Ad Copy Variations · Quality Scores 9/10</span>
+                    </div>
+                  </div>
+
+                  {/* Accordions */}
+                  <div className="space-y-4">
+                    {gAds.map((gad, idx) => {
+                      const isOpen = openGoogleIdx === idx;
+                      return (
+                        <div
+                          key={gad.id || idx}
+                          className={`border rounded-2xl transition-all duration-200 overflow-hidden ${
+                            isOpen
+                              ? "border-blue-500/80 shadow-md bg-white"
+                              : "border-slate-200 bg-white/80 hover:bg-white hover:border-slate-300"
+                          }`}
+                        >
+                          {/* Accordion Bar */}
+                          <button
+                            type="button"
+                            onClick={() => setOpenGoogleIdx(isOpen ? -1 : idx)}
+                            aria-expanded={isOpen}
+                            className="w-full p-5 sm:p-6 text-left flex items-start sm:items-center justify-between gap-4 select-none focus:outline-hidden cursor-pointer"
+                          >
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-1">
+                              <div className="w-8 h-8 rounded-lg bg-slate-900 text-amber-400 font-mono font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-slate-700">
+                                G{idx + 1}
+                              </div>
+                              <div>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="text-[11px] font-mono text-blue-600 font-bold uppercase tracking-wider">
+                                    {gad.campaignType}
+                                  </span>
+                                  <span className="text-slate-300">·</span>
+                                  <span className="text-xs text-emerald-700 font-semibold">
+                                    {gad.qualityScore}
+                                  </span>
+                                </div>
+                                <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-0.5">
+                                  {gad.campaignName || gad.title}
+                                </h3>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 shrink-0">
+                              <span className="hidden md:inline-flex items-center gap-1 font-mono text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">
+                                {gad.metrics?.roas}
+                              </span>
+                              <div
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform duration-200 ${
+                                  isOpen ? "bg-blue-600 text-white rotate-180" : "bg-slate-200 text-slate-600"
+                                }`}
+                              >
+                                <ChevronDown className="w-4 h-4" />
+                              </div>
+                            </div>
+                          </button>
+
+                          {/* Expanded Content */}
+                          {isOpen && (
+                            <div className="border-t border-slate-200 bg-white p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                              {/* Left Column: Mockup & Google Sponsored Search Box */}
+                              <div className="lg:col-span-5 space-y-3">
+                                <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                  Ad Preview & Campaign Screenshot:
+                                </div>
+                                <div className="relative bg-slate-900 rounded-xl overflow-hidden aspect-[4/3] border border-slate-200 shadow-xs group/ad">
+                                  <img
+                                    src={gad.screenshotUrl || mockupLaptopImg}
+                                    alt={gad.campaignName || gad.title}
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                                  />
+                                  <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/ad:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button
+                                      type="button"
+                                      onClick={() =>
+                                        openImageModal(
+                                          `Change Google Ads Screenshot: ${gad.campaignName || gad.title}`,
+                                          gad.screenshotUrl || mockupLaptopImg,
+                                          false,
+                                          (newUrl) => {
+                                            if (onChange) {
+                                              const updated = [...gAds];
+                                              updated[idx] = { ...updated[idx], screenshotUrl: newUrl };
+                                              onChange({
+                                                ...portfolioData,
+                                                modules: { ...modules, googleAds: updated },
+                                              });
+                                            }
+                                          }
+                                        )
+                                      }
+                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
+                                    >
+                                      <Camera className="w-3.5 h-3.5 text-blue-600" />
+                                      <span>Change Screenshot</span>
+                                    </button>
+                                  </div>
+                                  <div className="absolute bottom-2.5 right-2.5 bg-slate-900/80 backdrop-blur-xs text-amber-400 text-[10px] font-mono px-2 py-0.5 rounded shadow-xs">
+                                    Google Ads Verified
+                                  </div>
+                                </div>
+
+                                {/* Realistic Google Search Sponsored Box */}
+                                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
+                                  <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
+                                    <span className="font-bold text-slate-900">Sponsored</span>
+                                    <span>·</span>
+                                    <span className="font-mono">https://example.com/services</span>
+                                  </div>
+                                  <div className="text-sm font-semibold text-blue-800 hover:underline cursor-pointer">
+                                    {gad.headlines?.[0] || gad.campaignName}
+                                  </div>
+                                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                                    {gad.descriptions?.[0] || gad.summary}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* Right Column: Execution, RSA Copy, Keywords, Metrics */}
+                              <div className="lg:col-span-7 space-y-5">
+                                <div>
+                                  <div className="text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">
+                                    Student Campaign Execution & Strategy:
+                                  </div>
+                                  <EditableText
+                                    tag="p"
+                                    value={gad.summary}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...gAds];
+                                        updated[idx] = { ...updated[idx], summary: val };
+                                        onChange({
+                                          ...portfolioData,
+                                          modules: { ...modules, googleAds: updated },
+                                        });
+                                      }
+                                    }}
+                                    className="text-sm text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200/80 block"
+                                  />
+                                </div>
+
+                                {/* Tested Responsive Search Ad (RSA) Copy */}
+                                <div className="space-y-2">
+                                  <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                    Tested Responsive Search Ad (RSA) Copy:
+                                  </div>
+                                  <div className="space-y-1.5">
+                                    {(gad.headlines || []).map((headline, hIdx) => (
+                                      <div
+                                        key={hIdx}
+                                        className="flex items-center gap-2 text-xs text-slate-800 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200"
+                                      >
+                                        <span className="text-[10px] font-mono font-bold text-blue-600 shrink-0">
+                                          H{hIdx + 1}:
+                                        </span>
+                                        <EditableText
+                                          value={headline}
+                                          onChange={(val) => {
+                                            if (onChange) {
+                                              const updated = [...gAds];
+                                              const heads = [...(updated[idx].headlines || [])];
+                                              heads[hIdx] = val;
+                                              updated[idx] = { ...updated[idx], headlines: heads };
+                                              onChange({
+                                                ...portfolioData,
+                                                modules: { ...modules, googleAds: updated },
+                                              });
+                                            }
+                                          }}
+                                          className="flex-1"
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                {/* Target Keywords & Match Types */}
+                                <div className="space-y-1.5">
+                                  <div className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+                                    <Search className="w-3.5 h-3.5 text-blue-600" />
+                                    <span>Target Keywords & Match Types:</span>
+                                  </div>
+                                  <div className="flex flex-wrap gap-1.5">
+                                    {(gad.targetKeywords || gad.topSearchTerms || []).map((kw, kIdx) => (
+                                      <span
+                                        key={kIdx}
+                                        className="px-2 py-0.5 text-[11px] font-mono bg-blue-50 text-blue-800 rounded-md border border-blue-200"
+                                      >
+                                        {kw}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                {/* Verified Google Ads Metrics */}
+                                <div>
+                                  <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+                                    Verified Google Ads Metrics:
+                                  </div>
+                                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center">
+                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2">
+                                      <div className="text-[10px] text-slate-500 font-medium">
+                                        Impressions
+                                      </div>
+                                      <EditableText
+                                        value={gad.metrics?.impressions}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...gAds];
+                                            updated[idx] = {
+                                              ...updated[idx],
+                                              metrics: { ...updated[idx].metrics, impressions: val },
+                                            };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: { ...modules, googleAds: updated },
+                                            });
+                                          }
+                                        }}
+                                        className="text-xs font-mono font-bold text-slate-800 mt-0.5 block"
+                                      />
+                                    </div>
+
+                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2">
+                                      <div className="text-[10px] text-slate-500 font-medium">
+                                        CTR
+                                      </div>
+                                      <EditableText
+                                        value={gad.metrics?.ctr}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...gAds];
+                                            updated[idx] = {
+                                              ...updated[idx],
+                                              metrics: { ...updated[idx].metrics, ctr: val },
+                                            };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: { ...modules, googleAds: updated },
+                                            });
+                                          }
+                                        }}
+                                        className="text-xs font-mono font-bold text-blue-700 mt-0.5 block"
+                                      />
+                                    </div>
+
+                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2">
+                                      <div className="text-[10px] text-slate-500 font-medium">
+                                        Avg CPC
+                                      </div>
+                                      <EditableText
+                                        value={gad.metrics?.avgCpc}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...gAds];
+                                            updated[idx] = {
+                                              ...updated[idx],
+                                              metrics: { ...updated[idx].metrics, avgCpc: val },
+                                            };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: { ...modules, googleAds: updated },
+                                            });
+                                          }
+                                        }}
+                                        className="text-xs font-mono font-bold text-slate-800 mt-0.5 block"
+                                      />
+                                    </div>
+
+                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2">
+                                      <div className="text-[10px] text-slate-500 font-medium">
+                                        Conversions
+                                      </div>
+                                      <EditableText
+                                        value={gad.metrics?.conversions}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...gAds];
+                                            updated[idx] = {
+                                              ...updated[idx],
+                                              metrics: { ...updated[idx].metrics, conversions: val },
+                                            };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: { ...modules, googleAds: updated },
+                                            });
+                                          }
+                                        }}
+                                        className="text-xs font-mono font-bold text-emerald-700 mt-0.5 block"
+                                      />
+                                    </div>
+
+                                    <div className="bg-amber-50 border border-amber-300 rounded-lg p-2 col-span-2 sm:col-span-1">
+                                      <div className="text-[10px] text-amber-800 font-bold">
+                                        ROAS
+                                      </div>
+                                      <EditableText
+                                        value={gad.metrics?.roas}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...gAds];
+                                            updated[idx] = {
+                                              ...updated[idx],
+                                              metrics: { ...updated[idx].metrics, roas: val },
+                                            };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: { ...modules, googleAds: updated },
+                                            });
+                                          }
+                                        }}
+                                        className="text-xs font-mono font-bold text-amber-900 mt-0.5 block"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+            );
+          }
+          
           // MODULE 06: SEO & LOCAL GBP
           if (modId === "seo") {
             return (
