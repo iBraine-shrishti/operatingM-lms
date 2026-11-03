@@ -47,6 +47,7 @@ import {
   Smartphone,
   ShieldCheck,
   Target,
+  Calendar,
   Star,
   Store,
 } from "lucide-react";
@@ -118,6 +119,7 @@ export const PortfolioPreview = ({
   const [seoActiveTab, setSeoActiveTab] = useState("keywords");
   const [seoSearchQuery, setSeoSearchQuery] = useState("");
   const [seoIntentFilter, setSeoIntentFilter] = useState("All");
+  const [planSlideIdx, setPlanSlideIdx] = useState(0);
 
   // Image editing modal state
   const [imageModalConfig, setImageModalConfig] = useState({
@@ -2883,56 +2885,333 @@ export const PortfolioPreview = ({
             );
           }
 
-          // MODULE 07: DIGITAL PLANNING DECK
+          // MODULE 07: STRATEGIC GROWTH ARCHITECTURE - DIGITAL PLANNING & BRAND AUDIT
           if (modId === "digitalPlanning") {
+            const planData = modules.digitalPlanning || {};
+            const deck = Array.isArray(planData.brandAuditDeck) && planData.brandAuditDeck.length > 0
+              ? planData.brandAuditDeck
+              : [
+                  {
+                    slideNumber: 1,
+                    tag: "EXECUTIVE DELIVERABLE · CURRENT STATE VS MARKET LEADERS IN SUSTAINABLE ACTIVEWEAR",
+                    title: "Executive Brand Audit: Omni-Channel Gap Analysis",
+                    findings: [
+                      "Brand had a 72% reliance on paid Meta prospecting with zero email retention lifecycle marketing",
+                      "Organic brand search volume trailed competitors by 4.2x due to lack of PR and SEO authority content",
+                      "Website bounce rate on mobile was 68% due to sluggish product page loading times",
+                    ],
+                    metricsTable: [
+                      { metric: "Organic Traffic Share", auditState: "11%", benchmark: "38%" },
+                      { metric: "Blended Customer Acquisition Cost", auditState: "$64", benchmark: "$39" },
+                      { metric: "Email List Revenue Contribution", auditState: "6%", benchmark: "28%" },
+                    ],
+                  },
+                  {
+                    slideNumber: 2,
+                    tag: "EXECUTIVE DELIVERABLE · PERSONA: 'CONSCIOUS ACHIEVER CLARA' (AGE 28-42, HIGH HOUSEHOLD INCOME)",
+                    title: "Target Customer Persona & Mindset Mapping",
+                    findings: [
+                      "Primary motivation: Technical performance without toxic synthetic petroleum dyes or microplastics",
+                      "Main friction: Skeptical of greenwashing claims; needs transparent third-party laboratory certifications",
+                      "Trigger moments: New fitness milestones, corporate marathon signups, weekend hiking expeditions",
+                    ],
+                    frameworkArchitecture: "Empathy map outlining Clara's daily routine, media consumption channels (Substack, podcasts, TikTok), and purchase objections.",
+                  },
+                  {
+                    slideNumber: 3,
+                    tag: "EXECUTIVE DELIVERABLE · INTEGRATING PAID DISCOVERY, ORGANIC COMMUNITY, AND AUTOMATED RETENTION",
+                    title: "360° Omnichannel Funnel Architecture",
+                    findings: [
+                      "TOFU: Meta Broad Advantage+ Video hooks + TikTok UGC problem/solution demonstrations",
+                      "MOFU: Google Search commercial intent keywords + Retargeting comparison landing pages",
+                      "BOFU: Klaviyo 6-part automated welcome flow + SMS cart recovery offering VIP perks instead of deep discounts",
+                    ],
+                    frameworkArchitecture: "Funnel visual flow showing user progression from initial video impression down to post-purchase referral.",
+                  },
+                ];
+
+            const roadmap = Array.isArray(planData.strategyRoadmap) && planData.strategyRoadmap.length > 0
+              ? planData.strategyRoadmap
+              : [
+                  {
+                    weeks: "Weeks 1 - 4",
+                    allocation: "15% Allocation",
+                    phase: "Phase 1: Foundation & Infrastructure",
+                    channels: ["Technical SEO", "Analytics Setup", "Tracking Pixel CAPI"],
+                    deliverables: [
+                      "Deploy Server-Side Meta CAPI & Google Tag Manager Enhanced Conversions",
+                      "Perform comprehensive site speed optimization (sub-1.5s load times)",
+                      "Build Klaviyo automated core email flows (Welcome, Cart, Post-Purchase)",
+                    ],
+                    milestone: "Milestone Review at 4",
+                  },
+                  {
+                    weeks: "Weeks 5 - 10",
+                    allocation: "60% Allocation",
+                    phase: "Phase 2: Acquisition & Paid Testing",
+                    channels: ["Meta Advantage+ CBO", "Google PMax & Search", "Micro-Influencer Seeding"],
+                    deliverables: [
+                      "Test 20 creative iterations across 4 hook themes to find winning angles",
+                      "Launch Exact Match Google Ads for high-intent category terms",
+                      "Seed product with 30 micro-influencers for authentic testimonial UGC assets",
+                    ],
+                    milestone: "Milestone Review at 10",
+                  },
+                  {
+                    weeks: "Weeks 11 - 16",
+                    allocation: "25% Allocation",
+                    phase: "Phase 3: Scaling, CRO & Retention",
+                    channels: ["Full-Scale Performance Budget", "A/B Landing Page Testing", "Affiliate Program"],
+                    deliverables: [
+                      "Scale winning Meta ad sets vertically and horizontally across lookalike pockets",
+                      "Launch dedicated advertorial landing pages via Replo/Unbounce to boost conversion rates",
+                      "Activate VIP loyalty tier and subscription re-order triggers",
+                    ],
+                    milestone: "Milestone Review at 16",
+                  },
+                ];
+
+            const currentSlide = deck[planSlideIdx] || deck[0];
+
             return (
               <section
                 key={modId}
                 id="digitalPlanning"
-                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+                className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <Briefcase size={20} />
-                    </div>
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-1 sm:px-2 space-y-8">
+                  {/* Module 07 Header */}
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        Digital Planning Deck
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+                        Module 07 · Strategic Growth Architecture
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        Digital Planning, Brand Audit & Strategy Deck
                       </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Executive brand audit decks, competitor analysis & 3-month growth roadmap
+                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        A complete executive brand audit deck presented to leadership, coupled with a 16-week omnichannel growth marketing plan and budget allocation framework.
                       </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-2xs shrink-0">
+                      <Briefcase className="w-4 h-4 text-amber-500" />
+                      <span>Interactive Pitch Deck & 16-Week Roadmap</span>
                     </div>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {(Array.isArray(modules.digitalPlanning?.brandAuditDeck) ? modules.digitalPlanning.brandAuditDeck : []).map((slide, sIdx) => (
-                    <div
-                      key={sIdx}
-                      className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-2 flex flex-col justify-between"
-                    >
-                      <div>
-                        <span className="text-[10px] font-black uppercase text-blue-600 block">
-                          Slide 0{slide.slideNumber}
+                  {/* 1. Executive Pitch Deck Dark Slider */}
+                  <div className="bg-slate-950 text-white rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl relative overflow-hidden">
+                    {/* Slide Top Bar */}
+                    <div className="flex items-center justify-between pb-6 border-b border-slate-800/80 gap-3">
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block shrink-0 shadow-[0_0_8px_rgba(239,68,68,0.9)]" />
+                        <span className="font-mono text-xs font-bold text-amber-400 uppercase tracking-wider shrink-0">
+                          SLIDE {planSlideIdx + 1} OF {deck.length}
                         </span>
-                        <h3 className="text-sm font-extrabold text-slate-900 mt-1">
-                          {slide.title}
+                        <span className="text-slate-600 hidden sm:inline">|</span>
+                        <span className="text-xs text-slate-300 font-medium truncate hidden sm:inline">
+                          Executive Brand Audit & Gap Analysis Deck
+                        </span>
+                      </div>
+
+                      {/* Controls: Prev, Indicators, Next */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => setPlanSlideIdx((prev) => (prev > 0 ? prev - 1 : deck.length - 1))}
+                          className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                          title="Previous Slide"
+                        >
+                          <ChevronLeft size={14} />
+                        </button>
+
+                        <div className="flex items-center gap-1.5 px-1">
+                          {deck.map((_, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => setPlanSlideIdx(idx)}
+                              className={`transition-all cursor-pointer ${
+                                idx === planSlideIdx
+                                  ? "w-6 h-1.5 rounded-full bg-amber-400"
+                                  : "w-1.5 h-1.5 rounded-full bg-slate-700 hover:bg-slate-500"
+                              }`}
+                              title={`Go to Slide ${idx + 1}`}
+                            />
+                          ))}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => setPlanSlideIdx((prev) => (prev < deck.length - 1 ? prev + 1 : 0))}
+                          className="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                          title="Next Slide"
+                        >
+                          <ChevronRight size={14} />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Slide Body Content */}
+                    <div className="py-6 sm:py-8 space-y-6">
+                      <div>
+                        <div className="text-[11px] font-mono font-bold text-blue-400 uppercase tracking-wider">
+                          {currentSlide.tag}
+                        </div>
+                        <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 tracking-tight">
+                          {currentSlide.title}
                         </h3>
                       </div>
-                      <p className="text-xs text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-100 leading-relaxed mt-2">
-                        {slide.takeaway}
-                      </p>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                        {/* Left Column: 3 Strategic Diagnostic Findings */}
+                        <div className="lg:col-span-7 space-y-3">
+                          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                            STRATEGIC DIAGNOSTIC FINDINGS:
+                          </div>
+                          {(currentSlide.findings || []).map((finding, fIdx) => (
+                            <div
+                              key={fIdx}
+                              className="bg-slate-900/90 border border-slate-800/80 rounded-xl p-3.5 sm:p-4 flex items-start gap-3.5 shadow-2xs"
+                            >
+                              <span className="w-6 h-6 rounded-md bg-blue-600/30 text-blue-400 border border-blue-500/40 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
+                                {fIdx + 1}
+                              </span>
+                              <span className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
+                                {finding}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Right Column: Benchmarking Matrix or Framework Architecture */}
+                        <div className="lg:col-span-5 space-y-3">
+                          {currentSlide.metricsTable && (
+                            <div className="space-y-2">
+                              <div className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                                DIAGNOSTIC BENCHMARKING MATRIX:
+                              </div>
+                              <div className="bg-slate-900/90 rounded-xl border border-slate-800 p-4 overflow-hidden shadow-2xs">
+                                <table className="w-full text-left text-xs border-collapse">
+                                  <thead>
+                                    <tr className="border-b border-slate-800 text-[11px] text-slate-400 font-semibold">
+                                      <th className="pb-2.5">Metric</th>
+                                      <th className="pb-2.5 text-right">Audit State</th>
+                                      <th className="pb-2.5 text-right text-emerald-400">Benchmark</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-slate-800/60 font-mono">
+                                    {currentSlide.metricsTable.map((row, rIdx) => (
+                                      <tr key={rIdx}>
+                                        <td className="py-2.5 text-slate-300 font-sans text-xs">
+                                          {row.metric}
+                                        </td>
+                                        <td className="py-2.5 text-right font-bold text-rose-400">
+                                          {row.auditState}
+                                        </td>
+                                        <td className="py-2.5 text-right font-bold text-emerald-400">
+                                          {row.benchmark}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          )}
+
+                          {currentSlide.frameworkArchitecture && (
+                            <div className="space-y-2">
+                              <div className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                                FRAMEWORK ARCHITECTURE:
+                              </div>
+                              <div className="bg-slate-900/90 rounded-xl border border-slate-800 p-4 shadow-2xs">
+                                <p className="text-xs text-slate-300 leading-relaxed">
+                                  {currentSlide.frameworkArchitecture}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  ))}
-                </div>
-              
+
+                    {/* Slide Bottom Bar */}
+                    <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                      <span className="text-slate-400">
+                        Presented for Capstone Certification Review
+                      </span>
+                      <span className="font-mono font-bold text-amber-400">
+                        Verified by Academy Lead Trainer
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* 2. 16-Week Digital Marketing Execution Roadmap */}
+                  <div className="space-y-4 pt-2">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-blue-600" />
+                      <h3 className="text-lg font-bold text-slate-900">
+                        16-Week Digital Marketing Execution Roadmap
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {roadmap.map((phase, pIdx) => (
+                        <div
+                          key={pIdx}
+                          className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow"
+                        >
+                          <div>
+                            {/* Card Top: Weeks & Allocation */}
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold text-blue-600">
+                                {phase.weeks}
+                              </span>
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-300">
+                                {phase.allocation}
+                              </span>
+                            </div>
+
+                            <h4 className="text-base font-bold text-slate-900 mt-2">
+                              {phase.phase}
+                            </h4>
+
+                            {/* Channel Pills */}
+                            <div className="flex flex-wrap gap-1.5 mt-3">
+                              {(phase.channels || []).map((ch, cIdx) => (
+                                <span
+                                  key={cIdx}
+                                  className="px-2 py-0.5 text-[11px] font-medium bg-slate-100 text-slate-700 rounded-md border border-slate-200"
+                                >
+                                  {ch}
+                                </span>
+                              ))}
+                            </div>
+
+                            {/* Deliverables */}
+                            <div className="mt-4 space-y-2">
+                              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                KEY DELIVERABLES:
+                              </div>
+                              {(phase.deliverables || []).map((item, dIdx) => (
+                                <div key={dIdx} className="flex items-start gap-2 text-xs text-slate-700">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+                                  <span className="leading-relaxed">{item}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Milestone Footer */}
+                          <div className="pt-3 border-t border-slate-100 text-xs text-slate-400 font-mono">
+                            {phase.milestone}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </section>
             );
