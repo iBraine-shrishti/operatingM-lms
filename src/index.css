@@ -676,6 +676,63 @@ html.dark .hover\:border-slate-300:hover {
 }
 
 /* ==========================================================================
+   OFFICIAL RESUME DOCUMENT PROTECTION
+   Resumes are printable physical documents and MUST ALWAYS maintain
+   authentic white paper background and dark text, in BOTH Light & Dark modes.
+   ========================================================================== */
+#resume-print-document,
+#resume-print-document *,
+html.dark #resume-print-document,
+html.dark #resume-print-document * {
+  color-scheme: light !important;
+}
+
+#resume-print-document .bg-white,
+html.dark #resume-print-document .bg-white,
+#resume-print-document .resume-page-sheet,
+html.dark #resume-print-document .resume-page-sheet {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+}
+
+#resume-print-document .text-slate-900,
+html.dark #resume-print-document .text-slate-900 {
+  color: #0f172a !important;
+}
+
+#resume-print-document .text-slate-800,
+html.dark #resume-print-document .text-slate-800 {
+  color: #1e293b !important;
+}
+
+#resume-print-document .text-slate-700,
+html.dark #resume-print-document .text-slate-700 {
+  color: #334155 !important;
+}
+
+#resume-print-document .text-slate-600,
+html.dark #resume-print-document .text-slate-600 {
+  color: #475569 !important;
+}
+
+#resume-print-document .text-slate-500,
+html.dark #resume-print-document .text-slate-500 {
+  color: #64748b !important;
+}
+
+#resume-print-document .text-slate-400,
+html.dark #resume-print-document .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+#resume-print-document .border-slate-200,
+#resume-print-document .border-slate-200\/90,
+html.dark #resume-print-document .border-slate-200,
+html.dark #resume-print-document .border-slate-200\/90 {
+  border-color: #e2e8f0 !important;
+}
+
+/* ==========================================================================
    RESUME BUILDER CLEAN A4 PRINT STYLES
    ========================================================================== */
 @media print {
@@ -846,12 +903,15 @@ html.dark .hover\:border-slate-300:hover {
   #resume-print-document .resume-modern-aside {
     width: 36% !important;
     flex-shrink: 0 !important;
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
   #resume-print-document .resume-modern-main {
     width: 64% !important;
     flex: 1 1 0% !important;
-    display: block !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-sizing: border-box !important;
   }
 
   /* Minimalist Performance 12-Column Grid Layout */
@@ -885,7 +945,7 @@ html.dark .hover\:border-slate-300:hover {
   #resume-print-document aside.flex,
   #resume-print-document header.flex,
   #resume-print-document .flex,
-  #resume-print-document [class*="print:flex"] {
+  #resume-print-document .print\:flex {
     display: flex !important;
   }
   #resume-print-document .grid,
