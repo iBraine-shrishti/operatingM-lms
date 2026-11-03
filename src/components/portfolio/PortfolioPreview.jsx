@@ -2465,17 +2465,18 @@ export const PortfolioPreview = ({
           // MODULE 06: SEO KEYWORD RESEARCH, SITE AUDIT & LOCAL SEO (GBP)
           if (modId === "seo") {
             const seoData = modules.seo || {};
-            const rawKeywords = Array.isArray(seoData.keywords) && seoData.keywords.length > 0
-              ? seoData.keywords
-              : [
-                  { keyword: "best organic skincare for sensitive skin", searchVolume: 18100, keywordDifficulty: 42, intent: "Commercial", cpc: "$2.80", targetPage: "/collections/sensitive-skin-barrier", priority: "High" },
-                  { keyword: "ceramide barrier cream review", searchVolume: 9900, keywordDifficulty: 38, intent: "Informational", cpc: "$1.40", targetPage: "/blog/ceramide-skin-barrier-restoration", priority: "High" },
-                  { keyword: "buy organic peptide serum online", searchVolume: 6400, keywordDifficulty: 51, intent: "Transactional", cpc: "$4.20", targetPage: "/products/tri-peptide-nourishing-serum", priority: "High" },
-                  { keyword: "how to repair damaged skin barrier naturally", searchVolume: 14200, keywordDifficulty: 29, intent: "Informational", cpc: "$0.95", targetPage: "/guides/repair-skin-barrier-in-7-days", priority: "Medium" },
-                  { keyword: "hypoallergenic morning routine steps", searchVolume: 4800, keywordDifficulty: 24, intent: "Informational", cpc: "$1.10", targetPage: "/blog/hypoallergenic-morning-routine", priority: "Medium" },
-                  { keyword: "vegan cold pressed facial oil discount", searchVolume: 3200, keywordDifficulty: 35, intent: "Transactional", cpc: "$3.50", targetPage: "/products/botanical-glow-elixir", priority: "Low" },
-                ];
-
+            const defaultKeywords = [
+              { keyword: "best organic skincare for sensitive skin", searchVolume: 18100, keywordDifficulty: 42, intent: "Commercial", cpc: "$2.80", targetPage: "/collections/sensitive-skin-barrier", priority: "High" },
+              { keyword: "ceramide barrier cream review", searchVolume: 9900, keywordDifficulty: 38, intent: "Informational", cpc: "$1.40", targetPage: "/blog/ceramide-skin-barrier-restoration", priority: "High" },
+              { keyword: "buy organic peptide serum online", searchVolume: 6400, keywordDifficulty: 51, intent: "Transactional", cpc: "$4.20", targetPage: "/products/tri-peptide-nourishing-serum", priority: "High" },
+              { keyword: "how to repair damaged skin barrier naturally", searchVolume: 14200, keywordDifficulty: 29, intent: "Informational", cpc: "$0.95", targetPage: "/guides/repair-skin-barrier-in-7-days", priority: "Medium" },
+              { keyword: "hypoallergenic morning routine steps", searchVolume: 4800, keywordDifficulty: 24, intent: "Informational", cpc: "$1.10", targetPage: "/blog/hypoallergenic-morning-routine", priority: "Medium" },
+              { keyword: "vegan cold pressed facial oil discount", searchVolume: 3200, keywordDifficulty: 35, intent: "Transactional", cpc: "$3.50", targetPage: "/products/botanical-glow-elixir", priority: "Low" },
+            ];
+            const hasValidKeywords = Array.isArray(seoData.keywords) &&
+              seoData.keywords.length > 0 &&
+              Boolean(seoData.keywords[0].intent);
+            const rawKeywords = hasValidKeywords ? seoData.keywords : defaultKeywords;
             const filteredKeywords = rawKeywords.filter((kw) => {
               const query = (seoSearchQuery || "").toLowerCase();
               const matchesQuery = !query || kw.keyword?.toLowerCase().includes(query) || kw.targetPage?.toLowerCase().includes(query);
@@ -2888,88 +2889,98 @@ export const PortfolioPreview = ({
           // MODULE 07: STRATEGIC GROWTH ARCHITECTURE - DIGITAL PLANNING & BRAND AUDIT
           if (modId === "digitalPlanning") {
             const planData = modules.digitalPlanning || {};
-            const deck = Array.isArray(planData.brandAuditDeck) && planData.brandAuditDeck.length > 0
-              ? planData.brandAuditDeck
-              : [
-                  {
-                    slideNumber: 1,
-                    tag: "EXECUTIVE DELIVERABLE · CURRENT STATE VS MARKET LEADERS IN SUSTAINABLE ACTIVEWEAR",
-                    title: "Executive Brand Audit: Omni-Channel Gap Analysis",
-                    findings: [
-                      "Brand had a 72% reliance on paid Meta prospecting with zero email retention lifecycle marketing",
-                      "Organic brand search volume trailed competitors by 4.2x due to lack of PR and SEO authority content",
-                      "Website bounce rate on mobile was 68% due to sluggish product page loading times",
-                    ],
-                    metricsTable: [
-                      { metric: "Organic Traffic Share", auditState: "11%", benchmark: "38%" },
-                      { metric: "Blended Customer Acquisition Cost", auditState: "$64", benchmark: "$39" },
-                      { metric: "Email List Revenue Contribution", auditState: "6%", benchmark: "28%" },
-                    ],
-                  },
-                  {
-                    slideNumber: 2,
-                    tag: "EXECUTIVE DELIVERABLE · PERSONA: 'CONSCIOUS ACHIEVER CLARA' (AGE 28-42, HIGH HOUSEHOLD INCOME)",
-                    title: "Target Customer Persona & Mindset Mapping",
-                    findings: [
-                      "Primary motivation: Technical performance without toxic synthetic petroleum dyes or microplastics",
-                      "Main friction: Skeptical of greenwashing claims; needs transparent third-party laboratory certifications",
-                      "Trigger moments: New fitness milestones, corporate marathon signups, weekend hiking expeditions",
-                    ],
-                    frameworkArchitecture: "Empathy map outlining Clara's daily routine, media consumption channels (Substack, podcasts, TikTok), and purchase objections.",
-                  },
-                  {
-                    slideNumber: 3,
-                    tag: "EXECUTIVE DELIVERABLE · INTEGRATING PAID DISCOVERY, ORGANIC COMMUNITY, AND AUTOMATED RETENTION",
-                    title: "360° Omnichannel Funnel Architecture",
-                    findings: [
-                      "TOFU: Meta Broad Advantage+ Video hooks + TikTok UGC problem/solution demonstrations",
-                      "MOFU: Google Search commercial intent keywords + Retargeting comparison landing pages",
-                      "BOFU: Klaviyo 6-part automated welcome flow + SMS cart recovery offering VIP perks instead of deep discounts",
-                    ],
-                    frameworkArchitecture: "Funnel visual flow showing user progression from initial video impression down to post-purchase referral.",
-                  },
-                ];
+            const defaultDeck = [
+              {
+                slideNumber: 1,
+                tag: "EXECUTIVE DELIVERABLE · CURRENT STATE VS MARKET LEADERS IN SUSTAINABLE ACTIVEWEAR",
+                title: "Executive Brand Audit: Omni-Channel Gap Analysis",
+                findings: [
+                  "Brand had a 72% reliance on paid Meta prospecting with zero email retention lifecycle marketing",
+                  "Organic brand search volume trailed competitors by 4.2x due to lack of PR and SEO authority content",
+                  "Website bounce rate on mobile was 68% due to sluggish product page loading times",
+                ],
+                metricsTable: [
+                  { metric: "Organic Traffic Share", auditState: "11%", benchmark: "38%" },
+                  { metric: "Blended Customer Acquisition Cost", auditState: "$64", benchmark: "$39" },
+                  { metric: "Email List Revenue Contribution", auditState: "6%", benchmark: "28%" },
+                ],
+              },
+              {
+                slideNumber: 2,
+                tag: "EXECUTIVE DELIVERABLE · PERSONA: 'CONSCIOUS ACHIEVER CLARA' (AGE 28-42, HIGH HOUSEHOLD INCOME)",
+                title: "Target Customer Persona & Mindset Mapping",
+                findings: [
+                  "Primary motivation: Technical performance without toxic synthetic petroleum dyes or microplastics",
+                  "Main friction: Skeptical of greenwashing claims; needs transparent third-party laboratory certifications",
+                  "Trigger moments: New fitness milestones, corporate marathon signups, weekend hiking expeditions",
+                ],
+                frameworkArchitecture: "Empathy map outlining Clara's daily routine, media consumption channels (Substack, podcasts, TikTok), and purchase objections.",
+              },
+              {
+                slideNumber: 3,
+                tag: "EXECUTIVE DELIVERABLE · INTEGRATING PAID DISCOVERY, ORGANIC COMMUNITY, AND AUTOMATED RETENTION",
+                title: "360° Omnichannel Funnel Architecture",
+                findings: [
+                  "TOFU: Meta Broad Advantage+ Video hooks + TikTok UGC problem/solution demonstrations",
+                  "MOFU: Google Search commercial intent keywords + Retargeting comparison landing pages",
+                  "BOFU: Klaviyo 6-part automated welcome flow + SMS cart recovery offering VIP perks instead of deep discounts",
+                ],
+                frameworkArchitecture: "Funnel visual flow showing user progression from initial video impression down to post-purchase referral.",
+              },
+            ];
 
-            const roadmap = Array.isArray(planData.strategyRoadmap) && planData.strategyRoadmap.length > 0
-              ? planData.strategyRoadmap
-              : [
-                  {
-                    weeks: "Weeks 1 - 4",
-                    allocation: "15% Allocation",
-                    phase: "Phase 1: Foundation & Infrastructure",
-                    channels: ["Technical SEO", "Analytics Setup", "Tracking Pixel CAPI"],
-                    deliverables: [
-                      "Deploy Server-Side Meta CAPI & Google Tag Manager Enhanced Conversions",
-                      "Perform comprehensive site speed optimization (sub-1.5s load times)",
-                      "Build Klaviyo automated core email flows (Welcome, Cart, Post-Purchase)",
-                    ],
-                    milestone: "Milestone Review at 4",
-                  },
-                  {
-                    weeks: "Weeks 5 - 10",
-                    allocation: "60% Allocation",
-                    phase: "Phase 2: Acquisition & Paid Testing",
-                    channels: ["Meta Advantage+ CBO", "Google PMax & Search", "Micro-Influencer Seeding"],
-                    deliverables: [
-                      "Test 20 creative iterations across 4 hook themes to find winning angles",
-                      "Launch Exact Match Google Ads for high-intent category terms",
-                      "Seed product with 30 micro-influencers for authentic testimonial UGC assets",
-                    ],
-                    milestone: "Milestone Review at 10",
-                  },
-                  {
-                    weeks: "Weeks 11 - 16",
-                    allocation: "25% Allocation",
-                    phase: "Phase 3: Scaling, CRO & Retention",
-                    channels: ["Full-Scale Performance Budget", "A/B Landing Page Testing", "Affiliate Program"],
-                    deliverables: [
-                      "Scale winning Meta ad sets vertically and horizontally across lookalike pockets",
-                      "Launch dedicated advertorial landing pages via Replo/Unbounce to boost conversion rates",
-                      "Activate VIP loyalty tier and subscription re-order triggers",
-                    ],
-                    milestone: "Milestone Review at 16",
-                  },
-                ];
+            const defaultRoadmap = [
+              {
+                weeks: "Weeks 1 - 4",
+                allocation: "15% Allocation",
+                phase: "Phase 1: Foundation & Infrastructure",
+                channels: ["Technical SEO", "Analytics Setup", "Tracking Pixel CAPI"],
+                deliverables: [
+                  "Deploy Server-Side Meta CAPI & Google Tag Manager Enhanced Conversions",
+                  "Perform comprehensive site speed optimization (sub-1.5s load times)",
+                  "Build Klaviyo automated core email flows (Welcome, Cart, Post-Purchase)",
+                ],
+                milestone: "Milestone Review at 4",
+              },
+              {
+                weeks: "Weeks 5 - 10",
+                allocation: "60% Allocation",
+                phase: "Phase 2: Acquisition & Paid Testing",
+                channels: ["Meta Advantage+ CBO", "Google PMax & Search", "Micro-Influencer Seeding"],
+                deliverables: [
+                  "Test 20 creative iterations across 4 hook themes to find winning angles",
+                  "Launch Exact Match Google Ads for high-intent category terms",
+                  "Seed product with 30 micro-influencers for authentic testimonial UGC assets",
+                ],
+                milestone: "Milestone Review at 10",
+              },
+              {
+                weeks: "Weeks 11 - 16",
+                allocation: "25% Allocation",
+                phase: "Phase 3: Scaling, CRO & Retention",
+                channels: ["Full-Scale Performance Budget", "A/B Landing Page Testing", "Affiliate Program"],
+                deliverables: [
+                  "Scale winning Meta ad sets vertically and horizontally across lookalike pockets",
+                  "Launch dedicated advertorial landing pages via Replo/Unbounce to boost conversion rates",
+                  "Activate VIP loyalty tier and subscription re-order triggers",
+                ],
+                milestone: "Milestone Review at 16",
+              },
+            ];
+
+            const hasValidDeck =
+              Array.isArray(planData.brandAuditDeck) &&
+              planData.brandAuditDeck.length > 0 &&
+              Array.isArray(planData.brandAuditDeck[0].findings) &&
+              planData.brandAuditDeck[0].findings.length > 0;
+            const deck = hasValidDeck ? planData.brandAuditDeck : defaultDeck;
+
+            const hasValidRoadmap =
+              Array.isArray(planData.strategyRoadmap) &&
+              planData.strategyRoadmap.length > 0 &&
+              Array.isArray(planData.strategyRoadmap[0].deliverables) &&
+              planData.strategyRoadmap[0].deliverables.length > 0;
+            const roadmap = hasValidRoadmap ? planData.strategyRoadmap : defaultRoadmap;
 
             const currentSlide = deck[planSlideIdx] || deck[0];
 

@@ -56,6 +56,14 @@ export const PortfolioBuilderPage = () => {
           modules: {
             ...defaultData.modules,
             ...(parsed.modules || {}),
+            digitalPlanning:
+              parsed.modules?.digitalPlanning?.brandAuditDeck?.[0]?.findings
+                ? parsed.modules.digitalPlanning
+                : defaultData.modules.digitalPlanning,
+            seo:
+              parsed.modules?.seo?.auditCategories
+                ? parsed.modules.seo
+                : defaultData.modules.seo,
           },
         };
       }
