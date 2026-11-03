@@ -488,7 +488,7 @@ export const DualArchCreativeTemplate = ({
         </aside>
 
         {/* RIGHT COLUMN: MAIN CONTENT (62%) */}
-        <main className="w-full md:w-[62%] p-6 sm:p-8 space-y-5 flex-1 bg-white text-slate-800 print:w-[62%]">
+        <div className="w-full md:w-[62%] p-6 sm:p-8 space-y-5 flex-1 bg-white text-slate-800 print:w-[62%]">
           {page === 1 ? (
             <>
               {/* 1. ABOUT ME */}
@@ -515,7 +515,7 @@ export const DualArchCreativeTemplate = ({
               {renderExpertise()}
             </>
           )}
-        </main>
+        </div>
       </div>
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}

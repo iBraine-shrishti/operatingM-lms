@@ -538,7 +538,7 @@ export const ModernExecutiveTemplate = ({
         </aside>
 
         {/* RIGHT MAIN CONTENT (64%) */}
-        <main className="w-full md:w-[64%] print:w-[64%] p-7 sm:p-8 print:p-5 space-y-5 print:space-y-3 flex-1 resume-modern-main">
+        <div className="w-full md:w-[64%] print:w-[64%] p-7 sm:p-8 print:p-5 space-y-5 print:space-y-3 flex-1 resume-modern-main">
           {page === 1 ? (
             <>
               {renderMainHeader(false)}
@@ -551,7 +551,7 @@ export const ModernExecutiveTemplate = ({
               {renderProjects()}
             </>
           )}
-        </main>
+        </div>
       </div>
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}

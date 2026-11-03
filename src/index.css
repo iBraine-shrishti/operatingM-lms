@@ -807,7 +807,7 @@ html.dark #resume-print-document .border-slate-200\/90 {
   #root > div,
   .role-student,
   .role-student > div,
-  main,
+  .role-student > div > main,
   .resume-builder-root,
   .resume-builder-workspace,
   .resume-preview-column,
@@ -899,12 +899,15 @@ html.dark #resume-print-document .border-slate-200\/90 {
     flex-direction: row !important;
     flex: 1 1 0% !important;
     width: 100% !important;
+    box-sizing: border-box !important;
   }
   #resume-print-document .resume-modern-aside {
     width: 36% !important;
     flex-shrink: 0 !important;
     display: flex !important;
     flex-direction: column !important;
+    box-sizing: border-box !important;
+    padding: 1.25rem 1.25rem !important;
   }
   #resume-print-document .resume-modern-main {
     width: 64% !important;
@@ -912,6 +915,7 @@ html.dark #resume-print-document .border-slate-200\/90 {
     display: flex !important;
     flex-direction: column !important;
     box-sizing: border-box !important;
+    padding: 1.25rem 1.75rem !important;
   }
 
   /* Minimalist Performance 12-Column Grid Layout */
@@ -937,9 +941,7 @@ html.dark #resume-print-document .border-slate-200\/90 {
   }
 
   /* Ensure resume sidebar and header stay fully visible inside the template */
-  #resume-print-document aside,
-  #resume-print-document header,
-  #resume-print-document main {
+  #resume-print-document header {
     display: block !important;
   }
   #resume-print-document aside.flex,
