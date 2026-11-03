@@ -11,6 +11,7 @@ import {
   Layers,
   FolderGit2,
   CheckCircle2,
+  Target,
 } from "lucide-react";
 import { EditableHeading } from "../EditableHeading";
 import { ResumeFooter } from "../ResumeFooter";

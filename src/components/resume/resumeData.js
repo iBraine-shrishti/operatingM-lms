@@ -177,8 +177,9 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
     ],
     certifications: defaultCerts,
     languages: ["English (Professional)", "Hindi (Fluent)", "Marathi (Conversational)"],
-    skillsSummaryText:
-      "Results-oriented digital performance marketer skilled in cross-channel acquisition, conversion rate optimization (CRO), search advertising, and MarTech automation.",
+    skillsSummaryText: "",
+    pageMode: "1",
+    hiddenSections: {},
     showSpecializationBadge: true,
     showExpertiseColHeaders: false,
     expertiseGridCols: 2,

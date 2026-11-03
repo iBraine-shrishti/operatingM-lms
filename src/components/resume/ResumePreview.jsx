@@ -7,21 +7,9 @@ import { DualArchCreativeTemplate } from "./templates/DualArchCreativeTemplate";
 import { FileText, Files } from "lucide-react";
 
 export const ResumePreview = ({ data, templateId, theme, onChange }) => {
-  // Page mode resolution: explicit user setting "1" or "2", or auto-detect based on content length
+  // Page mode resolution: default is ALWAYS 1 page (single page) unless user explicitly selects "2"
   const explicitMode = data.pageMode;
-  const isHeavyContent =
-    (data.experiences?.length || 0) + (data.projects?.length || 0) > 3 ||
-    (data.summary?.length || 0) > 350 ||
-    (data.education?.length || 0) > 2;
-
-  const totalPages =
-    explicitMode === "2"
-      ? 2
-      : explicitMode === "1"
-      ? 1
-      : isHeavyContent
-      ? 2
-      : 1;
+  const totalPages = explicitMode === "2" ? 2 : 1;
 
   const handleSetPageMode = (mode) => {
     if (onChange) {

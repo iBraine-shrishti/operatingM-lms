@@ -22,6 +22,8 @@ import {
   X,
   Columns,
   PanelBottom,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 
 const TEMPLATE_SECTIONS_MAP = {
@@ -117,6 +119,72 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
 
   const toggleSection = (section) => {
     setOpenSection((prev) => (prev === section ? null : section));
+  };
+
+  const toggleHideSection = (sectionId) => {
+    const hidden = data.hiddenSections || {};
+    onChange({
+      ...data,
+      hiddenSections: {
+        ...hidden,
+        [sectionId]: !hidden[sectionId],
+      },
+    });
+  };
+
+  const renderSectionHeader = (secId, IconComponent, label, count = null) => {
+    const isHidden = !!data.hiddenSections?.[secId];
+    const isOpen = openSection === secId;
+
+    return (
+      <div
+        onClick={() => toggleSection(secId)}
+        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors cursor-pointer select-none"
+      >
+        <div className="flex items-center gap-2.5">
+          <IconComponent size={16} className="text-[#003873] dark:text-sky-400 shrink-0" />
+          <span className={isHidden ? "line-through opacity-60 text-slate-400" : ""}>
+            {label} {count !== null ? `(${count})` : ""}
+          </span>
+          {isHidden && (
+            <span className="text-[10px] font-black uppercase text-red-500 bg-red-50 dark:bg-red-950/50 px-2 py-0.5 rounded border border-red-200 dark:border-red-900 shrink-0">
+              Hidden / Shifted
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-2">
+          {secId !== "personal" && secId !== "footer" && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleHideSection(secId);
+              }}
+              className={`px-2 py-1 rounded-lg border text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                isHidden
+                  ? "bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:border-emerald-800"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-red-600 hover:bg-red-50 border-slate-200 dark:border-slate-700"
+              }`}
+              title={
+                isHidden
+                  ? "Restore section on resume"
+                  : "Delete / hide section from resume (below sections shift up)"
+              }
+            >
+              {isHidden ? <Eye size={13} /> : <Trash2 size={13} />}
+              <span className="text-[10.5px] hidden sm:inline">
+                {isHidden ? "Restore" : "Delete"}
+              </span>
+            </button>
+          )}
+          {isOpen ? (
+            <ChevronUp size={16} className="text-slate-400" />
+          ) : (
+            <ChevronDown size={16} className="text-slate-400" />
+          )}
+        </div>
+      </div>
+    );
   };
 
   const activeSections = filterByTemplate
@@ -703,17 +771,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
   // 2. SUMMARY SECTION
   const renderSummarySection = (meta) => (
     <div key="summary" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
-      <button
-        type="button"
-        onClick={() => toggleSection("summary")}
-        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          <FileText size={16} className="text-[#003873] dark:text-sky-400" />
-          <span>{meta.label}</span>
-        </div>
-        {openSection === "summary" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
+      {renderSectionHeader("summary", FileText, meta.label)}
 
       {openSection === "summary" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-3 text-xs">
@@ -749,17 +807,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
   // 3. EXPERIENCE SECTION
   const renderExperienceSection = (meta) => (
     <div key="experience" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
-      <button
-        type="button"
-        onClick={() => toggleSection("experience")}
-        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          <Briefcase size={16} className="text-[#003873] dark:text-sky-400" />
-          <span>{meta.label} ({data.experiences.length})</span>
-        </div>
-        {openSection === "experience" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
+      {renderSectionHeader("experience", Briefcase, meta.label, data.experiences.length)}
 
       {openSection === "experience" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
@@ -895,17 +943,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
   // 4. SKILLS SUMMARY (DUAL-ARCH PROGRESS BARS)
   const renderSkillsSummarySection = (meta) => (
     <div key="skillsSummary" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
-      <button
-        type="button"
-        onClick={() => toggleSection("skillsSummary")}
-        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          <Sliders size={16} className="text-[#003873] dark:text-sky-400" />
-          <span>{meta.label}</span>
-        </div>
-        {openSection === "skillsSummary" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
+      {renderSectionHeader("skillsSummary", Sliders, meta.label)}
 
       {openSection === "skillsSummary" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-3.5 text-xs">
@@ -958,17 +996,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
   // 5. EXPERTISE (DUAL-ARCH GRID WITH COLUMN HEADINGS & COLUMN CONTROLS)
   const renderExpertiseSection = (meta) => (
     <div key="expertise" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
-      <button
-        type="button"
-        onClick={() => toggleSection("expertise")}
-        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          <CheckCircle2 size={16} className="text-[#003873] dark:text-sky-400" />
-          <span>{meta.label} ({(data.expertiseList || []).length} Items)</span>
-        </div>
-        {openSection === "expertise" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
+      {renderSectionHeader("expertise", CheckCircle2, meta.label, (data.expertiseList || []).length)}
 
       {openSection === "expertise" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
@@ -1129,17 +1157,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
   // 6. CORE SKILLS (UNLIMITED DYNAMIC CATEGORIES FOR ATS & ALL TEMPLATES)
   const renderSkillsSection = (meta) => (
     <div key="skills" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
-      <button
-        type="button"
-        onClick={() => toggleSection("skills")}
-        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          <Layers size={16} className="text-[#003873] dark:text-sky-400" />
-          <span>{meta.label}</span>
-        </div>
-        {openSection === "skills" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
+      {renderSectionHeader("skills", Layers, meta.label)}
 
       {openSection === "skills" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
@@ -1326,17 +1344,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
   // 7. EDUCATION SECTION
   const renderEducationSection = (meta) => (
     <div key="education" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
-      <button
-        type="button"
-        onClick={() => toggleSection("education")}
-        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          <GraduationCap size={16} className="text-[#003873] dark:text-sky-400" />
-          <span>{meta.label} ({data.education.length})</span>
-        </div>
-        {openSection === "education" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
+      {renderSectionHeader("education", GraduationCap, meta.label, data.education.length)}
 
       {openSection === "education" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
@@ -1430,17 +1438,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
   // 8. PROJECTS SECTION (WITH LIVE CAPSTONE TAG CLEAR / REMOVE)
   const renderProjectsSection = (meta) => (
     <div key="projects" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
-      <button
-        type="button"
-        onClick={() => toggleSection("projects")}
-        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          <FolderGit2 size={16} className="text-[#003873] dark:text-sky-400" />
-          <span>{meta.label} ({data.projects.length})</span>
-        </div>
-        {openSection === "projects" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
+      {renderSectionHeader("projects", FolderGit2, meta.label, data.projects.length)}
 
       {openSection === "projects" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
@@ -1554,17 +1552,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
   // 9. CERTIFICATIONS SECTION
   const renderCertificationsSection = (meta) => (
     <div key="certifications" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
-      <button
-        type="button"
-        onClick={() => toggleSection("certifications")}
-        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          <Award size={16} className="text-[#003873] dark:text-sky-400" />
-          <span>{meta.label} ({data.certifications.length})</span>
-        </div>
-        {openSection === "certifications" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
+      {renderSectionHeader("certifications", Award, meta.label, data.certifications.length)}
 
       {openSection === "certifications" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-3 text-xs">
@@ -1629,17 +1617,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
   // 10. LANGUAGES SECTION
   const renderLanguagesSection = (meta) => (
     <div key="languages" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
-      <button
-        type="button"
-        onClick={() => toggleSection("languages")}
-        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          <Languages size={16} className="text-[#003873] dark:text-sky-400" />
-          <span>{meta.label} ({(data.languages || []).length})</span>
-        </div>
-        {openSection === "languages" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
+      {renderSectionHeader("languages", Languages, meta.label, (data.languages || []).length)}
 
       {openSection === "languages" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-3.5 text-xs">
