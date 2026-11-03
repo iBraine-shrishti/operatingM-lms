@@ -218,6 +218,110 @@ export const PortfolioFormEditor = ({
     }
   };
 
+  // Highlights Add/Remove
+  const handleAddHighlight = () => {
+    const updated = [
+      ...(student.highlights || []),
+      { label: "New Verified Metric", value: "98.4%", detail: "Campaign Performance" },
+    ];
+    onChange({ ...data, student: { ...student, highlights: updated } });
+  };
+
+  const handleRemoveHighlight = (index) => {
+    const updated = (student.highlights || []).filter((_, i) => i !== index);
+    onChange({ ...data, student: { ...student, highlights: updated } });
+  };
+
+  // Canva Add/Remove
+  const handleRemoveCanvaDesign = (dIdx) => {
+    const current = modules.canva?.designs || (Array.isArray(modules.canva) ? modules.canva : []);
+    const updated = current.filter((_, i) => i !== dIdx);
+    handleModuleDataChange("canva", { ...modules.canva, designs: updated });
+  };
+
+  const handleAddCanvaDesign = () => {
+    const current = modules.canva?.designs || (Array.isArray(modules.canva) ? modules.canva : []);
+    const newDesign = {
+      id: `canva-d-${Date.now()}`,
+      title: "New Marketing Creative Showcase",
+      category: "Display Banner",
+      dimensions: "1200 x 628 px",
+      description: "Custom-designed high-CTR advertising asset created in Canva.",
+      imageUrl: "https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&q=80&w=800",
+    };
+    handleModuleDataChange("canva", { ...modules.canva, designs: [...current, newDesign] });
+  };
+
+  const handleRemoveCanvaVideo = (vIdx) => {
+    const current = modules.canva?.videos || [];
+    const updated = current.filter((_, i) => i !== vIdx);
+    handleModuleDataChange("canva", { ...modules.canva, videos: updated });
+  };
+
+  const handleAddCanvaVideo = () => {
+    const current = modules.canva?.videos || [];
+    const newVideo = {
+      id: `canva-v-${Date.now()}`,
+      title: "New Short-Form Video Reel",
+      format: "9:16 Vertical Reel",
+      duration: "0:30 Reel",
+      description: "High-retention mobile video ad with kinetic typography.",
+      hook: "Stop scrolling if you want to scale your ROAS.",
+      thumbnailUrl: "https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&q=80&w=800",
+    };
+    handleModuleDataChange("canva", { ...modules.canva, videos: [...current, newVideo] });
+  };
+
+  // WordPress Add/Remove
+  const handleRemoveWordPress = (pIdx) => {
+    const current = Array.isArray(modules.wordpress) ? modules.wordpress : [];
+    const updated = current.filter((_, i) => i !== pIdx);
+    handleModuleDataChange("wordpress", updated);
+  };
+
+  const handleAddWordPress = () => {
+    const current = Array.isArray(modules.wordpress) ? modules.wordpress : [];
+    const newProj = {
+      id: `wp-${Date.now()}`,
+      title: "New Client Website & E-commerce Store",
+      clientType: "Direct-to-Consumer Brand",
+      description: "Custom Elementor Pro and WooCommerce build optimized for mobile conversion and Core Web Vitals.",
+      imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+      liveUrl: "https://demo.example.com",
+      speedScore: 95,
+      mobileOptimized: true,
+      techStack: ["WordPress 6.4", "Elementor Pro", "WooCommerce", "Cloudflare CDN"],
+      keyFeatures: [
+        "Custom Sticky Add-to-Cart with dynamic variant selectors",
+        "Automated Customer Review Schema markup for rich Google stars",
+        "Google Tag Manager & Meta Pixel server-side events configured",
+        "Mobile-first responsive drawer navigation with instant search",
+      ],
+    };
+    handleModuleDataChange("wordpress", [...current, newProj]);
+  };
+
+  // SMO Add/Remove
+  const handleRemoveSMO = (sIdx) => {
+    const current = Array.isArray(modules.socialOrganic) ? modules.socialOrganic : [];
+    const updated = current.filter((_, i) => i !== sIdx);
+    handleModuleDataChange("socialOrganic", updated);
+  };
+
+  // Meta Add/Remove
+  const handleRemoveMetaAd = (aIdx) => {
+    const current = Array.isArray(modules.socialMarketing) ? modules.socialMarketing : [];
+    const updated = current.filter((_, i) => i !== aIdx);
+    handleModuleDataChange("socialMarketing", updated);
+  };
+
+  // Google Add/Remove
+  const handleRemoveGoogleAd = (gIdx) => {
+    const current = Array.isArray(modules.googleAds) ? modules.googleAds : [];
+    const updated = current.filter((_, i) => i !== gIdx);
+    handleModuleDataChange("googleAds", updated);
+  };
+
   // Reorder modules: Move Up
   const handleMoveModuleUp = (index) => {
     if (index === 0) return;
@@ -633,11 +737,34 @@ export const PortfolioFormEditor = ({
 
             {openSections.highlights && (
               <div className="p-4 border-t border-slate-200 space-y-3 bg-white">
+                <div className="flex items-center justify-between pb-1">
+                  <span className="text-xs font-bold text-slate-700">Highlights List ({(student.highlights || []).length})</span>
+                  <button
+                    type="button"
+                    onClick={handleAddHighlight}
+                    className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                  >
+                    <Plus size={13} />
+                    <span>Add Stat Card</span>
+                  </button>
+                </div>
                 {(student.highlights || []).map((hl, hIdx) => (
                   <div key={hIdx} className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-                    <span className="text-[10px] font-black uppercase text-blue-600 tracking-wider">
-                      Stat #{hIdx + 1}
-                    </span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black uppercase text-blue-600 tracking-wider">
+                        Stat #{hIdx + 1}
+                      </span>
+                      {(student.highlights || []).length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveHighlight(hIdx)}
+                          className="p-1 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                          title="Delete this stat card"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      )}
+                    </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <div>
                         <label className="text-[10px] font-bold text-slate-400 block mb-0.5">Label</label>
@@ -707,9 +834,21 @@ export const PortfolioFormEditor = ({
                   <div key={proj.id || pIdx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="font-extrabold text-slate-900 text-xs">Client Build #{pIdx + 1}</span>
-                      <span className="text-[10px] font-mono text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                        Speed {proj.speedScore}/100
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          Speed {proj.speedScore}/100
+                        </span>
+                        {(modules.wordpress || []).length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveWordPress(pIdx)}
+                            className="p-1 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                            title="Delete this project build"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -877,15 +1016,37 @@ export const PortfolioFormEditor = ({
               <div className="p-4 border-t border-slate-200 space-y-4 bg-white">
                 {/* 4 Graphic Design Showcases */}
                 <div className="space-y-3">
-                  <div className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
-                    <Box size={14} className="text-amber-500" />
-                    <span>Graphic Design Showcases (4 Items)</span>
+                  <div className="flex items-center justify-between">
+                    <div className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                      <Box size={14} className="text-amber-500" />
+                      <span>Graphic Design Showcases</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleAddCanvaDesign}
+                      className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                    >
+                      <Plus size={13} />
+                      <span>Add Graphic</span>
+                    </button>
                   </div>
 
                   {((modules.canva?.designs || (Array.isArray(modules.canva) ? modules.canva : []))).map((design, dIdx) => (
                     <div key={design.id || dIdx} className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-800 text-xs">Graphic #{dIdx + 1}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-slate-800 text-xs">Graphic #{dIdx + 1}</span>
+                          {((modules.canva?.designs || (Array.isArray(modules.canva) ? modules.canva : []))).length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveCanvaDesign(dIdx)}
+                              className="p-1 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                              title="Delete this graphic design"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          )}
+                        </div>
                         <input
                           type="text"
                           value={design.category || "Design"}
@@ -990,7 +1151,19 @@ export const PortfolioFormEditor = ({
                   {(modules.canva?.videos || []).map((video, vIdx) => (
                     <div key={video.id || vIdx} className="p-3 rounded-xl bg-slate-900 text-white border border-slate-800 space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-amber-400 text-xs">Video #{vIdx + 1}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-amber-400 text-xs">Video #{vIdx + 1}</span>
+                          {(modules.canva?.videos || []).length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveCanvaVideo(vIdx)}
+                              className="p-1 text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
+                              title="Delete this video reel"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          )}
+                        </div>
                         <input
                           type="text"
                           value={video.duration || "0:30"}
@@ -1116,9 +1289,21 @@ export const PortfolioFormEditor = ({
                   <div key={profile.id || sIdx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="font-extrabold text-slate-900 text-xs">{profile.platform} Profile Teardown</span>
-                      <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                        {profile.growthRate}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          {profile.growthRate}
+                        </span>
+                        {(modules.socialOrganic || []).length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveSMO(sIdx)}
+                            className="p-1 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                            title="Delete this profile"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -1283,9 +1468,21 @@ export const PortfolioFormEditor = ({
                   <div key={ad.id || aIdx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="font-extrabold text-slate-900 text-xs">Campaign #{aIdx + 1}</span>
-                      <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                        {ad.metrics?.roasOrCpa}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                          {ad.metrics?.roasOrCpa}
+                        </span>
+                        {(modules.socialMarketing || []).length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveMetaAd(aIdx)}
+                            className="p-1 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                            title="Delete this campaign"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     <div>
@@ -1506,9 +1703,21 @@ export const PortfolioFormEditor = ({
                   <div key={gad.id || gIdx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="font-extrabold text-slate-900 text-xs">Google Campaign #{gIdx + 1}</span>
-                      <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                        {gad.metrics?.roas}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                          {gad.metrics?.roas}
+                        </span>
+                        {(modules.googleAds || []).length > 1 && (
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveGoogleAd(gIdx)}
+                            className="p-1 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                            title="Delete this Google campaign"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     <div>

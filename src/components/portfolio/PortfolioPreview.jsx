@@ -37,6 +37,8 @@ import {
   Github,
   MessageCircle,
   Camera,
+  Trash2,
+  Plus,
   Edit2,
   Eye,
   Play,
@@ -158,6 +160,202 @@ export const PortfolioPreview = ({
           ...student,
           highlights: updated,
         },
+      });
+    }
+  };
+
+  const handleDeleteHighlight = (index) => {
+    if (onChange) {
+      const updated = (student.highlights || []).filter((_, i) => i !== index);
+      onChange({
+        ...portfolioData,
+        student: { ...student, highlights: updated },
+      });
+    }
+  };
+
+  const handleAddHighlight = () => {
+    if (onChange) {
+      const updated = [
+        ...(student.highlights || []),
+        { label: "New Verified Metric", value: "98.4%", detail: "Campaign Tracking Attribution" },
+      ];
+      onChange({
+        ...portfolioData,
+        student: { ...student, highlights: updated },
+      });
+    }
+  };
+
+  // Socials updater & delete
+  const handleUpdateSocial = (index, field, val) => {
+    if (onChange) {
+      const updated = [...(student.socials || [])];
+      updated[index] = { ...updated[index], [field]: val };
+      onChange({
+        ...portfolioData,
+        student: { ...student, socials: updated },
+      });
+    }
+  };
+
+  const handleDeleteSocial = (index) => {
+    if (onChange) {
+      const updated = (student.socials || []).filter((_, i) => i !== index);
+      onChange({
+        ...portfolioData,
+        student: { ...student, socials: updated },
+      });
+    }
+  };
+
+  const handleAddSocial = () => {
+    if (onChange) {
+      const updated = [
+        ...(student.socials || []),
+        { platform: "globe", url: "https://", label: "Portfolio" },
+      ];
+      onChange({
+        ...portfolioData,
+        student: { ...student, socials: updated },
+      });
+    }
+  };
+
+  // Module items delete & add handlers
+  const handleDeleteWordPress = (pIdx) => {
+    if (onChange) {
+      const current = Array.isArray(modules.wordpress) ? modules.wordpress : [];
+      const updated = current.filter((_, i) => i !== pIdx);
+      onChange({
+        ...portfolioData,
+        modules: { ...modules, wordpress: updated },
+      });
+    }
+  };
+
+  const handleAddWordPress = () => {
+    if (onChange) {
+      const current = Array.isArray(modules.wordpress) ? modules.wordpress : [];
+      const newProj = {
+        id: `wp-${Date.now()}`,
+        title: "New Client Website & E-commerce Store",
+        clientType: "Direct-to-Consumer Brand",
+        description: "Custom Elementor Pro and WooCommerce build optimized for mobile conversion and Core Web Vitals.",
+        imageUrl: mockupLaptopImg,
+        liveUrl: "https://demo.example.com",
+        speedScore: 95,
+        mobileOptimized: true,
+        techStack: ["WordPress 6.4", "Elementor Pro", "WooCommerce", "Cloudflare CDN"],
+        keyFeatures: [
+          "Custom Sticky Add-to-Cart with dynamic variant selectors",
+          "Automated Customer Review Schema markup for rich Google stars",
+          "Google Tag Manager & Meta Pixel server-side events configured",
+          "Mobile-first responsive drawer navigation with instant search",
+        ],
+      };
+      onChange({
+        ...portfolioData,
+        modules: { ...modules, wordpress: [...current, newProj] },
+      });
+    }
+  };
+
+  const handleDeleteCanvaDesign = (dIdx) => {
+    if (onChange) {
+      const current = Array.isArray(modules.canva?.designs)
+        ? modules.canva.designs
+        : Array.isArray(modules.canva)
+        ? modules.canva
+        : [];
+      const updated = current.filter((_, i) => i !== dIdx);
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          canva: {
+            ...modules.canva,
+            designs: updated,
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddCanvaDesign = () => {
+    if (onChange) {
+      const current = Array.isArray(modules.canva?.designs)
+        ? modules.canva.designs
+        : Array.isArray(modules.canva)
+        ? modules.canva
+        : [];
+      const newDesign = {
+        id: `canva-d-${Date.now()}`,
+        title: "New Marketing Creative Showcase",
+        category: "Display Banner",
+        dimensions: "1200 x 628 px",
+        description: "Custom-designed high-CTR advertising asset created in Canva.",
+        imageUrl: mockupCreativesImg,
+      };
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          canva: {
+            ...modules.canva,
+            designs: [...current, newDesign],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteCanvaVideo = (vIdx) => {
+    if (onChange) {
+      const current = Array.isArray(modules.canva?.videos) ? modules.canva.videos : [];
+      const updated = current.filter((_, i) => i !== vIdx);
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          canva: {
+            ...modules.canva,
+            videos: updated,
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteSMO = (sIdx) => {
+    if (onChange) {
+      const current = Array.isArray(modules.socialOrganic) ? modules.socialOrganic : [];
+      const updated = current.filter((_, i) => i !== sIdx);
+      onChange({
+        ...portfolioData,
+        modules: { ...modules, socialOrganic: updated },
+      });
+    }
+  };
+
+  const handleDeleteMetaAd = (idx) => {
+    if (onChange) {
+      const current = Array.isArray(modules.socialMarketing) ? modules.socialMarketing : [];
+      const updated = current.filter((_, i) => i !== idx);
+      onChange({
+        ...portfolioData,
+        modules: { ...modules, socialMarketing: updated },
+      });
+    }
+  };
+
+  const handleDeleteGoogleAd = (idx) => {
+    if (onChange) {
+      const current = Array.isArray(modules.googleAds) ? modules.googleAds : [];
+      const updated = current.filter((_, i) => i !== idx);
+      onChange({
+        ...portfolioData,
+        modules: { ...modules, googleAds: updated },
       });
     }
   };
@@ -393,21 +591,57 @@ export const PortfolioPreview = ({
 
               {/* Verified Social & Portfolio Profiles */}
               <div className="pt-2">
-                <div className="text-xs uppercase tracking-wider text-slate-400 font-bold mb-2.5">
-                  Verified Social & Portfolio Profiles
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs uppercase tracking-wider text-slate-400 font-bold">
+                    Verified Social & Portfolio Profiles
+                  </div>
+                  {onChange && (
+                    <button
+                      type="button"
+                      onClick={handleAddSocial}
+                      className="text-[11px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer transition-colors"
+                      title="Add another social or portfolio link"
+                    >
+                      <Plus size={12} />
+                      <span>Add Profile</span>
+                    </button>
+                  )}
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   {(student.socials || []).map((social, sIdx) => (
-                    <a
+                    <div
                       key={sIdx}
-                      href={social.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-200 bg-slate-800/80 hover:bg-slate-700 hover:text-white rounded-lg border border-slate-700/80 transition-all duration-200 shadow-xs hover:-translate-y-0.5"
+                      className="group/soc relative inline-flex items-center gap-1.5 pl-3 pr-2 py-1 text-xs font-semibold text-slate-200 bg-slate-800/90 hover:bg-slate-700 hover:text-white rounded-lg border border-slate-700/80 transition-all duration-200 shadow-xs"
                     >
-                      {renderSocialIcon(social.platform)}
-                      <span>{social.label}</span>
-                    </a>
+                      <a
+                        href={social.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 hover:text-white"
+                        title={social.url}
+                      >
+                        {renderSocialIcon(social.platform)}
+                      </a>
+                      <EditableText
+                        value={social.label}
+                        onChange={(val) => handleUpdateSocial(sIdx, "label", val)}
+                        className="font-semibold text-xs"
+                      />
+                      {onChange && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDeleteSocial(sIdx);
+                          }}
+                          className="p-1 rounded text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors cursor-pointer"
+                          title={`Delete ${social.label || "link"}`}
+                        >
+                          <Trash2 size={11} />
+                        </button>
+                      )}
+                    </div>
                   ))}
                 </div>
               </div>
@@ -526,12 +760,38 @@ export const PortfolioPreview = ({
 
           {/* 4 Stat Highlights Grid (CLICK-TO-EDIT NUMBERS & LABELS) */}
           <div className="mt-8 sm:mt-12 lg:mt-14 pt-6 sm:pt-8 border-t border-slate-800/80">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-xs uppercase tracking-wider text-slate-400 font-bold">
+                Key Performance Highlights & Verified Metrics
+              </div>
+              {onChange && (
+                <button
+                  type="button"
+                  onClick={handleAddHighlight}
+                  className="text-[11px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer transition-colors"
+                  title="Add another highlight metric card"
+                >
+                  <Plus size={12} />
+                  <span>Add Stat Card</span>
+                </button>
+              )}
+            </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-[clamp(0.75rem,1.5vw,1.25rem)] w-full">
               {(student.highlights || []).map((stat, sIdx) => (
                 <div
                   key={sIdx}
-                  className="bg-slate-800/50 hover:bg-slate-800/90 border border-slate-700/70 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 group"
+                  className="bg-slate-800/50 hover:bg-slate-800/90 border border-slate-700/70 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 group relative"
                 >
+                  {onChange && (student.highlights || []).length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteHighlight(sIdx)}
+                      className="absolute top-2.5 right-2.5 p-1 rounded-md text-slate-500 hover:text-rose-400 hover:bg-slate-700/60 opacity-0 group-hover:opacity-100 transition-all cursor-pointer z-10"
+                      title="Delete this stat card"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  )}
                   <EditableText
                     value={stat.label}
                     onChange={(val) => handleUpdateHighlight(sIdx, "label", val)}
@@ -656,7 +916,7 @@ export const PortfolioPreview = ({
                       return (
                         <div
                           key={proj.id || pIdx}
-                          className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col group"
+                          className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col group relative"
                         >
                           {/* Mac Chrome Header */}
                           <div className="bg-slate-900 text-slate-300 px-4 py-2.5 flex items-center justify-between border-b border-slate-800">
@@ -672,6 +932,16 @@ export const PortfolioPreview = ({
                               </div>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
+                              {onChange && wpProjects.length > 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteWordPress(pIdx)}
+                                  className="p-1 rounded bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                                  title="Delete this project build"
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              )}
                               <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[11px] font-mono font-bold px-2 py-0.5 rounded">
                                 <Zap className="w-3 h-3 text-amber-400" />
                                 <span>Speed {proj.speedScore || 96}/100</span>
@@ -916,8 +1186,19 @@ export const PortfolioPreview = ({
                         {canvaDesigns.map((design, dIdx) => (
                           <div
                             key={design.id || dIdx}
-                            className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col group"
+                            className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col group relative"
                           >
+                            {/* Delete Design Button */}
+                            {onChange && canvaDesigns.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteCanvaDesign(dIdx)}
+                                className="absolute top-2.5 right-2.5 p-1.5 rounded-lg bg-slate-900/80 hover:bg-rose-600 text-slate-300 hover:text-white shadow-xs opacity-0 group-hover:opacity-100 transition-all cursor-pointer z-20"
+                                title="Delete this graphic design showcase"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            )}
                             <div className="relative aspect-[4/5] bg-slate-900 overflow-hidden group/img">
                               <img
                                 src={design.imageUrl || mockupCreativesImg}
@@ -1078,9 +1359,21 @@ export const PortfolioPreview = ({
                             {/* Right Details */}
                             <div className="w-full md:w-[calc(100%-clamp(200px,36%,280px))] p-[clamp(1rem,2vw,1.5rem)] flex flex-col justify-between space-y-3 min-w-0">
                               <div>
-                                <span className="text-[11px] font-mono text-amber-400 uppercase font-semibold">
-                                  {video.format}
-                                </span>
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[11px] font-mono text-amber-400 uppercase font-semibold">
+                                    {video.format}
+                                  </span>
+                                  {onChange && canvaVideos.length > 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteCanvaVideo(vIdx)}
+                                      className="p-1 rounded-md text-slate-500 hover:text-rose-400 hover:bg-slate-800 transition-colors cursor-pointer"
+                                      title="Delete this video reel"
+                                    >
+                                      <Trash2 size={13} />
+                                    </button>
+                                  )}
+                                </div>
                                 <EditableText
                                   tag="h4"
                                   value={video.title}
