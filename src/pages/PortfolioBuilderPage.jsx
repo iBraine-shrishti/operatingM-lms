@@ -30,20 +30,39 @@ export const PortfolioBuilderPage = () => {
   const { currentUser, crmProfile, crmBatch, crmCertificates } = useAuth();
   const { showToast } = useToast();
 
-  // 1. Portfolio Data State
+  // 1. Portfolio Data State (deep merge with defaults to prevent broken states from older localStorage data)
   const [portfolioData, setPortfolioData] = useState(() => {
-    try {
-      const saved = localStorage.getItem("om_lms_portfolio_data");
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      console.warn("Failed to read saved portfolio:", e);
-    }
-    return createInitialPortfolioData(
+    const defaultData = createInitialPortfolioData(
       currentUser,
       crmProfile,
       crmBatch,
       crmCertificates
     );
+    try {
+      const saved = localStorage.getItem("om_lms_portfolio_data");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          ...defaultData,
+          ...parsed,
+          moduleOrder:
+            Array.isArray(parsed.moduleOrder) && parsed.moduleOrder.length > 0
+              ? parsed.moduleOrder
+              : defaultData.moduleOrder,
+          student: {
+            ...defaultData.student,
+            ...(parsed.student || {}),
+          },
+          modules: {
+            ...defaultData.modules,
+            ...(parsed.modules || {}),
+          },
+        };
+      }
+    } catch (e) {
+      console.warn("Failed to read saved portfolio:", e);
+    }
+    return defaultData;
   });
 
   // 2. Theme State

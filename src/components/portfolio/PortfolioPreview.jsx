@@ -39,7 +39,7 @@ import {
 } from "lucide-react";
 import { EditableText } from "./EditableText";
 import { ImageUploadModal } from "./ImageUploadModal";
-import { MODULES_CATALOG, DEFAULT_MODULE_ORDER } from "./portfolioData";
+import { MODULES_CATALOG, DEFAULT_MODULE_ORDER, createInitialPortfolioData } from "./portfolioData";
 import logoHorizontalDarkImg from "../../assets/logo-horizontal-dark.png";
 import logoHorizontalImg from "../../assets/logo-horizontal.png";
 
@@ -90,8 +90,13 @@ export const PortfolioPreview = ({
   onOpenCustomizer,
   isStandalone = false,
 }) => {
-  const { student, modules } = portfolioData;
-  const moduleOrder = portfolioData.moduleOrder || DEFAULT_MODULE_ORDER;
+  const defaultData = React.useMemo(() => createInitialPortfolioData(), []);
+  const student = portfolioData?.student || defaultData.student;
+  const modules = { ...defaultData.modules, ...(portfolioData?.modules || {}) };
+  const moduleOrder =
+    Array.isArray(portfolioData?.moduleOrder) && portfolioData.moduleOrder.length > 0
+      ? portfolioData.moduleOrder
+      : defaultData.moduleOrder;
   const [activeTab, setActiveTab] = useState("wordpress");
   const [openMetaIdx, setOpenMetaIdx] = useState(0);
   const [openGoogleIdx, setOpenGoogleIdx] = useState(0);

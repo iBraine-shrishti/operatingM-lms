@@ -11,11 +11,30 @@ import { Link } from "react-router-dom";
 
 export const PortfolioLivePage = () => {
   const [portfolioData, setPortfolioData] = useState(() => {
+    const defaultData = createInitialPortfolioData();
     try {
       const saved = localStorage.getItem("om_lms_portfolio_data");
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return {
+          ...defaultData,
+          ...parsed,
+          moduleOrder:
+            Array.isArray(parsed.moduleOrder) && parsed.moduleOrder.length > 0
+              ? parsed.moduleOrder
+              : defaultData.moduleOrder,
+          student: {
+            ...defaultData.student,
+            ...(parsed.student || {}),
+          },
+          modules: {
+            ...defaultData.modules,
+            ...(parsed.modules || {}),
+          },
+        };
+      }
     } catch (e) {}
-    return createInitialPortfolioData();
+    return defaultData;
   });
 
   const [theme, setTheme] = useState(() => {

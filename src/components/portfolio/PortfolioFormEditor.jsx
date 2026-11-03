@@ -18,7 +18,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { PORTFOLIO_THEMES } from "./portfolioThemes";
-import { MODULES_CATALOG, DEFAULT_MODULE_ORDER } from "./portfolioData";
+import { MODULES_CATALOG, DEFAULT_MODULE_ORDER, createInitialPortfolioData } from "./portfolioData";
 import { PRESET_AVATARS } from "./ImageUploadModal";
 
 export const PortfolioFormEditor = ({
@@ -32,8 +32,13 @@ export const PortfolioFormEditor = ({
 }) => {
   const [activeTab, setActiveTab] = useState("theme");
   const [selectedCaseModule, setSelectedCaseModule] = useState("wordpress");
-  const student = data.student;
-  const moduleOrder = data.moduleOrder || DEFAULT_MODULE_ORDER;
+  const defaultData = React.useMemo(() => createInitialPortfolioData(), []);
+  const student = data?.student || defaultData.student;
+  const modules = { ...defaultData.modules, ...(data?.modules || {}) };
+  const moduleOrder =
+    Array.isArray(data?.moduleOrder) && data.moduleOrder.length > 0
+      ? data.moduleOrder
+      : defaultData.moduleOrder;
 
   // Student field update helper
   const handleStudentFieldChange = (field, val) => {
@@ -134,7 +139,7 @@ export const PortfolioFormEditor = ({
     onChange({
       ...data,
       modules: {
-        ...data.modules,
+        ...modules,
         [moduleKey]: updatedContent,
       },
     });
@@ -660,11 +665,11 @@ export const PortfolioFormEditor = ({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between border-b border-slate-200 pb-2">
                     <span className="font-extrabold text-slate-900">
-                      Module 01: WordPress Projects ({data.modules.wordpress.length})
+                      Module 01: WordPress Projects ({modules.wordpress.length})
                     </span>
                   </div>
 
-                  {data.modules.wordpress.map((proj, pIdx) => (
+                  {modules.wordpress.map((proj, pIdx) => (
                     <div key={proj.id} className="p-3 bg-white rounded-xl border border-slate-200 space-y-2.5">
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-slate-800 text-xs">Project #{pIdx + 1}</span>
@@ -678,7 +683,7 @@ export const PortfolioFormEditor = ({
                             type="text"
                             value={proj.title}
                             onChange={(e) => {
-                              const updated = [...data.modules.wordpress];
+                              const updated = [...modules.wordpress];
                               updated[pIdx] = { ...updated[pIdx], title: e.target.value };
                               handleModuleDataChange("wordpress", updated);
                             }}
@@ -691,7 +696,7 @@ export const PortfolioFormEditor = ({
                             type="number"
                             value={proj.speedScore}
                             onChange={(e) => {
-                              const updated = [...data.modules.wordpress];
+                              const updated = [...modules.wordpress];
                               updated[pIdx] = { ...updated[pIdx], speedScore: Number(e.target.value) };
                               handleModuleDataChange("wordpress", updated);
                             }}
@@ -706,7 +711,7 @@ export const PortfolioFormEditor = ({
                           rows={2}
                           value={proj.description}
                           onChange={(e) => {
-                            const updated = [...data.modules.wordpress];
+                            const updated = [...modules.wordpress];
                             updated[pIdx] = { ...updated[pIdx], description: e.target.value };
                             handleModuleDataChange("wordpress", updated);
                           }}
@@ -721,7 +726,7 @@ export const PortfolioFormEditor = ({
                             type="text"
                             value={proj.liveUrl}
                             onChange={(e) => {
-                              const updated = [...data.modules.wordpress];
+                              const updated = [...modules.wordpress];
                               updated[pIdx] = { ...updated[pIdx], liveUrl: e.target.value };
                               handleModuleDataChange("wordpress", updated);
                             }}
@@ -734,7 +739,7 @@ export const PortfolioFormEditor = ({
                             type="text"
                             value={proj.imageUrl}
                             onChange={(e) => {
-                              const updated = [...data.modules.wordpress];
+                              const updated = [...modules.wordpress];
                               updated[pIdx] = { ...updated[pIdx], imageUrl: e.target.value };
                               handleModuleDataChange("wordpress", updated);
                             }}
@@ -753,14 +758,14 @@ export const PortfolioFormEditor = ({
                   <span className="font-extrabold text-slate-900 block border-b border-slate-200 pb-2">
                     Module 04: Meta Ads Campaigns
                   </span>
-                  {data.modules.socialMarketing.map((ad, idx) => (
+                  {modules.socialMarketing.map((ad, idx) => (
                     <div key={ad.id} className="p-3 bg-white rounded-xl border border-slate-200 space-y-2">
                       <span className="font-bold text-slate-800 text-xs block">Campaign #{idx + 1}</span>
                       <input
                         type="text"
                         value={ad.campaignName}
                         onChange={(e) => {
-                          const updated = [...data.modules.socialMarketing];
+                          const updated = [...modules.socialMarketing];
                           updated[idx] = { ...updated[idx], campaignName: e.target.value };
                           handleModuleDataChange("socialMarketing", updated);
                         }}
@@ -774,7 +779,7 @@ export const PortfolioFormEditor = ({
                             type="text"
                             value={ad.roas}
                             onChange={(e) => {
-                              const updated = [...data.modules.socialMarketing];
+                              const updated = [...modules.socialMarketing];
                               updated[idx] = { ...updated[idx], roas: e.target.value };
                               handleModuleDataChange("socialMarketing", updated);
                             }}
@@ -787,7 +792,7 @@ export const PortfolioFormEditor = ({
                             type="text"
                             value={ad.adSpend}
                             onChange={(e) => {
-                              const updated = [...data.modules.socialMarketing];
+                              const updated = [...modules.socialMarketing];
                               updated[idx] = { ...updated[idx], adSpend: e.target.value };
                               handleModuleDataChange("socialMarketing", updated);
                             }}
@@ -800,7 +805,7 @@ export const PortfolioFormEditor = ({
                             type="text"
                             value={ad.revenueGenerated}
                             onChange={(e) => {
-                              const updated = [...data.modules.socialMarketing];
+                              const updated = [...modules.socialMarketing];
                               updated[idx] = { ...updated[idx], revenueGenerated: e.target.value };
                               handleModuleDataChange("socialMarketing", updated);
                             }}
@@ -813,7 +818,7 @@ export const PortfolioFormEditor = ({
                             type="text"
                             value={ad.cpa}
                             onChange={(e) => {
-                              const updated = [...data.modules.socialMarketing];
+                              const updated = [...modules.socialMarketing];
                               updated[idx] = { ...updated[idx], cpa: e.target.value };
                               handleModuleDataChange("socialMarketing", updated);
                             }}
@@ -832,7 +837,7 @@ export const PortfolioFormEditor = ({
                   <span className="font-extrabold text-slate-900 block border-b border-slate-200 pb-2">
                     Module 05: Google Ads Campaigns
                   </span>
-                  {data.modules.googleAds.map((gads, idx) => (
+                  {modules.googleAds.map((gads, idx) => (
                     <div key={gads.id} className="p-3 bg-white rounded-xl border border-slate-200 space-y-2">
                       <span className="font-bold text-slate-800 text-xs block">Campaign #{idx + 1}</span>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -840,7 +845,7 @@ export const PortfolioFormEditor = ({
                           type="text"
                           value={gads.campaignType}
                           onChange={(e) => {
-                            const updated = [...data.modules.googleAds];
+                            const updated = [...modules.googleAds];
                             updated[idx] = { ...updated[idx], campaignType: e.target.value };
                             handleModuleDataChange("googleAds", updated);
                           }}
@@ -851,7 +856,7 @@ export const PortfolioFormEditor = ({
                           type="text"
                           value={gads.industry}
                           onChange={(e) => {
-                            const updated = [...data.modules.googleAds];
+                            const updated = [...modules.googleAds];
                             updated[idx] = { ...updated[idx], industry: e.target.value };
                             handleModuleDataChange("googleAds", updated);
                           }}
@@ -866,7 +871,7 @@ export const PortfolioFormEditor = ({
                             type="text"
                             value={gads.qualityScoreAvg}
                             onChange={(e) => {
-                              const updated = [...data.modules.googleAds];
+                              const updated = [...modules.googleAds];
                               updated[idx] = { ...updated[idx], qualityScoreAvg: e.target.value };
                               handleModuleDataChange("googleAds", updated);
                             }}
@@ -879,7 +884,7 @@ export const PortfolioFormEditor = ({
                             type="text"
                             value={gads.conversions}
                             onChange={(e) => {
-                              const updated = [...data.modules.googleAds];
+                              const updated = [...modules.googleAds];
                               updated[idx] = { ...updated[idx], conversions: e.target.value };
                               handleModuleDataChange("googleAds", updated);
                             }}
@@ -892,7 +897,7 @@ export const PortfolioFormEditor = ({
                             type="text"
                             value={gads.ctrPct}
                             onChange={(e) => {
-                              const updated = [...data.modules.googleAds];
+                              const updated = [...modules.googleAds];
                               updated[idx] = { ...updated[idx], ctrPct: e.target.value };
                               handleModuleDataChange("googleAds", updated);
                             }}
@@ -905,7 +910,7 @@ export const PortfolioFormEditor = ({
                             type="text"
                             value={gads.monthlyBudget}
                             onChange={(e) => {
-                              const updated = [...data.modules.googleAds];
+                              const updated = [...modules.googleAds];
                               updated[idx] = { ...updated[idx], monthlyBudget: e.target.value };
                               handleModuleDataChange("googleAds", updated);
                             }}
@@ -929,11 +934,11 @@ export const PortfolioFormEditor = ({
                       <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Organic Traffic Growth</label>
                       <input
                         type="text"
-                        value={data.modules.seo.audit.organicTrafficGrowth}
+                        value={modules.seo.audit.organicTrafficGrowth}
                         onChange={(e) => {
                           handleModuleDataChange("seo", {
-                            ...data.modules.seo,
-                            audit: { ...data.modules.seo.audit, organicTrafficGrowth: e.target.value },
+                            ...modules.seo,
+                            audit: { ...modules.seo.audit, organicTrafficGrowth: e.target.value },
                           });
                         }}
                         className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-bold text-emerald-600"
@@ -943,11 +948,11 @@ export const PortfolioFormEditor = ({
                       <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Domain Authority (After)</label>
                       <input
                         type="number"
-                        value={data.modules.seo.audit.domainAuthorityAfter}
+                        value={modules.seo.audit.domainAuthorityAfter}
                         onChange={(e) => {
                           handleModuleDataChange("seo", {
-                            ...data.modules.seo,
-                            audit: { ...data.modules.seo.audit, domainAuthorityAfter: Number(e.target.value) },
+                            ...modules.seo,
+                            audit: { ...modules.seo.audit, domainAuthorityAfter: Number(e.target.value) },
                           });
                         }}
                         className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs"
@@ -957,15 +962,15 @@ export const PortfolioFormEditor = ({
 
                   <div className="space-y-2 pt-2">
                     <span className="text-[11px] font-bold text-slate-700 block">Top Ranked Keywords:</span>
-                    {data.modules.seo.keywords.map((kw, kIdx) => (
+                    {modules.seo.keywords.map((kw, kIdx) => (
                       <div key={kIdx} className="grid grid-cols-3 gap-2 bg-white p-2 rounded-lg border border-slate-200">
                         <input
                           type="text"
                           value={kw.keyword}
                           onChange={(e) => {
-                            const updated = [...data.modules.seo.keywords];
+                            const updated = [...modules.seo.keywords];
                             updated[kIdx] = { ...updated[kIdx], keyword: e.target.value };
-                            handleModuleDataChange("seo", { ...data.modules.seo, keywords: updated });
+                            handleModuleDataChange("seo", { ...modules.seo, keywords: updated });
                           }}
                           className="px-2 py-1 border border-slate-300 rounded text-xs font-bold"
                           placeholder="Keyword"
@@ -974,9 +979,9 @@ export const PortfolioFormEditor = ({
                           type="text"
                           value={kw.volume}
                           onChange={(e) => {
-                            const updated = [...data.modules.seo.keywords];
+                            const updated = [...modules.seo.keywords];
                             updated[kIdx] = { ...updated[kIdx], volume: e.target.value };
-                            handleModuleDataChange("seo", { ...data.modules.seo, keywords: updated });
+                            handleModuleDataChange("seo", { ...modules.seo, keywords: updated });
                           }}
                           className="px-2 py-1 border border-slate-300 rounded text-xs"
                           placeholder="Search Vol"
@@ -985,9 +990,9 @@ export const PortfolioFormEditor = ({
                           type="number"
                           value={kw.currentRank}
                           onChange={(e) => {
-                            const updated = [...data.modules.seo.keywords];
+                            const updated = [...modules.seo.keywords];
                             updated[kIdx] = { ...updated[kIdx], currentRank: Number(e.target.value) };
-                            handleModuleDataChange("seo", { ...data.modules.seo, keywords: updated });
+                            handleModuleDataChange("seo", { ...modules.seo, keywords: updated });
                           }}
                           className="px-2 py-1 border border-slate-300 rounded text-xs font-bold text-emerald-600"
                           placeholder="Google Rank"
@@ -1009,9 +1014,9 @@ export const PortfolioFormEditor = ({
                       <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Store Name</label>
                       <input
                         type="text"
-                        value={data.modules.shopify.storeName}
+                        value={modules.shopify.storeName}
                         onChange={(e) =>
-                          handleModuleDataChange("shopify", { ...data.modules.shopify, storeName: e.target.value })
+                          handleModuleDataChange("shopify", { ...modules.shopify, storeName: e.target.value })
                         }
                         className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-bold"
                       />
@@ -1020,9 +1025,9 @@ export const PortfolioFormEditor = ({
                       <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Store Niche</label>
                       <input
                         type="text"
-                        value={data.modules.shopify.niche}
+                        value={modules.shopify.niche}
                         onChange={(e) =>
-                          handleModuleDataChange("shopify", { ...data.modules.shopify, niche: e.target.value })
+                          handleModuleDataChange("shopify", { ...modules.shopify, niche: e.target.value })
                         }
                         className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs"
                       />
@@ -1033,9 +1038,9 @@ export const PortfolioFormEditor = ({
                       <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Conversion Rate</label>
                       <input
                         type="text"
-                        value={data.modules.shopify.conversionRateAchieved}
+                        value={modules.shopify.conversionRateAchieved}
                         onChange={(e) =>
-                          handleModuleDataChange("shopify", { ...data.modules.shopify, conversionRateAchieved: e.target.value })
+                          handleModuleDataChange("shopify", { ...modules.shopify, conversionRateAchieved: e.target.value })
                         }
                         className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs"
                       />
@@ -1044,9 +1049,9 @@ export const PortfolioFormEditor = ({
                       <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Average Order Value (AOV)</label>
                       <input
                         type="text"
-                        value={data.modules.shopify.aovAchieved}
+                        value={modules.shopify.aovAchieved}
                         onChange={(e) =>
-                          handleModuleDataChange("shopify", { ...data.modules.shopify, aovAchieved: e.target.value })
+                          handleModuleDataChange("shopify", { ...modules.shopify, aovAchieved: e.target.value })
                         }
                         className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-bold text-emerald-600"
                       />
@@ -1056,9 +1061,9 @@ export const PortfolioFormEditor = ({
                     <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Description</label>
                     <textarea
                       rows={2}
-                      value={data.modules.shopify.description}
+                      value={modules.shopify.description}
                       onChange={(e) =>
-                        handleModuleDataChange("shopify", { ...data.modules.shopify, description: e.target.value })
+                        handleModuleDataChange("shopify", { ...modules.shopify, description: e.target.value })
                       }
                       className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs"
                     />
@@ -1077,9 +1082,9 @@ export const PortfolioFormEditor = ({
                       <label className="text-[10px] font-bold text-slate-500 block mb-0.5">App Name</label>
                       <input
                         type="text"
-                        value={data.modules.aiApp.appName}
+                        value={modules.aiApp.appName}
                         onChange={(e) =>
-                          handleModuleDataChange("aiApp", { ...data.modules.aiApp, appName: e.target.value })
+                          handleModuleDataChange("aiApp", { ...modules.aiApp, appName: e.target.value })
                         }
                         className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-bold"
                       />
@@ -1088,9 +1093,9 @@ export const PortfolioFormEditor = ({
                       <label className="text-[10px] font-bold text-slate-500 block mb-0.5">AI Model Engine</label>
                       <input
                         type="text"
-                        value={data.modules.aiApp.aiModelUsed}
+                        value={modules.aiApp.aiModelUsed}
                         onChange={(e) =>
-                          handleModuleDataChange("aiApp", { ...data.modules.aiApp, aiModelUsed: e.target.value })
+                          handleModuleDataChange("aiApp", { ...modules.aiApp, aiModelUsed: e.target.value })
                         }
                         className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs"
                       />
@@ -1100,9 +1105,9 @@ export const PortfolioFormEditor = ({
                     <label className="text-[10px] font-bold text-slate-500 block mb-0.5">System Prompt Architecture</label>
                     <textarea
                       rows={3}
-                      value={data.modules.aiApp.samplePromptSystem}
+                      value={modules.aiApp.samplePromptSystem}
                       onChange={(e) =>
-                        handleModuleDataChange("aiApp", { ...data.modules.aiApp, samplePromptSystem: e.target.value })
+                        handleModuleDataChange("aiApp", { ...modules.aiApp, samplePromptSystem: e.target.value })
                       }
                       className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg text-xs font-mono"
                     />
@@ -1124,7 +1129,7 @@ export const PortfolioFormEditor = ({
                       Module Details (Directly Editable on Preview):
                     </span>
                     <pre className="text-[11px] font-mono text-slate-700 max-h-48 overflow-y-auto custom-scrollbar p-2 bg-slate-50 rounded-lg border border-slate-200">
-                      {JSON.stringify(data.modules[selectedCaseModule], null, 2)}
+                      {JSON.stringify(modules[selectedCaseModule], null, 2)}
                     </pre>
                   </div>
                 </div>
