@@ -117,6 +117,7 @@ export const PortfolioBuilderPage = () => {
         crmCertificates
       );
       setPortfolioData(fresh);
+      setModuleVisibility({});
       setTheme(PORTFOLIO_THEMES[0]);
       try {
         localStorage.setItem("om_lms_portfolio_data", JSON.stringify(fresh));
@@ -329,7 +330,7 @@ export const PortfolioBuilderPage = () => {
       {viewMode === "split" && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Editor */}
-          <div className="lg:col-span-5 h-[550px] sm:h-[700px] lg:h-[820px] xl:h-[860px] lg:sticky lg:top-24">
+          <div className="lg:col-span-5 h-[550px] sm:h-[700px] lg:h-[820px] xl:h-[860px] lg:sticky lg:top-24 overscroll-contain">
             <PortfolioFormEditor
               data={portfolioData}
               onChange={handleDataChange}
@@ -342,11 +343,12 @@ export const PortfolioBuilderPage = () => {
           </div>
 
           {/* Right Preview */}
-          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm h-[550px] sm:h-[700px] lg:h-[820px] xl:h-[860px] overflow-y-auto custom-scrollbar">
+          <div className="lg:col-span-7 bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm h-[550px] sm:h-[700px] lg:h-[820px] xl:h-[860px] overflow-y-auto overscroll-contain custom-scrollbar">
             <PortfolioPreview
               portfolioData={portfolioData}
               theme={theme}
               moduleVisibility={moduleVisibility}
+              onChange={handleDataChange}
               onOpenCustomizer={() => setViewMode("edit")}
             />
           </div>
@@ -373,6 +375,7 @@ export const PortfolioBuilderPage = () => {
             portfolioData={portfolioData}
             theme={theme}
             moduleVisibility={moduleVisibility}
+            onChange={handleDataChange}
             onOpenCustomizer={() => setViewMode("edit")}
           />
         </div>

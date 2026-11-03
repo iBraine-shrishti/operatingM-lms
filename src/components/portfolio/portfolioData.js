@@ -17,6 +17,22 @@ export const MODULES_CATALOG = [
   { id: "performanceMarketing", title: "Performance Marketing", number: "13", icon: "Zap", description: "Blended CAC, Cohort LTV & ROAS Scaling" },
 ];
 
+export const DEFAULT_MODULE_ORDER = [
+  "wordpress",
+  "canva",
+  "socialOrganic",
+  "socialMarketing",
+  "googleAds",
+  "seo",
+  "digitalPlanning",
+  "influencerMarketing",
+  "shopify",
+  "videoEditing",
+  "dropshipping",
+  "aiApp",
+  "performanceMarketing",
+];
+
 export const createInitialPortfolioData = (
   currentUser = {},
   crmProfile = {},
@@ -50,6 +66,7 @@ export const createInitialPortfolioData = (
     "Diploma in Digital Marketing";
 
   return {
+    moduleOrder: [...DEFAULT_MODULE_ORDER],
     student: {
       name: studentName,
       headline: "Certified Digital Marketer & Full-Funnel Growth Strategist",

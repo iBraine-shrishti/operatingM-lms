@@ -84,6 +84,12 @@ export const PortfolioLivePage = () => {
         theme={theme}
         moduleVisibility={moduleVisibility}
         isStandalone={true}
+        onChange={(updated) => {
+          setPortfolioData(updated);
+          try {
+            localStorage.setItem("om_lms_portfolio_data", JSON.stringify(updated));
+          } catch (e) {}
+        }}
       />
     </div>
   );
