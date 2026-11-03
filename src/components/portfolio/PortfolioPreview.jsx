@@ -44,6 +44,7 @@ import {
   DollarSign,
   Smartphone,
   ShieldCheck,
+  Target,
 } from "lucide-react";
 import { EditableText } from "./EditableText";
 import { ImageUploadModal } from "./ImageUploadModal";
