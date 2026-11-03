@@ -108,7 +108,7 @@ export const DualArchCreativeTemplate = ({
           SKILLS SUMMARY
         </div>
         <div className="space-y-2 text-left pt-1">
-          {displaySkillsSummary.slice(0, 3).map((item, idx) => (
+          {displaySkillsSummary.map((item, idx) => (
             <div key={idx} className="space-y-0.5">
               <div className="flex justify-between text-[10px] font-bold text-white/90">
                 <span className="truncate">{item.name}</span>
