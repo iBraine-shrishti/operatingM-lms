@@ -216,7 +216,7 @@ export const PortfolioPreview = ({
     <div className="bg-slate-50 text-slate-900 min-h-screen font-sans selection:bg-amber-400 selection:text-slate-950">
       {/* 1. TOPBAR HEADER (Matching reference: Aarav Sharma / DM initials / Center links / Developer Specs / Customize / Print) */}
       <header className="relative z-20 bg-white border-b border-slate-200 shadow-2xs">
-        <div className="max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 min-h-16 py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4">
+        <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 min-h-16 py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4">
           {/* Left Brand Badge */}
           <div className="flex items-center space-x-2.5 sm:space-x-3 shrink min-w-0">
             <div
@@ -306,10 +306,10 @@ export const PortfolioPreview = ({
           style={{ backgroundColor: theme.primary }}
         />
 
-        <div className="relative max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-14 items-center">
-            {/* Left Content Column (7 cols) - RESUME-LIKE DIRECT INLINE EDITING */}
-            <div className="lg:col-span-7 space-y-6">
+        <div className="relative w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-[clamp(1.5rem,3.5vw,3.5rem)]">
+            {/* Left Content Column (Proportional ~62% on Desktop) */}
+            <div className="w-full lg:w-[calc(62%-clamp(1rem,2vw,1.75rem))] flex-1 min-w-0 space-y-6">
               {/* Top Badges */}
               <div className="flex flex-wrap items-center gap-3 text-xs">
                 <span
@@ -435,9 +435,9 @@ export const PortfolioPreview = ({
               </div>
             </div>
 
-            {/* Right Column (5 cols) - LARGER AVATAR PHOTO CARD (CLICK TO CHANGE PHOTO) */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-end">
-              <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+            {/* Right Avatar Column (Proportional ~38% on Desktop, calc-width & clamped aspect ratio) */}
+            <div className="w-full max-w-[360px] sm:max-w-[420px] lg:max-w-none lg:w-[calc(38%-clamp(1rem,2vw,1.75rem))] shrink-0 flex flex-col items-center lg:items-end">
+              <div className="relative w-full">
                 {/* Luminous Glow Ring */}
                 <div
                   className="absolute -inset-2.5 rounded-2xl opacity-70 blur-xs transition-colors"
@@ -453,7 +453,7 @@ export const PortfolioPreview = ({
                       src={student.avatarUrl}
                       alt={student.name}
                       referrerPolicy="no-referrer"
-                      className="w-full aspect-[4/4.2] sm:aspect-square object-cover rounded-xl transition-transform duration-500 group-hover:scale-102"
+                      className="w-full aspect-[4/5] max-h-[460px] object-cover rounded-xl transition-transform duration-500 group-hover:scale-102"
                     />
 
                     {/* Change Photo Hover Overlay Button */}
@@ -526,7 +526,7 @@ export const PortfolioPreview = ({
 
           {/* 4 Stat Highlights Grid (CLICK-TO-EDIT NUMBERS & LABELS) */}
           <div className="mt-8 sm:mt-12 lg:mt-14 pt-6 sm:pt-8 border-t border-slate-800/80">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-[clamp(0.75rem,1.5vw,1.25rem)] w-full">
               {(student.highlights || []).map((stat, sIdx) => (
                 <div
                   key={sIdx}
@@ -629,7 +629,7 @@ export const PortfolioPreview = ({
                 id="wordpress"
                 className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-1 sm:px-2 space-y-8">
                   {/* Module Header */}
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
@@ -650,7 +650,7 @@ export const PortfolioPreview = ({
                   </div>
 
                   {/* 2-Column Grid */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-[repeat(2,minmax(0,1fr))] gap-[clamp(1.25rem,2.5vw,2rem)]">
                     {wpProjects.map((proj, pIdx) => {
                       const domainName = proj.title?.toLowerCase().replace(/[^a-z0-9]/g, "-") || "sample";
                       return (
@@ -684,7 +684,7 @@ export const PortfolioPreview = ({
                           </div>
 
                           {/* Laptop Mockup Image */}
-                          <div className="relative bg-slate-950 aspect-[16/10] overflow-hidden group/img">
+                          <div className="relative bg-slate-950 aspect-[16/10] w-full max-h-[380px] overflow-hidden group/img">
                             <img
                               src={proj.imageUrl || mockupLaptopImg}
                               alt={proj.title}
@@ -848,7 +848,7 @@ export const PortfolioPreview = ({
                 id="canva"
                 className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-1 sm:px-2 space-y-8">
                   {/* Module Header */}
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
@@ -912,7 +912,7 @@ export const PortfolioPreview = ({
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[clamp(1rem,1.5vw,1.5rem)]">
                         {canvaDesigns.map((design, dIdx) => (
                           <div
                             key={design.id || dIdx}
@@ -1050,14 +1050,14 @@ export const PortfolioPreview = ({
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      <div className="grid grid-cols-1 lg:grid-cols-[repeat(2,minmax(0,1fr))] gap-[clamp(1.25rem,2.5vw,2rem)]">
                         {canvaVideos.map((video, vIdx) => (
                           <div
                             key={video.id || vIdx}
-                            className="bg-slate-900 text-white rounded-2xl border border-slate-800 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col sm:flex-row group"
+                            className="bg-slate-900 text-white rounded-2xl border border-slate-800 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row w-full group"
                           >
-                            {/* Left Thumbnail */}
-                            <div className="relative w-full sm:w-2/5 aspect-[4/3] sm:aspect-auto bg-black overflow-hidden group/thumb min-h-[200px]">
+                            {/* Left Thumbnail with fixed mathematical clamp width */}
+                            <div className="relative w-full md:w-[clamp(200px,36%,280px)] aspect-[16/10] md:aspect-[9/13] shrink-0 bg-black overflow-hidden group/thumb">
                               <img
                                 src={video.thumbnailUrl || mockupCreativesImg}
                                 alt={video.title}
@@ -1076,7 +1076,7 @@ export const PortfolioPreview = ({
                             </div>
 
                             {/* Right Details */}
-                            <div className="p-5 sm:w-3/5 flex flex-col justify-between space-y-3">
+                            <div className="w-full md:w-[calc(100%-clamp(200px,36%,280px))] p-[clamp(1rem,2vw,1.5rem)] flex flex-col justify-between space-y-3 min-w-0">
                               <div>
                                 <span className="text-[11px] font-mono text-amber-400 uppercase font-semibold">
                                   {video.format}
@@ -1190,7 +1190,7 @@ export const PortfolioPreview = ({
                 id="socialOrganic"
                 className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-1 sm:px-2 space-y-8">
                   {/* Module Header */}
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
@@ -1324,7 +1324,7 @@ export const PortfolioPreview = ({
                         </div>
 
                         {/* Grid Screenshot Preview */}
-                        <div className="relative bg-slate-950 aspect-[16/9] overflow-hidden group/img">
+                        <div className="relative bg-slate-950 aspect-[16/9] w-full max-h-[300px] overflow-hidden group/img">
                           <img
                             src={profile.screenshotUrl || mockupCreativesImg}
                             alt={profile.handle}
@@ -1452,7 +1452,7 @@ export const PortfolioPreview = ({
                 id="socialMarketing"
                 className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-1 sm:px-2 space-y-8">
                   {/* Module Header */}
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
@@ -1528,9 +1528,9 @@ export const PortfolioPreview = ({
 
                           {/* Expanded Content */}
                           {isOpen && (
-                            <div className="border-t border-slate-200 bg-white p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                              {/* Left Column: Creative Mockup */}
-                              <div className="lg:col-span-5 space-y-3">
+                            <div className="border-t border-slate-200 bg-white p-[clamp(1rem,2vw,1.5rem)] flex flex-col lg:flex-row gap-[clamp(1.25rem,2.5vw,2rem)] items-start">
+                              {/* Left Column: Creative Mockup with Clamped Proportional Width */}
+                              <div className="w-full lg:w-[clamp(300px,40%,440px)] shrink-0 space-y-3">
                                 <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
                                   Ad Creative & Placement Screenshot:
                                 </div>
@@ -1576,7 +1576,7 @@ export const PortfolioPreview = ({
                               </div>
 
                               {/* Right Column: Details & KPIs */}
-                              <div className="lg:col-span-7 space-y-5">
+                              <div className="w-full lg:w-[calc(100%-clamp(300px,40%,440px)-clamp(1.25rem,2.5vw,2rem))] flex-1 min-w-0 space-y-5">
                                 <div>
                                   <div className="text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">
                                     Student Ad Campaign Summary:
@@ -1764,7 +1764,7 @@ export const PortfolioPreview = ({
                 id="googleAds"
                 className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-1 sm:px-2 space-y-8">
                   {/* Module Header */}
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
@@ -1840,9 +1840,9 @@ export const PortfolioPreview = ({
 
                           {/* Expanded Content */}
                           {isOpen && (
-                            <div className="border-t border-slate-200 bg-white p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                              {/* Left Column: Mockup & Google Sponsored Search Box */}
-                              <div className="lg:col-span-5 space-y-3">
+                            <div className="border-t border-slate-200 bg-white p-[clamp(1rem,2vw,1.5rem)] flex flex-col lg:flex-row gap-[clamp(1.25rem,2.5vw,2rem)] items-start">
+                              {/* Left Column: Mockup & Google Sponsored Search Box (Clamped Proportion) */}
+                              <div className="w-full lg:w-[clamp(300px,40%,440px)] shrink-0 space-y-3">
                                 <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
                                   Ad Preview & Campaign Screenshot:
                                 </div>
@@ -1900,7 +1900,7 @@ export const PortfolioPreview = ({
                               </div>
 
                               {/* Right Column: Execution, RSA Copy, Keywords, Metrics */}
-                              <div className="lg:col-span-7 space-y-5">
+                              <div className="w-full lg:w-[calc(100%-clamp(300px,40%,440px)-clamp(1.25rem,2.5vw,2rem))] flex-1 min-w-0 space-y-5">
                                 <div>
                                   <div className="text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">
                                     Student Campaign Execution & Strategy:
@@ -2117,7 +2117,7 @@ export const PortfolioPreview = ({
                 id="seo"
                 className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
 
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
@@ -2185,7 +2185,7 @@ export const PortfolioPreview = ({
                 id="digitalPlanning"
                 className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
 
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
@@ -2240,7 +2240,7 @@ export const PortfolioPreview = ({
                 id="influencerMarketing"
                 className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
 
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
@@ -2307,7 +2307,7 @@ export const PortfolioPreview = ({
                 id="shopify"
                 className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
 
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
@@ -2380,7 +2380,7 @@ export const PortfolioPreview = ({
                 id="videoEditing"
                 className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
 
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
@@ -2438,7 +2438,7 @@ export const PortfolioPreview = ({
                 id="dropshipping"
                 className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
 
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
@@ -2503,7 +2503,7 @@ export const PortfolioPreview = ({
                 id="aiApp"
                 className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
 
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
@@ -2568,7 +2568,7 @@ export const PortfolioPreview = ({
                 id="performanceMarketing"
                 className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
               >
-                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
 
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
@@ -2642,7 +2642,7 @@ export const PortfolioPreview = ({
 
       {/* 5. FOOTER WITH OPERATING MEDIA OFFICIAL LOGO & COPYRIGHT */}
       <footer className="bg-slate-950 text-white py-12 border-t border-slate-800">
-        <div className="max-w-[1550px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-slate-800/80">
             {/* Left: Operating Media Logo & Tagline */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
