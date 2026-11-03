@@ -601,14 +601,25 @@ export const PortfolioPreview = ({
       </nav>
 
       {/* 4. MAIN ALL 13 MODULES CONTENT SHOWCASE (RENDERED IN CUSTOM SHUFFLE SEQUENCE) */}
-      <main className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12 sm:space-y-16">
-        {moduleOrder.map((modId) => {
-          if (moduleVisibility[modId] === false) return null;
+      <main className="w-full">
+        {moduleOrder
+          .filter((modId) => moduleVisibility[modId] !== false)
+          .map((modId, modIndex) => {
+            const isEven = modIndex % 2 === 0;
+            const bgClass = isEven
+              ? "bg-slate-100/90 border-b border-slate-200/90"
+              : "bg-slate-50/70 border-b border-slate-200/40";
 
           // MODULE 01: WORDPRESS
           if (modId === "wordpress") {
             return (
-              <section key={modId} id="wordpress" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="wordpress"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -757,6 +768,8 @@ export const PortfolioPreview = ({
                     </div>
                   ))}
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -787,7 +800,13 @@ export const PortfolioPreview = ({
             };
 
             return (
-              <section key={modId} id="canva" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="canva"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -863,6 +882,8 @@ export const PortfolioPreview = ({
                     </div>
                   ))}
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -870,7 +891,13 @@ export const PortfolioPreview = ({
           // MODULE 03: SOCIAL MEDIA ORGANIC
           if (modId === "socialOrganic") {
             return (
-              <section key={modId} id="socialOrganic" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="socialOrganic"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -930,6 +957,8 @@ export const PortfolioPreview = ({
                     </div>
                   ))}
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -937,7 +966,13 @@ export const PortfolioPreview = ({
           // MODULE 04: META ADS (ACCORDIONS)
           if (modId === "socialMarketing") {
             return (
-              <section key={modId} id="socialMarketing" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="socialMarketing"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -1025,6 +1060,8 @@ export const PortfolioPreview = ({
                     );
                   })}
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -1032,7 +1069,13 @@ export const PortfolioPreview = ({
           // MODULE 05: GOOGLE ADS (ACCORDIONS)
           if (modId === "googleAds") {
             return (
-              <section key={modId} id="googleAds" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="googleAds"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -1132,6 +1175,8 @@ export const PortfolioPreview = ({
                     );
                   })}
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -1139,7 +1184,13 @@ export const PortfolioPreview = ({
           // MODULE 06: SEO & LOCAL GBP
           if (modId === "seo") {
             return (
-              <section key={modId} id="seo" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="seo"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -1192,6 +1243,8 @@ export const PortfolioPreview = ({
                     </table>
                   </div>
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -1199,7 +1252,13 @@ export const PortfolioPreview = ({
           // MODULE 07: DIGITAL PLANNING DECK
           if (modId === "digitalPlanning") {
             return (
-              <section key={modId} id="digitalPlanning" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="digitalPlanning"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -1239,6 +1298,8 @@ export const PortfolioPreview = ({
                     </div>
                   ))}
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -1246,7 +1307,13 @@ export const PortfolioPreview = ({
           // MODULE 08: INFLUENCER MARKETING
           if (modId === "influencerMarketing") {
             return (
-              <section key={modId} id="influencerMarketing" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="influencerMarketing"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -1298,6 +1365,8 @@ export const PortfolioPreview = ({
                     </div>
                   ))}
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -1305,7 +1374,13 @@ export const PortfolioPreview = ({
           // MODULE 09: SHOPIFY STORE
           if (modId === "shopify") {
             return (
-              <section key={modId} id="shopify" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="shopify"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -1363,6 +1438,8 @@ export const PortfolioPreview = ({
                     </ul>
                   </div>
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -1370,7 +1447,13 @@ export const PortfolioPreview = ({
           // MODULE 10: VIDEO EDITING
           if (modId === "videoEditing") {
             return (
-              <section key={modId} id="videoEditing" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="videoEditing"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -1413,6 +1496,8 @@ export const PortfolioPreview = ({
                     </div>
                   ))}
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -1420,7 +1505,13 @@ export const PortfolioPreview = ({
           // MODULE 11: DROPSHIPPING STORE
           if (modId === "dropshipping") {
             return (
-              <section key={modId} id="dropshipping" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="dropshipping"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -1470,6 +1561,8 @@ export const PortfolioPreview = ({
                     </div>
                   </div>
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -1477,7 +1570,13 @@ export const PortfolioPreview = ({
           // MODULE 12: AI MARKETING APP
           if (modId === "aiApp") {
             return (
-              <section key={modId} id="aiApp" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="aiApp"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -1527,6 +1626,8 @@ export const PortfolioPreview = ({
                     "{modules.aiApp.samplePromptSystem}"
                   </div>
                 </div>
+              
+                </div>
               </section>
             );
           }
@@ -1534,7 +1635,13 @@ export const PortfolioPreview = ({
           // MODULE 13: PERFORMANCE MARKETING
           if (modId === "performanceMarketing") {
             return (
-              <section key={modId} id="performanceMarketing" className="space-y-6 scroll-mt-28">
+              <section
+                key={modId}
+                id="performanceMarketing"
+                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+              >
+                <div className="w-full max-w-[1550px] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
+
                 <div className="flex items-center justify-between border-b border-slate-200 pb-3">
                   <div className="flex items-center space-x-3">
                     <div
@@ -1594,6 +1701,8 @@ export const PortfolioPreview = ({
                     <strong className="text-white">Cohort Economics: </strong>
                     {modules.performanceMarketing?.scalingMethodology || modules.performanceMarketing?.scalingResults || "Delivered profitable growth with full attribution."}
                   </p>
+                </div>
+              
                 </div>
               </section>
             );
