@@ -65,7 +65,16 @@ export const createInitialPortfolioData = (
   const courseTitle =
     crmBatch?.courseName ||
     crmProfile?.courseName ||
+    crmProfile?.course ||
     "Diploma in Digital Marketing";
+
+  const backendAvatar =
+    currentUser?.avatar ||
+    currentUser?.profilePicture ||
+    crmProfile?.photo ||
+    crmProfile?.avatar ||
+    (typeof localStorage !== "undefined" ? localStorage.getItem("om_lms_student_avatar") : null) ||
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400";
 
   return {
     moduleOrder: [...DEFAULT_MODULE_ORDER],
@@ -74,7 +83,7 @@ export const createInitialPortfolioData = (
       headline: "Certified Digital Marketer & Full-Funnel Growth Strategist",
       subheadline: `Specializing in ${courseTitle} — Performance Paid Ads, Technical SEO & High-Converting Funnels`,
       bio: "Passionate digital marketing graduate trained in 360° growth marketing at Operating Media. Proven track record managing Meta & Google Ads campaigns, designing high-converting WordPress & Shopify e-commerce experiences, executing organic content engines, and building AI-accelerated marketing workflows.",
-      avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop",
+      avatarUrl: backendAvatar,
       email: studentEmail,
       phone: studentPhone,
       location: studentBranch,

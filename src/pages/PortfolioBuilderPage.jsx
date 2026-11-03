@@ -100,6 +100,56 @@ export const PortfolioBuilderPage = () => {
   // 4. View Mode: "split" | "edit" | "preview"
   const [viewMode, setViewMode] = useState("split");
 
+  // Auto-sync backend student profile details on load if available (like Resume)
+  useEffect(() => {
+    const backendAvatar =
+      currentUser?.avatar ||
+      currentUser?.profilePicture ||
+      crmProfile?.photo ||
+      crmProfile?.avatar ||
+      localStorage.getItem("om_lms_student_avatar");
+
+    const studentName =
+      currentUser?.name ||
+      currentUser?.fullName ||
+      crmProfile?.name ||
+      crmProfile?.fullName;
+
+    if (backendAvatar || studentName) {
+      setPortfolioData((prev) => {
+        let changed = false;
+        const updatedStudent = { ...prev.student };
+
+        if (
+          backendAvatar &&
+          (!updatedStudent.avatarUrl ||
+            updatedStudent.avatarUrl.includes("photo-1534528741775-53994a69daeb") ||
+            updatedStudent.avatarUrl.includes("photo-1507003211169-0a1dd7228f2d"))
+        ) {
+          updatedStudent.avatarUrl = backendAvatar;
+          changed = true;
+        }
+
+        if (studentName && (updatedStudent.name === "Ram Charan" || !updatedStudent.name)) {
+          updatedStudent.name = studentName;
+          changed = true;
+        }
+
+        if (changed) {
+          const updated = {
+            ...prev,
+            student: updatedStudent,
+          };
+          try {
+            localStorage.setItem("om_lms_portfolio_data", JSON.stringify(updated));
+          } catch (e) {}
+          return updated;
+        }
+        return prev;
+      });
+    }
+  }, [currentUser?.avatar, currentUser?.name, crmProfile?.photo, crmProfile?.name]);
+
   // Save changes to localStorage
   const handleDataChange = (updated) => {
     setPortfolioData(updated);
