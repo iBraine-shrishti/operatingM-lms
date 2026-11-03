@@ -477,6 +477,56 @@ export const MinimalistPerformanceTemplate = ({
     certifications.length > 0 &&
     !data.hiddenSections?.certifications;
 
+  const defaultOrder = [
+    "summary",
+    "experience",
+    "projects",
+    "skills",
+    "education",
+    "certifications",
+  ];
+  const customOrder =
+    data.sectionOrders?.["minimalist-tech"] || data.sectionOrder;
+  const contentOrder =
+    Array.isArray(customOrder) && customOrder.length > 0
+      ? [
+          ...customOrder.filter((id) => defaultOrder.includes(id)),
+          ...defaultOrder.filter((id) => !customOrder.includes(id)),
+        ]
+      : defaultOrder;
+
+  const leftSectionIds = ["experience", "projects"].sort(
+    (a, b) => contentOrder.indexOf(a) - contentOrder.indexOf(b)
+  );
+
+  const rightSectionIds = ["skills", "education", "certifications"].sort(
+    (a, b) => contentOrder.indexOf(a) - contentOrder.indexOf(b)
+  );
+
+  const renderLeftSection = (id) => {
+    switch (id) {
+      case "experience":
+        return renderExperience();
+      case "projects":
+        return renderProjects();
+      default:
+        return null;
+    }
+  };
+
+  const renderRightSection = (id) => {
+    switch (id) {
+      case "skills":
+        return renderSkills();
+      case "education":
+        return renderEducation();
+      case "certifications":
+        return renderCertifications();
+      default:
+        return null;
+    }
+  };
+
   const showLeftCol = showExp || showProj;
   const showRightCol = showSkills || showEdu || showCert;
 
@@ -496,30 +546,32 @@ export const MinimalistPerformanceTemplate = ({
               if (showLeftCol && !showRightCol) {
                 return (
                   <div className="space-y-3">
-                    {renderExperience()}
-                    {renderProjects()}
+                    {leftSectionIds.map((id) => (
+                      <React.Fragment key={id}>{renderLeftSection(id)}</React.Fragment>
+                    ))}
                   </div>
                 );
               }
               if (!showLeftCol && showRightCol) {
                 return (
                   <div className="space-y-3">
-                    {renderSkills()}
-                    {renderEducation()}
-                    {renderCertifications()}
+                    {rightSectionIds.map((id) => (
+                      <React.Fragment key={id}>{renderRightSection(id)}</React.Fragment>
+                    ))}
                   </div>
                 );
               }
               return (
                 <div className="grid grid-cols-1 md:grid-cols-12 print:grid-cols-12 gap-5 print:gap-3.5 pt-0.5 resume-minimalist-grid">
                   <div className="md:col-span-7 print:col-span-7 space-y-3.5 print:space-y-2 resume-minimalist-col-7">
-                    {renderExperience()}
-                    {renderProjects()}
+                    {leftSectionIds.map((id) => (
+                      <React.Fragment key={id}>{renderLeftSection(id)}</React.Fragment>
+                    ))}
                   </div>
                   <div className="md:col-span-5 print:col-span-5 space-y-3.5 print:space-y-2 resume-minimalist-col-5">
-                    {renderSkills()}
-                    {renderEducation()}
-                    {renderCertifications()}
+                    {rightSectionIds.map((id) => (
+                      <React.Fragment key={id}>{renderRightSection(id)}</React.Fragment>
+                    ))}
                   </div>
                 </div>
               );
@@ -528,11 +580,14 @@ export const MinimalistPerformanceTemplate = ({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-12 print:grid-cols-12 gap-5 print:gap-3.5 pt-0.5 resume-minimalist-grid">
             <div className="md:col-span-7 print:col-span-7 space-y-3.5 print:space-y-2 resume-minimalist-col-7">
-              {renderProjects()}
+              {leftSectionIds.map((id) => (
+                <React.Fragment key={id}>{renderLeftSection(id)}</React.Fragment>
+              ))}
             </div>
             <div className="md:col-span-5 print:col-span-5 space-y-3.5 print:space-y-2 resume-minimalist-col-5">
-              {renderEducation()}
-              {renderCertifications()}
+              {rightSectionIds.map((id) => (
+                <React.Fragment key={id}>{renderRightSection(id)}</React.Fragment>
+              ))}
             </div>
           </div>
         )}

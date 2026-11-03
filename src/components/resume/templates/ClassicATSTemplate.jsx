@@ -315,86 +315,131 @@ export const ClassicATSTemplate = ({
     );
   };
 
-  // SECTION: Certifications & Languages
-  const renderCertificationsAndLanguages = () => {
-    const hasCerts =
-      certifications &&
-      certifications.length > 0 &&
-      !data.hiddenSections?.certifications;
-    const hasLangs =
-      languages && languages.length > 0 && !data.hiddenSections?.languages;
-    if (!hasCerts && !hasLangs) return null;
+  // SUB-RENDERER: Certifications
+  const renderCertifications = () => {
+    if (
+      data.hiddenSections?.certifications ||
+      !certifications ||
+      certifications.length === 0
+    )
+      return null;
     const isOnePage = totalPages === 1;
 
     return (
-      <div className={`grid grid-cols-1 sm:grid-cols-2 gap-3 ${isOnePage ? "mt-2 print:mt-1.5" : "mt-4"}`}>
-        {hasCerts && (
-          <section>
-            <EditableHeading
-              value={sectionHeadings.certifications}
-              fallback="Certifications"
-              onChange={(val) => onUpdateHeading?.("certifications", val)}
-              className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-1.5"
-              style={{ color: theme.primary, borderColor: theme.border }}
-              tag="h2"
-            />
-            <ul className="space-y-0.5 text-[10.5px] print:text-[9.5px] text-slate-700 list-disc list-outside pl-4">
-              {certifications.map((c) => (
-                <li key={c.id}>
-                  <strong>{c.name}</strong> – {c.issuer} {c.year && `(${c.year})`}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
-
-        {hasLangs && (
-          <section>
-            <EditableHeading
-              value={sectionHeadings.languages}
-              fallback="Languages"
-              onChange={(val) => onUpdateHeading?.("languages", val)}
-              className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-1.5"
-              style={{ color: theme.primary, borderColor: theme.border }}
-              tag="h2"
-            />
-            <p className="text-[11px] print:text-[10px] text-slate-700 pt-0.5">
-              {languages.join(" • ")}
-            </p>
-          </section>
-        )}
-      </div>
+      <section className={isOnePage ? "mt-2 print:mt-1.5" : "mt-4"}>
+        <EditableHeading
+          value={sectionHeadings.certifications}
+          fallback="Certifications"
+          onChange={(val) => onUpdateHeading?.("certifications", val)}
+          className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-1.5"
+          style={{ color: theme.primary, borderColor: theme.border }}
+          tag="h2"
+        />
+        <ul className="space-y-0.5 text-[10.5px] print:text-[9.5px] text-slate-700 list-disc list-outside pl-4">
+          {certifications.map((c) => (
+            <li key={c.id}>
+              <strong>{c.name}</strong> – {c.issuer} {c.year && `(${c.year})`}
+            </li>
+          ))}
+        </ul>
+      </section>
     );
   };
 
+  // SUB-RENDERER: Languages
+  const renderLanguages = () => {
+    if (data.hiddenSections?.languages || !languages || languages.length === 0)
+      return null;
+    const isOnePage = totalPages === 1;
+
+    return (
+      <section className={isOnePage ? "mt-2 print:mt-1.5" : "mt-4"}>
+        <EditableHeading
+          value={sectionHeadings.languages}
+          fallback="Languages"
+          onChange={(val) => onUpdateHeading?.("languages", val)}
+          className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-1.5"
+          style={{ color: theme.primary, borderColor: theme.border }}
+          tag="h2"
+        />
+        <p className="text-[11px] print:text-[10px] text-slate-700 pt-0.5">
+          {languages.join(" • ")}
+        </p>
+      </section>
+    );
+  };
+
+  const renderSectionById = (secId) => {
+    switch (secId) {
+      case "summary":
+        return renderSummary();
+      case "skills":
+        return renderSkills();
+      case "experience":
+        return renderExperience();
+      case "projects":
+        return renderProjects();
+      case "education":
+        return renderEducation();
+      case "certifications":
+        return renderCertifications();
+      case "languages":
+        return renderLanguages();
+      default:
+        return null;
+    }
+  };
+
+  const defaultOrder = [
+    "summary",
+    "skills",
+    "experience",
+    "projects",
+    "education",
+    "certifications",
+    "languages",
+  ];
+  const customOrder = data.sectionOrders?.["classic-ats"] || data.sectionOrder;
+  const contentOrder =
+    Array.isArray(customOrder) && customOrder.length > 0
+      ? [
+          ...customOrder.filter((id) => defaultOrder.includes(id)),
+          ...defaultOrder.filter((id) => !customOrder.includes(id)),
+        ]
+      : defaultOrder;
+
   return (
-    <div className={`bg-white text-slate-900 font-sans leading-relaxed text-[12.5px] print:text-[11px] w-full min-h-[1050px] h-full print:h-full print:min-h-0 ${
-      totalPages === 1 ? "p-6 sm:p-7 print:p-4" : "p-8 sm:p-10 print:p-6"
-    } flex flex-col justify-between print:m-0`}>
+    <div
+      className={`bg-white text-slate-900 font-sans leading-relaxed text-[12.5px] print:text-[11px] w-full min-h-[1050px] h-full print:h-full print:min-h-0 ${
+        totalPages === 1 ? "p-6 sm:p-7 print:p-4" : "p-8 sm:p-10 print:p-6"
+      } flex flex-col justify-between print:m-0`}
+    >
       {/* PAGE 1 CONTENT */}
       {page === 1 && (
         <div className="space-y-1 flex-1">
           {renderHeader(false)}
-          {renderSummary()}
-          {renderSkills()}
-          {renderExperience()}
-          {/* If 1-page mode, also render projects, education, certs */}
-          {totalPages === 1 && (
-            <>
-              {renderProjects()}
-              {renderEducation()}
-              {renderCertificationsAndLanguages()}
-            </>
-          )}
+          {totalPages === 1
+            ? contentOrder.map((secId) => (
+                <React.Fragment key={secId}>
+                  {renderSectionById(secId)}
+                </React.Fragment>
+              ))
+            : contentOrder.slice(0, 3).map((secId) => (
+                <React.Fragment key={secId}>
+                  {renderSectionById(secId)}
+                </React.Fragment>
+              ))}
         </div>
       )}
 
       {/* PAGE 2 CONTENT (NO HEADER - JUST CONTENT & FOOTER) */}
       {page === 2 && (
         <div className="space-y-1 flex-1">
-          {renderProjects()}
-          {renderEducation()}
-          {renderCertificationsAndLanguages()}
+          {contentOrder.slice(3).map((secId) => (
+            <React.Fragment key={secId}>
+              {renderSectionById(secId)}
+            </React.Fragment>
+          ))}
         </div>
       )}
 

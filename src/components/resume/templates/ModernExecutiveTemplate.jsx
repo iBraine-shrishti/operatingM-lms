@@ -603,12 +603,65 @@ export const ModernExecutiveTemplate = ({
     );
   };
 
-  const hasAnySkills =
-    skills &&
-    Object.values(skills).some((list) => Array.isArray(list) && list.length > 0);
-  const showSkills = hasAnySkills && !data.hiddenSections?.skills;
-  const showExp =
-    experiences && experiences.length > 0 && !data.hiddenSections?.experience;
+  const defaultOrder = [
+    "summary",
+    "experience",
+    "skills",
+    "education",
+    "projects",
+    "certifications",
+    "languages",
+  ];
+  const customOrder =
+    data.sectionOrders?.["modern-executive"] || data.sectionOrder;
+  const contentOrder =
+    Array.isArray(customOrder) && customOrder.length > 0
+      ? [
+          ...customOrder.filter((id) => defaultOrder.includes(id)),
+          ...defaultOrder.filter((id) => !customOrder.includes(id)),
+        ]
+      : defaultOrder;
+
+  // Relative sequence inside Main column
+  const mainSectionIds = ["summary", "experience", "projects"].sort(
+    (a, b) => contentOrder.indexOf(a) - contentOrder.indexOf(b)
+  );
+
+  // Relative sequence inside Sidebar column
+  const sidebarSectionIds = [
+    "skills",
+    "education",
+    "certifications",
+    "languages",
+  ].sort((a, b) => contentOrder.indexOf(a) - contentOrder.indexOf(b));
+
+  const renderMainSection = (id) => {
+    switch (id) {
+      case "summary":
+        return renderSummary();
+      case "experience":
+        return renderExperience();
+      case "projects":
+        return renderProjects();
+      default:
+        return null;
+    }
+  };
+
+  const renderSidebarSection = (id) => {
+    switch (id) {
+      case "skills":
+        return renderSkills();
+      case "education":
+        return renderEducation();
+      case "certifications":
+        return renderCertifications();
+      case "languages":
+        return renderLanguages();
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] h-full print:h-full print:min-h-0 flex flex-col justify-between print:p-0 print:m-0">
@@ -629,24 +682,25 @@ export const ModernExecutiveTemplate = ({
           {page === 1 ? (
             <>
               {renderContact()}
-              {renderSkills()}
-              {(totalPages === 1 || !showSkills) && (
-                <>
-                  {renderEducation()}
-                  {renderCertifications()}
-                  {renderLanguages()}
-                </>
-              )}
+              {totalPages === 1
+                ? sidebarSectionIds.map((id) => (
+                    <React.Fragment key={id}>
+                      {renderSidebarSection(id)}
+                    </React.Fragment>
+                  ))
+                : sidebarSectionIds.slice(0, 1).map((id) => (
+                    <React.Fragment key={id}>
+                      {renderSidebarSection(id)}
+                    </React.Fragment>
+                  ))}
             </>
           ) : (
             <>
-              {showSkills && (
-                <>
-                  {renderEducation()}
-                  {renderCertifications()}
-                  {renderLanguages()}
-                </>
-              )}
+              {sidebarSectionIds.slice(1).map((id) => (
+                <React.Fragment key={id}>
+                  {renderSidebarSection(id)}
+                </React.Fragment>
+              ))}
             </>
           )}
         </aside>
@@ -662,13 +716,25 @@ export const ModernExecutiveTemplate = ({
           {page === 1 ? (
             <>
               {renderMainHeader(false)}
-              {renderSummary()}
-              {renderExperience()}
-              {(totalPages === 1 || !showExp) && renderProjects()}
+              {totalPages === 1
+                ? mainSectionIds.map((id) => (
+                    <React.Fragment key={id}>
+                      {renderMainSection(id)}
+                    </React.Fragment>
+                  ))
+                : mainSectionIds.slice(0, 2).map((id) => (
+                    <React.Fragment key={id}>
+                      {renderMainSection(id)}
+                    </React.Fragment>
+                  ))}
             </>
           ) : (
             <>
-              {showExp && renderProjects()}
+              {mainSectionIds.slice(2).map((id) => (
+                <React.Fragment key={id}>
+                  {renderMainSection(id)}
+                </React.Fragment>
+              ))}
             </>
           )}
         </div>

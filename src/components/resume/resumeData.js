@@ -1,5 +1,50 @@
 // Initial student profile prefill + professional editable dummy resume data
 
+export const DEFAULT_SECTION_ORDERS = {
+  "modern-executive": [
+    "summary",
+    "experience",
+    "skills",
+    "education",
+    "projects",
+    "certifications",
+    "languages",
+  ],
+  "creative-marketer": [
+    "summary",
+    "experience",
+    "projects",
+    "skills",
+    "education",
+    "certifications",
+  ],
+  "minimalist-tech": [
+    "summary",
+    "experience",
+    "projects",
+    "skills",
+    "education",
+    "certifications",
+  ],
+  "classic-ats": [
+    "summary",
+    "skills",
+    "experience",
+    "projects",
+    "education",
+    "certifications",
+    "languages",
+  ],
+  "dual-arch-creative": [
+    "summary",
+    "projects",
+    "experience",
+    "skillsSummary",
+    "expertise",
+    "education",
+  ],
+};
+
 export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCertificates = []) => {
   const studentName =
     currentUser?.name ||
@@ -180,6 +225,7 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
     skillsSummaryText: "",
     pageMode: "1",
     hiddenSections: {},
+    sectionOrders: { ...DEFAULT_SECTION_ORDERS },
     showSpecializationBadge: true,
     showExpertiseColHeaders: false,
     expertiseGridCols: 2,

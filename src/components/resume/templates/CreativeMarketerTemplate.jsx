@@ -566,6 +566,60 @@ export const CreativeMarketerTemplate = ({
     !data.hiddenSections?.certifications;
   const showEduCert = hasEdu || hasCert;
 
+  const defaultOrder = [
+    "summary",
+    "experience",
+    "projects",
+    "skills",
+    "education",
+    "certifications",
+  ];
+  const customOrder =
+    data.sectionOrders?.["creative-marketer"] || data.sectionOrder;
+  const contentOrder =
+    Array.isArray(customOrder) && customOrder.length > 0
+      ? [
+          ...customOrder.filter((id) => defaultOrder.includes(id)),
+          ...defaultOrder.filter((id) => !customOrder.includes(id)),
+        ]
+      : defaultOrder;
+
+  // Upper stream sections (e.g., summary, experience, projects) sorted by user sequence
+  const topSections = ["summary", "experience", "projects"].sort(
+    (a, b) => contentOrder.indexOf(a) - contentOrder.indexOf(b)
+  );
+
+  const renderTopSection = (id) => {
+    switch (id) {
+      case "summary":
+        return renderSummary();
+      case "experience":
+        return renderExperience();
+      case "projects":
+        return renderProjects();
+      default:
+        return null;
+    }
+  };
+
+  const renderSectionById = (id) => {
+    switch (id) {
+      case "summary":
+        return renderSummary();
+      case "experience":
+        return renderExperience();
+      case "projects":
+        return renderProjects();
+      case "skills":
+        return renderSkills();
+      case "education":
+      case "certifications":
+        return renderEducationAndCertifications();
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1050px] h-full print:h-full print:min-h-0 flex flex-col justify-between print:p-0 print:m-0">
       {/* HEADER BANNER (PAGE 1 ONLY - NO HEADER ON PAGE 2) */}
@@ -581,36 +635,38 @@ export const CreativeMarketerTemplate = ({
       >
         {page === 1 ? (
           <>
-            {renderSummary()}
-            {renderExperience()}
+            {/* Render top sections according to sequence */}
+            {topSections.slice(0, totalPages === 1 ? 3 : 2).map((id) => (
+              <React.Fragment key={id}>{renderTopSection(id)}</React.Fragment>
+            ))}
+
             {totalPages === 1 ? (
-              <>
-                {renderProjects()}
-                {(() => {
-                  if (!showSkills && !showEduCert) return null;
-                  if (showSkills && !showEduCert)
-                    return <div className="pt-1">{renderSkills()}</div>;
-                  if (!showSkills && showEduCert)
-                    return (
-                      <div className="pt-1">
-                        {renderEducationAndCertifications()}
-                      </div>
-                    );
+              (() => {
+                if (!showSkills && !showEduCert) return null;
+                if (showSkills && !showEduCert)
+                  return <div className="pt-1">{renderSkills()}</div>;
+                if (!showSkills && showEduCert)
                   return (
-                    <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-4 print:gap-3 pt-1 resume-creative-grid">
-                      {renderSkills()}
+                    <div className="pt-1">
                       {renderEducationAndCertifications()}
                     </div>
                   );
-                })()}
-              </>
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-4 print:gap-3 pt-1 resume-creative-grid">
+                    {renderSkills()}
+                    {renderEducationAndCertifications()}
+                  </div>
+                );
+              })()
             ) : (
               showSkills && <div className="pt-2">{renderSkills()}</div>
             )}
           </>
         ) : (
           <>
-            {renderProjects()}
+            {topSections.slice(2).map((id) => (
+              <React.Fragment key={id}>{renderTopSection(id)}</React.Fragment>
+            ))}
             {showEduCert && (
               <div className="pt-2">
                 {renderEducationAndCertifications()}

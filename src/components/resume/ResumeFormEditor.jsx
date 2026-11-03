@@ -24,7 +24,11 @@ import {
   PanelBottom,
   Eye,
   EyeOff,
+  Shuffle,
+  ArrowUpDown,
+  GripVertical,
 } from "lucide-react";
+import { DEFAULT_SECTION_ORDERS } from "./resumeData";
 
 const TEMPLATE_SECTIONS_MAP = {
   "dual-arch-creative": [
@@ -132,18 +136,112 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
     });
   };
 
+  // 1. Resolve content section sequence
+  const templateDefaultOrder =
+    DEFAULT_SECTION_ORDERS[templateId] ||
+    (TEMPLATE_SECTIONS_MAP[templateId] || ALL_SECTIONS_FALLBACK)
+      .filter((s) => s.id !== "personal" && s.id !== "footer")
+      .map((s) => s.id);
+
+  const customOrder =
+    data.sectionOrders?.[templateId] || data.sectionOrder;
+
+  const currentContentOrder =
+    Array.isArray(customOrder) && customOrder.length > 0
+      ? [
+          ...customOrder.filter((id) => templateDefaultOrder.includes(id)),
+          ...templateDefaultOrder.filter((id) => !customOrder.includes(id)),
+        ]
+      : templateDefaultOrder;
+
+  // Move section up in sequence
+  const moveSectionUp = (secId) => {
+    const idx = currentContentOrder.indexOf(secId);
+    if (idx <= 0) return;
+    const newOrder = [...currentContentOrder];
+    const temp = newOrder[idx - 1];
+    newOrder[idx - 1] = newOrder[idx];
+    newOrder[idx] = temp;
+    onChange({
+      ...data,
+      sectionOrders: {
+        ...(data.sectionOrders || {}),
+        [templateId]: newOrder,
+      },
+      sectionOrder: newOrder,
+    });
+  };
+
+  // Move section down in sequence
+  const moveSectionDown = (secId) => {
+    const idx = currentContentOrder.indexOf(secId);
+    if (idx === -1 || idx >= currentContentOrder.length - 1) return;
+    const newOrder = [...currentContentOrder];
+    const temp = newOrder[idx + 1];
+    newOrder[idx + 1] = newOrder[idx];
+    newOrder[idx] = temp;
+    onChange({
+      ...data,
+      sectionOrders: {
+        ...(data.sectionOrders || {}),
+        [templateId]: newOrder,
+      },
+      sectionOrder: newOrder,
+    });
+  };
+
+  // Randomly shuffle section sequence
+  const handleShuffleSections = () => {
+    const shuffled = [...currentContentOrder].sort(() => Math.random() - 0.5);
+    onChange({
+      ...data,
+      sectionOrders: {
+        ...(data.sectionOrders || {}),
+        [templateId]: shuffled,
+      },
+      sectionOrder: shuffled,
+    });
+  };
+
+  // Reset sequence to template default
+  const handleResetSectionOrder = () => {
+    const newOrders = { ...(data.sectionOrders || {}) };
+    delete newOrders[templateId];
+    onChange({
+      ...data,
+      sectionOrders: newOrders,
+      sectionOrder: templateDefaultOrder,
+    });
+  };
+
   const renderSectionHeader = (secId, IconComponent, label, count = null) => {
     const isHidden = !!data.hiddenSections?.[secId];
     const isOpen = openSection === secId;
+    const isReorderable = secId !== "personal" && secId !== "footer";
+    const contentIdx = currentContentOrder.indexOf(secId);
+    const canMoveUp = isReorderable && contentIdx > 0;
+    const canMoveDown =
+      isReorderable &&
+      contentIdx !== -1 &&
+      contentIdx < currentContentOrder.length - 1;
 
     return (
       <div
         onClick={() => toggleSection(secId)}
-        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors cursor-pointer select-none"
+        className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors cursor-pointer select-none"
       >
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+          {/* Order Rank Badge */}
+          {isReorderable && contentIdx !== -1 && (
+            <span
+              className="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-black flex items-center justify-center shrink-0 border border-slate-200/80 dark:border-slate-700"
+              title={`Sequence rank #${contentIdx + 1}`}
+            >
+              #{contentIdx + 1}
+            </span>
+          )}
           <IconComponent size={16} className="text-[#003873] dark:text-sky-400 shrink-0" />
-          <span className={isHidden ? "line-through opacity-60 text-slate-400" : ""}>
+          <span className={`truncate ${isHidden ? "line-through opacity-60 text-slate-400" : ""}`}>
             {label} {count !== null ? `(${count})` : ""}
           </span>
           {isHidden && (
@@ -152,7 +250,35 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 shrink-0">
+          {/* Reorder Up / Down Controls */}
+          {isReorderable && (
+            <div
+              className="flex items-center -space-x-0.5 bg-slate-100/90 dark:bg-slate-800/90 rounded-lg p-0.5 border border-slate-200/70 dark:border-slate-700"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                type="button"
+                onClick={() => moveSectionUp(secId)}
+                disabled={!canMoveUp}
+                className="p-1 rounded text-slate-500 hover:text-[#003873] dark:hover:text-sky-300 hover:bg-white dark:hover:bg-slate-700 disabled:opacity-20 disabled:hover:bg-transparent cursor-pointer transition-colors"
+                title="Move section up"
+              >
+                <ChevronUp size={13} strokeWidth={2.5} />
+              </button>
+              <button
+                type="button"
+                onClick={() => moveSectionDown(secId)}
+                disabled={!canMoveDown}
+                className="p-1 rounded text-slate-500 hover:text-[#003873] dark:hover:text-sky-300 hover:bg-white dark:hover:bg-slate-700 disabled:opacity-20 disabled:hover:bg-transparent cursor-pointer transition-colors"
+                title="Move section down"
+              >
+                <ChevronDown size={13} strokeWidth={2.5} />
+              </button>
+            </div>
+          )}
+
+          {/* Delete / Restore Toggle */}
           {secId !== "personal" && secId !== "footer" && (
             <button
               type="button"
@@ -177,19 +303,39 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
               </span>
             </button>
           )}
-          {isOpen ? (
-            <ChevronUp size={16} className="text-slate-400" />
-          ) : (
-            <ChevronDown size={16} className="text-slate-400" />
-          )}
+
+          {/* Expand/Collapse Chevron */}
+          <div className="w-5 h-5 flex items-center justify-center text-slate-400">
+            {isOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+          </div>
         </div>
       </div>
     );
   };
 
-  const activeSections = filterByTemplate
+  const baseSections = filterByTemplate
     ? TEMPLATE_SECTIONS_MAP[templateId] || ALL_SECTIONS_FALLBACK
     : ALL_SECTIONS_FALLBACK;
+
+  const personalSec = baseSections.find((s) => s.id === "personal");
+  const footerSec = baseSections.find((s) => s.id === "footer");
+  const orderedContentSecs = currentContentOrder
+    .map((id) => baseSections.find((s) => s.id === id))
+    .filter(Boolean);
+
+  const remainingSecs = baseSections.filter(
+    (s) =>
+      s.id !== "personal" &&
+      s.id !== "footer" &&
+      !currentContentOrder.includes(s.id)
+  );
+
+  const activeSections = [
+    ...(personalSec ? [personalSec] : []),
+    ...orderedContentSecs,
+    ...remainingSecs,
+    ...(footerSec ? [footerSec] : []),
+  ];
 
   const isDualArch = templateId === "dual-arch-creative";
   const isCreativeMarketer = templateId === "creative-marketer";
@@ -1927,6 +2073,41 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
             <Filter size={11} />
             <span>{filterByTemplate ? "Show all sections" : "Match template only"}</span>
           </button>
+        </div>
+
+        {/* SHUFFLE & SEQUENCE TOOLBAR */}
+        <div className="mt-2.5 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <ArrowUpDown size={14} className="text-[#003873] dark:text-sky-400 shrink-0" />
+            <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">
+              Sequence & Shuffle
+            </span>
+            <span className="text-[10.5px] text-slate-500 dark:text-slate-400 hidden sm:inline">
+              (Use ▲ ▼ on cards or 1-click Shuffle)
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={handleShuffleSections}
+              className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-950/50 text-slate-700 dark:text-slate-200 hover:text-[#003873] dark:hover:text-sky-300 border border-slate-200 dark:border-slate-700 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95"
+              title="Randomly shuffle section sequence"
+            >
+              <Shuffle size={12} className="text-blue-600 dark:text-sky-400" />
+              <span>Shuffle</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleResetSectionOrder}
+              className="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs active:scale-95"
+              title="Reset section sequence back to template default"
+            >
+              <RotateCcw size={12} />
+              <span>Reset Sequence</span>
+            </button>
+          </div>
         </div>
       </div>
 
