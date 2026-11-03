@@ -373,24 +373,67 @@ export const createInitialPortfolioData = (
       ],
       seo: {
         keywords: [
-          { keyword: "best digital marketing course in andheri", volume: "4,400", initialRank: 48, currentRank: 2, url: "/digital-marketing-andheri" },
-          { keyword: "seo training institute mumbai", volume: "2,900", initialRank: 36, currentRank: 1, url: "/seo-course-mumbai" },
-          { keyword: "google ads certification classes", volume: "1,800", initialRank: 29, currentRank: 3, url: "/google-ads-classes" },
-          { keyword: "performance marketing agency mumbai", volume: "1,200", initialRank: 55, currentRank: 4, url: "/performance-marketing" },
+          { keyword: "best organic skincare for sensitive skin", searchVolume: 18100, keywordDifficulty: 42, intent: "Commercial", cpc: "$2.80", targetPage: "/collections/sensitive-skin-barrier", priority: "High" },
+          { keyword: "ceramide barrier cream review", searchVolume: 9900, keywordDifficulty: 38, intent: "Informational", cpc: "$1.40", targetPage: "/blog/ceramide-skin-barrier-restoration", priority: "High" },
+          { keyword: "buy organic peptide serum online", searchVolume: 6400, keywordDifficulty: 51, intent: "Transactional", cpc: "$4.20", targetPage: "/products/tri-peptide-nourishing-serum", priority: "High" },
+          { keyword: "how to repair damaged skin barrier naturally", searchVolume: 14200, keywordDifficulty: 29, intent: "Informational", cpc: "$0.95", targetPage: "/guides/repair-skin-barrier-in-7-days", priority: "Medium" },
+          { keyword: "hypoallergenic morning routine steps", searchVolume: 4800, keywordDifficulty: 24, intent: "Informational", cpc: "$1.10", targetPage: "/blog/hypoallergenic-morning-routine", priority: "Medium" },
+          { keyword: "vegan cold pressed facial oil discount", searchVolume: 3200, keywordDifficulty: 35, intent: "Transactional", cpc: "$3.50", targetPage: "/products/botanical-glow-elixir", priority: "Low" },
         ],
-        audit: {
-          totalPagesAudited: 420,
-          criticalErrorsResolved: 38,
-          coreWebVitalsStatus: "Pass (LCP 1.1s, CLS 0.02, INP 84ms)",
-          domainAuthorityBefore: 14,
-          domainAuthorityAfter: 38,
-          organicTrafficGrowth: "+380%",
-        },
+        auditCategories: [
+          {
+            category: "Technical Crawlability & Indexation",
+            score: 98,
+            findings: [
+              "Resolved 24 orphan URLs via updated XML sitemap and automated internal linking",
+              "Fixed 14 legacy 301 redirect chains to direct canonical destinations",
+              "Configured robots.txt directives to prevent indexing of internal search filter facets",
+            ],
+            actionTaken: "Submitted pristine dynamic sitemap index to Google Search Console; 100% of target pages indexed within 48 hours.",
+          },
+          {
+            category: "Core Web Vitals & Page Speed (LCP, INP, CLS)",
+            score: 95,
+            findings: [
+              "Largest Contentful Paint (LCP) reduced from 4.1s to 1.1s via WebP compression & AVIF next-gen formats",
+              "Cumulative Layout Shift (CLS) reduced from 0.28 to 0.01 by specifying image aspect ratios in CSS",
+              "Interaction to Next Paint (INP) clocked at 68ms (well within Google's <200ms good threshold)",
+            ],
+            actionTaken: "Deferred unneeded third-party tracking scripts, self-hosted web fonts, and leveraged Cloudflare Polish edge caching.",
+          },
+          {
+            category: "On-Page SEO & Structured Data",
+            score: 92,
+            findings: [
+              "Implemented JSON-LD Schema markup for Product, Review, FAQPage, and Organization",
+              "Rewrote meta titles & H1 hierarchy across 45 collection pages to include primary keyword triggers",
+              "Introduced automated descriptive alt text and internal breadcrumb navigation structure",
+            ],
+            actionTaken: "Achieved Google Rich Results approval with review star snippets displaying directly in SERPs.",
+          },
+        ],
         localSeo: {
-          businessName: "Operating Media — Digital Marketing Institute",
-          googleReviewsCount: "480+ Reviews",
-          avgRating: "4.9 ★",
-          localPackTop3Keywords: ["digital marketing institute near me", "seo classes andheri west"],
+          businessName: "Aura Dental & Holistic Smile Studio",
+          category: "Cosmetic Dentist & Dental Clinic",
+          addressSnippet: "450 Sutter St Suite 1200, San Francisco, CA 94108",
+          reviewsCount: 148,
+          avgRating: 4.9,
+          localKeywordsRanked: [
+            "#1 for 'holistic cosmetic dentist san francisco'",
+            "#2 for 'clear aligners financial district sf'",
+            "#1 in Google 3-Pack Maps for 'emergency gentle dental clinic'",
+          ],
+          optimizationSteps: [
+            "Claimed & 100% verified Google Business Profile with secondary categories (Teeth Whitening, Dental Hygienist)",
+            "Uploaded 60+ geotagged high-resolution clinic and smiling staff photos with EXIF metadata",
+            "Automated post-appointment SMS review generation workflow resulting in 42 new 5-star reviews in 60 days",
+            "Standardized Name-Address-Phone (NAP) consistency across 35 top local citations (Yelp, Healthgrades, YellowPages)",
+          ],
+          sampleReview: {
+            author: "Dr. Elena Vance, Tech Executive",
+            rating: 5,
+            text: "Found Aura Dental on Google Maps while looking for holistic biomimetic treatments. The staff was incredible, booking was seamless, and the clinic feels like a peaceful spa. Highly recommend!",
+          },
         },
       },
       digitalPlanning: {

@@ -47,6 +47,8 @@ import {
   Smartphone,
   ShieldCheck,
   Target,
+  Star,
+  Store,
 } from "lucide-react";
 import { EditableText, PortfolioEditableContext } from "./EditableText";
 import { ImageUploadModal } from "./ImageUploadModal";
@@ -113,6 +115,9 @@ export const PortfolioPreview = ({
   const [openMetaIdx, setOpenMetaIdx] = useState(0);
   const [openGoogleIdx, setOpenGoogleIdx] = useState(0);
   const [canvaFilter, setCanvaFilter] = useState("all");
+  const [seoActiveTab, setSeoActiveTab] = useState("keywords");
+  const [seoSearchQuery, setSeoSearchQuery] = useState("");
+  const [seoIntentFilter, setSeoIntentFilter] = useState("All");
 
   // Image editing modal state
   const [imageModalConfig, setImageModalConfig] = useState({
@@ -2455,69 +2460,424 @@ export const PortfolioPreview = ({
             );
           }
           
-          // MODULE 06: SEO & LOCAL GBP
+          // MODULE 06: SEO KEYWORD RESEARCH, SITE AUDIT & LOCAL SEO (GBP)
           if (modId === "seo") {
+            const seoData = modules.seo || {};
+            const rawKeywords = Array.isArray(seoData.keywords) && seoData.keywords.length > 0
+              ? seoData.keywords
+              : [
+                  { keyword: "best organic skincare for sensitive skin", searchVolume: 18100, keywordDifficulty: 42, intent: "Commercial", cpc: "$2.80", targetPage: "/collections/sensitive-skin-barrier", priority: "High" },
+                  { keyword: "ceramide barrier cream review", searchVolume: 9900, keywordDifficulty: 38, intent: "Informational", cpc: "$1.40", targetPage: "/blog/ceramide-skin-barrier-restoration", priority: "High" },
+                  { keyword: "buy organic peptide serum online", searchVolume: 6400, keywordDifficulty: 51, intent: "Transactional", cpc: "$4.20", targetPage: "/products/tri-peptide-nourishing-serum", priority: "High" },
+                  { keyword: "how to repair damaged skin barrier naturally", searchVolume: 14200, keywordDifficulty: 29, intent: "Informational", cpc: "$0.95", targetPage: "/guides/repair-skin-barrier-in-7-days", priority: "Medium" },
+                  { keyword: "hypoallergenic morning routine steps", searchVolume: 4800, keywordDifficulty: 24, intent: "Informational", cpc: "$1.10", targetPage: "/blog/hypoallergenic-morning-routine", priority: "Medium" },
+                  { keyword: "vegan cold pressed facial oil discount", searchVolume: 3200, keywordDifficulty: 35, intent: "Transactional", cpc: "$3.50", targetPage: "/products/botanical-glow-elixir", priority: "Low" },
+                ];
+
+            const filteredKeywords = rawKeywords.filter((kw) => {
+              const query = (seoSearchQuery || "").toLowerCase();
+              const matchesQuery = !query || kw.keyword?.toLowerCase().includes(query) || kw.targetPage?.toLowerCase().includes(query);
+              const matchesIntent = seoIntentFilter === "All" || (kw.intent || "").toLowerCase() === seoIntentFilter.toLowerCase();
+              return matchesQuery && matchesIntent;
+            });
+
+            const auditCategories = Array.isArray(seoData.auditCategories) && seoData.auditCategories.length > 0
+              ? seoData.auditCategories
+              : [
+                  {
+                    category: "Technical Crawlability & Indexation",
+                    score: 98,
+                    findings: [
+                      "Resolved 24 orphan URLs via updated XML sitemap and automated internal linking",
+                      "Fixed 14 legacy 301 redirect chains to direct canonical destinations",
+                      "Configured robots.txt directives to prevent indexing of internal search filter facets",
+                    ],
+                    actionTaken: "Submitted pristine dynamic sitemap index to Google Search Console; 100% of target pages indexed within 48 hours.",
+                  },
+                  {
+                    category: "Core Web Vitals & Page Speed (LCP, INP, CLS)",
+                    score: 95,
+                    findings: [
+                      "Largest Contentful Paint (LCP) reduced from 4.1s to 1.1s via WebP compression & AVIF next-gen formats",
+                      "Cumulative Layout Shift (CLS) reduced from 0.28 to 0.01 by specifying image aspect ratios in CSS",
+                      "Interaction to Next Paint (INP) clocked at 68ms (well within Google's <200ms good threshold)",
+                    ],
+                    actionTaken: "Deferred unneeded third-party tracking scripts, self-hosted web fonts, and leveraged Cloudflare Polish edge caching.",
+                  },
+                  {
+                    category: "On-Page SEO & Structured Data",
+                    score: 92,
+                    findings: [
+                      "Implemented JSON-LD Schema markup for Product, Review, FAQPage, and Organization",
+                      "Rewrote meta titles & H1 hierarchy across 45 collection pages to include primary keyword triggers",
+                      "Introduced automated descriptive alt text and internal breadcrumb navigation structure",
+                    ],
+                    actionTaken: "Achieved Google Rich Results approval with review star snippets displaying directly in SERPs.",
+                  },
+                ];
+
+            const localSeo = seoData.localSeo || {
+              businessName: "Aura Dental & Holistic Smile Studio",
+              category: "Cosmetic Dentist & Dental Clinic",
+              addressSnippet: "450 Sutter St Suite 1200, San Francisco, CA 94108",
+              reviewsCount: 148,
+              avgRating: 4.9,
+              localKeywordsRanked: [
+                "#1 for 'holistic cosmetic dentist san francisco'",
+                "#2 for 'clear aligners financial district sf'",
+                "#1 in Google 3-Pack Maps for 'emergency gentle dental clinic'",
+              ],
+              optimizationSteps: [
+                "Claimed & 100% verified Google Business Profile with secondary categories (Teeth Whitening, Dental Hygienist)",
+                "Uploaded 60+ geotagged high-resolution clinic and smiling staff photos with EXIF metadata",
+                "Automated post-appointment SMS review generation workflow resulting in 42 new 5-star reviews in 60 days",
+                "Standardized Name-Address-Phone (NAP) consistency across 35 top local citations (Yelp, Healthgrades, YellowPages)",
+              ],
+              sampleReview: {
+                author: "Dr. Elena Vance, Tech Executive",
+                rating: 5,
+                text: "Found Aura Dental on Google Maps while looking for holistic biomimetic treatments. The staff was incredible, booking was seamless, and the clinic feels like a peaceful spa. Highly recommend!",
+              },
+            };
+
             return (
               <section
                 key={modId}
                 id="seo"
-                className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
+                className={`w-full py-12 sm:py-16 scroll-mt-28 transition-colors ${bgClass}`}
               >
-                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <BarChart3 size={20} />
-                    </div>
+                <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-1 sm:px-2 space-y-8">
+                  {/* Header with 3-Option Switch Toggle */}
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        SEO & Local GBP
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
+                        Module 06 · Organic Search Engine Optimization
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        SEO Keyword Research, Site Audit & Local SEO (GBP)
                       </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Technical audits, Core Web Vitals optimization, Top 10 rankings & Google Map Pack
+                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        A comprehensive three-tier SEO execution covering transactional keyword strategy, technical Core Web Vitals optimization, and Google Business Profile local 3-pack dominance.
                       </p>
                     </div>
-                  </div>
-                </div>
 
-                <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
-                  <div className="p-4 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-3 text-xs font-bold">
-                    <span>Rankings Audit Report: {modules.seo?.audit?.organicTrafficGrowth || "+380%"} Organic Traffic Growth</span>
-                    <span>DA: {modules.seo?.audit?.domainAuthorityBefore ?? 14} → {modules.seo?.audit?.domainAuthorityAfter ?? 38}</span>
+                    {/* Switch Toggle Buttons */}
+                    <div className="inline-flex items-center p-1 bg-slate-100/90 rounded-xl border border-slate-200/90 shadow-2xs self-start md:self-auto shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setSeoActiveTab("keywords")}
+                        className={`px-3 py-1.5 sm:px-3.5 sm:py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                          seoActiveTab === "keywords"
+                            ? "bg-blue-600 text-white shadow-xs"
+                            : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
+                        }`}
+                      >
+                        1. Keyword Research Sheet
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSeoActiveTab("audit")}
+                        className={`px-3 py-1.5 sm:px-3.5 sm:py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                          seoActiveTab === "audit"
+                            ? "bg-blue-600 text-white shadow-xs"
+                            : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
+                        }`}
+                      >
+                        2. Technical SEO Audit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSeoActiveTab("local")}
+                        className={`px-3 py-1.5 sm:px-3.5 sm:py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                          seoActiveTab === "local"
+                            ? "bg-blue-600 text-white shadow-xs"
+                            : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
+                        }`}
+                      >
+                        3. Local SEO & GBP Project
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="overflow-x-auto custom-scrollbar w-full">
-                    <table className="w-full min-w-[500px] text-left text-xs">
-                      <thead className="bg-slate-100 text-slate-700 font-black uppercase text-[10px] tracking-wider border-b border-slate-200">
-                        <tr>
-                          <th className="py-3 px-4">Target Keyword</th>
-                          <th className="py-3 px-4">Monthly Search Volume</th>
-                          <th className="py-3 px-4">Initial Rank</th>
-                          <th className="py-3 px-4">Current Google Rank</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 font-medium">
-                        {(Array.isArray(modules.seo?.keywords) ? modules.seo.keywords : []).map((kw, kIdx) => (
-                          <tr key={kIdx} className="hover:bg-slate-50">
-                            <td className="py-3 px-4 font-bold text-slate-900">{kw.keyword}</td>
-                            <td className="py-3 px-4 text-slate-600">{kw.volume}/mo</td>
-                            <td className="py-3 px-4 text-slate-400">Position #{kw.initialRank}</td>
-                            <td className="py-3 px-4">
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full font-black text-[11px] bg-emerald-100 text-emerald-800 border border-emerald-300">
-                                Rank #{kw.currentRank} on Google
+                  {/* TAB 1: KEYWORD RESEARCH SHEET */}
+                  {seoActiveTab === "keywords" && (
+                    <div className="space-y-4 animate-in fade-in-50 duration-200">
+                      {/* Search & Filter Bar */}
+                      <div className="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+                        <div className="flex items-center gap-2 w-full sm:w-auto flex-1 max-w-md">
+                          <Search className="w-4 h-4 text-slate-400 shrink-0 ml-1" />
+                          <input
+                            type="text"
+                            placeholder="Search keywords in research sheet..."
+                            value={seoSearchQuery}
+                            onChange={(e) => setSeoSearchQuery(e.target.value)}
+                            className="w-full bg-slate-50 text-xs px-3 py-2 rounded-lg border border-slate-200 focus:outline-hidden focus:border-blue-600 focus:bg-white transition-colors"
+                          />
+                        </div>
+
+                        <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+                          <span className="text-xs text-slate-500 font-medium">Filter Intent:</span>
+                          {["All", "Commercial", "Transactional", "Informational"].map((intent) => {
+                            const isSelected = seoIntentFilter === intent;
+                            return (
+                              <button
+                                key={intent}
+                                type="button"
+                                onClick={() => setSeoIntentFilter(intent)}
+                                className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${
+                                  isSelected
+                                    ? "bg-slate-900 text-white shadow-2xs"
+                                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
+                                }`}
+                              >
+                                {intent}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Keywords Table */}
+                      <div className="border border-slate-200 rounded-xl overflow-hidden shadow-xs bg-white">
+                        <div className="overflow-x-auto custom-scrollbar">
+                          <table className="w-full text-left border-collapse text-xs">
+                            <thead>
+                              <tr className="bg-slate-900 text-slate-200 border-b border-slate-800">
+                                <th className="py-3 px-4 font-bold tracking-wide">Target Keyword</th>
+                                <th className="py-3 px-4 font-bold tracking-wide text-right">Volume / Mo</th>
+                                <th className="py-3 px-4 font-bold tracking-wide text-center">KD (Difficulty)</th>
+                                <th className="py-3 px-4 font-bold tracking-wide">Search Intent</th>
+                                <th className="py-3 px-4 font-bold tracking-wide text-right">Est. CPC</th>
+                                <th className="py-3 px-4 font-bold tracking-wide">Target Page Architecture</th>
+                                <th className="py-3 px-4 font-bold tracking-wide text-center">Priority</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                              {filteredKeywords.map((kw, idx) => {
+                                const kd = kw.keywordDifficulty ?? 35;
+                                const kdClass =
+                                  kd < 30
+                                    ? "bg-emerald-100 text-emerald-800"
+                                    : kd < 45
+                                    ? "bg-amber-100 text-amber-800"
+                                    : "bg-rose-100 text-rose-800";
+                                const priorityClass =
+                                  kw.priority === "High"
+                                    ? "bg-amber-100 text-amber-900 border border-amber-300"
+                                    : kw.priority === "Medium"
+                                    ? "bg-slate-100 text-slate-700"
+                                    : "bg-slate-100 text-slate-500";
+                                return (
+                                  <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
+                                    <td className="py-3 px-4 font-semibold text-slate-900">
+                                      {kw.keyword}
+                                    </td>
+                                    <td className="py-3 px-4 text-right font-mono text-slate-700 font-medium">
+                                      {typeof kw.searchVolume === "number" ? kw.searchVolume.toLocaleString() : (kw.searchVolume || kw.volume || "-")}
+                                    </td>
+                                    <td className="py-3 px-4 text-center">
+                                      <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-mono font-bold ${kdClass}`}>
+                                        {kd}%
+                                      </span>
+                                    </td>
+                                    <td className="py-3 px-4">
+                                      <span className="text-slate-600 font-medium">
+                                        {kw.intent || "Commercial"}
+                                      </span>
+                                    </td>
+                                    <td className="py-3 px-4 text-right font-mono text-slate-700 font-medium">
+                                      {kw.cpc || "$2.50"}
+                                    </td>
+                                    <td className="py-3 px-4 font-mono text-[11px] text-blue-600 truncate max-w-xs">
+                                      {kw.targetPage || kw.url || "/"}
+                                    </td>
+                                    <td className="py-3 px-4 text-center">
+                                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${priorityClass}`}>
+                                        {kw.priority || "High"}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Footer Information */}
+                        <div className="p-3.5 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+                          <span>
+                            Showing {filteredKeywords.length} of {rawKeywords.length} mapped keywords from SEMrush / Ahrefs research dataset.
+                          </span>
+                          <span className="font-mono text-blue-600 font-bold">
+                            Total monthly search potential: 56,600+ impressions
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 2: TECHNICAL SEO AUDIT */}
+                  {seoActiveTab === "audit" && (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in-50 duration-200">
+                      {auditCategories.map((cat, cIdx) => (
+                        <div
+                          key={cIdx}
+                          className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                                AUDIT CATEGORY {cIdx + 1}
                               </span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              
+                              <div className="flex items-center gap-1 font-mono text-xs font-bold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded">
+                                <span>Score:</span>
+                                <span>{cat.score || 95}/100</span>
+                              </div>
+                            </div>
+
+                            <h3 className="text-base font-bold text-slate-900 mt-2">
+                              {cat.category}
+                            </h3>
+
+                            <div className="mt-4 space-y-2">
+                              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                AUDIT FINDINGS & RESOLVED ISSUES:
+                              </div>
+                              {(cat.findings || []).map((finding, fIdx) => (
+                                <div key={fIdx} className="flex items-start gap-2 text-xs text-slate-700">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+                                  <span className="leading-relaxed">{finding}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="pt-3 border-t border-slate-100">
+                            <div className="text-[11px] font-bold uppercase tracking-wider text-amber-700 mb-0.5">
+                              ACTION TAKEN BY STUDENT:
+                            </div>
+                            <p className="text-xs text-slate-600 italic leading-relaxed">
+                              "{cat.actionTaken}"
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* TAB 3: LOCAL SEO & GBP PROJECT */}
+                  {seoActiveTab === "local" && (
+                    <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 animate-in fade-in-50 duration-200 shadow-xs">
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                        {/* Left Column: Business Card & Mockup (5 cols) */}
+                        <div className="lg:col-span-5 space-y-4">
+                          <div className="bg-slate-50/80 rounded-xl border border-slate-200 p-4 shadow-2xs">
+                            <div className="flex items-center gap-3">
+                              <div className="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shrink-0 shadow-xs">
+                                <Store className="w-6 h-6 text-white" />
+                              </div>
+                              <div className="min-w-0">
+                                <h4 className="text-base font-bold text-slate-900 truncate">
+                                  {localSeo.businessName}
+                                </h4>
+                                <p className="text-xs text-slate-500">
+                                  {localSeo.category}
+                                </p>
+                                <div className="flex items-center gap-1.5 mt-1">
+                                  <div className="flex text-amber-400">
+                                    {[...Array(5)].map((_, sIdx) => (
+                                      <Star key={sIdx} className="w-3.5 h-3.5 fill-amber-400" />
+                                    ))}
+                                  </div>
+                                  <span className="text-xs font-bold text-slate-900">
+                                    {localSeo.avgRating || 4.9}
+                                  </span>
+                                  <span className="text-xs text-slate-500 font-medium">
+                                    ({localSeo.reviewsCount || 148} Google Reviews)
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="mt-3 pt-3 border-t border-slate-200/80 flex items-center gap-1.5 text-xs text-slate-600">
+                              <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                              <span className="truncate">{localSeo.addressSnippet}</span>
+                            </div>
+                          </div>
+
+                          {/* Laptop / Mockup Showcase Image */}
+                          <div className="relative rounded-xl overflow-hidden border border-slate-200 bg-slate-950 aspect-[16/10] shadow-xs group">
+                            <img
+                              src={mockupLaptopImg}
+                              alt="Local SEO Live Website Build"
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                            />
+                            <div className="absolute bottom-2.5 left-2.5 bg-slate-900/85 backdrop-blur-xs text-emerald-400 text-[10px] font-mono px-2 py-0.5 rounded shadow-xs">
+                              Verified Google Maps Local 3-Pack
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Right Column: 3-Pack Rankings, Steps & Review (7 cols) */}
+                        <div className="lg:col-span-7 space-y-6">
+                          {/* Google Maps 3-Pack Rankings Achieved */}
+                          <div className="space-y-2">
+                            <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                              GOOGLE MAPS 3-PACK RANKINGS ACHIEVED:
+                            </div>
+                            <div className="space-y-2">
+                              {(localSeo.localKeywordsRanked || []).map((rankText, rIdx) => (
+                                <div
+                                  key={rIdx}
+                                  className="flex items-center gap-2 p-2.5 bg-emerald-50/70 border border-emerald-200/90 rounded-xl text-xs font-semibold text-emerald-900"
+                                >
+                                  <TrendingUp className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                  <span>{rankText}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Local SEO Implementation Steps */}
+                          <div className="space-y-2">
+                            <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                              LOCAL SEO IMPLEMENTATION STEPS:
+                            </div>
+                            <div className="space-y-2">
+                              {(localSeo.optimizationSteps || []).map((step, sIdx) => (
+                                <div
+                                  key={sIdx}
+                                  className="flex items-start gap-2.5 p-2.5 bg-slate-50/80 border border-slate-200/80 rounded-xl text-xs text-slate-700 font-medium"
+                                >
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+                                  <span className="leading-relaxed">{step}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Authentic Review Card */}
+                          {localSeo.sampleReview && (
+                            <div className="p-4 bg-amber-50/60 border border-amber-200 rounded-xl space-y-1.5 shadow-2xs">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold text-slate-900">
+                                  {localSeo.sampleReview.author}
+                                </span>
+                                <div className="flex text-amber-400">
+                                  {[...Array(localSeo.sampleReview.rating || 5)].map((_, sIdx) => (
+                                    <Star key={sIdx} className="w-3 h-3 fill-amber-400" />
+                                  ))}
+                                </div>
+                              </div>
+                              <p className="text-xs text-slate-700 italic leading-relaxed">
+                                "{localSeo.sampleReview.text}"
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </section>
             );

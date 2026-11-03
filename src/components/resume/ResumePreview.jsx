@@ -24,9 +24,10 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
     return () => observer.disconnect();
   }, [data, templateId]);
 
-  // Standard A4 aspect ratio height at max-w-[820px] width (820px * 1.414 = ~1160px)
-  const A4_PAGE_HEIGHT = 1140;
-  const isMultiPage = docHeight > 1160;
+  // Multi-page detection: print typography is slightly tighter than screen.
+  // Standard single A4 sheet content renders ~1120-1200px on screen.
+  // When content significantly exceeds this (~1250px+), it flows onto Page 2 in download.
+  const isMultiPage = docHeight > 1250;
 
   const handleUpdateHeading = (key, val) => {
     if (onChange) {
@@ -104,8 +105,8 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
 
         <span className="text-[11px] text-slate-500 font-medium hidden sm:inline">
           {!isMultiPage
-            ? "Will print on 1 clean page • No page break"
-            : "Breaks cleanly onto Page 2 strictly after A4 size • Zero cropped text"}
+            ? "Fits 1 clean page in download • Exact preview match"
+            : "Flows cleanly to Page 2 in download • Zero cropped text"}
         </span>
       </div>
 
@@ -116,20 +117,6 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
         className="w-full max-w-[820px] min-h-[1120px] bg-white rounded-2xl shadow-md border border-slate-200/90 relative overflow-visible transition-all flex flex-col justify-between print:border-none print:shadow-none print:rounded-none print:max-w-none print:w-full print:m-0 print:p-0"
       >
         {renderTemplate()}
-
-        {/* VISUAL A4 PAGE BREAK GUIDE (SCREEN ONLY - HIDDEN ON PRINT) */}
-        {isMultiPage && (
-          <div
-            style={{ top: `${A4_PAGE_HEIGHT}px` }}
-            className="resume-page-break-guide resume-hide-on-print print:hidden absolute left-0 right-0 z-20 pointer-events-none flex items-center px-4 -translate-y-1/2 select-none"
-          >
-            <div className="h-px bg-rose-400 border-t-2 border-dashed border-rose-500 flex-1" />
-            <span className="mx-2 px-3 py-1 rounded-full bg-rose-600 text-white text-[10.5px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5">
-              <span>✂ A4 Page 1 End • Page 2 Starts Here</span>
-            </span>
-            <div className="h-px bg-rose-400 border-t-2 border-dashed border-rose-500 flex-1" />
-          </div>
-        )}
       </div>
     </div>
   );
