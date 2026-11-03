@@ -1,4 +1,6 @@
-import React from "react";
+import React, { createContext, useContext } from "react";
+
+export const PortfolioEditableContext = createContext(true);
 
 export const EditableText = ({
   value,
@@ -9,10 +11,13 @@ export const EditableText = ({
   placeholder = "Click to edit...",
   disabled = false,
 }) => {
-  if (disabled || !onChange) {
+  const isEditableFromContext = useContext(PortfolioEditableContext);
+  const isDisabled = disabled || !isEditableFromContext || !onChange;
+
+  if (isDisabled) {
     return (
       <Tag className={className} style={style}>
-        {value || placeholder}
+        {value ?? ""}
       </Tag>
     );
   }

@@ -48,7 +48,7 @@ import {
   ShieldCheck,
   Target,
 } from "lucide-react";
-import { EditableText } from "./EditableText";
+import { EditableText, PortfolioEditableContext } from "./EditableText";
 import { ImageUploadModal } from "./ImageUploadModal";
 import { MODULES_CATALOG, DEFAULT_MODULE_ORDER, createInitialPortfolioData } from "./portfolioData";
 import logoHorizontalDarkImg from "../../assets/logo-horizontal-dark.png";
@@ -108,6 +108,7 @@ export const PortfolioPreview = ({
     Array.isArray(portfolioData?.moduleOrder) && portfolioData.moduleOrder.length > 0
       ? portfolioData.moduleOrder
       : defaultData.moduleOrder;
+  const isEditable = !isStandalone && Boolean(onChange);
   const [activeTab, setActiveTab] = useState("wordpress");
   const [openMetaIdx, setOpenMetaIdx] = useState(0);
   const [openGoogleIdx, setOpenGoogleIdx] = useState(0);
@@ -123,6 +124,7 @@ export const PortfolioPreview = ({
   });
 
   const openImageModal = (title, currentUrl, isAvatar, onSave) => {
+    if (!isEditable) return;
     setImageModalConfig({
       isOpen: true,
       title,
@@ -411,7 +413,8 @@ export const PortfolioPreview = ({
   }, [navItems]);
 
   return (
-    <div className="bg-slate-50 text-slate-900 min-h-screen font-sans selection:bg-amber-400 selection:text-slate-950">
+    <PortfolioEditableContext.Provider value={isEditable}>
+      <div className="bg-slate-50 text-slate-900 min-h-screen font-sans selection:bg-amber-400 selection:text-slate-950">
       {/* 1. TOPBAR HEADER (Matching reference: Aarav Sharma / DM initials / Center links / Developer Specs / Customize / Print) */}
       <header className="relative z-20 bg-white border-b border-slate-200 shadow-2xs">
         <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 min-h-16 py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4">
@@ -452,17 +455,19 @@ export const PortfolioPreview = ({
 
           {/* Right Action Buttons */}
           <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
-            <button
-              type="button"
-              onClick={() => window.open("/portfolio-live", "_blank")}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 sm:py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-300/70 cursor-pointer shadow-2xs"
-              title="View Live Standalone Portfolio"
-            >
-              <Code2 size={13} style={{ color: theme.primary }} />
-              <span className="hidden sm:inline">Developer Specs</span>
-            </button>
+            {!isStandalone && (
+              <button
+                type="button"
+                onClick={() => window.open("/portfolio-live", "_blank")}
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 sm:py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-300/70 cursor-pointer shadow-2xs"
+                title="View Live Standalone Portfolio"
+              >
+                <Code2 size={13} style={{ color: theme.primary }} />
+                <span className="hidden sm:inline">Developer Specs</span>
+              </button>
+            )}
 
-            {onOpenCustomizer && (
+            {isEditable && onOpenCustomizer && (
               <button
                 type="button"
                 onClick={onOpenCustomizer}
@@ -475,14 +480,27 @@ export const PortfolioPreview = ({
               </button>
             )}
 
-            <button
-              type="button"
-              onClick={() => window.print()}
-              className="inline-flex items-center p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 cursor-pointer shadow-2xs"
-              title="Print or Save Portfolio as PDF"
-            >
-              <Printer size={15} />
-            </button>
+            {!isStandalone && (
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="inline-flex items-center p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 cursor-pointer shadow-2xs"
+                title="Print or Save Portfolio as PDF"
+              >
+                <Printer size={15} />
+              </button>
+            )}
+
+            {isStandalone && student.email && (
+              <a
+                href={`mailto:${student.email}`}
+                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 sm:py-2 text-xs font-bold text-slate-950 rounded-lg transition-colors shadow-xs cursor-pointer"
+                style={{ backgroundColor: theme.primary }}
+              >
+                <Mail size={13} />
+                <span>Get in Touch</span>
+              </a>
+            )}
           </div>
         </div>
       </header>
@@ -595,7 +613,7 @@ export const PortfolioPreview = ({
                   <div className="text-xs uppercase tracking-wider text-slate-400 font-bold">
                     Verified Social & Portfolio Profiles
                   </div>
-                  {onChange && (
+                  {isEditable && (
                     <button
                       type="button"
                       onClick={handleAddSocial}
@@ -627,7 +645,7 @@ export const PortfolioPreview = ({
                         onChange={(val) => handleUpdateSocial(sIdx, "label", val)}
                         className="font-semibold text-xs"
                       />
-                      {onChange && (
+                      {isEditable && (
                         <button
                           type="button"
                           onClick={(e) => {
@@ -658,14 +676,26 @@ export const PortfolioPreview = ({
                   <span>Explore Projects ({navItems.length} Modules)</span>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => window.print()}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors cursor-pointer"
-                >
-                  <Printer size={16} style={{ color: theme.primary }} />
-                  <span>Save / Print Portfolio</span>
-                </button>
+                {!isStandalone && (
+                  <button
+                    type="button"
+                    onClick={() => window.print()}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors cursor-pointer"
+                  >
+                    <Printer size={16} style={{ color: theme.primary }} />
+                    <span>Save / Print Portfolio</span>
+                  </button>
+                )}
+
+                {isStandalone && student.email && (
+                  <a
+                    href={`mailto:${student.email}`}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors"
+                  >
+                    <Mail size={16} style={{ color: theme.primary }} />
+                    <span>Connect Directly</span>
+                  </a>
+                )}
               </div>
             </div>
 
@@ -691,24 +721,26 @@ export const PortfolioPreview = ({
                     />
 
                     {/* Change Photo Hover Overlay Button */}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        openImageModal(
-                          "Update Profile Photo",
-                          student.avatarUrl,
-                          true,
-                          (newUrl) => handleUpdateStudentField("avatarUrl", newUrl)
-                        )
-                      }
-                      className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white space-y-1.5 cursor-pointer"
-                    >
-                      <div className="p-2.5 rounded-full bg-blue-600 text-white shadow-lg">
-                        <Camera size={18} />
-                      </div>
-                      <span className="text-xs font-bold tracking-wide">Change Photo</span>
-                      <span className="text-[10px] text-slate-300">Click to upload or pick avatar</span>
-                    </button>
+                    {isEditable && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          openImageModal(
+                            "Update Profile Photo",
+                            student.avatarUrl,
+                            true,
+                            (newUrl) => handleUpdateStudentField("avatarUrl", newUrl)
+                          )
+                        }
+                        className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white space-y-1.5 cursor-pointer"
+                      >
+                        <div className="p-2.5 rounded-full bg-blue-600 text-white shadow-lg">
+                          <Camera size={18} />
+                        </div>
+                        <span className="text-xs font-bold tracking-wide">Change Photo</span>
+                        <span className="text-[10px] text-slate-300">Click to upload or pick avatar</span>
+                      </button>
+                    )}
                   </div>
 
                   {/* Floating Glass Bottom Bar Over Photo */}
@@ -728,7 +760,7 @@ export const PortfolioPreview = ({
                         <div className="text-[11px] text-slate-400">Meta · Google · HubSpot · Shopify</div>
                       </div>
                     </div>
-                    {onOpenCustomizer && (
+                    {isEditable && onOpenCustomizer && (
                       <button
                         type="button"
                         onClick={onOpenCustomizer}
@@ -764,7 +796,7 @@ export const PortfolioPreview = ({
               <div className="text-xs uppercase tracking-wider text-slate-400 font-bold">
                 Key Performance Highlights & Verified Metrics
               </div>
-              {onChange && (
+              {isEditable && (
                 <button
                   type="button"
                   onClick={handleAddHighlight}
@@ -782,7 +814,7 @@ export const PortfolioPreview = ({
                   key={sIdx}
                   className="bg-slate-800/50 hover:bg-slate-800/90 border border-slate-700/70 rounded-xl p-4 transition-all duration-200 hover:-translate-y-0.5 group relative"
                 >
-                  {onChange && (student.highlights || []).length > 1 && (
+                  {isEditable && (student.highlights || []).length > 1 && (
                     <button
                       type="button"
                       onClick={() => handleDeleteHighlight(sIdx)}
@@ -932,7 +964,7 @@ export const PortfolioPreview = ({
                               </div>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
-                              {onChange && wpProjects.length > 1 && (
+                              {isEditable && wpProjects.length > 1 && (
                                 <button
                                   type="button"
                                   onClick={() => handleDeleteWordPress(pIdx)}
@@ -964,27 +996,31 @@ export const PortfolioPreview = ({
                             <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2">
                               <button
                                 type="button"
-                                onClick={() =>
-                                  openImageModal(
-                                    `Update WordPress Screenshot: ${proj.title}`,
-                                    proj.imageUrl || mockupLaptopImg,
-                                    false,
-                                    (newUrl) => {
-                                      if (onChange) {
-                                        const updated = [...wpProjects];
-                                        updated[pIdx] = { ...updated[pIdx], imageUrl: newUrl };
-                                        onChange({
-                                          ...portfolioData,
-                                          modules: { ...modules, wordpress: updated },
-                                        });
+                                onClick={() => {
+                                  if (isEditable) {
+                                    openImageModal(
+                                      `Update WordPress Screenshot: ${proj.title}`,
+                                      proj.imageUrl || mockupLaptopImg,
+                                      false,
+                                      (newUrl) => {
+                                        if (onChange) {
+                                          const updated = [...wpProjects];
+                                          updated[pIdx] = { ...updated[pIdx], imageUrl: newUrl };
+                                          onChange({
+                                            ...portfolioData,
+                                            modules: { ...modules, wordpress: updated },
+                                          });
+                                        }
                                       }
-                                    }
-                                  )
-                                }
+                                    );
+                                  } else {
+                                    window.open(proj.imageUrl || mockupLaptopImg, "_blank");
+                                  }
+                                }}
                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
                               >
                                 <Eye className="w-3.5 h-3.5 text-blue-600" />
-                                <span>View / Change Screenshot</span>
+                                <span>{isEditable ? "Change / View Screenshot" : "View Fullscreen"}</span>
                               </button>
                             </div>
                           </div>
@@ -1189,7 +1225,7 @@ export const PortfolioPreview = ({
                             className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col group relative"
                           >
                             {/* Delete Design Button */}
-                            {onChange && canvaDesigns.length > 1 && (
+                            {isEditable && canvaDesigns.length > 1 && (
                               <button
                                 type="button"
                                 onClick={() => handleDeleteCanvaDesign(dIdx)}
@@ -1209,38 +1245,40 @@ export const PortfolioPreview = ({
                                 {design.category || "Design"}
                               </div>
                               {/* Change Screenshot Overlay */}
-                              <div className="absolute inset-0 bg-blue-900/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    openImageModal(
-                                      `Update Canva Design: ${design.title}`,
-                                      design.imageUrl || mockupCreativesImg,
-                                      false,
-                                      (newUrl) => {
-                                        if (onChange) {
-                                          const updatedDesigns = [...canvaDesigns];
-                                          updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], imageUrl: newUrl };
-                                          onChange({
-                                            ...portfolioData,
-                                            modules: {
-                                              ...modules,
-                                              canva: {
-                                                ...modules.canva,
-                                                designs: updatedDesigns,
+                              {isEditable && (
+                                <div className="absolute inset-0 bg-blue-900/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      openImageModal(
+                                        `Update Canva Design: ${design.title}`,
+                                        design.imageUrl || mockupCreativesImg,
+                                        false,
+                                        (newUrl) => {
+                                          if (onChange) {
+                                            const updatedDesigns = [...canvaDesigns];
+                                            updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], imageUrl: newUrl };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: {
+                                                ...modules,
+                                                canva: {
+                                                  ...modules.canva,
+                                                  designs: updatedDesigns,
+                                                },
                                               },
-                                            },
-                                          });
+                                            });
+                                          }
                                         }
-                                      }
-                                    )
-                                  }
-                                  className="p-2 rounded-full bg-white text-blue-600 shadow-md hover:bg-slate-100 cursor-pointer"
-                                  title="Change Design Image"
-                                >
-                                  <Camera className="w-4 h-4" />
-                                </button>
-                              </div>
+                                      )
+                                    }
+                                    className="p-2 rounded-full bg-white text-blue-600 shadow-md hover:bg-slate-100 cursor-pointer"
+                                    title="Change Design Image"
+                                  >
+                                    <Camera className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              )}
                             </div>
 
                             <div className="p-4 flex-1 flex flex-col justify-between">
@@ -1287,29 +1325,34 @@ export const PortfolioPreview = ({
                               </div>
                               <button
                                 type="button"
-                                onClick={() =>
-                                  openImageModal(
-                                    `View / Edit Canva Design: ${design.title}`,
-                                    design.imageUrl || mockupCreativesImg,
-                                    false,
-                                    (newUrl) => {
-                                      if (onChange) {
-                                        const updatedDesigns = [...canvaDesigns];
-                                        updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], imageUrl: newUrl };
-                                        onChange({
-                                          ...portfolioData,
-                                          modules: {
-                                            ...modules,
-                                            canva: { ...modules.canva, designs: updatedDesigns },
-                                          },
-                                        });
+                                onClick={() => {
+                                  if (isEditable) {
+                                    openImageModal(
+                                      `View / Edit Canva Design: ${design.title}`,
+                                      design.imageUrl || mockupCreativesImg,
+                                      false,
+                                      (newUrl) => {
+                                        if (onChange) {
+                                          const updatedDesigns = [...canvaDesigns];
+                                          updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], imageUrl: newUrl };
+                                          onChange({
+                                            ...portfolioData,
+                                            modules: {
+                                              ...modules,
+                                              canva: { ...modules.canva, designs: updatedDesigns },
+                                            },
+                                          });
+                                        }
                                       }
-                                    }
-                                  )
-                                }
+                                    );
+                                  } else {
+                                    window.open(design.imageUrl || mockupCreativesImg, "_blank");
+                                  }
+                                }}
                                 className="mt-3 text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 self-start cursor-pointer"
                               >
-                                <span>Expand Design</span>
+                                <span>{isEditable ? "Expand / Edit Design" : "Expand Design"}</span>
+                                <ExternalLink className="w-3 h-3" />
                               </button>
                             </div>
                           </div>
@@ -1363,7 +1406,7 @@ export const PortfolioPreview = ({
                                   <span className="text-[11px] font-mono text-amber-400 uppercase font-semibold">
                                     {video.format}
                                   </span>
-                                  {onChange && canvaVideos.length > 1 && (
+                                  {isEditable && canvaVideos.length > 1 && (
                                     <button
                                       type="button"
                                       onClick={() => handleDeleteCanvaVideo(vIdx)}
@@ -1436,33 +1479,35 @@ export const PortfolioPreview = ({
                                 />
                               </div>
 
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  openImageModal(
-                                    `Change Video Thumbnail: ${video.title}`,
-                                    video.thumbnailUrl || mockupCreativesImg,
-                                    false,
-                                    (newUrl) => {
-                                      if (onChange) {
-                                        const updatedVideos = [...canvaVideos];
-                                        updatedVideos[vIdx] = { ...updatedVideos[vIdx], thumbnailUrl: newUrl };
-                                        onChange({
-                                          ...portfolioData,
-                                          modules: {
-                                            ...modules,
-                                            canva: { ...modules.canva, videos: updatedVideos },
-                                          },
-                                        });
+                              {isEditable && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    openImageModal(
+                                      `Change Video Thumbnail: ${video.title}`,
+                                      video.thumbnailUrl || mockupCreativesImg,
+                                      false,
+                                      (newUrl) => {
+                                        if (onChange) {
+                                          const updatedVideos = [...canvaVideos];
+                                          updatedVideos[vIdx] = { ...updatedVideos[vIdx], thumbnailUrl: newUrl };
+                                          onChange({
+                                            ...portfolioData,
+                                            modules: {
+                                              ...modules,
+                                              canva: { ...modules.canva, videos: updatedVideos },
+                                            },
+                                          });
+                                        }
                                       }
-                                    }
-                                  )
-                                }
-                                className="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 self-start cursor-pointer"
-                              >
-                                <Play className="w-3 h-3 fill-amber-400" />
-                                <span>Preview Reel Storyboard</span>
-                              </button>
+                                    )
+                                  }
+                                  className="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 self-start cursor-pointer"
+                                >
+                                  <Camera className="w-3 h-3" />
+                                  <span>Change Thumbnail</span>
+                                </button>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -1626,27 +1671,31 @@ export const PortfolioPreview = ({
                           <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
                             <button
                               type="button"
-                              onClick={() =>
-                                openImageModal(
-                                  `Update SMO Profile Screenshot: ${profile.handle}`,
-                                  profile.screenshotUrl || mockupCreativesImg,
-                                  false,
-                                  (newUrl) => {
-                                    if (onChange) {
-                                      const updated = [...smoProfiles];
-                                      updated[pIdx] = { ...updated[pIdx], screenshotUrl: newUrl };
-                                      onChange({
-                                        ...portfolioData,
-                                        modules: { ...modules, socialOrganic: updated },
-                                      });
+                              onClick={() => {
+                                if (isEditable) {
+                                  openImageModal(
+                                    `Update SMO Profile Screenshot: ${profile.handle}`,
+                                    profile.screenshotUrl || mockupCreativesImg,
+                                    false,
+                                    (newUrl) => {
+                                      if (onChange) {
+                                        const updated = [...smoProfiles];
+                                        updated[pIdx] = { ...updated[pIdx], screenshotUrl: newUrl };
+                                        onChange({
+                                          ...portfolioData,
+                                          modules: { ...modules, socialOrganic: updated },
+                                        });
+                                      }
                                     }
-                                  }
-                                )
-                              }
+                                  );
+                                } else {
+                                  window.open(profile.screenshotUrl || mockupCreativesImg, "_blank");
+                                }
+                              }}
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
                             >
                               <Eye className="w-3.5 h-3.5 text-blue-600" />
-                              <span>Inspect Profile Grid Screenshot</span>
+                              <span>{isEditable ? "Change / Inspect Screenshot" : "Inspect Profile Grid Screenshot"}</span>
                             </button>
                           </div>
                         </div>
@@ -1833,32 +1882,34 @@ export const PortfolioPreview = ({
                                     alt={ad.title}
                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                                   />
-                                  <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/ad:opacity-100 transition-opacity flex items-center justify-center">
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        openImageModal(
-                                          `Change Meta Ad Creative: ${ad.title}`,
-                                          ad.screenshotUrl || mockupCreativesImg,
-                                          false,
-                                          (newUrl) => {
-                                            if (onChange) {
-                                              const updated = [...metaAds];
-                                              updated[idx] = { ...updated[idx], screenshotUrl: newUrl };
-                                              onChange({
-                                                ...portfolioData,
-                                                modules: { ...modules, socialMarketing: updated },
-                                              });
+                                  {isEditable && (
+                                    <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/ad:opacity-100 transition-opacity flex items-center justify-center">
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          openImageModal(
+                                            `Change Meta Ad Creative: ${ad.title}`,
+                                            ad.screenshotUrl || mockupCreativesImg,
+                                            false,
+                                            (newUrl) => {
+                                              if (onChange) {
+                                                const updated = [...metaAds];
+                                                updated[idx] = { ...updated[idx], screenshotUrl: newUrl };
+                                                onChange({
+                                                  ...portfolioData,
+                                                  modules: { ...modules, socialMarketing: updated },
+                                                });
+                                              }
                                             }
-                                          }
-                                        )
-                                      }
-                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
-                                    >
-                                      <Camera className="w-3.5 h-3.5 text-blue-600" />
-                                      <span>Change Ad Screenshot</span>
-                                    </button>
-                                  </div>
+                                          )
+                                        }
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
+                                      >
+                                        <Camera className="w-3.5 h-3.5 text-blue-600" />
+                                        <span>Change Ad Screenshot</span>
+                                      </button>
+                                    </div>
+                                  )}
                                   <div className="absolute bottom-2.5 right-2.5 bg-slate-900/80 backdrop-blur-xs text-amber-400 text-[10px] font-mono px-2 py-0.5 rounded shadow-xs">
                                     Meta Ads Manager Verified
                                   </div>
@@ -2145,32 +2196,34 @@ export const PortfolioPreview = ({
                                     alt={gad.campaignName || gad.title}
                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                                   />
-                                  <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/ad:opacity-100 transition-opacity flex items-center justify-center">
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        openImageModal(
-                                          `Change Google Ads Screenshot: ${gad.campaignName || gad.title}`,
-                                          gad.screenshotUrl || mockupLaptopImg,
-                                          false,
-                                          (newUrl) => {
-                                            if (onChange) {
-                                              const updated = [...gAds];
-                                              updated[idx] = { ...updated[idx], screenshotUrl: newUrl };
-                                              onChange({
-                                                ...portfolioData,
-                                                modules: { ...modules, googleAds: updated },
-                                              });
+                                  {isEditable && (
+                                    <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/ad:opacity-100 transition-opacity flex items-center justify-center">
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          openImageModal(
+                                            `Change Google Ads Screenshot: ${gad.campaignName || gad.title}`,
+                                            gad.screenshotUrl || mockupLaptopImg,
+                                            false,
+                                            (newUrl) => {
+                                              if (onChange) {
+                                                const updated = [...gAds];
+                                                updated[idx] = { ...updated[idx], screenshotUrl: newUrl };
+                                                onChange({
+                                                  ...portfolioData,
+                                                  modules: { ...modules, googleAds: updated },
+                                                });
+                                              }
                                             }
-                                          }
-                                        )
-                                      }
-                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
-                                    >
-                                      <Camera className="w-3.5 h-3.5 text-blue-600" />
-                                      <span>Change Screenshot</span>
-                                    </button>
-                                  </div>
+                                          )
+                                        }
+                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
+                                      >
+                                        <Camera className="w-3.5 h-3.5 text-blue-600" />
+                                        <span>Change Screenshot</span>
+                                      </button>
+                                    </div>
+                                  )}
                                   <div className="absolute bottom-2.5 right-2.5 bg-slate-900/80 backdrop-blur-xs text-amber-400 text-[10px] font-mono px-2 py-0.5 rounded shadow-xs">
                                     Google Ads Verified
                                   </div>
@@ -3000,7 +3053,7 @@ export const PortfolioPreview = ({
 
       {/* 6. MODAL FOR UPDATING IMAGES DIRECTLY */}
       <ImageUploadModal
-        isOpen={imageModalConfig.isOpen}
+        isOpen={imageModalConfig.isOpen && isEditable}
         onClose={closeImageModal}
         title={imageModalConfig.title}
         currentUrl={imageModalConfig.currentUrl}
@@ -3013,6 +3066,7 @@ export const PortfolioPreview = ({
         }}
       />
     </div>
+    </PortfolioEditableContext.Provider>
   );
 };
 

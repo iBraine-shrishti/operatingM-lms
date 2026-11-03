@@ -6,8 +6,7 @@ import {
 import {
   PORTFOLIO_THEMES,
 } from "../components/portfolio/portfolioThemes";
-import { Copy, Check, ArrowLeft, ExternalLink } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Copy, Check } from "lucide-react";
 
 export const PortfolioLivePage = () => {
   const [portfolioData, setPortfolioData] = useState(() => {
@@ -77,16 +76,8 @@ export const PortfolioLivePage = () => {
 
   return (
     <div className="relative min-h-screen bg-slate-50">
-      {/* Floating Top Control Bar */}
+      {/* Floating Share Link Pill */}
       <div className="fixed bottom-4 right-4 z-50 flex items-center space-x-2 bg-slate-900/90 backdrop-blur-md text-white px-4 py-2.5 rounded-full shadow-2xl border border-slate-700/80">
-        <Link
-          to="/portfolio-builder"
-          className="text-xs font-bold text-slate-300 hover:text-white flex items-center space-x-1.5 transition-colors pr-3 border-r border-slate-700"
-        >
-          <ArrowLeft size={13} />
-          <span>Edit Portfolio</span>
-        </Link>
-
         <button
           type="button"
           onClick={handleCopyLink}
@@ -97,18 +88,12 @@ export const PortfolioLivePage = () => {
         </button>
       </div>
 
-      {/* Fullscreen Portfolio Preview */}
+      {/* Fullscreen Portfolio Preview (Strict Read-Only Mode) */}
       <PortfolioPreview
         portfolioData={portfolioData}
         theme={theme}
         moduleVisibility={moduleVisibility}
         isStandalone={true}
-        onChange={(updated) => {
-          setPortfolioData(updated);
-          try {
-            localStorage.setItem("om_lms_portfolio_data", JSON.stringify(updated));
-          } catch (e) {}
-        }}
       />
     </div>
   );
