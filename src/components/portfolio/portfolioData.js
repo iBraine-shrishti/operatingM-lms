@@ -515,10 +515,86 @@ export const createInitialPortfolioData = (
           },
         ],
       },
-      influencerMarketing: [
-        { id: "inf-1", tier: "Nano-Influencer (5k - 15k)", countHired: 12, costPerPost: "₹3,000", totalSpend: "₹36,000", reach: "148,000", engagementRate: "8.4%", revenueDrawn: "₹185,000" },
-        { id: "inf-2", tier: "Micro-Influencer (20k - 80k)", countHired: 4, costPerPost: "₹18,000", totalSpend: "₹72,000", reach: "320,000", engagementRate: "5.1%", revenueDrawn: "₹310,000" },
-      ],
+      influencerMarketing: {
+        sheetTitle: "Influencer Marketing Research & Vetting Sheet",
+        subtitle:
+          "A comprehensive creator vetting database evaluating follower authenticity, audience fraud detection, demographic skew, engagement rates, and projected collaboration ROI.",
+        badge: "Fraud Audit · Modash & HypeAuditor Metrics",
+        cpmBenchmark: "Evaluated against creator CPM benchmarks ($12-$18 CPM target).",
+        cohortAvgEngagement: "5.25%",
+        creators: [
+          {
+            id: "inf-1",
+            name: "Chloe Chen",
+            handle: "@chloeglows",
+            platform: "Instagram",
+            niche: "Clean Skincare & Dermatologist Insights",
+            followers: "128,000",
+            fakeFollowersAudit: "4.8% (Exceptional Authenticity)",
+            auditClean: true,
+            genderDemographics: "84% Female / 16% Male",
+            engagementRate: "4.92%",
+            collaborationCost: "$850 (1 Reel + 3 Stories)",
+            fitAssessment: "Recommended",
+          },
+          {
+            id: "inf-2",
+            name: "Marcus Rivera",
+            handle: "@marcus_fitfood",
+            platform: "TikTok",
+            niche: "High Protein & Functional Nutrition",
+            followers: "340,000",
+            fakeFollowersAudit: "6.2% (Very Clean)",
+            auditClean: true,
+            genderDemographics: "58% Male / 42% Female",
+            engagementRate: "7.15%",
+            collaborationCost: "$1,200 (1 Dedicated TikTok)",
+            fitAssessment: "Recommended",
+          },
+          {
+            id: "inf-3",
+            name: "Sophia Sterling",
+            handle: "@sophia.lifestyle",
+            platform: "Instagram",
+            niche: "Luxury Travel & Fashion",
+            followers: "285,000",
+            fakeFollowersAudit: "22.4% (Elevated Bot Spike)",
+            auditClean: false,
+            genderDemographics: "70% Female / 30% Male",
+            engagementRate: "1.10%",
+            collaborationCost: "$2,000",
+            fitAssessment: "Risky",
+          },
+          {
+            id: "inf-4",
+            name: "Dr. Ethan Brooks",
+            handle: "@dr.ethan_health",
+            platform: "YouTube",
+            niche: "Preventative Medicine & Biohacking",
+            followers: "94,000",
+            fakeFollowersAudit: "3.1% (Pristine Audience)",
+            auditClean: true,
+            genderDemographics: "52% Male / 48% Female",
+            engagementRate: "6.40%",
+            collaborationCost: "$1,500 (60s Mid-Roll Integration)",
+            fitAssessment: "High Potential",
+          },
+          {
+            id: "inf-5",
+            name: "Maya Lin",
+            handle: "@mayaminimalist",
+            platform: "TikTok",
+            niche: "Sustainable Living & Zero-Waste",
+            followers: "78,500",
+            fakeFollowersAudit: "5.0%",
+            auditClean: true,
+            genderDemographics: "79% Female / 21% Male",
+            engagementRate: "5.80%",
+            collaborationCost: "$500 (1 TikTok + Whitelisting rights)",
+            fitAssessment: "Recommended",
+          },
+        ],
+      },
       shopify: {
         storeName: "Kinetics Performance Wear",
         niche: "Gym & Athleisure DTC",
@@ -545,24 +621,159 @@ export const createInitialPortfolioData = (
         validationMetrics: "₹340,000 gross revenue in first 21 days with 3.2x ROAS on Meta Ads.",
       },
       aiApp: {
-        appName: "PromptGrowth AI — Social Content Generator",
-        tagline: "Custom GPT-4o marketing workflow assistant generating 30 days of viral content in 60 seconds",
-        problemSolved: "Eliminates creator writer's block by reverse-engineering viral hooks and outputting formatted carousels.",
-        techStack: ["Next.js", "OpenAI API", "Tailwind CSS", "Vercel"],
-        aiModelUsed: "GPT-4o + Claude 3.5 Sonnet",
-        samplePromptSystem: "Acts as a senior direct-response copywriter trained on 1,000+ viral LinkedIn carousels.",
-        features: ["1-Click Hook Variations Generator", "Hashtag & SEO Keywords Optimizer", "Export to PDF Carousel Slide Deck"],
-        demoUrl: "https://promptgrowth-demo.vercel.app",
+        moduleEyebrow: "MODULE 12 · ARTIFICIAL INTELLIGENCE & AUTOMATION",
+        title: "AI-Powered Marketing Application & Creative Co-Pilot",
+        subtitle:
+          "Custom software engineered with modern AI APIs to accelerate marketing workflows, automate direct-response ad copy generation, and scale creative testing.",
+        topBadge: "Gemini API · React 19 · Prompt Engineered",
+        category: "PRODUCT ARCHITECTURE & WORKFLOW",
+        appName: "AdCopyGenius AI — Marketing Creative Co-Pilot",
+        appDescription:
+          "Digital marketers spend 10+ hours a week staring at blank screens trying to write compelling ad angles. AdCopyGenius AI structures inputs into proven frameworks (AIDA, PAS, BAB) with automatic character count validation and emoji formatting.",
+        systemPromptInstruction:
+          '"You are an elite direct-response copywriter. Given a product, audience, and pain point, output 3 distinct hooks (Curiosity, Problem-Agitate, Social Proof) under 125 characters, paired with 2 persuasive bodies and call-to-actions."',
+        features: [
+          "Instant 3-Hook Generation (Curiosity, Pain Point, Social Proof)",
+          "Automated Google Ads Headline & Description compliance checker",
+          "Meta Primary Text generator with estimated CTR rating score",
+          "1-Click Copy to Clipboard & CSV batch export for Google Ads Editor",
+        ],
+        techStack: ["React 19", "TypeScript", "Tailwind CSS", "Gemini API", "Vite"],
+        defaultProduct: "Anti-Fatigue Ergonomic Standing Mat",
+        variants: {
+          "AIDA": [
+                    {
+                              "framework": "Curiosity Pattern Interrupt",
+                              "ctr": "3.85% Pred. CTR",
+                              "text": "\"Why 84% of remote workers suffer lower back soreness after 2 PM (Hint: it's not their chair, it's what's under their socks).\""
+                    },
+                    {
+                              "framework": "Pain-Agitate-Solve (PAS)",
+                              "ctr": "4.12% Pred. CTR",
+                              "text": "\"Standing desks don't fix foot fatigue. Our high-density contoured core absorbs 40% of joint compression so you work pain-free all day.\""
+                    },
+                    {
+                              "framework": "Direct Response Offer Hook",
+                              "ctr": "3.94% Pred. CTR",
+                              "text": "\"Upgrade your daily work stamina. Try the orthopedic standing mat backed by 2,400+ 5-star physical therapist reviews. Free 30-day trial.\""
+                    }
+          ],
+          "PAS": [
+                    {
+                              "framework": "Pain-Agitate-Solve (PAS)",
+                              "ctr": "4.12% Pred. CTR",
+                              "text": "\"Standing desks don't fix foot fatigue. Our high-density contoured core absorbs 40% of joint compression so you work pain-free all day.\""
+                    },
+                    {
+                              "framework": "Curiosity Pattern Interrupt",
+                              "ctr": "3.85% Pred. CTR",
+                              "text": "\"Why 84% of remote workers suffer lower back soreness after 2 PM (Hint: it's not their chair, it's what's under their socks).\""
+                    },
+                    {
+                              "framework": "Direct Response Offer Hook",
+                              "ctr": "3.94% Pred. CTR",
+                              "text": "\"Upgrade your daily work stamina. Try the orthopedic standing mat backed by 2,400+ 5-star physical therapist reviews. Free 30-day trial.\""
+                    }
+          ],
+          "Curiosity": [
+                    {
+                              "framework": "Curiosity Pattern Interrupt",
+                              "ctr": "3.85% Pred. CTR",
+                              "text": "\"Why 84% of remote workers suffer lower back soreness after 2 PM (Hint: it's not their chair, it's what's under their socks).\""
+                    },
+                    {
+                              "framework": "Pain-Agitate-Solve (PAS)",
+                              "ctr": "4.12% Pred. CTR",
+                              "text": "\"Standing desks don't fix foot fatigue. Our high-density contoured core absorbs 40% of joint compression so you work pain-free all day.\""
+                    },
+                    {
+                              "framework": "Direct Response Offer Hook",
+                              "ctr": "3.94% Pred. CTR",
+                              "text": "\"Upgrade your daily work stamina. Try the orthopedic standing mat backed by 2,400+ 5-star physical therapist reviews. Free 30-day trial.\""
+                    }
+          ]
+        },
       },
       performanceMarketing: {
-        clientIndustry: "Omnichannel Health & Wellness Brand",
-        budgetScaled: "Scaled from ₹100,000/mo to ₹850,000/mo in 6 months",
-        timeframe: "Q1 to Q3 2026",
-        overallRoas: "3.92x Blended",
-        blendedCac: "₹410 (Reduced by 28%)",
-        ltvEstimate: "₹2,840 90-Day LTV",
-        funnelStages: "Meta Ads (TOFU) -> Google Search Brand (MOFU) -> Klaviyo SMS/Email (BOFU Retargeting)",
-        scalingResults: "Delivered ₹3,332,000 in profitable tracked revenue with 99.4% tracking attribution accuracy.",
+        moduleEyebrow: "MODULE 13 · ADVANCED PERFORMANCE MARKETING",
+        title: "Performance Marketing & Full-Funnel Scaling",
+        subtitle:
+          "Full-funnel paid acquisition architecture scaling spend from $8k to $45k/month while sustaining high profitability through CAC reduction and cohort LTV expansion.",
+        topBadge: "Triple Whale & GA4 Attributed · $135k Managed",
+        stats: [
+          {
+            label: "Total Spend Scaled",
+            value: "$45,000",
+            subtext: "90-Day Scaling Sprint",
+            highlight: false,
+          },
+          {
+            label: "Blended ROAS",
+            value: "3.92x",
+            subtext: "$529,200 Gross Revenue",
+            highlight: "blue",
+          },
+          {
+            label: "Blended Acquisition (CAC)",
+            value: "$82.40",
+            subtext: "-28% vs Account Baseline",
+            highlight: "emerald",
+          },
+          {
+            label: "6-Month LTV / CAC",
+            value: "4.12x Ratio",
+            subtext: "$340 (4.1x CAC ratio) Projected LTV",
+            highlight: "amber",
+          },
+        ],
+        funnelArchitecture: {
+          eyebrow: "FUNNEL ALLOCATION ARCHITECTURE:",
+          title: "Multi-Stage Channel Mix & Budget Orchestration",
+          stages: [
+            {
+              stage: "Top of Funnel (TOF)",
+              pct: "65%",
+              pctBadgeClass: "bg-blue-100 text-blue-700",
+              objective: "Problem Awareness & Cold Traffic Acquisition",
+              channels: "Meta Advantage+ (60%) + TikTok Ads (40%)",
+              creativeFormats:
+                "Founder Story UGC, Spine Pain Medical Demonstration, Hook-tested Reels",
+              budgetFooter: "65% of Total Budget ($29,250/mo)",
+            },
+            {
+              stage: "Middle of Funnel (MOF)",
+              pct: "20%",
+              pctBadgeClass: "bg-amber-100 text-amber-800",
+              objective: "Product Consideration & Social Proof Validation",
+              channels: "Google Search Exact Intent + Meta Video Views Retargeting",
+              creativeFormats:
+                "Press Reviews (Forbes / Wirecutter quotes), 1,000+ Customer Testimonial Grids",
+              budgetFooter: "20% of Total Budget ($9,000/mo)",
+            },
+            {
+              stage: "Bottom of Funnel (BOF)",
+              pct: "15%",
+              pctBadgeClass: "bg-emerald-100 text-emerald-800",
+              objective: "Conversion, Abandonment Recovery & Urgency",
+              channels: "Dynamic Catalog Ads + Klaviyo SMS/Email + Google Brand Search",
+              creativeFormats:
+                "Limited-time 10-year warranty highlight, Zero-interest financing ($0 down via Klarna)",
+              budgetFooter: "15% of Total Budget ($6,750/mo)",
+            },
+          ],
+        },
+        attribution: {
+          eyebrow: "ATTRIBUTION & MEASUREMENT RIGOR",
+          title: "Independent First-Party Tracking",
+          description:
+            "Triple Whale 1-Day Click / 1-Day View First-Party Pixel & Google Analytics 4 Data-Driven Attribution",
+          outcomesHeading: "VERIFIED STUDENT SCALING OUTCOMES:",
+          outcomes: [
+            "Scaled monthly spend from $8,000 to $45,000 while maintaining ROAS above 3.8x",
+            "Decreased blended CAC by 28% through iterative landing page A/B split testing",
+            "Generated over $529,200 in gross revenue with $174,000 contribution profit margin",
+          ],
+        },
       },
     },
   };

@@ -64,6 +64,18 @@ export const PortfolioBuilderPage = () => {
               parsed.modules?.seo?.auditCategories
                 ? parsed.modules.seo
                 : defaultData.modules.seo,
+            influencerMarketing:
+              parsed.modules?.influencerMarketing?.creators
+                ? parsed.modules.influencerMarketing
+                : defaultData.modules.influencerMarketing,
+            aiApp:
+              parsed.modules?.aiApp?.systemPromptInstruction
+                ? parsed.modules.aiApp
+                : defaultData.modules.aiApp,
+            performanceMarketing:
+              parsed.modules?.performanceMarketing?.funnelArchitecture
+                ? parsed.modules.performanceMarketing
+                : defaultData.modules.performanceMarketing,
           },
         };
       }

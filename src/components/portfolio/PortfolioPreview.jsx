@@ -46,6 +46,7 @@ import {
   DollarSign,
   Smartphone,
   ShieldCheck,
+  AlertTriangle,
   Target,
   Calendar,
   Truck,
@@ -121,6 +122,11 @@ export const PortfolioPreview = ({
   const [seoSearchQuery, setSeoSearchQuery] = useState("");
   const [seoIntentFilter, setSeoIntentFilter] = useState("All");
   const [planSlideIdx, setPlanSlideIdx] = useState(0);
+  const [influencerSearchQuery, setInfluencerSearchQuery] = useState("");
+  const [influencerPlatformFilter, setInfluencerPlatformFilter] = useState("All");
+  const [aiProductInput, setAiProductInput] = useState("Anti-Fatigue Ergonomic Standing Mat");
+  const [aiFramework, setAiFramework] = useState("AIDA");
+  const [copiedVariantIdx, setCopiedVariantIdx] = useState(null);
 
   // Image editing modal state
   const [imageModalConfig, setImageModalConfig] = useState({
@@ -3231,6 +3237,25 @@ export const PortfolioPreview = ({
 
           // MODULE 08: INFLUENCER MARKETING
           if (modId === "influencerMarketing") {
+            const initialInf = createInitialPortfolioData().modules.influencerMarketing;
+            const infData = modules.influencerMarketing?.creators
+              ? modules.influencerMarketing
+              : initialInf;
+
+            const allCreators = infData?.creators || initialInf.creators || [];
+            const filteredCreators = allCreators.filter((creator) => {
+              const matchesPlatform =
+                influencerPlatformFilter === "All" ||
+                creator.platform?.toLowerCase() === influencerPlatformFilter.toLowerCase();
+              const query = influencerSearchQuery.trim().toLowerCase();
+              const matchesQuery =
+                !query ||
+                creator.name?.toLowerCase().includes(query) ||
+                creator.handle?.toLowerCase().includes(query) ||
+                creator.niche?.toLowerCase().includes(query);
+              return matchesPlatform && matchesQuery;
+            });
+
             return (
               <section
                 key={modId}
@@ -3238,59 +3263,190 @@ export const PortfolioPreview = ({
                 className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
               >
                 <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <Users size={20} />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        Influencer Marketing
+                  {/* Module Header */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                        MODULE 08 · CREATOR & AFFILIATE PARTNERSHIPS
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                        {infData.sheetTitle || "Influencer Marketing Research & Vetting Sheet"}
                       </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Creator tiering, contract deliverables, cost-per-engagement & revenue attribution
+                      <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
+                        {infData.subtitle ||
+                          "A comprehensive creator vetting database evaluating follower authenticity, audience fraud detection, demographic skew, engagement rates, and projected collaboration ROI."}
                       </p>
                     </div>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {(Array.isArray(modules.influencerMarketing) ? modules.influencerMarketing : []).map((inf) => (
-                    <div
-                      key={inf.id}
-                      className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3"
-                    >
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-sm font-black text-slate-900">
-                          {inf.tier}
-                        </h3>
-                        <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
-                          {inf.revenueDrawn} Revenue
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl text-center text-xs">
-                        <div>
-                          <span className="text-[9px] text-slate-400 font-bold block">CREATORS</span>
-                          <span className="font-extrabold text-slate-900">{inf.countHired}</span>
-                        </div>
-                        <div>
-                          <span className="text-[9px] text-slate-400 font-bold block">TOTAL SPEND</span>
-                          <span className="font-extrabold text-slate-900">{inf.totalSpend}</span>
-                        </div>
-                        <div>
-                          <span className="text-[9px] text-slate-400 font-bold block">REACH</span>
-                          <span className="font-extrabold text-blue-600">{inf.reach}</span>
-                        </div>
+                    <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
+                      <div className="border border-blue-200 bg-blue-50/50 text-blue-700 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2">
+                        <Users size={14} className="text-blue-600" />
+                        <span>{infData.badge || "Fraud Audit · Modash & HypeAuditor Metrics"}</span>
                       </div>
                     </div>
-                  ))}
-                </div>
-              
+                  </div>
+
+                  {/* Filter & Search Bar */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-1">
+                    <div className="relative flex-1 max-w-md">
+                      <Search
+                        size={15}
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Search creator by name, handle, or niche..."
+                        value={influencerSearchQuery}
+                        onChange={(e) => setInfluencerSearchQuery(e.target.value)}
+                        className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs"
+                      />
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-slate-500 font-medium">Platform:</span>
+                      <div className="flex items-center gap-1.5">
+                        {["All", "Instagram", "TikTok", "YouTube"].map((platform) => {
+                          const isActive = influencerPlatformFilter === platform;
+                          return (
+                            <button
+                              key={platform}
+                              type="button"
+                              onClick={() => setInfluencerPlatformFilter(platform)}
+                              className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${
+                                isActive
+                                  ? "bg-blue-600 text-white shadow-xs"
+                                  : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                              }`}
+                            >
+                              {platform}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Vetting Table */}
+                  <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-xs">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-[#0a192f] text-white text-xs font-bold uppercase tracking-wider">
+                            <th className="py-3.5 px-4">Creator & Handle</th>
+                            <th className="py-3.5 px-4">Platform & Niche</th>
+                            <th className="py-3.5 px-4 text-center">Follower Count</th>
+                            <th className="py-3.5 px-4">Fake Followers Audit</th>
+                            <th className="py-3.5 px-4">Gender Demographics</th>
+                            <th className="py-3.5 px-4 text-center">Engagement Rate</th>
+                            <th className="py-3.5 px-4">Est. Collaboration Cost</th>
+                            <th className="py-3.5 px-4 text-right">Fit Assessment</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 text-xs">
+                          {filteredCreators.length > 0 ? (
+                            filteredCreators.map((creator) => {
+                              return (
+                                <tr key={creator.id} className="hover:bg-slate-50/70 transition-colors">
+                                  {/* Creator & Handle */}
+                                  <td className="py-3.5 px-4">
+                                    <div className="font-bold text-slate-900 text-sm">
+                                      {creator.name}
+                                    </div>
+                                    <div className="text-blue-600 font-medium">
+                                      {creator.handle}
+                                    </div>
+                                  </td>
+
+                                  {/* Platform & Niche */}
+                                  <td className="py-3.5 px-4">
+                                    <div className="font-semibold text-slate-800">
+                                      {creator.platform}
+                                    </div>
+                                    <div className="text-slate-500 text-[11px]">
+                                      {creator.niche}
+                                    </div>
+                                  </td>
+
+                                  {/* Follower Count */}
+                                  <td className="py-3.5 px-4 text-center font-bold text-slate-900">
+                                    {creator.followers}
+                                  </td>
+
+                                  {/* Fake Followers Audit */}
+                                  <td className="py-3.5 px-4">
+                                    <div className="flex items-center gap-1.5">
+                                      {creator.auditClean ? (
+                                        <ShieldCheck size={14} className="text-emerald-500 shrink-0" />
+                                      ) : (
+                                        <AlertTriangle size={14} className="text-amber-500 shrink-0" />
+                                      )}
+                                      <span className="text-slate-800 font-medium">
+                                        {creator.fakeFollowersAudit}
+                                      </span>
+                                    </div>
+                                  </td>
+
+                                  {/* Gender Demographics */}
+                                  <td className="py-3.5 px-4 text-slate-700 font-medium">
+                                    {creator.genderDemographics}
+                                  </td>
+
+                                  {/* Engagement Rate */}
+                                  <td className="py-3.5 px-4 text-center">
+                                    <span
+                                      className={`inline-block px-2.5 py-0.5 rounded font-bold text-xs ${
+                                        parseFloat(creator.engagementRate) >= 4
+                                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                          : "bg-slate-100 text-slate-700 border border-slate-200"
+                                      }`}
+                                    >
+                                      {creator.engagementRate}
+                                    </span>
+                                  </td>
+
+                                  {/* Est. Collaboration Cost */}
+                                  <td className="py-3.5 px-4">
+                                    <span className="font-bold text-slate-900">
+                                      {creator.collaborationCost}
+                                    </span>
+                                  </td>
+
+                                  {/* Fit Assessment */}
+                                  <td className="py-3.5 px-4 text-right">
+                                    <span
+                                      className={`inline-block px-3 py-0.5 rounded-full text-xs font-bold border ${
+                                        creator.fitAssessment === "Recommended"
+                                          ? "border-emerald-300 bg-emerald-50 text-emerald-700"
+                                          : creator.fitAssessment === "Risky"
+                                          ? "border-rose-300 bg-rose-50 text-rose-600"
+                                          : "border-blue-300 bg-blue-50 text-blue-700"
+                                      }`}
+                                    >
+                                      {creator.fitAssessment}
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          ) : (
+                            <tr>
+                              <td colSpan={8} className="py-8 text-center text-slate-400">
+                                No creators found matching "{influencerSearchQuery}" on {influencerPlatformFilter}
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Table Footer */}
+                    <div className="bg-slate-50/80 px-4 py-2.5 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+                      <span>{infData.cpmBenchmark || "Evaluated against creator CPM benchmarks ($12-$18 CPM target)."}</span>
+                      <span className="font-bold text-amber-700">
+                        Average cohort engagement rate: {infData.cohortAvgEngagement || "5.25%"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </section>
             );
@@ -3699,6 +3855,21 @@ export const PortfolioPreview = ({
 
           // MODULE 12: AI MARKETING APP
           if (modId === "aiApp") {
+            const initialAi = createInitialPortfolioData().modules.aiApp;
+            const aiData = modules.aiApp?.systemPromptInstruction ? modules.aiApp : initialAi;
+            const frameworkVariants =
+              aiData?.variants?.[aiFramework] ||
+              aiData?.variants?.AIDA ||
+              initialAi.variants.AIDA;
+
+            const handleCopyVariant = (text, idx) => {
+              if (navigator.clipboard) {
+                navigator.clipboard.writeText(text);
+                setCopiedVariantIdx(idx);
+                setTimeout(() => setCopiedVariantIdx(null), 2000);
+              }
+            };
+
             return (
               <section
                 key={modId}
@@ -3706,57 +3877,303 @@ export const PortfolioPreview = ({
                 className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
               >
                 <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <Cpu size={20} />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        AI Marketing App
+                  {/* Module Header */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                        {aiData.moduleEyebrow || "MODULE 12 · ARTIFICIAL INTELLIGENCE & AUTOMATION"}
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                        {aiData.title || "AI-Powered Marketing Application & Creative Co-Pilot"}
                       </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        AI prompt engineering systems, automated copy generators & custom GPT pipelines
+                      <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
+                        {aiData.subtitle ||
+                          "Custom software engineered with modern AI APIs to accelerate marketing workflows, automate direct-response ad copy generation, and scale creative testing."}
                       </p>
                     </div>
-                  </div>
-                </div>
 
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <div>
-                      <span className="text-[10px] font-black uppercase text-purple-600">
-                        {modules.aiApp.aiModelUsed}
-                      </span>
-                      <h3 className="text-base font-black text-slate-900">
-                        {modules.aiApp.appName}
+                    <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
+                      <div className="border border-blue-200 bg-blue-50/50 text-blue-700 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2">
+                        <Sparkles size={14} className="text-blue-600" />
+                        <span>{aiData.topBadge || "Gemini API · React 19 · Prompt Engineered"}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Top Dark Hero Card: Product Architecture & Workflow */}
+                  <div className="bg-[#0b1329] border border-slate-800 rounded-2xl p-6 lg:p-8 text-white shadow-xl overflow-hidden">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                      {/* Left: Interactive UI Dashboard Mockup */}
+                      <div className="lg:col-span-6 space-y-3">
+                        {/* Floating Feature Pill */}
+                        <div className="inline-flex items-center gap-1.5 bg-[#2563eb] text-white text-xs font-bold px-3.5 py-1 rounded-md shadow-md">
+                          <Sparkles size={12} className="text-white" />
+                          <span>Gemini 2.5 Flash with custom system prompts & temperature fine-tuning</span>
+                        </div>
+
+                        {/* Mockup Dashboard Window */}
+                        <div className="bg-slate-100 rounded-xl border border-slate-300/80 shadow-md p-3 sm:p-4 text-slate-900 text-xs">
+                          {/* Mockup Topbar */}
+                          <div className="flex items-center justify-between border-b border-slate-200 pb-2 mb-3">
+                            <span className="font-bold text-slate-800 text-[11px]">
+                              Ad Copy Generation Dashboard
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <Search size={12} className="text-slate-400" />
+                              <div className="w-4 h-4 rounded-full bg-blue-600 text-[9px] text-white flex items-center justify-center font-bold">
+                                A
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {/* Left Pane: Prompt Editor */}
+                            <div className="bg-white rounded-lg p-3 border border-slate-200 space-y-2 text-[10px]">
+                              <div>
+                                <span className="text-slate-400 block font-semibold text-[9px]">Campaign Selector</span>
+                                <div className="border border-slate-200 rounded px-1.5 py-1 text-slate-800 font-medium bg-slate-50">
+                                  Spring Launch 2024
+                                </div>
+                              </div>
+                              <div className="font-bold text-slate-700 text-[10px] pt-1">
+                                Prompt Editor
+                              </div>
+                              <div className="space-y-1 text-slate-600 bg-slate-50 p-2 rounded border border-slate-100">
+                                <div><strong className="text-slate-800">Product:</strong> AeroFit Wireless Earbuds</div>
+                                <div><strong className="text-slate-800">Audience:</strong> Tech-savvy fitness (25-40)</div>
+                                <div><strong className="text-slate-800">Goal:</strong> Driving sales with 20% discount</div>
+                                <div><strong className="text-slate-800">Key features:</strong> Noise canceling, 30h battery</div>
+                              </div>
+                              <div className="flex gap-2 text-slate-600 pt-1">
+                                <div><strong className="text-slate-800">Style:</strong> Creative</div>
+                                <div><strong className="text-slate-800">Tone:</strong> Energetic</div>
+                              </div>
+                              <button
+                                type="button"
+                                className="w-full bg-blue-600 text-white font-bold py-1.5 rounded text-center text-[10px] shadow-xs cursor-default"
+                              >
+                                Generate Ad Copy
+                              </button>
+                            </div>
+
+                            {/* Right Pane: Generated Ad Variants */}
+                            <div className="bg-white rounded-lg p-3 border border-slate-200 space-y-2.5 text-[10px]">
+                              <span className="font-bold text-slate-800 block text-[10px]">
+                                Generated Ad Variants
+                              </span>
+
+                              {/* Variant 1 */}
+                              <div className="border border-slate-200 rounded p-2 bg-slate-50 space-y-1">
+                                <div className="flex items-center justify-between text-[9px]">
+                                  <span className="font-bold text-blue-600">Variant 1 (Facebook/Instagram)</span>
+                                </div>
+                                <div className="font-bold text-slate-900 leading-tight">
+                                  Elevate Your Workout: AeroFit Earbuds
+                                </div>
+                                <p className="text-slate-600 text-[9px] line-clamp-2">
+                                  Experience sound without limits. 30h battery & Noise Canceling. Get 20% OFF! #AeroFit #Fitness
+                                </p>
+                                <div className="flex items-center justify-between text-[9px] pt-1 border-t border-slate-200/60">
+                                  <span className="text-slate-500">Score: <strong className="text-blue-600">89/100</strong></span>
+                                  <span className="text-emerald-600 font-bold">High Engagement ↗</span>
+                                </div>
+                              </div>
+
+                              {/* Variant 2 */}
+                              <div className="border border-slate-200 rounded p-2 bg-slate-50 space-y-1">
+                                <div className="flex items-center justify-between text-[9px]">
+                                  <span className="font-bold text-blue-600">Variant 2 (Google Ads)</span>
+                                </div>
+                                <div className="font-bold text-slate-900 leading-tight">
+                                  AeroFit Earbuds | 20% OFF Limited Time
+                                </div>
+                                <p className="text-slate-600 text-[9px] line-clamp-2">
+                                  Power your workout with water-resistant wireless earbuds. Shop Now!
+                                </p>
+                                <div className="flex items-center justify-between text-[9px] pt-1 border-t border-slate-200/60">
+                                  <span className="text-slate-500">Score: <strong className="text-blue-600">92/100</strong></span>
+                                  <span className="text-emerald-600 font-bold">High Quality Score ↗</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Export bar */}
+                          <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-200 text-[9px] text-slate-500">
+                            <span className="font-semibold text-slate-700">Export Options:</span>
+                            <div className="flex gap-1.5 font-medium">
+                              <span className="bg-slate-200 px-2 py-0.5 rounded text-slate-700">Export All Variants</span>
+                              <span className="bg-slate-200 px-1.5 py-0.5 rounded text-slate-700">Meta (FB/IG)</span>
+                              <span className="bg-slate-200 px-1.5 py-0.5 rounded text-slate-700">Google Ads</span>
+                              <span className="bg-slate-200 px-1.5 py-0.5 rounded text-slate-700">TikTok</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Architecture & Engineered System Prompt */}
+                      <div className="lg:col-span-6 space-y-4">
+                        <div>
+                          <div className="text-xs font-bold uppercase tracking-wider text-amber-500">
+                            {aiData.category || "PRODUCT ARCHITECTURE & WORKFLOW"}
+                          </div>
+                          <h3 className="text-2xl lg:text-3xl font-extrabold text-white mt-1">
+                            {aiData.appName || "AdCopyGenius AI — Marketing Creative Co-Pilot"}
+                          </h3>
+                        </div>
+
+                        <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                          {aiData.appDescription || aiData.tagline ||
+                            "Digital marketers spend 10+ hours a week staring at blank screens trying to write compelling ad angles. AdCopyGenius AI structures inputs into proven frameworks (AIDA, PAS, BAB) with automatic character count validation and emoji formatting."}
+                        </p>
+
+                        {/* Terminal Box */}
+                        <div className="bg-[#050b14] border border-slate-700/60 rounded-xl p-4">
+                          <div className="text-[11px] font-mono font-bold text-amber-500">
+                            &gt;_ ENGINEERED SYSTEM PROMPT INSTRUCTION:
+                          </div>
+                          <p className="text-slate-200 font-mono text-xs leading-relaxed italic mt-1.5">
+                            {aiData.systemPromptInstruction ||
+                              '"You are an elite direct-response copywriter. Given a product, audience, and pain point, output 3 distinct hooks (Curiosity, Problem-Agitate, Social Proof) under 125 characters, paired with 2 persuasive bodies and call-to-actions."'}
+                          </p>
+                        </div>
+
+                        {/* Bullets */}
+                        <div className="space-y-2 pt-1 text-xs text-slate-200">
+                          {(aiData.features || [
+                            "Instant 3-Hook Generation (Curiosity, Pain Point, Social Proof)",
+                            "Automated Google Ads Headline & Description compliance checker",
+                            "Meta Primary Text generator with estimated CTR rating score",
+                            "1-Click Copy to Clipboard & CSV batch export for Google Ads Editor",
+                          ]).map((feat, fIdx) => (
+                            <div key={fIdx} className="flex items-center gap-2.5">
+                              <CheckCircle2 size={15} className="text-blue-400 shrink-0" />
+                              <span>{feat}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Tech Stack Pills */}
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          {(aiData.techStack || ["React 19", "TypeScript", "Tailwind CSS", "Gemini API", "Vite"]).map(
+                            (tech, tIdx) => (
+                              <span
+                                key={tIdx}
+                                className="px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 border border-slate-700 font-mono text-xs"
+                              >
+                                {tech}
+                              </span>
+                            )
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom White Card: Interactive Test Drive */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 shadow-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="text-base text-amber-500">✨</span>
+                      <h3 className="font-bold text-slate-900 text-base sm:text-lg">
+                        {aiData.interactiveTitle || "Interactive Test Drive: Try the Student's AI Ad Copy Output Engine"}
                       </h3>
                     </div>
-                    <a
-                      href={modules.aiApp.demoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-purple-600 hover:bg-purple-700 shadow-xs"
-                    >
-                      <span>Launch Live AI App</span>
-                      <ExternalLink size={12} />
-                    </a>
-                  </div>
 
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    {modules.aiApp.tagline}
-                  </p>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
+                      {/* Left: Simulator Controls */}
+                      <div className="lg:col-span-5 space-y-4">
+                        <div>
+                          <label className="text-xs font-semibold text-slate-700 block mb-1.5">
+                            Product / Service Name:
+                          </label>
+                          <input
+                            type="text"
+                            value={aiProductInput}
+                            onChange={(e) => setAiProductInput(e.target.value)}
+                            placeholder="e.g. Anti-Fatigue Ergonomic Standing Mat"
+                            className="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs"
+                          />
+                        </div>
 
-                  <div className="bg-slate-900 text-slate-200 p-3.5 rounded-xl text-xs font-mono">
-                    <span className="text-slate-400 block text-[10px] font-bold mb-1">// SYSTEM PROMPT ARCHITECTURE</span>
-                    "{modules.aiApp.samplePromptSystem}"
+                        <div>
+                          <label className="text-xs font-semibold text-slate-700 block mb-2">
+                            Direct Response Framework:
+                          </label>
+                          <div className="flex items-center gap-2">
+                            {["AIDA", "PAS", "Curiosity"].map((fw) => {
+                              const isActive = aiFramework === fw;
+                              return (
+                                <button
+                                  key={fw}
+                                  type="button"
+                                  onClick={() => setAiFramework(fw)}
+                                  className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                    isActive
+                                      ? "bg-blue-600 text-white shadow-xs"
+                                      : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                                  }`}
+                                >
+                                  {fw}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-slate-400 leading-relaxed pt-1">
+                          Interactive simulator executing the student's fine-tuned copywriting prompt matrix.
+                        </p>
+                      </div>
+
+                      {/* Right: Generated Ad Variants */}
+                      <div className="lg:col-span-7 space-y-3">
+                        <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                          GENERATED AD VARIANTS FOR {(aiProductInput || "ANTI-FATIGUE ERGONOMIC STANDING MAT").toUpperCase().slice(0, 32)}...:
+                        </div>
+
+                        <div className="space-y-3">
+                          {frameworkVariants.map((variant, vIdx) => {
+                            const isCopied = copiedVariantIdx === vIdx;
+                            return (
+                              <div
+                                key={vIdx}
+                                className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs hover:border-slate-300 transition-colors relative space-y-2"
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <span className="text-xs font-bold text-blue-600">
+                                      {variant.framework}
+                                    </span>
+                                    <span className="text-slate-300">·</span>
+                                    <span className="inline-block px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                      {variant.ctr}
+                                    </span>
+                                  </div>
+
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopyVariant(variant.text, vIdx)}
+                                    title="Copy Ad Variant"
+                                    className="text-slate-400 hover:text-slate-700 p-1 rounded-md transition-colors cursor-pointer"
+                                  >
+                                    {isCopied ? (
+                                      <Check size={15} className="text-emerald-600" />
+                                    ) : (
+                                      <Copy size={15} />
+                                    )}
+                                  </button>
+                                </div>
+
+                                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                                  {variant.text}
+                                </p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              
                 </div>
               </section>
             );
@@ -3764,6 +4181,21 @@ export const PortfolioPreview = ({
 
           // MODULE 13: PERFORMANCE MARKETING
           if (modId === "performanceMarketing") {
+            const initialPerf = createInitialPortfolioData().modules.performanceMarketing;
+            const perfData = modules.performanceMarketing?.funnelArchitecture
+              ? modules.performanceMarketing
+              : initialPerf;
+
+            const statsList = perfData.stats || initialPerf.stats || [];
+            const stagesList =
+              perfData.funnelArchitecture?.stages ||
+              initialPerf.funnelArchitecture.stages ||
+              [];
+            const outcomesList =
+              perfData.attribution?.outcomes ||
+              initialPerf.attribution.outcomes ||
+              [];
+
             return (
               <section
                 key={modId}
@@ -3771,68 +4203,191 @@ export const PortfolioPreview = ({
                 className={`w-full py-10 sm:py-14 scroll-mt-16 transition-colors ${bgClass}`}
               >
                 <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 space-y-6">
-
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white"
-                      style={{ backgroundColor: theme.primary }}
-                    >
-                      <Zap size={20} />
-                    </div>
-                    <div>
-                      <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900">
-                        Performance Marketing
+                  {/* Module Header */}
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                        {perfData.moduleEyebrow || "MODULE 13 · ADVANCED PERFORMANCE MARKETING"}
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                        {perfData.title || "Performance Marketing & Full-Funnel Scaling"}
                       </h2>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Multi-channel attribution, blended CAC reduction, and budget scaling economics
+                      <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
+                        {perfData.subtitle ||
+                          "Full-funnel paid acquisition architecture scaling spend from $8k to $45k/month while sustaining high profitability through CAC reduction and cohort LTV expansion."}
                       </p>
                     </div>
-                  </div>
-                </div>
 
-                <div className="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-2xl p-6 shadow-md space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
+                      <div className="border border-emerald-200 bg-emerald-50/50 text-emerald-700 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2">
+                        <BarChart3 size={14} className="text-emerald-600" />
+                        <span>{perfData.topBadge || "Triple Whale & GA4 Attributed · $135k Managed"}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 4 Top Stat Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {statsList.map((stat, sIdx) => {
+                      const isBlue = stat.highlight === "blue";
+                      const isAmber = stat.highlight === "amber";
+
+                      return (
+                        <div
+                          key={sIdx}
+                          className={`rounded-2xl p-5 shadow-xs border transition-all ${
+                            isBlue
+                              ? "bg-blue-50/30 border-blue-200"
+                              : isAmber
+                              ? "bg-amber-50/30 border-amber-200"
+                              : "bg-white border-slate-200"
+                          }`}
+                        >
+                          <div
+                            className={`text-xs font-medium ${
+                              isBlue
+                                ? "text-blue-600 font-semibold"
+                                : isAmber
+                                ? "text-amber-700 font-semibold"
+                                : "text-slate-500"
+                            }`}
+                          >
+                            {stat.label}
+                          </div>
+                          <div
+                            className={`text-2xl sm:text-3xl font-extrabold mt-1 ${
+                              isBlue
+                                ? "text-blue-600"
+                                : isAmber
+                                ? "text-amber-800"
+                                : "text-slate-900"
+                            }`}
+                          >
+                            {stat.value}
+                          </div>
+                          <div
+                            className={`text-xs mt-1 font-medium ${
+                              stat.highlight === "emerald"
+                                ? "text-emerald-600 font-bold"
+                                : isBlue
+                                ? "text-blue-600/80"
+                                : isAmber
+                                ? "text-amber-700/80"
+                                : "text-slate-400"
+                            }`}
+                          >
+                            {stat.subtext}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Middle Card: Funnel Allocation Architecture */}
+                  <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 shadow-sm space-y-6">
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-400">
-                        {modules.performanceMarketing?.clientIndustry || "Omnichannel DTC Brand"}
-                      </span>
-                      <h3 className="text-base sm:text-lg font-black text-white mt-0.5">
-                        {modules.performanceMarketing?.budgetScaled || "Scaled to ₹850,000/mo"}
+                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                        {perfData.funnelArchitecture?.eyebrow || "FUNNEL ALLOCATION ARCHITECTURE:"}
+                      </div>
+                      <h3 className="text-xl font-extrabold text-slate-900 mt-1">
+                        {perfData.funnelArchitecture?.title || "Multi-Stage Channel Mix & Budget Orchestration"}
                       </h3>
                     </div>
-                    <span className="text-xs font-black text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1 rounded-lg self-start sm:self-auto">
-                      Blended CAC: {modules.performanceMarketing?.blendedCacReduced || modules.performanceMarketing?.blendedCac || "₹410"}
-                    </span>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {stagesList.map((stage, stIdx) => {
+                        return (
+                          <div
+                            key={stIdx}
+                            className="bg-slate-50/70 border border-slate-200/80 rounded-xl p-5 flex flex-col justify-between"
+                          >
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between">
+                                <span className="font-bold text-slate-900 text-sm">
+                                  {stage.stage}
+                                </span>
+                                <span
+                                  className={`px-2 py-0.5 rounded text-xs font-bold ${
+                                    stage.pctBadgeClass || "bg-blue-100 text-blue-700"
+                                  }`}
+                                >
+                                  {stage.pct}
+                                </span>
+                              </div>
+
+                              <p className="text-xs text-slate-600 leading-relaxed">
+                                {stage.objective}
+                              </p>
+
+                              <div>
+                                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                                  ACTIVE CHANNELS:
+                                </span>
+                                <p className="text-xs font-medium text-slate-800 mt-1">
+                                  {stage.channels}
+                                </p>
+                              </div>
+
+                              <div>
+                                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+                                  CREATIVE FORMATS:
+                                </span>
+                                <p className="text-xs font-medium text-slate-800 mt-1 leading-relaxed">
+                                  {stage.creativeFormats}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="pt-4 mt-4 border-t border-slate-200">
+                              <span className="text-xs text-slate-400 font-medium">
+                                {stage.budgetFooter}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-white/5 p-4 rounded-xl text-center text-xs border border-white/10">
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-bold block">SCALE SPEND</span>
-                      <span className="font-extrabold text-white text-sm">
-                        {modules.performanceMarketing?.budgetScaled ? String(modules.performanceMarketing.budgetScaled).split(" ")[0] : "₹850k"}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-slate-400 font-bold block">LTV:CAC</span>
-                      <span className="font-extrabold text-emerald-400 text-sm">
-                        {modules.performanceMarketing?.cohortLtvCac || modules.performanceMarketing?.ltvEstimate || "3.9x"}
-                      </span>
-                    </div>
-                    <div className="col-span-2">
-                      <span className="text-[10px] text-slate-400 font-bold block">CHANNELS</span>
-                      <span className="font-semibold text-slate-300 truncate">
-                        {modules.performanceMarketing?.attributionMix || modules.performanceMarketing?.funnelStages || "Meta Ads + Google Search + Email"}
-                      </span>
+                  {/* Bottom Dark Card: Attribution & Measurement Rigor */}
+                  <div className="bg-[#0a1526] border border-slate-800 rounded-2xl p-6 lg:p-8 text-white shadow-xl">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                      {/* Left: Attribution Rigor info */}
+                      <div className="lg:col-span-5 space-y-2">
+                        <div className="text-xs font-bold uppercase tracking-wider text-amber-500">
+                          {perfData.attribution?.eyebrow || "ATTRIBUTION & MEASUREMENT RIGOR"}
+                        </div>
+                        <h3 className="text-2xl font-extrabold text-white">
+                          {perfData.attribution?.title || "Independent First-Party Tracking"}
+                        </h3>
+                        <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-md pt-1">
+                          {perfData.attribution?.description ||
+                            "Triple Whale 1-Day Click / 1-Day View First-Party Pixel & Google Analytics 4 Data-Driven Attribution"}
+                        </p>
+                      </div>
+
+                      {/* Right: Verified Student Outcomes */}
+                      <div className="lg:col-span-7 space-y-3">
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                          {perfData.attribution?.outcomesHeading || "VERIFIED STUDENT SCALING OUTCOMES:"}
+                        </span>
+
+                        <div className="space-y-3">
+                          {outcomesList.map((outcome, oIdx) => (
+                            <div
+                              key={oIdx}
+                              className="bg-[#0f1d38] border border-slate-700/60 rounded-xl px-4 py-3.5 flex items-center gap-3"
+                            >
+                              <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
+                              <span className="text-xs sm:text-sm text-slate-200 font-medium leading-snug">
+                                {outcome}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                  <p className="text-xs text-slate-300 leading-relaxed bg-white/5 p-3 rounded-xl border border-white/10">
-                    <strong className="text-white">Cohort Economics: </strong>
-                    {modules.performanceMarketing?.scalingMethodology || modules.performanceMarketing?.scalingResults || "Delivered profitable growth with full attribution."}
-                  </p>
-                </div>
-              
                 </div>
               </section>
             );
