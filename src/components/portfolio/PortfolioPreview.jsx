@@ -451,6 +451,606 @@ export const PortfolioPreview = ({
     }
   };
 
+  const handleAddMetaAd = () => {
+    if (onChange) {
+      const current = Array.isArray(modules.socialMarketing) ? modules.socialMarketing : [];
+      const newAd = {
+        id: `smm-acc-${Date.now()}`,
+        title: "New Meta Scale Campaign",
+        campaignType: "Advantage+ Shopping / CBO Scale",
+        objective: "Conversions (Purchase) — Top of Funnel",
+        screenshotUrl: mockupCreativesImg,
+        summary: "Engineered an Advantage+ Shopping Campaign utilizing dynamic creative testing (DCT) with 3 hooks, 2 bodies, and 2 headline variants.",
+        audienceTargeting: "Broad 18-54 F, US National, Excluded 30-day website buyers.",
+        budgetSpend: "$450/day spend ($13,500 total 30-day test flight)",
+        metrics: {
+          ctr: "2.84%",
+          cpc: "$0.84",
+          roasOrCpa: "4.45x ROAS ($24.80 CPA)",
+          purchases: "544 verified DTC checkout conversions",
+          conversions: "544 Orders",
+          impressions: "450,000+",
+          revenue: "$60,200",
+        },
+      };
+      onChange({
+        ...portfolioData,
+        modules: { ...modules, socialMarketing: [...current, newAd] },
+      });
+    }
+  };
+
+  const handleAddGoogleAd = () => {
+    if (onChange) {
+      const current = Array.isArray(modules.googleAds) ? modules.googleAds : [];
+      const newGad = {
+        id: `gads-${Date.now()}`,
+        campaignName: "High-Intent Search: Category Keywords",
+        campaignType: "Search Ad",
+        screenshotUrl: mockupLaptopImg,
+        summary: "Restructured legacy broad-match campaigns into tight single-theme ad groups (STAGs) with exact and phrase match keywords.",
+        headlines: [
+          "Emergency Commercial Plumber | 24/7 Rapid Response",
+          "Licensed Techs on Site in 45 Min | Upfront Pricing",
+          "No Hidden Overtime Fees | Call Our Master Dispatch",
+        ],
+        descriptions: [
+          "Top-rated licensed master plumbers dispatched immediately. Clear upfront flat-rate pricing.",
+          "Fast response times, emergency shutoff & commercial pipe repairs. Speak with an expert now.",
+        ],
+        metrics: {
+          ctr: "8.65%",
+          avgCpc: "$3.42",
+          convRate: "14.2%",
+          conversions: "324 verified phone calls & lead forms",
+          costPerConv: "$24.10",
+          roas: "5.8x",
+          impressions: "42,000",
+        },
+      };
+      onChange({
+        ...portfolioData,
+        modules: { ...modules, googleAds: [...current, newGad] },
+      });
+    }
+  };
+
+  const handleAddSeoKeyword = () => {
+    if (onChange) {
+      const current = Array.isArray(modules.seo?.keywords) ? modules.seo.keywords : [];
+      const newKw = {
+        keyword: "new high-intent target keyword",
+        searchVolume: 5400,
+        keywordDifficulty: 32,
+        intent: "Commercial",
+        cpc: "$2.40",
+        targetPage: "/collections/best-products",
+        priority: "High",
+      };
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          seo: {
+            ...modules.seo,
+            keywords: [...current, newKw],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteSeoKeyword = (kIdx) => {
+    if (onChange) {
+      const current = Array.isArray(modules.seo?.keywords) ? modules.seo.keywords : [];
+      const updated = current.filter((_, i) => i !== kIdx);
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          seo: {
+            ...modules.seo,
+            keywords: updated,
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddPlanSlide = () => {
+    if (onChange) {
+      const current = Array.isArray(modules.digitalPlanning?.brandAuditDeck)
+        ? modules.digitalPlanning.brandAuditDeck
+        : [];
+      const newSlide = {
+        slideNumber: current.length + 1,
+        tag: "EXECUTIVE DELIVERABLE · STRATEGIC GROWTH ROADMAP",
+        title: "New Omnichannel Strategy Deliverable",
+        findings: [
+          "Core strategic takeaway outlining customer journey friction and unlock points.",
+          "Key benchmark comparison against top category competitors.",
+          "Actionable milestone roadmap for scaling marketing attribution.",
+        ],
+        frameworkArchitecture: "Strategic workflow architecture detailing channel dependencies and expected ROI.",
+      };
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          digitalPlanning: {
+            ...modules.digitalPlanning,
+            brandAuditDeck: [...current, newSlide],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeletePlanSlide = (sIdx) => {
+    if (onChange) {
+      const current = Array.isArray(modules.digitalPlanning?.brandAuditDeck)
+        ? modules.digitalPlanning.brandAuditDeck
+        : [];
+      const updated = current.filter((_, i) => i !== sIdx);
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          digitalPlanning: {
+            ...modules.digitalPlanning,
+            brandAuditDeck: updated,
+          },
+        },
+      });
+    }
+  };
+
+  // Module 08: Influencer Marketing Handlers
+  const handleAddInfluencerCreator = () => {
+    if (onChange) {
+      const im = modules.influencerMarketing || {};
+      const current = Array.isArray(im.creators) ? im.creators : [];
+      const newCreator = {
+        id: "inf-" + Date.now(),
+        name: "New Creator",
+        handle: "@creator_handle",
+        platform: influencerPlatformFilter === "All" ? "Instagram" : influencerPlatformFilter,
+        niche: "Clean Skincare & Lifestyle",
+        followers: "150,000",
+        fakeFollowersAudit: "4.5% (Exceptional Authenticity)",
+        auditClean: true,
+        genderDemographics: "80% Female / 20% Male",
+        engagementRate: "5.20%",
+        collaborationCost: "$900 (1 Reel + 2 Stories)",
+        fitAssessment: "Recommended",
+      };
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          influencerMarketing: {
+            ...im,
+            creators: [...current, newCreator],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteInfluencerCreator = (cIdx) => {
+    if (onChange) {
+      const im = modules.influencerMarketing || {};
+      const current = Array.isArray(im.creators) ? im.creators : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          influencerMarketing: {
+            ...im,
+            creators: current.filter((_, i) => i !== cIdx),
+          },
+        },
+      });
+    }
+  };
+
+  // Module 09: Shopify Handlers
+  const handleAddShopifyCroFeature = () => {
+    if (onChange) {
+      const shop = modules.shopify || {};
+      const current = Array.isArray(shop.croFeatures) ? shop.croFeatures : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          shopify: {
+            ...shop,
+            croFeatures: [...current, "High-converting product bundle & tiered pricing widget"],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteShopifyCroFeature = (fIdx) => {
+    if (onChange) {
+      const shop = modules.shopify || {};
+      const current = Array.isArray(shop.croFeatures) ? shop.croFeatures : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          shopify: {
+            ...shop,
+            croFeatures: current.filter((_, i) => i !== fIdx),
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddShopifyApp = () => {
+    if (onChange) {
+      const shop = modules.shopify || {};
+      const current = Array.isArray(shop.installedApps) ? shop.installedApps : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          shopify: {
+            ...shop,
+            installedApps: [...current, "Gorgias: AI Customer Support & Chat"],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteShopifyApp = (aIdx) => {
+    if (onChange) {
+      const shop = modules.shopify || {};
+      const current = Array.isArray(shop.installedApps) ? shop.installedApps : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          shopify: {
+            ...shop,
+            installedApps: current.filter((_, i) => i !== aIdx),
+          },
+        },
+      });
+    }
+  };
+
+  // Module 10: Video Editing Handlers
+  const handleAddVideoReel = () => {
+    if (onChange) {
+      const ve = modules.videoEditing || {};
+      const current = Array.isArray(ve.reels) ? ve.reels : [];
+      const newReel = {
+        id: "reel-" + Date.now(),
+        formatTag: "Reels / TikTok",
+        duration: "0:30",
+        imageUrl: mockupCreativesImg,
+        title: "High-Retention Product Teaser: Direct-Response Creative",
+        description: "Engineered high-velocity commercial video with kinetic subtitles, audio pop-ups, and pattern-interrupt hook.",
+        hookEyebrow: "HOOK & RETENTION ARCHITECTURE (0-3S):",
+        hookStrategy: "0-3s visual pattern interrupt paired with curiosity headline text and dynamic sound effects.",
+        retentionLabel: "Verified Retention:",
+        retentionMetric: "64% completion rate at 15s mark (4.2x benchmark)",
+        tools: ["Adobe Premiere Pro", "CapCut Desktop", "After Effects"],
+      };
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          videoEditing: {
+            ...ve,
+            reels: [...current, newReel],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteVideoReel = (rIdx) => {
+    if (onChange) {
+      const ve = modules.videoEditing || {};
+      const current = Array.isArray(ve.reels) ? ve.reels : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          videoEditing: {
+            ...ve,
+            reels: current.filter((_, i) => i !== rIdx),
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddVideoReelTool = (rIdx) => {
+    if (onChange) {
+      const ve = modules.videoEditing || {};
+      const current = Array.isArray(ve.reels) ? [...ve.reels] : [];
+      if (current[rIdx]) {
+        const tools = Array.isArray(current[rIdx].tools) ? [...current[rIdx].tools] : [];
+        current[rIdx] = { ...current[rIdx], tools: [...tools, "DaVinci Resolve"] };
+        onChange({
+          ...portfolioData,
+          modules: {
+            ...modules,
+            videoEditing: { ...ve, reels: current },
+          },
+        });
+      }
+    }
+  };
+
+  const handleDeleteVideoReelTool = (rIdx, tIdx) => {
+    if (onChange) {
+      const ve = modules.videoEditing || {};
+      const current = Array.isArray(ve.reels) ? [...ve.reels] : [];
+      if (current[rIdx]) {
+        const tools = Array.isArray(current[rIdx].tools) ? current[rIdx].tools.filter((_, i) => i !== tIdx) : [];
+        current[rIdx] = { ...current[rIdx], tools };
+        onChange({
+          ...portfolioData,
+          modules: {
+            ...modules,
+            videoEditing: { ...ve, reels: current },
+          },
+        });
+      }
+    }
+  };
+
+  // Module 12: AI Marketing App Handlers
+  const handleAddAiFeature = () => {
+    if (onChange) {
+      const ai = modules.aiApp || {};
+      const current = Array.isArray(ai.features) ? ai.features : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          aiApp: {
+            ...ai,
+            features: [...current, "Automated A/B creative angle copy scoring and CTR benchmarking"],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteAiFeature = (fIdx) => {
+    if (onChange) {
+      const ai = modules.aiApp || {};
+      const current = Array.isArray(ai.features) ? ai.features : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          aiApp: {
+            ...ai,
+            features: current.filter((_, i) => i !== fIdx),
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddAiTech = () => {
+    if (onChange) {
+      const ai = modules.aiApp || {};
+      const current = Array.isArray(ai.techStack) ? ai.techStack : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          aiApp: {
+            ...ai,
+            techStack: [...current, "Next.js 15"],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteAiTech = (tIdx) => {
+    if (onChange) {
+      const ai = modules.aiApp || {};
+      const current = Array.isArray(ai.techStack) ? ai.techStack : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          aiApp: {
+            ...ai,
+            techStack: current.filter((_, i) => i !== tIdx),
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddAiVariant = (framework) => {
+    if (onChange) {
+      const ai = modules.aiApp || {};
+      const currentFw = Array.isArray(ai.variants?.[framework]) ? ai.variants[framework] : [];
+      const newVar = {
+        framework: framework + " Pattern Hook",
+        ctr: "3.95% Pred. CTR",
+        text: '"High-converting direct response angle hook addressing customer pain point directly."',
+      };
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          aiApp: {
+            ...ai,
+            variants: {
+              ...(ai.variants || {}),
+              [framework]: [...currentFw, newVar],
+            },
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteAiVariant = (framework, vIdx) => {
+    if (onChange) {
+      const ai = modules.aiApp || {};
+      const currentFw = Array.isArray(ai.variants?.[framework]) ? ai.variants[framework] : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          aiApp: {
+            ...ai,
+            variants: {
+              ...(ai.variants || {}),
+              [framework]: currentFw.filter((_, i) => i !== vIdx),
+            },
+          },
+        },
+      });
+    }
+  };
+
+  // Module 13: Performance Marketing Handlers
+  const handleAddPerfStat = () => {
+    if (onChange) {
+      const pm = modules.performanceMarketing || {};
+      const current = Array.isArray(pm.stats) ? pm.stats : [];
+      const newStat = {
+        label: "Scale Milestone",
+        value: "$60,000",
+        subtext: "Sprint Target Growth",
+        highlight: "blue",
+      };
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          performanceMarketing: {
+            ...pm,
+            stats: [...current, newStat],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeletePerfStat = (sIdx) => {
+    if (onChange) {
+      const pm = modules.performanceMarketing || {};
+      const current = Array.isArray(pm.stats) ? pm.stats : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          performanceMarketing: {
+            ...pm,
+            stats: current.filter((_, i) => i !== sIdx),
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddPerfStage = () => {
+    if (onChange) {
+      const pm = modules.performanceMarketing || {};
+      const current = Array.isArray(pm.funnelArchitecture?.stages) ? pm.funnelArchitecture.stages : [];
+      const newStage = {
+        stage: "Custom Stage",
+        pct: "25%",
+        pctBadgeClass: "bg-purple-100 text-purple-800",
+        objective: "Targeted Audience Retargeting & Brand Uplift",
+        channels: "Meta + Google Video + Klaviyo Email",
+        creativeFormats: "Social Proof Grids, Customer Review Carousels",
+        budgetFooter: "25% of Total Budget ($11,250/mo)",
+      };
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          performanceMarketing: {
+            ...pm,
+            funnelArchitecture: {
+              ...(pm.funnelArchitecture || {}),
+              stages: [...current, newStage],
+            },
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeletePerfStage = (stIdx) => {
+    if (onChange) {
+      const pm = modules.performanceMarketing || {};
+      const current = Array.isArray(pm.funnelArchitecture?.stages) ? pm.funnelArchitecture.stages : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          performanceMarketing: {
+            ...pm,
+            funnelArchitecture: {
+              ...(pm.funnelArchitecture || {}),
+              stages: current.filter((_, i) => i !== stIdx),
+            },
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddPerfOutcome = () => {
+    if (onChange) {
+      const pm = modules.performanceMarketing || {};
+      const current = Array.isArray(pm.attribution?.outcomes) ? pm.attribution.outcomes : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          performanceMarketing: {
+            ...pm,
+            attribution: {
+              ...(pm.attribution || {}),
+              outcomes: [...current, "Achieved predictable positive cashflow across all scaled ad cohorts."],
+            },
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeletePerfOutcome = (oIdx) => {
+    if (onChange) {
+      const pm = modules.performanceMarketing || {};
+      const current = Array.isArray(pm.attribution?.outcomes) ? pm.attribution.outcomes : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          performanceMarketing: {
+            ...pm,
+            attribution: {
+              ...(pm.attribution || {}),
+              outcomes: current.filter((_, i) => i !== oIdx),
+            },
+          },
+        },
+      });
+    }
+  };
+
   const scrollToSection = (id) => {
     setActiveTab(id);
     const el = document.getElementById(id);
@@ -2406,6 +3006,7 @@ export const PortfolioPreview = ({
           // MODULE 04: META ADS
           if (modId === "socialMarketing") {
             const metaAds = Array.isArray(modules.socialMarketing) ? modules.socialMarketing : [];
+            const metaMeta = modules.socialMarketingMeta || {};
             return (
               <section
                 key={modId}
@@ -2417,18 +3018,72 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-                        Module 04 · Paid Social Advertising
+                        <EditableText
+                          value={metaMeta.category || "Module 04 · Paid Social Advertising"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  socialMarketingMeta: { ...metaMeta, category: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        Social Media Marketing (Meta & Paid Ads Accordions)
+                        <EditableText
+                          value={metaMeta.title || "Social Media Marketing (Meta & Paid Ads Accordions)"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  socialMarketingMeta: { ...metaMeta, title: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </h2>
                       <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        Performance advertising campaigns deployed across Meta Ads Manager (Advantage+ Shopping, Lead Gen, and Dynamic Retargeting). Click each accordion to review ad screenshots, targeting, and summary teardowns.
+                        <EditableText
+                          tag="span"
+                          value={metaMeta.subtitle || "Performance advertising campaigns deployed across Meta Ads Manager (Advantage+ Shopping, Lead Gen, and Dynamic Retargeting). Click each accordion to review ad screenshots, targeting, and summary teardowns."}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  socialMarketingMeta: { ...metaMeta, subtitle: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </p>
                     </div>
                     <div className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-xs shrink-0">
                       <span className="text-amber-500">👉</span>
-                      <span className="font-semibold text-slate-700">Interactive Accordion Structure</span>
+                      <EditableText
+                        className="font-semibold text-slate-700"
+                        value={metaMeta.badge || "Interactive Accordion Structure · Verified Meta ROI"}
+                        onChange={(val) => {
+                          if (onChange) {
+                            onChange({
+                              ...portfolioData,
+                              modules: {
+                                ...modules,
+                                socialMarketingMeta: { ...metaMeta, badge: val },
+                              },
+                            });
+                          }
+                        }}
+                      />
                     </div>
                   </div>
 
@@ -2446,50 +3101,101 @@ export const PortfolioPreview = ({
                           }`}
                         >
                           {/* Accordion Bar */}
-                          <button
-                            type="button"
-                            onClick={() => setOpenMetaIdx(isOpen ? -1 : idx)}
-                            aria-expanded={isOpen}
-                            className="w-full p-5 sm:p-6 text-left flex items-start sm:items-center justify-between gap-4 select-none focus:outline-hidden cursor-pointer"
-                          >
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-1">
+                          <div className="w-full p-5 sm:p-6 flex items-start sm:items-center justify-between gap-4 select-none bg-white">
+                            <button
+                              type="button"
+                              onClick={() => setOpenMetaIdx(isOpen ? -1 : idx)}
+                              aria-expanded={isOpen}
+                              className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-1 text-left cursor-pointer focus:outline-hidden"
+                            >
                               <div className="w-8 h-8 rounded-lg bg-blue-600 text-amber-300 font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
                                 #{idx + 1}
                               </div>
                               <div>
                                 <div className="flex items-center gap-2 flex-wrap">
                                   <span className="text-[11px] font-mono text-blue-600 font-bold uppercase tracking-wider">
-                                    {ad.campaignType}
+                                    <EditableText
+                                      value={ad.campaignType || "Advantage+ Shopping"}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...metaAds];
+                                          updated[idx] = { ...updated[idx], campaignType: val };
+                                          onChange({ ...portfolioData, modules: { ...modules, socialMarketing: updated } });
+                                        }
+                                      }}
+                                    />
                                   </span>
                                   <span className="text-slate-300">·</span>
                                   <span className="text-xs text-slate-500 font-medium">
-                                    {ad.objective}
+                                    <EditableText
+                                      value={ad.objective || "Conversions"}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...metaAds];
+                                          updated[idx] = { ...updated[idx], objective: val };
+                                          onChange({ ...portfolioData, modules: { ...modules, socialMarketing: updated } });
+                                        }
+                                      }}
+                                    />
                                   </span>
                                 </div>
                                 <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-0.5">
-                                  {ad.title}
+                                  <EditableText
+                                    value={ad.title || "Meta Campaign Title"}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...metaAds];
+                                        updated[idx] = { ...updated[idx], title: val };
+                                        onChange({ ...portfolioData, modules: { ...modules, socialMarketing: updated } });
+                                      }
+                                    }}
+                                  />
                                 </h3>
                               </div>
-                            </div>
+                            </button>
 
-                            <div className="flex items-center gap-3 shrink-0">
+                            <div className="flex items-center gap-2 shrink-0">
                               <span className="hidden md:inline-flex items-center gap-1 font-mono text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
-                                {ad.metrics?.roasOrCpa}
+                                <EditableText
+                                  value={ad.metrics?.roasOrCpa || "4.45x ROAS"}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updated = [...metaAds];
+                                      updated[idx] = {
+                                        ...updated[idx],
+                                        metrics: { ...updated[idx].metrics, roasOrCpa: val },
+                                      };
+                                      onChange({ ...portfolioData, modules: { ...modules, socialMarketing: updated } });
+                                    }
+                                  }}
+                                />
                               </span>
-                              <div
-                                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform duration-200 ${
+                              {isEditable && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteMetaAd(idx)}
+                                  className="p-1.5 rounded-lg bg-slate-100 hover:bg-rose-600 text-slate-500 hover:text-white transition-colors cursor-pointer"
+                                  title="Delete this campaign accordion"
+                                >
+                                  <Trash2 size={13} />
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => setOpenMetaIdx(isOpen ? -1 : idx)}
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform duration-200 cursor-pointer ${
                                   isOpen ? "bg-blue-600 text-white rotate-180" : "bg-slate-200 text-slate-600"
                                 }`}
                               >
                                 <ChevronDown className="w-4 h-4" />
-                              </div>
+                              </button>
                             </div>
-                          </button>
+                          </div>
 
                           {/* Expanded Content */}
                           {isOpen && (
                             <div className="border-t border-slate-200 bg-white p-[clamp(1rem,2vw,1.5rem)] flex flex-col lg:flex-row gap-[clamp(1.25rem,2.5vw,2rem)] items-start">
-                              {/* Left Column: Creative Mockup with Clamped Proportional Width */}
+                              {/* Left Column: Creative Mockup */}
                               <div className="w-full lg:w-[clamp(300px,40%,440px)] shrink-0 space-y-3">
                                 <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
                                   Ad Creative & Placement Screenshot:
@@ -2654,13 +3360,13 @@ export const PortfolioPreview = ({
                                             });
                                           }
                                         }}
-                                        className="text-sm font-mono font-bold text-slate-800 mt-0.5 block"
+                                        className="text-sm font-mono font-bold text-slate-700 mt-0.5 block"
                                       />
                                     </div>
 
-                                    <div className="bg-amber-50 border border-amber-300 rounded-lg p-2.5 text-center">
-                                      <div className="text-[10px] uppercase font-bold text-amber-800">
-                                        ROAS / CPA
+                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center">
+                                      <div className="text-[10px] uppercase font-bold text-slate-500">
+                                        Blended ROAS
                                       </div>
                                       <EditableText
                                         value={ad.metrics?.roasOrCpa}
@@ -2677,22 +3383,22 @@ export const PortfolioPreview = ({
                                             });
                                           }
                                         }}
-                                        className="text-sm font-mono font-bold text-amber-900 mt-0.5 block"
+                                        className="text-sm font-mono font-bold text-emerald-700 mt-0.5 block"
                                       />
                                     </div>
 
-                                    <div className="bg-emerald-50/60 border border-emerald-200 rounded-lg p-2.5 text-center">
+                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center">
                                       <div className="text-[10px] uppercase font-bold text-slate-500">
-                                        Total Conv.
+                                        Purchases / Leads
                                       </div>
                                       <EditableText
-                                        value={ad.metrics?.conversions}
+                                        value={ad.metrics?.purchases || ad.metrics?.conversions || "544 Orders"}
                                         onChange={(val) => {
                                           if (onChange) {
                                             const updated = [...metaAds];
                                             updated[idx] = {
                                               ...updated[idx],
-                                              metrics: { ...updated[idx].metrics, conversions: val },
+                                              metrics: { ...updated[idx].metrics, purchases: val, conversions: val },
                                             };
                                             onChange({
                                               ...portfolioData,
@@ -2700,7 +3406,7 @@ export const PortfolioPreview = ({
                                             });
                                           }
                                         }}
-                                        className="text-sm font-mono font-bold text-emerald-700 mt-0.5 block"
+                                        className="text-xs font-mono font-bold text-slate-800 mt-0.5 truncate block"
                                       />
                                     </div>
                                   </div>
@@ -2712,6 +3418,20 @@ export const PortfolioPreview = ({
                       );
                     })}
                   </div>
+
+                  {/* Add Meta Campaign Button */}
+                  {isEditable && (
+                    <div className="pt-2 text-center">
+                      <button
+                        type="button"
+                        onClick={handleAddMetaAd}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-blue-300 hover:border-blue-500 bg-blue-50/60 hover:bg-blue-50 text-blue-700 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                      >
+                        <Plus size={15} />
+                        <span>Add Meta Paid Ad Campaign</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               </section>
             );
@@ -2720,6 +3440,7 @@ export const PortfolioPreview = ({
           // MODULE 05: GOOGLE ADS
           if (modId === "googleAds") {
             const gAds = Array.isArray(modules.googleAds) ? modules.googleAds : [];
+            const gMeta = modules.googleAdsMeta || {};
             return (
               <section
                 key={modId}
@@ -2731,18 +3452,60 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-                        Module 05 · Search Engine & Intent Advertising
+                        <EditableText
+                          value={gMeta.category || "Module 05 · Search Engine & Intent Advertising"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: { ...modules, googleAdsMeta: { ...gMeta, category: val } },
+                              });
+                            }
+                          }}
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        Google Ads Campaigns & Search Architecture
+                        <EditableText
+                          value={gMeta.title || "Google Ads Campaigns & Search Architecture"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: { ...modules, googleAdsMeta: { ...gMeta, title: val } },
+                              });
+                            }
+                          }}
+                        />
                       </h2>
                       <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        High-intent Google Search, Performance Max, and YouTube video ad campaigns configured with tight STAG ad groups, negative keyword exclusions, and automated bidding strategies.
+                        <EditableText
+                          tag="span"
+                          value={gMeta.subtitle || "High-intent Google Search, Performance Max, and YouTube video ad campaigns configured with tight STAG ad groups, negative keyword exclusions, and automated bidding strategies."}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: { ...modules, googleAdsMeta: { ...gMeta, subtitle: val } },
+                              });
+                            }
+                          }}
+                        />
                       </p>
                     </div>
                     <div className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-xs shrink-0">
                       <span className="text-amber-500">👉</span>
-                      <span className="font-semibold text-slate-700">Ad Copy Variations · Quality Scores 9/10</span>
+                      <EditableText
+                        className="font-semibold text-slate-700"
+                        value={gMeta.badge || "Ad Copy Variations · Quality Scores 9/10"}
+                        onChange={(val) => {
+                          if (onChange) {
+                            onChange({
+                              ...portfolioData,
+                              modules: { ...modules, googleAdsMeta: { ...gMeta, badge: val } },
+                            });
+                          }
+                        }}
+                      />
                     </div>
                   </div>
 
@@ -2760,67 +3523,103 @@ export const PortfolioPreview = ({
                           }`}
                         >
                           {/* Accordion Bar */}
-                          <button
-                            type="button"
-                            onClick={() => setOpenGoogleIdx(isOpen ? -1 : idx)}
-                            aria-expanded={isOpen}
-                            className="w-full p-5 sm:p-6 text-left flex items-start sm:items-center justify-between gap-4 select-none focus:outline-hidden cursor-pointer"
-                          >
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-1">
-                              <div className="w-8 h-8 rounded-lg bg-slate-900 text-amber-400 font-mono font-bold text-xs flex items-center justify-center shrink-0 shadow-xs border border-slate-700">
-                                G{idx + 1}
+                          <div className="w-full p-5 sm:p-6 flex items-start sm:items-center justify-between gap-4 select-none bg-white">
+                            <button
+                              type="button"
+                              onClick={() => setOpenGoogleIdx(isOpen ? -1 : idx)}
+                              aria-expanded={isOpen}
+                              className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-1 text-left cursor-pointer focus:outline-hidden"
+                            >
+                              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                                #{idx + 1}
                               </div>
                               <div>
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <span className="text-[11px] font-mono text-blue-600 font-bold uppercase tracking-wider">
-                                    {gad.campaignType}
-                                  </span>
-                                  <span className="text-slate-300">·</span>
-                                  <span className="text-xs text-emerald-700 font-semibold">
-                                    {gad.qualityScore}
-                                  </span>
-                                </div>
+                                <span className="text-[11px] font-mono text-emerald-700 font-bold uppercase tracking-wider block">
+                                  <EditableText
+                                    value={gad.campaignType || "Search Ad"}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...gAds];
+                                        updated[idx] = { ...updated[idx], campaignType: val };
+                                        onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                      }
+                                    }}
+                                  />
+                                </span>
                                 <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-0.5">
-                                  {gad.campaignName || gad.title}
+                                  <EditableText
+                                    value={gad.campaignName || "Google Ads Campaign"}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...gAds];
+                                        updated[idx] = { ...updated[idx], campaignName: val };
+                                        onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                      }
+                                    }}
+                                  />
                                 </h3>
                               </div>
-                            </div>
+                            </button>
 
-                            <div className="flex items-center gap-3 shrink-0">
-                              <span className="hidden md:inline-flex items-center gap-1 font-mono text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md border border-blue-200">
-                                {gad.metrics?.roas}
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="hidden md:inline-flex items-center gap-1 font-mono text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+                                <EditableText
+                                  value={gad.metrics?.convRate || "14.2% Conv"}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updated = [...gAds];
+                                      updated[idx] = {
+                                        ...updated[idx],
+                                        metrics: { ...updated[idx].metrics, convRate: val },
+                                      };
+                                      onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                    }
+                                  }}
+                                />
                               </span>
-                              <div
-                                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform duration-200 ${
+                              {isEditable && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteGoogleAd(idx)}
+                                  className="p-1.5 rounded-lg bg-slate-100 hover:bg-rose-600 text-slate-500 hover:text-white transition-colors cursor-pointer"
+                                  title="Delete this Google ad campaign"
+                                >
+                                  <Trash2 size={13} />
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => setOpenGoogleIdx(isOpen ? -1 : idx)}
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-transform duration-200 cursor-pointer ${
                                   isOpen ? "bg-blue-600 text-white rotate-180" : "bg-slate-200 text-slate-600"
                                 }`}
                               >
                                 <ChevronDown className="w-4 h-4" />
-                              </div>
+                              </button>
                             </div>
-                          </button>
+                          </div>
 
                           {/* Expanded Content */}
                           {isOpen && (
                             <div className="border-t border-slate-200 bg-white p-[clamp(1rem,2vw,1.5rem)] flex flex-col lg:flex-row gap-[clamp(1.25rem,2.5vw,2rem)] items-start">
-                              {/* Left Column: Mockup & Google Sponsored Search Box (Clamped Proportion) */}
+                              {/* Left Column: UI Mockup */}
                               <div className="w-full lg:w-[clamp(300px,40%,440px)] shrink-0 space-y-3">
                                 <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                                  Ad Preview & Campaign Screenshot:
+                                  Search Architecture & Extension Preview:
                                 </div>
-                                <div className="relative bg-slate-900 rounded-xl overflow-hidden aspect-[4/3] border border-slate-200 shadow-xs group/ad">
+                                <div className="relative bg-slate-950 rounded-xl overflow-hidden aspect-[4/3] border border-slate-200 shadow-xs group/gad">
                                   <img
                                     src={gad.screenshotUrl || mockupLaptopImg}
-                                    alt={gad.campaignName || gad.title}
+                                    alt={gad.campaignName}
                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                                   />
                                   {isEditable && (
-                                    <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/ad:opacity-100 transition-opacity flex items-center justify-center">
+                                    <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/gad:opacity-100 transition-opacity flex items-center justify-center">
                                       <button
                                         type="button"
                                         onClick={() =>
                                           openImageModal(
-                                            `Change Google Ads Screenshot: ${gad.campaignName || gad.title}`,
+                                            `Change Google Ads Preview: ${gad.campaignName}`,
                                             gad.screenshotUrl || mockupLaptopImg,
                                             false,
                                             (newUrl) => {
@@ -2838,36 +3637,21 @@ export const PortfolioPreview = ({
                                         className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
                                       >
                                         <Camera className="w-3.5 h-3.5 text-blue-600" />
-                                        <span>Change Screenshot</span>
+                                        <span>Change Ad Screenshot</span>
                                       </button>
                                     </div>
                                   )}
-                                  <div className="absolute bottom-2.5 right-2.5 bg-slate-900/80 backdrop-blur-xs text-amber-400 text-[10px] font-mono px-2 py-0.5 rounded shadow-xs">
+                                  <div className="absolute bottom-2.5 right-2.5 bg-slate-900/80 backdrop-blur-xs text-emerald-400 text-[10px] font-mono px-2 py-0.5 rounded shadow-xs">
                                     Google Ads Verified
                                   </div>
                                 </div>
-
-                                {/* Realistic Google Search Sponsored Box */}
-                                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1">
-                                  <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                                    <span className="font-bold text-slate-900">Sponsored</span>
-                                    <span>·</span>
-                                    <span className="font-mono">https://example.com/services</span>
-                                  </div>
-                                  <div className="text-sm font-semibold text-blue-800 hover:underline cursor-pointer">
-                                    {gad.headlines?.[0] || gad.campaignName}
-                                  </div>
-                                  <p className="text-slate-600 text-[11px] leading-relaxed">
-                                    {gad.descriptions?.[0] || gad.summary}
-                                  </p>
-                                </div>
                               </div>
 
-                              {/* Right Column: Execution, RSA Copy, Keywords, Metrics */}
+                              {/* Right Column: Copy & KPIs */}
                               <div className="w-full lg:w-[calc(100%-clamp(300px,40%,440px)-clamp(1.25rem,2.5vw,2rem))] flex-1 min-w-0 space-y-5">
                                 <div>
                                   <div className="text-xs font-bold uppercase tracking-wider text-amber-600 mb-1">
-                                    Student Campaign Execution & Strategy:
+                                    Campaign Strategy & Structure:
                                   </div>
                                   <EditableText
                                     tag="p"
@@ -2876,189 +3660,213 @@ export const PortfolioPreview = ({
                                       if (onChange) {
                                         const updated = [...gAds];
                                         updated[idx] = { ...updated[idx], summary: val };
-                                        onChange({
-                                          ...portfolioData,
-                                          modules: { ...modules, googleAds: updated },
-                                        });
+                                        onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
                                       }
                                     }}
-                                    className="text-sm text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200/80 block"
+                                    className="text-sm text-slate-700 leading-relaxed font-normal bg-slate-50 p-4 rounded-xl border border-slate-200/80 block"
                                   />
                                 </div>
 
-                                {/* Tested Responsive Search Ad (RSA) Copy */}
-                                <div className="space-y-2">
-                                  <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                                    Tested Responsive Search Ad (RSA) Copy:
+                                {/* Responsive Search Ad Headlines */}
+                                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                  <div className="flex items-center justify-between">
+                                    <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                      Tested Responsive Search Headlines (H1 - H3):
+                                    </div>
+                                    {isEditable && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (onChange) {
+                                            const updated = [...gAds];
+                                            const hls = [...(updated[idx].headlines || [])];
+                                            hls.push("New High-Converting Google Headline | Call Now");
+                                            updated[idx] = { ...updated[idx], headlines: hls };
+                                            onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                          }
+                                        }}
+                                        className="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                                      >
+                                        <Plus size={11} />
+                                        <span>Add Headline</span>
+                                      </button>
+                                    )}
                                   </div>
                                   <div className="space-y-1.5">
                                     {(gad.headlines || []).map((headline, hIdx) => (
-                                      <div
-                                        key={hIdx}
-                                        className="flex items-center gap-2 text-xs text-slate-800 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200"
-                                      >
-                                        <span className="text-[10px] font-mono font-bold text-blue-600 shrink-0">
-                                          H{hIdx + 1}:
+                                      <div key={hIdx} className="flex items-center gap-2 text-xs group/hl">
+                                        <span className="w-5 h-5 rounded bg-blue-100 text-blue-800 font-mono font-bold text-[10px] flex items-center justify-center shrink-0">
+                                          H{hIdx + 1}
                                         </span>
                                         <EditableText
                                           value={headline}
                                           onChange={(val) => {
                                             if (onChange) {
                                               const updated = [...gAds];
-                                              const heads = [...(updated[idx].headlines || [])];
-                                              heads[hIdx] = val;
-                                              updated[idx] = { ...updated[idx], headlines: heads };
-                                              onChange({
-                                                ...portfolioData,
-                                                modules: { ...modules, googleAds: updated },
-                                              });
+                                              const hls = [...(updated[idx].headlines || [])];
+                                              hls[hIdx] = val;
+                                              updated[idx] = { ...updated[idx], headlines: hls };
+                                              onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
                                             }
                                           }}
-                                          className="flex-1"
+                                          className="text-slate-800 font-medium flex-1"
                                         />
+                                        {isEditable && (
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              if (onChange) {
+                                                const updated = [...gAds];
+                                                const hls = (updated[idx].headlines || []).filter((_, i) => i !== hIdx);
+                                                updated[idx] = { ...updated[idx], headlines: hls };
+                                                onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                              }
+                                            }}
+                                            className="opacity-0 group-hover/hl:opacity-100 text-slate-400 hover:text-rose-600 transition-opacity p-0.5 cursor-pointer"
+                                            title="Delete headline"
+                                          >
+                                            <Trash2 size={11} />
+                                          </button>
+                                        )}
                                       </div>
                                     ))}
                                   </div>
                                 </div>
 
-                                {/* Target Keywords & Match Types */}
-                                <div className="space-y-1.5">
-                                  <div className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
-                                    <Search className="w-3.5 h-3.5 text-blue-600" />
-                                    <span>Target Keywords & Match Types:</span>
-                                  </div>
-                                  <div className="flex flex-wrap gap-1.5">
-                                    {(gad.targetKeywords || gad.topSearchTerms || []).map((kw, kIdx) => (
-                                      <span
-                                        key={kIdx}
-                                        className="px-2 py-0.5 text-[11px] font-mono bg-blue-50 text-blue-800 rounded-md border border-blue-200"
+                                {/* Descriptions */}
+                                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                                  <div className="flex items-center justify-between">
+                                    <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                      Descriptions & Callout Extensions (D1 - D2):
+                                    </div>
+                                    {isEditable && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (onChange) {
+                                            const updated = [...gAds];
+                                            const descs = [...(updated[idx].descriptions || [])];
+                                            descs.push("Clear upfront pricing and prompt expert assistance. Contact us today.");
+                                            updated[idx] = { ...updated[idx], descriptions: descs };
+                                            onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                          }
+                                        }}
+                                        className="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
                                       >
-                                        {kw}
-                                      </span>
+                                        <Plus size={11} />
+                                        <span>Add Description</span>
+                                      </button>
+                                    )}
+                                  </div>
+                                  <div className="space-y-1.5">
+                                    {(gad.descriptions || []).map((desc, dIdx) => (
+                                      <div key={dIdx} className="flex items-start gap-2 text-xs group/desc">
+                                        <span className="w-5 h-5 rounded bg-emerald-100 text-emerald-800 font-mono font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                                          D{dIdx + 1}
+                                        </span>
+                                        <EditableText
+                                          value={desc}
+                                          onChange={(val) => {
+                                            if (onChange) {
+                                              const updated = [...gAds];
+                                              const descs = [...(updated[idx].descriptions || [])];
+                                              descs[dIdx] = val;
+                                              updated[idx] = { ...updated[idx], descriptions: descs };
+                                              onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                            }
+                                          }}
+                                          className="text-slate-600 flex-1 leading-relaxed"
+                                        />
+                                        {isEditable && (
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              if (onChange) {
+                                                const updated = [...gAds];
+                                                const descs = (updated[idx].descriptions || []).filter((_, i) => i !== dIdx);
+                                                updated[idx] = { ...updated[idx], descriptions: descs };
+                                                onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                              }
+                                            }}
+                                            className="opacity-0 group-hover/desc:opacity-100 text-slate-400 hover:text-rose-600 transition-opacity p-0.5 cursor-pointer mt-0.5"
+                                            title="Delete description"
+                                          >
+                                            <Trash2 size={11} />
+                                          </button>
+                                        )}
+                                      </div>
                                     ))}
                                   </div>
                                 </div>
 
-                                {/* Verified Google Ads Metrics */}
-                                <div>
-                                  <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-                                    Verified Google Ads Metrics:
+                                {/* KPI Grid */}
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center">
+                                    <div className="text-[10px] uppercase font-bold text-slate-500">
+                                      Click-Through Rate
+                                    </div>
+                                    <EditableText
+                                      value={gad.metrics?.ctr}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...gAds];
+                                          updated[idx] = { ...updated[idx], metrics: { ...updated[idx].metrics, ctr: val } };
+                                          onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                        }
+                                      }}
+                                      className="text-sm font-mono font-bold text-blue-700 mt-0.5 block"
+                                    />
                                   </div>
-                                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-center">
-                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2">
-                                      <div className="text-[10px] text-slate-500 font-medium">
-                                        Impressions
-                                      </div>
-                                      <EditableText
-                                        value={gad.metrics?.impressions}
-                                        onChange={(val) => {
-                                          if (onChange) {
-                                            const updated = [...gAds];
-                                            updated[idx] = {
-                                              ...updated[idx],
-                                              metrics: { ...updated[idx].metrics, impressions: val },
-                                            };
-                                            onChange({
-                                              ...portfolioData,
-                                              modules: { ...modules, googleAds: updated },
-                                            });
-                                          }
-                                        }}
-                                        className="text-xs font-mono font-bold text-slate-800 mt-0.5 block"
-                                      />
-                                    </div>
 
-                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2">
-                                      <div className="text-[10px] text-slate-500 font-medium">
-                                        CTR
-                                      </div>
-                                      <EditableText
-                                        value={gad.metrics?.ctr}
-                                        onChange={(val) => {
-                                          if (onChange) {
-                                            const updated = [...gAds];
-                                            updated[idx] = {
-                                              ...updated[idx],
-                                              metrics: { ...updated[idx].metrics, ctr: val },
-                                            };
-                                            onChange({
-                                              ...portfolioData,
-                                              modules: { ...modules, googleAds: updated },
-                                            });
-                                          }
-                                        }}
-                                        className="text-xs font-mono font-bold text-blue-700 mt-0.5 block"
-                                      />
+                                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center">
+                                    <div className="text-[10px] uppercase font-bold text-slate-500">
+                                      Average CPC
                                     </div>
+                                    <EditableText
+                                      value={gad.metrics?.avgCpc}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...gAds];
+                                          updated[idx] = { ...updated[idx], metrics: { ...updated[idx].metrics, avgCpc: val } };
+                                          onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                        }
+                                      }}
+                                      className="text-sm font-mono font-bold text-slate-700 mt-0.5 block"
+                                    />
+                                  </div>
 
-                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2">
-                                      <div className="text-[10px] text-slate-500 font-medium">
-                                        Avg CPC
-                                      </div>
-                                      <EditableText
-                                        value={gad.metrics?.avgCpc}
-                                        onChange={(val) => {
-                                          if (onChange) {
-                                            const updated = [...gAds];
-                                            updated[idx] = {
-                                              ...updated[idx],
-                                              metrics: { ...updated[idx].metrics, avgCpc: val },
-                                            };
-                                            onChange({
-                                              ...portfolioData,
-                                              modules: { ...modules, googleAds: updated },
-                                            });
-                                          }
-                                        }}
-                                        className="text-xs font-mono font-bold text-slate-800 mt-0.5 block"
-                                      />
+                                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center">
+                                    <div className="text-[10px] uppercase font-bold text-slate-500">
+                                      Conversion Rate
                                     </div>
+                                    <EditableText
+                                      value={gad.metrics?.convRate}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...gAds];
+                                          updated[idx] = { ...updated[idx], metrics: { ...updated[idx].metrics, convRate: val } };
+                                          onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                        }
+                                      }}
+                                      className="text-sm font-mono font-bold text-emerald-700 mt-0.5 block"
+                                    />
+                                  </div>
 
-                                    <div className="bg-slate-50 border border-slate-200 rounded-lg p-2">
-                                      <div className="text-[10px] text-slate-500 font-medium">
-                                        Conversions
-                                      </div>
-                                      <EditableText
-                                        value={gad.metrics?.conversions}
-                                        onChange={(val) => {
-                                          if (onChange) {
-                                            const updated = [...gAds];
-                                            updated[idx] = {
-                                              ...updated[idx],
-                                              metrics: { ...updated[idx].metrics, conversions: val },
-                                            };
-                                            onChange({
-                                              ...portfolioData,
-                                              modules: { ...modules, googleAds: updated },
-                                            });
-                                          }
-                                        }}
-                                        className="text-xs font-mono font-bold text-emerald-700 mt-0.5 block"
-                                      />
+                                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-center">
+                                    <div className="text-[10px] uppercase font-bold text-slate-500">
+                                      Conversions
                                     </div>
-
-                                    <div className="bg-amber-50 border border-amber-300 rounded-lg p-2 col-span-2 sm:col-span-1">
-                                      <div className="text-[10px] text-amber-800 font-bold">
-                                        ROAS
-                                      </div>
-                                      <EditableText
-                                        value={gad.metrics?.roas}
-                                        onChange={(val) => {
-                                          if (onChange) {
-                                            const updated = [...gAds];
-                                            updated[idx] = {
-                                              ...updated[idx],
-                                              metrics: { ...updated[idx].metrics, roas: val },
-                                            };
-                                            onChange({
-                                              ...portfolioData,
-                                              modules: { ...modules, googleAds: updated },
-                                            });
-                                          }
-                                        }}
-                                        className="text-xs font-mono font-bold text-amber-900 mt-0.5 block"
-                                      />
-                                    </div>
+                                    <EditableText
+                                      value={gad.metrics?.conversions || "324 Leads"}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...gAds];
+                                          updated[idx] = { ...updated[idx], metrics: { ...updated[idx].metrics, conversions: val } };
+                                          onChange({ ...portfolioData, modules: { ...modules, googleAds: updated } });
+                                        }
+                                      }}
+                                      className="text-xs font-mono font-bold text-slate-800 mt-0.5 truncate block"
+                                    />
                                   </div>
                                 </div>
                               </div>
@@ -3068,14 +3876,29 @@ export const PortfolioPreview = ({
                       );
                     })}
                   </div>
+
+                  {/* Add Google Campaign Button */}
+                  {isEditable && (
+                    <div className="pt-2 text-center">
+                      <button
+                        type="button"
+                        onClick={handleAddGoogleAd}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-emerald-300 hover:border-emerald-500 bg-emerald-50/60 hover:bg-emerald-50 text-emerald-800 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                      >
+                        <Plus size={15} />
+                        <span>Add Google Ads Campaign</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               </section>
             );
           }
-          
-          // MODULE 06: SEO KEYWORD RESEARCH, SITE AUDIT & LOCAL SEO (GBP)
+
+          // MODULE 06: SEO & LOCAL GBP
           if (modId === "seo") {
             const seoData = modules.seo || {};
+            const seoMeta = modules.seoMeta || {};
             const defaultKeywords = [
               { keyword: "best organic skincare for sensitive skin", searchVolume: 18100, keywordDifficulty: 42, intent: "Commercial", cpc: "$2.80", targetPage: "/collections/sensitive-skin-barrier", priority: "High" },
               { keyword: "ceramide barrier cream review", searchVolume: 9900, keywordDifficulty: 38, intent: "Informational", cpc: "$1.40", targetPage: "/blog/ceramide-skin-barrier-restoration", priority: "High" },
@@ -3084,10 +3907,7 @@ export const PortfolioPreview = ({
               { keyword: "hypoallergenic morning routine steps", searchVolume: 4800, keywordDifficulty: 24, intent: "Informational", cpc: "$1.10", targetPage: "/blog/hypoallergenic-morning-routine", priority: "Medium" },
               { keyword: "vegan cold pressed facial oil discount", searchVolume: 3200, keywordDifficulty: 35, intent: "Transactional", cpc: "$3.50", targetPage: "/products/botanical-glow-elixir", priority: "Low" },
             ];
-            const hasValidKeywords = Array.isArray(seoData.keywords) &&
-              seoData.keywords.length > 0 &&
-              Boolean(seoData.keywords[0].intent);
-            const rawKeywords = hasValidKeywords ? seoData.keywords : defaultKeywords;
+            const rawKeywords = Array.isArray(seoData.keywords) && seoData.keywords.length > 0 ? seoData.keywords : defaultKeywords;
             const filteredKeywords = rawKeywords.filter((kw) => {
               const query = (seoSearchQuery || "").toLowerCase();
               const matchesQuery = !query || kw.keyword?.toLowerCase().includes(query) || kw.targetPage?.toLowerCase().includes(query);
@@ -3165,13 +3985,44 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-                        Module 06 · Organic Search Engine Optimization
+                        <EditableText
+                          value={seoMeta.category || "Module 06 · Organic Search Engine Optimization"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: { ...modules, seoMeta: { ...seoMeta, category: val } },
+                              });
+                            }
+                          }}
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        SEO Keyword Research, Site Audit & Local SEO (GBP)
+                        <EditableText
+                          value={seoMeta.title || "SEO Keyword Research, Site Audit & Local SEO (GBP)"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: { ...modules, seoMeta: { ...seoMeta, title: val } },
+                              });
+                            }
+                          }}
+                        />
                       </h2>
                       <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        A comprehensive three-tier SEO execution covering transactional keyword strategy, technical Core Web Vitals optimization, and Google Business Profile local 3-pack dominance.
+                        <EditableText
+                          tag="span"
+                          value={seoMeta.subtitle || "A comprehensive three-tier SEO execution covering transactional keyword strategy, technical Core Web Vitals optimization, and Google Business Profile local 3-pack dominance."}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: { ...modules, seoMeta: { ...seoMeta, subtitle: val } },
+                              });
+                            }
+                          }}
+                        />
                       </p>
                     </div>
 
@@ -3248,6 +4099,16 @@ export const PortfolioPreview = ({
                               </button>
                             );
                           })}
+                          {isEditable && (
+                            <button
+                              type="button"
+                              onClick={handleAddSeoKeyword}
+                              className="px-3 py-1 text-xs rounded-md font-bold bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1 shadow-2xs cursor-pointer ml-auto"
+                            >
+                              <Plus size={13} />
+                              <span>Add Keyword</span>
+                            </button>
+                          )}
                         </div>
                       </div>
 
@@ -3264,10 +4125,12 @@ export const PortfolioPreview = ({
                                 <th className="py-3 px-4 font-bold tracking-wide text-right">Est. CPC</th>
                                 <th className="py-3 px-4 font-bold tracking-wide">Target Page Architecture</th>
                                 <th className="py-3 px-4 font-bold tracking-wide text-center">Priority</th>
+                                {isEditable && <th className="py-3 px-2 text-center w-10">Delete</th>}
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
                               {filteredKeywords.map((kw, idx) => {
+                                const realIdx = rawKeywords.indexOf(kw);
                                 const kd = kw.keywordDifficulty ?? 35;
                                 const kdClass =
                                   kd < 30
@@ -3282,34 +4145,109 @@ export const PortfolioPreview = ({
                                     ? "bg-slate-100 text-slate-700"
                                     : "bg-slate-100 text-slate-500";
                                 return (
-                                  <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
+                                  <tr key={idx} className="hover:bg-slate-50/80 transition-colors group/kw">
                                     <td className="py-3 px-4 font-semibold text-slate-900">
-                                      {kw.keyword}
+                                      <EditableText
+                                        value={kw.keyword}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...rawKeywords];
+                                            updated[realIdx] = { ...updated[realIdx], keyword: val };
+                                            onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, keywords: updated } } });
+                                          }
+                                        }}
+                                      />
                                     </td>
                                     <td className="py-3 px-4 text-right font-mono text-slate-700 font-medium">
-                                      {typeof kw.searchVolume === "number" ? kw.searchVolume.toLocaleString() : (kw.searchVolume || kw.volume || "-")}
+                                      <EditableText
+                                        value={String(kw.searchVolume ?? "")}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...rawKeywords];
+                                            updated[realIdx] = { ...updated[realIdx], searchVolume: parseInt(val.replace(/,/g, ""), 10) || val };
+                                            onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, keywords: updated } } });
+                                          }
+                                        }}
+                                      />
                                     </td>
                                     <td className="py-3 px-4 text-center">
                                       <span className={`inline-block px-2 py-0.5 rounded text-[11px] font-mono font-bold ${kdClass}`}>
-                                        {kd}%
+                                        <EditableText
+                                          value={String(kd)}
+                                          onChange={(val) => {
+                                            if (onChange) {
+                                              const updated = [...rawKeywords];
+                                              updated[realIdx] = { ...updated[realIdx], keywordDifficulty: parseInt(val, 10) || 30 };
+                                              onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, keywords: updated } } });
+                                            }
+                                          }}
+                                        />%
                                       </span>
                                     </td>
                                     <td className="py-3 px-4">
                                       <span className="text-slate-600 font-medium">
-                                        {kw.intent || "Commercial"}
+                                        <EditableText
+                                          value={kw.intent || "Commercial"}
+                                          onChange={(val) => {
+                                            if (onChange) {
+                                              const updated = [...rawKeywords];
+                                              updated[realIdx] = { ...updated[realIdx], intent: val };
+                                              onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, keywords: updated } } });
+                                            }
+                                          }}
+                                        />
                                       </span>
                                     </td>
                                     <td className="py-3 px-4 text-right font-mono text-slate-700 font-medium">
-                                      {kw.cpc || "$2.50"}
+                                      <EditableText
+                                        value={kw.cpc || "$2.50"}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...rawKeywords];
+                                            updated[realIdx] = { ...updated[realIdx], cpc: val };
+                                            onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, keywords: updated } } });
+                                          }
+                                        }}
+                                      />
                                     </td>
                                     <td className="py-3 px-4 font-mono text-[11px] text-blue-600 truncate max-w-xs">
-                                      {kw.targetPage || kw.url || "/"}
+                                      <EditableText
+                                        value={kw.targetPage || kw.url || "/"}
+                                        onChange={(val) => {
+                                          if (onChange) {
+                                            const updated = [...rawKeywords];
+                                            updated[realIdx] = { ...updated[realIdx], targetPage: val };
+                                            onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, keywords: updated } } });
+                                          }
+                                        }}
+                                      />
                                     </td>
                                     <td className="py-3 px-4 text-center">
                                       <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${priorityClass}`}>
-                                        {kw.priority || "High"}
+                                        <EditableText
+                                          value={kw.priority || "High"}
+                                          onChange={(val) => {
+                                            if (onChange) {
+                                              const updated = [...rawKeywords];
+                                              updated[realIdx] = { ...updated[realIdx], priority: val };
+                                              onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, keywords: updated } } });
+                                            }
+                                          }}
+                                        />
                                       </span>
                                     </td>
+                                    {isEditable && (
+                                      <td className="py-3 px-2 text-center">
+                                        <button
+                                          type="button"
+                                          onClick={() => handleDeleteSeoKeyword(realIdx)}
+                                          className="text-slate-400 hover:text-rose-600 p-1 cursor-pointer transition-colors"
+                                          title="Delete keyword"
+                                        >
+                                          <Trash2 size={12} />
+                                        </button>
+                                      </td>
+                                    )}
                                   </tr>
                                 );
                               })}
@@ -3319,11 +4257,23 @@ export const PortfolioPreview = ({
 
                         {/* Footer Information */}
                         <div className="p-3.5 bg-slate-50 border-t border-slate-200 text-[11px] text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
-                          <span>
-                            Showing {filteredKeywords.length} of {rawKeywords.length} mapped keywords from SEMrush / Ahrefs research dataset.
-                          </span>
+                          <EditableText
+                            value={seoData.footerText || `Showing ${filteredKeywords.length} of ${rawKeywords.length} mapped keywords from SEMrush / Ahrefs research dataset.`}
+                            onChange={(val) => {
+                              if (onChange) {
+                                onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, footerText: val } } });
+                              }
+                            }}
+                          />
                           <span className="font-mono text-blue-600 font-bold">
-                            Total monthly search potential: 56,600+ impressions
+                            <EditableText
+                              value={seoData.totalSearchPotential || "Total monthly search potential: 56,600+ impressions"}
+                              onChange={(val) => {
+                                if (onChange) {
+                                  onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, totalSearchPotential: val } } });
+                                }
+                              }}
+                            />
                           </span>
                         </div>
                       </div>
@@ -3332,50 +4282,174 @@ export const PortfolioPreview = ({
 
                   {/* TAB 2: TECHNICAL SEO AUDIT */}
                   {seoActiveTab === "audit" && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in-50 duration-200">
-                      {auditCategories.map((cat, cIdx) => (
-                        <div
-                          key={cIdx}
-                          className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow"
-                        >
-                          <div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                                AUDIT CATEGORY {cIdx + 1}
-                              </span>
-                              <div className="flex items-center gap-1 font-mono text-xs font-bold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded">
-                                <span>Score:</span>
-                                <span>{cat.score || 95}/100</span>
-                              </div>
-                            </div>
-
-                            <h3 className="text-base font-bold text-slate-900 mt-2">
-                              {cat.category}
-                            </h3>
-
-                            <div className="mt-4 space-y-2">
-                              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                                AUDIT FINDINGS & RESOLVED ISSUES:
-                              </div>
-                              {(cat.findings || []).map((finding, fIdx) => (
-                                <div key={fIdx} className="flex items-start gap-2 text-xs text-slate-700">
-                                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
-                                  <span className="leading-relaxed">{finding}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="pt-3 border-t border-slate-100">
-                            <div className="text-[11px] font-bold uppercase tracking-wider text-amber-700 mb-0.5">
-                              ACTION TAKEN BY STUDENT:
-                            </div>
-                            <p className="text-xs text-slate-600 italic leading-relaxed">
-                              "{cat.actionTaken}"
-                            </p>
-                          </div>
+                    <div className="space-y-4 animate-in fade-in-50 duration-200">
+                      {isEditable && (
+                        <div className="flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (onChange) {
+                                const newCat = {
+                                  category: "New Technical Audit Category",
+                                  score: 94,
+                                  findings: [
+                                    "Identified and rectified critical technical crawling or schema blocker.",
+                                    "Optimized resource delivery and compressed heavy script bundles.",
+                                  ],
+                                  actionTaken: "Implemented corrective directive and validated clean status in Google Search Console.",
+                                };
+                                onChange({
+                                  ...portfolioData,
+                                  modules: { ...modules, seo: { ...seoData, auditCategories: [...auditCategories, newCat] } },
+                                });
+                              }
+                            }}
+                            className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs"
+                          >
+                            <Plus size={13} />
+                            <span>Add Audit Category Card</span>
+                          </button>
                         </div>
-                      ))}
+                      )}
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {auditCategories.map((cat, cIdx) => (
+                          <div
+                            key={cIdx}
+                            className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow relative group/card"
+                          >
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (onChange) {
+                                    const updated = auditCategories.filter((_, i) => i !== cIdx);
+                                    onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, auditCategories: updated } } });
+                                  }
+                                }}
+                                className="absolute top-3 right-3 p-1 rounded bg-slate-100 hover:bg-rose-600 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                                title="Delete this audit card"
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                            )}
+
+                            <div>
+                              <div className="flex items-center justify-between pr-6">
+                                <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                                  AUDIT CATEGORY {cIdx + 1}
+                                </span>
+                                <div className="flex items-center gap-1 font-mono text-xs font-bold text-emerald-700 bg-emerald-100/90 px-2 py-0.5 rounded">
+                                  <span>Score:</span>
+                                  <EditableText
+                                    value={String(cat.score || 95)}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...auditCategories];
+                                        updated[cIdx] = { ...updated[cIdx], score: parseInt(val, 10) || 90 };
+                                        onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, auditCategories: updated } } });
+                                      }
+                                    }}
+                                  />
+                                  <span>/100</span>
+                                </div>
+                              </div>
+
+                              <h3 className="text-base font-bold text-slate-900 mt-2">
+                                <EditableText
+                                  value={cat.category}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updated = [...auditCategories];
+                                      updated[cIdx] = { ...updated[cIdx], category: val };
+                                      onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, auditCategories: updated } } });
+                                    }
+                                  }}
+                                />
+                              </h3>
+
+                              <div className="mt-4 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                    AUDIT FINDINGS & RESOLVED ISSUES:
+                                  </div>
+                                  {isEditable && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        if (onChange) {
+                                          const updated = [...auditCategories];
+                                          const findings = [...(updated[cIdx].findings || [])];
+                                          findings.push("Resolved new technical audit finding and verified fix");
+                                          updated[cIdx] = { ...updated[cIdx], findings };
+                                          onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, auditCategories: updated } } });
+                                        }
+                                      }}
+                                      className="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                                    >
+                                      <Plus size={10} />
+                                      <span>Add Finding</span>
+                                    </button>
+                                  )}
+                                </div>
+                                {(cat.findings || []).map((finding, fIdx) => (
+                                  <div key={fIdx} className="flex items-start gap-2 text-xs text-slate-700 group/finding">
+                                    <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+                                    <EditableText
+                                      value={finding}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...auditCategories];
+                                          const findings = [...(updated[cIdx].findings || [])];
+                                          findings[fIdx] = val;
+                                          updated[cIdx] = { ...updated[cIdx], findings };
+                                          onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, auditCategories: updated } } });
+                                        }
+                                      }}
+                                      className="leading-relaxed flex-1"
+                                    />
+                                    {isEditable && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (onChange) {
+                                            const updated = [...auditCategories];
+                                            const findings = (updated[cIdx].findings || []).filter((_, i) => i !== fIdx);
+                                            updated[cIdx] = { ...updated[cIdx], findings };
+                                            onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, auditCategories: updated } } });
+                                          }
+                                        }}
+                                        className="opacity-0 group-hover/finding:opacity-100 text-slate-400 hover:text-rose-600 transition-opacity p-0.5 cursor-pointer mt-0.5"
+                                        title="Delete finding"
+                                      >
+                                        <Trash2 size={11} />
+                                      </button>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="pt-3 border-t border-slate-100">
+                              <div className="text-[11px] font-bold uppercase tracking-wider text-amber-700 mb-0.5">
+                                ACTION TAKEN BY STUDENT:
+                              </div>
+                              <div className="text-xs text-slate-600 italic leading-relaxed">
+                                "<EditableText
+                                  value={cat.actionTaken}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updated = [...auditCategories];
+                                      updated[cIdx] = { ...updated[cIdx], actionTaken: val };
+                                      onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, auditCategories: updated } } });
+                                    }
+                                  }}
+                                />"
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
 
@@ -3390,12 +4464,26 @@ export const PortfolioPreview = ({
                               <div className="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-lg shrink-0 shadow-xs">
                                 <Store className="w-6 h-6 text-white" />
                               </div>
-                              <div className="min-w-0">
+                              <div className="min-w-0 flex-1">
                                 <h4 className="text-base font-bold text-slate-900 truncate">
-                                  {localSeo.businessName}
+                                  <EditableText
+                                    value={localSeo.businessName}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, localSeo: { ...localSeo, businessName: val } } } });
+                                      }
+                                    }}
+                                  />
                                 </h4>
                                 <p className="text-xs text-slate-500">
-                                  {localSeo.category}
+                                  <EditableText
+                                    value={localSeo.category}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, localSeo: { ...localSeo, category: val } } } });
+                                      }
+                                    }}
+                                  />
                                 </p>
                                 <div className="flex items-center gap-1.5 mt-1">
                                   <div className="flex text-amber-400">
@@ -3404,10 +4492,24 @@ export const PortfolioPreview = ({
                                     ))}
                                   </div>
                                   <span className="text-xs font-bold text-slate-900">
-                                    {localSeo.avgRating || 4.9}
+                                    <EditableText
+                                      value={String(localSeo.avgRating || 4.9)}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, localSeo: { ...localSeo, avgRating: parseFloat(val) || 4.9 } } } });
+                                        }
+                                      }}
+                                    />
                                   </span>
                                   <span className="text-xs text-slate-500 font-medium">
-                                    ({localSeo.reviewsCount || 148} Google Reviews)
+                                    (<EditableText
+                                      value={String(localSeo.reviewsCount || 148)}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, localSeo: { ...localSeo, reviewsCount: parseInt(val, 10) || 100 } } } });
+                                        }
+                                      }}
+                                    /> Google Reviews)
                                   </span>
                                 </div>
                               </div>
@@ -3415,7 +4517,16 @@ export const PortfolioPreview = ({
 
                             <div className="mt-3 pt-3 border-t border-slate-200/80 flex items-center gap-1.5 text-xs text-slate-600">
                               <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                              <span className="truncate">{localSeo.addressSnippet}</span>
+                              <span className="truncate">
+                                <EditableText
+                                  value={localSeo.addressSnippet}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, localSeo: { ...localSeo, addressSnippet: val } } } });
+                                    }
+                                  }}
+                                />
+                              </span>
                             </div>
                           </div>
 
@@ -3436,56 +4547,182 @@ export const PortfolioPreview = ({
                         <div className="lg:col-span-7 space-y-6">
                           {/* Google Maps 3-Pack Rankings Achieved */}
                           <div className="space-y-2">
-                            <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                              GOOGLE MAPS 3-PACK RANKINGS ACHIEVED:
+                            <div className="flex items-center justify-between">
+                              <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                                GOOGLE MAPS 3-PACK RANKINGS ACHIEVED:
+                              </div>
+                              {isEditable && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (onChange) {
+                                      const ranks = [...(localSeo.localKeywordsRanked || [])];
+                                      ranks.push("#1 in Google 3-Pack for 'new top geo-targeted service'");
+                                      onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, localSeo: { ...localSeo, localKeywordsRanked: ranks } } } });
+                                    }
+                                  }}
+                                  className="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                                >
+                                  <Plus size={10} />
+                                  <span>Add Ranking</span>
+                                </button>
+                              )}
                             </div>
                             <div className="space-y-2">
                               {(localSeo.localKeywordsRanked || []).map((rankText, rIdx) => (
                                 <div
                                   key={rIdx}
-                                  className="flex items-center gap-2 p-2.5 bg-emerald-50/70 border border-emerald-200/90 rounded-xl text-xs font-semibold text-emerald-900"
+                                  className="flex items-center justify-between gap-2 p-2.5 bg-emerald-50/70 border border-emerald-200/90 rounded-xl text-xs font-medium text-emerald-950 group/rank"
                                 >
-                                  <TrendingUp className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                                  <span>{rankText}</span>
+                                  <div className="flex items-center gap-2 flex-1">
+                                    <Award className="w-4 h-4 text-emerald-600 shrink-0" />
+                                    <EditableText
+                                      value={rankText}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const ranks = [...(localSeo.localKeywordsRanked || [])];
+                                          ranks[rIdx] = val;
+                                          onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, localSeo: { ...localSeo, localKeywordsRanked: ranks } } } });
+                                        }
+                                      }}
+                                      className="flex-1"
+                                    />
+                                  </div>
+                                  {isEditable && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        if (onChange) {
+                                          const ranks = (localSeo.localKeywordsRanked || []).filter((_, i) => i !== rIdx);
+                                          onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, localSeo: { ...localSeo, localKeywordsRanked: ranks } } } });
+                                        }
+                                      }}
+                                      className="opacity-0 group-hover/rank:opacity-100 text-slate-400 hover:text-rose-600 transition-opacity p-0.5 cursor-pointer"
+                                      title="Delete ranking"
+                                    >
+                                      <Trash2 size={11} />
+                                    </button>
+                                  )}
                                 </div>
                               ))}
                             </div>
                           </div>
 
-                          {/* Local SEO Implementation Steps */}
+                          {/* Local Optimization & NAP Consistency Executed */}
                           <div className="space-y-2">
-                            <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                              LOCAL SEO IMPLEMENTATION STEPS:
-                            </div>
-                            <div className="space-y-2">
-                              {(localSeo.optimizationSteps || []).map((step, sIdx) => (
-                                <div
-                                  key={sIdx}
-                                  className="flex items-start gap-2.5 p-2.5 bg-slate-50/80 border border-slate-200/80 rounded-xl text-xs text-slate-700 font-medium"
+                            <div className="flex items-center justify-between">
+                              <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                                LOCAL OPTIMIZATION & NAP CONSISTENCY EXECUTED:
+                              </div>
+                              {isEditable && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (onChange) {
+                                      const steps = [...(localSeo.optimizationSteps || [])];
+                                      steps.push("Audited and optimized local business directory listings for NAP consistency");
+                                      onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, localSeo: { ...localSeo, optimizationSteps: steps } } } });
+                                    }
+                                  }}
+                                  className="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
                                 >
+                                  <Plus size={10} />
+                                  <span>Add Step</span>
+                                </button>
+                              )}
+                            </div>
+                            <div className="space-y-1.5">
+                              {(localSeo.optimizationSteps || []).map((step, sIdx) => (
+                                <div key={sIdx} className="flex items-start gap-2 text-xs text-slate-700 group/step">
                                   <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
-                                  <span className="leading-relaxed">{step}</span>
+                                  <EditableText
+                                    value={step}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const steps = [...(localSeo.optimizationSteps || [])];
+                                        steps[sIdx] = val;
+                                        onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, localSeo: { ...localSeo, optimizationSteps: steps } } } });
+                                      }
+                                    }}
+                                    className="leading-relaxed flex-1"
+                                  />
+                                  {isEditable && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        if (onChange) {
+                                          const steps = (localSeo.optimizationSteps || []).filter((_, i) => i !== sIdx);
+                                          onChange({ ...portfolioData, modules: { ...modules, seo: { ...seoData, localSeo: { ...localSeo, optimizationSteps: steps } } } });
+                                        }
+                                      }}
+                                      className="opacity-0 group-hover/step:opacity-100 text-slate-400 hover:text-rose-600 transition-opacity p-0.5 cursor-pointer mt-0.5"
+                                      title="Delete step"
+                                    >
+                                      <Trash2 size={11} />
+                                    </button>
+                                  )}
                                 </div>
                               ))}
                             </div>
                           </div>
 
-                          {/* Authentic Review Card */}
+                          {/* Verified 5-Star Customer Review */}
                           {localSeo.sampleReview && (
-                            <div className="p-4 bg-amber-50/60 border border-amber-200 rounded-xl space-y-1.5 shadow-2xs">
+                            <div className="p-3.5 bg-amber-50/60 border border-amber-200/80 rounded-xl space-y-1.5">
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold text-slate-900">
-                                  {localSeo.sampleReview.author}
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800">
+                                  VERIFIED 5-STAR PATIENT / CUSTOMER REVIEW:
                                 </span>
                                 <div className="flex text-amber-400">
-                                  {[...Array(localSeo.sampleReview.rating || 5)].map((_, sIdx) => (
+                                  {[...Array(5)].map((_, sIdx) => (
                                     <Star key={sIdx} className="w-3 h-3 fill-amber-400" />
                                   ))}
                                 </div>
                               </div>
                               <p className="text-xs text-slate-700 italic leading-relaxed">
-                                "{localSeo.sampleReview.text}"
+                                "<EditableText
+                                  value={localSeo.sampleReview.text}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: {
+                                          ...modules,
+                                          seo: {
+                                            ...seoData,
+                                            localSeo: {
+                                              ...localSeo,
+                                              sampleReview: { ...localSeo.sampleReview, text: val },
+                                            },
+                                          },
+                                        },
+                                      });
+                                    }
+                                  }}
+                                />"
                               </p>
+                              <div className="text-[11px] font-bold text-slate-800">
+                                — <EditableText
+                                  value={localSeo.sampleReview.author}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: {
+                                          ...modules,
+                                          seo: {
+                                            ...seoData,
+                                            localSeo: {
+                                              ...localSeo,
+                                              sampleReview: { ...localSeo.sampleReview, author: val },
+                                            },
+                                          },
+                                        },
+                                      });
+                                    }
+                                  }}
+                                />
+                              </div>
                             </div>
                           )}
                         </div>
@@ -3497,9 +4734,10 @@ export const PortfolioPreview = ({
             );
           }
 
-          // MODULE 07: STRATEGIC GROWTH ARCHITECTURE - DIGITAL PLANNING & BRAND AUDIT
+          // MODULE 07: STRATEGIC GROWTH ARCHITECTURE
           if (modId === "digitalPlanning") {
             const planData = modules.digitalPlanning || {};
+            const planMeta = modules.digitalPlanningMeta || {};
             const defaultDeck = [
               {
                 slideNumber: 1,
@@ -3579,20 +4817,8 @@ export const PortfolioPreview = ({
               },
             ];
 
-            const hasValidDeck =
-              Array.isArray(planData.brandAuditDeck) &&
-              planData.brandAuditDeck.length > 0 &&
-              Array.isArray(planData.brandAuditDeck[0].findings) &&
-              planData.brandAuditDeck[0].findings.length > 0;
-            const deck = hasValidDeck ? planData.brandAuditDeck : defaultDeck;
-
-            const hasValidRoadmap =
-              Array.isArray(planData.strategyRoadmap) &&
-              planData.strategyRoadmap.length > 0 &&
-              Array.isArray(planData.strategyRoadmap[0].deliverables) &&
-              planData.strategyRoadmap[0].deliverables.length > 0;
-            const roadmap = hasValidRoadmap ? planData.strategyRoadmap : defaultRoadmap;
-
+            const deck = Array.isArray(planData.brandAuditDeck) && planData.brandAuditDeck.length > 0 ? planData.brandAuditDeck : defaultDeck;
+            const roadmap = Array.isArray(planData.strategyRoadmap) && planData.strategyRoadmap.length > 0 ? planData.strategyRoadmap : defaultRoadmap;
             const currentSlide = deck[planSlideIdx] || deck[0];
 
             return (
@@ -3606,23 +4832,65 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-                        Module 07 · Strategic Growth Architecture
+                        <EditableText
+                          value={planMeta.category || "MODULE 07 · STRATEGIC GROWTH ARCHITECTURE"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: { ...modules, digitalPlanningMeta: { ...planMeta, category: val } },
+                              });
+                            }
+                          }}
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        Digital Planning, Brand Audit & Strategy Deck
+                        <EditableText
+                          value={planMeta.title || "Digital Planning, Brand Audit & Strategy Deck"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: { ...modules, digitalPlanningMeta: { ...planMeta, title: val } },
+                              });
+                            }
+                          }}
+                        />
                       </h2>
                       <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        A complete executive brand audit deck presented to leadership, coupled with a 16-week omnichannel growth marketing plan and budget allocation framework.
+                        <EditableText
+                          tag="span"
+                          value={planMeta.subtitle || "A complete executive brand audit deck presented to leadership, coupled with a 16-week omnichannel growth marketing plan and budget allocation framework."}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: { ...modules, digitalPlanningMeta: { ...planMeta, subtitle: val } },
+                              });
+                            }
+                          }}
+                        />
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-2xs shrink-0">
                       <Briefcase className="w-4 h-4 text-amber-500" />
-                      <span>Interactive Pitch Deck & 16-Week Roadmap</span>
+                      <EditableText
+                        className="font-semibold text-slate-700"
+                        value={planMeta.badge || "Interactive Pitch Deck & 16-Week Roadmap"}
+                        onChange={(val) => {
+                          if (onChange) {
+                            onChange({
+                              ...portfolioData,
+                              modules: { ...modules, digitalPlanningMeta: { ...planMeta, badge: val } },
+                            });
+                          }
+                        }}
+                      />
                     </div>
                   </div>
 
-                  {/* 1. Executive Pitch Deck Dark Slider */}
+                  {/* 1. Executive Pitch Deck Dark Slider Container */}
                   <div className="bg-slate-950 text-white rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl relative overflow-hidden">
                     {/* Slide Top Bar */}
                     <div className="flex items-center justify-between pb-6 border-b border-slate-800/80 gap-3">
@@ -3637,8 +4905,19 @@ export const PortfolioPreview = ({
                         </span>
                       </div>
 
-                      {/* Controls: Prev, Indicators, Next */}
+                      {/* Controls: Prev, Indicators, Next, Delete, Add */}
                       <div className="flex items-center gap-2 shrink-0">
+                        {isEditable && (
+                          <button
+                            type="button"
+                            onClick={() => handleDeletePlanSlide(planSlideIdx)}
+                            className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                            title="Delete this slide"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        )}
+
                         <button
                           type="button"
                           onClick={() => setPlanSlideIdx((prev) => (prev > 0 ? prev - 1 : deck.length - 1))}
@@ -3672,6 +4951,18 @@ export const PortfolioPreview = ({
                         >
                           <ChevronRight size={14} />
                         </button>
+
+                        {isEditable && (
+                          <button
+                            type="button"
+                            onClick={handleAddPlanSlide}
+                            className="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer flex items-center gap-1 text-[11px] font-bold"
+                            title="Add new slide"
+                          >
+                            <Plus size={13} />
+                            <span className="hidden sm:inline">Add Slide</span>
+                          </button>
+                        )}
                       </div>
                     </div>
 
@@ -3679,30 +4970,95 @@ export const PortfolioPreview = ({
                     <div className="py-6 sm:py-8 space-y-6">
                       <div>
                         <div className="text-[11px] font-mono font-bold text-blue-400 uppercase tracking-wider">
-                          {currentSlide.tag}
+                          <EditableText
+                            value={currentSlide.tag || "EXECUTIVE DELIVERABLE · CURRENT STATE VS MARKET LEADERS IN SUSTAINABLE ACTIVEWEAR"}
+                            onChange={(val) => {
+                              if (onChange) {
+                                const updated = [...deck];
+                                updated[planSlideIdx] = { ...updated[planSlideIdx], tag: val };
+                                onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, brandAuditDeck: updated } } });
+                              }
+                            }}
+                          />
                         </div>
                         <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-1.5 tracking-tight">
-                          {currentSlide.title}
+                          <EditableText
+                            value={currentSlide.title || "Executive Brand Audit: Omni-Channel Gap Analysis"}
+                            onChange={(val) => {
+                              if (onChange) {
+                                const updated = [...deck];
+                                updated[planSlideIdx] = { ...updated[planSlideIdx], title: val };
+                                onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, brandAuditDeck: updated } } });
+                              }
+                            }}
+                          />
                         </h3>
                       </div>
 
                       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                        {/* Left Column: 3 Strategic Diagnostic Findings */}
+                        {/* Left Column: Strategic Diagnostic Findings */}
                         <div className="lg:col-span-7 space-y-3">
-                          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
-                            STRATEGIC DIAGNOSTIC FINDINGS:
+                          <div className="flex items-center justify-between">
+                            <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                              STRATEGIC DIAGNOSTIC FINDINGS:
+                            </div>
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (onChange) {
+                                    const updated = [...deck];
+                                    const findings = [...(updated[planSlideIdx].findings || [])];
+                                    findings.push("New strategic diagnostic observation and critical benchmark takeaway.");
+                                    updated[planSlideIdx] = { ...updated[planSlideIdx], findings };
+                                    onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, brandAuditDeck: updated } } });
+                                  }
+                                }}
+                                className="text-[10px] font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
+                              >
+                                <Plus size={10} />
+                                <span>Add Finding</span>
+                              </button>
+                            )}
                           </div>
                           {(currentSlide.findings || []).map((finding, fIdx) => (
                             <div
                               key={fIdx}
-                              className="bg-slate-900/90 border border-slate-800/80 rounded-xl p-3.5 sm:p-4 flex items-start gap-3.5 shadow-2xs"
+                              className="bg-slate-900/90 border border-slate-800/80 rounded-xl p-3.5 sm:p-4 flex items-start gap-3.5 shadow-2xs group/find"
                             >
                               <span className="w-6 h-6 rounded-md bg-blue-600/30 text-blue-400 border border-blue-500/40 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">
                                 {fIdx + 1}
                               </span>
-                              <span className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
-                                {finding}
-                              </span>
+                              <EditableText
+                                value={finding}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...deck];
+                                    const findings = [...(updated[planSlideIdx].findings || [])];
+                                    findings[fIdx] = val;
+                                    updated[planSlideIdx] = { ...updated[planSlideIdx], findings };
+                                    onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, brandAuditDeck: updated } } });
+                                  }
+                                }}
+                                className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal flex-1"
+                              />
+                              {isEditable && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (onChange) {
+                                      const updated = [...deck];
+                                      const findings = (updated[planSlideIdx].findings || []).filter((_, i) => i !== fIdx);
+                                      updated[planSlideIdx] = { ...updated[planSlideIdx], findings };
+                                      onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, brandAuditDeck: updated } } });
+                                    }
+                                  }}
+                                  className="opacity-0 group-hover/find:opacity-100 text-slate-500 hover:text-rose-400 transition-opacity p-0.5 cursor-pointer shrink-0"
+                                  title="Delete finding"
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -3711,30 +5067,103 @@ export const PortfolioPreview = ({
                         <div className="lg:col-span-5 space-y-3">
                           {currentSlide.metricsTable && (
                             <div className="space-y-2">
-                              <div className="text-xs font-bold text-amber-400 uppercase tracking-wider">
-                                DIAGNOSTIC BENCHMARKING MATRIX:
+                              <div className="flex items-center justify-between">
+                                <div className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                                  DIAGNOSTIC BENCHMARKING MATRIX:
+                                </div>
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (onChange) {
+                                        const updated = [...deck];
+                                        const mt = [...(updated[planSlideIdx].metricsTable || [])];
+                                        mt.push({ metric: "New Benchmark Metric", auditState: "15%", benchmark: "45%" });
+                                        updated[planSlideIdx] = { ...updated[planSlideIdx], metricsTable: mt };
+                                        onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, brandAuditDeck: updated } } });
+                                      }
+                                    }}
+                                    className="text-[10px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <Plus size={10} />
+                                    <span>Add Metric</span>
+                                  </button>
+                                )}
                               </div>
                               <div className="bg-slate-900/90 rounded-xl border border-slate-800 p-4 overflow-hidden shadow-2xs">
                                 <table className="w-full text-left text-xs border-collapse">
                                   <thead>
-                                    <tr className="border-b border-slate-800 text-[11px] text-slate-400 font-semibold">
-                                      <th className="pb-2.5">Metric</th>
-                                      <th className="pb-2.5 text-right">Audit State</th>
-                                      <th className="pb-2.5 text-right text-emerald-400">Benchmark</th>
+                                    <tr className="border-b border-slate-800 text-slate-400">
+                                      <th className="pb-2 font-semibold">Metric</th>
+                                      <th className="pb-2 font-semibold text-right">Audit State</th>
+                                      <th className="pb-2 font-semibold text-right text-emerald-400">Benchmark</th>
+                                      {isEditable && <th className="pb-2 w-8 text-center"></th>}
                                     </tr>
                                   </thead>
                                   <tbody className="divide-y divide-slate-800/60 font-mono">
-                                    {currentSlide.metricsTable.map((row, rIdx) => (
-                                      <tr key={rIdx}>
-                                        <td className="py-2.5 text-slate-300 font-sans text-xs">
-                                          {row.metric}
+                                    {(currentSlide.metricsTable || []).map((row, rIdx) => (
+                                      <tr key={rIdx} className="hover:bg-slate-800/40 group/mtr">
+                                        <td className="py-2.5 text-slate-200 font-sans font-medium">
+                                          <EditableText
+                                            value={row.metric}
+                                            onChange={(val) => {
+                                              if (onChange) {
+                                                const updated = [...deck];
+                                                const mt = [...(updated[planSlideIdx].metricsTable || [])];
+                                                mt[rIdx] = { ...mt[rIdx], metric: val };
+                                                updated[planSlideIdx] = { ...updated[planSlideIdx], metricsTable: mt };
+                                                onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, brandAuditDeck: updated } } });
+                                              }
+                                            }}
+                                          />
                                         </td>
-                                        <td className="py-2.5 text-right font-bold text-rose-400">
-                                          {row.auditState}
+                                        <td className="py-2.5 text-right text-rose-400 font-bold">
+                                          <EditableText
+                                            value={row.auditState}
+                                            onChange={(val) => {
+                                              if (onChange) {
+                                                const updated = [...deck];
+                                                const mt = [...(updated[planSlideIdx].metricsTable || [])];
+                                                mt[rIdx] = { ...mt[rIdx], auditState: val };
+                                                updated[planSlideIdx] = { ...updated[planSlideIdx], metricsTable: mt };
+                                                onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, brandAuditDeck: updated } } });
+                                              }
+                                            }}
+                                          />
                                         </td>
-                                        <td className="py-2.5 text-right font-bold text-emerald-400">
-                                          {row.benchmark}
+                                        <td className="py-2.5 text-right text-emerald-400 font-bold">
+                                          <EditableText
+                                            value={row.benchmark}
+                                            onChange={(val) => {
+                                              if (onChange) {
+                                                const updated = [...deck];
+                                                const mt = [...(updated[planSlideIdx].metricsTable || [])];
+                                                mt[rIdx] = { ...mt[rIdx], benchmark: val };
+                                                updated[planSlideIdx] = { ...updated[planSlideIdx], metricsTable: mt };
+                                                onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, brandAuditDeck: updated } } });
+                                              }
+                                            }}
+                                          />
                                         </td>
+                                        {isEditable && (
+                                          <td className="py-2.5 text-center">
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                if (onChange) {
+                                                  const updated = [...deck];
+                                                  const mt = (updated[planSlideIdx].metricsTable || []).filter((_, i) => i !== rIdx);
+                                                  updated[planSlideIdx] = { ...updated[planSlideIdx], metricsTable: mt };
+                                                  onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, brandAuditDeck: updated } } });
+                                                }
+                                              }}
+                                              className="opacity-0 group-hover/mtr:opacity-100 text-slate-500 hover:text-rose-400 transition-opacity p-0.5 cursor-pointer"
+                                              title="Delete benchmark row"
+                                            >
+                                              <Trash2 size={11} />
+                                            </button>
+                                          </td>
+                                        )}
                                       </tr>
                                     ))}
                                   </tbody>
@@ -3744,15 +5173,22 @@ export const PortfolioPreview = ({
                           )}
 
                           {currentSlide.frameworkArchitecture && (
-                            <div className="space-y-2">
+                            <div className="bg-slate-900/90 rounded-xl border border-slate-800 p-4 space-y-2">
                               <div className="text-xs font-bold text-amber-400 uppercase tracking-wider">
                                 FRAMEWORK ARCHITECTURE:
                               </div>
-                              <div className="bg-slate-900/90 rounded-xl border border-slate-800 p-4 shadow-2xs">
-                                <p className="text-xs text-slate-300 leading-relaxed">
-                                  {currentSlide.frameworkArchitecture}
-                                </p>
-                              </div>
+                              <EditableText
+                                tag="p"
+                                value={currentSlide.frameworkArchitecture}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...deck];
+                                    updated[planSlideIdx] = { ...updated[planSlideIdx], frameworkArchitecture: val };
+                                    onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, brandAuditDeck: updated } } });
+                                  }
+                                }}
+                                className="text-xs text-slate-300 leading-relaxed block font-normal"
+                              />
                             </div>
                           )}
                         </div>
@@ -3760,75 +5196,234 @@ export const PortfolioPreview = ({
                     </div>
 
                     {/* Slide Bottom Bar */}
-                    <div className="pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs">
-                      <span className="text-slate-400">
-                        Presented for Capstone Certification Review
-                      </span>
-                      <span className="font-mono font-bold text-amber-400">
-                        Verified by Academy Lead Trainer
+                    <div className="pt-4 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
+                      <EditableText
+                        value={planData.capstoneReviewText || "Presented for Capstone Certification Review"}
+                        onChange={(val) => {
+                          if (onChange) {
+                            onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, capstoneReviewText: val } } });
+                          }
+                        }}
+                      />
+                      <span className="font-mono text-amber-400/90 font-medium">
+                        <EditableText
+                          value={planData.verifiedTrainerText || "Verified by Academy Lead Trainer"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, verifiedTrainerText: val } } });
+                            }
+                          }}
+                        />
                       </span>
                     </div>
                   </div>
 
                   {/* 2. 16-Week Digital Marketing Execution Roadmap */}
-                  <div className="space-y-4 pt-2">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-blue-600" />
-                      <h3 className="text-lg font-bold text-slate-900">
-                        16-Week Digital Marketing Execution Roadmap
-                      </h3>
+                  <div className="space-y-4 pt-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-5 h-5 text-blue-600" />
+                        <h3 className="text-lg sm:text-xl font-bold text-slate-900">
+                          16-Week Digital Marketing Execution Roadmap
+                        </h3>
+                      </div>
+                      {isEditable && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (onChange) {
+                              const newPhase = {
+                                weeks: "Weeks 17 - 20",
+                                allocation: "15% Allocation",
+                                phase: "Phase 4: Omnichannel Expansion",
+                                channels: ["TikTok Shop", "Affiliate Program", "Wholesale Leads"],
+                                deliverables: [
+                                  "Deploy dedicated influencer gifting campaign with affiliate links",
+                                  "Launch wholesale catalog landing page with B2B lead capture",
+                                ],
+                                milestone: "Milestone Review at 20",
+                              };
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  digitalPlanning: {
+                                    ...planData,
+                                    strategyRoadmap: [...roadmap, newPhase],
+                                  },
+                                },
+                              });
+                            }
+                          }}
+                          className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-200"
+                        >
+                          <Plus size={13} />
+                          <span>Add Phase</span>
+                        </button>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {roadmap.map((phase, pIdx) => (
                         <div
                           key={pIdx}
-                          className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col justify-between space-y-4 hover:shadow-md transition-shadow"
+                          className="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 flex flex-col justify-between space-y-4 shadow-xs hover:shadow-md transition-shadow relative group/phase"
                         >
+                          {isEditable && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (onChange) {
+                                  const updated = roadmap.filter((_, i) => i !== pIdx);
+                                  onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, strategyRoadmap: updated } } });
+                                }
+                              }}
+                              className="absolute top-3 right-3 p-1 rounded bg-slate-100 hover:bg-rose-600 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                              title="Delete this phase card"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          )}
+
                           <div>
-                            {/* Card Top: Weeks & Allocation */}
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-bold text-blue-600">
-                                {phase.weeks}
+                            <div className="flex items-center justify-between gap-2 pr-6">
+                              <span className="text-xs font-mono font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
+                                <EditableText
+                                  value={phase.weeks}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updated = [...roadmap];
+                                      updated[pIdx] = { ...updated[pIdx], weeks: val };
+                                      onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, strategyRoadmap: updated } } });
+                                    }
+                                  }}
+                                />
                               </span>
-                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-300">
-                                {phase.allocation}
+                              <span className="text-[11px] font-mono text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                <EditableText
+                                  value={phase.allocation}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updated = [...roadmap];
+                                      updated[pIdx] = { ...updated[pIdx], allocation: val };
+                                      onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, strategyRoadmap: updated } } });
+                                    }
+                                  }}
+                                />
                               </span>
                             </div>
 
-                            <h4 className="text-base font-bold text-slate-900 mt-2">
-                              {phase.phase}
+                            <h4 className="text-base font-bold text-slate-900 mt-3">
+                              <EditableText
+                                value={phase.phase}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...roadmap];
+                                    updated[pIdx] = { ...updated[pIdx], phase: val };
+                                    onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, strategyRoadmap: updated } } });
+                                  }
+                                }}
+                              />
                             </h4>
 
-                            {/* Channel Pills */}
-                            <div className="flex flex-wrap gap-1.5 mt-3">
-                              {(phase.channels || []).map((ch, cIdx) => (
+                            {/* Channels Tags */}
+                            <div className="flex flex-wrap gap-1.5 mt-2.5">
+                              {(phase.channels || []).map((chan, cIdx) => (
                                 <span
                                   key={cIdx}
-                                  className="px-2 py-0.5 text-[11px] font-medium bg-slate-100 text-slate-700 rounded-md border border-slate-200"
+                                  className="text-[10px] font-semibold bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200"
                                 >
-                                  {ch}
+                                  <EditableText
+                                    value={chan}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...roadmap];
+                                        const chans = [...(updated[pIdx].channels || [])];
+                                        chans[cIdx] = val;
+                                        updated[pIdx] = { ...updated[pIdx], channels: chans };
+                                        onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, strategyRoadmap: updated } } });
+                                      }
+                                    }}
+                                  />
                                 </span>
                               ))}
                             </div>
 
                             {/* Deliverables */}
-                            <div className="mt-4 space-y-2">
-                              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                                KEY DELIVERABLES:
+                            <div className="mt-4 space-y-1.5">
+                              <div className="flex items-center justify-between">
+                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                  KEY PHASE DELIVERABLES:
+                                </div>
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (onChange) {
+                                        const updated = [...roadmap];
+                                        const dels = [...(updated[pIdx].deliverables || [])];
+                                        dels.push("New core milestone deliverable executed during this sprint");
+                                        updated[pIdx] = { ...updated[pIdx], deliverables: dels };
+                                        onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, strategyRoadmap: updated } } });
+                                      }
+                                    }}
+                                    className="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <Plus size={10} />
+                                    <span>Add</span>
+                                  </button>
+                                )}
                               </div>
-                              {(phase.deliverables || []).map((item, dIdx) => (
-                                <div key={dIdx} className="flex items-start gap-2 text-xs text-slate-700">
+                              {(phase.deliverables || []).map((deliv, dIdx) => (
+                                <div key={dIdx} className="flex items-start gap-2 text-xs text-slate-700 group/deliv">
                                   <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
-                                  <span className="leading-relaxed">{item}</span>
+                                  <EditableText
+                                    value={deliv}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...roadmap];
+                                        const dels = [...(updated[pIdx].deliverables || [])];
+                                        dels[dIdx] = val;
+                                        updated[pIdx] = { ...updated[pIdx], deliverables: dels };
+                                        onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, strategyRoadmap: updated } } });
+                                      }
+                                    }}
+                                    className="leading-relaxed flex-1"
+                                  />
+                                  {isEditable && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        if (onChange) {
+                                          const updated = [...roadmap];
+                                          const dels = (updated[pIdx].deliverables || []).filter((_, i) => i !== dIdx);
+                                          updated[pIdx] = { ...updated[pIdx], deliverables: dels };
+                                          onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, strategyRoadmap: updated } } });
+                                        }
+                                      }}
+                                      className="opacity-0 group-hover/deliv:opacity-100 text-slate-400 hover:text-rose-600 transition-opacity p-0.5 cursor-pointer mt-0.5"
+                                      title="Delete deliverable"
+                                    >
+                                      <Trash2 size={11} />
+                                    </button>
+                                  )}
                                 </div>
                               ))}
                             </div>
                           </div>
 
-                          {/* Milestone Footer */}
-                          <div className="pt-3 border-t border-slate-100 text-xs text-slate-400 font-mono">
-                            {phase.milestone}
+                          <div className="pt-3 border-t border-slate-100 text-[11px] text-slate-500 flex items-center gap-1 font-mono">
+                            <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                            <EditableText
+                              value={phase.milestone || "Milestone Review"}
+                              onChange={(val) => {
+                                if (onChange) {
+                                  const updated = [...roadmap];
+                                  updated[pIdx] = { ...updated[pIdx], milestone: val };
+                                  onChange({ ...portfolioData, modules: { ...modules, digitalPlanning: { ...planData, strategyRoadmap: updated } } });
+                                }
+                              }}
+                            />
                           </div>
                         </div>
                       ))}
@@ -3842,11 +5437,8 @@ export const PortfolioPreview = ({
           // MODULE 08: INFLUENCER MARKETING
           if (modId === "influencerMarketing") {
             const initialInf = createInitialPortfolioData().modules.influencerMarketing;
-            const infData = modules.influencerMarketing?.creators
-              ? modules.influencerMarketing
-              : initialInf;
-
-            const allCreators = infData?.creators || initialInf.creators || [];
+            const infData = modules.influencerMarketing || initialInf;
+            const allCreators = Array.isArray(infData?.creators) ? infData.creators : (initialInf.creators || []);
             const filteredCreators = allCreators.filter((creator) => {
               const matchesPlatform =
                 influencerPlatformFilter === "All" ||
@@ -3871,21 +5463,38 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-1">
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                        MODULE 08 · CREATOR & AFFILIATE PARTNERSHIPS
+                        <EditableText
+                          value={infData.categoryBadge || "MODULE 08 · CREATOR & AFFILIATE PARTNERSHIPS"}
+                          path="modules.influencerMarketing.categoryBadge"
+                          placeholder="MODULE 08 · CREATOR & AFFILIATE PARTNERSHIPS"
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                        {infData.sheetTitle || "Influencer Marketing Research & Vetting Sheet"}
+                        <EditableText
+                          value={infData.sheetTitle || "Influencer Marketing Research & Vetting Sheet"}
+                          path="modules.influencerMarketing.sheetTitle"
+                          placeholder="Influencer Marketing Research & Vetting Sheet"
+                        />
                       </h2>
-                      <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
-                        {infData.subtitle ||
-                          "A comprehensive creator vetting database evaluating follower authenticity, audience fraud detection, demographic skew, engagement rates, and projected collaboration ROI."}
-                      </p>
+                      <div className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
+                        <EditableText
+                          value={infData.subtitle ||
+                            "A comprehensive creator vetting database evaluating follower authenticity, audience fraud detection, demographic skew, engagement rates, and projected collaboration ROI."}
+                          path="modules.influencerMarketing.subtitle"
+                          placeholder="Subtitle description..."
+                          multiline
+                        />
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
                       <div className="border border-blue-200 bg-blue-50/50 text-blue-700 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2">
                         <Users size={14} className="text-blue-600" />
-                        <span>{infData.badge || "Fraud Audit · Modash & HypeAuditor Metrics"}</span>
+                        <EditableText
+                          value={infData.badge || "Fraud Audit · Modash & HypeAuditor Metrics"}
+                          path="modules.influencerMarketing.badge"
+                          placeholder="Badge..."
+                        />
                       </div>
                     </div>
                   </div>
@@ -3906,27 +5515,40 @@ export const PortfolioPreview = ({
                       />
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-slate-500 font-medium">Platform:</span>
-                      <div className="flex items-center gap-1.5">
-                        {["All", "Instagram", "TikTok", "YouTube"].map((platform) => {
-                          const isActive = influencerPlatformFilter === platform;
-                          return (
-                            <button
-                              key={platform}
-                              type="button"
-                              onClick={() => setInfluencerPlatformFilter(platform)}
-                              className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${
-                                isActive
-                                  ? "bg-blue-600 text-white shadow-xs"
-                                  : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
-                              }`}
-                            >
-                              {platform}
-                            </button>
-                          );
-                        })}
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-slate-500 font-medium">Platform:</span>
+                        <div className="flex items-center gap-1.5">
+                          {["All", "Instagram", "TikTok", "YouTube"].map((platform) => {
+                            const isActive = influencerPlatformFilter === platform;
+                            return (
+                              <button
+                                key={platform}
+                                type="button"
+                                onClick={() => setInfluencerPlatformFilter(platform)}
+                                className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${
+                                  isActive
+                                    ? "bg-blue-600 text-white shadow-xs"
+                                    : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                                }`}
+                              >
+                                {platform}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
+
+                      {isEditable && (
+                        <button
+                          type="button"
+                          onClick={handleAddInfluencerCreator}
+                          className="px-3 py-1 text-xs rounded-md font-bold text-white bg-blue-600 hover:bg-blue-700 flex items-center gap-1 shadow-xs cursor-pointer"
+                        >
+                          <Plus size={13} />
+                          <span>Add Creator</span>
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -3944,74 +5566,131 @@ export const PortfolioPreview = ({
                             <th className="py-3.5 px-4 text-center">Engagement Rate</th>
                             <th className="py-3.5 px-4">Est. Collaboration Cost</th>
                             <th className="py-3.5 px-4 text-right">Fit Assessment</th>
+                            {isEditable && <th className="py-3.5 px-2 text-center w-10">Actions</th>}
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 text-xs">
                           {filteredCreators.length > 0 ? (
                             filteredCreators.map((creator) => {
+                              const realIdx = allCreators.findIndex(c => (c.id && c.id === creator.id) || c === creator);
                               return (
-                                <tr key={creator.id} className="hover:bg-slate-50/70 transition-colors">
+                                <tr key={creator.id || realIdx} className="hover:bg-slate-50/70 transition-colors">
                                   {/* Creator & Handle */}
                                   <td className="py-3.5 px-4">
                                     <div className="font-bold text-slate-900 text-sm">
-                                      {creator.name}
+                                      <EditableText
+                                        value={creator.name || ""}
+                                        path={`modules.influencerMarketing.creators[${realIdx}].name`}
+                                        placeholder="Creator Name"
+                                      />
                                     </div>
                                     <div className="text-blue-600 font-medium">
-                                      {creator.handle}
+                                      <EditableText
+                                        value={creator.handle || ""}
+                                        path={`modules.influencerMarketing.creators[${realIdx}].handle`}
+                                        placeholder="@handle"
+                                      />
                                     </div>
                                   </td>
 
                                   {/* Platform & Niche */}
                                   <td className="py-3.5 px-4">
                                     <div className="font-semibold text-slate-800">
-                                      {creator.platform}
+                                      <EditableText
+                                        value={creator.platform || ""}
+                                        path={`modules.influencerMarketing.creators[${realIdx}].platform`}
+                                        placeholder="Platform"
+                                      />
                                     </div>
                                     <div className="text-slate-500 text-[11px]">
-                                      {creator.niche}
+                                      <EditableText
+                                        value={creator.niche || ""}
+                                        path={`modules.influencerMarketing.creators[${realIdx}].niche`}
+                                        placeholder="Niche"
+                                      />
                                     </div>
                                   </td>
 
                                   {/* Follower Count */}
                                   <td className="py-3.5 px-4 text-center font-bold text-slate-900">
-                                    {creator.followers}
+                                    <EditableText
+                                      value={creator.followers || ""}
+                                      path={`modules.influencerMarketing.creators[${realIdx}].followers`}
+                                      placeholder="100,000"
+                                    />
                                   </td>
 
                                   {/* Fake Followers Audit */}
                                   <td className="py-3.5 px-4">
                                     <div className="flex items-center gap-1.5">
-                                      {creator.auditClean ? (
+                                      {isEditable ? (
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            if (onChange) {
+                                              const updated = [...allCreators];
+                                              updated[realIdx] = { ...updated[realIdx], auditClean: !updated[realIdx].auditClean };
+                                              onChange({
+                                                ...portfolioData,
+                                                modules: {
+                                                  ...modules,
+                                                  influencerMarketing: { ...infData, creators: updated },
+                                                },
+                                              });
+                                            }
+                                          }}
+                                          title="Click to toggle Shield / Warning"
+                                          className="cursor-pointer hover:scale-110 transition-transform"
+                                        >
+                                          {creator.auditClean ? (
+                                            <ShieldCheck size={14} className="text-emerald-500 shrink-0" />
+                                          ) : (
+                                            <AlertTriangle size={14} className="text-amber-500 shrink-0" />
+                                          )}
+                                        </button>
+                                      ) : creator.auditClean ? (
                                         <ShieldCheck size={14} className="text-emerald-500 shrink-0" />
                                       ) : (
                                         <AlertTriangle size={14} className="text-amber-500 shrink-0" />
                                       )}
                                       <span className="text-slate-800 font-medium">
-                                        {creator.fakeFollowersAudit}
+                                        <EditableText
+                                          value={creator.fakeFollowersAudit || ""}
+                                          path={`modules.influencerMarketing.creators[${realIdx}].fakeFollowersAudit`}
+                                          placeholder="4.8% (Clean)"
+                                        />
                                       </span>
                                     </div>
                                   </td>
 
                                   {/* Gender Demographics */}
                                   <td className="py-3.5 px-4 text-slate-700 font-medium">
-                                    {creator.genderDemographics}
+                                    <EditableText
+                                      value={creator.genderDemographics || ""}
+                                      path={`modules.influencerMarketing.creators[${realIdx}].genderDemographics`}
+                                      placeholder="80% Female / 20% Male"
+                                    />
                                   </td>
 
                                   {/* Engagement Rate */}
                                   <td className="py-3.5 px-4 text-center">
-                                    <span
-                                      className={`inline-block px-2.5 py-0.5 rounded font-bold text-xs ${
-                                        parseFloat(creator.engagementRate) >= 4
-                                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                          : "bg-slate-100 text-slate-700 border border-slate-200"
-                                      }`}
-                                    >
-                                      {creator.engagementRate}
+                                    <span className="inline-block px-2.5 py-0.5 rounded font-bold text-xs bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                      <EditableText
+                                        value={creator.engagementRate || ""}
+                                        path={`modules.influencerMarketing.creators[${realIdx}].engagementRate`}
+                                        placeholder="4.92%"
+                                      />
                                     </span>
                                   </td>
 
                                   {/* Est. Collaboration Cost */}
                                   <td className="py-3.5 px-4">
                                     <span className="font-bold text-slate-900">
-                                      {creator.collaborationCost}
+                                      <EditableText
+                                        value={creator.collaborationCost || ""}
+                                        path={`modules.influencerMarketing.creators[${realIdx}].collaborationCost`}
+                                        placeholder="$850 (1 Reel)"
+                                      />
                                     </span>
                                   </td>
 
@@ -4026,15 +5705,33 @@ export const PortfolioPreview = ({
                                           : "border-blue-300 bg-blue-50 text-blue-700"
                                       }`}
                                     >
-                                      {creator.fitAssessment}
+                                      <EditableText
+                                        value={creator.fitAssessment || ""}
+                                        path={`modules.influencerMarketing.creators[${realIdx}].fitAssessment`}
+                                        placeholder="Recommended"
+                                      />
                                     </span>
                                   </td>
+
+                                  {/* Delete Action if isEditable */}
+                                  {isEditable && (
+                                    <td className="py-3.5 px-2 text-center">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteInfluencerCreator(realIdx)}
+                                        className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
+                                        title="Delete Creator Row"
+                                      >
+                                        <Trash2 size={13} />
+                                      </button>
+                                    </td>
+                                  )}
                                 </tr>
                               );
                             })
                           ) : (
                             <tr>
-                              <td colSpan={8} className="py-8 text-center text-slate-400">
+                              <td colSpan={isEditable ? 9 : 8} className="py-8 text-center text-slate-400">
                                 No creators found matching "{influencerSearchQuery}" on {influencerPlatformFilter}
                               </td>
                             </tr>
@@ -4045,10 +5742,21 @@ export const PortfolioPreview = ({
 
                     {/* Table Footer */}
                     <div className="bg-slate-50/80 px-4 py-2.5 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
-                      <span>{infData.cpmBenchmark || "Evaluated against creator CPM benchmarks ($12-$18 CPM target)."}</span>
-                      <span className="font-bold text-amber-700">
-                        Average cohort engagement rate: {infData.cohortAvgEngagement || "5.25%"}
-                      </span>
+                      <div>
+                        <EditableText
+                          value={infData.cpmBenchmark || "Evaluated against creator CPM benchmarks ($12-$18 CPM target)."}
+                          path="modules.influencerMarketing.cpmBenchmark"
+                          placeholder="Evaluated against creator CPM benchmarks ($12-$18 CPM target)."
+                        />
+                      </div>
+                      <div className="font-bold text-amber-700 flex items-center gap-1">
+                        <span>Average cohort engagement rate:</span>
+                        <EditableText
+                          value={infData.cohortAvgEngagement || "5.25%"}
+                          path="modules.influencerMarketing.cohortAvgEngagement"
+                          placeholder="5.25%"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -4090,19 +5798,36 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-                        Module 09 · E-Commerce Architecture
+                        <EditableText
+                          value={shopData.categoryBadge || "Module 09 · E-Commerce Architecture"}
+                          path="modules.shopify.categoryBadge"
+                          placeholder="Module 09 · E-Commerce Architecture"
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        {shopData.moduleTitle || "Shopify E-Commerce Store & CRO Architecture"}
+                        <EditableText
+                          value={shopData.moduleTitle || "Shopify E-Commerce Store & CRO Architecture"}
+                          path="modules.shopify.moduleTitle"
+                          placeholder="Shopify E-Commerce Store & CRO Architecture"
+                        />
                       </h2>
-                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        {shopData.subtitle || "End-to-end Shopify merchant deployment designed for high Average Order Value (AOV), seamless 1-click checkout, and automated retention loops."}
-                      </p>
+                      <div className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        <EditableText
+                          value={shopData.subtitle || "End-to-end Shopify merchant deployment designed for high Average Order Value (AOV), seamless 1-click checkout, and automated retention loops."}
+                          path="modules.shopify.subtitle"
+                          placeholder="Subtitle description..."
+                          multiline
+                        />
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-2xs shrink-0">
                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                      <span>{shopData.topBadge || "Shopify Partner Certified · Liquid Customized"}</span>
+                      <EditableText
+                        value={shopData.topBadge || "Shopify Partner Certified · Liquid Customized"}
+                        path="modules.shopify.topBadge"
+                        placeholder="Shopify Partner Certified · Liquid Customized"
+                      />
                     </div>
                   </div>
 
@@ -4118,8 +5843,62 @@ export const PortfolioPreview = ({
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                           />
                           <div className="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-xs text-amber-400 font-mono text-[10px] px-2.5 py-1 rounded-md border border-slate-700 shadow-xs font-bold">
-                            {themeBadge}
+                            <EditableText
+                              value={themeBadge}
+                              path="modules.shopify.themeUsed"
+                              placeholder="Customized Dawn 2.0 with liquid micro-optimizations"
+                            />
                           </div>
+
+                          {/* Editable Image Upload Overlay */}
+                          {isEditable && (
+                            <div className="absolute bottom-3 right-3 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 text-xs shadow-lg">
+                              <label className="text-white hover:text-blue-300 font-semibold cursor-pointer flex items-center gap-1.5">
+                                <Camera size={13} />
+                                <span>Change Image</span>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      const reader = new FileReader();
+                                      reader.onload = () => {
+                                        if (onChange) {
+                                          onChange({
+                                            ...portfolioData,
+                                            modules: {
+                                              ...modules,
+                                              shopify: { ...shopData, imageUrl: reader.result },
+                                            },
+                                          });
+                                        }
+                                      };
+                                      reader.readAsDataURL(file);
+                                    }
+                                  }}
+                                />
+                              </label>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (onChange) {
+                                    onChange({
+                                      ...portfolioData,
+                                      modules: {
+                                        ...modules,
+                                        shopify: { ...shopData, imageUrl: mockupCreativesImg },
+                                      },
+                                    });
+                                  }
+                                }}
+                                className="text-slate-400 hover:text-white text-[11px] font-medium"
+                              >
+                                Reset
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -4127,46 +5906,107 @@ export const PortfolioPreview = ({
                       <div className="lg:col-span-6 space-y-4">
                         <div>
                           <div className="text-xs font-bold uppercase tracking-wider text-amber-600">
-                            {nicheCat}
+                            <EditableText
+                              value={nicheCat}
+                              path="modules.shopify.nicheCategory"
+                              placeholder="SUSTAINABLE ORGANIC OUTDOOR APPAREL & GEAR"
+                            />
                           </div>
                           <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
-                            {storeName}
+                            <EditableText
+                              value={storeName}
+                              path="modules.shopify.storeName"
+                              placeholder="Terra & Tide Apparel"
+                            />
                           </h3>
-                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-2">
-                            {description}
-                          </p>
+                          <div className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-2">
+                            <EditableText
+                              value={description}
+                              path="modules.shopify.description"
+                              placeholder="Complete Shopify store setup description..."
+                              multiline
+                            />
+                          </div>
                         </div>
 
                         {/* 2 Stat Boxes */}
                         <div className="grid grid-cols-2 gap-4">
                           <div className="bg-blue-50/60 border border-blue-200 p-3.5 rounded-xl">
                             <div className="text-[11px] font-bold text-blue-700 uppercase tracking-wider">
-                              CONVERSION RATE
+                              <EditableText
+                                value={shopData.conversionRateLabel || "CONVERSION RATE"}
+                                path="modules.shopify.conversionRateLabel"
+                                placeholder="CONVERSION RATE"
+                              />
                             </div>
                             <div className="font-mono font-bold text-sm sm:text-base text-slate-900 mt-1">
-                              {crAchieved}
+                              <EditableText
+                                value={crAchieved}
+                                path="modules.shopify.conversionRateAchieved"
+                                placeholder="3.84% (up from 1.9% store baseline)"
+                              />
                             </div>
                           </div>
                           <div className="bg-amber-50/60 border border-amber-200 p-3.5 rounded-xl">
                             <div className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">
-                              ACHIEVED AOV
+                              <EditableText
+                                value={shopData.aovLabel || "ACHIEVED AOV"}
+                                path="modules.shopify.aovLabel"
+                                placeholder="ACHIEVED AOV"
+                              />
                             </div>
                             <div className="font-mono font-bold text-sm sm:text-base text-slate-900 mt-1">
-                              {aovAchieved}
+                              <EditableText
+                                value={aovAchieved}
+                                path="modules.shopify.aovAchieved"
+                                placeholder="$89.50 (+$21 lift via cart cross-sells)"
+                              />
                             </div>
                           </div>
                         </div>
 
                         {/* CRO Features */}
                         <div className="space-y-2">
-                          <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                            CONVERSION RATE OPTIMIZATION (CRO) FEATURES:
+                          <div className="flex items-center justify-between">
+                            <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                              <EditableText
+                                value={shopData.croFeaturesHeading || "CONVERSION RATE OPTIMIZATION (CRO) FEATURES:"}
+                                path="modules.shopify.croFeaturesHeading"
+                                placeholder="CONVERSION RATE OPTIMIZATION (CRO) FEATURES:"
+                              />
+                            </div>
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={handleAddShopifyCroFeature}
+                                className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-2 py-0.5 rounded border border-blue-200"
+                              >
+                                <Plus size={11} />
+                                <span>Add Feature</span>
+                              </button>
+                            )}
                           </div>
                           <div className="space-y-1.5 text-xs text-slate-700">
                             {croFeatures.map((feat, fIdx) => (
-                              <div key={fIdx} className="flex items-center gap-2">
-                                <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                                <span>{feat}</span>
+                              <div key={fIdx} className="flex items-center justify-between gap-2 group/feat">
+                                <div className="flex items-center gap-2 flex-1">
+                                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
+                                  <EditableText
+                                    value={feat}
+                                    path={`modules.shopify.croFeatures[${fIdx}]`}
+                                    placeholder="CRO Feature..."
+                                  />
+                                </div>
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteShopifyCroFeature(fIdx)}
+                                    className="opacity-0 group-hover/feat:opacity-100 p-0.5 text-slate-400 hover:text-rose-600 rounded transition-opacity cursor-pointer"
+                                    title="Delete Feature"
+                                  >
+                                    <X size={12} />
+                                  </button>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -4174,16 +6014,46 @@ export const PortfolioPreview = ({
 
                         {/* Integrated Shopify Apps */}
                         <div className="space-y-2 pt-2 border-t border-slate-100">
-                          <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                            INTEGRATED SHOPIFY APPS:
+                          <div className="flex items-center justify-between">
+                            <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                              <EditableText
+                                value={shopData.installedAppsHeading || "INTEGRATED SHOPIFY APPS:"}
+                                path="modules.shopify.installedAppsHeading"
+                                placeholder="INTEGRATED SHOPIFY APPS:"
+                              />
+                            </div>
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={handleAddShopifyApp}
+                                className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-2 py-0.5 rounded border border-blue-200"
+                              >
+                                <Plus size={11} />
+                                <span>Add App</span>
+                              </button>
+                            )}
                           </div>
                           <div className="flex flex-wrap gap-2">
                             {installedApps.map((app, aIdx) => (
                               <span
                                 key={aIdx}
-                                className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium border border-slate-200"
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium border border-slate-200 group/app"
                               >
-                                {app}
+                                <EditableText
+                                  value={app}
+                                  path={`modules.shopify.installedApps[${aIdx}]`}
+                                  placeholder="App Name"
+                                />
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteShopifyApp(aIdx)}
+                                    className="p-0.5 text-slate-400 hover:text-rose-600 rounded cursor-pointer"
+                                    title="Delete App"
+                                  >
+                                    <X size={11} />
+                                  </button>
+                                )}
                               </span>
                             ))}
                           </div>
@@ -4198,28 +6068,35 @@ export const PortfolioPreview = ({
 
           // MODULE 10: VIDEO EDITING, UGC CREATIVES & COMMERCIAL REELS
           if (modId === "videoEditing") {
+            const veData = modules.videoEditing || {};
             const defaultReels = [
               {
                 formatTag: "Reels / TikTok",
                 duration: "0:24",
+                imageUrl: mockupCreativesImg,
                 title: "High-Retention UGC Hook: The 'Stop Scrolling' Skincare Teardown",
                 description: "Engineered a TikTok-native UGC video ad featuring jump cuts every 1.2 seconds, dynamic auto-synced subtitles, sound design (whooshes, pop-ups), and a clear call-to-action.",
+                hookEyebrow: "HOOK & RETENTION ARCHITECTURE (0-3S):",
                 hookStrategy: "0-3s visual pattern interrupt (rapid zoom on textured skin) paired with curiosity headline text and dynamic sound effects.",
+                retentionLabel: "Verified Retention:",
                 retentionMetric: "62% completion rate at 15s mark (4.1x benchmark)",
                 tools: ["Adobe Premiere Pro", "CapCut Desktop", "After Effects"],
               },
               {
                 formatTag: "Brand Teaser",
                 duration: "0:45",
+                imageUrl: mockupCreativesImg,
                 title: "Cinematic Product Commercial: Matte Black Espresso Machine",
                 description: "Commercial-grade promotional video focusing on product textures, precision engineering, and lifestyle aspiration. Used as top-of-funnel brand anchor for Meta and YouTube campaigns.",
+                hookEyebrow: "HOOK & RETENTION ARCHITECTURE (0-3S):",
                 hookStrategy: "Slow-motion espresso extraction shot at 120fps with tactile ASMR audio and atmospheric golden hour backlight.",
+                retentionLabel: "Verified Retention:",
                 retentionMetric: "54% 30-second retention rate on YouTube In-Stream",
                 tools: ["DaVinci Resolve", "Color Grading with Film LUTs", "Sound FX Library"],
               },
             ];
-            const reels = Array.isArray(modules.videoEditing?.reels) && modules.videoEditing.reels.length > 0
-              ? modules.videoEditing.reels
+            const reels = Array.isArray(veData?.reels) && veData.reels.length > 0
+              ? veData.reels
               : Array.isArray(modules.videoEditing) && modules.videoEditing.length > 0
               ? modules.videoEditing
               : defaultReels;
@@ -4235,42 +6112,79 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-                        Module 10 · Post-Production & Motion
+                        <EditableText
+                          value={veData.categoryBadge || "Module 10 · Post-Production & Motion"}
+                          path="modules.videoEditing.categoryBadge"
+                          placeholder="Module 10 · Post-Production & Motion"
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        Video Editing, UGC Creatives & Commercial Reels
+                        <EditableText
+                          value={veData.moduleTitle || "Video Editing, UGC Creatives & Commercial Reels"}
+                          path="modules.videoEditing.moduleTitle"
+                          placeholder="Video Editing, UGC Creatives & Commercial Reels"
+                        />
                       </h2>
-                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        Short-form video assets engineered for algorithm retention, featuring dynamic jump-cut pacing, kinetic subtitles, and psycho-acoustic sound design.
-                      </p>
+                      <div className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        <EditableText
+                          value={veData.subtitle || "Short-form video assets engineered for algorithm retention, featuring dynamic jump-cut pacing, kinetic subtitles, and psycho-acoustic sound design."}
+                          path="modules.videoEditing.subtitle"
+                          placeholder="Subtitle description..."
+                          multiline
+                        />
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-2xs shrink-0">
-                      <Video className="w-4 h-4 text-blue-600" />
-                      <span>CapCut Desktop · Premiere Pro · 4K Color Graded</span>
+                    <div className="flex items-center gap-3 self-start md:self-auto shrink-0">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-2xs">
+                        <Video className="w-4 h-4 text-blue-600" />
+                        <EditableText
+                          value={veData.topBadge || "CapCut Desktop · Premiere Pro · 4K Color Graded"}
+                          path="modules.videoEditing.topBadge"
+                          placeholder="CapCut Desktop · Premiere Pro · 4K Color Graded"
+                        />
+                      </div>
+                      {isEditable && (
+                        <button
+                          type="button"
+                          onClick={handleAddVideoReel}
+                          className="px-3 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl flex items-center gap-1.5 shadow-xs cursor-pointer"
+                        >
+                          <Plus size={14} />
+                          <span>Add Reel</span>
+                        </button>
+                      )}
                     </div>
                   </div>
 
-                  {/* 2 Video Cards Grid */}
+                  {/* Video Cards Grid */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {reels.map((reel, rIdx) => (
                       <div
-                        key={rIdx}
-                        className="bg-slate-900 text-white rounded-2xl border border-slate-800 overflow-hidden shadow-md flex flex-col justify-between group"
+                        key={reel.id || rIdx}
+                        className="bg-slate-900 text-white rounded-2xl border border-slate-800 overflow-hidden shadow-md flex flex-col justify-between group relative"
                       >
                         {/* Video Thumbnail Area */}
                         <div className="relative aspect-[16/9] bg-black overflow-hidden group/vid">
                           <img
-                            src={mockupCreativesImg}
+                            src={reel.imageUrl || mockupCreativesImg}
                             alt={reel.title}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-85"
                           />
                           <div className="absolute top-3 left-3 bg-slate-900/90 text-amber-400 font-mono text-[10px] px-2.5 py-1 rounded font-bold shadow-xs">
-                            {reel.formatTag || "Reels / TikTok"}
+                            <EditableText
+                              value={reel.formatTag || "Reels / TikTok"}
+                              path={`modules.videoEditing.reels[${rIdx}].formatTag`}
+                              placeholder="Reels / TikTok"
+                            />
                           </div>
                           <div className="absolute top-3 right-3 flex items-center gap-1 bg-slate-900/90 text-slate-300 font-mono text-[10px] px-2.5 py-1 rounded shadow-xs">
                             <Clock className="w-3 h-3 text-slate-400" />
-                            <span>{reel.duration || reel.hookTime || "0:30"}</span>
+                            <EditableText
+                              value={reel.duration || "0:30"}
+                              path={`modules.videoEditing.reels[${rIdx}].duration`}
+                              placeholder="0:30"
+                            />
                           </div>
 
                           {/* Center Play Button */}
@@ -4280,6 +6194,53 @@ export const PortfolioPreview = ({
                             </div>
                           </div>
 
+                          {/* Editable Image Upload Overlay */}
+                          {isEditable && (
+                            <div className="absolute bottom-3 right-3 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-lg border border-slate-700 text-xs shadow-lg">
+                              <label className="text-white hover:text-amber-300 font-semibold cursor-pointer flex items-center gap-1 text-[11px]">
+                                <Camera size={12} />
+                                <span>Change Thumbnail</span>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      const reader = new FileReader();
+                                      reader.onload = () => {
+                                        if (onChange) {
+                                          const updated = [...reels];
+                                          updated[rIdx] = { ...updated[rIdx], imageUrl: reader.result };
+                                          onChange({
+                                            ...portfolioData,
+                                            modules: {
+                                              ...modules,
+                                              videoEditing: { ...veData, reels: updated },
+                                            },
+                                          });
+                                        }
+                                      };
+                                      reader.readAsDataURL(file);
+                                    }
+                                  }}
+                                />
+                              </label>
+                            </div>
+                          )}
+
+                          {/* Delete Reel button if isEditable */}
+                          {isEditable && reels.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteVideoReel(rIdx)}
+                              className="absolute bottom-3 left-3 p-1.5 bg-rose-600/90 hover:bg-rose-700 text-white rounded-lg shadow-md cursor-pointer transition-colors"
+                              title="Delete Video Reel"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          )}
+
                           {/* Yellow Accent Bar */}
                           <div className="absolute bottom-0 left-0 right-0 h-1 bg-amber-400" />
                         </div>
@@ -4288,45 +6249,100 @@ export const PortfolioPreview = ({
                         <div className="p-5 sm:p-6 space-y-4 flex-1 flex flex-col justify-between">
                           <div className="space-y-2">
                             <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
-                              {reel.title}
+                              <EditableText
+                                value={reel.title}
+                                path={`modules.videoEditing.reels[${rIdx}].title`}
+                                placeholder="Video Reel Title"
+                              />
                             </h3>
-                            <p className="text-xs text-slate-300 leading-relaxed font-normal">
-                              {reel.description}
-                            </p>
+                            <div className="text-xs text-slate-300 leading-relaxed font-normal">
+                              <EditableText
+                                value={reel.description}
+                                path={`modules.videoEditing.reels[${rIdx}].description`}
+                                placeholder="Reel description..."
+                                multiline
+                              />
+                            </div>
                           </div>
 
                           {/* Hook & Retention Architecture Box */}
                           <div className="bg-slate-950/70 border border-slate-800 rounded-xl p-3.5 space-y-2 text-xs">
                             <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1">
                               <Sparkles className="w-3 h-3 text-amber-400" />
-                              <span>HOOK & RETENTION ARCHITECTURE (0-3S):</span>
+                              <EditableText
+                                value={reel.hookEyebrow || "HOOK & RETENTION ARCHITECTURE (0-3S):"}
+                                path={`modules.videoEditing.reels[${rIdx}].hookEyebrow`}
+                                placeholder="HOOK & RETENTION ARCHITECTURE (0-3S):"
+                              />
                             </div>
-                            <p className="text-slate-200 italic leading-relaxed">
-                              "{reel.hookStrategy || reel.hookArchitecture || "0-3s visual pattern interrupt paired with dynamic sound design."}"
-                            </p>
+                            <div className="text-slate-200 italic leading-relaxed">
+                              "<EditableText
+                                value={reel.hookStrategy || "0-3s visual pattern interrupt paired with dynamic sound design."}
+                                path={`modules.videoEditing.reels[${rIdx}].hookStrategy`}
+                                placeholder="Hook strategy quote..."
+                                multiline
+                              />"
+                            </div>
                             <div className="flex items-center justify-between text-[11px] pt-2 border-t border-slate-800/80">
-                              <span className="text-slate-400">Verified Retention:</span>
+                              <span className="text-slate-400">
+                                <EditableText
+                                  value={reel.retentionLabel || "Verified Retention:"}
+                                  path={`modules.videoEditing.reels[${rIdx}].retentionLabel`}
+                                  placeholder="Verified Retention:"
+                                />
+                              </span>
                               <span className="text-emerald-400 font-mono font-bold">
-                                {reel.retentionMetric || reel.retentionRate || "62% completion rate at 15s mark"}
+                                <EditableText
+                                  value={reel.retentionMetric || "62% completion rate at 15s mark (4.1x benchmark)"}
+                                  path={`modules.videoEditing.reels[${rIdx}].retentionMetric`}
+                                  placeholder="62% completion rate"
+                                />
                               </span>
                             </div>
                           </div>
 
                           {/* Footer with Tools & Enlarge link */}
                           <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800/60">
-                            <div className="flex flex-wrap gap-1.5">
-                              {(Array.isArray(reel.tools) ? reel.tools : typeof reel.software === "string" ? reel.software.split("&").map(s => s.trim()) : ["Adobe Premiere Pro", "CapCut Desktop", "After Effects"]).map((tool, tIdx) => (
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              {(Array.isArray(reel.tools) ? reel.tools : ["Adobe Premiere Pro", "CapCut Desktop", "After Effects"]).map((tool, tIdx) => (
                                 <span
                                   key={tIdx}
-                                  className="px-2 py-0.5 text-[11px] font-medium bg-slate-800 text-slate-300 rounded-md border border-slate-700"
+                                  className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium bg-slate-800 text-slate-300 rounded-md border border-slate-700"
                                 >
-                                  {tool}
+                                  <EditableText
+                                    value={tool}
+                                    path={`modules.videoEditing.reels[${rIdx}].tools[${tIdx}]`}
+                                    placeholder="Tool Name"
+                                  />
+                                  {isEditable && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteVideoReelTool(rIdx, tIdx)}
+                                      className="p-0.5 text-slate-400 hover:text-rose-400 rounded cursor-pointer"
+                                    >
+                                      <X size={10} />
+                                    </button>
+                                  )}
                                 </span>
                               ))}
+                              {isEditable && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddVideoReelTool(rIdx)}
+                                  className="px-1.5 py-0.5 text-[10px] font-bold text-amber-400 bg-slate-800 hover:bg-slate-700 rounded border border-slate-700 cursor-pointer"
+                                >
+                                  + Tool
+                                </button>
+                              )}
                             </div>
-                            <span className="text-xs font-semibold text-amber-400 hover:text-amber-300 cursor-pointer">
-                              Enlarge Player
-                            </span>
+
+                            <button
+                              type="button"
+                              className="text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1 cursor-pointer"
+                            >
+                              <span>Enlarge Player</span>
+                              <ExternalLink className="w-3 h-3" />
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -4362,112 +6378,160 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-                        Module 11 · Direct-To-Consumer Fulfillment
+                        <EditableText
+                          value={dropData.categoryBadge || "Module 11 · Direct-To-Consumer Fulfillment"}
+                          path="modules.dropshipping.categoryBadge"
+                          placeholder="Module 11 · Direct-To-Consumer Fulfillment"
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        {dropData.moduleTitle || "Dropshipping Store & Winning Product Validation"}
+                        <EditableText
+                          value={dropData.moduleTitle || "Dropshipping Store & Winning Product Validation"}
+                          path="modules.dropshipping.moduleTitle"
+                          placeholder="Dropshipping Store & Winning Product Validation"
+                        />
                       </h2>
-                      <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        {dropData.subtitle || "Product discovery research, supplier supply chain integration, margin modeling, and TikTok/Meta ad testing for rapid profitable scaling."}
-                      </p>
+                      <div className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
+                        <EditableText
+                          value={dropData.subtitle || "Product discovery research, supplier supply chain integration, margin modeling, and TikTok/Meta ad testing for rapid profitable scaling."}
+                          path="modules.dropshipping.subtitle"
+                          placeholder="Subtitle description..."
+                          multiline
+                        />
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-2xs shrink-0">
                       <Truck className="w-4 h-4 text-emerald-600" />
-                      <span>{dropData.topBadge || "Fast 5-Day US Fulfillment · 76.3% Gross Margin"}</span>
+                      <EditableText
+                        value={dropData.topBadge || "Fast 5-Day US Fulfillment · 76.3% Gross Margin"}
+                        path="modules.dropshipping.topBadge"
+                        placeholder="Fast 5-Day US Fulfillment · 76.3% Gross Margin"
+                      />
                     </div>
                   </div>
 
                   {/* Winning Product Case Study Card */}
                   <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                      {/* Left: Store Screenshot Mockup */}
-                      <div className="lg:col-span-6 space-y-3">
-                        <div className="relative bg-slate-950 aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 shadow-xs group">
-                          <img
-                            src={dropData.imageUrl || mockupCreativesImg}
-                            alt={winProd}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
-                          />
-                          <div className="absolute top-3 left-3 bg-emerald-600 text-white font-mono text-[11px] font-bold px-3 py-1 rounded-md shadow-xs">
-                            {dropData.grossMarginBadge || "76.3% Gross Margin"}
+                      <div className="lg:col-span-7 space-y-4">
+                        <div>
+                          <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                            PRODUCT VALIDATION LABS
+                          </div>
+                          <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight mt-1">
+                            <EditableText
+                              value={winProd}
+                              path="modules.dropshipping.winningProduct"
+                              placeholder="Winning Product Name"
+                            />
+                          </h3>
+                          <div className="text-xs text-slate-500 font-mono mt-1">
+                            <EditableText
+                              value={storefront}
+                              path="modules.dropshipping.storefrontDetails"
+                              placeholder="Storefront details..."
+                            />
+                          </div>
+                        </div>
+
+                        {/* COGS, Retail, Margin */}
+                        <div className="grid grid-cols-3 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                          <div>
+                            <div className="text-[10px] font-bold text-slate-400 uppercase">COGS</div>
+                            <div className="font-mono font-bold text-sm text-slate-900 mt-0.5">
+                              <EditableText
+                                value={cogs}
+                                path="modules.dropshipping.cogs"
+                                placeholder="$14.20"
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-[10px] font-bold text-slate-400 uppercase">RETAIL PRICE</div>
+                            <div className="font-mono font-bold text-sm text-slate-900 mt-0.5">
+                              <EditableText
+                                value={retail}
+                                path="modules.dropshipping.retailPrice"
+                                placeholder="$59.95"
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-[10px] font-bold text-emerald-600 uppercase">NET PROFIT / UNIT</div>
+                            <div className="font-mono font-bold text-sm text-emerald-700 mt-0.5">
+                              <EditableText
+                                value={profit}
+                                path="modules.dropshipping.netProfit"
+                                placeholder="+$45.75"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Creative Angle */}
+                        <div className="space-y-1">
+                          <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                            WINNING AD ANGLE &amp; HOOK:
+                          </div>
+                          <div className="text-xs sm:text-sm text-slate-700 leading-relaxed bg-amber-50/50 p-3 rounded-lg border border-amber-200/60">
+                            <EditableText
+                              value={adAngle}
+                              path="modules.dropshipping.adAngleDescription"
+                              placeholder="Ad angle description..."
+                              multiline
+                            />
                           </div>
                         </div>
                       </div>
 
-                      {/* Right: Product Case Study & Unit Economics */}
-                      <div className="lg:col-span-6 space-y-4">
-                        <div>
-                          <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                            WINNING PRODUCT CASE STUDY
-                          </div>
-                          <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
-                            {winProd}
-                          </h3>
-                          <p className="text-xs text-slate-500 mt-1 font-medium">
-                            {storefront}
-                          </p>
+                      {/* Right: Pilot Launch Results */}
+                      <div className="lg:col-span-5 bg-slate-900 text-white rounded-xl p-5 space-y-4">
+                        <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                          <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                            PILOT TESTING SPRINT RESULTS
+                          </span>
+                          <span className="text-[11px] text-slate-400 font-mono">14 Days Live</span>
                         </div>
-
-                        {/* 3 Unit Economics KPI Boxes */}
-                        <div className="grid grid-cols-3 gap-3 my-4">
-                          <div className="bg-slate-50 border border-slate-200 p-3 rounded-xl text-center">
-                            <div className="text-[10px] font-bold text-slate-500 uppercase">
-                              UNIT COGS
-                            </div>
-                            <div className="font-mono font-bold text-xs sm:text-sm text-slate-900 mt-1 leading-snug">
-                              {cogs} <span className="block text-[10px] font-normal text-slate-500">(including express fulfillment)</span>
-                            </div>
-                          </div>
-                          <div className="bg-blue-50/50 border border-blue-200 p-3 rounded-xl text-center flex flex-col justify-center">
-                            <div className="text-[10px] font-bold text-blue-700 uppercase">
-                              RETAIL PRICE
-                            </div>
-                            <div className="font-mono font-bold text-sm sm:text-base text-blue-700 mt-1">
-                              {retail}
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <div className="text-[10px] font-bold text-slate-400 uppercase">Units Dispatched</div>
+                            <div className="text-lg font-bold font-mono text-white mt-0.5">
+                              <EditableText
+                                value={unitsSold}
+                                path="modules.dropshipping.pilotUnitsSold"
+                                placeholder="420"
+                              />
                             </div>
                           </div>
-                          <div className="bg-amber-50/60 border border-amber-300 p-3 rounded-xl text-center flex flex-col justify-center">
-                            <div className="text-[10px] font-bold text-amber-800 uppercase">
-                              NET PROFIT/UNIT
-                            </div>
-                            <div className="font-mono font-extrabold text-sm sm:text-base text-amber-800 mt-1">
-                              {profit}
+                          <div>
+                            <div className="text-[10px] font-bold text-slate-400 uppercase">Test Ad Spend</div>
+                            <div className="text-lg font-bold font-mono text-white mt-0.5">
+                              <EditableText
+                                value={adSpend}
+                                path="modules.dropshipping.pilotAdSpend"
+                                placeholder="$3,800"
+                              />
                             </div>
                           </div>
-                        </div>
-
-                        {/* Winning Ad Creative Hook & Angle */}
-                        <div className="space-y-1">
-                          <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wider">
-                            WINNING AD CREATIVE HOOK & ANGLE:
+                          <div>
+                            <div className="text-[10px] font-bold text-slate-400 uppercase">Gross Revenue</div>
+                            <div className="text-lg font-bold font-mono text-emerald-400 mt-0.5">
+                              <EditableText
+                                value={grossRev}
+                                path="modules.dropshipping.pilotGrossRevenue"
+                                placeholder="$25,179"
+                              />
+                            </div>
                           </div>
-                          <p className="text-xs text-slate-600 leading-relaxed">
-                            {adAngle}
-                          </p>
-                        </div>
-
-                        {/* Pilot Test Validation Performance (14-Day Sprint) */}
-                        <div className="space-y-2 pt-2 border-t border-slate-100">
-                          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                            PILOT TEST VALIDATION PERFORMANCE (14-DAY SPRINT):
-                          </div>
-                          <div className="grid grid-cols-4 gap-2 text-center">
-                            <div className="bg-slate-50 border border-slate-200 p-2 rounded-lg">
-                              <span className="text-[10px] text-slate-400 font-medium block">Units Sold</span>
-                              <span className="font-mono font-bold text-xs text-slate-800">{unitsSold}</span>
-                            </div>
-                            <div className="bg-slate-50 border border-slate-200 p-2 rounded-lg">
-                              <span className="text-[10px] text-slate-400 font-medium block">Ad Spend</span>
-                              <span className="font-mono font-bold text-xs text-slate-800">{adSpend}</span>
-                            </div>
-                            <div className="bg-blue-50/60 border border-blue-200 p-2 rounded-lg">
-                              <span className="text-[10px] text-blue-600 font-medium block">Gross Revenue</span>
-                              <span className="font-mono font-bold text-xs text-blue-700">{grossRev}</span>
-                            </div>
-                            <div className="bg-emerald-50/60 border border-emerald-200 p-2 rounded-lg">
-                              <span className="text-[10px] text-emerald-600 font-medium block">Net ROAS</span>
-                              <span className="font-mono font-bold text-xs text-emerald-700">{netRoas}</span>
+                          <div>
+                            <div className="text-[10px] font-bold text-slate-400 uppercase">Blended ROAS</div>
+                            <div className="text-lg font-bold font-mono text-blue-400 mt-0.5">
+                              <EditableText
+                                value={netRoas}
+                                path="modules.dropshipping.pilotNetRoas"
+                                placeholder="3.84x"
+                              />
                             </div>
                           </div>
                         </div>
@@ -4507,21 +6571,38 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-1">
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                        {aiData.moduleEyebrow || "MODULE 12 · ARTIFICIAL INTELLIGENCE & AUTOMATION"}
+                        <EditableText
+                          value={aiData.moduleEyebrow || "MODULE 12 · ARTIFICIAL INTELLIGENCE & AUTOMATION"}
+                          path="modules.aiApp.moduleEyebrow"
+                          placeholder="MODULE 12 · ARTIFICIAL INTELLIGENCE & AUTOMATION"
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                        {aiData.title || "AI-Powered Marketing Application & Creative Co-Pilot"}
+                        <EditableText
+                          value={aiData.title || "AI-Powered Marketing Application & Creative Co-Pilot"}
+                          path="modules.aiApp.title"
+                          placeholder="AI-Powered Marketing Application & Creative Co-Pilot"
+                        />
                       </h2>
-                      <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
-                        {aiData.subtitle ||
-                          "Custom software engineered with modern AI APIs to accelerate marketing workflows, automate direct-response ad copy generation, and scale creative testing."}
-                      </p>
+                      <div className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
+                        <EditableText
+                          value={aiData.subtitle ||
+                            "Custom software engineered with modern AI APIs to accelerate marketing workflows, automate direct-response ad copy generation, and scale creative testing."}
+                          path="modules.aiApp.subtitle"
+                          placeholder="Subtitle description..."
+                          multiline
+                        />
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
                       <div className="border border-blue-200 bg-blue-50/50 text-blue-700 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2">
                         <Sparkles size={14} className="text-blue-600" />
-                        <span>{aiData.topBadge || "Gemini API · React 19 · Prompt Engineered"}</span>
+                        <EditableText
+                          value={aiData.topBadge || "Gemini API · React 19 · Prompt Engineered"}
+                          path="modules.aiApp.topBadge"
+                          placeholder="Gemini API · React 19 · Prompt Engineered"
+                        />
                       </div>
                     </div>
                   </div>
@@ -4534,7 +6615,11 @@ export const PortfolioPreview = ({
                         {/* Floating Feature Pill */}
                         <div className="inline-flex items-center gap-1.5 bg-[#2563eb] text-white text-xs font-bold px-3.5 py-1 rounded-md shadow-md">
                           <Sparkles size={12} className="text-white" />
-                          <span>Gemini 2.5 Flash with custom system prompts & temperature fine-tuning</span>
+                          <EditableText
+                            value={aiData.mockupBanner || "Gemini 2.5 Flash with custom system prompts & temperature fine-tuning"}
+                            path="modules.aiApp.mockupBanner"
+                            placeholder="Gemini 2.5 Flash with custom system prompts & temperature fine-tuning"
+                          />
                         </div>
 
                         {/* Mockup Dashboard Window */}
@@ -4641,56 +6726,134 @@ export const PortfolioPreview = ({
                       <div className="lg:col-span-6 space-y-4">
                         <div>
                           <div className="text-xs font-bold uppercase tracking-wider text-amber-500">
-                            {aiData.category || "PRODUCT ARCHITECTURE & WORKFLOW"}
+                            <EditableText
+                              value={aiData.category || "PRODUCT ARCHITECTURE & WORKFLOW"}
+                              path="modules.aiApp.category"
+                              placeholder="PRODUCT ARCHITECTURE & WORKFLOW"
+                            />
                           </div>
                           <h3 className="text-2xl lg:text-3xl font-extrabold text-white mt-1">
-                            {aiData.appName || "AdCopyGenius AI — Marketing Creative Co-Pilot"}
+                            <EditableText
+                              value={aiData.appName || "AdCopyGenius AI — Marketing Creative Co-Pilot"}
+                              path="modules.aiApp.appName"
+                              placeholder="AdCopyGenius AI — Marketing Creative Co-Pilot"
+                            />
                           </h3>
                         </div>
 
-                        <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                          {aiData.appDescription || aiData.tagline ||
-                            "Digital marketers spend 10+ hours a week staring at blank screens trying to write compelling ad angles. AdCopyGenius AI structures inputs into proven frameworks (AIDA, PAS, BAB) with automatic character count validation and emoji formatting."}
-                        </p>
+                        <div className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                          <EditableText
+                            value={aiData.appDescription ||
+                              "Digital marketers spend 10+ hours a week staring at blank screens trying to write compelling ad angles. AdCopyGenius AI structures inputs into proven frameworks (AIDA, PAS, BAB) with automatic character count validation and emoji formatting."}
+                            path="modules.aiApp.appDescription"
+                            placeholder="Description..."
+                            multiline
+                          />
+                        </div>
 
                         {/* Terminal Box */}
                         <div className="bg-[#050b14] border border-slate-700/60 rounded-xl p-4">
                           <div className="text-[11px] font-mono font-bold text-amber-500">
-                            &gt;_ ENGINEERED SYSTEM PROMPT INSTRUCTION:
+                            <EditableText
+                              value={aiData.systemPromptEyebrow || ">_ ENGINEERED SYSTEM PROMPT INSTRUCTION:"}
+                              path="modules.aiApp.systemPromptEyebrow"
+                              placeholder=">_ ENGINEERED SYSTEM PROMPT INSTRUCTION:"
+                            />
                           </div>
-                          <p className="text-slate-200 font-mono text-xs leading-relaxed italic mt-1.5">
-                            {aiData.systemPromptInstruction ||
-                              '"You are an elite direct-response copywriter. Given a product, audience, and pain point, output 3 distinct hooks (Curiosity, Problem-Agitate, Social Proof) under 125 characters, paired with 2 persuasive bodies and call-to-actions."'}
-                          </p>
+                          <div className="text-slate-200 font-mono text-xs leading-relaxed italic mt-1.5">
+                            <EditableText
+                              value={aiData.systemPromptInstruction ||
+                                '"You are an elite direct-response copywriter. Given a product, audience, and pain point, output 3 distinct hooks (Curiosity, Problem-Agitate, Social Proof) under 125 characters, paired with 2 persuasive bodies and call-to-actions."'}
+                              path="modules.aiApp.systemPromptInstruction"
+                              placeholder="System Prompt..."
+                              multiline
+                            />
+                          </div>
                         </div>
 
                         {/* Bullets */}
                         <div className="space-y-2 pt-1 text-xs text-slate-200">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Features</span>
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={handleAddAiFeature}
+                                className="text-[10px] font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer bg-slate-800 px-2 py-0.5 rounded border border-slate-700"
+                              >
+                                <Plus size={11} />
+                                <span>Add Feature</span>
+                              </button>
+                            )}
+                          </div>
                           {(aiData.features || [
                             "Instant 3-Hook Generation (Curiosity, Pain Point, Social Proof)",
                             "Automated Google Ads Headline & Description compliance checker",
                             "Meta Primary Text generator with estimated CTR rating score",
                             "1-Click Copy to Clipboard & CSV batch export for Google Ads Editor",
                           ]).map((feat, fIdx) => (
-                            <div key={fIdx} className="flex items-center gap-2.5">
-                              <CheckCircle2 size={15} className="text-blue-400 shrink-0" />
-                              <span>{feat}</span>
+                            <div key={fIdx} className="flex items-center justify-between gap-2.5 group/feat">
+                              <div className="flex items-center gap-2.5 flex-1">
+                                <CheckCircle2 size={15} className="text-blue-400 shrink-0" />
+                                <EditableText
+                                  value={feat}
+                                  path={`modules.aiApp.features[${fIdx}]`}
+                                  placeholder="Feature..."
+                                />
+                              </div>
+                              {isEditable && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteAiFeature(fIdx)}
+                                  className="opacity-0 group-hover/feat:opacity-100 p-0.5 text-slate-400 hover:text-rose-400 rounded cursor-pointer transition-opacity"
+                                >
+                                  <X size={12} />
+                                </button>
+                              )}
                             </div>
                           ))}
                         </div>
 
                         {/* Tech Stack Pills */}
-                        <div className="flex flex-wrap gap-2 pt-2">
-                          {(aiData.techStack || ["React 19", "TypeScript", "Tailwind CSS", "Gemini API", "Vite"]).map(
-                            (tech, tIdx) => (
-                              <span
-                                key={tIdx}
-                                className="px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 border border-slate-700 font-mono text-xs"
+                        <div className="pt-2 border-t border-slate-800">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Tech Stack</span>
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={handleAddAiTech}
+                                className="text-[10px] font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer bg-slate-800 px-2 py-0.5 rounded border border-slate-700"
                               >
-                                {tech}
-                              </span>
-                            )
-                          )}
+                                <Plus size={11} />
+                                <span>Add Tech</span>
+                              </button>
+                            )}
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {(aiData.techStack || ["React 19", "TypeScript", "Tailwind CSS", "Gemini API", "Vite"]).map(
+                              (tech, tIdx) => (
+                                <span
+                                  key={tIdx}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-800 text-slate-300 border border-slate-700 font-mono text-xs group/tech"
+                                >
+                                  <EditableText
+                                    value={tech}
+                                    path={`modules.aiApp.techStack[${tIdx}]`}
+                                    placeholder="Tech Name"
+                                  />
+                                  {isEditable && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteAiTech(tIdx)}
+                                      className="p-0.5 text-slate-400 hover:text-rose-400 rounded cursor-pointer"
+                                    >
+                                      <X size={11} />
+                                    </button>
+                                  )}
+                                </span>
+                              )
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -4701,7 +6864,11 @@ export const PortfolioPreview = ({
                     <div className="flex items-center gap-2">
                       <span className="text-base text-amber-500">✨</span>
                       <h3 className="font-bold text-slate-900 text-base sm:text-lg">
-                        {aiData.interactiveTitle || "Interactive Test Drive: Try the Student's AI Ad Copy Output Engine"}
+                        <EditableText
+                          value={aiData.interactiveTitle || "Interactive Test Drive: Try the Student's AI Ad Copy Output Engine"}
+                          path="modules.aiApp.interactiveTitle"
+                          placeholder="Interactive Test Drive: Try the Student's AI Ad Copy Output Engine"
+                        />
                       </h3>
                     </div>
 
@@ -4746,15 +6913,31 @@ export const PortfolioPreview = ({
                           </div>
                         </div>
 
-                        <p className="text-xs text-slate-400 leading-relaxed pt-1">
-                          Interactive simulator executing the student's fine-tuned copywriting prompt matrix.
-                        </p>
+                        <div className="text-xs text-slate-400 leading-relaxed pt-1">
+                          <EditableText
+                            value={aiData.interactiveNote || "Interactive simulator executing the student's fine-tuned copywriting prompt matrix."}
+                            path="modules.aiApp.interactiveNote"
+                            placeholder="Interactive simulator executing the student's fine-tuned copywriting prompt matrix."
+                          />
+                        </div>
                       </div>
 
                       {/* Right: Generated Ad Variants */}
                       <div className="lg:col-span-7 space-y-3">
-                        <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                          GENERATED AD VARIANTS FOR {(aiProductInput || "ANTI-FATIGUE ERGONOMIC STANDING MAT").toUpperCase().slice(0, 32)}...:
+                        <div className="flex items-center justify-between">
+                          <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                            GENERATED AD VARIANTS FOR {(aiProductInput || "ANTI-FATIGUE ERGONOMIC STANDING MAT").toUpperCase().slice(0, 32)}...:
+                          </div>
+                          {isEditable && (
+                            <button
+                              type="button"
+                              onClick={() => handleAddAiVariant(aiFramework)}
+                              className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-2 py-0.5 rounded border border-blue-200"
+                            >
+                              <Plus size={11} />
+                              <span>Add Variant ({aiFramework})</span>
+                            </button>
+                          )}
                         </div>
 
                         <div className="space-y-3">
@@ -4763,36 +6946,61 @@ export const PortfolioPreview = ({
                             return (
                               <div
                                 key={vIdx}
-                                className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs hover:border-slate-300 transition-colors relative space-y-2"
+                                className="bg-white border border-slate-200 rounded-xl p-4 shadow-xs hover:border-slate-300 transition-colors relative space-y-2 group/var"
                               >
                                 <div className="flex items-center justify-between gap-2">
                                   <div className="flex items-center gap-2 flex-wrap">
                                     <span className="text-xs font-bold text-blue-600">
-                                      {variant.framework}
+                                      <EditableText
+                                        value={variant.framework}
+                                        path={`modules.aiApp.variants.${aiFramework}[${vIdx}].framework`}
+                                        placeholder="Framework Name"
+                                      />
                                     </span>
                                     <span className="text-slate-300">·</span>
                                     <span className="inline-block px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                      {variant.ctr}
+                                      <EditableText
+                                        value={variant.ctr}
+                                        path={`modules.aiApp.variants.${aiFramework}[${vIdx}].ctr`}
+                                        placeholder="3.85% Pred. CTR"
+                                      />
                                     </span>
                                   </div>
 
-                                  <button
-                                    type="button"
-                                    onClick={() => handleCopyVariant(variant.text, vIdx)}
-                                    title="Copy Ad Variant"
-                                    className="text-slate-400 hover:text-slate-700 p-1 rounded-md transition-colors cursor-pointer"
-                                  >
-                                    {isCopied ? (
-                                      <Check size={15} className="text-emerald-600" />
-                                    ) : (
-                                      <Copy size={15} />
+                                  <div className="flex items-center gap-1">
+                                    <button
+                                      type="button"
+                                      onClick={() => handleCopyVariant(variant.text, vIdx)}
+                                      title="Copy Ad Variant"
+                                      className="text-slate-400 hover:text-slate-700 p-1 rounded-md transition-colors cursor-pointer"
+                                    >
+                                      {isCopied ? (
+                                        <Check size={15} className="text-emerald-600" />
+                                      ) : (
+                                        <Copy size={15} />
+                                      )}
+                                    </button>
+                                    {isEditable && (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleDeleteAiVariant(aiFramework, vIdx)}
+                                        className="opacity-0 group-hover/var:opacity-100 p-1 text-slate-400 hover:text-rose-600 rounded transition-opacity cursor-pointer"
+                                        title="Delete Variant"
+                                      >
+                                        <Trash2 size={13} />
+                                      </button>
                                     )}
-                                  </button>
+                                  </div>
                                 </div>
 
-                                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                                  {variant.text}
-                                </p>
+                                <div className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                                  <EditableText
+                                    value={variant.text}
+                                    path={`modules.aiApp.variants.${aiFramework}[${vIdx}].text`}
+                                    placeholder="Variant Ad Copy text..."
+                                    multiline
+                                  />
+                                </div>
                               </div>
                             );
                           })}
@@ -4812,15 +7020,15 @@ export const PortfolioPreview = ({
               ? modules.performanceMarketing
               : initialPerf;
 
-            const statsList = perfData.stats || initialPerf.stats || [];
+            const statsList = Array.isArray(perfData.stats) ? perfData.stats : (initialPerf.stats || []);
             const stagesList =
-              perfData.funnelArchitecture?.stages ||
-              initialPerf.funnelArchitecture.stages ||
-              [];
+              Array.isArray(perfData.funnelArchitecture?.stages)
+                ? perfData.funnelArchitecture.stages
+                : (initialPerf.funnelArchitecture.stages || []);
             const outcomesList =
-              perfData.attribution?.outcomes ||
-              initialPerf.attribution.outcomes ||
-              [];
+              Array.isArray(perfData.attribution?.outcomes)
+                ? perfData.attribution.outcomes
+                : (initialPerf.attribution.outcomes || []);
 
             return (
               <section
@@ -4833,22 +7041,49 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="space-y-1">
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                        {perfData.moduleEyebrow || "MODULE 13 · ADVANCED PERFORMANCE MARKETING"}
+                        <EditableText
+                          value={perfData.moduleEyebrow || "MODULE 13 · ADVANCED PERFORMANCE MARKETING"}
+                          path="modules.performanceMarketing.moduleEyebrow"
+                          placeholder="MODULE 13 · ADVANCED PERFORMANCE MARKETING"
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                        {perfData.title || "Performance Marketing & Full-Funnel Scaling"}
+                        <EditableText
+                          value={perfData.title || "Performance Marketing & Full-Funnel Scaling"}
+                          path="modules.performanceMarketing.title"
+                          placeholder="Performance Marketing & Full-Funnel Scaling"
+                        />
                       </h2>
-                      <p className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
-                        {perfData.subtitle ||
-                          "Full-funnel paid acquisition architecture scaling spend from $8k to $45k/month while sustaining high profitability through CAC reduction and cohort LTV expansion."}
-                      </p>
+                      <div className="text-xs sm:text-sm text-slate-600 max-w-3xl leading-relaxed">
+                        <EditableText
+                          value={perfData.subtitle ||
+                            "Full-funnel paid acquisition architecture scaling spend from $8k to $45k/month while sustaining high profitability through CAC reduction and cohort LTV expansion."}
+                          path="modules.performanceMarketing.subtitle"
+                          placeholder="Subtitle description..."
+                          multiline
+                        />
+                      </div>
                     </div>
 
-                    <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
+                    <div className="flex items-center gap-3 self-start md:self-auto shrink-0">
                       <div className="border border-emerald-200 bg-emerald-50/50 text-emerald-700 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2">
                         <BarChart3 size={14} className="text-emerald-600" />
-                        <span>{perfData.topBadge || "Triple Whale & GA4 Attributed · $135k Managed"}</span>
+                        <EditableText
+                          value={perfData.topBadge || "Triple Whale & GA4 Attributed · $135k Managed"}
+                          path="modules.performanceMarketing.topBadge"
+                          placeholder="Triple Whale & GA4 Attributed · $135k Managed"
+                        />
                       </div>
+                      {isEditable && (
+                        <button
+                          type="button"
+                          onClick={handleAddPerfStat}
+                          className="px-3 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg flex items-center gap-1 shadow-xs cursor-pointer"
+                        >
+                          <Plus size={13} />
+                          <span>Add Stat</span>
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -4861,7 +7096,7 @@ export const PortfolioPreview = ({
                       return (
                         <div
                           key={sIdx}
-                          className={`rounded-2xl p-5 shadow-xs border transition-all ${
+                          className={`rounded-2xl p-5 shadow-xs border transition-all relative group/stat ${
                             isBlue
                               ? "bg-blue-50/30 border-blue-200"
                               : isAmber
@@ -4869,6 +7104,16 @@ export const PortfolioPreview = ({
                               : "bg-white border-slate-200"
                           }`}
                         >
+                          {isEditable && statsList.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => handleDeletePerfStat(sIdx)}
+                              className="opacity-0 group-hover/stat:opacity-100 absolute top-3 right-3 p-1 text-slate-400 hover:text-rose-600 rounded transition-opacity cursor-pointer"
+                              title="Delete Stat Card"
+                            >
+                              <X size={13} />
+                            </button>
+                          )}
                           <div
                             className={`text-xs font-medium ${
                               isBlue
@@ -4878,7 +7123,11 @@ export const PortfolioPreview = ({
                                 : "text-slate-500"
                             }`}
                           >
-                            {stat.label}
+                            <EditableText
+                              value={stat.label}
+                              path={`modules.performanceMarketing.stats[${sIdx}].label`}
+                              placeholder="Stat Label"
+                            />
                           </div>
                           <div
                             className={`text-2xl sm:text-3xl font-extrabold mt-1 ${
@@ -4889,7 +7138,11 @@ export const PortfolioPreview = ({
                                 : "text-slate-900"
                             }`}
                           >
-                            {stat.value}
+                            <EditableText
+                              value={stat.value}
+                              path={`modules.performanceMarketing.stats[${sIdx}].value`}
+                              placeholder="$45,000"
+                            />
                           </div>
                           <div
                             className={`text-xs mt-1 font-medium ${
@@ -4902,7 +7155,11 @@ export const PortfolioPreview = ({
                                 : "text-slate-400"
                             }`}
                           >
-                            {stat.subtext}
+                            <EditableText
+                              value={stat.subtext}
+                              path={`modules.performanceMarketing.stats[${sIdx}].subtext`}
+                              placeholder="Subtext detail"
+                            />
                           </div>
                         </div>
                       );
@@ -4911,13 +7168,33 @@ export const PortfolioPreview = ({
 
                   {/* Middle Card: Funnel Allocation Architecture */}
                   <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 shadow-sm space-y-6">
-                    <div>
-                      <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                        {perfData.funnelArchitecture?.eyebrow || "FUNNEL ALLOCATION ARCHITECTURE:"}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                          <EditableText
+                            value={perfData.funnelArchitecture?.eyebrow || "FUNNEL ALLOCATION ARCHITECTURE:"}
+                            path="modules.performanceMarketing.funnelArchitecture.eyebrow"
+                            placeholder="FUNNEL ALLOCATION ARCHITECTURE:"
+                          />
+                        </div>
+                        <h3 className="text-xl font-extrabold text-slate-900 mt-1">
+                          <EditableText
+                            value={perfData.funnelArchitecture?.title || "Multi-Stage Channel Mix & Budget Orchestration"}
+                            path="modules.performanceMarketing.funnelArchitecture.title"
+                            placeholder="Multi-Stage Channel Mix & Budget Orchestration"
+                          />
+                        </h3>
                       </div>
-                      <h3 className="text-xl font-extrabold text-slate-900 mt-1">
-                        {perfData.funnelArchitecture?.title || "Multi-Stage Channel Mix & Budget Orchestration"}
-                      </h3>
+                      {isEditable && (
+                        <button
+                          type="button"
+                          onClick={handleAddPerfStage}
+                          className="px-3 py-1.5 text-xs font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 flex items-center gap-1 cursor-pointer"
+                        >
+                          <Plus size={13} />
+                          <span>Add Funnel Stage</span>
+                        </button>
+                      )}
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -4925,48 +7202,84 @@ export const PortfolioPreview = ({
                         return (
                           <div
                             key={stIdx}
-                            className="bg-slate-50/70 border border-slate-200/80 rounded-xl p-5 flex flex-col justify-between"
+                            className="bg-slate-50/70 border border-slate-200/80 rounded-xl p-5 flex flex-col justify-between relative group/stage"
                           >
+                            {isEditable && stagesList.length > 1 && (
+                              <button
+                                type="button"
+                                onClick={() => handleDeletePerfStage(stIdx)}
+                                className="opacity-0 group-hover/stage:opacity-100 absolute top-3 right-3 p-1 text-slate-400 hover:text-rose-600 rounded transition-opacity cursor-pointer"
+                                title="Delete Stage"
+                              >
+                                <X size={13} />
+                              </button>
+                            )}
                             <div className="space-y-4">
-                              <div className="flex items-center justify-between">
+                              <div className="flex items-center justify-between pr-4">
                                 <span className="font-bold text-slate-900 text-sm">
-                                  {stage.stage}
+                                  <EditableText
+                                    value={stage.stage}
+                                    path={`modules.performanceMarketing.funnelArchitecture.stages[${stIdx}].stage`}
+                                    placeholder="Top of Funnel (TOF)"
+                                  />
                                 </span>
                                 <span
                                   className={`px-2 py-0.5 rounded text-xs font-bold ${
                                     stage.pctBadgeClass || "bg-blue-100 text-blue-700"
                                   }`}
                                 >
-                                  {stage.pct}
+                                  <EditableText
+                                    value={stage.pct}
+                                    path={`modules.performanceMarketing.funnelArchitecture.stages[${stIdx}].pct`}
+                                    placeholder="65%"
+                                  />
                                 </span>
                               </div>
 
-                              <p className="text-xs text-slate-600 leading-relaxed">
-                                {stage.objective}
-                              </p>
+                              <div className="text-xs text-slate-600 leading-relaxed">
+                                <EditableText
+                                  value={stage.objective}
+                                  path={`modules.performanceMarketing.funnelArchitecture.stages[${stIdx}].objective`}
+                                  placeholder="Objective..."
+                                  multiline
+                                />
+                              </div>
 
                               <div>
                                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
                                   ACTIVE CHANNELS:
                                 </span>
-                                <p className="text-xs font-medium text-slate-800 mt-1">
-                                  {stage.channels}
-                                </p>
+                                <div className="text-xs font-medium text-slate-800 mt-1">
+                                  <EditableText
+                                    value={stage.channels}
+                                    path={`modules.performanceMarketing.funnelArchitecture.stages[${stIdx}].channels`}
+                                    placeholder="Active channels..."
+                                  />
+                                </div>
                               </div>
 
                               <div>
                                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
                                   CREATIVE FORMATS:
                                 </span>
-                                <p className="text-xs font-medium text-slate-800 mt-1 leading-relaxed">
-                                  {stage.creativeFormats}
-                                </p>
+                                <div className="text-xs font-medium text-slate-800 mt-1 leading-relaxed">
+                                  <EditableText
+                                    value={stage.creativeFormats}
+                                    path={`modules.performanceMarketing.funnelArchitecture.stages[${stIdx}].creativeFormats`}
+                                    placeholder="Creative formats..."
+                                    multiline
+                                  />
+                                </div>
                               </div>
                             </div>
 
                             <div className="pt-4 mt-4 border-t border-slate-200">
                               <span className="text-xs text-slate-400 font-medium">
-                                {stage.budgetFooter}
+                                <EditableText
+                                  value={stage.budgetFooter}
+                                  path={`modules.performanceMarketing.funnelArchitecture.stages[${stIdx}].budgetFooter`}
+                                  placeholder="65% of Total Budget ($29,250/mo)"
+                                />
                               </span>
                             </div>
                           </div>
@@ -4981,33 +7294,75 @@ export const PortfolioPreview = ({
                       {/* Left: Attribution Rigor info */}
                       <div className="lg:col-span-5 space-y-2">
                         <div className="text-xs font-bold uppercase tracking-wider text-amber-500">
-                          {perfData.attribution?.eyebrow || "ATTRIBUTION & MEASUREMENT RIGOR"}
+                          <EditableText
+                            value={perfData.attribution?.eyebrow || "ATTRIBUTION & MEASUREMENT RIGOR"}
+                            path="modules.performanceMarketing.attribution.eyebrow"
+                            placeholder="ATTRIBUTION & MEASUREMENT RIGOR"
+                          />
                         </div>
                         <h3 className="text-2xl font-extrabold text-white">
-                          {perfData.attribution?.title || "Independent First-Party Tracking"}
+                          <EditableText
+                            value={perfData.attribution?.title || "Independent First-Party Tracking"}
+                            path="modules.performanceMarketing.attribution.title"
+                            placeholder="Independent First-Party Tracking"
+                          />
                         </h3>
-                        <p className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-md pt-1">
-                          {perfData.attribution?.description ||
-                            "Triple Whale 1-Day Click / 1-Day View First-Party Pixel & Google Analytics 4 Data-Driven Attribution"}
-                        </p>
+                        <div className="text-slate-400 text-xs sm:text-sm leading-relaxed max-w-md pt-1">
+                          <EditableText
+                            value={perfData.attribution?.description ||
+                              "Triple Whale 1-Day Click / 1-Day View First-Party Pixel & Google Analytics 4 Data-Driven Attribution"}
+                            path="modules.performanceMarketing.attribution.description"
+                            placeholder="Attribution description..."
+                            multiline
+                          />
+                        </div>
                       </div>
 
                       {/* Right: Verified Student Outcomes */}
                       <div className="lg:col-span-7 space-y-3">
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
-                          {perfData.attribution?.outcomesHeading || "VERIFIED STUDENT SCALING OUTCOMES:"}
-                        </span>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">
+                            <EditableText
+                              value={perfData.attribution?.outcomesHeading || "VERIFIED STUDENT SCALING OUTCOMES:"}
+                              path="modules.performanceMarketing.attribution.outcomesHeading"
+                              placeholder="VERIFIED STUDENT SCALING OUTCOMES:"
+                            />
+                          </span>
+                          {isEditable && (
+                            <button
+                              type="button"
+                              onClick={handleAddPerfOutcome}
+                              className="text-[10px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer bg-slate-800 px-2 py-0.5 rounded border border-slate-700"
+                            >
+                              <Plus size={11} />
+                              <span>Add Outcome</span>
+                            </button>
+                          )}
+                        </div>
 
                         <div className="space-y-3">
                           {outcomesList.map((outcome, oIdx) => (
-                            <div
-                              key={oIdx}
-                              className="bg-[#0f1d38] border border-slate-700/60 rounded-xl px-4 py-3.5 flex items-center gap-3"
-                            >
-                              <CheckCircle2 size={18} className="text-emerald-400 shrink-0" />
-                              <span className="text-xs sm:text-sm text-slate-200 font-medium leading-snug">
-                                {outcome}
-                              </span>
+                            <div key={oIdx} className="flex items-start justify-between gap-3 group/out">
+                              <div className="flex items-start gap-3 flex-1">
+                                <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
+                                <span className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                  <EditableText
+                                    value={outcome}
+                                    path={`modules.performanceMarketing.attribution.outcomes[${oIdx}]`}
+                                    placeholder="Outcome text..."
+                                    multiline
+                                  />
+                                </span>
+                              </div>
+                              {isEditable && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeletePerfOutcome(oIdx)}
+                                  className="opacity-0 group-hover/out:opacity-100 p-0.5 text-slate-400 hover:text-rose-400 rounded cursor-pointer transition-opacity"
+                                >
+                                  <X size={12} />
+                                </button>
+                              )}
                             </div>
                           ))}
                         </div>

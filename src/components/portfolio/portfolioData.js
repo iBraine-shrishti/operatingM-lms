@@ -486,6 +486,8 @@ export const createInitialPortfolioData = (
             frameworkArchitecture: "Funnel visual flow showing user progression from initial video impression down to post-purchase referral.",
           },
         ],
+        capstoneReviewText: "Presented for Capstone Certification Review",
+        verifiedTrainerText: "Verified by Academy Lead Trainer",
         strategyRoadmap: [
           {
             weeks: "Weeks 1 - 4",
@@ -606,17 +608,39 @@ export const createInitialPortfolioData = (
         ],
       },
       shopify: {
-        storeName: "Kinetics Performance Wear",
-        niche: "Gym & Athleisure DTC",
-        themeUsed: "Dawn (Custom Liquified & Optimized)",
-        liveUrl: "https://kinetics-store-sample.myshopify.com",
-        installedApps: ["Klaviyo Email", "Rebuy Smart Cart", "Loox Product Reviews", "Judge.me"],
-        croFeatures: ["Sticky slide-out drawer cart with free shipping progress bar", "1-Click post-purchase upsell checkout funnel", "Bundle & Save tiered pricing widget on product page"],
-        conversionRateAchieved: "3.84%",
-        aovAchieved: "₹2,450",
-        description: "Engineered high-converting Shopify store architecture from scratch, ensuring sub-1.4s load time on mobile 4G networks and seamless Razorpay/Stripe checkout gateways.",
+        categoryBadge: "Module 09 · E-Commerce Architecture",
+        moduleTitle: "Shopify E-Commerce Store & CRO Architecture",
+        subtitle:
+          "End-to-end Shopify merchant deployment designed for high Average Order Value (AOV), seamless 1-click checkout, and automated retention loops.",
+        topBadge: "Shopify Partner Certified · Liquid Customized",
+        imageUrl: mockupCreativesImg,
+        themeUsed: "Customized Dawn 2.0 with liquid micro-optimizations",
+        nicheCategory: "SUSTAINABLE ORGANIC OUTDOOR APPAREL & GEAR",
+        storeName: "Terra & Tide Apparel",
+        description:
+          "Complete Shopify store setup from scratch. Configured product collections, payment gateways, automated tax settings, shipping zones, and integrated post-purchase cross-sell flows that immediately increased average order value by 30%.",
+        conversionRateAchieved: "3.84% (up from 1.9% store baseline)",
+        conversionRateLabel: "CONVERSION RATE",
+        aovAchieved: "$89.50 (+$21 lift via cart cross-sells)",
+        aovLabel: "ACHIEVED AOV",
+        croFeaturesHeading: "CONVERSION RATE OPTIMIZATION (CRO) FEATURES:",
+        croFeatures: [
+          "Slide-out Smart Cart with progress bar toward free shipping",
+          "Instant 1-Click Shopify Pay & Apple Pay express checkout",
+          "Sticky mobile buy bar with real-time stock scarcity notice",
+          "Size guide interactive modal with 98% fit confidence",
+        ],
+        installedAppsHeading: "INTEGRATED SHOPIFY APPS:",
+        installedApps: [
+          "Klaviyo: Email Marketing & SMS",
+          "Rebuy Engine: Smart Cart & AI Upsells",
+          "Judge.me: Verified Product Reviews",
+          "Matrixify: Bulk Inventory Automation",
+          "Loox: Photo Reviews & UGC Carousel",
+        ],
       },
       videoEditing: {
+        categoryBadge: "Module 10 · Post-Production & Motion",
         moduleTitle: "Video Editing, UGC Creatives & Commercial Reels",
         subtitle:
           "Short-form video assets engineered for algorithm retention, featuring dynamic jump-cut pacing, kinetic subtitles, and psycho-acoustic sound design.",
