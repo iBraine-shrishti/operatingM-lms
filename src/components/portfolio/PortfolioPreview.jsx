@@ -311,6 +311,7 @@ export const PortfolioPreview = ({
   onChange,
   onOpenCustomizer,
   isStandalone = false,
+  isExportCapture = false,
 }) => {
   const defaultData = React.useMemo(() => createInitialPortfolioData(), []);
   const student = portfolioData?.student || defaultData.student;
@@ -1696,7 +1697,8 @@ export const PortfolioPreview = ({
   return (
     <PortfolioEditableContext.Provider value={isEditable}>
       <div className="bg-slate-50 text-slate-900 min-h-screen font-sans selection:bg-amber-400 selection:text-slate-950">
-      {/* 1. TOPBAR HEADER (Matching reference: Aarav Sharma / DM initials / Center links / Developer Specs / Customize / Print) */}
+      {/* 1. TOPBAR HEADER & HERO SECTION (Wrapped for clean 16:9 PDF capture) */}
+      <div id="portfolio-section-hero" className="w-full">
       <header className="relative z-20 bg-white border-b border-slate-200 shadow-2xs">
         <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 min-h-16 py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4">
           {/* Left Brand Badge */}
@@ -2098,6 +2100,7 @@ export const PortfolioPreview = ({
           </div>
         </div>
       </section>
+      </div>
 
       {/* 3. STICKY 13-MODULE NAVIGATION SLIDER (CUSTOM SHUFFLED SEQUENCE & FULL-BLEED) */}
       <nav
@@ -8310,14 +8313,16 @@ export const PortfolioPreview = ({
       </footer>
 
       {/* 6. MODAL FOR UPDATING IMAGES DIRECTLY */}
-      <PortfolioPdfExporter
-        isOpen={isPdfExportOpen}
-        onClose={() => setIsPdfExportOpen(false)}
-        portfolioData={portfolioData}
-        theme={theme}
-        moduleVisibility={moduleVisibility}
-        moduleOrder={moduleOrder}
-      />
+      {!isExportCapture && (
+        <PortfolioPdfExporter
+          isOpen={isPdfExportOpen}
+          onClose={() => setIsPdfExportOpen(false)}
+          portfolioData={portfolioData}
+          theme={theme}
+          moduleVisibility={moduleVisibility}
+          moduleOrder={moduleOrder}
+        />
+      )}
       <ImageUploadModal
         isOpen={imageModalConfig.isOpen && isEditable}
         onClose={closeImageModal}
