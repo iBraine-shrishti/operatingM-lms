@@ -661,8 +661,37 @@ export const ModernExecutiveTemplate = ({
     }
   };
 
+  // Page-specific section partitioning for 2-page format
+  const page1SidebarIds = ["skills", "languages"].filter((id) =>
+    sidebarSectionIds.includes(id)
+  );
+  const page2SidebarIds = ["education", "certifications"].filter((id) =>
+    sidebarSectionIds.includes(id)
+  );
+
+  const page1MainIds = ["summary", "experience"].filter((id) =>
+    mainSectionIds.includes(id)
+  );
+  const page2MainIds = ["projects"].filter((id) =>
+    mainSectionIds.includes(id)
+  );
+
+  const activeSidebarIds =
+    totalPages === 1
+      ? sidebarSectionIds
+      : page === 1
+      ? page1SidebarIds
+      : page2SidebarIds;
+
+  const activeMainIds =
+    totalPages === 1
+      ? mainSectionIds
+      : page === 1
+      ? page1MainIds
+      : page2MainIds;
+
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.5mm] h-auto flex flex-col justify-between print:p-0 print:m-0">
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.8mm] h-full flex flex-col justify-between print:p-0 print:m-0">
       {/* 2-COLUMN BODY */}
       <div className="w-full flex flex-col md:flex-row print:flex-row flex-1 resume-modern-body">
         {/* LEFT SIDEBAR (36%) */}
@@ -673,8 +702,16 @@ export const ModernExecutiveTemplate = ({
             borderColor: theme.border,
           }}
         >
-          {renderContact()}
-          {sidebarSectionIds.map((id) => (
+          {page === 1 ? (
+            renderContact()
+          ) : (
+            <div className="pb-2.5 border-b mb-2" style={{ borderColor: theme.border }}>
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-500">
+                Credentials & Background
+              </span>
+            </div>
+          )}
+          {activeSidebarIds.map((id) => (
             <React.Fragment key={id}>
               {renderSidebarSection(id)}
             </React.Fragment>
@@ -685,8 +722,19 @@ export const ModernExecutiveTemplate = ({
         <div
           className="w-full md:w-[64%] print:w-[64%] p-5 sm:p-6 print:p-4 space-y-3.5 print:space-y-2.5 flex-1 resume-modern-main"
         >
-          {renderMainHeader(false)}
-          {mainSectionIds.map((id) => (
+          {page === 1 ? (
+            renderMainHeader(false)
+          ) : (
+            <header className="pb-2.5 border-b mb-2 resume-section" style={{ borderColor: theme.border }}>
+              <h2 className="text-base sm:text-lg font-extrabold uppercase tracking-tight" style={{ color: theme.primary }}>
+                {personalInfo.fullName}
+              </h2>
+              <div className="text-xs font-bold text-slate-600 mt-0.5">
+                {personalInfo.jobTitle} • Portfolio & Projects (Page 2)
+              </div>
+            </header>
+          )}
+          {activeMainIds.map((id) => (
             <React.Fragment key={id}>
               {renderMainSection(id)}
             </React.Fragment>
@@ -696,6 +744,8 @@ export const ModernExecutiveTemplate = ({
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}
       <ResumeFooter
+        pageNumber={page}
+        totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
         footerInfo={data.footerInfo}

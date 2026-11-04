@@ -620,39 +620,79 @@ export const CreativeMarketerTemplate = ({
     }
   };
 
+  const page1TopSections = ["summary", "experience"].filter((id) =>
+    topSections.includes(id)
+  );
+  const page2TopSections = ["projects"].filter((id) =>
+    topSections.includes(id)
+  );
+
+  const curTopSections =
+    totalPages === 1
+      ? topSections
+      : page === 1
+      ? page1TopSections
+      : page2TopSections;
+
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.5mm] h-auto flex flex-col justify-between print:p-0 print:m-0">
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.8mm] h-full flex flex-col justify-between print:p-0 print:m-0">
       {/* HEADER BANNER */}
-      {renderHeroBanner(false)}
+      {page === 1 ? (
+        renderHeroBanner(false)
+      ) : (
+        <header className="px-5 pt-4 pb-2.5 border-b resume-section flex items-center justify-between" style={{ borderColor: theme.border }}>
+          <div>
+            <h2 className="text-base sm:text-lg font-black uppercase tracking-tight" style={{ color: theme.primary }}>
+              {personalInfo.fullName}
+            </h2>
+            <div className="text-xs font-bold text-slate-600 mt-0.5">
+              {personalInfo.jobTitle} • Portfolio & Credentials (Page 2)
+            </div>
+          </div>
+          <div className="text-[11px] text-slate-500 font-medium text-right">
+            {[personalInfo.email, personalInfo.phone, personalInfo.location].filter(Boolean).join(" • ")}
+          </div>
+        </header>
+      )}
 
       {/* BODY CONTENT */}
       <div className="p-4.5 sm:p-5 print:p-3.5 space-y-2.5 print:space-y-2 flex-1">
         {/* Render top sections according to sequence */}
-        {topSections.map((id) => (
+        {curTopSections.map((id) => (
           <React.Fragment key={id}>{renderTopSection(id)}</React.Fragment>
         ))}
 
-        {(() => {
-          if (!showSkills && !showEduCert) return null;
-          if (showSkills && !showEduCert)
-            return <div className="pt-1">{renderSkills()}</div>;
-          if (!showSkills && showEduCert)
+        {totalPages === 1 ? (
+          (() => {
+            if (!showSkills && !showEduCert) return null;
+            if (showSkills && !showEduCert)
+              return <div className="pt-1">{renderSkills()}</div>;
+            if (!showSkills && showEduCert)
+              return (
+                <div className="pt-1">
+                  {renderEducationAndCertifications()}
+                </div>
+              );
             return (
-              <div className="pt-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-4 print:gap-3 pt-1 resume-creative-grid">
+                {renderSkills()}
                 {renderEducationAndCertifications()}
               </div>
             );
-          return (
-            <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-4 print:gap-3 pt-1 resume-creative-grid">
-              {renderSkills()}
-              {renderEducationAndCertifications()}
-            </div>
-          );
-        })()}
+          })()
+        ) : page === 1 ? (
+          showSkills && <div className="pt-1">{renderSkills()}</div>
+        ) : (
+          showEduCert && (
+            <div className="pt-1">{renderEducationAndCertifications()}</div>
+          )
+        )}
       </div>
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}
       <ResumeFooter
+        pageNumber={page}
+        totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
         footerInfo={data.footerInfo}

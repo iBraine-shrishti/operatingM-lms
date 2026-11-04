@@ -460,35 +460,66 @@ export const DualArchCreativeTemplate = ({
         <aside className="w-full md:w-[38%] bg-[#cfd4dc] dark:bg-slate-800/90 flex flex-col justify-between shrink-0 print:w-[38%] py-0 relative">
           {/* TOP SECTION: Top Arch + Contact Details (connected naturally) */}
           <div className="flex flex-col">
-            {renderTopArch(false)}
-            {renderContactInfo()}
+            {page === 1 ? (
+              <>
+                {renderTopArch(false)}
+                {renderContactInfo()}
+              </>
+            ) : (
+              <div className="p-6">
+                <h3 className="text-sm font-extrabold uppercase tracking-widest text-[#003873] border-b pb-2 mb-3">
+                  Academic Credentials
+                </h3>
+              </div>
+            )}
           </div>
 
           {/* BOTTOM SECTION: Bottom Arch (Education) flush to bottom */}
           <div className="mt-auto">
-            {renderBottomArchEducation()}
+            {page === 1 && totalPages === 1 ? (
+              renderBottomArchEducation()
+            ) : page === 2 ? (
+              renderBottomArchEducation()
+            ) : null}
           </div>
         </aside>
 
         {/* RIGHT COLUMN: MAIN CONTENT (62%) */}
         <div className="w-full md:w-[62%] p-6 sm:p-8 space-y-5 flex-1 bg-white text-slate-800 print:w-[62%]">
-          {/* 1. ABOUT ME */}
-          {renderAboutMe()}
+          {page === 1 ? (
+            <>
+              {/* 1. ABOUT ME */}
+              {renderAboutMe()}
 
-          {/* 2. KEY PROJECTS & CASE STUDIES (ABOVE WORK EXPERIENCE) */}
-          {renderProjects()}
+              {/* 2. WORK EXPERIENCE */}
+              {renderWorkExperience()}
 
-          {/* 3. WORK EXPERIENCE */}
-          {renderWorkExperience()}
+              {/* 3. SKILLS & EXPERTISE */}
+              {renderSkillsSummary()}
+              {renderExpertise()}
+            </>
+          ) : (
+            <>
+              <header className="pb-3 border-b mb-4">
+                <h2 className="text-xl font-black uppercase text-[#003873]">
+                  {personalInfo?.fullName}
+                </h2>
+                <div className="text-xs font-bold text-slate-600 mt-0.5">
+                  {personalInfo?.jobTitle} • Projects & Highlights (Page 2)
+                </div>
+              </header>
 
-          {/* 4 & 5. SKILLS & EXPERTISE */}
-          {renderSkillsSummary()}
-          {renderExpertise()}
+              {/* KEY PROJECTS & CASE STUDIES */}
+              {renderProjects()}
+            </>
+          )}
         </div>
       </div>
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}
       <ResumeFooter
+        pageNumber={page}
+        totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
         footerInfo={data.footerInfo}

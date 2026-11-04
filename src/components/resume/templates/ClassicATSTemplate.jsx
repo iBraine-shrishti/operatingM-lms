@@ -6,6 +6,8 @@ export const ClassicATSTemplate = ({
   data,
   theme,
   onUpdateHeading,
+  page = 1,
+  totalPages = 1,
 }) => {
   const {
     personalInfo = {},
@@ -55,6 +57,31 @@ export const ClassicATSTemplate = ({
               )}
             </React.Fragment>
           ))}
+        </div>
+      </header>
+    );
+  };
+
+  // SECTION: Page 2 Header (Word-like professional continued header)
+  const renderPage2Header = () => {
+    return (
+      <header
+        className="pb-2 mb-2 border-b-2 resume-section break-inside-avoid print:break-inside-avoid flex items-center justify-between"
+        style={{ borderColor: theme.primary }}
+      >
+        <div>
+          <h2
+            className="text-base sm:text-lg font-extrabold uppercase tracking-tight"
+            style={{ color: theme.primary }}
+          >
+            {personalInfo.fullName}
+          </h2>
+          <div className="text-xs font-bold mt-0.5 tracking-wide text-slate-600">
+            {personalInfo.jobTitle} • Curriculum Vitae (Page 2)
+          </div>
+        </div>
+        <div className="text-[11px] text-slate-500 font-medium text-right">
+          {[personalInfo.email, personalInfo.phone, personalInfo.location].filter(Boolean).join(" • ")}
         </div>
       </header>
     );
@@ -372,13 +399,24 @@ export const ClassicATSTemplate = ({
         ]
       : defaultOrder;
 
+  const page1DefaultSections = ["summary", "skills", "experience"];
+  const page1Sections = contentOrder.filter((id) => page1DefaultSections.includes(id));
+  const page2Sections = contentOrder.filter((id) => !page1DefaultSections.includes(id));
+
+  const sectionsToRender =
+    totalPages === 1
+      ? contentOrder
+      : page === 1
+      ? page1Sections
+      : page2Sections;
+
   return (
     <div
-      className="bg-white text-slate-900 font-sans leading-relaxed text-[12.5px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.5mm] h-auto p-6 sm:p-7 print:p-5 flex flex-col justify-between print:m-0"
+      className="bg-white text-slate-900 font-sans leading-relaxed text-[12.5px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.8mm] h-full p-6 sm:p-7 print:p-5 flex flex-col justify-between print:m-0"
     >
       <div className="space-y-2 flex-1">
-        {renderHeader()}
-        {contentOrder.map((secId) => (
+        {page === 1 ? renderHeader() : renderPage2Header()}
+        {sectionsToRender.map((secId) => (
           <React.Fragment key={secId}>
             {renderSectionById(secId)}
           </React.Fragment>
@@ -387,6 +425,8 @@ export const ClassicATSTemplate = ({
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}
       <ResumeFooter
+        pageNumber={page}
+        totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
         footerInfo={data.footerInfo}

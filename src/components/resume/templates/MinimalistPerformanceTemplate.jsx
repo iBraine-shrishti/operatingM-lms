@@ -527,22 +527,61 @@ export const MinimalistPerformanceTemplate = ({
     }
   };
 
-  const showLeftCol = showExp || showProj;
-  const showRightCol = showSkills || showEdu || showCert;
+  const page1LeftIds = ["experience"].filter((id) => leftSectionIds.includes(id));
+  const page2LeftIds = ["projects"].filter((id) => leftSectionIds.includes(id));
+
+  const page1RightIds = ["skills"].filter((id) => rightSectionIds.includes(id));
+  const page2RightIds = ["education", "certifications"].filter((id) =>
+    rightSectionIds.includes(id)
+  );
+
+  const curLeftIds =
+    totalPages === 1
+      ? leftSectionIds
+      : page === 1
+      ? page1LeftIds
+      : page2LeftIds;
+
+  const curRightIds =
+    totalPages === 1
+      ? rightSectionIds
+      : page === 1
+      ? page1RightIds
+      : page2RightIds;
+
+  const showLeftCol = curLeftIds.length > 0;
+  const showRightCol = curRightIds.length > 0;
 
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.5mm] h-auto p-5 sm:p-6 print:p-4 flex flex-col justify-between print:m-0">
+    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.8mm] h-full p-5 sm:p-6 print:p-4 flex flex-col justify-between print:m-0">
       <div className="space-y-3 print:space-y-2 flex-1">
         {/* HEADER */}
-        {renderHeader(false)}
+        {page === 1 ? (
+          renderHeader(false)
+        ) : (
+          <header className="pb-2.5 mb-2 border-b resume-section flex items-center justify-between" style={{ borderColor: theme.border }}>
+            <div>
+              <h2 className="text-base font-extrabold uppercase tracking-tight" style={{ color: theme.primary }}>
+                {personalInfo.fullName}
+              </h2>
+              <div className="text-xs font-bold text-slate-600 mt-0.5">
+                {personalInfo.jobTitle} • Projects & Credentials (Page 2)
+              </div>
+            </div>
+            <div className="text-[11px] text-slate-500 font-medium text-right">
+              {[personalInfo.email, personalInfo.phone, personalInfo.location].filter(Boolean).join(" • ")}
+            </div>
+          </header>
+        )}
 
-        {renderSummary()}
+        {page === 1 && renderSummary()}
+
         {(() => {
           if (!showLeftCol && !showRightCol) return null;
           if (showLeftCol && !showRightCol) {
             return (
               <div className="space-y-3">
-                {leftSectionIds.map((id) => (
+                {curLeftIds.map((id) => (
                   <React.Fragment key={id}>{renderLeftSection(id)}</React.Fragment>
                 ))}
               </div>
@@ -551,7 +590,7 @@ export const MinimalistPerformanceTemplate = ({
           if (!showLeftCol && showRightCol) {
             return (
               <div className="space-y-3">
-                {rightSectionIds.map((id) => (
+                {curRightIds.map((id) => (
                   <React.Fragment key={id}>{renderRightSection(id)}</React.Fragment>
                 ))}
               </div>
@@ -560,12 +599,12 @@ export const MinimalistPerformanceTemplate = ({
           return (
             <div className="grid grid-cols-1 md:grid-cols-12 print:grid-cols-12 gap-5 print:gap-3.5 pt-0.5 resume-minimalist-grid">
               <div className="md:col-span-7 print:col-span-7 space-y-3.5 print:space-y-2 resume-minimalist-col-7">
-                {leftSectionIds.map((id) => (
+                {curLeftIds.map((id) => (
                   <React.Fragment key={id}>{renderLeftSection(id)}</React.Fragment>
                 ))}
               </div>
               <div className="md:col-span-5 print:col-span-5 space-y-3.5 print:space-y-2 resume-minimalist-col-5">
-                {rightSectionIds.map((id) => (
+                {curRightIds.map((id) => (
                   <React.Fragment key={id}>{renderRightSection(id)}</React.Fragment>
                 ))}
               </div>
@@ -576,6 +615,8 @@ export const MinimalistPerformanceTemplate = ({
 
       {/* DOCUMENT FOOTER (WORD-LIKE WITH OM LOGO) */}
       <ResumeFooter
+        pageNumber={page}
+        totalPages={totalPages}
         personalInfo={personalInfo}
         experience={experiences}
         footerInfo={data.footerInfo}
