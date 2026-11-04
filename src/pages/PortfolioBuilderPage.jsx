@@ -76,6 +76,10 @@ export const PortfolioBuilderPage = () => {
               parsed.modules?.performanceMarketing?.funnelArchitecture
                 ? parsed.modules.performanceMarketing
                 : defaultData.modules.performanceMarketing,
+            videoEditing:
+              parsed.modules?.videoEditing?.reels
+                ? parsed.modules.videoEditing
+                : defaultData.modules.videoEditing,
           },
         };
       }

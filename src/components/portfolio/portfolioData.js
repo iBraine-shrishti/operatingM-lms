@@ -606,10 +606,38 @@ export const createInitialPortfolioData = (
         aovAchieved: "₹2,450",
         description: "Engineered high-converting Shopify store architecture from scratch, ensuring sub-1.4s load time on mobile 4G networks and seamless Razorpay/Stripe checkout gateways.",
       },
-      videoEditing: [
-        { id: "ve-1", title: "Problem-Agitate-Solve UGC Ad for Teeth Whitening", software: "CapCut Pro & Premiere Pro", hookTime: "First 1.8 seconds", retentionRate: "68% at 3s mark" },
-        { id: "ve-2", title: "Kinetic Podcast Clip with B-roll & Sound Effects", software: "After Effects & Premiere Pro", hookTime: "Visual pattern interrupt on word 1", retentionRate: "74% completion rate" },
-      ],
+      videoEditing: {
+        moduleTitle: "Video Editing, UGC Creatives & Commercial Reels",
+        subtitle:
+          "Short-form video assets engineered for algorithm retention, featuring dynamic jump-cut pacing, kinetic subtitles, and psycho-acoustic sound design.",
+        topBadge: "CapCut Desktop · Premiere Pro · 4K Color Graded",
+        reels: [
+          {
+            id: "reel-1",
+            formatTag: "Reels / TikTok",
+            duration: "0:24",
+            title: "High-Retention UGC Hook: The 'Stop Scrolling' Skincare Teardown",
+            description:
+              "Engineered a TikTok-native UGC video ad featuring jump cuts every 1.2 seconds, dynamic auto-synced subtitles, sound design (whooshes, pop-ups), and a clear call-to-action.",
+            hookStrategy:
+              "0-3s visual pattern interrupt (rapid zoom on textured skin) paired with curiosity headline text and dynamic sound effects.",
+            retentionMetric: "62% completion rate at 15s mark (4.1x benchmark)",
+            tools: ["Adobe Premiere Pro", "CapCut Desktop", "After Effects"],
+          },
+          {
+            id: "reel-2",
+            formatTag: "Brand Teaser",
+            duration: "0:45",
+            title: "Cinematic Product Commercial: Matte Black Espresso Machine",
+            description:
+              "Commercial-grade promotional video focusing on product textures, precision engineering, and lifestyle aspiration. Used as top-of-funnel brand anchor for Meta and YouTube campaigns.",
+            hookStrategy:
+              "Slow-motion espresso extraction shot at 120fps with tactile ASMR audio and atmospheric golden hour backlight.",
+            retentionMetric: "54% 30-second retention rate on YouTube In-Stream",
+            tools: ["DaVinci Resolve", "Color Grading with Film LUTs", "Sound FX Library"],
+          },
+        ],
+      },
       dropshipping: {
         storeName: "Lumina Home Tech",
         winningProduct: "Smart Ergonomic Posture Sensor",
