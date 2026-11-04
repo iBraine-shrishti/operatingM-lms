@@ -34,6 +34,9 @@ import {
   Linkedin,
   Twitter,
   Instagram,
+  Youtube,
+  Music,
+  X,
   Github,
   MessageCircle,
   Camera,
@@ -60,6 +63,18 @@ import { ImageUploadModal } from "./ImageUploadModal";
 import { MODULES_CATALOG, DEFAULT_MODULE_ORDER, createInitialPortfolioData } from "./portfolioData";
 import logoHorizontalDarkImg from "../../assets/logo-horizontal-dark.png";
 import logoHorizontalImg from "../../assets/logo-horizontal.png";
+
+const renderSmoIcon = (platform, icon) => {
+  const key = (icon || platform || "").toLowerCase();
+  if (key.includes("linkedin")) return <Linkedin className="w-5 h-5 text-blue-400" />;
+  if (key.includes("instagram")) return <Instagram className="w-5 h-5 text-pink-400" />;
+  if (key.includes("youtube")) return <Youtube className="w-5 h-5 text-red-500" />;
+  if (key.includes("twitter") || key.includes(" x") || key === "x") return <Twitter className="w-5 h-5 text-sky-400" />;
+  if (key.includes("tiktok") || key.includes("music")) return <Music className="w-5 h-5 text-fuchsia-400" />;
+  if (key.includes("facebook")) return <Facebook className="w-5 h-5 text-blue-500" />;
+  if (key.includes("pinterest") || key.includes("pin")) return <Pin className="w-5 h-5 text-rose-500" />;
+  return <Share2 className="w-5 h-5 text-emerald-400" />;
+};
 
 const renderSocialIcon = (platform) => {
   switch (platform?.toLowerCase()) {
@@ -324,6 +339,64 @@ export const PortfolioPreview = ({
             designs: [...current, newDesign],
           },
         },
+      });
+    }
+  };
+
+  const handleAddCanvaVideo = () => {
+    if (onChange) {
+      const current = Array.isArray(modules.canva?.videos) ? modules.canva.videos : [];
+      const newVideo = {
+        id: `canva-v-${Date.now()}`,
+        title: "New Short-Form Video Reel",
+        format: "9:16 Vertical Reel",
+        duration: "0:30",
+        hook: "First 2 seconds: 'Stop burning ad budget on this one button...'",
+        thumbnailUrl: mockupCreativesImg,
+        description: "Studio-lit product video reel with kinetic text overlays, feature callout callipers, and clear end-card discount code animation.",
+      };
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          canva: {
+            ...modules.canva,
+            videos: [...current, newVideo],
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddSMO = () => {
+    if (onChange) {
+      const current = Array.isArray(modules.socialOrganic) ? modules.socialOrganic : [];
+      const newProfile = {
+        id: `smo-${Date.now()}`,
+        platform: "Instagram",
+        icon: "Instagram",
+        handle: "@vitalbloom.wellness",
+        niche: "Holistic Health & Adaptogens",
+        beforeFollowers: "840 followers",
+        afterFollowers: "14,800 followers (+1,661%)",
+        growthRate: "+210% engagement rate across 90 days",
+        bioStrategy: "Revamped bio from generic quote to: 'Doctor-formulated organic adaptogens for sustained focus 🌿 | 25,000+ Happy Minds | Claim your free focus quiz 👇'",
+        contentPillars: [
+          "40% Science-backed myth busters (educational carousels)",
+          "30% Routine reels & Morning rituals (relatable lifestyle)",
+          "20% User-Generated Content & Customer Transformations",
+          "10% Founder story & behind-the-scenes laboratory batching",
+        ],
+        customMetrics: [
+          { id: `cm-${Date.now()}-1`, label: "Monthly Impressions", value: "280,000/mo" },
+          { id: `cm-${Date.now()}-2`, label: "Bio-Link Clicks", value: "640 / week" },
+        ],
+        screenshotUrl: mockupCreativesImg,
+        resultsSummary: "Grew organic impressions from 4,200/mo to 280,000/mo. Generated 640 organic bio-link clicks per week directly to the email opt-in funnel without any paid boost.",
+      };
+      onChange({
+        ...portfolioData,
+        modules: { ...modules, socialOrganic: [...current, newProfile] },
       });
     }
   };
@@ -931,6 +1004,7 @@ export const PortfolioPreview = ({
           // MODULE 01: WORDPRESS
           if (modId === "wordpress") {
             const wpProjects = Array.isArray(modules.wordpress) ? modules.wordpress : [];
+            const wpMeta = modules.wordpressMeta || {};
             return (
               <section
                 key={modId}
@@ -942,25 +1016,79 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-                        Module 01 · Full-Stack CMS
+                        <EditableText
+                          value={wpMeta.category || "Module 01 · Full-Stack CMS"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  wordpressMeta: { ...wpMeta, category: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        WordPress Web Design & Development
+                        <EditableText
+                          value={wpMeta.title || "WordPress Web Design & Development"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  wordpressMeta: { ...wpMeta, title: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </h2>
                       <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        Custom-built corporate and e-commerce websites focused on high conversion rates, sub-second loading speeds, and responsive mobile architecture.
+                        <EditableText
+                          tag="span"
+                          value={wpMeta.subtitle || "Custom-built corporate and e-commerce websites focused on high conversion rates, sub-second loading speeds, and responsive mobile architecture."}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  wordpressMeta: { ...wpMeta, subtitle: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </p>
                     </div>
                     <div className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-xs shrink-0">
                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                      <span className="font-semibold text-slate-700">Elementor Pro · WooCommerce · Core Web Vitals Tested</span>
+                      <EditableText
+                        className="font-semibold text-slate-700"
+                        value={wpMeta.badge || "Elementor Pro · WooCommerce · Core Web Vitals Tested"}
+                        onChange={(val) => {
+                          if (onChange) {
+                            onChange({
+                              ...portfolioData,
+                              modules: {
+                                ...modules,
+                                wordpressMeta: { ...wpMeta, badge: val },
+                              },
+                            });
+                          }
+                        }}
+                      />
                     </div>
                   </div>
 
                   {/* 2-Column Grid */}
                   <div className="grid grid-cols-1 lg:grid-cols-[repeat(2,minmax(0,1fr))] gap-[clamp(1.25rem,2.5vw,2rem)]">
                     {wpProjects.map((proj, pIdx) => {
-                      const domainName = proj.title?.toLowerCase().replace(/[^a-z0-9]/g, "-") || "sample";
+                      const domainName = proj.domain || proj.title?.toLowerCase().replace(/[^a-z0-9]/g, "-") || "sample";
                       return (
                         <div
                           key={proj.id || pIdx}
@@ -976,11 +1104,21 @@ export const PortfolioPreview = ({
                               </div>
                               <div className="ml-2 sm:ml-3 flex items-center gap-1 bg-slate-800/90 text-[11px] font-mono text-slate-400 px-3 py-1 rounded-md border border-slate-700/60 max-w-[200px] sm:max-w-xs truncate">
                                 <span className="text-emerald-400">https://</span>
-                                <span className="truncate">{domainName}.demo</span>
+                                <EditableText
+                                  className="text-slate-300 truncate"
+                                  value={proj.domain || `${domainName}.demo`}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updated = [...wpProjects];
+                                      updated[pIdx] = { ...updated[pIdx], domain: val };
+                                      onChange({ ...portfolioData, modules: { ...modules, wordpress: updated } });
+                                    }
+                                  }}
+                                />
                               </div>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
-                              {isEditable && wpProjects.length > 1 && (
+                              {isEditable && (
                                 <button
                                   type="button"
                                   onClick={() => handleDeleteWordPress(pIdx)}
@@ -992,7 +1130,18 @@ export const PortfolioPreview = ({
                               )}
                               <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[11px] font-mono font-bold px-2 py-0.5 rounded">
                                 <Zap className="w-3 h-3 text-amber-400" />
-                                <span>Speed {proj.speedScore || 96}/100</span>
+                                <span>Speed </span>
+                                <EditableText
+                                  value={String(proj.speedScore ?? 96)}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updated = [...wpProjects];
+                                      updated[pIdx] = { ...updated[pIdx], speedScore: parseInt(val, 10) || 90 };
+                                      onChange({ ...portfolioData, modules: { ...modules, wordpress: updated } });
+                                    }
+                                  }}
+                                />
+                                <span>/100</span>
                               </div>
                               <div className="inline-flex items-center gap-1 bg-blue-500/10 text-blue-300 border border-blue-500/30 text-[11px] font-mono px-2 py-0.5 rounded">
                                 <Smartphone className="w-3 h-3 text-blue-400" />
@@ -1050,25 +1199,18 @@ export const PortfolioPreview = ({
                                   if (onChange) {
                                     const updated = [...wpProjects];
                                     updated[pIdx] = { ...updated[pIdx], clientType: val };
-                                    onChange({
-                                      ...portfolioData,
-                                      modules: { ...modules, wordpress: updated },
-                                    });
+                                    onChange({ ...portfolioData, modules: { ...modules, wordpress: updated } });
                                   }
                                 }}
-                                className="text-xs font-bold text-amber-600 uppercase tracking-wider block"
+                                className="text-[11px] font-bold uppercase tracking-wider text-blue-600 block"
                               />
                               <EditableText
-                                tag="h3"
                                 value={proj.title}
                                 onChange={(val) => {
                                   if (onChange) {
                                     const updated = [...wpProjects];
                                     updated[pIdx] = { ...updated[pIdx], title: val };
-                                    onChange({
-                                      ...portfolioData,
-                                      modules: { ...modules, wordpress: updated },
-                                    });
+                                    onChange({ ...portfolioData, modules: { ...modules, wordpress: updated } });
                                   }
                                 }}
                                 className="text-xl font-bold text-slate-900 mt-1 block"
@@ -1080,10 +1222,7 @@ export const PortfolioPreview = ({
                                   if (onChange) {
                                     const updated = [...wpProjects];
                                     updated[pIdx] = { ...updated[pIdx], description: val };
-                                    onChange({
-                                      ...portfolioData,
-                                      modules: { ...modules, wordpress: updated },
-                                    });
+                                    onChange({ ...portfolioData, modules: { ...modules, wordpress: updated } });
                                   }
                                 }}
                                 className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed block"
@@ -1092,12 +1231,32 @@ export const PortfolioPreview = ({
 
                             {/* Core Technical Implementations */}
                             <div className="space-y-2 pt-3 border-t border-slate-100">
-                              <div className="text-[11px] font-bold uppercase text-slate-400 tracking-wider">
-                                Core Technical Implementations:
+                              <div className="flex items-center justify-between">
+                                <div className="text-[11px] font-bold uppercase text-slate-400 tracking-wider">
+                                  Core Technical Implementations:
+                                </div>
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (onChange) {
+                                        const updated = [...wpProjects];
+                                        const feats = [...(updated[pIdx].keyFeatures || [])];
+                                        feats.push("Custom conversion feature & performance optimization");
+                                        updated[pIdx] = { ...updated[pIdx], keyFeatures: feats };
+                                        onChange({ ...portfolioData, modules: { ...modules, wordpress: updated } });
+                                      }
+                                    }}
+                                    className="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <Plus size={11} />
+                                    <span>Add Implementation</span>
+                                  </button>
+                                )}
                               </div>
                               <div className="space-y-1.5">
                                 {(proj.keyFeatures || []).map((feat, fIdx) => (
-                                  <div key={fIdx} className="flex items-start gap-2 text-xs text-slate-700">
+                                  <div key={fIdx} className="flex items-start gap-2 text-xs text-slate-700 group/feat">
                                     <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
                                     <EditableText
                                       value={feat}
@@ -1107,14 +1266,28 @@ export const PortfolioPreview = ({
                                           const feats = [...(updated[pIdx].keyFeatures || [])];
                                           feats[fIdx] = val;
                                           updated[pIdx] = { ...updated[pIdx], keyFeatures: feats };
-                                          onChange({
-                                            ...portfolioData,
-                                            modules: { ...modules, wordpress: updated },
-                                          });
+                                          onChange({ ...portfolioData, modules: { ...modules, wordpress: updated } });
                                         }
                                       }}
                                       className="flex-1"
                                     />
+                                    {isEditable && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (onChange) {
+                                            const updated = [...wpProjects];
+                                            const feats = (updated[pIdx].keyFeatures || []).filter((_, i) => i !== fIdx);
+                                            updated[pIdx] = { ...updated[pIdx], keyFeatures: feats };
+                                            onChange({ ...portfolioData, modules: { ...modules, wordpress: updated } });
+                                          }
+                                        }}
+                                        className="opacity-0 group-hover/feat:opacity-100 text-slate-400 hover:text-rose-600 p-0.5 transition-opacity cursor-pointer shrink-0"
+                                        title="Delete this implementation"
+                                      >
+                                        <Trash2 size={12} />
+                                      </button>
+                                    )}
                                   </div>
                                 ))}
                               </div>
@@ -1122,15 +1295,60 @@ export const PortfolioPreview = ({
 
                             {/* Footer tech tags & inspect link */}
                             <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
-                              <div className="flex flex-wrap gap-1.5">
+                              <div className="flex flex-wrap items-center gap-1.5">
                                 {(proj.techStack || []).map((tech, tIdx) => (
                                   <span
                                     key={tIdx}
-                                    className="px-2 py-0.5 text-[11px] font-medium bg-slate-100 text-slate-700 rounded-md border border-slate-200"
+                                    className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium bg-slate-100 text-slate-700 rounded-md border border-slate-200 group/tag"
                                   >
-                                    {tech}
+                                    <EditableText
+                                      value={tech}
+                                      onChange={(val) => {
+                                        if (onChange) {
+                                          const updated = [...wpProjects];
+                                          const techs = [...(updated[pIdx].techStack || [])];
+                                          techs[tIdx] = val;
+                                          updated[pIdx] = { ...updated[pIdx], techStack: techs };
+                                          onChange({ ...portfolioData, modules: { ...modules, wordpress: updated } });
+                                        }
+                                      }}
+                                    />
+                                    {isEditable && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (onChange) {
+                                            const updated = [...wpProjects];
+                                            const techs = (updated[pIdx].techStack || []).filter((_, i) => i !== tIdx);
+                                            updated[pIdx] = { ...updated[pIdx], techStack: techs };
+                                            onChange({ ...portfolioData, modules: { ...modules, wordpress: updated } });
+                                          }
+                                        }}
+                                        className="text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
+                                        title="Delete tag"
+                                      >
+                                        <X size={10} />
+                                      </button>
+                                    )}
                                   </span>
                                 ))}
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (onChange) {
+                                        const updated = [...wpProjects];
+                                        const techs = [...(updated[pIdx].techStack || []), "WordPress 6.4"];
+                                        updated[pIdx] = { ...updated[pIdx], techStack: techs };
+                                        onChange({ ...portfolioData, modules: { ...modules, wordpress: updated } });
+                                      }
+                                    }}
+                                    className="px-2 py-0.5 text-[10px] font-bold text-blue-600 bg-blue-50 border border-blue-200 rounded-md hover:bg-blue-100 flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <Plus size={10} />
+                                    <span>Tag</span>
+                                  </button>
+                                )}
                               </div>
                               <a
                                 href={proj.liveUrl || "#"}
@@ -1147,6 +1365,20 @@ export const PortfolioPreview = ({
                       );
                     })}
                   </div>
+
+                  {/* Add Project Card Button */}
+                  {isEditable && (
+                    <div className="pt-2 text-center">
+                      <button
+                        type="button"
+                        onClick={handleAddWordPress}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-blue-300 hover:border-blue-500 bg-blue-50/60 hover:bg-blue-50 text-blue-700 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                      >
+                        <Plus size={15} />
+                        <span>Add WordPress Project Card</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               </section>
             );
@@ -1163,6 +1395,7 @@ export const PortfolioPreview = ({
               ? modules.canva.videos
               : [];
             const totalAssets = canvaDesigns.length + canvaVideos.length;
+            const canvaMeta = modules.canvaMeta || {};
 
             return (
               <section
@@ -1175,13 +1408,53 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-                        Module 02 · Visual Branding & Motion
+                        <EditableText
+                          value={canvaMeta.category || "Module 02 · Visual Branding & Motion"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  canvaMeta: { ...canvaMeta, category: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        Canva Graphic Design & Short-Form Video Creatives
+                        <EditableText
+                          value={canvaMeta.title || "Canva Graphic Design & Short-Form Video Creatives"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  canvaMeta: { ...canvaMeta, title: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </h2>
                       <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        High-retention social media carousels, performance ad banners, infographic frameworks, and kinetic motion reels engineered for thumb-stopping engagement.
+                        <EditableText
+                          tag="span"
+                          value={canvaMeta.subtitle || "High-impact social media carousels, performance ad banners, infographic frameworks, and kinetic motion reels engineered for thumb-stopping engagement."}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  canvaMeta: { ...canvaMeta, subtitle: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </p>
                     </div>
                     <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl self-start md:self-auto border border-slate-200 shrink-0">
@@ -1221,17 +1494,29 @@ export const PortfolioPreview = ({
                     </div>
                   </div>
 
-                  {/* 4 Graphic Design Showcases */}
+                  {/* Graphic Design Showcases */}
                   {(canvaFilter === "all" || canvaFilter === "designs") && (
                     <div className="space-y-4">
-                      <div className="flex items-center gap-2">
-                        <Box className="w-4 h-4 text-amber-500" />
-                        <h3 className="text-lg font-bold text-slate-900">
-                          Graphic Design Assets & Carousels
-                        </h3>
-                        <span className="text-xs text-slate-500 font-mono">
-                          ({canvaDesigns.length} showcases)
-                        </span>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Box className="w-4 h-4 text-amber-500" />
+                          <h3 className="text-lg font-bold text-slate-900">
+                            Graphic Design Assets & Carousels
+                          </h3>
+                          <span className="text-xs text-slate-500 font-mono">
+                            ({canvaDesigns.length} showcases)
+                          </span>
+                        </div>
+                        {isEditable && (
+                          <button
+                            type="button"
+                            onClick={handleAddCanvaDesign}
+                            className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                          >
+                            <Plus size={13} />
+                            <span>Add Graphic Design</span>
+                          </button>
+                        )}
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[clamp(1rem,1.5vw,1.5rem)]">
@@ -1241,7 +1526,7 @@ export const PortfolioPreview = ({
                             className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col group relative"
                           >
                             {/* Delete Design Button */}
-                            {isEditable && canvaDesigns.length > 1 && (
+                            {isEditable && (
                               <button
                                 type="button"
                                 onClick={() => handleDeleteCanvaDesign(dIdx)}
@@ -1258,7 +1543,19 @@ export const PortfolioPreview = ({
                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                               />
                               <div className="absolute top-2.5 left-2.5 bg-slate-900/80 backdrop-blur-xs text-amber-400 text-[10px] font-bold px-2 py-0.5 rounded shadow-xs">
-                                {design.category || "Design"}
+                                <EditableText
+                                  value={design.category || "Design"}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updated = [...canvaDesigns];
+                                      updated[dIdx] = { ...updated[dIdx], category: val };
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: { ...modules, canva: { ...modules.canva, designs: updated } },
+                                      });
+                                    }
+                                  }}
+                                />
                               </div>
                               {/* Change Screenshot Overlay */}
                               {isEditable && (
@@ -1288,86 +1585,90 @@ export const PortfolioPreview = ({
                                         }
                                       )
                                     }
-                                    className="p-2 rounded-full bg-white text-blue-600 shadow-md hover:bg-slate-100 cursor-pointer"
-                                    title="Change Design Image"
+                                    className="px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer flex items-center gap-1.5"
                                   >
-                                    <Camera className="w-4 h-4" />
+                                    <Camera className="w-3.5 h-3.5 text-blue-600" />
+                                    <span>Change Image</span>
                                   </button>
                                 </div>
                               )}
                             </div>
 
-                            <div className="p-4 flex-1 flex flex-col justify-between">
+                            <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
                               <div>
-                                <div className="text-[11px] font-mono text-slate-400 font-semibold">
-                                  {design.dimensions}
+                                <div className="text-[10px] font-mono text-slate-400 mb-1">
+                                  <EditableText
+                                    value={design.dimensions}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...canvaDesigns];
+                                        updated[dIdx] = { ...updated[dIdx], dimensions: val };
+                                        onChange({
+                                          ...portfolioData,
+                                          modules: { ...modules, canva: { ...modules.canva, designs: updated } },
+                                        });
+                                      }
+                                    }}
+                                  />
                                 </div>
                                 <EditableText
-                                  tag="h4"
                                   value={design.title}
                                   onChange={(val) => {
                                     if (onChange) {
-                                      const updatedDesigns = [...canvaDesigns];
-                                      updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], title: val };
+                                      const updated = [...canvaDesigns];
+                                      updated[dIdx] = { ...updated[dIdx], title: val };
                                       onChange({
                                         ...portfolioData,
-                                        modules: {
-                                          ...modules,
-                                          canva: { ...modules.canva, designs: updatedDesigns },
-                                        },
+                                        modules: { ...modules, canva: { ...modules.canva, designs: updated } },
                                       });
                                     }
                                   }}
-                                  className="text-sm font-bold text-slate-900 mt-1 line-clamp-2 block"
+                                  className="text-xs font-bold text-slate-900 line-clamp-2 block"
                                 />
                                 <EditableText
                                   tag="p"
                                   value={design.description}
                                   onChange={(val) => {
                                     if (onChange) {
-                                      const updatedDesigns = [...canvaDesigns];
-                                      updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], description: val };
+                                      const updated = [...canvaDesigns];
+                                      updated[dIdx] = { ...updated[dIdx], description: val };
                                       onChange({
                                         ...portfolioData,
-                                        modules: {
-                                          ...modules,
-                                          canva: { ...modules.canva, designs: updatedDesigns },
-                                        },
+                                        modules: { ...modules, canva: { ...modules.canva, designs: updated } },
                                       });
                                     }
                                   }}
-                                  className="text-xs text-slate-600 mt-2 line-clamp-3 block"
+                                  className="text-[11px] text-slate-600 mt-1 line-clamp-3 leading-relaxed block"
                                 />
                               </div>
                               <button
                                 type="button"
-                                onClick={() => {
-                                  if (isEditable) {
-                                    openImageModal(
-                                      `View / Edit Canva Design: ${design.title}`,
-                                      design.imageUrl || mockupCreativesImg,
-                                      false,
-                                      (newUrl) => {
-                                        if (onChange) {
-                                          const updatedDesigns = [...canvaDesigns];
-                                          updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], imageUrl: newUrl };
-                                          onChange({
-                                            ...portfolioData,
-                                            modules: {
-                                              ...modules,
-                                              canva: { ...modules.canva, designs: updatedDesigns },
+                                onClick={() =>
+                                  openImageModal(
+                                    `${design.title} (${design.dimensions || "Creative Display"})`,
+                                    design.imageUrl || mockupCreativesImg,
+                                    true,
+                                    (newUrl) => {
+                                      if (onChange) {
+                                        const updatedDesigns = [...canvaDesigns];
+                                        updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], imageUrl: newUrl };
+                                        onChange({
+                                          ...portfolioData,
+                                          modules: {
+                                            ...modules,
+                                            canva: {
+                                              ...modules.canva,
+                                              designs: updatedDesigns,
                                             },
-                                          });
-                                        }
+                                          },
+                                        });
                                       }
-                                    );
-                                  } else {
-                                    window.open(design.imageUrl || mockupCreativesImg, "_blank");
-                                  }
-                                }}
-                                className="mt-3 text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 self-start cursor-pointer"
+                                    }
+                                  )
+                                }
+                                className="text-[11px] font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 self-start pt-2 cursor-pointer"
                               >
-                                <span>{isEditable ? "Expand / Edit Design" : "Expand Design"}</span>
+                                <span>Expand / View Design</span>
                                 <ExternalLink className="w-3 h-3" />
                               </button>
                             </div>
@@ -1377,64 +1678,102 @@ export const PortfolioPreview = ({
                     </div>
                   )}
 
-                  {/* 2 Motion & Short-Form Video Ads */}
+                  {/* Video Creatives & Reels */}
                   {(canvaFilter === "all" || canvaFilter === "videos") && (
-                    <div className="space-y-4 pt-4">
-                      <div className="flex items-center gap-2">
-                        <Video className="w-4 h-4 text-blue-600" />
-                        <h3 className="text-lg font-bold text-slate-900">
-                          Motion & Short-Form Video Ads
-                        </h3>
-                        <span className="text-xs text-slate-500 font-mono">
-                          ({canvaVideos.length} videos)
-                        </span>
+                    <div className="space-y-4 pt-4 border-t border-slate-200/80">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Video className="w-4 h-4 text-blue-500" />
+                          <h3 className="text-lg font-bold text-slate-900">
+                            Short-Form Video Creatives & Kinetic Reels
+                          </h3>
+                          <span className="text-xs text-slate-500 font-mono">
+                            ({canvaVideos.length} reels)
+                          </span>
+                        </div>
+                        {isEditable && (
+                          <button
+                            type="button"
+                            onClick={handleAddCanvaVideo}
+                            className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                          >
+                            <Plus size={13} />
+                            <span>Add Video Reel</span>
+                          </button>
+                        )}
                       </div>
 
-                      <div className="grid grid-cols-1 lg:grid-cols-[repeat(2,minmax(0,1fr))] gap-[clamp(1.25rem,2.5vw,2rem)]">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {canvaVideos.map((video, vIdx) => (
                           <div
                             key={video.id || vIdx}
-                            className="bg-slate-900 text-white rounded-2xl border border-slate-800 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row w-full group"
+                            className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col md:flex-row group hover:border-slate-700 transition-colors relative"
                           >
-                            {/* Left Thumbnail with fixed mathematical clamp width */}
-                            <div className="relative w-full md:w-[clamp(200px,36%,280px)] aspect-[16/10] md:aspect-[9/13] shrink-0 bg-black overflow-hidden group/thumb">
+                            {/* Delete Video Button */}
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteCanvaVideo(vIdx)}
+                                className="absolute top-2.5 right-2.5 p-1.5 rounded-lg bg-slate-800/90 hover:bg-rose-600 text-slate-300 hover:text-white shadow-xs opacity-0 group-hover:opacity-100 transition-all cursor-pointer z-20"
+                                title="Delete this video reel"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            )}
+
+                            {/* Video Thumbnail mockup */}
+                            <div className="relative md:w-5/12 aspect-[9/16] max-h-[340px] md:max-h-none bg-slate-950 overflow-hidden flex items-center justify-center shrink-0">
                               <img
                                 src={video.thumbnailUrl || mockupCreativesImg}
                                 alt={video.title}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-80"
+                                className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500"
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-12 h-12 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                                  <Play className="w-5 h-5 fill-slate-950 ml-0.5" />
-                                </div>
+                              <div className="absolute w-12 h-12 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                                <Play className="w-5 h-5 fill-slate-950 ml-0.5" />
                               </div>
-                              <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1 text-[10px] bg-slate-900/90 text-amber-400 px-2 py-0.5 rounded font-mono">
-                                <Clock className="w-3 h-3" />
-                                <span>{video.duration || "0:30"}</span>
+                              <div className="absolute top-3 left-3 bg-slate-900/90 text-[10px] font-mono text-slate-300 px-2 py-0.5 rounded border border-slate-800">
+                                <EditableText
+                                  value={video.duration || "0:30"}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updatedVideos = [...canvaVideos];
+                                      updatedVideos[vIdx] = { ...updatedVideos[vIdx], duration: val };
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: {
+                                          ...modules,
+                                          canva: { ...modules.canva, videos: updatedVideos },
+                                        },
+                                      });
+                                    }
+                                  }}
+                                />
                               </div>
                             </div>
 
-                            {/* Right Details */}
-                            <div className="w-full md:w-[calc(100%-clamp(200px,36%,280px))] p-[clamp(1rem,2vw,1.5rem)] flex flex-col justify-between space-y-3 min-w-0">
+                            {/* Details */}
+                            <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                               <div>
-                                <div className="flex items-center justify-between">
-                                  <span className="text-[11px] font-mono text-amber-400 uppercase font-semibold">
-                                    {video.format}
-                                  </span>
-                                  {isEditable && canvaVideos.length > 1 && (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleDeleteCanvaVideo(vIdx)}
-                                      className="p-1 rounded-md text-slate-500 hover:text-rose-400 hover:bg-slate-800 transition-colors cursor-pointer"
-                                      title="Delete this video reel"
-                                    >
-                                      <Trash2 size={13} />
-                                    </button>
-                                  )}
+                                <div className="text-[11px] font-mono font-bold text-amber-400 uppercase tracking-wider">
+                                  <EditableText
+                                    value={video.format || "9:16 Vertical Reel"}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updatedVideos = [...canvaVideos];
+                                        updatedVideos[vIdx] = { ...updatedVideos[vIdx], format: val };
+                                        onChange({
+                                          ...portfolioData,
+                                          modules: {
+                                            ...modules,
+                                            canva: { ...modules.canva, videos: updatedVideos },
+                                          },
+                                        });
+                                      }
+                                    }}
+                                  />
                                 </div>
                                 <EditableText
-                                  tag="h4"
                                   value={video.title}
                                   onChange={(val) => {
                                     if (onChange) {
@@ -1495,35 +1834,51 @@ export const PortfolioPreview = ({
                                 />
                               </div>
 
-                              {isEditable && (
+                              <div className="flex items-center gap-3 pt-1">
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      openImageModal(
+                                        `Change Video Thumbnail: ${video.title}`,
+                                        video.thumbnailUrl || mockupCreativesImg,
+                                        false,
+                                        (newUrl) => {
+                                          if (onChange) {
+                                            const updatedVideos = [...canvaVideos];
+                                            updatedVideos[vIdx] = { ...updatedVideos[vIdx], thumbnailUrl: newUrl };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: {
+                                                ...modules,
+                                                canva: { ...modules.canva, videos: updatedVideos },
+                                              },
+                                            });
+                                          }
+                                        }
+                                      )
+                                    }
+                                    className="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <Camera className="w-3 h-3" />
+                                    <span>Change Thumbnail</span>
+                                  </button>
+                                )}
                                 <button
                                   type="button"
                                   onClick={() =>
                                     openImageModal(
-                                      `Change Video Thumbnail: ${video.title}`,
+                                      `${video.title} (${video.format || "Video Reel"})`,
                                       video.thumbnailUrl || mockupCreativesImg,
-                                      false,
-                                      (newUrl) => {
-                                        if (onChange) {
-                                          const updatedVideos = [...canvaVideos];
-                                          updatedVideos[vIdx] = { ...updatedVideos[vIdx], thumbnailUrl: newUrl };
-                                          onChange({
-                                            ...portfolioData,
-                                            modules: {
-                                              ...modules,
-                                              canva: { ...modules.canva, videos: updatedVideos },
-                                            },
-                                          });
-                                        }
-                                      }
+                                      true
                                     )
                                   }
-                                  className="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 self-start cursor-pointer"
+                                  className="text-xs font-semibold text-slate-400 hover:text-slate-200 flex items-center gap-1 ml-auto cursor-pointer"
                                 >
-                                  <Camera className="w-3 h-3" />
-                                  <span>Change Thumbnail</span>
+                                  <span>Enlarge Player</span>
+                                  <ExternalLink className="w-3 h-3" />
                                 </button>
-                              )}
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -1538,6 +1893,7 @@ export const PortfolioPreview = ({
           // MODULE 03: SOCIAL ORGANIC (SMO)
           if (modId === "socialOrganic") {
             const smoProfiles = Array.isArray(modules.socialOrganic) ? modules.socialOrganic : [];
+            const smoMeta = modules.socialOrganicMeta || {};
             return (
               <section
                 key={modId}
@@ -1549,42 +1905,92 @@ export const PortfolioPreview = ({
                   <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/80 pb-6">
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-                        Module 03 · Organic Growth Engineering
+                        <EditableText
+                          value={smoMeta.category || "Module 03 · Organic Growth Engineering"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  socialOrganicMeta: { ...smoMeta, category: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        Social Media Organic (SMO) Profile Optimization
+                        <EditableText
+                          value={smoMeta.title || "Social Media Organic (SMO) Profile Optimization"}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  socialOrganicMeta: { ...smoMeta, title: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </h2>
                       <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        Auditing, restructuring, and scaling organic social presence through strategic bio copywriting, content pillars, aesthetic grid curation, and high-retention community triggers.
+                        <EditableText
+                          tag="span"
+                          value={smoMeta.subtitle || "Auditing, restructuring, and scaling organic social presence through strategic bio copywriting, content pillars, aesthetic grid curation, and high-retention community triggers."}
+                          onChange={(val) => {
+                            if (onChange) {
+                              onChange({
+                                ...portfolioData,
+                                modules: {
+                                  ...modules,
+                                  socialOrganicMeta: { ...smoMeta, subtitle: val },
+                                },
+                              });
+                            }
+                          }}
+                        />
                       </p>
                     </div>
                     <div className="flex items-center gap-2 text-xs font-medium text-slate-600 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-xs shrink-0">
                       <TrendingUp className="w-4 h-4 text-emerald-600" />
-                      <span className="font-semibold text-slate-700">Zero Ad Spend · Pure Organic Inbound Funnels</span>
+                      <EditableText
+                        className="font-semibold text-slate-700"
+                        value={smoMeta.badge || "Zero Ad Spend · Pure Organic Inbound Funnels"}
+                        onChange={(val) => {
+                          if (onChange) {
+                            onChange({
+                              ...portfolioData,
+                              modules: {
+                                ...modules,
+                                socialOrganicMeta: { ...smoMeta, badge: val },
+                              },
+                            });
+                          }
+                        }}
+                      />
                     </div>
                   </div>
 
-                  {/* 2 Profile Cards */}
+                  {/* Profile Cards Grid */}
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {smoProfiles.map((profile, pIdx) => (
                       <div
                         key={profile.id || pIdx}
-                        className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-shadow"
+                        className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative"
                       >
                         {/* Header Navy Banner */}
                         <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
                           <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-500 text-amber-400 flex items-center justify-center shrink-0">
-                              {profile.platform?.toLowerCase() === "linkedin" ? (
-                                <Linkedin className="w-5 h-5 text-blue-400" />
-                              ) : (
-                                <Instagram className="w-5 h-5 text-pink-400" />
-                              )}
+                            <div className="w-10 h-10 rounded-xl bg-blue-600/30 border border-blue-500/50 flex items-center justify-center shrink-0">
+                              {renderSmoIcon(profile.platform, profile.icon)}
                             </div>
                             <div>
                               <h3 className="text-base font-bold text-white flex items-center gap-1.5">
                                 <EditableText
-                                  value={profile.handle}
+                                  value={profile.handle || "@brand"}
                                   onChange={(val) => {
                                     if (onChange) {
                                       const updated = [...smoProfiles];
@@ -1597,7 +2003,19 @@ export const PortfolioPreview = ({
                                   }}
                                 />
                                 <span className="text-xs text-amber-400 font-normal">
-                                  ({profile.platform})
+                                  (<EditableText
+                                    value={profile.platform || "Platform"}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...smoProfiles];
+                                        updated[pIdx] = { ...updated[pIdx], platform: val };
+                                        onChange({
+                                          ...portfolioData,
+                                          modules: { ...modules, socialOrganic: updated },
+                                        });
+                                      }
+                                    }}
+                                  />)
                                 </span>
                               </h3>
                               <EditableText
@@ -1616,22 +2034,47 @@ export const PortfolioPreview = ({
                               />
                             </div>
                           </div>
-                          <div className="text-right">
-                            <EditableText
-                              value={profile.growthRate}
-                              onChange={(val) => {
-                                if (onChange) {
-                                  const updated = [...smoProfiles];
-                                  updated[pIdx] = { ...updated[pIdx], growthRate: val };
-                                  onChange({
-                                    ...portfolioData,
-                                    modules: { ...modules, socialOrganic: updated },
-                                  });
-                                }
-                              }}
-                              className="text-xs text-emerald-400 font-bold font-mono block"
-                            />
-                            <div className="text-[11px] text-slate-400">Verified Analytics</div>
+                          <div className="flex items-center gap-2">
+                            <div className="text-right">
+                              <EditableText
+                                value={profile.growthRate}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...smoProfiles];
+                                    updated[pIdx] = { ...updated[pIdx], growthRate: val };
+                                    onChange({
+                                      ...portfolioData,
+                                      modules: { ...modules, socialOrganic: updated },
+                                    });
+                                  }
+                                }}
+                                className="text-xs text-emerald-400 font-bold font-mono block"
+                              />
+                              <EditableText
+                                value={profile.verifiedBadgeText || "Verified Analytics"}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...smoProfiles];
+                                    updated[pIdx] = { ...updated[pIdx], verifiedBadgeText: val };
+                                    onChange({
+                                      ...portfolioData,
+                                      modules: { ...modules, socialOrganic: updated },
+                                    });
+                                  }
+                                }}
+                                className="text-[11px] text-slate-400 block"
+                              />
+                            </div>
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteSMO(pIdx)}
+                                className="p-1 rounded bg-slate-800 hover:bg-rose-600 text-slate-400 hover:text-white transition-colors cursor-pointer ml-1 shrink-0"
+                                title="Delete this profile card"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            )}
                           </div>
                         </div>
 
@@ -1639,14 +2082,23 @@ export const PortfolioPreview = ({
                         <div className="grid grid-cols-2 bg-slate-50 border-b border-slate-200 divide-x divide-slate-200">
                           <div className="p-3.5 text-center">
                             <div className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">
-                              Starting Baseline
+                              <EditableText
+                                value={profile.beforeLabel || "Starting Baseline"}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...smoProfiles];
+                                    updated[pIdx] = { ...updated[pIdx], beforeLabel: val };
+                                    onChange({ ...portfolioData, modules: { ...modules, socialOrganic: updated } });
+                                  }
+                                }}
+                              />
                             </div>
                             <EditableText
-                              value={profile.beforeFollowers}
+                              value={profile.beforeFollowers || profile.followers || "840 followers"}
                               onChange={(val) => {
                                 if (onChange) {
                                   const updated = [...smoProfiles];
-                                  updated[pIdx] = { ...updated[pIdx], beforeFollowers: val };
+                                  updated[pIdx] = { ...updated[pIdx], beforeFollowers: val, followers: val };
                                   onChange({
                                     ...portfolioData,
                                     modules: { ...modules, socialOrganic: updated },
@@ -1658,10 +2110,19 @@ export const PortfolioPreview = ({
                           </div>
                           <div className="p-3.5 text-center bg-blue-50/50">
                             <div className="text-[11px] uppercase tracking-wider text-blue-700 font-semibold">
-                              Post-Optimization
+                              <EditableText
+                                value={profile.afterLabel || "Post-Optimization"}
+                                onChange={(val) => {
+                                  if (onChange) {
+                                    const updated = [...smoProfiles];
+                                    updated[pIdx] = { ...updated[pIdx], afterLabel: val };
+                                    onChange({ ...portfolioData, modules: { ...modules, socialOrganic: updated } });
+                                  }
+                                }}
+                              />
                             </div>
                             <EditableText
-                              value={profile.afterFollowers}
+                              value={profile.afterFollowers || "14,800 followers (+1,661%)"}
                               onChange={(val) => {
                                 if (onChange) {
                                   const updated = [...smoProfiles];
@@ -1677,20 +2138,106 @@ export const PortfolioPreview = ({
                           </div>
                         </div>
 
-                        {/* Grid Screenshot Preview */}
-                        <div className="relative bg-slate-950 aspect-[16/9] w-full max-h-[300px] overflow-hidden group/img">
+                        {/* Custom Additional Fields / Metrics (customizable) */}
+                        {((profile.customMetrics && profile.customMetrics.length > 0) || isEditable) && (
+                          <div className="px-5 py-2.5 bg-slate-900/5 border-b border-slate-200">
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                                Key Campaign Metrics:
+                              </span>
+                              {isEditable && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (onChange) {
+                                      const updated = [...smoProfiles];
+                                      const cms = [...(updated[pIdx].customMetrics || [])];
+                                      cms.push({
+                                        id: `cm-${Date.now()}`,
+                                        label: "Custom Metric",
+                                        value: "100+",
+                                      });
+                                      updated[pIdx] = { ...updated[pIdx], customMetrics: cms };
+                                      onChange({ ...portfolioData, modules: { ...modules, socialOrganic: updated } });
+                                    }
+                                  }}
+                                  className="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1 cursor-pointer"
+                                >
+                                  <Plus size={11} />
+                                  <span>Add Metric Field</span>
+                                </button>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {(profile.customMetrics || []).map((cm, cmIdx) => (
+                                <div
+                                  key={cm.id || cmIdx}
+                                  className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white rounded-lg border border-slate-200 shadow-2xs text-xs group/cm"
+                                >
+                                  <EditableText
+                                    className="text-[10px] uppercase font-bold text-slate-400"
+                                    value={cm.label}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...smoProfiles];
+                                        const cms = [...(updated[pIdx].customMetrics || [])];
+                                        cms[cmIdx] = { ...cms[cmIdx], label: val };
+                                        updated[pIdx] = { ...updated[pIdx], customMetrics: cms };
+                                        onChange({ ...portfolioData, modules: { ...modules, socialOrganic: updated } });
+                                      }
+                                    }}
+                                  />
+                                  <span className="text-slate-300">:</span>
+                                  <EditableText
+                                    className="font-mono font-bold text-slate-800"
+                                    value={cm.value}
+                                    onChange={(val) => {
+                                      if (onChange) {
+                                        const updated = [...smoProfiles];
+                                        const cms = [...(updated[pIdx].customMetrics || [])];
+                                        cms[cmIdx] = { ...cms[cmIdx], value: val };
+                                        updated[pIdx] = { ...updated[pIdx], customMetrics: cms };
+                                        onChange({ ...portfolioData, modules: { ...modules, socialOrganic: updated } });
+                                      }
+                                    }}
+                                  />
+                                  {isEditable && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        if (onChange) {
+                                          const updated = [...smoProfiles];
+                                          const cms = (updated[pIdx].customMetrics || []).filter((_, i) => i !== cmIdx);
+                                          updated[pIdx] = { ...updated[pIdx], customMetrics: cms };
+                                          onChange({ ...portfolioData, modules: { ...modules, socialOrganic: updated } });
+                                        }
+                                      }}
+                                      className="text-slate-400 hover:text-rose-600 p-0.5 transition-colors cursor-pointer"
+                                      title="Delete this custom metric"
+                                    >
+                                      <X size={11} />
+                                    </button>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Grid Mockup Image */}
+                        <div className="relative aspect-[16/9] max-h-[260px] bg-slate-950 overflow-hidden group/img">
                           <img
                             src={profile.screenshotUrl || mockupCreativesImg}
                             alt={profile.handle}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
+                            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                           />
-                          <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                          <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-2">
                             <button
                               type="button"
                               onClick={() => {
                                 if (isEditable) {
                                   openImageModal(
-                                    `Update SMO Profile Screenshot: ${profile.handle}`,
+                                    `Update SMO Grid Screenshot: ${profile.handle}`,
                                     profile.screenshotUrl || mockupCreativesImg,
                                     false,
                                     (newUrl) => {
@@ -1705,10 +2252,14 @@ export const PortfolioPreview = ({
                                     }
                                   );
                                 } else {
-                                  window.open(profile.screenshotUrl || mockupCreativesImg, "_blank");
+                                  openImageModal(
+                                    `${profile.handle} Organic Social Grid`,
+                                    profile.screenshotUrl || mockupCreativesImg,
+                                    true
+                                  );
                                 }
                               }}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
+                              className="px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer flex items-center gap-1.5"
                             >
                               <Eye className="w-3.5 h-3.5 text-blue-600" />
                               <span>{isEditable ? "Change / Inspect Screenshot" : "Inspect Profile Grid Screenshot"}</span>
@@ -1725,11 +2276,11 @@ export const PortfolioPreview = ({
                                 Optimized Bio & CTA Framework:
                               </div>
                               <EditableText
-                                value={profile.bioStrategy}
+                                value={profile.bioStrategy || profile.bioSetup}
                                 onChange={(val) => {
                                   if (onChange) {
                                     const updated = [...smoProfiles];
-                                    updated[pIdx] = { ...updated[pIdx], bioStrategy: val };
+                                    updated[pIdx] = { ...updated[pIdx], bioStrategy: val, bioSetup: val };
                                     onChange({
                                       ...portfolioData,
                                       modules: { ...modules, socialOrganic: updated },
@@ -1742,12 +2293,32 @@ export const PortfolioPreview = ({
 
                             {/* Content Pillars */}
                             <div className="mt-4 space-y-1.5">
-                              <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                                Engineered Content Pillars:
+                              <div className="flex items-center justify-between">
+                                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                                  Engineered Content Pillars:
+                                </div>
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (onChange) {
+                                        const updated = [...smoProfiles];
+                                        const pillars = [...(updated[pIdx].contentPillars || [])];
+                                        pillars.push("25% High-value educational carousels & tutorials");
+                                        updated[pIdx] = { ...updated[pIdx], contentPillars: pillars };
+                                        onChange({ ...portfolioData, modules: { ...modules, socialOrganic: updated } });
+                                      }
+                                    }}
+                                    className="text-[10px] font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1 cursor-pointer"
+                                  >
+                                    <Plus size={11} />
+                                    <span>Add Pillar</span>
+                                  </button>
+                                )}
                               </div>
                               <div className="space-y-1.5">
                                 {(profile.contentPillars || []).map((pillar, cIdx) => (
-                                  <div key={cIdx} className="flex items-center gap-2 text-xs text-slate-700">
+                                  <div key={cIdx} className="flex items-center gap-2 text-xs text-slate-700 group/pillar">
                                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                                     <EditableText
                                       value={pillar}
@@ -1765,6 +2336,23 @@ export const PortfolioPreview = ({
                                       }}
                                       className="flex-1"
                                     />
+                                    {isEditable && (
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (onChange) {
+                                            const updated = [...smoProfiles];
+                                            const pillars = (updated[pIdx].contentPillars || []).filter((_, i) => i !== cIdx);
+                                            updated[pIdx] = { ...updated[pIdx], contentPillars: pillars };
+                                            onChange({ ...portfolioData, modules: { ...modules, socialOrganic: updated } });
+                                          }
+                                        }}
+                                        className="opacity-0 group-hover/pillar:opacity-100 text-slate-400 hover:text-rose-600 p-0.5 transition-opacity cursor-pointer shrink-0"
+                                        title="Delete this content pillar"
+                                      >
+                                        <Trash2 size={12} />
+                                      </button>
+                                    )}
                                   </div>
                                 ))}
                               </div>
@@ -1796,6 +2384,20 @@ export const PortfolioPreview = ({
                       </div>
                     ))}
                   </div>
+
+                  {/* Add Profile Card Button */}
+                  {isEditable && (
+                    <div className="pt-2 text-center">
+                      <button
+                        type="button"
+                        onClick={handleAddSMO}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-emerald-300 hover:border-emerald-500 bg-emerald-50/60 hover:bg-emerald-50 text-emerald-800 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+                      >
+                        <Plus size={15} />
+                        <span>Add Channel Profile Card</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               </section>
             );

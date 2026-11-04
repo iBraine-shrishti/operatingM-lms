@@ -212,6 +212,11 @@ export const createInitialPortfolioData = (
             "10% Founder story & behind-the-scenes laboratory batching",
           ],
           screenshotUrl: mockupCreativesImg,
+          icon: "Instagram",
+          customMetrics: [
+            { id: "cm-1-1", label: "Monthly Impressions", value: "280,000/mo" },
+            { id: "cm-1-2", label: "Organic Bio Clicks", value: "640 / week" },
+          ],
           resultsSummary: "Grew organic impressions from 4,200/mo to 280,000/mo. Generated 640 organic bio-link clicks per week directly to the email opt-in funnel without any paid boost.",
         },
         {
@@ -230,6 +235,11 @@ export const createInitialPortfolioData = (
             "10% Polls benchmarking facility managers' energy pain points",
           ],
           screenshotUrl: mockupCreativesImg,
+          icon: "LinkedIn",
+          customMetrics: [
+            { id: "cm-2-1", label: "Executive Inbound DMs", value: "18 Qualified" },
+            { id: "cm-2-2", label: "Avg Post Impressions", value: "14,500" },
+          ],
           resultsSummary: "Created 18 closed B2B audit appointments organically through LinkedIn content strategy and proactive founder executive positioning.",
         },
       ],
