@@ -5,6 +5,7 @@ import {
   Globe,
   MapPin,
   Linkedin,
+  Github,
   FolderGit2,
   ExternalLink,
 } from "lucide-react";
@@ -66,9 +67,11 @@ export const DualArchCreativeTemplate = ({
         <h1 className="text-lg sm:text-xl font-black uppercase tracking-tight text-white leading-tight">
           {personalInfo.fullName}
         </h1>
-        <div className="text-[10px] sm:text-[10.5px] font-extrabold uppercase tracking-[2px] text-white/85 mt-1">
-          {personalInfo.jobTitle}
-        </div>
+        {personalInfo.jobTitle && (
+          <div className="text-[10px] sm:text-[10.5px] font-extrabold uppercase tracking-[2px] text-white/85 mt-1">
+            {personalInfo.jobTitle}
+          </div>
+        )}
 
         {/* CIRCULAR PROFILE PHOTO */}
         <div className="mt-4 flex justify-center">
@@ -131,87 +134,108 @@ export const DualArchCreativeTemplate = ({
   );
 
   // SUB-RENDERER: Contact Info (inside gray column, right below top arch)
-  const renderContactInfo = () => (
-    <div className="w-[82%] sm:w-[84%] mx-auto py-4 space-y-2.5 text-slate-800 dark:text-slate-100 text-[11px] font-semibold">
-      {personalInfo.phone && (
-        <a
-          href={`tel:${personalInfo.phone.replace(/\s+/g, "")}`}
-          className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
-        >
-          <div
-            className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
-            style={{ backgroundColor: theme.primary }}
+  const renderContactInfo = () => {
+    if (data.hiddenSections?.personal) return null;
+    return (
+      <div className="w-[82%] sm:w-[84%] mx-auto py-4 space-y-2.5 text-slate-800 dark:text-slate-100 text-[11px] font-semibold">
+        {personalInfo.phone && (
+          <a
+            href={`tel:${personalInfo.phone.replace(/\s+/g, "")}`}
+            className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
           >
-            <Phone size={11} />
-          </div>
-          <span>{personalInfo.phone}</span>
-        </a>
-      )}
+            <div
+              className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
+              style={{ backgroundColor: theme.primary }}
+            >
+              <Phone size={11} />
+            </div>
+            <span>{personalInfo.phone}</span>
+          </a>
+        )}
 
-      {personalInfo.email && (
-        <a
-          href={`mailto:${personalInfo.email}`}
-          className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
-        >
-          <div
-            className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
-            style={{ backgroundColor: theme.primary }}
+        {personalInfo.email && (
+          <a
+            href={`mailto:${personalInfo.email}`}
+            className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
           >
-            <Mail size={11} />
-          </div>
-          <span className="truncate">{personalInfo.email}</span>
-        </a>
-      )}
+            <div
+              className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
+              style={{ backgroundColor: theme.primary }}
+            >
+              <Mail size={11} />
+            </div>
+            <span className="truncate">{personalInfo.email}</span>
+          </a>
+        )}
 
-      {personalInfo.linkedin && (
-        <a
-          href={formatUrl(personalInfo.linkedin)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
-        >
-          <div
-            className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
-            style={{ backgroundColor: theme.primary }}
+        {personalInfo.linkedin && (
+          <a
+            href={formatUrl(personalInfo.linkedin)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
           >
-            <Linkedin size={11} />
-          </div>
-          <span className="truncate">{personalInfo.linkedin}</span>
-          <ExternalLink size={9} className="opacity-60 shrink-0" />
-        </a>
-      )}
+            <div
+              className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
+              style={{ backgroundColor: theme.primary }}
+            >
+              <Linkedin size={11} />
+            </div>
+            <span className="truncate">{personalInfo.linkedin}</span>
+            <ExternalLink size={9} className="opacity-60 shrink-0" />
+          </a>
+        )}
 
-      {personalInfo.portfolio && (
-        <a
-          href={formatUrl(personalInfo.portfolio)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
-        >
-          <div
-            className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
-            style={{ backgroundColor: theme.primary }}
+        {personalInfo.github && (
+          <a
+            href={formatUrl(personalInfo.github)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
           >
-            <Globe size={11} />
-          </div>
-          <span className="truncate">{personalInfo.portfolio}</span>
-          <ExternalLink size={9} className="opacity-60 shrink-0" />
-        </a>
-      )}
+            <div
+              className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
+              style={{ backgroundColor: theme.primary }}
+            >
+              <Github size={11} />
+            </div>
+            <span className="truncate">{personalInfo.github}</span>
+            <ExternalLink size={9} className="opacity-60 shrink-0" />
+          </a>
+        )}
 
-      {personalInfo.location && (
-        <div className="flex items-center gap-3">
-          <div
-            className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
-            style={{ backgroundColor: theme.primary }}
+        {personalInfo.portfolio && (
+          <a
+            href={formatUrl(personalInfo.portfolio)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
           >
-            <MapPin size={11} />
+            <div
+              className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
+              style={{ backgroundColor: theme.primary }}
+            >
+              <Globe size={11} />
+            </div>
+            <span className="truncate">{personalInfo.portfolio}</span>
+            <ExternalLink size={9} className="opacity-60 shrink-0" />
+          </a>
+        )}
+
+        {personalInfo.location && (
+          <div className="flex items-center gap-3">
+            <div
+              className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
+              style={{ backgroundColor: theme.primary }}
+            >
+              <MapPin size={11} />
+            </div>
+            <span>{personalInfo.location}</span>
           </div>
-          <span>{personalInfo.location}</span>
-        </div>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  };
 
   // SUB-RENDERER: Bottom Arch (Education & Certifications)
   const renderBottomArchEducation = () => (

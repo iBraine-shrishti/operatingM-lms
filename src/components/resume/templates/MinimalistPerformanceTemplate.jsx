@@ -5,6 +5,7 @@ import {
   MapPin,
   Linkedin,
   Globe,
+  Github,
   Briefcase,
   GraduationCap,
   Award,
@@ -38,6 +39,7 @@ export const MinimalistPerformanceTemplate = ({
 
   // SUB-RENDERER: Header
   const renderHeader = (isContinuation = false) => {
+    if (data.hiddenSections?.personal) return null;
     if (isContinuation) {
       return (
         <header className="pb-4 border-b-2 mb-4 shrink-0" style={{ borderColor: theme.primary }}>
@@ -76,12 +78,14 @@ export const MinimalistPerformanceTemplate = ({
             >
               {personalInfo.fullName}
             </h1>
-            <div
-              className="text-base sm:text-lg font-bold mt-1"
-              style={{ color: theme.secondary }}
-            >
-              {personalInfo.jobTitle}
-            </div>
+            {personalInfo.jobTitle && (
+              <div
+                className="text-base sm:text-lg font-bold mt-1"
+                style={{ color: theme.secondary }}
+              >
+                {personalInfo.jobTitle}
+              </div>
+            )}
           </div>
 
           {/* Quick Metrics Badge (Editable & Removable) */}
@@ -144,6 +148,18 @@ export const MinimalistPerformanceTemplate = ({
             >
               <Linkedin size={13} style={{ color: theme.primary }} className="shrink-0" />
               <span className="truncate max-w-[200px]">{personalInfo.linkedin}</span>
+              <ExternalLink size={9} className="opacity-60 shrink-0" />
+            </a>
+          )}
+          {personalInfo.github && (
+            <a
+              href={formatUrl(personalInfo.github)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 hover:underline hover:text-blue-700 font-semibold transition-colors"
+            >
+              <Github size={13} style={{ color: theme.primary }} className="shrink-0" />
+              <span className="truncate max-w-[200px]">{personalInfo.github}</span>
               <ExternalLink size={9} className="opacity-60 shrink-0" />
             </a>
           )}

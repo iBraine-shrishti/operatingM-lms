@@ -5,6 +5,7 @@ import {
   MapPin,
   Linkedin,
   Globe,
+  Github,
   Briefcase,
   GraduationCap,
   Award,
@@ -39,6 +40,7 @@ export const CreativeMarketerTemplate = ({
 
   // SUB-RENDERER: Hero Banner
   const renderHeroBanner = (isContinuation = false) => {
+    if (data.hiddenSections?.personal) return null;
     if (isContinuation) {
       return (
         <header
@@ -146,6 +148,18 @@ export const CreativeMarketerTemplate = ({
               >
                 <Linkedin size={12} className="text-white/80 shrink-0" />
                 <span className="truncate max-w-[190px]">{personalInfo.linkedin}</span>
+                <ExternalLink size={9} className="opacity-70 shrink-0" />
+              </a>
+            )}
+            {personalInfo.github && (
+              <a
+                href={formatUrl(personalInfo.github)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center sm:justify-end gap-1.5 hover:underline hover:text-white font-medium transition-colors"
+              >
+                <Github size={12} className="text-white/80 shrink-0" />
+                <span className="truncate max-w-[190px]">{personalInfo.github}</span>
                 <ExternalLink size={9} className="opacity-70 shrink-0" />
               </a>
             )}

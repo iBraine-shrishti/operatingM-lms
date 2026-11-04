@@ -27,6 +27,12 @@ import {
   Shuffle,
   ArrowUpDown,
   GripVertical,
+  Mail,
+  Phone,
+  MapPin,
+  Linkedin,
+  Globe,
+  Github,
 } from "lucide-react";
 import { DEFAULT_SECTION_ORDERS } from "./resumeData";
 
@@ -279,7 +285,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
           )}
 
           {/* Delete / Restore Toggle */}
-          {secId !== "personal" && secId !== "footer" && (
+          {secId !== "footer" && (
             <button
               type="button"
               onClick={(e) => {
@@ -661,17 +667,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
   // 1. PERSONAL SECTION RENDERER
   const renderPersonalSection = (meta) => (
     <div key="personal" className="border border-slate-200 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b1329] overflow-hidden shadow-2xs">
-      <button
-        type="button"
-        onClick={() => toggleSection("personal")}
-        className="w-full flex items-center justify-between p-4 text-left font-bold text-slate-900 dark:text-white text-sm hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-colors"
-      >
-        <div className="flex items-center gap-2.5">
-          <User size={16} className="text-[#003873] dark:text-sky-400" />
-          <span>{meta.label}</span>
-        </div>
-        {openSection === "personal" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-      </button>
+      {renderSectionHeader("personal", User, meta.label)}
 
       {openSection === "personal" && (
         <div className="p-4 pt-1 border-t border-slate-100 dark:border-slate-800 space-y-4 text-xs">
@@ -703,9 +699,10 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
                         showSpecializationBadge: false,
                       })
                     }
-                    className="text-[10px] font-bold text-red-500 hover:underline cursor-pointer"
+                    className="text-[10.5px] font-bold text-red-500 hover:text-red-700 hover:underline cursor-pointer flex items-center gap-1"
                   >
-                    Remove Box
+                    <Trash2 size={11} />
+                    <span>Delete Box</span>
                   </button>
                 )}
               </div>
@@ -744,9 +741,22 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
           {/* TOP EYEBROW / TAGLINE (for Creative & Minimalist templates) */}
           {(isCreativeMarketer || isMinimalist || !filterByTemplate) && (
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                Topmost Eyebrow / Tagline Badge
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="font-bold text-slate-700 dark:text-slate-300 block">
+                  Topmost Eyebrow / Tagline Badge
+                </label>
+                {data.sectionHeadings?.eyebrow && (
+                  <button
+                    type="button"
+                    onClick={() => updateSectionHeading("eyebrow", "")}
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10.5px] font-bold text-red-600 hover:text-red-700 hover:bg-red-100/70 dark:hover:bg-red-950/60 rounded border border-red-200 dark:border-red-900 transition-colors cursor-pointer"
+                    title="Delete Eyebrow / Tagline"
+                  >
+                    <Trash2 size={11} />
+                    <span>Delete</span>
+                  </button>
+                )}
+              </div>
               <input
                 type="text"
                 value={data.sectionHeadings?.eyebrow || ""}
@@ -763,9 +773,22 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
           {/* CONTACT SECTION TITLE (for Modern Executive) */}
           {(isExecutive || !filterByTemplate) && (
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                Contact Section Heading
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="font-bold text-slate-700 dark:text-slate-300 block">
+                  Contact Section Heading
+                </label>
+                {data.sectionHeadings?.contact && (
+                  <button
+                    type="button"
+                    onClick={() => updateSectionHeading("contact", "")}
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10.5px] font-bold text-red-600 hover:text-red-700 hover:bg-red-100/70 dark:hover:bg-red-950/60 rounded border border-red-200 dark:border-red-900 transition-colors cursor-pointer"
+                    title="Delete Contact Heading"
+                  >
+                    <Trash2 size={11} />
+                    <span>Delete</span>
+                  </button>
+                )}
+              </div>
               <input
                 type="text"
                 value={data.sectionHeadings?.contact || ""}
@@ -818,9 +841,10 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
                     <button
                       type="button"
                       onClick={() => updatePersonalInfo("photo", "")}
-                      className="px-2.5 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg border border-red-200 dark:border-red-900 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-lg border border-red-200 dark:border-red-900 transition-colors cursor-pointer"
                     >
-                      Remove
+                      <Trash2 size={12} />
+                      <span>Delete Photo</span>
                     </button>
                   )}
                 </div>
@@ -844,80 +868,74 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
             </div>
           )}
 
-          {/* CONTACT FIELDS */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Full Name</label>
-              <input
-                type="text"
-                value={data.personalInfo.fullName}
-                onChange={(e) => updatePersonalInfo("fullName", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
+          {/* CONTACT FIELDS (With Individual 1-Click Delete Buttons) */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-extrabold text-slate-800 dark:text-slate-200 text-xs">
+                Contact & Communication Channels
+              </span>
+              <span className="text-[10.5px] text-slate-500">
+                Click <span className="text-red-500 font-bold">Delete</span> on any item to remove it from the resume
+              </span>
             </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Target Job Title</label>
-              <input
-                type="text"
-                value={data.personalInfo.jobTitle}
-                onChange={(e) => updatePersonalInfo("jobTitle", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Email Address</label>
-              <input
-                type="email"
-                value={data.personalInfo.email}
-                onChange={(e) => updatePersonalInfo("email", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Phone Number</label>
-              <input
-                type="text"
-                value={data.personalInfo.phone}
-                onChange={(e) => updatePersonalInfo("phone", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Location / Branch</label>
-              <input
-                type="text"
-                value={data.personalInfo.location}
-                onChange={(e) => updatePersonalInfo("location", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">LinkedIn Profile</label>
-              <input
-                type="text"
-                value={data.personalInfo.linkedin}
-                onChange={(e) => updatePersonalInfo("linkedin", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Portfolio / Website</label>
-              <input
-                type="text"
-                value={data.personalInfo.portfolio || ""}
-                onChange={(e) => updatePersonalInfo("portfolio", e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
-            </div>
-            <div>
-              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">GitHub / Extra Link (Optional)</label>
-              <input
-                type="text"
-                value={data.personalInfo.github || ""}
-                onChange={(e) => updatePersonalInfo("github", e.target.value)}
-                placeholder="github.com/username"
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
-              />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {[
+                { key: "fullName", label: "Full Name", icon: User, placeholder: "e.g. Ram Charan" },
+                { key: "jobTitle", label: "Target Job Title", icon: Briefcase, placeholder: "e.g. Performance Marketing & SEO Strategist" },
+                { key: "email", label: "Email Address", icon: Mail, type: "email", placeholder: "e.g. ramcharan0811@gmail.com" },
+                { key: "phone", label: "Phone Number", icon: Phone, placeholder: "e.g. +91 93720 17331" },
+                { key: "location", label: "Location / Branch", icon: MapPin, placeholder: "e.g. Andheri Center, Mumbai" },
+                { key: "linkedin", label: "LinkedIn Profile", icon: Linkedin, placeholder: "e.g. linkedin.com/in/username" },
+                { key: "portfolio", label: "Portfolio / Website", icon: Globe, placeholder: "e.g. operatingmedia.org/portfolio" },
+                { key: "github", label: "GitHub Profile", icon: Github, placeholder: "e.g. github.com/username" },
+              ].map(({ key, label, icon: FieldIcon, type = "text", placeholder }) => {
+                const val = data.personalInfo?.[key] || "";
+                const hasValue = Boolean(val.trim());
+
+                return (
+                  <div
+                    key={key}
+                    className={`p-2.5 rounded-xl border transition-all ${
+                      hasValue
+                        ? "bg-slate-50/70 dark:bg-slate-900/40 border-slate-200 dark:border-slate-800"
+                        : "bg-amber-50/20 dark:bg-amber-950/10 border-dashed border-amber-200 dark:border-amber-900/40"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5 text-xs">
+                        <FieldIcon
+                          size={13}
+                          className={hasValue ? "text-[#003873] dark:text-sky-400" : "text-slate-400"}
+                        />
+                        <span>{label}</span>
+                      </label>
+                      {hasValue ? (
+                        <button
+                          type="button"
+                          onClick={() => updatePersonalInfo(key, "")}
+                          className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10.5px] font-bold text-red-600 hover:text-red-700 hover:bg-red-100/70 dark:hover:bg-red-950/60 rounded border border-red-200 dark:border-red-900 transition-colors cursor-pointer"
+                          title={`Delete ${label} from resume`}
+                        >
+                          <Trash2 size={11} />
+                          <span>Delete</span>
+                        </button>
+                      ) : (
+                        <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-1.5 py-0.2 rounded border border-amber-200 dark:border-amber-900/60">
+                          Empty / Hidden
+                        </span>
+                      )}
+                    </div>
+                    <input
+                      type={type}
+                      value={val}
+                      onChange={(e) => updatePersonalInfo(key, e.target.value)}
+                      placeholder={placeholder}
+                      className="w-full px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873] text-xs font-semibold placeholder:text-slate-400 placeholder:font-normal"
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

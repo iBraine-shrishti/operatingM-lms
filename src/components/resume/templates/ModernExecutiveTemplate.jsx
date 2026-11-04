@@ -5,6 +5,7 @@ import {
   MapPin,
   Linkedin,
   Globe,
+  Github,
   Briefcase,
   GraduationCap,
   Award,
@@ -138,6 +139,22 @@ export const ModernExecutiveTemplate = ({
                   className="shrink-0"
                 />
                 <span className="truncate">{personalInfo.linkedin}</span>
+                <ExternalLink size={9} className="opacity-60 shrink-0" />
+              </a>
+            )}
+            {personalInfo.github && (
+              <a
+                href={formatUrl(personalInfo.github)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:underline hover:text-blue-700 font-semibold transition-colors"
+              >
+                <Github
+                  size={12}
+                  style={{ color: theme.primary }}
+                  className="shrink-0"
+                />
+                <span className="truncate">{personalInfo.github}</span>
                 <ExternalLink size={9} className="opacity-60 shrink-0" />
               </a>
             )}

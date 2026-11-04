@@ -25,6 +25,80 @@ export const ClassicATSTemplate = ({
 
   // SECTION: Header
   const renderHeader = () => {
+    if (data.hiddenSections?.personal) return null;
+
+    const contactItems = [];
+    if (personalInfo.phone) {
+      contactItems.push(
+        <a
+          key="phone"
+          href={`tel:${personalInfo.phone.replace(/\s+/g, "")}`}
+          className="hover:underline hover:text-slate-900 transition-colors"
+        >
+          {personalInfo.phone}
+        </a>
+      );
+    }
+    if (personalInfo.email) {
+      contactItems.push(
+        <a
+          key="email"
+          href={`mailto:${personalInfo.email}`}
+          className="hover:underline hover:text-slate-900 transition-colors"
+        >
+          {personalInfo.email}
+        </a>
+      );
+    }
+    if (personalInfo.location) {
+      contactItems.push(<span key="loc">{personalInfo.location}</span>);
+    }
+    if (personalInfo.linkedin) {
+      contactItems.push(
+        <a
+          key="linkedin"
+          href={formatUrl(personalInfo.linkedin)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline font-semibold hover:text-blue-700 transition-colors inline-flex items-center gap-0.5"
+          style={{ color: theme.primary }}
+        >
+          <span>{personalInfo.linkedin}</span>
+          <ExternalLink size={9} className="opacity-60 inline shrink-0" />
+        </a>
+      );
+    }
+    if (personalInfo.github) {
+      contactItems.push(
+        <a
+          key="github"
+          href={formatUrl(personalInfo.github)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline font-semibold hover:text-blue-700 transition-colors inline-flex items-center gap-0.5"
+          style={{ color: theme.primary }}
+        >
+          <span>{personalInfo.github}</span>
+          <ExternalLink size={9} className="opacity-60 inline shrink-0" />
+        </a>
+      );
+    }
+    if (personalInfo.portfolio) {
+      contactItems.push(
+        <a
+          key="portfolio"
+          href={formatUrl(personalInfo.portfolio)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline font-semibold hover:text-blue-700 transition-colors inline-flex items-center gap-0.5"
+          style={{ color: theme.secondary || theme.primary }}
+        >
+          <span>{personalInfo.portfolio}</span>
+          <ExternalLink size={9} className="opacity-60 inline shrink-0" />
+        </a>
+      );
+    }
+
     return (
       <header
         className="text-center pb-3.5 border-b-2 resume-section break-inside-avoid print:break-inside-avoid"
@@ -36,67 +110,24 @@ export const ClassicATSTemplate = ({
         >
           {personalInfo.fullName}
         </h1>
-        <div
-          className="text-sm sm:text-base font-bold mt-0.5 tracking-wide"
-          style={{ color: theme.secondary }}
-        >
-          {personalInfo.jobTitle}
-        </div>
-        <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11.5px] text-slate-600 mt-2 font-medium">
-          {personalInfo.phone && (
-            <a
-              href={`tel:${personalInfo.phone.replace(/\s+/g, "")}`}
-              className="hover:underline hover:text-slate-900 transition-colors"
-            >
-              {personalInfo.phone}
-            </a>
-          )}
-          {personalInfo.phone && (personalInfo.email || personalInfo.location || personalInfo.linkedin || personalInfo.portfolio) && (
-            <span className="text-slate-300">•</span>
-          )}
-          {personalInfo.email && (
-            <a
-              href={`mailto:${personalInfo.email}`}
-              className="hover:underline hover:text-slate-900 transition-colors"
-            >
-              {personalInfo.email}
-            </a>
-          )}
-          {personalInfo.email && (personalInfo.location || personalInfo.linkedin || personalInfo.portfolio) && (
-            <span className="text-slate-300">•</span>
-          )}
-          {personalInfo.location && <span>{personalInfo.location}</span>}
-          {personalInfo.location && (personalInfo.linkedin || personalInfo.portfolio) && (
-            <span className="text-slate-300">•</span>
-          )}
-          {personalInfo.linkedin && (
-            <a
-              href={formatUrl(personalInfo.linkedin)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline font-semibold hover:text-blue-700 transition-colors inline-flex items-center gap-0.5"
-              style={{ color: theme.primary }}
-            >
-              <span>{personalInfo.linkedin}</span>
-              <ExternalLink size={9} className="opacity-60 inline shrink-0" />
-            </a>
-          )}
-          {personalInfo.linkedin && personalInfo.portfolio && (
-            <span className="text-slate-300">•</span>
-          )}
-          {personalInfo.portfolio && (
-            <a
-              href={formatUrl(personalInfo.portfolio)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:underline font-semibold hover:text-blue-700 transition-colors inline-flex items-center gap-0.5"
-              style={{ color: theme.secondary || theme.primary }}
-            >
-              <span>{personalInfo.portfolio}</span>
-              <ExternalLink size={9} className="opacity-60 inline shrink-0" />
-            </a>
-          )}
-        </div>
+        {personalInfo.jobTitle && (
+          <div
+            className="text-sm sm:text-base font-bold mt-0.5 tracking-wide"
+            style={{ color: theme.secondary }}
+          >
+            {personalInfo.jobTitle}
+          </div>
+        )}
+        {contactItems.length > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11.5px] text-slate-600 mt-2 font-medium">
+            {contactItems.map((item, idx) => (
+              <React.Fragment key={idx}>
+                {idx > 0 && <span className="text-slate-300">•</span>}
+                {item}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
       </header>
     );
   };
