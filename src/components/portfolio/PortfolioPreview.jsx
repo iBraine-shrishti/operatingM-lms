@@ -47,6 +47,8 @@ import {
   Smartphone,
   ShieldCheck,
   AlertTriangle,
+  Copy,
+  Check,
   Target,
   Calendar,
   Truck,
