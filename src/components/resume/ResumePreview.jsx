@@ -55,9 +55,10 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
     (explicitMode !== "1" && (isContentExceedingA4() || docHeight > 1220));
   const totalPages = isMultiPage ? 2 : 1;
 
-  // Single-page overflow detection: when in 1-page mode, notify if content exceeds standard A4 boundary
-  const isContentExceeding1Page =
-    totalPages === 1 && (docHeight > 1130 || isContentExceedingA4());
+  // Single-page indication: ONLY when user explicitly selects "1 Page" and content exceeds standard A4
+  const isExplicitOnePage = explicitMode === "1";
+  const showRedBreakLine =
+    isExplicitOnePage && (docHeight > 1130 || isContentExceedingA4());
 
   const handleSetPageMode = (mode) => {
     if (onChange) {
@@ -123,34 +124,32 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
         <div className="flex items-center gap-2 text-xs font-bold text-slate-700 dark:text-slate-300">
           <FileText size={15} className="text-[#003873] dark:text-sky-400 shrink-0" />
           <span>A4 Document Size:</span>
-          <span
-            className={`px-2.5 py-0.5 rounded-md text-[11px] font-extrabold flex items-center gap-1 ${
-              totalPages === 1
-                ? isContentExceeding1Page
-                  ? "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800"
-                  : "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
-                : "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
-            }`}
-          >
-            {totalPages === 1 ? (
-              isContentExceeding1Page ? (
-                <>
-                  <AlertCircle size={12} className="text-rose-600 dark:text-rose-400" />
-                  <span>Content Exceeds 1 Page (See Red Line)</span>
-                </>
-              ) : (
+          {isExplicitOnePage && showRedBreakLine ? (
+            <span className="px-2.5 py-0.5 rounded-md text-[11px] font-extrabold flex items-center gap-1 bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+              <AlertCircle size={12} className="text-rose-600 dark:text-rose-400" />
+              <span>Content Exceeds 1 Page (See Red Line)</span>
+            </span>
+          ) : (
+            <span
+              className={`px-2.5 py-0.5 rounded-md text-[11px] font-extrabold flex items-center gap-1 ${
+                totalPages === 1
+                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
+                  : "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
+              }`}
+            >
+              {totalPages === 1 ? (
                 <>
                   <CheckCircle2 size={12} className="text-emerald-600 dark:text-emerald-400" />
                   <span>Fits Single A4 Page</span>
                 </>
-              )
-            ) : (
-              <>
-                <AlertCircle size={12} className="text-blue-600 dark:text-blue-400" />
-                <span>2 Separate A4 Pages (Auto-Formatted)</span>
-              </>
-            )}
-          </span>
+              ) : (
+                <>
+                  <AlertCircle size={12} className="text-blue-600 dark:text-blue-400" />
+                  <span>2 Separate A4 Pages (Auto-Formatted)</span>
+                </>
+              )}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-1.5 self-end sm:self-auto">
@@ -204,15 +203,15 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
         {/* PAGE 1 SHEET */}
         <div
           className={`resume-page-sheet w-full max-w-[820px] min-h-[1120px] bg-white rounded-2xl shadow-md border border-slate-200/90 relative ${
-            totalPages === 1
-              ? "overflow-visible resume-page-sheet-single resume-page-sheet-last"
-              : "overflow-hidden"
-          } transition-all flex flex-col justify-between print:border-none print:shadow-none print:rounded-none print:max-w-none print:w-full`}
+            isExplicitOnePage ? "overflow-visible" : "overflow-hidden"
+          } transition-all flex flex-col justify-between print:border-none print:shadow-none print:rounded-none print:max-w-none print:w-full ${
+            totalPages === 1 ? "resume-page-sheet-last" : ""
+          }`}
         >
           {renderTemplateSheet(1, totalPages)}
 
-          {/* RED BREAK LINE: Notifies student when 1-page info exceeds standard A4 size */}
-          {isContentExceeding1Page && (
+          {/* RED BREAK LINE: ONLY for explicit 1-Page mode when info exceeds A4 */}
+          {showRedBreakLine && (
             <div
               style={{ top: "1120px" }}
               className="resume-page-break-guide resume-hide-on-print print:hidden absolute left-0 right-0 z-30 pointer-events-none flex items-center px-4 -translate-y-1/2 select-none"

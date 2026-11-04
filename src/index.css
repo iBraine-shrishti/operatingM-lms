@@ -867,23 +867,6 @@ html.dark #resume-print-document .border-slate-200\/90 {
     margin: 0 !important;
   }
 
-    /* Single-page mode: do not crop content or footer when content exceeds 1 page */
-  .resume-page-sheet-single {
-    height: auto !important;
-    min-height: 296.6mm !important;
-    max-height: none !important;
-    overflow: visible !important;
-    page-break-after: auto !important;
-    break-after: auto !important;
-  }
-
-  .resume-page-sheet-single > div {
-    height: auto !important;
-    min-height: 296.6mm !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-
   /* Last page sheet doesn't force a trailing blank sheet */
   .resume-page-sheet:last-child,
   .resume-page-sheet-last {
