@@ -1701,8 +1701,24 @@ export const PortfolioPreview = ({
       <div id="portfolio-section-hero" className="w-full">
       <header className="relative z-20 bg-white border-b border-slate-200 shadow-2xs">
         <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 min-h-16 py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4">
-          {/* Left Brand Badge */}
-          <div className="flex items-center space-x-2.5 sm:space-x-3 shrink min-w-0">
+          {/* Left Brand & Institutional Accreditation */}
+          <div className="flex items-center space-x-3 sm:space-x-3.5 shrink min-w-0">
+            {/* Operating Media Academy Logo (Subtle & Professional) */}
+            <a
+              href="https://operatingmedia.com"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center pr-3 border-r border-slate-200 shrink-0 hover:opacity-85 transition-opacity"
+              title="Operating Media Digital Marketing Academy"
+            >
+              <img
+                src={logoHorizontalImg}
+                alt="Operating Media"
+                className="h-6 sm:h-7 w-auto object-contain"
+              />
+            </a>
+
+            {/* Student Monogram Badge */}
             <div
               className="w-9 h-9 rounded-xl flex items-center justify-center font-black text-white text-xs shadow-xs tracking-wider shrink-0"
               style={{ backgroundColor: theme.primary }}
@@ -1716,8 +1732,10 @@ export const PortfolioPreview = ({
                   onChange={(val) => handleUpdateStudentField("name", val)}
                 />
               </div>
-              <div className="text-[11px] text-slate-500 font-medium leading-tight hidden sm:block">
-                Digital Marketing Portfolio
+              <div className="text-[10px] sm:text-[11px] text-slate-500 font-medium leading-tight hidden sm:flex items-center gap-1.5">
+                <span>Digital Marketing Portfolio</span>
+                <span className="text-slate-300">•</span>
+                <span className="text-blue-600 font-semibold">Operating Media Verified</span>
               </div>
             </div>
           </div>
