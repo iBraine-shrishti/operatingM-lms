@@ -569,19 +569,10 @@ export const MinimalistPerformanceTemplate = ({
         {page === 1 ? (
           renderHeader(false)
         ) : (
-          <header className="pb-2.5 mb-2 border-b resume-section flex items-center justify-between" style={{ borderColor: theme.border }}>
-            <div>
-              <h2 className="text-base font-extrabold uppercase tracking-tight" style={{ color: theme.primary }}>
-                {personalInfo.fullName}
-              </h2>
-              <div className="text-xs font-bold text-slate-600 mt-0.5">
-                {personalInfo.jobTitle} • Projects & Credentials (Page 2)
-              </div>
-            </div>
-            <div className="text-[11px] text-slate-500 font-medium text-right">
-              {[personalInfo.email, personalInfo.phone, personalInfo.location].filter(Boolean).join(" • ")}
-            </div>
-          </header>
+          <div
+            className="w-full h-1 shrink-0 bg-slate-900 mb-2.5 print:mb-2"
+            style={{ backgroundColor: theme.primary }}
+          />
         )}
 
         {page === 1 && renderSummary()}

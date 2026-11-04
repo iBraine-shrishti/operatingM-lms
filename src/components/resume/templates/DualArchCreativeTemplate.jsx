@@ -506,14 +506,10 @@ export const DualArchCreativeTemplate = ({
             </>
           ) : (
             <>
-              <header className="pb-3 border-b mb-4">
-                <h2 className="text-xl font-black uppercase text-[#003873]">
-                  {personalInfo?.fullName}
-                </h2>
-                <div className="text-xs font-bold text-slate-600 mt-0.5">
-                  {personalInfo?.jobTitle} • Projects & Highlights (Page 2)
-                </div>
-              </header>
+              <div
+                className="w-full h-1.5 shrink-0 bg-slate-900 mb-3 print:mb-2"
+                style={{ backgroundColor: theme.primary || "#003873" }}
+              />
 
               {/* WORK EXPERIENCE (CONTINUED IF > 2 JOBS) */}
               {experiences.length > 2 && renderWorkExperience()}

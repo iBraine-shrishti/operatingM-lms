@@ -62,28 +62,13 @@ export const ClassicATSTemplate = ({
     );
   };
 
-  // SECTION: Page 2 Header (Word-like professional continued header)
+  // SECTION: Page 2 Header (Slim sleek accent strip, no bulky repeated text, brings content upward)
   const renderPage2Header = () => {
     return (
-      <header
-        className="pb-2 mb-2 border-b-2 resume-section break-inside-avoid print:break-inside-avoid flex items-center justify-between"
-        style={{ borderColor: theme.primary }}
-      >
-        <div>
-          <h2
-            className="text-base sm:text-lg font-extrabold uppercase tracking-tight"
-            style={{ color: theme.primary }}
-          >
-            {personalInfo.fullName}
-          </h2>
-          <div className="text-xs font-bold mt-0.5 tracking-wide text-slate-600">
-            {personalInfo.jobTitle} • Curriculum Vitae (Page 2)
-          </div>
-        </div>
-        <div className="text-[11px] text-slate-500 font-medium text-right">
-          {[personalInfo.email, personalInfo.phone, personalInfo.location].filter(Boolean).join(" • ")}
-        </div>
-      </header>
+      <div
+        className="w-full h-1 shrink-0 bg-slate-900 mb-2.5 print:mb-2"
+        style={{ backgroundColor: theme.primary }}
+      />
     );
   };
 

@@ -43,7 +43,7 @@ export const ResumeFooter = ({
   const showPageNumber = footerInfo?.showPageNumber !== false;
 
   return (
-    <footer className="resume-footer mt-auto pt-2 pb-1 px-4 sm:px-6 border-t border-slate-200/90 text-slate-500 font-sans flex items-center justify-between text-[10px] w-full print:pt-1.5 print:pb-0 print:px-6 shrink-0 select-none">
+    <footer className="resume-footer mt-auto pt-2 pb-1.5 px-4 sm:px-6 border-t border-slate-200/90 text-slate-500 font-sans flex items-center justify-between text-[10px] w-full print:pt-1.5 print:pb-2 print:px-6 shrink-0 select-none">
       {/* LEFT: {name} • {title} – {company, location} */}
       <div className="flex items-center gap-1.5 truncate max-w-[62%] text-slate-700">
         <span className="font-bold text-slate-900 truncate shrink-0">

@@ -729,14 +729,10 @@ export const ModernExecutiveTemplate = ({
           {page === 1 ? (
             renderMainHeader(false)
           ) : (
-            <header className="pb-2.5 border-b mb-2 resume-section" style={{ borderColor: theme.border }}>
-              <h2 className="text-base sm:text-lg font-extrabold uppercase tracking-tight" style={{ color: theme.primary }}>
-                {personalInfo.fullName}
-              </h2>
-              <div className="text-xs font-bold text-slate-600 mt-0.5">
-                {personalInfo.jobTitle} • Portfolio & Projects (Page 2)
-              </div>
-            </header>
+            <div
+              className="w-full h-1 shrink-0 bg-slate-900 mb-2.5 print:mb-2"
+              style={{ backgroundColor: theme.primary }}
+            />
           )}
           {activeMainIds.map((id) => (
             <React.Fragment key={id}>

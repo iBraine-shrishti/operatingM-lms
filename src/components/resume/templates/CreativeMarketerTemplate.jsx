@@ -235,7 +235,7 @@ export const CreativeMarketerTemplate = ({
                 className={`${
                   isOnePage
                     ? "p-2.5 sm:p-3 print:p-2 space-y-1"
-                    : "p-4 sm:p-5 space-y-2"
+                    : "p-4 sm:p-5 print:p-2.5 space-y-2 print:space-y-1"
                 } rounded-xl border transition-all`}
                 style={{ borderColor: theme.border }}
               >
@@ -280,7 +280,7 @@ export const CreativeMarketerTemplate = ({
                     className={`text-slate-700 ${
                       isOnePage
                         ? "space-y-0.5 text-[11px] print:text-[9.5px] pt-0.5"
-                        : "space-y-1.5 text-[12px] pt-1"
+                        : "space-y-1.5 print:space-y-0.5 text-[12px] print:text-[10px] pt-1 print:pt-0.5"
                     }`}
                   >
                     {bulletsToRender.map((b, idx) => (
@@ -310,7 +310,7 @@ export const CreativeMarketerTemplate = ({
     const isOnePage = totalPages === 1;
 
     return (
-      <section className={isOnePage ? "space-y-2.5" : "space-y-4"}>
+      <section className={isOnePage ? "space-y-2.5" : "space-y-3.5 print:space-y-2"}>
         <div
           className="flex items-center justify-between pb-1.5 border-b-2"
           style={{ borderColor: theme.primary }}
@@ -333,7 +333,7 @@ export const CreativeMarketerTemplate = ({
 
         <div
           className={`grid grid-cols-1 md:grid-cols-2 ${
-            isOnePage ? "gap-2.5 print:gap-2" : "gap-4"
+            isOnePage ? "gap-2.5 print:gap-2" : "gap-3.5 print:gap-2"
           }`}
         >
           {projects.map((proj) => (
@@ -342,7 +342,7 @@ export const CreativeMarketerTemplate = ({
               className={`${
                 isOnePage
                   ? "p-2.5 sm:p-3 print:p-2 space-y-1"
-                  : "p-4 space-y-2"
+                  : "p-3 sm:p-3.5 print:p-2 space-y-1.5 print:space-y-1"
               } rounded-xl border flex flex-col justify-between`}
               style={{
                 backgroundColor: theme.lightBg,
@@ -356,7 +356,7 @@ export const CreativeMarketerTemplate = ({
                     fallback="Project Title"
                     onChange={(val) => onUpdateProject?.(proj.id, "title", val)}
                     className={`font-bold text-slate-900 ${
-                      isOnePage ? "text-[11.5px]" : "text-[12.5px]"
+                      isOnePage ? "text-[11.5px]" : "text-[12.5px] print:text-[11px]"
                     }`}
                     tag="h4"
                   />
@@ -377,7 +377,7 @@ export const CreativeMarketerTemplate = ({
                   className={`text-slate-700 leading-snug ${
                     isOnePage
                       ? "text-[11px] print:text-[9.5px] "
-                      : "text-[11.5px]"
+                      : "text-[11.5px] print:text-[10px]"
                   }`}
                 >
                   {proj.description}
@@ -494,7 +494,7 @@ export const CreativeMarketerTemplate = ({
     const isOnePage = totalPages === 1;
 
     return (
-      <section className={isOnePage ? "space-y-2" : "space-y-3"}>
+      <section className={isOnePage ? "space-y-2" : "space-y-2.5 print:space-y-1.5"}>
         <div
           className="flex items-center gap-2 pb-1 border-b"
           style={{ borderColor: theme.border }}
@@ -510,8 +510,8 @@ export const CreativeMarketerTemplate = ({
           />
         </div>
         <div
-          className={`space-y-1.5 ${
-            isOnePage ? "text-[11px] print:text-[10px]" : "text-[12px]"
+          className={`space-y-1.5 print:space-y-1 ${
+            isOnePage ? "text-[11px] print:text-[10px]" : "text-[11.5px] print:text-[10px]"
           }`}
         >
           {hasEdu &&
@@ -630,27 +630,18 @@ export const CreativeMarketerTemplate = ({
 
   return (
     <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.8mm] h-full flex flex-col justify-between print:p-0 print:m-0">
-      {/* HEADER BANNER */}
+      {/* HEADER BANNER: Full hero on Page 1, sleek accent strip on Page 2 (bringing content upward with zero bulky text) */}
       {page === 1 ? (
         renderHeroBanner(false)
       ) : (
-        <header className="px-5 pt-4 pb-2.5 border-b resume-section flex items-center justify-between" style={{ borderColor: theme.border }}>
-          <div>
-            <h2 className="text-base sm:text-lg font-black uppercase tracking-tight" style={{ color: theme.primary }}>
-              {personalInfo.fullName}
-            </h2>
-            <div className="text-xs font-bold text-slate-600 mt-0.5">
-              {personalInfo.jobTitle} • Portfolio & Credentials (Page 2)
-            </div>
-          </div>
-          <div className="text-[11px] text-slate-500 font-medium text-right">
-            {[personalInfo.email, personalInfo.phone, personalInfo.location].filter(Boolean).join(" • ")}
-          </div>
-        </header>
+        <div
+          className="w-full h-1.5 shrink-0 bg-slate-900"
+          style={{ backgroundColor: theme.primary }}
+        />
       )}
 
       {/* BODY CONTENT */}
-      <div className="p-4.5 sm:p-5 print:p-3.5 space-y-2.5 print:space-y-2 flex-1">
+      <div className={`p-4.5 sm:p-5 print:p-3.5 space-y-2.5 print:space-y-1.5 flex-1 ${page > 1 ? "pt-3 print:pt-2" : ""}`}>
         {/* Render top sections according to sequence */}
         {curTopSections.map((id) => (
           <React.Fragment key={id}>{renderTopSection(id)}</React.Fragment>
