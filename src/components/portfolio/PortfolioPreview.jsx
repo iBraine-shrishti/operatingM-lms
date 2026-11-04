@@ -3456,6 +3456,27 @@ export const PortfolioPreview = ({
 
           // MODULE 09: SHOPIFY E-COMMERCE STORE & CRO ARCHITECTURE
           if (modId === "shopify") {
+            const shopData = modules.shopify || {};
+            const storeName = shopData.storeName || "Terra & Tide Apparel";
+            const nicheCat = shopData.nicheCategory || "SUSTAINABLE ORGANIC OUTDOOR APPAREL & GEAR";
+            const themeBadge = shopData.themeUsed || "Customized Dawn 2.0 with liquid micro-optimizations";
+            const description = shopData.description || "Complete Shopify store setup from scratch. Configured product collections, payment gateways, automated tax settings, shipping zones, and integrated post-purchase cross-sell flows that immediately increased average order value by 30%.";
+            const crAchieved = shopData.conversionRateAchieved || "3.84% (up from 1.9% store baseline)";
+            const aovAchieved = shopData.aovAchieved || "$89.50 (+$21 lift via cart cross-sells)";
+            const croFeatures = Array.isArray(shopData.croFeatures) && shopData.croFeatures.length > 0 ? shopData.croFeatures : [
+              "Slide-out Smart Cart with progress bar toward free shipping",
+              "Instant 1-Click Shopify Pay & Apple Pay express checkout",
+              "Sticky mobile buy bar with real-time stock scarcity notice",
+              "Size guide interactive modal with 98% fit confidence",
+            ];
+            const installedApps = Array.isArray(shopData.installedApps) && shopData.installedApps.length > 0 ? shopData.installedApps : [
+              "Klaviyo: Email Marketing & SMS",
+              "Rebuy Engine: Smart Cart & AI Upsells",
+              "Judge.me: Verified Product Reviews",
+              "Matrixify: Bulk Inventory Automation",
+              "Loox: Photo Reviews & UGC Carousel",
+            ];
+
             return (
               <section
                 key={modId}
@@ -3470,16 +3491,16 @@ export const PortfolioPreview = ({
                         Module 09 · E-Commerce Architecture
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        Shopify E-Commerce Store & CRO Architecture
+                        {shopData.moduleTitle || "Shopify E-Commerce Store & CRO Architecture"}
                       </h2>
                       <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        End-to-end Shopify merchant deployment designed for high Average Order Value (AOV), seamless 1-click checkout, and automated retention loops.
+                        {shopData.subtitle || "End-to-end Shopify merchant deployment designed for high Average Order Value (AOV), seamless 1-click checkout, and automated retention loops."}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-2xs shrink-0">
                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                      <span>Shopify Partner Certified · Liquid Customized</span>
+                      <span>{shopData.topBadge || "Shopify Partner Certified · Liquid Customized"}</span>
                     </div>
                   </div>
 
@@ -3490,12 +3511,12 @@ export const PortfolioPreview = ({
                       <div className="lg:col-span-6 space-y-3">
                         <div className="relative bg-slate-950 aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 shadow-xs group">
                           <img
-                            src={mockupCreativesImg}
-                            alt="Terra & Tide Apparel Shopify Store"
+                            src={shopData.imageUrl || mockupCreativesImg}
+                            alt={storeName}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                           />
                           <div className="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-xs text-amber-400 font-mono text-[10px] px-2.5 py-1 rounded-md border border-slate-700 shadow-xs font-bold">
-                            Customized Dawn 2.0 with liquid micro-optimizations
+                            {themeBadge}
                           </div>
                         </div>
                       </div>
@@ -3504,13 +3525,13 @@ export const PortfolioPreview = ({
                       <div className="lg:col-span-6 space-y-4">
                         <div>
                           <div className="text-xs font-bold uppercase tracking-wider text-amber-600">
-                            SUSTAINABLE ORGANIC OUTDOOR APPAREL & GEAR
+                            {nicheCat}
                           </div>
                           <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
-                            Terra & Tide Apparel
+                            {storeName}
                           </h3>
                           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-2">
-                            Complete Shopify store setup from scratch. Configured product collections, payment gateways, automated tax settings, shipping zones, and integrated post-purchase cross-sell flows that immediately increased average order value by 30%.
+                            {description}
                           </p>
                         </div>
 
@@ -3521,7 +3542,7 @@ export const PortfolioPreview = ({
                               CONVERSION RATE
                             </div>
                             <div className="font-mono font-bold text-sm sm:text-base text-slate-900 mt-1">
-                              3.84% <span className="text-xs font-medium text-slate-500">(up from 1.9% store baseline)</span>
+                              {crAchieved}
                             </div>
                           </div>
                           <div className="bg-amber-50/60 border border-amber-200 p-3.5 rounded-xl">
@@ -3529,52 +3550,36 @@ export const PortfolioPreview = ({
                               ACHIEVED AOV
                             </div>
                             <div className="font-mono font-bold text-sm sm:text-base text-slate-900 mt-1">
-                              $89.50 <span className="text-xs font-medium text-amber-700">(+$21 lift via cart cross-sells)</span>
+                              {aovAchieved}
                             </div>
                           </div>
                         </div>
 
                         {/* CRO Features */}
-                        <div className="space-y-2 pt-1">
-                          <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                        <div className="space-y-2">
+                          <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
                             CONVERSION RATE OPTIMIZATION (CRO) FEATURES:
                           </div>
-                          <div className="space-y-1.5 text-xs text-slate-700 font-medium">
-                            <div className="flex items-start gap-2">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
-                              <span>Slide-out Smart Cart with progress bar toward free shipping</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
-                              <span>Instant 1-Click Shopify Pay & Apple Pay express checkout</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
-                              <span>Sticky mobile buy bar with real-time stock scarcity notice</span>
-                            </div>
-                            <div className="flex items-start gap-2">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
-                              <span>Size guide interactive modal with 98% fit confidence</span>
-                            </div>
+                          <div className="space-y-1.5 text-xs text-slate-700">
+                            {croFeatures.map((feat, fIdx) => (
+                              <div key={fIdx} className="flex items-center gap-2">
+                                <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
+                                <span>{feat}</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
 
                         {/* Integrated Shopify Apps */}
                         <div className="space-y-2 pt-2 border-t border-slate-100">
-                          <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                          <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
                             INTEGRATED SHOPIFY APPS:
                           </div>
-                          <div className="flex flex-wrap gap-1.5">
-                            {[
-                              "Klaviyo: Email Marketing & SMS",
-                              "Rebuy Engine: Smart Cart & AI Upsells",
-                              "Judge.me: Verified Product Reviews",
-                              "Matrixify: Bulk Inventory Automation",
-                              "Loox: Photo Reviews & UGC Carousel",
-                            ].map((app, aIdx) => (
+                          <div className="flex flex-wrap gap-2">
+                            {installedApps.map((app, aIdx) => (
                               <span
                                 key={aIdx}
-                                className="px-2.5 py-1 text-[11px] font-medium bg-slate-100 text-slate-700 rounded-lg border border-slate-200"
+                                className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium border border-slate-200"
                               >
                                 {app}
                               </span>
@@ -3591,7 +3596,7 @@ export const PortfolioPreview = ({
 
           // MODULE 10: VIDEO EDITING, UGC CREATIVES & COMMERCIAL REELS
           if (modId === "videoEditing") {
-            const reels = [
+            const defaultReels = [
               {
                 formatTag: "Reels / TikTok",
                 duration: "0:24",
@@ -3611,6 +3616,11 @@ export const PortfolioPreview = ({
                 tools: ["DaVinci Resolve", "Color Grading with Film LUTs", "Sound FX Library"],
               },
             ];
+            const reels = Array.isArray(modules.videoEditing?.reels) && modules.videoEditing.reels.length > 0
+              ? modules.videoEditing.reels
+              : Array.isArray(modules.videoEditing) && modules.videoEditing.length > 0
+              ? modules.videoEditing
+              : defaultReels;
 
             return (
               <section
@@ -3727,6 +3737,18 @@ export const PortfolioPreview = ({
 
           // MODULE 11: DROPSHIPPING STORE & WINNING PRODUCT VALIDATION
           if (modId === "dropshipping") {
+            const dropData = modules.dropshipping || {};
+            const winProd = dropData.winningProduct || "Smart Ergonomic Cervical Contour Pillow with Cooling Gel";
+            const storefront = dropData.storefrontDetails || "Storefront: Lumina Sleep Lab · Fulfilled via CJ Dropshipping & Direct Private Agent (5-8 day US delivery)";
+            const cogs = dropData.cogs || "$14.20";
+            const retail = dropData.retailPrice || "$59.95";
+            const profit = dropData.netProfit || "+$45.75";
+            const adAngle = dropData.adAngleDescription || "Tackled widespread neck stiffness and morning migraines caused by smartphone posture. Ad creative demonstrated side-by-side spine alignment using 3D medical animation vs traditional flat pillows.";
+            const unitsSold = dropData.pilotUnitsSold || "420";
+            const adSpend = dropData.pilotAdSpend || "$3,800";
+            const grossRev = dropData.pilotGrossRevenue || "$25,179";
+            const netRoas = dropData.pilotNetRoas || "3.84x";
+
             return (
               <section
                 key={modId}
@@ -3741,16 +3763,16 @@ export const PortfolioPreview = ({
                         Module 11 · Direct-To-Consumer Fulfillment
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-                        Dropshipping Store & Winning Product Validation
+                        {dropData.moduleTitle || "Dropshipping Store & Winning Product Validation"}
                       </h2>
                       <p className="mt-2 text-slate-600 max-w-3xl text-sm sm:text-base leading-relaxed">
-                        Product discovery research, supplier supply chain integration, margin modeling, and TikTok/Meta ad testing for rapid profitable scaling.
+                        {dropData.subtitle || "Product discovery research, supplier supply chain integration, margin modeling, and TikTok/Meta ad testing for rapid profitable scaling."}
                       </p>
                     </div>
 
                     <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 self-start md:self-auto shadow-2xs shrink-0">
                       <Truck className="w-4 h-4 text-emerald-600" />
-                      <span>Fast 5-Day US Fulfillment · 76.3% Gross Margin</span>
+                      <span>{dropData.topBadge || "Fast 5-Day US Fulfillment · 76.3% Gross Margin"}</span>
                     </div>
                   </div>
 
@@ -3761,12 +3783,12 @@ export const PortfolioPreview = ({
                       <div className="lg:col-span-6 space-y-3">
                         <div className="relative bg-slate-950 aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 shadow-xs group">
                           <img
-                            src={mockupCreativesImg}
-                            alt="Smart Ergonomic Contour Pillow"
+                            src={dropData.imageUrl || mockupCreativesImg}
+                            alt={winProd}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                           />
                           <div className="absolute top-3 left-3 bg-emerald-600 text-white font-mono text-[11px] font-bold px-3 py-1 rounded-md shadow-xs">
-                            76.3% Gross Margin
+                            {dropData.grossMarginBadge || "76.3% Gross Margin"}
                           </div>
                         </div>
                       </div>
@@ -3778,10 +3800,10 @@ export const PortfolioPreview = ({
                             WINNING PRODUCT CASE STUDY
                           </div>
                           <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
-                            Smart Ergonomic Cervical Contour Pillow with Cooling Gel
+                            {winProd}
                           </h3>
                           <p className="text-xs text-slate-500 mt-1 font-medium">
-                            Storefront: Lumina Sleep Lab · Fulfilled via CJ Dropshipping & Direct Private Agent (5-8 day US delivery)
+                            {storefront}
                           </p>
                         </div>
 
@@ -3792,7 +3814,7 @@ export const PortfolioPreview = ({
                               UNIT COGS
                             </div>
                             <div className="font-mono font-bold text-xs sm:text-sm text-slate-900 mt-1 leading-snug">
-                              $14.20 <span className="block text-[10px] font-normal text-slate-500">(including ePacket express fulfillment)</span>
+                              {cogs} <span className="block text-[10px] font-normal text-slate-500">(including express fulfillment)</span>
                             </div>
                           </div>
                           <div className="bg-blue-50/50 border border-blue-200 p-3 rounded-xl text-center flex flex-col justify-center">
@@ -3800,7 +3822,7 @@ export const PortfolioPreview = ({
                               RETAIL PRICE
                             </div>
                             <div className="font-mono font-bold text-sm sm:text-base text-blue-700 mt-1">
-                              $59.95
+                              {retail}
                             </div>
                           </div>
                           <div className="bg-amber-50/60 border border-amber-300 p-3 rounded-xl text-center flex flex-col justify-center">
@@ -3808,7 +3830,7 @@ export const PortfolioPreview = ({
                               NET PROFIT/UNIT
                             </div>
                             <div className="font-mono font-extrabold text-sm sm:text-base text-amber-800 mt-1">
-                              +$45.75
+                              {profit}
                             </div>
                           </div>
                         </div>
@@ -3819,7 +3841,7 @@ export const PortfolioPreview = ({
                             WINNING AD CREATIVE HOOK & ANGLE:
                           </div>
                           <p className="text-xs text-slate-600 leading-relaxed">
-                            Tackled widespread neck stiffness and morning migraines caused by smartphone posture. Ad creative demonstrated side-by-side spine alignment using 3D medical animation vs traditional flat pillows.
+                            {adAngle}
                           </p>
                         </div>
 
@@ -3831,19 +3853,19 @@ export const PortfolioPreview = ({
                           <div className="grid grid-cols-4 gap-2 text-center">
                             <div className="bg-slate-50 border border-slate-200 p-2 rounded-lg">
                               <span className="text-[10px] text-slate-400 font-medium block">Units Sold</span>
-                              <span className="font-mono font-bold text-xs text-slate-800">420</span>
+                              <span className="font-mono font-bold text-xs text-slate-800">{unitsSold}</span>
                             </div>
                             <div className="bg-slate-50 border border-slate-200 p-2 rounded-lg">
                               <span className="text-[10px] text-slate-400 font-medium block">Ad Spend</span>
-                              <span className="font-mono font-bold text-xs text-slate-800">$3,800</span>
+                              <span className="font-mono font-bold text-xs text-slate-800">{adSpend}</span>
                             </div>
                             <div className="bg-blue-50/60 border border-blue-200 p-2 rounded-lg">
-                              <span className="text-[10px] text-blue-600 font-medium block">Revenue</span>
-                              <span className="font-mono font-bold text-xs text-blue-700">$25,179</span>
+                              <span className="text-[10px] text-blue-600 font-medium block">Gross Revenue</span>
+                              <span className="font-mono font-bold text-xs text-blue-700">{grossRev}</span>
                             </div>
-                            <div className="bg-emerald-50/80 border border-emerald-300 p-2 rounded-lg">
-                              <span className="text-[10px] text-emerald-700 font-medium block">Net Profit</span>
-                              <span className="font-mono font-bold text-xs text-emerald-700">$8,950</span>
+                            <div className="bg-emerald-50/60 border border-emerald-200 p-2 rounded-lg">
+                              <span className="text-[10px] text-emerald-600 font-medium block">Net ROAS</span>
+                              <span className="font-mono font-bold text-xs text-emerald-700">{netRoas}</span>
                             </div>
                           </div>
                         </div>
