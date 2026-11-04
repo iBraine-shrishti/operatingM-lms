@@ -1,6 +1,6 @@
 import mockupLaptopImg from "../../assets/mockup-laptop.jpg";
 import mockupCreativesImg from "../../assets/mockup-creatives.jpg";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Globe,
   Palette,
@@ -57,6 +57,10 @@ import {
   Truck,
   Star,
   Store,
+  Layers,
+  Activity,
+  Flame,
+  Upload,
 } from "lucide-react";
 import { EditableText, PortfolioEditableContext } from "./EditableText";
 import { ImageUploadModal } from "./ImageUploadModal";
@@ -115,6 +119,28 @@ const getModuleIcon = (id) => {
   }
 };
 
+// Helper to render customized icons for features, outcomes and badges
+export const renderCustomIcon = (iconName, defaultIcon = "check", className = "w-4 h-4") => {
+  const name = (typeof iconName === "object" ? iconName?.icon : iconName || defaultIcon || "").toLowerCase();
+  if (name.includes("sparkle") || name.includes("star")) return <Sparkles className={className} />;
+  if (name.includes("zap") || name.includes("bolt") || name.includes("flash")) return <Zap className={className} />;
+  if (name.includes("shield")) return <ShieldCheck className={className} />;
+  if (name.includes("chart") || name.includes("graph") || name.includes("bar")) return <BarChart3 className={className} />;
+  if (name.includes("trend") || name.includes("growth")) return <TrendingUp className={className} />;
+  if (name.includes("target")) return <Target className={className} />;
+  if (name.includes("award")) return <Award className={className} />;
+  if (name.includes("clock") || name.includes("time")) return <Clock className={className} />;
+  if (name.includes("play") || name.includes("video")) return <Play className={className} />;
+  if (name.includes("bag") || name.includes("shop") || name.includes("cart")) return <ShoppingBag className={className} />;
+  if (name.includes("truck") || name.includes("shipping")) return <Truck className={className} />;
+  if (name.includes("cpu") || name.includes("ai") || name.includes("bot")) return <Cpu className={className} />;
+  if (name.includes("dollar") || name.includes("cash") || name.includes("money")) return <DollarSign className={className} />;
+  if (name.includes("flame") || name.includes("fire")) return <Flame className={className} />;
+  if (name.includes("activity") || name.includes("pulse")) return <Activity className={className} />;
+  if (name.includes("layer")) return <Layers className={className} />;
+  return <CheckCircle2 className={className} />;
+};
+
 export const PortfolioPreview = ({
   portfolioData,
   theme,
@@ -139,6 +165,39 @@ export const PortfolioPreview = ({
   const [seoSearchQuery, setSeoSearchQuery] = useState("");
   const [seoIntentFilter, setSeoIntentFilter] = useState("All");
   const [planSlideIdx, setPlanSlideIdx] = useState(0);
+  const deckTouchStartX = useRef(0);
+  const deckLastWheelTime = useRef(0);
+
+  const handleDeckTouchStart = (e) => {
+    deckTouchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleDeckTouchEnd = (e, totalSlides) => {
+    const endX = e.changedTouches[0].clientX;
+    const diff = deckTouchStartX.current - endX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) {
+        setPlanSlideIdx((prev) => (prev < totalSlides - 1 ? prev + 1 : 0));
+      } else {
+        setPlanSlideIdx((prev) => (prev > 0 ? prev - 1 : totalSlides - 1));
+      }
+    }
+  };
+
+  const handleDeckWheel = (e, totalSlides) => {
+    if (Math.abs(e.deltaX) > 30 || (e.shiftKey && Math.abs(e.deltaY) > 30)) {
+      const now = Date.now();
+      if (now - deckLastWheelTime.current > 350) {
+        deckLastWheelTime.current = now;
+        const delta = Math.abs(e.deltaX) > 30 ? e.deltaX : e.deltaY;
+        if (delta > 0) {
+          setPlanSlideIdx((prev) => (prev < totalSlides - 1 ? prev + 1 : 0));
+        } else {
+          setPlanSlideIdx((prev) => (prev > 0 ? prev - 1 : totalSlides - 1));
+        }
+      }
+    }
+  };
   const [influencerSearchQuery, setInfluencerSearchQuery] = useState("");
   const [influencerPlatformFilter, setInfluencerPlatformFilter] = useState("All");
   const [aiProductInput, setAiProductInput] = useState("Anti-Fatigue Ergonomic Standing Mat");
@@ -655,6 +714,45 @@ export const PortfolioPreview = ({
   };
 
   // Module 09: Shopify Handlers
+  const handleAddShopifyKpi = () => {
+    if (onChange) {
+      const shop = modules.shopify || {};
+      const current = Array.isArray(shop.kpis)
+        ? shop.kpis
+        : [
+            { id: "kpi-1", label: shop.conversionRateLabel || "CONVERSION RATE", value: shop.conversionRateAchieved || "3.84%", highlight: "blue" },
+            { id: "kpi-2", label: shop.aovLabel || "ACHIEVED AOV", value: shop.aovAchieved || "$89.50", highlight: "amber" },
+          ];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          shopify: {
+            ...shop,
+            kpis: [...current, { id: "kpi-" + Date.now(), label: "NEW KPI METRIC", value: "4.5x Lift", highlight: "emerald" }],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteShopifyKpi = (idx) => {
+    if (onChange) {
+      const shop = modules.shopify || {};
+      const current = Array.isArray(shop.kpis) ? shop.kpis : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          shopify: {
+            ...shop,
+            kpis: current.filter((_, i) => i !== idx),
+          },
+        },
+      });
+    }
+  };
+
   const handleAddShopifyCroFeature = () => {
     if (onChange) {
       const shop = modules.shopify || {};
@@ -665,7 +763,7 @@ export const PortfolioPreview = ({
           ...modules,
           shopify: {
             ...shop,
-            croFeatures: [...current, "High-converting product bundle & tiered pricing widget"],
+            croFeatures: [...current, { text: "Slide-out Smart Cart with progress bar toward free shipping", icon: "cart" }],
           },
         },
       });
@@ -689,6 +787,29 @@ export const PortfolioPreview = ({
     }
   };
 
+  const handleCycleShopifyCroIcon = (fIdx) => {
+    if (onChange) {
+      const shop = modules.shopify || {};
+      const current = Array.isArray(shop.croFeatures) ? [...shop.croFeatures] : [];
+      const item = current[fIdx];
+      const currentIcon = typeof item === "object" ? (item.icon || "check") : "check";
+      const iconCycle = ["check", "zap", "trending", "shield", "sparkles", "cart", "award", "truck", "target", "dollar"];
+      const nextIcon = iconCycle[(iconCycle.indexOf(currentIcon) + 1) % iconCycle.length];
+      if (typeof item === "object") {
+        current[fIdx] = { ...item, icon: nextIcon };
+      } else {
+        current[fIdx] = { text: item, icon: nextIcon };
+      }
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          shopify: { ...shop, croFeatures: current },
+        },
+      });
+    }
+  };
+
   const handleAddShopifyApp = () => {
     if (onChange) {
       const shop = modules.shopify || {};
@@ -699,7 +820,7 @@ export const PortfolioPreview = ({
           ...modules,
           shopify: {
             ...shop,
-            installedApps: [...current, "Gorgias: AI Customer Support & Chat"],
+            installedApps: [...current, "Rebuy Engine: Smart Cart & AI Upsells"],
           },
         },
       });
@@ -731,6 +852,7 @@ export const PortfolioPreview = ({
       const newReel = {
         id: "reel-" + Date.now(),
         formatTag: "Reels / TikTok",
+        overlayTitle: "CREATIVE VISUALS - MARKETING GRAPHICS",
         duration: "0:30",
         imageUrl: mockupCreativesImg,
         title: "High-Retention Product Teaser: Direct-Response Creative",
@@ -807,6 +929,122 @@ export const PortfolioPreview = ({
     }
   };
 
+  // Module 11: Dropshipping Handlers
+  const handleAddDropshipMetric = () => {
+    if (onChange) {
+      const drop = modules.dropshipping || {};
+      const current = Array.isArray(drop.economics)
+        ? drop.economics
+        : [
+            { label: "COGS", value: drop.cogs || "$14.20", highlight: "slate" },
+            { label: "RETAIL PRICE", value: drop.retailPrice || "$59.95", highlight: "slate" },
+            { label: "NET PROFIT / UNIT", value: drop.netProfit || "+$45.75", highlight: "emerald" },
+          ];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          dropshipping: {
+            ...drop,
+            economics: [...current, { label: "NEW METRIC", value: "78% Margin", highlight: "emerald" }],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteDropshipMetric = (idx) => {
+    if (onChange) {
+      const drop = modules.dropshipping || {};
+      const current = Array.isArray(drop.economics) ? drop.economics : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          dropshipping: {
+            ...drop,
+            economics: current.filter((_, i) => i !== idx),
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddDropshipSupplier = () => {
+    if (onChange) {
+      const drop = modules.dropshipping || {};
+      const current = Array.isArray(drop.supplierTags) ? drop.supplierTags : ["CJ Dropshipping", "Private Agent Shenzhen"];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          dropshipping: {
+            ...drop,
+            supplierTags: [...current, "AutoDS Automation"],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteDropshipSupplier = (idx) => {
+    if (onChange) {
+      const drop = modules.dropshipping || {};
+      const current = Array.isArray(drop.supplierTags) ? drop.supplierTags : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          dropshipping: {
+            ...drop,
+            supplierTags: current.filter((_, i) => i !== idx),
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddDropshipSprintMetric = () => {
+    if (onChange) {
+      const drop = modules.dropshipping || {};
+      const current = Array.isArray(drop.sprintMetrics)
+        ? drop.sprintMetrics
+        : [
+            { label: "Units Dispatched", value: drop.pilotUnitsSold || "420", highlight: "white" },
+            { label: "Test Ad Spend", value: drop.pilotAdSpend || "$3,800", highlight: "white" },
+            { label: "Gross Revenue", value: drop.pilotGrossRevenue || "$25,179", highlight: "emerald" },
+            { label: "Blended ROAS", value: drop.pilotNetRoas || "3.84x", highlight: "blue" },
+          ];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          dropshipping: {
+            ...drop,
+            sprintMetrics: [...current, { label: "Refund Rate", value: "1.2%", highlight: "emerald" }],
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeleteDropshipSprintMetric = (idx) => {
+    if (onChange) {
+      const drop = modules.dropshipping || {};
+      const current = Array.isArray(drop.sprintMetrics) ? drop.sprintMetrics : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          dropshipping: {
+            ...drop,
+            sprintMetrics: current.filter((_, i) => i !== idx),
+          },
+        },
+      });
+    }
+  };
+
   // Module 12: AI Marketing App Handlers
   const handleAddAiFeature = () => {
     if (onChange) {
@@ -818,7 +1056,7 @@ export const PortfolioPreview = ({
           ...modules,
           aiApp: {
             ...ai,
-            features: [...current, "Automated A/B creative angle copy scoring and CTR benchmarking"],
+            features: [...current, { text: "Instant 3-Hook Generation (Curiosity, Pain Point, Social Proof)", icon: "check" }],
           },
         },
       });
@@ -842,6 +1080,29 @@ export const PortfolioPreview = ({
     }
   };
 
+  const handleCycleAiFeatureIcon = (fIdx) => {
+    if (onChange) {
+      const ai = modules.aiApp || {};
+      const current = Array.isArray(ai.features) ? [...ai.features] : [];
+      const item = current[fIdx];
+      const currentIcon = typeof item === "object" ? (item.icon || "check") : "check";
+      const iconCycle = ["check", "zap", "sparkles", "shield", "trending", "target", "award"];
+      const nextIcon = iconCycle[(iconCycle.indexOf(currentIcon) + 1) % iconCycle.length];
+      if (typeof item === "object") {
+        current[fIdx] = { ...item, icon: nextIcon };
+      } else {
+        current[fIdx] = { text: item, icon: nextIcon };
+      }
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          aiApp: { ...ai, features: current },
+        },
+      });
+    }
+  };
+
   const handleAddAiTech = () => {
     if (onChange) {
       const ai = modules.aiApp || {};
@@ -852,7 +1113,7 @@ export const PortfolioPreview = ({
           ...modules,
           aiApp: {
             ...ai,
-            techStack: [...current, "Next.js 15"],
+            techStack: [...current, "Gemini API"],
           },
         },
       });
@@ -1023,7 +1284,7 @@ export const PortfolioPreview = ({
             ...pm,
             attribution: {
               ...(pm.attribution || {}),
-              outcomes: [...current, "Achieved predictable positive cashflow across all scaled ad cohorts."],
+              outcomes: [...current, { text: "Achieved predictable positive cashflow across all scaled ad cohorts.", icon: "check" }],
             },
           },
         },
@@ -1051,11 +1312,87 @@ export const PortfolioPreview = ({
     }
   };
 
+  const handleCyclePerfOutcomeIcon = (oIdx) => {
+    if (onChange) {
+      const pm = modules.performanceMarketing || {};
+      const current = Array.isArray(pm.attribution?.outcomes) ? [...pm.attribution.outcomes] : [];
+      const item = current[oIdx];
+      const currentIcon = typeof item === "object" ? (item.icon || "check") : "check";
+      const iconCycle = ["check", "zap", "trending", "shield", "sparkles", "award", "target"];
+      const nextIcon = iconCycle[(iconCycle.indexOf(currentIcon) + 1) % iconCycle.length];
+      if (typeof item === "object") {
+        current[oIdx] = { ...item, icon: nextIcon };
+      } else {
+        current[oIdx] = { text: item, icon: nextIcon };
+      }
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          performanceMarketing: {
+            ...pm,
+            attribution: {
+              ...(pm.attribution || {}),
+              outcomes: current,
+            },
+          },
+        },
+      });
+    }
+  };
+
+  const handleAddPerfAttributionTool = () => {
+    if (onChange) {
+      const pm = modules.performanceMarketing || {};
+      const current = Array.isArray(pm.attribution?.tools) ? pm.attribution.tools : ["Triple Whale 1-Day Click", "GA4 Server-Side", "Northbeam"];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          performanceMarketing: {
+            ...pm,
+            attribution: {
+              ...(pm.attribution || {}),
+              tools: [...current, "Post-Purchase Survey Loop"],
+            },
+          },
+        },
+      });
+    }
+  };
+
+  const handleDeletePerfAttributionTool = (tIdx) => {
+    if (onChange) {
+      const pm = modules.performanceMarketing || {};
+      const current = Array.isArray(pm.attribution?.tools) ? pm.attribution.tools : [];
+      onChange({
+        ...portfolioData,
+        modules: {
+          ...modules,
+          performanceMarketing: {
+            ...pm,
+            attribution: {
+              ...(pm.attribution || {}),
+              tools: current.filter((_, i) => i !== tIdx),
+            },
+          },
+        },
+      });
+    }
+  };
+
   const scrollToSection = (id) => {
     setActiveTab(id);
     const el = document.getElementById(id);
     if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      const navEl = document.getElementById("portfolio-module-slider-nav");
+      const navHeight = navEl ? navEl.offsetHeight : 64;
+      const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+      const offsetPosition = elementPosition - navHeight - 12;
+      window.scrollTo({
+        top: Math.max(0, offsetPosition),
+        behavior: "smooth",
+      });
     }
   };
 
@@ -1081,25 +1418,116 @@ export const PortfolioPreview = ({
     }
   };
 
-  // Scroll listener for sticky navigation sync
+  // 1. Keep horizontal module slider smoothly scrolled so the active module pill is centered & live
   useEffect(() => {
+    if (!activeTab) return;
+    const pill = document.getElementById(`nav-pill-${activeTab}`);
+    const slider = document.getElementById("portfolio-module-slider");
+    if (pill && slider) {
+      const pillLeft = pill.offsetLeft;
+      const pillWidth = pill.offsetWidth;
+      const sliderWidth = slider.offsetWidth;
+      const targetScroll = pillLeft - sliderWidth / 2 + pillWidth / 2;
+      slider.scrollTo({ left: Math.max(0, targetScroll), behavior: "smooth" });
+    }
+  }, [activeTab]);
+
+  // 2. High-precision scroll listener for sticky navigation sync using getBoundingClientRect
+  useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      const scrollPos = window.scrollY + 140;
-      for (const item of navItems) {
-        const el = document.getElementById(item.id);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPos >= top && scrollPos < top + height) {
-            setActiveTab(item.id);
-            break;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const navEl = document.getElementById("portfolio-module-slider-nav");
+          const navHeight = navEl ? navEl.offsetHeight : 64;
+          const triggerLine = navHeight + 120;
+
+          let currentActiveId = null;
+          for (const item of navItems) {
+            const el = document.getElementById(item.id);
+            if (el) {
+              const rect = el.getBoundingClientRect();
+              if (rect.top <= triggerLine && rect.bottom > triggerLine) {
+                currentActiveId = item.id;
+                break;
+              }
+            }
           }
-        }
+
+          // If scrolled to near bottom of the page, activate the last visible module
+          if (
+            window.innerHeight + window.scrollY >=
+            document.documentElement.scrollHeight - 80
+          ) {
+            if (navItems.length > 0) {
+              currentActiveId = navItems[navItems.length - 1].id;
+            }
+          }
+
+          if (currentActiveId && currentActiveId !== activeTab) {
+            setActiveTab(currentActiveId);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [navItems]);
+  }, [navItems, activeTab]);
+
+  // 3. Mouse Wheel & Drag-to-Scroll on horizontal module slider
+  useEffect(() => {
+    const slider = document.getElementById("portfolio-module-slider");
+    if (!slider) return;
+
+    const handleWheel = (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && e.deltaY !== 0) {
+        e.preventDefault();
+        slider.scrollBy({ left: e.deltaY * 1.2, behavior: "auto" });
+      }
+    };
+
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+
+    const onMouseDown = (e) => {
+      if (e.button !== 0) return;
+      isDown = true;
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    };
+    const onMouseLeave = () => {
+      isDown = false;
+    };
+    const onMouseUp = () => {
+      isDown = false;
+    };
+    const onMouseMove = (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      slider.scrollLeft = scrollLeft - walk;
+    };
+
+    slider.addEventListener("wheel", handleWheel, { passive: false });
+    slider.addEventListener("mousedown", onMouseDown);
+    slider.addEventListener("mouseleave", onMouseLeave);
+    slider.addEventListener("mouseup", onMouseUp);
+    slider.addEventListener("mousemove", onMouseMove);
+
+    return () => {
+      slider.removeEventListener("wheel", handleWheel);
+      slider.removeEventListener("mousedown", onMouseDown);
+      slider.removeEventListener("mouseleave", onMouseLeave);
+      slider.removeEventListener("mouseup", onMouseUp);
+      slider.removeEventListener("mousemove", onMouseMove);
+    };
+  }, []);
 
   return (
     <PortfolioEditableContext.Provider value={isEditable}>
@@ -1563,6 +1991,7 @@ export const PortfolioPreview = ({
               return (
                 <button
                   key={item.id}
+                  id={`nav-pill-${item.id}`}
                   type="button"
                   onClick={() => scrollToSection(item.id)}
                   className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-bold whitespace-nowrap flex items-center space-x-1.5 sm:space-x-2 transition-all cursor-pointer shrink-0 shadow-2xs ${
@@ -4891,7 +5320,12 @@ export const PortfolioPreview = ({
                   </div>
 
                   {/* 1. Executive Pitch Deck Dark Slider Container */}
-                  <div className="bg-slate-950 text-white rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl relative overflow-hidden">
+                  <div
+                    className="bg-slate-950 text-white rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl relative overflow-hidden select-none transition-all touch-pan-y"
+                    onTouchStart={handleDeckTouchStart}
+                    onTouchEnd={(e) => handleDeckTouchEnd(e, deck.length)}
+                    onWheel={(e) => handleDeckWheel(e, deck.length)}
+                  >
                     {/* Slide Top Bar */}
                     <div className="flex items-center justify-between pb-6 border-b border-slate-800/80 gap-3">
                       <div className="flex items-center gap-2.5 min-w-0">
@@ -5771,14 +6205,20 @@ export const PortfolioPreview = ({
             const nicheCat = shopData.nicheCategory || "SUSTAINABLE ORGANIC OUTDOOR APPAREL & GEAR";
             const themeBadge = shopData.themeUsed || "Customized Dawn 2.0 with liquid micro-optimizations";
             const description = shopData.description || "Complete Shopify store setup from scratch. Configured product collections, payment gateways, automated tax settings, shipping zones, and integrated post-purchase cross-sell flows that immediately increased average order value by 30%.";
-            const crAchieved = shopData.conversionRateAchieved || "3.84% (up from 1.9% store baseline)";
-            const aovAchieved = shopData.aovAchieved || "$89.50 (+$21 lift via cart cross-sells)";
-            const croFeatures = Array.isArray(shopData.croFeatures) && shopData.croFeatures.length > 0 ? shopData.croFeatures : [
-              "Slide-out Smart Cart with progress bar toward free shipping",
-              "Instant 1-Click Shopify Pay & Apple Pay express checkout",
-              "Sticky mobile buy bar with real-time stock scarcity notice",
-              "Size guide interactive modal with 98% fit confidence",
+            
+            // Dynamic KPIs support
+            const kpiList = Array.isArray(shopData.kpis) && shopData.kpis.length > 0 ? shopData.kpis : [
+              { id: "kpi-1", label: shopData.conversionRateLabel || "CONVERSION RATE", value: shopData.conversionRateAchieved || "3.84% (up from 1.9% store baseline)", highlight: "blue" },
+              { id: "kpi-2", label: shopData.aovLabel || "ACHIEVED AOV", value: shopData.aovAchieved || "$89.50 (+$21 lift via cart cross-sells)", highlight: "amber" },
             ];
+
+            const croFeatures = Array.isArray(shopData.croFeatures) && shopData.croFeatures.length > 0 ? shopData.croFeatures : [
+              { text: "Slide-out Smart Cart with progress bar toward free shipping", icon: "cart" },
+              { text: "Instant 1-Click Shopify Pay & Apple Pay express checkout", icon: "zap" },
+              { text: "Sticky mobile buy bar with real-time stock scarcity notice", icon: "trending" },
+              { text: "Size guide interactive modal with 98% fit confidence", icon: "shield" },
+            ];
+
             const installedApps = Array.isArray(shopData.installedApps) && shopData.installedApps.length > 0 ? shopData.installedApps : [
               "Klaviyo: Email Marketing & SMS",
               "Rebuy Engine: Smart Cart & AI Upsells",
@@ -5929,43 +6369,74 @@ export const PortfolioPreview = ({
                           </div>
                         </div>
 
-                        {/* 2 Stat Boxes */}
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="bg-blue-50/60 border border-blue-200 p-3.5 rounded-xl">
-                            <div className="text-[11px] font-bold text-blue-700 uppercase tracking-wider">
-                              <EditableText
-                                value={shopData.conversionRateLabel || "CONVERSION RATE"}
-                                path="modules.shopify.conversionRateLabel"
-                                placeholder="CONVERSION RATE"
-                              />
-                            </div>
-                            <div className="font-mono font-bold text-sm sm:text-base text-slate-900 mt-1">
-                              <EditableText
-                                value={crAchieved}
-                                path="modules.shopify.conversionRateAchieved"
-                                placeholder="3.84% (up from 1.9% store baseline)"
-                              />
-                            </div>
+                        {/* Dynamic Stat Boxes */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Key Store Performance Metrics</span>
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={handleAddShopifyKpi}
+                                className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-2 py-0.5 rounded border border-blue-200"
+                              >
+                                <Plus size={11} />
+                                <span>Add KPI Card</span>
+                              </button>
+                            )}
                           </div>
-                          <div className="bg-amber-50/60 border border-amber-200 p-3.5 rounded-xl">
-                            <div className="text-[11px] font-bold text-amber-800 uppercase tracking-wider">
-                              <EditableText
-                                value={shopData.aovLabel || "ACHIEVED AOV"}
-                                path="modules.shopify.aovLabel"
-                                placeholder="ACHIEVED AOV"
-                              />
-                            </div>
-                            <div className="font-mono font-bold text-sm sm:text-base text-slate-900 mt-1">
-                              <EditableText
-                                value={aovAchieved}
-                                path="modules.shopify.aovAchieved"
-                                placeholder="$89.50 (+$21 lift via cart cross-sells)"
-                              />
-                            </div>
+                          <div className="grid grid-cols-2 gap-3">
+                            {kpiList.map((kpi, kIdx) => {
+                              const isBlue = kpi.highlight === "blue" || kIdx === 0;
+                              const isAmber = kpi.highlight === "amber" || kIdx === 1;
+                              const isEmerald = kpi.highlight === "emerald";
+                              return (
+                                <div
+                                  key={kpi.id || kIdx}
+                                  className={`p-3.5 rounded-xl border relative group/kpi ${
+                                    isEmerald
+                                      ? "bg-emerald-50/60 border-emerald-200"
+                                      : isAmber
+                                      ? "bg-amber-50/60 border-amber-200"
+                                      : "bg-blue-50/60 border-blue-200"
+                                  }`}
+                                >
+                                  {isEditable && kpiList.length > 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteShopifyKpi(kIdx)}
+                                      className="opacity-0 group-hover/kpi:opacity-100 absolute top-2 right-2 p-0.5 text-slate-400 hover:text-rose-600 rounded transition-opacity cursor-pointer"
+                                      title="Delete KPI Card"
+                                    >
+                                      <X size={12} />
+                                    </button>
+                                  )}
+                                  <div className={`text-[11px] font-bold uppercase tracking-wider ${
+                                    isEmerald
+                                      ? "text-emerald-800"
+                                      : isAmber
+                                      ? "text-amber-800"
+                                      : "text-blue-700"
+                                  }`}>
+                                    <EditableText
+                                      value={kpi.label}
+                                      path={`modules.shopify.kpis[${kIdx}].label`}
+                                      placeholder="KPI LABEL"
+                                    />
+                                  </div>
+                                  <div className="font-mono font-bold text-sm sm:text-base text-slate-900 mt-1">
+                                    <EditableText
+                                      value={kpi.value}
+                                      path={`modules.shopify.kpis[${kIdx}].value`}
+                                      placeholder="3.84%"
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
 
-                        {/* CRO Features */}
+                        {/* CRO Features with Customizable Icons */}
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
@@ -5987,28 +6458,45 @@ export const PortfolioPreview = ({
                             )}
                           </div>
                           <div className="space-y-1.5 text-xs text-slate-700">
-                            {croFeatures.map((feat, fIdx) => (
-                              <div key={fIdx} className="flex items-center justify-between gap-2 group/feat">
-                                <div className="flex items-center gap-2 flex-1">
-                                  <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                                  <EditableText
-                                    value={feat}
-                                    path={`modules.shopify.croFeatures[${fIdx}]`}
-                                    placeholder="CRO Feature..."
-                                  />
+                            {croFeatures.map((feat, fIdx) => {
+                              const featText = typeof feat === "object" ? feat.text : feat;
+                              const featIcon = typeof feat === "object" ? feat.icon : "check";
+                              return (
+                                <div key={fIdx} className="flex items-center justify-between gap-2 group/feat">
+                                  <div className="flex items-center gap-2 flex-1">
+                                    {isEditable ? (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleCycleShopifyCroIcon(fIdx)}
+                                        className="shrink-0 text-blue-600 hover:scale-120 transition-transform cursor-pointer"
+                                        title="Click to cycle icon (Check, Zap, Trend, Shield, Sparkle...)"
+                                      >
+                                        {renderCustomIcon(featIcon, "check", "w-4 h-4 text-blue-600")}
+                                      </button>
+                                    ) : (
+                                      <div className="shrink-0 text-blue-600">
+                                        {renderCustomIcon(featIcon, "check", "w-4 h-4 text-blue-600")}
+                                      </div>
+                                    )}
+                                    <EditableText
+                                      value={featText}
+                                      path={`modules.shopify.croFeatures[${fIdx}].text`}
+                                      placeholder="CRO Feature..."
+                                    />
+                                  </div>
+                                  {isEditable && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteShopifyCroFeature(fIdx)}
+                                      className="opacity-0 group-hover/feat:opacity-100 p-0.5 text-slate-400 hover:text-rose-600 rounded transition-opacity cursor-pointer"
+                                      title="Delete Feature"
+                                    >
+                                      <X size={12} />
+                                    </button>
+                                  )}
                                 </div>
-                                {isEditable && (
-                                  <button
-                                    type="button"
-                                    onClick={() => handleDeleteShopifyCroFeature(fIdx)}
-                                    className="opacity-0 group-hover/feat:opacity-100 p-0.5 text-slate-400 hover:text-rose-600 rounded transition-opacity cursor-pointer"
-                                    title="Delete Feature"
-                                  >
-                                    <X size={12} />
-                                  </button>
-                                )}
-                              </div>
-                            ))}
+                              );
+                            })}
                           </div>
                         </div>
 
@@ -6029,7 +6517,7 @@ export const PortfolioPreview = ({
                                 className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-2 py-0.5 rounded border border-blue-200"
                               >
                                 <Plus size={11} />
-                                <span>Add App</span>
+                                <span>Add App Tag</span>
                               </button>
                             )}
                           </div>
@@ -6072,6 +6560,7 @@ export const PortfolioPreview = ({
             const defaultReels = [
               {
                 formatTag: "Reels / TikTok",
+                overlayTitle: "CREATIVE VISUALS - MARKETING GRAPHICS",
                 duration: "0:24",
                 imageUrl: mockupCreativesImg,
                 title: "High-Retention UGC Hook: The 'Stop Scrolling' Skincare Teardown",
@@ -6084,6 +6573,7 @@ export const PortfolioPreview = ({
               },
               {
                 formatTag: "Brand Teaser",
+                overlayTitle: "CREATIVE VISUALS - MARKETING GRAPHICS",
                 duration: "0:45",
                 imageUrl: mockupCreativesImg,
                 title: "Cinematic Product Commercial: Matte Black Espresso Machine",
@@ -6178,6 +6668,15 @@ export const PortfolioPreview = ({
                               placeholder="Reels / TikTok"
                             />
                           </div>
+
+                          <div className="absolute top-3 left-28 hidden sm:block text-slate-300 font-mono text-[10px] font-bold tracking-wider uppercase opacity-80">
+                            <EditableText
+                              value={reel.overlayTitle || "CREATIVE VISUALS - MARKETING GRAPHICS"}
+                              path={`modules.videoEditing.reels[${rIdx}].overlayTitle`}
+                              placeholder="CREATIVE VISUALS - MARKETING GRAPHICS"
+                            />
+                          </div>
+
                           <div className="absolute top-3 right-3 flex items-center gap-1 bg-slate-900/90 text-slate-300 font-mono text-[10px] px-2.5 py-1 rounded shadow-xs">
                             <Clock className="w-3 h-3 text-slate-400" />
                             <EditableText
@@ -6358,14 +6857,27 @@ export const PortfolioPreview = ({
             const dropData = modules.dropshipping || {};
             const winProd = dropData.winningProduct || "Smart Ergonomic Cervical Contour Pillow with Cooling Gel";
             const storefront = dropData.storefrontDetails || "Storefront: Lumina Sleep Lab · Fulfilled via CJ Dropshipping & Direct Private Agent (5-8 day US delivery)";
-            const cogs = dropData.cogs || "$14.20";
-            const retail = dropData.retailPrice || "$59.95";
-            const profit = dropData.netProfit || "+$45.75";
-            const adAngle = dropData.adAngleDescription || "Tackled widespread neck stiffness and morning migraines caused by smartphone posture. Ad creative demonstrated side-by-side spine alignment using 3D medical animation vs traditional flat pillows.";
-            const unitsSold = dropData.pilotUnitsSold || "420";
-            const adSpend = dropData.pilotAdSpend || "$3,800";
-            const grossRev = dropData.pilotGrossRevenue || "$25,179";
-            const netRoas = dropData.pilotNetRoas || "3.84x";
+            
+            // Dynamic Unit Economics
+            const economicsList = Array.isArray(dropData.economics) && dropData.economics.length > 0 ? dropData.economics : [
+              { label: "COGS", value: dropData.cogs || "$14.20", highlight: "slate" },
+              { label: "RETAIL PRICE", value: dropData.retailPrice || "$59.95", highlight: "slate" },
+              { label: "NET PROFIT / UNIT", value: dropData.netProfit || "+$45.75", highlight: "emerald" },
+            ];
+
+            const supplierTags = Array.isArray(dropData.supplierTags) && dropData.supplierTags.length > 0 ? dropData.supplierTags : [
+              "CJ Dropshipping",
+              "Private Agent Shenzhen",
+              "USPS Priority 5-Day",
+              "AutoDS Automation",
+            ];
+
+            const sprintMetrics = Array.isArray(dropData.sprintMetrics) && dropData.sprintMetrics.length > 0 ? dropData.sprintMetrics : [
+              { label: "Units Dispatched", value: dropData.pilotUnitsSold || "420", highlight: "white" },
+              { label: "Test Ad Spend", value: dropData.pilotAdSpend || "$3,800", highlight: "white" },
+              { label: "Gross Revenue", value: dropData.pilotGrossRevenue || "$25,179", highlight: "emerald" },
+              { label: "Blended ROAS", value: dropData.pilotNetRoas || "3.84x", highlight: "blue" },
+            ];
 
             return (
               <section
@@ -6417,7 +6929,11 @@ export const PortfolioPreview = ({
                       <div className="lg:col-span-7 space-y-4">
                         <div>
                           <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                            PRODUCT VALIDATION LABS
+                            <EditableText
+                              value={dropData.eyebrow || "PRODUCT VALIDATION LABS"}
+                              path="modules.dropshipping.eyebrow"
+                              placeholder="PRODUCT VALIDATION LABS"
+                            />
                           </div>
                           <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight mt-1">
                             <EditableText
@@ -6435,52 +6951,151 @@ export const PortfolioPreview = ({
                           </div>
                         </div>
 
-                        {/* COGS, Retail, Margin */}
-                        <div className="grid grid-cols-3 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
-                          <div>
-                            <div className="text-[10px] font-bold text-slate-400 uppercase">COGS</div>
-                            <div className="font-mono font-bold text-sm text-slate-900 mt-0.5">
-                              <EditableText
-                                value={cogs}
-                                path="modules.dropshipping.cogs"
-                                placeholder="$14.20"
-                              />
+                        {/* Product Image Manager */}
+                        <div className="relative aspect-[16/9] bg-slate-950 rounded-xl overflow-hidden border border-slate-200 shadow-xs group">
+                          <img
+                            src={dropData.productImage || mockupLaptopImg}
+                            alt={winProd}
+                            className="w-full h-full object-cover"
+                          />
+                          {isEditable && (
+                            <div className="absolute bottom-3 right-3 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 text-xs shadow-lg">
+                              <label className="text-white hover:text-blue-300 font-semibold cursor-pointer flex items-center gap-1.5">
+                                <Camera size={13} />
+                                <span>Change Image</span>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      const reader = new FileReader();
+                                      reader.onload = () => {
+                                        if (onChange) {
+                                          onChange({
+                                            ...portfolioData,
+                                            modules: {
+                                              ...modules,
+                                              dropshipping: { ...dropData, productImage: reader.result },
+                                            },
+                                          });
+                                        }
+                                      };
+                                      reader.readAsDataURL(file);
+                                    }
+                                  }}
+                                />
+                              </label>
                             </div>
+                          )}
+                        </div>
+
+                        {/* Dynamic Unit Economics Metrics */}
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Unit Economics & Margins</span>
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={handleAddDropshipMetric}
+                                className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-2 py-0.5 rounded border border-blue-200"
+                              >
+                                <Plus size={11} />
+                                <span>Add Metric</span>
+                              </button>
+                            )}
                           </div>
-                          <div>
-                            <div className="text-[10px] font-bold text-slate-400 uppercase">RETAIL PRICE</div>
-                            <div className="font-mono font-bold text-sm text-slate-900 mt-0.5">
-                              <EditableText
-                                value={retail}
-                                path="modules.dropshipping.retailPrice"
-                                placeholder="$59.95"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-[10px] font-bold text-emerald-600 uppercase">NET PROFIT / UNIT</div>
-                            <div className="font-mono font-bold text-sm text-emerald-700 mt-0.5">
-                              <EditableText
-                                value={profit}
-                                path="modules.dropshipping.netProfit"
-                                placeholder="+$45.75"
-                              />
-                            </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            {economicsList.map((econ, eIdx) => {
+                              const isEmerald = econ.highlight === "emerald" || eIdx === 2;
+                              return (
+                                <div key={eIdx} className="relative group/econ">
+                                  {isEditable && economicsList.length > 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteDropshipMetric(eIdx)}
+                                      className="opacity-0 group-hover/econ:opacity-100 absolute -top-1 -right-1 p-0.5 text-slate-400 hover:text-rose-600 rounded cursor-pointer"
+                                    >
+                                      <X size={11} />
+                                    </button>
+                                  )}
+                                  <div className={`text-[10px] font-bold uppercase ${isEmerald ? "text-emerald-700" : "text-slate-400"}`}>
+                                    <EditableText
+                                      value={econ.label}
+                                      path={`modules.dropshipping.economics[${eIdx}].label`}
+                                      placeholder="LABEL"
+                                    />
+                                  </div>
+                                  <div className={`font-mono font-bold text-sm mt-0.5 ${isEmerald ? "text-emerald-700" : "text-slate-900"}`}>
+                                    <EditableText
+                                      value={econ.value}
+                                      path={`modules.dropshipping.economics[${eIdx}].value`}
+                                      placeholder="$0.00"
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
 
                         {/* Creative Angle */}
                         <div className="space-y-1">
                           <div className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                            WINNING AD ANGLE &amp; HOOK:
+                            <EditableText
+                              value={dropData.adAngleHeading || "WINNING AD ANGLE & HOOK:"}
+                              path="modules.dropshipping.adAngleHeading"
+                              placeholder="WINNING AD ANGLE & HOOK:"
+                            />
                           </div>
                           <div className="text-xs sm:text-sm text-slate-700 leading-relaxed bg-amber-50/50 p-3 rounded-lg border border-amber-200/60">
                             <EditableText
-                              value={adAngle}
+                              value={dropData.adAngleDescription}
                               path="modules.dropshipping.adAngleDescription"
                               placeholder="Ad angle description..."
                               multiline
                             />
+                          </div>
+                        </div>
+
+                        {/* Supplier & Logistics Tags */}
+                        <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-bold text-slate-500 uppercase">Supply Chain & Automation Partners</span>
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={handleAddDropshipSupplier}
+                                className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
+                              >
+                                <Plus size={11} />
+                                <span>Add Partner</span>
+                              </button>
+                            )}
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {supplierTags.map((tag, tIdx) => (
+                              <span
+                                key={tIdx}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-mono border border-slate-200 group/tag"
+                              >
+                                <EditableText
+                                  value={tag}
+                                  path={`modules.dropshipping.supplierTags[${tIdx}]`}
+                                  placeholder="Supplier Tag"
+                                />
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteDropshipSupplier(tIdx)}
+                                    className="p-0.5 text-slate-400 hover:text-rose-600 rounded cursor-pointer"
+                                  >
+                                    <X size={10} />
+                                  </button>
+                                )}
+                              </span>
+                            ))}
                           </div>
                         </div>
                       </div>
@@ -6489,52 +7104,67 @@ export const PortfolioPreview = ({
                       <div className="lg:col-span-5 bg-slate-900 text-white rounded-xl p-5 space-y-4">
                         <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                           <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
-                            PILOT TESTING SPRINT RESULTS
+                            <EditableText
+                              value={dropData.sprintHeading || "PILOT TESTING SPRINT RESULTS"}
+                              path="modules.dropshipping.sprintHeading"
+                              placeholder="PILOT TESTING SPRINT RESULTS"
+                            />
                           </span>
-                          <span className="text-[11px] text-slate-400 font-mono">14 Days Live</span>
+                          <span className="text-[11px] text-slate-400 font-mono">
+                            <EditableText
+                              value={dropData.sprintTimeframe || "14 Days Live"}
+                              path="modules.dropshipping.sprintTimeframe"
+                              placeholder="14 Days Live"
+                            />
+                          </span>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <div className="text-[10px] font-bold text-slate-400 uppercase">Units Dispatched</div>
-                            <div className="text-lg font-bold font-mono text-white mt-0.5">
-                              <EditableText
-                                value={unitsSold}
-                                path="modules.dropshipping.pilotUnitsSold"
-                                placeholder="420"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-[10px] font-bold text-slate-400 uppercase">Test Ad Spend</div>
-                            <div className="text-lg font-bold font-mono text-white mt-0.5">
-                              <EditableText
-                                value={adSpend}
-                                path="modules.dropshipping.pilotAdSpend"
-                                placeholder="$3,800"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-[10px] font-bold text-slate-400 uppercase">Gross Revenue</div>
-                            <div className="text-lg font-bold font-mono text-emerald-400 mt-0.5">
-                              <EditableText
-                                value={grossRev}
-                                path="modules.dropshipping.pilotGrossRevenue"
-                                placeholder="$25,179"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-[10px] font-bold text-slate-400 uppercase">Blended ROAS</div>
-                            <div className="text-lg font-bold font-mono text-blue-400 mt-0.5">
-                              <EditableText
-                                value={netRoas}
-                                path="modules.dropshipping.pilotNetRoas"
-                                placeholder="3.84x"
-                              />
-                            </div>
-                          </div>
+                          {sprintMetrics.map((sm, smIdx) => {
+                            const isEmerald = sm.highlight === "emerald" || smIdx === 2;
+                            const isBlue = sm.highlight === "blue" || smIdx === 3;
+                            return (
+                              <div key={smIdx} className="relative group/sm">
+                                {isEditable && sprintMetrics.length > 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteDropshipSprintMetric(smIdx)}
+                                    className="opacity-0 group-hover/sm:opacity-100 absolute -top-1 right-0 p-0.5 text-slate-400 hover:text-rose-400 rounded cursor-pointer"
+                                  >
+                                    <X size={11} />
+                                  </button>
+                                )}
+                                <div className="text-[10px] font-bold text-slate-400 uppercase">
+                                  <EditableText
+                                    value={sm.label}
+                                    path={`modules.dropshipping.sprintMetrics[${smIdx}].label`}
+                                    placeholder="METRIC"
+                                  />
+                                </div>
+                                <div className={`text-lg font-bold font-mono mt-0.5 ${
+                                  isEmerald ? "text-emerald-400" : isBlue ? "text-blue-400" : "text-white"
+                                }`}>
+                                  <EditableText
+                                    value={sm.value}
+                                    path={`modules.dropshipping.sprintMetrics[${smIdx}].value`}
+                                    placeholder="420"
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
+                        {isEditable && (
+                          <div className="pt-2 border-t border-slate-800 flex justify-end">
+                            <button
+                              type="button"
+                              onClick={handleAddDropshipSprintMetric}
+                              className="text-[10px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer bg-slate-800 px-2 py-0.5 rounded border border-slate-700"
+                            >
+                              <Plus size={11} />
+                              <span>Add Sprint Stat</span>
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -6771,7 +7401,7 @@ export const PortfolioPreview = ({
                           </div>
                         </div>
 
-                        {/* Bullets */}
+                        {/* Bullets with Customizable Icons */}
                         <div className="space-y-2 pt-1 text-xs text-slate-200">
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Features</span>
@@ -6787,31 +7417,48 @@ export const PortfolioPreview = ({
                             )}
                           </div>
                           {(aiData.features || [
-                            "Instant 3-Hook Generation (Curiosity, Pain Point, Social Proof)",
-                            "Automated Google Ads Headline & Description compliance checker",
-                            "Meta Primary Text generator with estimated CTR rating score",
-                            "1-Click Copy to Clipboard & CSV batch export for Google Ads Editor",
-                          ]).map((feat, fIdx) => (
-                            <div key={fIdx} className="flex items-center justify-between gap-2.5 group/feat">
-                              <div className="flex items-center gap-2.5 flex-1">
-                                <CheckCircle2 size={15} className="text-blue-400 shrink-0" />
-                                <EditableText
-                                  value={feat}
-                                  path={`modules.aiApp.features[${fIdx}]`}
-                                  placeholder="Feature..."
-                                />
+                            { text: "Instant 3-Hook Generation (Curiosity, Pain Point, Social Proof)", icon: "check" },
+                            { text: "Automated Google Ads Headline & Description compliance checker", icon: "check" },
+                            { text: "Meta Primary Text generator with estimated CTR rating score", icon: "check" },
+                            { text: "1-Click Copy to Clipboard & CSV batch export for Google Ads Editor", icon: "check" },
+                          ]).map((feat, fIdx) => {
+                            const featText = typeof feat === "object" ? feat.text : feat;
+                            const featIcon = typeof feat === "object" ? feat.icon : "check";
+                            return (
+                              <div key={fIdx} className="flex items-center justify-between gap-2.5 group/feat">
+                                <div className="flex items-center gap-2.5 flex-1">
+                                  {isEditable ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleCycleAiFeatureIcon(fIdx)}
+                                      className="shrink-0 text-blue-400 hover:scale-120 transition-transform cursor-pointer"
+                                      title="Click to cycle icon"
+                                    >
+                                      {renderCustomIcon(featIcon, "check", "w-4 h-4 text-blue-400")}
+                                    </button>
+                                  ) : (
+                                    <div className="shrink-0 text-blue-400">
+                                      {renderCustomIcon(featIcon, "check", "w-4 h-4 text-blue-400")}
+                                    </div>
+                                  )}
+                                  <EditableText
+                                    value={featText}
+                                    path={`modules.aiApp.features[${fIdx}].text`}
+                                    placeholder="Feature..."
+                                  />
+                                </div>
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteAiFeature(fIdx)}
+                                    className="opacity-0 group-hover/feat:opacity-100 p-0.5 text-slate-400 hover:text-rose-400 rounded cursor-pointer transition-opacity"
+                                  >
+                                    <X size={12} />
+                                  </button>
+                                )}
                               </div>
-                              {isEditable && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleDeleteAiFeature(fIdx)}
-                                  className="opacity-0 group-hover/feat:opacity-100 p-0.5 text-slate-400 hover:text-rose-400 rounded cursor-pointer transition-opacity"
-                                >
-                                  <X size={12} />
-                                </button>
-                              )}
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
 
                         {/* Tech Stack Pills */}
@@ -7029,6 +7676,12 @@ export const PortfolioPreview = ({
               Array.isArray(perfData.attribution?.outcomes)
                 ? perfData.attribution.outcomes
                 : (initialPerf.attribution.outcomes || []);
+            const attributionTools = Array.isArray(perfData.attribution?.tools) ? perfData.attribution.tools : [
+              "Triple Whale 1-Day Click",
+              "GA4 Server-Side",
+              "Northbeam Attribution",
+              "Post-Purchase Survey",
+            ];
 
             return (
               <section
@@ -7092,12 +7745,15 @@ export const PortfolioPreview = ({
                     {statsList.map((stat, sIdx) => {
                       const isBlue = stat.highlight === "blue";
                       const isAmber = stat.highlight === "amber";
+                      const isEmerald = stat.highlight === "emerald";
 
                       return (
                         <div
                           key={sIdx}
                           className={`rounded-2xl p-5 shadow-xs border transition-all relative group/stat ${
-                            isBlue
+                            isEmerald
+                              ? "bg-emerald-50/30 border-emerald-200"
+                              : isBlue
                               ? "bg-blue-50/30 border-blue-200"
                               : isAmber
                               ? "bg-amber-50/30 border-amber-200"
@@ -7116,7 +7772,9 @@ export const PortfolioPreview = ({
                           )}
                           <div
                             className={`text-xs font-medium ${
-                              isBlue
+                              isEmerald
+                                ? "text-emerald-700 font-semibold"
+                                : isBlue
                                 ? "text-blue-600 font-semibold"
                                 : isAmber
                                 ? "text-amber-700 font-semibold"
@@ -7131,7 +7789,9 @@ export const PortfolioPreview = ({
                           </div>
                           <div
                             className={`text-2xl sm:text-3xl font-extrabold mt-1 ${
-                              isBlue
+                              isEmerald
+                                ? "text-emerald-700"
+                                : isBlue
                                 ? "text-blue-600"
                                 : isAmber
                                 ? "text-amber-800"
@@ -7146,7 +7806,7 @@ export const PortfolioPreview = ({
                           </div>
                           <div
                             className={`text-xs mt-1 font-medium ${
-                              stat.highlight === "emerald"
+                              isEmerald
                                 ? "text-emerald-600 font-bold"
                                 : isBlue
                                 ? "text-blue-600/80"
@@ -7292,7 +7952,7 @@ export const PortfolioPreview = ({
                   <div className="bg-[#0a1526] border border-slate-800 rounded-2xl p-6 lg:p-8 text-white shadow-xl">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                       {/* Left: Attribution Rigor info */}
-                      <div className="lg:col-span-5 space-y-2">
+                      <div className="lg:col-span-5 space-y-3">
                         <div className="text-xs font-bold uppercase tracking-wider text-amber-500">
                           <EditableText
                             value={perfData.attribution?.eyebrow || "ATTRIBUTION & MEASUREMENT RIGOR"}
@@ -7315,6 +7975,46 @@ export const PortfolioPreview = ({
                             placeholder="Attribution description..."
                             multiline
                           />
+                        </div>
+
+                        {/* Attribution Tools Tags */}
+                        <div className="pt-2">
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tracking Infrastructure</span>
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={handleAddPerfAttributionTool}
+                                className="text-[10px] font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1 cursor-pointer"
+                              >
+                                <Plus size={10} />
+                                <span>Add Tool</span>
+                              </button>
+                            )}
+                          </div>
+                          <div className="flex flex-wrap gap-1.5">
+                            {attributionTools.map((tool, tIdx) => (
+                              <span
+                                key={tIdx}
+                                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700 font-mono text-[11px]"
+                              >
+                                <EditableText
+                                  value={tool}
+                                  path={`modules.performanceMarketing.attribution.tools[${tIdx}]`}
+                                  placeholder="Tracking Tool"
+                                />
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeletePerfAttributionTool(tIdx)}
+                                    className="p-0.5 text-slate-400 hover:text-rose-400 rounded cursor-pointer"
+                                  >
+                                    <X size={10} />
+                                  </button>
+                                )}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
 
@@ -7341,30 +8041,47 @@ export const PortfolioPreview = ({
                         </div>
 
                         <div className="space-y-3">
-                          {outcomesList.map((outcome, oIdx) => (
-                            <div key={oIdx} className="flex items-start justify-between gap-3 group/out">
-                              <div className="flex items-start gap-3 flex-1">
-                                <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
-                                <span className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                                  <EditableText
-                                    value={outcome}
-                                    path={`modules.performanceMarketing.attribution.outcomes[${oIdx}]`}
-                                    placeholder="Outcome text..."
-                                    multiline
-                                  />
-                                </span>
+                          {outcomesList.map((outcome, oIdx) => {
+                            const outcomeText = typeof outcome === "object" ? outcome.text : outcome;
+                            const outcomeIcon = typeof outcome === "object" ? outcome.icon : "check";
+                            return (
+                              <div key={oIdx} className="flex items-start justify-between gap-3 group/out">
+                                <div className="flex items-start gap-3 flex-1">
+                                  {isEditable ? (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleCyclePerfOutcomeIcon(oIdx)}
+                                      className="shrink-0 text-emerald-400 mt-0.5 hover:scale-120 transition-transform cursor-pointer"
+                                      title="Click to cycle icon"
+                                    >
+                                      {renderCustomIcon(outcomeIcon, "check", "w-4 h-4 text-emerald-400")}
+                                    </button>
+                                  ) : (
+                                    <div className="shrink-0 text-emerald-400 mt-0.5">
+                                      {renderCustomIcon(outcomeIcon, "check", "w-4 h-4 text-emerald-400")}
+                                    </div>
+                                  )}
+                                  <span className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                    <EditableText
+                                      value={outcomeText}
+                                      path={`modules.performanceMarketing.attribution.outcomes[${oIdx}].text`}
+                                      placeholder="Outcome text..."
+                                      multiline
+                                    />
+                                  </span>
+                                </div>
+                                {isEditable && (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeletePerfOutcome(oIdx)}
+                                    className="opacity-0 group-hover/out:opacity-100 p-0.5 text-slate-400 hover:text-rose-400 rounded cursor-pointer transition-opacity"
+                                  >
+                                    <X size={12} />
+                                  </button>
+                                )}
                               </div>
-                              {isEditable && (
-                                <button
-                                  type="button"
-                                  onClick={() => handleDeletePerfOutcome(oIdx)}
-                                  className="opacity-0 group-hover/out:opacity-100 p-0.5 text-slate-400 hover:text-rose-400 rounded cursor-pointer transition-opacity"
-                                >
-                                  <X size={12} />
-                                </button>
-                              )}
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </div>
                     </div>

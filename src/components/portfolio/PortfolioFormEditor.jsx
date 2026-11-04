@@ -3,6 +3,10 @@ import mockupCreativesImg from "../../assets/mockup-creatives.jpg";
 import React, { useState, useRef } from "react";
 import {
   Palette,
+  Truck,
+  ShieldCheck,
+  Flame,
+  Activity,
   User,
   Layers,
   FileText,
@@ -717,6 +721,139 @@ export const PortfolioFormEditor = ({
   };
 
   // Reorder modules: Move Up
+    // Module 09 (Shopify) Dynamic KPI cards
+  const handleAddShopifyKpi = () => {
+    const shop = modules.shopify || {};
+    const current = Array.isArray(shop.kpis) ? shop.kpis : [
+      { id: "kpi-1", label: shop.conversionRateLabel || "CONVERSION RATE", value: shop.conversionRateAchieved || "3.84% (up from 1.9% store baseline)", highlight: "blue" },
+      { id: "kpi-2", label: shop.aovLabel || "ACHIEVED AOV", value: shop.aovAchieved || "$89.50 (+$21 lift via cart cross-sells)", highlight: "amber" }
+    ];
+    handleModuleDataChange("shopify", {
+      ...shop,
+      kpis: [...current, { id: "kpi-" + Date.now(), label: "RETENTION LTV", value: "$142.00 (60-day repeat cohort)", highlight: "emerald" }]
+    });
+  };
+
+  const handleRemoveShopifyKpi = (idx) => {
+    const shop = modules.shopify || {};
+    const current = Array.isArray(shop.kpis) ? shop.kpis : [
+      { id: "kpi-1", label: shop.conversionRateLabel || "CONVERSION RATE", value: shop.conversionRateAchieved || "3.84% (up from 1.9% store baseline)", highlight: "blue" },
+      { id: "kpi-2", label: shop.aovLabel || "ACHIEVED AOV", value: shop.aovAchieved || "$89.50 (+$21 lift via cart cross-sells)", highlight: "amber" }
+    ];
+    handleModuleDataChange("shopify", {
+      ...shop,
+      kpis: current.filter((_, i) => i !== idx)
+    });
+  };
+
+  // Module 11 (Dropshipping) Unit Economics, Supplier Tags, Pilot Sprint Metrics
+  const handleAddDropshipMetric = () => {
+    const drop = modules.dropshipping || {};
+    const current = Array.isArray(drop.economics) ? drop.economics : [
+      { label: "COGS", value: drop.cogs || "$14.20", highlight: "slate" },
+      { label: "RETAIL PRICE", value: drop.retailPrice || "$59.95", highlight: "slate" },
+      { label: "NET PROFIT / UNIT", value: drop.netProfit || "+$45.75", highlight: "emerald" },
+    ];
+    handleModuleDataChange("dropshipping", {
+      ...drop,
+      economics: [...current, { label: "GROSS MARGIN", value: "76.3%", highlight: "emerald" }]
+    });
+  };
+
+  const handleRemoveDropshipMetric = (idx) => {
+    const drop = modules.dropshipping || {};
+    const current = Array.isArray(drop.economics) ? drop.economics : [
+      { label: "COGS", value: drop.cogs || "$14.20", highlight: "slate" },
+      { label: "RETAIL PRICE", value: drop.retailPrice || "$59.95", highlight: "slate" },
+      { label: "NET PROFIT / UNIT", value: drop.netProfit || "+$45.75", highlight: "emerald" },
+    ];
+    handleModuleDataChange("dropshipping", {
+      ...drop,
+      economics: current.filter((_, i) => i !== idx)
+    });
+  };
+
+  const handleAddDropshipSupplier = () => {
+    const drop = modules.dropshipping || {};
+    const current = Array.isArray(drop.supplierTags) ? drop.supplierTags : [
+      "CJ Dropshipping", "Private Agent Shenzhen", "USPS Priority 5-Day", "AutoDS Automation"
+    ];
+    handleModuleDataChange("dropshipping", {
+      ...drop,
+      supplierTags: [...current, "Custom Eco Unboxing"]
+    });
+  };
+
+  const handleRemoveDropshipSupplier = (idx) => {
+    const drop = modules.dropshipping || {};
+    const current = Array.isArray(drop.supplierTags) ? drop.supplierTags : [
+      "CJ Dropshipping", "Private Agent Shenzhen", "USPS Priority 5-Day", "AutoDS Automation"
+    ];
+    handleModuleDataChange("dropshipping", {
+      ...drop,
+      supplierTags: current.filter((_, i) => i !== idx)
+    });
+  };
+
+  const handleAddDropshipSprintMetric = () => {
+    const drop = modules.dropshipping || {};
+    const current = Array.isArray(drop.sprintMetrics) ? drop.sprintMetrics : [
+      { label: "FIRST 48-HR ORDERS", value: "34 units" },
+      { label: "BLENDED PILOT ROAS", value: "3.42x" },
+      { label: "AVERAGE DELIVERY TIME", value: "5.8 Days" },
+      { label: "CHARGEBACK / REFUND RATE", value: "< 0.4%" },
+    ];
+    handleModuleDataChange("dropshipping", {
+      ...drop,
+      sprintMetrics: [...current, { label: "REPEAT PURCHASE INTENT", value: "28%" }]
+    });
+  };
+
+  const handleRemoveDropshipSprintMetric = (idx) => {
+    const drop = modules.dropshipping || {};
+    const current = Array.isArray(drop.sprintMetrics) ? drop.sprintMetrics : [
+      { label: "FIRST 48-HR ORDERS", value: "34 units" },
+      { label: "BLENDED PILOT ROAS", value: "3.42x" },
+      { label: "AVERAGE DELIVERY TIME", value: "5.8 Days" },
+      { label: "CHARGEBACK / REFUND RATE", value: "< 0.4%" },
+    ];
+    handleModuleDataChange("dropshipping", {
+      ...drop,
+      sprintMetrics: current.filter((_, i) => i !== idx)
+    });
+  };
+
+  // Performance Marketing Attribution Tools
+  const handleAddPerfAttributionTool = () => {
+    const pm = modules.performanceMarketing || {};
+    const attr = pm.attribution || {};
+    const current = Array.isArray(attr.attributionTools) ? attr.attributionTools : [
+      "Triple Whale CAPI", "GA4 BigQuery Export", "Northbeam Blended MER", "Elevar Server-Side GTM", "Post-Purchase Survey (Fairing)"
+    ];
+    handleModuleDataChange("performanceMarketing", {
+      ...pm,
+      attribution: {
+        ...attr,
+        attributionTools: [...current, "Server-Side Tracking"]
+      }
+    });
+  };
+
+  const handleRemovePerfAttributionTool = (idx) => {
+    const pm = modules.performanceMarketing || {};
+    const attr = pm.attribution || {};
+    const current = Array.isArray(attr.attributionTools) ? attr.attributionTools : [
+      "Triple Whale CAPI", "GA4 BigQuery Export", "Northbeam Blended MER", "Elevar Server-Side GTM", "Post-Purchase Survey (Fairing)"
+    ];
+    handleModuleDataChange("performanceMarketing", {
+      ...pm,
+      attribution: {
+        ...attr,
+        attributionTools: current.filter((_, i) => i !== idx)
+      }
+    });
+  };
+
   const handleMoveModuleUp = (index) => {
     if (index === 0) return;
     const newOrder = [...moduleOrder];
@@ -4839,7 +4976,7 @@ export const PortfolioFormEditor = ({
           </div>
         )}
 
-        {/* SECTION 11: MODULE 09 - SHOPIFY */}
+                {/* SECTION 11: MODULE 09 - SHOPIFY */}
         {matchesFilter("shopify", "Module 09: Shopify E-Commerce Store & CRO Architecture") && (
           <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-2xs">
             <button
@@ -4918,65 +5055,71 @@ export const PortfolioFormEditor = ({
                 {/* Screenshot & Theme Overlay */}
                 <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-600">
-                      Store Preview Mockup Image & Theme Badge
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                      Store Mockup Screenshot
                     </label>
-                    <button
-                      type="button"
-                      onClick={() => handleModuleDataChange("shopify", { ...modules.shopify, imageUrl: mockupCreativesImg })}
-                      className="text-[10px] text-blue-600 hover:underline cursor-pointer"
-                    >
-                      Reset Mockup
-                    </button>
+                    {modules.shopify?.imageUrl && (
+                      <button
+                        type="button"
+                        onClick={() => handleModuleDataChange("shopify", { ...modules.shopify, imageUrl: null })}
+                        className="text-[10px] font-bold text-rose-600 hover:underline cursor-pointer"
+                      >
+                        Reset to Default
+                      </button>
+                    )}
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-20 h-16 bg-slate-900 rounded overflow-hidden border border-slate-200 shrink-0">
-                      <img src={modules.shopify?.imageUrl || mockupCreativesImg} alt="" className="w-full h-full object-cover" />
+                    <div className="w-16 h-12 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
+                      <img
+                        src={modules.shopify?.imageUrl || mockupLaptopImg}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                    <div className="flex-1 space-y-1.5">
-                      <label className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-semibold rounded cursor-pointer inline-flex items-center gap-1 shadow-2xs">
-                        <Upload size={11} />
-                        <span>Upload Store Screenshot</span>
+                    <div className="flex-1 space-y-1">
+                      <label className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg cursor-pointer transition-colors border border-slate-200">
+                        <Upload size={12} />
+                        <span>Upload Mockup Image</span>
                         <input
                           type="file"
                           accept="image/*"
                           className="hidden"
                           onChange={(e) =>
-                            handleImageFileUpload(e, (url) => {
-                              handleModuleDataChange("shopify", { ...modules.shopify, imageUrl: url });
-                            })
+                            handleImageFileUpload(e, (dataUrl) =>
+                              handleModuleDataChange("shopify", { ...modules.shopify, imageUrl: dataUrl })
+                            )
                           }
                         />
                       </label>
                       <input
                         type="text"
-                        value={modules.shopify?.imageUrl || ""}
-                        placeholder="or paste image URL"
+                        placeholder="Or paste image URL"
+                        value={typeof modules.shopify?.imageUrl === "string" && modules.shopify.imageUrl.startsWith("data:") ? "" : (modules.shopify?.imageUrl || "")}
                         onChange={(e) => handleModuleDataChange("shopify", { ...modules.shopify, imageUrl: e.target.value })}
-                        className="w-full px-2 py-1 text-[11px] rounded border border-slate-200 bg-slate-50 font-mono"
+                        className="w-full px-2 py-0.5 text-[11px] rounded border border-slate-200 bg-white"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Theme Badge Overlay Text</label>
+                    <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Top Banner Overlay Text</label>
                     <input
                       type="text"
                       value={modules.shopify?.themeUsed || "Customized Dawn 2.0 with liquid micro-optimizations"}
                       onChange={(e) => handleModuleDataChange("shopify", { ...modules.shopify, themeUsed: e.target.value })}
-                      className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono text-amber-700"
+                      className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono text-emerald-800"
                     />
                   </div>
                 </div>
 
-                {/* Store Info & KPIs */}
+                {/* Store Brand & Details */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <div>
-                    <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Niche Category Eyebrow</label>
+                    <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Category / Niche Eyebrow</label>
                     <input
                       type="text"
                       value={modules.shopify?.nicheCategory || "SUSTAINABLE ORGANIC OUTDOOR APPAREL & GEAR"}
                       onChange={(e) => handleModuleDataChange("shopify", { ...modules.shopify, nicheCategory: e.target.value })}
-                      className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-semibold text-amber-600"
+                      className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-bold text-amber-700"
                     />
                   </div>
                   <div>
@@ -4991,37 +5134,105 @@ export const PortfolioFormEditor = ({
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Store Description</label>
+                  <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Store Architecture Description</label>
                   <textarea
                     rows={2}
-                    value={modules.shopify?.description || ""}
+                    value={modules.shopify?.description || "Complete Shopify store setup from scratch. Configured product collections, payment gateways, automated tax settings, shipping zones, and integrated post-purchase cross-sell flows that immediately increased average order value by 30%."}
                     onChange={(e) => handleModuleDataChange("shopify", { ...modules.shopify, description: e.target.value })}
                     className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Conversion Rate Value</label>
-                    <input
-                      type="text"
-                      value={modules.shopify?.conversionRateAchieved || "3.84% (up from 1.9% store baseline)"}
-                      onChange={(e) => handleModuleDataChange("shopify", { ...modules.shopify, conversionRateAchieved: e.target.value })}
-                      className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono font-bold text-blue-700"
-                    />
+                {/* Dynamic Store KPI Cards */}
+                <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-800">
+                      Store Performance KPI Cards ({((modules.shopify?.kpis || [1, 2])).length})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleAddShopifyKpi}
+                      className="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1 cursor-pointer bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200"
+                    >
+                      <Plus size={13} />
+                      <span>Add KPI Card</span>
+                    </button>
                   </div>
-                  <div>
-                    <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Achieved AOV Value</label>
-                    <input
-                      type="text"
-                      value={modules.shopify?.aovAchieved || "$89.50 (+$21 lift via cart cross-sells)"}
-                      onChange={(e) => handleModuleDataChange("shopify", { ...modules.shopify, aovAchieved: e.target.value })}
-                      className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono font-bold text-amber-800"
-                    />
+                  <div className="space-y-2">
+                    {(Array.isArray(modules.shopify?.kpis) && modules.shopify.kpis.length > 0
+                      ? modules.shopify.kpis
+                      : [
+                          { label: modules.shopify?.conversionRateLabel || "CONVERSION RATE", value: modules.shopify?.conversionRateAchieved || "3.84% (up from 1.9% store baseline)", highlight: "blue" },
+                          { label: modules.shopify?.aovLabel || "ACHIEVED AOV", value: modules.shopify?.aovAchieved || "$89.50 (+$21 lift via cart cross-sells)", highlight: "amber" }
+                        ]
+                    ).map((kpi, kIdx) => (
+                      <div key={kIdx} className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                        <input
+                          type="text"
+                          value={kpi.label || ""}
+                          placeholder="KPI Label (e.g. CONVERSION RATE)"
+                          onChange={(e) => {
+                            const current = Array.isArray(modules.shopify?.kpis) && modules.shopify.kpis.length > 0
+                              ? [...modules.shopify.kpis]
+                              : [
+                                  { label: modules.shopify?.conversionRateLabel || "CONVERSION RATE", value: modules.shopify?.conversionRateAchieved || "3.84% (up from 1.9% store baseline)", highlight: "blue" },
+                                  { label: modules.shopify?.aovLabel || "ACHIEVED AOV", value: modules.shopify?.aovAchieved || "$89.50 (+$21 lift via cart cross-sells)", highlight: "amber" }
+                                ];
+                            current[kIdx] = { ...current[kIdx], label: e.target.value };
+                            handleModuleDataChange("shopify", { ...modules.shopify, kpis: current });
+                          }}
+                          className="w-full sm:w-1/3 px-2 py-1 text-xs rounded border border-slate-200 bg-white font-bold uppercase text-slate-700"
+                        />
+                        <input
+                          type="text"
+                          value={kpi.value || ""}
+                          placeholder="KPI Value (e.g. 3.84%)"
+                          onChange={(e) => {
+                            const current = Array.isArray(modules.shopify?.kpis) && modules.shopify.kpis.length > 0
+                              ? [...modules.shopify.kpis]
+                              : [
+                                  { label: modules.shopify?.conversionRateLabel || "CONVERSION RATE", value: modules.shopify?.conversionRateAchieved || "3.84% (up from 1.9% store baseline)", highlight: "blue" },
+                                  { label: modules.shopify?.aovLabel || "ACHIEVED AOV", value: modules.shopify?.aovAchieved || "$89.50 (+$21 lift via cart cross-sells)", highlight: "amber" }
+                                ];
+                            current[kIdx] = { ...current[kIdx], value: e.target.value };
+                            handleModuleDataChange("shopify", { ...modules.shopify, kpis: current });
+                          }}
+                          className="flex-1 px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono font-bold"
+                        />
+                        <select
+                          value={kpi.highlight || "blue"}
+                          onChange={(e) => {
+                            const current = Array.isArray(modules.shopify?.kpis) && modules.shopify.kpis.length > 0
+                              ? [...modules.shopify.kpis]
+                              : [
+                                  { label: modules.shopify?.conversionRateLabel || "CONVERSION RATE", value: modules.shopify?.conversionRateAchieved || "3.84% (up from 1.9% store baseline)", highlight: "blue" },
+                                  { label: modules.shopify?.aovLabel || "ACHIEVED AOV", value: modules.shopify?.aovAchieved || "$89.50 (+$21 lift via cart cross-sells)", highlight: "amber" }
+                                ];
+                            current[kIdx] = { ...current[kIdx], highlight: e.target.value };
+                            handleModuleDataChange("shopify", { ...modules.shopify, kpis: current });
+                          }}
+                          className="px-2 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 font-semibold cursor-pointer"
+                        >
+                          <option value="blue">Blue Box</option>
+                          <option value="amber">Amber Box</option>
+                          <option value="emerald">Emerald Box</option>
+                          <option value="purple">Purple Box</option>
+                          <option value="rose">Rose Box</option>
+                        </select>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveShopifyKpi(kIdx)}
+                          className="p-1 text-slate-400 hover:text-rose-600 self-center cursor-pointer"
+                          title="Delete KPI"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                {/* CRO Features List */}
+                {/* CRO Features List with Icon Selector */}
                 <div className="space-y-2 pt-2 border-t border-slate-100">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-800">
@@ -5036,28 +5247,53 @@ export const PortfolioFormEditor = ({
                       <span>Add Feature</span>
                     </button>
                   </div>
-                  {((modules.shopify?.croFeatures || [])).map((feat, fIdx) => (
-                    <div key={fIdx} className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={feat}
-                        onChange={(e) => {
-                          const updated = [...modules.shopify.croFeatures];
-                          updated[fIdx] = e.target.value;
-                          handleModuleDataChange("shopify", { ...modules.shopify, croFeatures: updated });
-                        }}
-                        className="flex-1 px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveShopifyCroFeature(fIdx)}
-                        className="p-1 text-slate-400 hover:text-rose-600 cursor-pointer"
-                        title="Delete feature"
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-                  ))}
+                  {((modules.shopify?.croFeatures || [])).map((feat, fIdx) => {
+                    const featText = typeof feat === "object" && feat !== null ? feat.text : feat;
+                    const featIcon = typeof feat === "object" && feat !== null ? (feat.icon || "CheckCircle2") : "CheckCircle2";
+                    return (
+                      <div key={fIdx} className="flex items-center gap-2">
+                        <select
+                          value={featIcon}
+                          onChange={(e) => {
+                            const updated = [...modules.shopify.croFeatures];
+                            updated[fIdx] = { text: featText, icon: e.target.value };
+                            handleModuleDataChange("shopify", { ...modules.shopify, croFeatures: updated });
+                          }}
+                          className="px-2 py-1 text-xs border border-slate-200 rounded-lg bg-slate-50 font-mono text-slate-700 cursor-pointer"
+                        >
+                          <option value="CheckCircle2">✓ Check</option>
+                          <option value="Zap">⚡ Zap</option>
+                          <option value="Sparkles">✨ Sparkles</option>
+                          <option value="ShieldCheck">🛡 Shield</option>
+                          <option value="Target">🎯 Target</option>
+                          <option value="Award">🏆 Award</option>
+                          <option value="Clock">⏱ Clock</option>
+                          <option value="Flame">🔥 Flame</option>
+                          <option value="ShoppingBag">🛍 Bag</option>
+                        </select>
+                        <input
+                          type="text"
+                          value={featText}
+                          onChange={(e) => {
+                            const updated = [...modules.shopify.croFeatures];
+                            updated[fIdx] = typeof feat === "object" && feat !== null
+                              ? { ...feat, text: e.target.value }
+                              : e.target.value;
+                            handleModuleDataChange("shopify", { ...modules.shopify, croFeatures: updated });
+                          }}
+                          className="flex-1 px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveShopifyCroFeature(fIdx)}
+                          className="p-1 text-slate-400 hover:text-rose-600 cursor-pointer"
+                          title="Delete feature"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Integrated Shopify Apps */}
@@ -5137,7 +5373,7 @@ export const PortfolioFormEditor = ({
                 {/* Header Customizer */}
                 <div className="p-3 bg-rose-50/50 rounded-xl border border-rose-100 space-y-2">
                   <span className="text-[11px] font-extrabold uppercase tracking-wider text-rose-900 block">
-                    Module 10 Header & Badges
+                    Module 10 Header & Tool Badges
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div>
@@ -5153,8 +5389,8 @@ export const PortfolioFormEditor = ({
                       <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Module Title</label>
                       <input
                         type="text"
-                        value={modules.videoEditing?.moduleTitle || "Video Editing, UGC Creatives & Commercial Reels"}
-                        onChange={(e) => handleModuleDataChange("videoEditing", { ...modules.videoEditing, moduleTitle: e.target.value })}
+                        value={modules.videoEditing?.title || "Video Editing, UGC Creatives & Commercial Reels"}
+                        onChange={(e) => handleModuleDataChange("videoEditing", { ...modules.videoEditing, title: e.target.value })}
                         className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-bold"
                       />
                     </div>
@@ -5170,7 +5406,7 @@ export const PortfolioFormEditor = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Top Badge</label>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Top Right Badge</label>
                       <input
                         type="text"
                         value={modules.videoEditing?.topBadge || "CapCut Desktop · Premiere Pro · 4K Color Graded"}
@@ -5181,227 +5417,267 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
 
-                {/* Reels List */}
-                <div className="flex items-center justify-between pb-1 border-b border-slate-100">
-                  <span className="text-xs font-bold text-slate-800">
-                    Video Reels & UGC Assets ({((modules.videoEditing?.reels || modules.videoEditing || [])).length})
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleAddVideoReel}
-                    className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200"
-                  >
-                    <Plus size={13} />
-                    <span>Add Video Reel</span>
-                  </button>
-                </div>
+                {/* Reels List Manager */}
+                <div className="space-y-4 pt-2 border-t border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-800">
+                      Video Reel Creatives ({((modules.videoEditing?.reels || [])).length})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleAddVideoReel}
+                      className="text-[11px] font-bold text-rose-700 hover:text-rose-900 flex items-center gap-1 cursor-pointer bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200"
+                    >
+                      <Plus size={13} />
+                      <span>Add Video Reel</span>
+                    </button>
+                  </div>
 
-                {((modules.videoEditing?.reels || (Array.isArray(modules.videoEditing) ? modules.videoEditing : []))).map((reel, rIdx) => (
-                  <div key={reel.id || rIdx} className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3.5">
-                    <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
-                      <span className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                        Reel #{rIdx + 1}: {reel.title || "Untitled Video"}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveVideoReel(rIdx)}
-                        className="p-1 rounded bg-slate-200/60 hover:bg-rose-600 text-slate-500 hover:text-white transition-colors cursor-pointer"
-                        title="Delete video reel"
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Format Pill Tag</label>
-                        <input
-                          type="text"
-                          value={reel.formatTag || ""}
-                          placeholder="e.g. Reels / TikTok"
-                          onChange={(e) => {
-                            const current = modules.videoEditing?.reels || modules.videoEditing || [];
-                            const updated = [...current];
-                            updated[rIdx] = { ...updated[rIdx], formatTag: e.target.value };
-                            handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
-                          }}
-                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono text-amber-700 font-bold"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Duration</label>
-                        <input
-                          type="text"
-                          value={reel.duration || ""}
-                          placeholder="e.g. 0:24"
-                          onChange={(e) => {
-                            const current = modules.videoEditing?.reels || modules.videoEditing || [];
-                            const updated = [...current];
-                            updated[rIdx] = { ...updated[rIdx], duration: e.target.value };
-                            handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
-                          }}
-                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Thumbnail Image Manager */}
-                    <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-bold uppercase tracking-wider text-slate-600">Thumbnail Image</label>
+                  {((modules.videoEditing?.reels || [])).map((reel, rIdx) => (
+                    <div key={rIdx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                      <div className="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                        <span className="font-extrabold text-slate-900 text-xs">Reel #{rIdx + 1}: {reel.title || "Untitled Reel"}</span>
                         <button
                           type="button"
-                          onClick={() => {
-                            const current = modules.videoEditing?.reels || modules.videoEditing || [];
-                            const updated = [...current];
-                            updated[rIdx] = { ...updated[rIdx], imageUrl: mockupCreativesImg };
-                            handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
-                          }}
-                          className="text-[10px] text-blue-600 hover:underline cursor-pointer"
+                          onClick={() => handleRemoveVideoReel(rIdx)}
+                          className="p-1 rounded bg-slate-200/60 hover:bg-rose-600 text-slate-500 hover:text-white transition-colors cursor-pointer"
+                          title="Delete reel"
                         >
-                          Reset Default
+                          <Trash2 size={13} />
                         </button>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-20 h-14 bg-slate-900 rounded overflow-hidden border border-slate-200 shrink-0">
-                          <img src={reel.imageUrl || mockupCreativesImg} alt="" className="w-full h-full object-cover" />
-                        </div>
-                        <div className="flex-1 space-y-1.5">
-                          <label className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white text-[11px] font-semibold rounded cursor-pointer inline-flex items-center gap-1 shadow-2xs">
-                            <Upload size={11} />
-                            <span>Upload Thumbnail</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) =>
-                                handleImageFileUpload(e, (url) => {
-                                  const current = modules.videoEditing?.reels || modules.videoEditing || [];
-                                  const updated = [...current];
-                                  updated[rIdx] = { ...updated[rIdx], imageUrl: url };
-                                  handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
-                                })
-                              }
-                            />
-                          </label>
+
+                      {/* Video Overlay Settings */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <div>
+                          <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Format Badge</label>
                           <input
                             type="text"
-                            value={reel.imageUrl || ""}
-                            placeholder="or paste image URL"
+                            value={reel.formatTag || ""}
+                            placeholder="e.g. Reels / TikTok"
                             onChange={(e) => {
-                              const current = modules.videoEditing?.reels || modules.videoEditing || [];
-                              const updated = [...current];
-                              updated[rIdx] = { ...updated[rIdx], imageUrl: e.target.value };
+                              const updated = [...modules.videoEditing.reels];
+                              updated[rIdx] = { ...updated[rIdx], formatTag: e.target.value };
                               handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
                             }}
-                            className="w-full px-2 py-1 text-[11px] rounded border border-slate-200 bg-slate-50 font-mono"
+                            className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-medium"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Video Overlay Title</label>
+                          <input
+                            type="text"
+                            value={reel.overlayTitle || ""}
+                            placeholder="e.g. CREATIVE VISUALS - MARKETING GRAPHICS"
+                            onChange={(e) => {
+                              const updated = [...modules.videoEditing.reels];
+                              updated[rIdx] = { ...updated[rIdx], overlayTitle: e.target.value };
+                              handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                            }}
+                            className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono text-slate-700 uppercase"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Duration</label>
+                          <input
+                            type="text"
+                            value={reel.duration || ""}
+                            placeholder="e.g. 0:24"
+                            onChange={(e) => {
+                              const updated = [...modules.videoEditing.reels];
+                              updated[rIdx] = { ...updated[rIdx], duration: e.target.value };
+                              handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                            }}
+                            className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono"
                           />
                         </div>
                       </div>
-                    </div>
 
-                    <div>
-                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Video Title</label>
-                      <input
-                        type="text"
-                        value={reel.title || ""}
-                        onChange={(e) => {
-                          const current = modules.videoEditing?.reels || modules.videoEditing || [];
-                          const updated = [...current];
-                          updated[rIdx] = { ...updated[rIdx], title: e.target.value };
-                          handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
-                        }}
-                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-bold"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Description</label>
-                      <textarea
-                        rows={2}
-                        value={reel.description || ""}
-                        onChange={(e) => {
-                          const current = modules.videoEditing?.reels || modules.videoEditing || [];
-                          const updated = [...current];
-                          updated[rIdx] = { ...updated[rIdx], description: e.target.value };
-                          handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
-                        }}
-                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Hook & Retention Strategy Quote</label>
-                      <input
-                        type="text"
-                        value={reel.hookStrategy || ""}
-                        onChange={(e) => {
-                          const current = modules.videoEditing?.reels || modules.videoEditing || [];
-                          const updated = [...current];
-                          updated[rIdx] = { ...updated[rIdx], hookStrategy: e.target.value };
-                          handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
-                        }}
-                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white italic"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Verified Retention Metric</label>
-                      <input
-                        type="text"
-                        value={reel.retentionMetric || ""}
-                        onChange={(e) => {
-                          const current = modules.videoEditing?.reels || modules.videoEditing || [];
-                          const updated = [...current];
-                          updated[rIdx] = { ...updated[rIdx], retentionMetric: e.target.value };
-                          handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
-                        }}
-                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono font-bold text-emerald-700"
-                      />
-                    </div>
-
-                    {/* Tools list */}
-                    <div className="space-y-1.5 pt-2 border-t border-slate-200">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase">Software / Tools Used</span>
-                        <button
-                          type="button"
-                          onClick={() => handleAddVideoTool(rIdx)}
-                          className="text-[10px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
-                        >
-                          <Plus size={11} />
-                          <span>Add Tool</span>
-                        </button>
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {(Array.isArray(reel.tools) ? reel.tools : []).map((tool, tIdx) => (
-                          <div key={tIdx} className="flex items-center gap-1 bg-white border border-slate-200 rounded px-2 py-0.5 text-xs">
-                            <input
-                              type="text"
-                              value={tool}
-                              onChange={(e) => {
-                                const current = modules.videoEditing?.reels || modules.videoEditing || [];
-                                const updated = [...current];
-                                const tools = [...updated[rIdx].tools];
-                                tools[tIdx] = e.target.value;
-                                updated[rIdx] = { ...updated[rIdx], tools };
-                                handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
-                              }}
-                              className="text-xs bg-transparent border-none p-0 focus:outline-none w-24 font-medium"
-                            />
+                      {/* Video Thumbnail / Mockup */}
+                      <div className="p-2.5 bg-white rounded-lg border border-slate-200 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase">Video Mockup Thumbnail</label>
+                          {reel.imageUrl && (
                             <button
                               type="button"
-                              onClick={() => handleRemoveVideoTool(rIdx, tIdx)}
-                              className="text-slate-400 hover:text-rose-600 cursor-pointer"
+                              onClick={() => {
+                                const updated = [...modules.videoEditing.reels];
+                                updated[rIdx] = { ...updated[rIdx], imageUrl: null };
+                                handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                              }}
+                              className="text-[10px] font-bold text-rose-600 hover:underline cursor-pointer"
                             >
-                              <X size={11} />
+                              Reset Image
                             </button>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-14 h-10 rounded bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
+                            <img
+                              src={reel.imageUrl || mockupCreativesImg}
+                              alt="Thumbnail"
+                              className="w-full h-full object-cover"
+                            />
                           </div>
-                        ))}
+                          <div className="flex-1 space-y-1">
+                            <label className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-semibold rounded cursor-pointer border border-slate-200">
+                              <Upload size={11} />
+                              <span>Upload Thumbnail</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={(e) =>
+                                  handleImageFileUpload(e, (dataUrl) => {
+                                    const updated = [...modules.videoEditing.reels];
+                                    updated[rIdx] = { ...updated[rIdx], imageUrl: dataUrl };
+                                    handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                                  })
+                                }
+                              />
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="Or paste image URL"
+                              value={typeof reel.imageUrl === "string" && reel.imageUrl.startsWith("data:") ? "" : (reel.imageUrl || "")}
+                              onChange={(e) => {
+                                const updated = [...modules.videoEditing.reels];
+                                updated[rIdx] = { ...updated[rIdx], imageUrl: e.target.value };
+                                handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                              }}
+                              className="w-full px-2 py-0.5 text-[11px] rounded border border-slate-200 bg-white"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Title & Description */}
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Creative Title</label>
+                        <input
+                          type="text"
+                          value={reel.title || ""}
+                          placeholder="e.g. High-Retention UGC Hook..."
+                          onChange={(e) => {
+                            const updated = [...modules.videoEditing.reels];
+                            updated[rIdx] = { ...updated[rIdx], title: e.target.value };
+                            handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                          }}
+                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Execution & Pacing Description</label>
+                        <textarea
+                          rows={2}
+                          value={reel.description || ""}
+                          onChange={(e) => {
+                            const updated = [...modules.videoEditing.reels];
+                            updated[rIdx] = { ...updated[rIdx], description: e.target.value };
+                            handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                          }}
+                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white"
+                        />
+                      </div>
+
+                      {/* Hook & Retention Framework */}
+                      <div className="p-2.5 bg-slate-900 text-slate-200 rounded-lg space-y-2">
+                        <div className="flex items-center justify-between">
+                          <input
+                            type="text"
+                            value={reel.hookEyebrow || "HOOK & RETENTION ARCHITECTURE (0-3S):"}
+                            onChange={(e) => {
+                              const updated = [...modules.videoEditing.reels];
+                              updated[rIdx] = { ...updated[rIdx], hookEyebrow: e.target.value };
+                              handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                            }}
+                            className="bg-transparent border-none text-[10px] font-extrabold text-amber-400 uppercase tracking-wider p-0 focus:outline-none w-full"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[9px] font-mono text-slate-400 block mb-0.5">Hook Strategy (Quote)</label>
+                          <textarea
+                            rows={2}
+                            value={reel.hookStrategy || ""}
+                            onChange={(e) => {
+                              const updated = [...modules.videoEditing.reels];
+                              updated[rIdx] = { ...updated[rIdx], hookStrategy: e.target.value };
+                              handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                            }}
+                            className="w-full px-2 py-1 text-xs rounded bg-slate-800 border border-slate-700 text-slate-100 font-serif italic"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-800">
+                          <div>
+                            <label className="text-[9px] font-mono text-slate-400 block mb-0.5">Retention Label</label>
+                            <input
+                              type="text"
+                              value={reel.retentionLabel || "Verified Retention:"}
+                              onChange={(e) => {
+                                const updated = [...modules.videoEditing.reels];
+                                updated[rIdx] = { ...updated[rIdx], retentionLabel: e.target.value };
+                                handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                              }}
+                              className="w-full px-2 py-0.5 text-xs rounded bg-slate-800 border border-slate-700 text-slate-300 font-medium"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[9px] font-mono text-slate-400 block mb-0.5">Retention Metric</label>
+                            <input
+                              type="text"
+                              value={reel.retentionMetric || ""}
+                              onChange={(e) => {
+                                const updated = [...modules.videoEditing.reels];
+                                updated[rIdx] = { ...updated[rIdx], retentionMetric: e.target.value };
+                                handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                              }}
+                              className="w-full px-2 py-0.5 text-xs rounded bg-slate-800 border border-slate-700 text-emerald-400 font-mono font-bold"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Post-Production Software Tags */}
+                      <div className="space-y-1.5 pt-1">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase">Post-Production Software & Assets</label>
+                          <button
+                            type="button"
+                            onClick={() => handleAddVideoTool(rIdx)}
+                            className="text-[10px] font-bold text-blue-600 hover:text-blue-800 cursor-pointer"
+                          >
+                            + Add Tool Tag
+                          </button>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {((reel.tools || [])).map((tool, tIdx) => (
+                            <div key={tIdx} className="flex items-center gap-1 bg-white border border-slate-200 rounded px-2 py-0.5 text-xs">
+                              <input
+                                type="text"
+                                value={tool}
+                                onChange={(e) => {
+                                  const updated = [...modules.videoEditing.reels];
+                                  const tools = [...updated[rIdx].tools];
+                                  tools[tIdx] = e.target.value;
+                                  updated[rIdx] = { ...updated[rIdx], tools };
+                                  handleModuleDataChange("videoEditing", { ...modules.videoEditing, reels: updated });
+                                }}
+                                className="text-xs bg-transparent border-none p-0 focus:outline-none w-24 font-medium"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveVideoTool(rIdx, tIdx)}
+                                className="text-slate-400 hover:text-rose-600 cursor-pointer"
+                              >
+                                <X size={11} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -5436,65 +5712,386 @@ export const PortfolioFormEditor = ({
 
             {openSections.dropshipping && (
               <div className="p-4 border-t border-slate-200 space-y-4 bg-white">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Winning Product Name</label>
-                    <input
-                      type="text"
-                      value={modules.dropshipping?.winningProduct || ""}
-                      onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, winningProduct: e.target.value })}
-                      className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-bold"
-                    />
+                {/* Header Customizer */}
+                <div className="p-3 bg-teal-50/50 rounded-xl border border-teal-100 space-y-2">
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-teal-900 block">
+                    Module 11 Header & Verification Badges
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Category Badge</label>
+                      <input
+                        type="text"
+                        value={modules.dropshipping?.categoryBadge || "Module 11 · E-Commerce & Sourcing"}
+                        onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, categoryBadge: e.target.value })}
+                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-medium"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Module Title</label>
+                      <input
+                        type="text"
+                        value={modules.dropshipping?.title || "Dropshipping Store & Winning Product Validation"}
+                        onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, title: e.target.value })}
+                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-bold"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Subtitle</label>
+                      <input
+                        type="text"
+                        value={modules.dropshipping?.subtitle || "End-to-end dropshipping product research, supplier vetting, unit economics modeling, and 7-day paid testing pilot."}
+                        onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, subtitle: e.target.value })}
+                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white text-slate-700"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Top Right Badge</label>
+                      <input
+                        type="text"
+                        value={modules.dropshipping?.topBadge || "CJ Dropshipping & DSers Vetted"}
+                        onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, topBadge: e.target.value })}
+                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-medium"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Product Showcase & Image */}
+                <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                      Product Validation Mockup Image
+                    </label>
+                    {modules.dropshipping?.productImage && (
+                      <button
+                        type="button"
+                        onClick={() => handleModuleDataChange("dropshipping", { ...modules.dropshipping, productImage: null })}
+                        className="text-[10px] font-bold text-rose-600 hover:underline cursor-pointer"
+                      >
+                        Reset Image
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-16 h-14 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
+                      <img
+                        src={modules.dropshipping?.productImage || mockupLaptopImg}
+                        alt="Product"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <label className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg cursor-pointer transition-colors border border-slate-200">
+                        <Upload size={12} />
+                        <span>Upload Product Image</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) =>
+                            handleImageFileUpload(e, (dataUrl) =>
+                              handleModuleDataChange("dropshipping", { ...modules.dropshipping, productImage: dataUrl })
+                            )
+                          }
+                        />
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Or paste image URL"
+                        value={typeof modules.dropshipping?.productImage === "string" && modules.dropshipping.productImage.startsWith("data:") ? "" : (modules.dropshipping?.productImage || "")}
+                        onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, productImage: e.target.value })}
+                        className="w-full px-2 py-0.5 text-[11px] rounded border border-slate-200 bg-white"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-slate-100">
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Section Eyebrow</label>
+                      <input
+                        type="text"
+                        value={modules.dropshipping?.eyebrow || "PRODUCT VALIDATION LABS"}
+                        onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, eyebrow: e.target.value })}
+                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono uppercase text-teal-700"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Winning Product Name</label>
+                      <input
+                        type="text"
+                        value={modules.dropshipping?.winningProduct || "Smart Ergonomic Cervical Contour Pillow with Cooling Gel"}
+                        onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, winningProduct: e.target.value })}
+                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-bold"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Storefront & Supplier Info</label>
                     <input
                       type="text"
-                      value={modules.dropshipping?.storefrontDetails || ""}
+                      value={modules.dropshipping?.storefrontDetails || "Storefront: Lumina Sleep Lab · Fulfilled via CJ Dropshipping & Direct Private Agent (5-8 day US delivery)"}
                       onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, storefrontDetails: e.target.value })}
-                      className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono text-slate-700"
+                      className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-medium text-slate-700"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <label className="text-[10px] font-bold text-slate-500 block mb-0.5">COGS</label>
-                    <input
-                      type="text"
-                      value={modules.dropshipping?.cogs || ""}
-                      onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, cogs: e.target.value })}
-                      className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono"
-                    />
+                {/* Unit Economics Cards */}
+                <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-800">
+                      Unit Economics Breakdown ({((modules.dropshipping?.economics || [1, 2, 3])).length})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleAddDropshipMetric}
+                      className="text-[11px] font-bold text-teal-700 hover:text-teal-900 flex items-center gap-1 cursor-pointer bg-teal-50 px-2.5 py-1 rounded-lg border border-teal-200"
+                    >
+                      <Plus size={13} />
+                      <span>Add Metric</span>
+                    </button>
+                  </div>
+                  <div className="space-y-2">
+                    {(Array.isArray(modules.dropshipping?.economics) && modules.dropshipping.economics.length > 0
+                      ? modules.dropshipping.economics
+                      : [
+                          { label: "COGS", value: modules.dropshipping?.cogs || "$14.20", highlight: "slate" },
+                          { label: "RETAIL PRICE", value: modules.dropshipping?.retailPrice || "$59.95", highlight: "slate" },
+                          { label: "NET PROFIT / UNIT", value: modules.dropshipping?.netProfit || "+$45.75", highlight: "emerald" },
+                        ]
+                    ).map((eco, eIdx) => (
+                      <div key={eIdx} className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                        <input
+                          type="text"
+                          value={eco.label || ""}
+                          placeholder="Label (e.g. COGS)"
+                          onChange={(e) => {
+                            const current = Array.isArray(modules.dropshipping?.economics) && modules.dropshipping.economics.length > 0
+                              ? [...modules.dropshipping.economics]
+                              : [
+                                  { label: "COGS", value: modules.dropshipping?.cogs || "$14.20", highlight: "slate" },
+                                  { label: "RETAIL PRICE", value: modules.dropshipping?.retailPrice || "$59.95", highlight: "slate" },
+                                  { label: "NET PROFIT / UNIT", value: modules.dropshipping?.netProfit || "+$45.75", highlight: "emerald" },
+                                ];
+                            current[eIdx] = { ...current[eIdx], label: e.target.value };
+                            handleModuleDataChange("dropshipping", { ...modules.dropshipping, economics: current });
+                          }}
+                          className="w-full sm:w-1/3 px-2 py-1 text-xs rounded border border-slate-200 bg-white font-bold uppercase text-slate-700"
+                        />
+                        <input
+                          type="text"
+                          value={eco.value || ""}
+                          placeholder="Value (e.g. $14.20)"
+                          onChange={(e) => {
+                            const current = Array.isArray(modules.dropshipping?.economics) && modules.dropshipping.economics.length > 0
+                              ? [...modules.dropshipping.economics]
+                              : [
+                                  { label: "COGS", value: modules.dropshipping?.cogs || "$14.20", highlight: "slate" },
+                                  { label: "RETAIL PRICE", value: modules.dropshipping?.retailPrice || "$59.95", highlight: "slate" },
+                                  { label: "NET PROFIT / UNIT", value: modules.dropshipping?.netProfit || "+$45.75", highlight: "emerald" },
+                                ];
+                            current[eIdx] = { ...current[eIdx], value: e.target.value };
+                            handleModuleDataChange("dropshipping", { ...modules.dropshipping, economics: current });
+                          }}
+                          className="flex-1 px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono font-bold"
+                        />
+                        <select
+                          value={eco.highlight || "slate"}
+                          onChange={(e) => {
+                            const current = Array.isArray(modules.dropshipping?.economics) && modules.dropshipping.economics.length > 0
+                              ? [...modules.dropshipping.economics]
+                              : [
+                                  { label: "COGS", value: modules.dropshipping?.cogs || "$14.20", highlight: "slate" },
+                                  { label: "RETAIL PRICE", value: modules.dropshipping?.retailPrice || "$59.95", highlight: "slate" },
+                                  { label: "NET PROFIT / UNIT", value: modules.dropshipping?.netProfit || "+$45.75", highlight: "emerald" },
+                                ];
+                            current[eIdx] = { ...current[eIdx], highlight: e.target.value };
+                            handleModuleDataChange("dropshipping", { ...modules.dropshipping, economics: current });
+                          }}
+                          className="px-2 py-1 text-xs rounded border border-slate-200 bg-white text-slate-600 font-semibold cursor-pointer"
+                        >
+                          <option value="slate">Slate Box</option>
+                          <option value="emerald">Emerald Highlight</option>
+                          <option value="blue">Blue Highlight</option>
+                          <option value="amber">Amber Highlight</option>
+                        </select>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveDropshipMetric(eIdx)}
+                          className="p-1 text-slate-400 hover:text-rose-600 self-center cursor-pointer"
+                          title="Delete metric"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Winning Ad Angle */}
+                <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Ad Angle Heading</label>
+                      <input
+                        type="text"
+                        value={modules.dropshipping?.adAngleHeading || "WINNING AD ANGLE & HOOK:"}
+                        onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, adAngleHeading: e.target.value })}
+                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono uppercase text-teal-800"
+                      />
+                    </div>
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Retail Price</label>
-                    <input
-                      type="text"
-                      value={modules.dropshipping?.retailPrice || ""}
-                      onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, retailPrice: e.target.value })}
-                      className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono font-bold"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Net Profit / Margin</label>
-                    <input
-                      type="text"
-                      value={modules.dropshipping?.netProfit || modules.dropshipping?.grossMarginPct || ""}
-                      onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, netProfit: e.target.value })}
-                      className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono font-bold text-emerald-700"
+                    <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Direct-Response Ad Angle Script</label>
+                    <textarea
+                      rows={2}
+                      value={modules.dropshipping?.adAngleDescription || "\"Stop waking up with neck pain: The 3-second contour test physical therapists use before recommending cervical memory foam.\" (Achieved 4.38% outbound CTR on TikTok Ads)."}
+                      onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, adAngleDescription: e.target.value })}
+                      className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white"
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Winning Ad Angle & Hook</label>
-                  <textarea
-                    rows={2}
-                    value={modules.dropshipping?.adAngleDescription || ""}
-                    onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, adAngleDescription: e.target.value })}
-                    className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white"
-                  />
+                {/* Supply Chain Tags */}
+                <div className="space-y-2 pt-2 border-t border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-800">
+                      Supply Chain & Fulfillment Partners ({((modules.dropshipping?.supplierTags || [1, 2, 3, 4])).length})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleAddDropshipSupplier}
+                      className="text-[11px] font-bold text-teal-700 hover:text-teal-900 flex items-center gap-1 cursor-pointer bg-teal-50 px-2 py-0.5 rounded border border-teal-200"
+                    >
+                      <Plus size={11} />
+                      <span>Add Partner Tag</span>
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(Array.isArray(modules.dropshipping?.supplierTags) && modules.dropshipping.supplierTags.length > 0
+                      ? modules.dropshipping.supplierTags
+                      : ["CJ Dropshipping", "Private Agent Shenzhen", "USPS Priority 5-Day", "AutoDS Automation"]
+                    ).map((tag, tIdx) => (
+                      <div key={tIdx} className="flex items-center gap-1 bg-slate-100 border border-slate-200 rounded px-2 py-0.5 text-xs">
+                        <input
+                          type="text"
+                          value={tag}
+                          onChange={(e) => {
+                            const current = Array.isArray(modules.dropshipping?.supplierTags) && modules.dropshipping.supplierTags.length > 0
+                              ? [...modules.dropshipping.supplierTags]
+                              : ["CJ Dropshipping", "Private Agent Shenzhen", "USPS Priority 5-Day", "AutoDS Automation"];
+                            current[tIdx] = e.target.value;
+                            handleModuleDataChange("dropshipping", { ...modules.dropshipping, supplierTags: current });
+                          }}
+                          className="text-xs bg-transparent border-none p-0 focus:outline-none w-28 font-medium"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveDropshipSupplier(tIdx)}
+                          className="text-slate-400 hover:text-rose-600 cursor-pointer"
+                        >
+                          <X size={11} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Pilot Sprint Results */}
+                <div className="space-y-3 pt-2 border-t border-slate-100">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Sprint Heading</label>
+                      <input
+                        type="text"
+                        value={modules.dropshipping?.sprintHeading || "7-Day Pilot Sprint Results"}
+                        onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, sprintHeading: e.target.value })}
+                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Sprint Timeframe / Budget</label>
+                      <input
+                        type="text"
+                        value={modules.dropshipping?.sprintTimeframe || "Validated with $420 initial test budget"}
+                        onChange={(e) => handleModuleDataChange("dropshipping", { ...modules.dropshipping, sprintTimeframe: e.target.value })}
+                        className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white text-slate-600"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-800">
+                        Sprint Metrics Cards ({((modules.dropshipping?.sprintMetrics || [1, 2, 3, 4])).length})
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleAddDropshipSprintMetric}
+                        className="text-[11px] font-bold text-teal-700 hover:text-teal-900 flex items-center gap-1 cursor-pointer bg-teal-50 px-2 py-0.5 rounded border border-teal-200"
+                      >
+                        <Plus size={11} />
+                        <span>Add Metric Card</span>
+                      </button>
+                    </div>
+                    {(Array.isArray(modules.dropshipping?.sprintMetrics) && modules.dropshipping.sprintMetrics.length > 0
+                      ? modules.dropshipping.sprintMetrics
+                      : [
+                          { label: "FIRST 48-HR ORDERS", value: "34 units" },
+                          { label: "BLENDED PILOT ROAS", value: "3.42x" },
+                          { label: "AVERAGE DELIVERY TIME", value: "5.8 Days" },
+                          { label: "CHARGEBACK / REFUND RATE", value: "< 0.4%" },
+                        ]
+                    ).map((m, mIdx) => (
+                      <div key={mIdx} className="p-2 bg-slate-50 rounded-lg border border-slate-200 flex items-center gap-2">
+                        <input
+                          type="text"
+                          value={m.label || ""}
+                          placeholder="Label (e.g. BLENDED ROAS)"
+                          onChange={(e) => {
+                            const current = Array.isArray(modules.dropshipping?.sprintMetrics) && modules.dropshipping.sprintMetrics.length > 0
+                              ? [...modules.dropshipping.sprintMetrics]
+                              : [
+                                  { label: "FIRST 48-HR ORDERS", value: "34 units" },
+                                  { label: "BLENDED PILOT ROAS", value: "3.42x" },
+                                  { label: "AVERAGE DELIVERY TIME", value: "5.8 Days" },
+                                  { label: "CHARGEBACK / REFUND RATE", value: "< 0.4%" },
+                                ];
+                            current[mIdx] = { ...current[mIdx], label: e.target.value };
+                            handleModuleDataChange("dropshipping", { ...modules.dropshipping, sprintMetrics: current });
+                          }}
+                          className="w-1/2 px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono text-[11px]"
+                        />
+                        <input
+                          type="text"
+                          value={m.value || ""}
+                          placeholder="Value (e.g. 3.42x)"
+                          onChange={(e) => {
+                            const current = Array.isArray(modules.dropshipping?.sprintMetrics) && modules.dropshipping.sprintMetrics.length > 0
+                              ? [...modules.dropshipping.sprintMetrics]
+                              : [
+                                  { label: "FIRST 48-HR ORDERS", value: "34 units" },
+                                  { label: "BLENDED PILOT ROAS", value: "3.42x" },
+                                  { label: "AVERAGE DELIVERY TIME", value: "5.8 Days" },
+                                  { label: "CHARGEBACK / REFUND RATE", value: "< 0.4%" },
+                                ];
+                            current[mIdx] = { ...current[mIdx], value: e.target.value };
+                            handleModuleDataChange("dropshipping", { ...modules.dropshipping, sprintMetrics: current });
+                          }}
+                          className="flex-1 px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono font-bold text-teal-800"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveDropshipSprintMetric(mIdx)}
+                          className="p-1 text-slate-400 hover:text-rose-600 cursor-pointer"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -5575,6 +6172,56 @@ export const PortfolioFormEditor = ({
                       />
                     </div>
                   </div>
+                </div>
+
+                {/* Dashboard Screenshot & Mockup Banner */}
+                <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                      Application Interface Screenshot
+                    </label>
+                    {modules.aiApp?.dashboardImage && (
+                      <button
+                        type="button"
+                        onClick={() => handleModuleDataChange("aiApp", { ...modules.aiApp, dashboardImage: null })}
+                        className="text-[10px] font-bold text-rose-600 hover:underline cursor-pointer"
+                      >
+                        Reset Image
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-16 h-12 rounded-lg bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
+                      <img
+                        src={modules.aiApp?.dashboardImage || mockupLaptopImg}
+                        alt="AI Dashboard"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <label className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg cursor-pointer transition-colors border border-slate-200">
+                        <Upload size={12} />
+                        <span>Upload App Screenshot</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) =>
+                            handleImageFileUpload(e, (dataUrl) =>
+                              handleModuleDataChange("aiApp", { ...modules.aiApp, dashboardImage: dataUrl })
+                            )
+                          }
+                        />
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Or paste image URL"
+                        value={typeof modules.aiApp?.dashboardImage === "string" && modules.aiApp.dashboardImage.startsWith("data:") ? "" : (modules.aiApp?.dashboardImage || "")}
+                        onChange={(e) => handleModuleDataChange("aiApp", { ...modules.aiApp, dashboardImage: e.target.value })}
+                        className="w-full px-2 py-0.5 text-[11px] rounded border border-slate-200 bg-white"
+                      />
+                    </div>
+                  </div>
                   <div>
                     <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Mockup Banner Pill</label>
                     <input
@@ -5591,7 +6238,7 @@ export const PortfolioFormEditor = ({
                     <label className="text-[10px] font-bold text-slate-500 block mb-0.5">App Name</label>
                     <input
                       type="text"
-                      value={modules.aiApp?.appName || ""}
+                      value={modules.aiApp?.appName || "AdCopyGenius AI — Marketing Creative Co-Pilot"}
                       onChange={(e) => handleModuleDataChange("aiApp", { ...modules.aiApp, appName: e.target.value })}
                       className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-bold"
                     />
@@ -5600,7 +6247,7 @@ export const PortfolioFormEditor = ({
                     <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Category Eyebrow</label>
                     <input
                       type="text"
-                      value={modules.aiApp?.category || ""}
+                      value={modules.aiApp?.category || "PRODUCT ARCHITECTURE & WORKFLOW"}
                       onChange={(e) => handleModuleDataChange("aiApp", { ...modules.aiApp, category: e.target.value })}
                       className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-semibold text-amber-600"
                     />
@@ -5611,23 +6258,33 @@ export const PortfolioFormEditor = ({
                   <label className="text-[10px] font-bold text-slate-500 block mb-0.5">App Description</label>
                   <textarea
                     rows={2}
-                    value={modules.aiApp?.appDescription || ""}
+                    value={modules.aiApp?.appDescription || "Digital marketers spend 10+ hours a week staring at blank screens trying to write compelling ad angles. AdCopyGenius AI structures inputs into proven frameworks (AIDA, PAS, BAB) with automatic character count validation and emoji formatting."}
                     onChange={(e) => handleModuleDataChange("aiApp", { ...modules.aiApp, appDescription: e.target.value })}
                     className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white"
                   />
                 </div>
 
-                <div>
-                  <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Engineered System Prompt Instruction</label>
-                  <textarea
-                    rows={3}
-                    value={modules.aiApp?.systemPromptInstruction || ""}
-                    onChange={(e) => handleModuleDataChange("aiApp", { ...modules.aiApp, systemPromptInstruction: e.target.value })}
-                    className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono text-slate-800"
-                  />
+                {/* Engineered System Prompt */}
+                <div className="p-3 bg-slate-900 rounded-xl space-y-2">
+                  <div className="flex items-center justify-between">
+                    <input
+                      type="text"
+                      value={modules.aiApp?.engineeredPromptEyebrow || ">_ ENGINEERED SYSTEM PROMPT INSTRUCTION:"}
+                      onChange={(e) => handleModuleDataChange("aiApp", { ...modules.aiApp, engineeredPromptEyebrow: e.target.value })}
+                      className="bg-transparent border-none text-[10px] font-mono font-bold text-amber-400 tracking-wider p-0 focus:outline-none w-full"
+                    />
+                  </div>
+                  <div>
+                    <textarea
+                      rows={3}
+                      value={modules.aiApp?.systemPromptInstruction || "\"You are an elite direct-response copywriter. Given a product, audience, and pain point, output 3 distinct hooks (Curiosity, Problem-Agitate, Social Proof) under 125 characters, paired with 2 persuasive bodies and call-to-actions.\""}
+                      onChange={(e) => handleModuleDataChange("aiApp", { ...modules.aiApp, systemPromptInstruction: e.target.value })}
+                      className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-slate-800 border border-slate-700 text-slate-100 font-mono"
+                    />
+                  </div>
                 </div>
 
-                {/* Features List */}
+                {/* Features List with Icon Selector */}
                 <div className="space-y-2 pt-2 border-t border-slate-100">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-800">
@@ -5642,27 +6299,51 @@ export const PortfolioFormEditor = ({
                       <span>Add Feature</span>
                     </button>
                   </div>
-                  {((modules.aiApp?.features || [])).map((feat, fIdx) => (
-                    <div key={fIdx} className="flex items-center gap-2">
-                      <input
-                        type="text"
-                        value={feat}
-                        onChange={(e) => {
-                          const updated = [...modules.aiApp.features];
-                          updated[fIdx] = e.target.value;
-                          handleModuleDataChange("aiApp", { ...modules.aiApp, features: updated });
-                        }}
-                        className="flex-1 px-2.5 py-1 text-xs rounded border border-slate-200 bg-white"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveAiFeature(fIdx)}
-                        className="p-1 text-slate-400 hover:text-rose-600 cursor-pointer"
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-                  ))}
+                  {((modules.aiApp?.features || [])).map((feat, fIdx) => {
+                    const featText = typeof feat === "object" && feat !== null ? feat.text : feat;
+                    const featIcon = typeof feat === "object" && feat !== null ? (feat.icon || "CheckCircle2") : "CheckCircle2";
+                    return (
+                      <div key={fIdx} className="flex items-center gap-2">
+                        <select
+                          value={featIcon}
+                          onChange={(e) => {
+                            const updated = [...modules.aiApp.features];
+                            updated[fIdx] = { text: featText, icon: e.target.value };
+                            handleModuleDataChange("aiApp", { ...modules.aiApp, features: updated });
+                          }}
+                          className="px-2 py-1 text-xs border border-slate-200 rounded-lg bg-slate-50 font-mono text-slate-700 cursor-pointer"
+                        >
+                          <option value="CheckCircle2">✓ Check</option>
+                          <option value="Zap">⚡ Zap</option>
+                          <option value="Sparkles">✨ Sparkles</option>
+                          <option value="ShieldCheck">🛡 Shield</option>
+                          <option value="Target">🎯 Target</option>
+                          <option value="Award">🏆 Award</option>
+                          <option value="Cpu">💻 CPU</option>
+                          <option value="Play">▶ Play</option>
+                        </select>
+                        <input
+                          type="text"
+                          value={featText}
+                          onChange={(e) => {
+                            const updated = [...modules.aiApp.features];
+                            updated[fIdx] = typeof feat === "object" && feat !== null
+                              ? { ...feat, text: e.target.value }
+                              : e.target.value;
+                            handleModuleDataChange("aiApp", { ...modules.aiApp, features: updated });
+                          }}
+                          className="flex-1 px-2.5 py-1 text-xs rounded border border-slate-200 bg-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveAiFeature(fIdx)}
+                          className="p-1 text-slate-400 hover:text-rose-600 cursor-pointer"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Tech Stack List */}
@@ -5707,6 +6388,29 @@ export const PortfolioFormEditor = ({
 
                 {/* Ad Variants for Interactive Simulator */}
                 <div className="space-y-3 pt-2 border-t border-slate-100">
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Simulator Section Heading</label>
+                        <input
+                          type="text"
+                          value={modules.aiApp?.simulatorHeading || "Interactive Test Drive: Try the Student's AI Ad Copy Output Engine"}
+                          onChange={(e) => handleModuleDataChange("aiApp", { ...modules.aiApp, simulatorHeading: e.target.value })}
+                          className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Default Product Name</label>
+                        <input
+                          type="text"
+                          value={modules.aiApp?.defaultProduct || "Anti-Fatigue Ergonomic Standing Mat"}
+                          onChange={(e) => handleModuleDataChange("aiApp", { ...modules.aiApp, defaultProduct: e.target.value })}
+                          className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-800">
                       Interactive Simulator Ad Variants (AIDA, PAS, Curiosity)
@@ -5864,7 +6568,7 @@ export const PortfolioFormEditor = ({
                       />
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Top Badge</label>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Top Right Badge</label>
                       <input
                         type="text"
                         value={modules.performanceMarketing?.topBadge || "Triple Whale & GA4 Attributed · $135k Managed"}
@@ -5875,11 +6579,11 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
 
-                {/* 4 Stat Cards Editor */}
-                <div className="space-y-3">
+                {/* Scaling Stat Cards */}
+                <div className="space-y-3 pt-2 border-t border-slate-100">
                   <div className="flex items-center justify-between pb-1 border-b border-slate-100">
                     <span className="text-xs font-bold text-slate-800">
-                      Performance Stat Cards ({((modules.performanceMarketing?.stats || [])).length})
+                      Top Performance Metric Cards ({((modules.performanceMarketing?.stats || [])).length})
                     </span>
                     <button
                       type="button"
@@ -5887,88 +6591,109 @@ export const PortfolioFormEditor = ({
                       className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200"
                     >
                       <Plus size={13} />
-                      <span>Add Stat Card</span>
+                      <span>Add Metric Card</span>
                     </button>
                   </div>
 
-                  {((modules.performanceMarketing?.stats || [])).map((stat, sIdx) => (
-                    <div key={sIdx} className="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-900 text-xs">Stat #{sIdx + 1}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleRemovePerfStat(sIdx)}
-                          className="p-1 text-slate-400 hover:text-rose-600 transition-colors cursor-pointer"
-                          title="Delete stat card"
-                        >
-                          <Trash2 size={13} />
-                        </button>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {((modules.performanceMarketing?.stats || [])).map((stat, sIdx) => (
+                      <div key={sIdx} className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-extrabold text-slate-800 text-xs">Metric #{sIdx + 1}</span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemovePerfStat(sIdx)}
+                            className="p-1 rounded bg-slate-200/60 hover:bg-rose-600 text-slate-500 hover:text-white transition-colors cursor-pointer"
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
                         <div>
-                          <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Label</label>
+                          <label className="text-[9px] font-bold text-slate-400 block mb-0.5">Metric Label</label>
                           <input
                             type="text"
                             value={stat.label || ""}
                             onChange={(e) => {
                               const updated = [...modules.performanceMarketing.stats];
                               updated[sIdx] = { ...updated[sIdx], label: e.target.value };
-                              handleModuleDataChange("performanceMarketing", { ...modules.performanceMarketing, stats: updated });
+                              handleModuleDataChange("performanceMarketing", {
+                                ...modules.performanceMarketing,
+                                stats: updated,
+                              });
                             }}
-                            className="w-full px-2 py-1 text-xs rounded bg-white border border-slate-200 font-medium"
+                            className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white"
                           />
                         </div>
-                        <div>
-                          <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Value</label>
-                          <input
-                            type="text"
-                            value={stat.value || ""}
-                            onChange={(e) => {
-                              const updated = [...modules.performanceMarketing.stats];
-                              updated[sIdx] = { ...updated[sIdx], value: e.target.value };
-                              handleModuleDataChange("performanceMarketing", { ...modules.performanceMarketing, stats: updated });
-                            }}
-                            className="w-full px-2 py-1 text-xs rounded bg-white border border-slate-200 font-mono font-bold"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Subtext</label>
-                          <input
-                            type="text"
-                            value={stat.subtext || ""}
-                            onChange={(e) => {
-                              const updated = [...modules.performanceMarketing.stats];
-                              updated[sIdx] = { ...updated[sIdx], subtext: e.target.value };
-                              handleModuleDataChange("performanceMarketing", { ...modules.performanceMarketing, stats: updated });
-                            }}
-                            className="w-full px-2 py-1 text-xs rounded bg-white border border-slate-200"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Highlight</label>
-                          <select
-                            value={stat.highlight || "none"}
-                            onChange={(e) => {
-                              const updated = [...modules.performanceMarketing.stats];
-                              updated[sIdx] = { ...updated[sIdx], highlight: e.target.value === "none" ? false : e.target.value };
-                              handleModuleDataChange("performanceMarketing", { ...modules.performanceMarketing, stats: updated });
-                            }}
-                            className="w-full px-2 py-1 text-xs rounded bg-white border border-slate-200"
-                          >
-                            <option value="none">Standard</option>
-                            <option value="blue">Blue</option>
-                            <option value="amber">Amber</option>
-                            <option value="emerald">Emerald</option>
-                          </select>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="text-[9px] font-bold text-slate-400 block mb-0.5">Primary Value</label>
+                            <input
+                              type="text"
+                              value={stat.value || ""}
+                              onChange={(e) => {
+                                const updated = [...modules.performanceMarketing.stats];
+                                updated[sIdx] = { ...updated[sIdx], value: e.target.value };
+                                handleModuleDataChange("performanceMarketing", {
+                                  ...modules.performanceMarketing,
+                                  stats: updated,
+                                });
+                              }}
+                              className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono font-bold"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-[9px] font-bold text-slate-400 block mb-0.5">Subtext / Benchmark</label>
+                            <input
+                              type="text"
+                              value={stat.subtext || ""}
+                              onChange={(e) => {
+                                const updated = [...modules.performanceMarketing.stats];
+                                updated[sIdx] = { ...updated[sIdx], subtext: e.target.value };
+                                handleModuleDataChange("performanceMarketing", {
+                                  ...modules.performanceMarketing,
+                                  stats: updated,
+                                });
+                              }}
+                              className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono text-[11px]"
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
 
                 {/* Funnel Allocation Architecture */}
                 <div className="space-y-3 pt-2 border-t border-slate-100">
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Architecture Eyebrow</label>
+                        <input
+                          type="text"
+                          value={modules.performanceMarketing?.funnelArchitecture?.eyebrow || "FUNNEL ALLOCATION ARCHITECTURE:"}
+                          onChange={(e) => handleModuleDataChange("performanceMarketing", {
+                            ...modules.performanceMarketing,
+                            funnelArchitecture: { ...(modules.performanceMarketing.funnelArchitecture || {}), eyebrow: e.target.value }
+                          })}
+                          className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono uppercase text-blue-700"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Architecture Title</label>
+                        <input
+                          type="text"
+                          value={modules.performanceMarketing?.funnelArchitecture?.title || "Multi-Stage Channel Mix & Budget Orchestration"}
+                          onChange={(e) => handleModuleDataChange("performanceMarketing", {
+                            ...modules.performanceMarketing,
+                            funnelArchitecture: { ...(modules.performanceMarketing.funnelArchitecture || {}), title: e.target.value }
+                          })}
+                          className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-bold"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="flex items-center justify-between pb-1 border-b border-slate-100">
                     <span className="text-xs font-bold text-slate-800">
                       Funnel Allocation Stages ({((modules.performanceMarketing?.funnelArchitecture?.stages || [])).length})
@@ -6010,7 +6735,7 @@ export const PortfolioFormEditor = ({
                                 funnelArchitecture: { ...modules.performanceMarketing.funnelArchitecture, stages: updated },
                               });
                             }}
-                            className="w-full px-2 py-1 text-xs rounded bg-white border border-slate-200 font-bold"
+                            className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-bold"
                           />
                         </div>
                         <div>
@@ -6026,13 +6751,13 @@ export const PortfolioFormEditor = ({
                                 funnelArchitecture: { ...modules.performanceMarketing.funnelArchitecture, stages: updated },
                               });
                             }}
-                            className="w-full px-2 py-1 text-xs rounded bg-white border border-slate-200 font-bold text-blue-600"
+                            className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono font-bold text-blue-600"
                           />
                         </div>
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Objective</label>
+                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Stage Objective</label>
                         <input
                           type="text"
                           value={stage.objective || ""}
@@ -6044,47 +6769,46 @@ export const PortfolioFormEditor = ({
                               funnelArchitecture: { ...modules.performanceMarketing.funnelArchitecture, stages: updated },
                             });
                           }}
-                          className="w-full px-2 py-1 text-xs rounded bg-white border border-slate-200 text-slate-700"
+                          className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white"
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                        <div>
-                          <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Active Channels</label>
-                          <input
-                            type="text"
-                            value={stage.channels || ""}
-                            onChange={(e) => {
-                              const updated = [...modules.performanceMarketing.funnelArchitecture.stages];
-                              updated[stIdx] = { ...updated[stIdx], channels: e.target.value };
-                              handleModuleDataChange("performanceMarketing", {
-                                ...modules.performanceMarketing,
-                                funnelArchitecture: { ...modules.performanceMarketing.funnelArchitecture, stages: updated },
-                              });
-                            }}
-                            className="w-full px-2 py-1 text-xs rounded bg-white border border-slate-200 font-medium"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Creative Formats</label>
-                          <input
-                            type="text"
-                            value={stage.creativeFormats || ""}
-                            onChange={(e) => {
-                              const updated = [...modules.performanceMarketing.funnelArchitecture.stages];
-                              updated[stIdx] = { ...updated[stIdx], creativeFormats: e.target.value };
-                              handleModuleDataChange("performanceMarketing", {
-                                ...modules.performanceMarketing,
-                                funnelArchitecture: { ...modules.performanceMarketing.funnelArchitecture, stages: updated },
-                              });
-                            }}
-                            className="w-full px-2 py-1 text-xs rounded bg-white border border-slate-200 text-slate-600"
-                          />
-                        </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Active Channels</label>
+                        <input
+                          type="text"
+                          value={stage.channels || ""}
+                          onChange={(e) => {
+                            const updated = [...modules.performanceMarketing.funnelArchitecture.stages];
+                            updated[stIdx] = { ...updated[stIdx], channels: e.target.value };
+                            handleModuleDataChange("performanceMarketing", {
+                              ...modules.performanceMarketing,
+                              funnelArchitecture: { ...modules.performanceMarketing.funnelArchitecture, stages: updated },
+                            });
+                          }}
+                          className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono text-[11px]"
+                        />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Budget Footer Text</label>
+                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Creative Formats</label>
+                        <input
+                          type="text"
+                          value={stage.creativeFormats || ""}
+                          onChange={(e) => {
+                            const updated = [...modules.performanceMarketing.funnelArchitecture.stages];
+                            updated[stIdx] = { ...updated[stIdx], creativeFormats: e.target.value };
+                            handleModuleDataChange("performanceMarketing", {
+                              ...modules.performanceMarketing,
+                              funnelArchitecture: { ...modules.performanceMarketing.funnelArchitecture, stages: updated },
+                            });
+                          }}
+                          className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white text-slate-700"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Budget Subtext Footer</label>
                         <input
                           type="text"
                           value={stage.budgetFooter || ""}
@@ -6096,54 +6820,181 @@ export const PortfolioFormEditor = ({
                               funnelArchitecture: { ...modules.performanceMarketing.funnelArchitecture, stages: updated },
                             });
                           }}
-                          className="w-full px-2 py-1 text-xs rounded bg-white border border-slate-200 text-slate-500"
+                          className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono text-slate-500 text-[11px]"
                         />
                       </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Attribution & Student Outcomes */}
+                {/* Attribution & Measurement Rigor */}
                 <div className="space-y-3 pt-2 border-t border-slate-100">
-                  <div className="flex items-center justify-between pb-1 border-b border-slate-100">
-                    <span className="text-xs font-bold text-slate-800">
-                      Verified Student Scaling Outcomes ({((modules.performanceMarketing?.attribution?.outcomes || [])).length})
-                    </span>
-                    <button
-                      type="button"
-                      onClick={handleAddPerfOutcome}
-                      className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200"
-                    >
-                      <Plus size={13} />
-                      <span>Add Outcome</span>
-                    </button>
-                  </div>
-
-                  {((modules.performanceMarketing?.attribution?.outcomes || [])).map((outcome, oIdx) => (
-                    <div key={oIdx} className="flex items-center gap-2">
+                  <div className="p-3 bg-slate-900 text-slate-200 rounded-xl space-y-2">
+                    <div>
                       <input
                         type="text"
-                        value={outcome}
-                        onChange={(e) => {
-                          const updated = [...modules.performanceMarketing.attribution.outcomes];
-                          updated[oIdx] = e.target.value;
-                          handleModuleDataChange("performanceMarketing", {
-                            ...modules.performanceMarketing,
-                            attribution: { ...modules.performanceMarketing.attribution, outcomes: updated },
-                          });
-                        }}
-                        className="flex-1 px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white"
+                        value={modules.performanceMarketing?.attribution?.eyebrow || "ATTRIBUTION & MEASUREMENT RIGOR"}
+                        onChange={(e) => handleModuleDataChange("performanceMarketing", {
+                          ...modules.performanceMarketing,
+                          attribution: { ...(modules.performanceMarketing.attribution || {}), eyebrow: e.target.value }
+                        })}
+                        className="bg-transparent border-none text-[10px] font-extrabold text-amber-400 uppercase tracking-wider p-0 focus:outline-none w-full"
                       />
+                    </div>
+                    <div>
+                      <input
+                        type="text"
+                        value={modules.performanceMarketing?.attribution?.title || "Independent First-Party Tracking"}
+                        onChange={(e) => handleModuleDataChange("performanceMarketing", {
+                          ...modules.performanceMarketing,
+                          attribution: { ...(modules.performanceMarketing.attribution || {}), title: e.target.value }
+                        })}
+                        className="bg-transparent border-none text-sm font-bold text-white p-0 focus:outline-none w-full"
+                      />
+                    </div>
+                    <div>
+                      <textarea
+                        rows={3}
+                        value={modules.performanceMarketing?.attribution?.description || "Overcame iOS 14.5+ signal loss and Meta modeled conversion inflation by implementing Triple Whale server-side CAPI and 60-day post-purchase attribution surveys."}
+                        onChange={(e) => handleModuleDataChange("performanceMarketing", {
+                          ...modules.performanceMarketing,
+                          attribution: { ...(modules.performanceMarketing.attribution || {}), description: e.target.value }
+                        })}
+                        className="w-full px-2.5 py-1 text-xs rounded bg-slate-800 border border-slate-700 text-slate-300"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Attribution Tools Tags */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-800">
+                        Attribution & Tracking Tools ({((modules.performanceMarketing?.attribution?.attributionTools || [1, 2, 3, 4, 5])).length})
+                      </span>
                       <button
                         type="button"
-                        onClick={() => handleRemovePerfOutcome(oIdx)}
-                        className="p-1 text-slate-400 hover:text-rose-600 cursor-pointer"
-                        title="Delete outcome"
+                        onClick={handleAddPerfAttributionTool}
+                        className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-2 py-0.5 rounded border border-blue-200"
                       >
-                        <Trash2 size={13} />
+                        <Plus size={11} />
+                        <span>Add Tool Tag</span>
                       </button>
                     </div>
-                  ))}
+                    <div className="flex flex-wrap gap-1.5">
+                      {(Array.isArray(modules.performanceMarketing?.attribution?.attributionTools) && modules.performanceMarketing.attribution.attributionTools.length > 0
+                        ? modules.performanceMarketing.attribution.attributionTools
+                        : ["Triple Whale CAPI", "GA4 BigQuery Export", "Northbeam Blended MER", "Elevar Server-Side GTM", "Post-Purchase Survey (Fairing)"]
+                      ).map((tool, tIdx) => (
+                        <div key={tIdx} className="flex items-center gap-1 bg-slate-100 border border-slate-200 rounded px-2 py-0.5 text-xs">
+                          <input
+                            type="text"
+                            value={tool}
+                            onChange={(e) => {
+                              const current = Array.isArray(modules.performanceMarketing?.attribution?.attributionTools) && modules.performanceMarketing.attribution.attributionTools.length > 0
+                                ? [...modules.performanceMarketing.attribution.attributionTools]
+                                : ["Triple Whale CAPI", "GA4 BigQuery Export", "Northbeam Blended MER", "Elevar Server-Side GTM", "Post-Purchase Survey (Fairing)"];
+                              current[tIdx] = e.target.value;
+                              handleModuleDataChange("performanceMarketing", {
+                                ...modules.performanceMarketing,
+                                attribution: { ...modules.performanceMarketing.attribution, attributionTools: current },
+                              });
+                            }}
+                            className="text-xs bg-transparent border-none p-0 focus:outline-none w-28 font-medium"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemovePerfAttributionTool(tIdx)}
+                            className="text-slate-400 hover:text-rose-600 cursor-pointer"
+                          >
+                            <X size={11} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Verified Student Scaling Outcomes */}
+                  <div className="space-y-2 pt-2 border-t border-slate-100">
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Outcomes Heading</label>
+                      <input
+                        type="text"
+                        value={modules.performanceMarketing?.attribution?.outcomesHeading || "VERIFIED STUDENT SCALING OUTCOMES:"}
+                        onChange={(e) => handleModuleDataChange("performanceMarketing", {
+                          ...modules.performanceMarketing,
+                          attribution: { ...(modules.performanceMarketing.attribution || {}), outcomesHeading: e.target.value }
+                        })}
+                        className="w-full px-2 py-1 text-xs rounded border border-slate-200 bg-white font-mono uppercase text-orange-800"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-800">
+                        Verified Outcomes List ({((modules.performanceMarketing?.attribution?.outcomes || [])).length})
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleAddPerfOutcome}
+                        className="text-[11px] font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-200"
+                      >
+                        <Plus size={13} />
+                        <span>Add Outcome</span>
+                      </button>
+                    </div>
+
+                    {((modules.performanceMarketing?.attribution?.outcomes || [])).map((outcome, oIdx) => {
+                      const outText = typeof outcome === "object" && outcome !== null ? outcome.text : outcome;
+                      const outIcon = typeof outcome === "object" && outcome !== null ? (outcome.icon || "CheckCircle2") : "CheckCircle2";
+                      return (
+                        <div key={oIdx} className="flex items-center gap-2">
+                          <select
+                            value={outIcon}
+                            onChange={(e) => {
+                              const updated = [...modules.performanceMarketing.attribution.outcomes];
+                              updated[oIdx] = { text: outText, icon: e.target.value };
+                              handleModuleDataChange("performanceMarketing", {
+                                ...modules.performanceMarketing,
+                                attribution: { ...modules.performanceMarketing.attribution, outcomes: updated },
+                              });
+                            }}
+                            className="px-2 py-1 text-xs border border-slate-200 rounded-lg bg-slate-50 font-mono text-slate-700 cursor-pointer"
+                          >
+                            <option value="CheckCircle2">✓ Check</option>
+                            <option value="Zap">⚡ Zap</option>
+                            <option value="Sparkles">✨ Sparkles</option>
+                            <option value="ShieldCheck">🛡 Shield</option>
+                            <option value="Target">🎯 Target</option>
+                            <option value="Award">🏆 Award</option>
+                            <option value="Flame">🔥 Flame</option>
+                            <option value="TrendingUp">📈 Trending</option>
+                          </select>
+                          <input
+                            type="text"
+                            value={outText}
+                            onChange={(e) => {
+                              const updated = [...modules.performanceMarketing.attribution.outcomes];
+                              updated[oIdx] = typeof outcome === "object" && outcome !== null
+                                ? { ...outcome, text: e.target.value }
+                                : e.target.value;
+                              handleModuleDataChange("performanceMarketing", {
+                                ...modules.performanceMarketing,
+                                attribution: { ...modules.performanceMarketing.attribution, outcomes: updated },
+                              });
+                            }}
+                            className="flex-1 px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemovePerfOutcome(oIdx)}
+                            className="p-1 text-slate-400 hover:text-rose-600 cursor-pointer"
+                            title="Delete outcome"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             )}
