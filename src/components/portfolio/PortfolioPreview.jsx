@@ -64,6 +64,7 @@ import {
 } from "lucide-react";
 import { EditableText, PortfolioEditableContext } from "./EditableText";
 import { ImageUploadModal } from "./ImageUploadModal";
+import { PortfolioPdfExporter } from "./PortfolioPdfExporter";
 import { MODULES_CATALOG, DEFAULT_MODULE_ORDER, createInitialPortfolioData } from "./portfolioData";
 import logoHorizontalDarkImg from "../../assets/logo-horizontal-dark.png";
 import logoHorizontalImg from "../../assets/logo-horizontal.png";
@@ -141,6 +142,168 @@ export const renderCustomIcon = (iconName, defaultIcon = "check", className = "w
   return <CheckCircle2 className={className} />;
 };
 
+/**
+ * InfiniteCardMarquee:
+ * Horizontally scrolling infinite loop for portfolio cards.
+ * Automatically glides across the screen, hides scrollbar,
+ * and pauses instantly on hover or focus so users can comfortably read & interact.
+ */
+const InfiniteCardMarquee = ({
+  items,
+  renderItem,
+  speed = 36, // pixels per second
+  className = "",
+  itemKeyPrefix = "marquee-item",
+}) => {
+  const containerRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Duplicate items enough times so total width exceeds viewport
+  const repeatCount = !items || items.length === 0 ? 0 : items.length < 3 ? 4 : items.length < 5 ? 3 : 2;
+  const duplicatedItems = [];
+  for (let r = 0; r < repeatCount; r++) {
+    (items || []).forEach((item, idx) => {
+      duplicatedItems.push({ item, originalIdx: idx, repIdx: r });
+    });
+  }
+
+  // Smooth JS continuous auto-scroll using delta time
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || duplicatedItems.length === 0) return;
+
+    let animId;
+    let lastTime = performance.now();
+
+    const step = (now) => {
+      const dt = Math.min((now - lastTime) / 1000, 0.1);
+      lastTime = now;
+
+      if (!isPaused && container) {
+        container.scrollLeft += speed * dt;
+        const maxScroll = container.scrollWidth / 2;
+        if (container.scrollLeft >= maxScroll) {
+          container.scrollLeft -= maxScroll;
+        }
+      }
+      animId = requestAnimationFrame(step);
+    };
+
+    animId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(animId);
+  }, [isPaused, duplicatedItems.length, speed]);
+
+  // Mouse wheel horizontal scroll
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const handleWheel = (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && e.deltaY !== 0) {
+        e.preventDefault();
+        container.scrollBy({ left: e.deltaY * 1.2, behavior: "auto" });
+      }
+    };
+    container.addEventListener("wheel", handleWheel, { passive: false });
+    return () => container.removeEventListener("wheel", handleWheel);
+  }, []);
+
+  // Desktop drag-to-scroll
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+
+    const onMouseDown = (e) => {
+      if (e.target.closest("button") || e.target.closest("input") || e.target.closest("textarea") || e.target.closest("a")) return;
+      isDown = true;
+      startX = e.pageX - container.offsetLeft;
+      scrollLeft = container.scrollLeft;
+    };
+    const onMouseLeave = () => { isDown = false; };
+    const onMouseUp = () => { isDown = false; };
+    const onMouseMove = (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      container.scrollLeft = scrollLeft - walk;
+    };
+
+    container.addEventListener("mousedown", onMouseDown);
+    container.addEventListener("mouseleave", onMouseLeave);
+    container.addEventListener("mouseup", onMouseUp);
+    container.addEventListener("mousemove", onMouseMove);
+
+    return () => {
+      container.removeEventListener("mousedown", onMouseDown);
+      container.removeEventListener("mouseleave", onMouseLeave);
+      container.removeEventListener("mouseup", onMouseUp);
+      container.removeEventListener("mousemove", onMouseMove);
+    };
+  }, []);
+
+  const scrollByAmount = (offset) => {
+    if (containerRef.current) {
+      containerRef.current.scrollBy({ left: offset, behavior: "smooth" });
+    }
+  };
+
+  if (!items || items.length === 0) return null;
+
+  return (
+    <div
+      className={`relative w-full group/marquee ${className}`}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocusCapture={() => setIsPaused(true)}
+      onBlurCapture={() => setIsPaused(false)}
+    >
+      {/* Scroll Left Button */}
+      <button
+        type="button"
+        onClick={() => scrollByAmount(-400)}
+        aria-label="Scroll Left"
+        className="absolute -left-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all hover:scale-105 hover:bg-slate-50 cursor-pointer"
+      >
+        <ChevronLeft size={20} />
+      </button>
+
+      {/* Marquee Track Container */}
+      <div
+        ref={containerRef}
+        className="flex items-stretch gap-6 overflow-x-auto no-scrollbar scroll-smooth py-3 px-1 touch-pan-x"
+      >
+        {duplicatedItems.map(({ item, originalIdx, repIdx }, i) => (
+          <div
+            key={`${itemKeyPrefix}-${repIdx}-${originalIdx}-${i}`}
+            className="shrink-0 flex items-stretch"
+          >
+            {renderItem(item, originalIdx, repIdx > 0)}
+          </div>
+        ))}
+      </div>
+
+      {/* Scroll Right Button */}
+      <button
+        type="button"
+        onClick={() => scrollByAmount(400)}
+        aria-label="Scroll Right"
+        className="absolute -right-3 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 shadow-lg border border-slate-200 dark:border-slate-700 flex items-center justify-center opacity-0 group-hover/marquee:opacity-100 transition-all hover:scale-105 hover:bg-slate-50 cursor-pointer"
+      >
+        <ChevronRight size={20} />
+      </button>
+
+      {/* Subtle Hover Pause indicator badge */}
+      <div className="flex items-center justify-end gap-1.5 pt-1 pr-1 text-[10px] font-mono text-slate-400">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+        <span>Infinite marquee · Hover to pause and read</span>
+      </div>
+    </div>
+  );
+};
+
 export const PortfolioPreview = ({
   portfolioData,
   theme,
@@ -158,6 +321,7 @@ export const PortfolioPreview = ({
       : defaultData.moduleOrder;
   const isEditable = !isStandalone && Boolean(onChange);
   const [activeTab, setActiveTab] = useState("wordpress");
+  const [isPdfExportOpen, setIsPdfExportOpen] = useState(false);
   const [openMetaIdx, setOpenMetaIdx] = useState(0);
   const [openGoogleIdx, setOpenGoogleIdx] = useState(0);
   const [canvaFilter, setCanvaFilter] = useState("all");
@@ -1572,41 +1736,14 @@ export const PortfolioPreview = ({
 
           {/* Right Action Buttons */}
           <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
-            {!isStandalone && (
-              <button
-                type="button"
-                onClick={() => window.open("/portfolio-live", "_blank")}
-                className="inline-flex items-center space-x-1.5 px-3 py-1.5 sm:py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-300/70 cursor-pointer shadow-2xs"
-                title="View Live Standalone Portfolio"
-              >
-                <Code2 size={13} style={{ color: theme.primary }} />
-                <span className="hidden sm:inline">Developer Specs</span>
-              </button>
-            )}
-
-            {isEditable && onOpenCustomizer && (
-              <button
-                type="button"
-                onClick={onOpenCustomizer}
-                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 sm:py-2 text-xs font-bold text-slate-950 rounded-lg transition-colors shadow-xs cursor-pointer"
-                style={{ backgroundColor: theme.primary }}
-                title="Edit student details & customize theme"
-              >
-                <Settings size={13} />
-                <span>Customize</span>
-              </button>
-            )}
-
-            {!isStandalone && (
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="inline-flex items-center p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 cursor-pointer shadow-2xs"
-                title="Print or Save Portfolio as PDF"
-              >
-                <Printer size={15} />
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => setIsPdfExportOpen(true)}
+              className="inline-flex items-center p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 cursor-pointer shadow-2xs"
+              title="Save / Print Portfolio as PDF"
+            >
+              <Printer size={15} />
+            </button>
 
             {isStandalone && student.email && (
               <a
@@ -1793,16 +1930,14 @@ export const PortfolioPreview = ({
                   <span>Explore Projects ({navItems.length} Modules)</span>
                 </button>
 
-                {!isStandalone && (
-                  <button
-                    type="button"
-                    onClick={() => window.print()}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors cursor-pointer"
-                  >
-                    <Printer size={16} style={{ color: theme.primary }} />
-                    <span>Save / Print Portfolio</span>
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={() => setIsPdfExportOpen(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors cursor-pointer"
+                >
+                  <Printer size={16} style={{ color: theme.primary }} />
+                  <span>Save / Print Portfolio</span>
+                </button>
 
                 {isStandalone && student.email && (
                   <a
@@ -2114,14 +2249,16 @@ export const PortfolioPreview = ({
                     </div>
                   </div>
 
-                  {/* 2-Column Grid */}
-                  <div className="grid grid-cols-1 lg:grid-cols-[repeat(2,minmax(0,1fr))] gap-[clamp(1.25rem,2.5vw,2rem)]">
-                    {wpProjects.map((proj, pIdx) => {
+                  {/* Infinite Horizontal Cards Marquee */}
+                  <InfiniteCardMarquee
+                    items={wpProjects}
+                    itemKeyPrefix="wp-proj"
+                    renderItem={(proj, pIdx) => {
                       const domainName = proj.domain || proj.title?.toLowerCase().replace(/[^a-z0-9]/g, "-") || "sample";
                       return (
                         <div
                           key={proj.id || pIdx}
-                          className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col group relative"
+                          className="w-[360px] sm:w-[420px] lg:w-[460px] h-full bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col justify-between group relative shrink-0"
                         >
                           {/* Mac Chrome Header */}
                           <div className="bg-slate-900 text-slate-300 px-4 py-2.5 flex items-center justify-between border-b border-slate-800">
@@ -2392,8 +2529,8 @@ export const PortfolioPreview = ({
                           </div>
                         </div>
                       );
-                    })}
-                  </div>
+                    }}
+                  />
 
                   {/* Add Project Card Button */}
                   {isEditable && (
@@ -2548,11 +2685,13 @@ export const PortfolioPreview = ({
                         )}
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[clamp(1rem,1.5vw,1.5rem)]">
-                        {canvaDesigns.map((design, dIdx) => (
+                      <InfiniteCardMarquee
+                        items={canvaDesigns}
+                        itemKeyPrefix="canva-design"
+                        renderItem={(design, dIdx) => (
                           <div
                             key={design.id || dIdx}
-                            className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col group relative"
+                            className="w-[280px] sm:w-[310px] h-full bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all duration-300 flex flex-col justify-between group relative shrink-0"
                           >
                             {/* Delete Design Button */}
                             {isEditable && (
@@ -2702,8 +2841,8 @@ export const PortfolioPreview = ({
                               </button>
                             </div>
                           </div>
-                        ))}
-                      </div>
+                        )}
+                      />
                     </div>
                   )}
 
@@ -2732,11 +2871,14 @@ export const PortfolioPreview = ({
                         )}
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {canvaVideos.map((video, vIdx) => (
+                      <InfiniteCardMarquee
+                        items={canvaVideos}
+                        itemKeyPrefix="canva-vid"
+                        speed={32}
+                        renderItem={(video, vIdx) => (
                           <div
                             key={video.id || vIdx}
-                            className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col md:flex-row group hover:border-slate-700 transition-colors relative"
+                            className="w-[290px] sm:w-[320px] h-full bg-slate-900 text-white rounded-2xl border border-slate-800 overflow-hidden flex flex-col justify-between group hover:border-slate-700 transition-colors relative shrink-0 shadow-md"
                           >
                             {/* Delete Video Button */}
                             {isEditable && (
@@ -2750,18 +2892,34 @@ export const PortfolioPreview = ({
                               </button>
                             )}
 
-                            {/* Video Thumbnail mockup */}
-                            <div className="relative md:w-5/12 aspect-[9/16] max-h-[340px] md:max-h-none bg-slate-950 overflow-hidden flex items-center justify-center shrink-0">
+                            {/* Compact Video Thumbnail mockup */}
+                            <div className="relative w-full aspect-[16/10] bg-slate-950 overflow-hidden flex items-center justify-center shrink-0 group/thumb">
                               <img
                                 src={video.thumbnailUrl || mockupCreativesImg}
                                 alt={video.title}
-                                className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500"
+                                className="w-full h-full object-cover opacity-85 group-hover/thumb:opacity-100 transition-opacity"
                               />
-                              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                              <div className="absolute w-12 h-12 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                                <Play className="w-5 h-5 fill-slate-950 ml-0.5" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/30" />
+                              <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono px-2 py-0.5 rounded-md border border-white/10">
+                                <EditableText
+                                  value={video.format || "9:16 Reel"}
+                                  onChange={(val) => {
+                                    if (onChange) {
+                                      const updatedVideos = [...canvaVideos];
+                                      updatedVideos[vIdx] = { ...updatedVideos[vIdx], format: val };
+                                      onChange({
+                                        ...portfolioData,
+                                        modules: {
+                                          ...modules,
+                                          canva: { ...modules.canva, videos: updatedVideos },
+                                        },
+                                      });
+                                    }
+                                  }}
+                                />
                               </div>
-                              <div className="absolute top-3 left-3 bg-slate-900/90 text-[10px] font-mono text-slate-300 px-2 py-0.5 rounded border border-slate-800">
+                              <div className="absolute top-2.5 right-2.5 bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono px-2 py-0.5 rounded-md border border-white/10 flex items-center gap-1">
+                                <Clock size={10} />
                                 <EditableText
                                   value={video.duration || "0:30"}
                                   onChange={(val) => {
@@ -2779,18 +2937,23 @@ export const PortfolioPreview = ({
                                   }}
                                 />
                               </div>
+                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div className="w-10 h-10 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg group-hover/thumb:scale-110 transition-transform">
+                                  <Play className="w-5 h-5 fill-slate-950 ml-0.5" />
+                                </div>
+                              </div>
                             </div>
 
                             {/* Details */}
-                            <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                            <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                               <div>
-                                <div className="text-[11px] font-mono font-bold text-amber-400 uppercase tracking-wider">
+                                <h4 className="font-bold text-sm text-white line-clamp-2 leading-snug">
                                   <EditableText
-                                    value={video.format || "9:16 Vertical Reel"}
+                                    value={video.title || "Untitled Video"}
                                     onChange={(val) => {
                                       if (onChange) {
                                         const updatedVideos = [...canvaVideos];
-                                        updatedVideos[vIdx] = { ...updatedVideos[vIdx], format: val };
+                                        updatedVideos[vIdx] = { ...updatedVideos[vIdx], title: val };
                                         onChange({
                                           ...portfolioData,
                                           modules: {
@@ -2801,27 +2964,9 @@ export const PortfolioPreview = ({
                                       }
                                     }}
                                   />
-                                </div>
+                                </h4>
                                 <EditableText
-                                  value={video.title}
-                                  onChange={(val) => {
-                                    if (onChange) {
-                                      const updatedVideos = [...canvaVideos];
-                                      updatedVideos[vIdx] = { ...updatedVideos[vIdx], title: val };
-                                      onChange({
-                                        ...portfolioData,
-                                        modules: {
-                                          ...modules,
-                                          canva: { ...modules.canva, videos: updatedVideos },
-                                        },
-                                      });
-                                    }
-                                  }}
-                                  className="text-base font-bold text-white mt-1 block"
-                                />
-                                <EditableText
-                                  tag="p"
-                                  value={video.description}
+                                  value={video.description || ""}
                                   onChange={(val) => {
                                     if (onChange) {
                                       const updatedVideos = [...canvaVideos];
@@ -2835,17 +2980,17 @@ export const PortfolioPreview = ({
                                       });
                                     }
                                   }}
-                                  className="text-xs text-slate-300 mt-2 leading-relaxed block"
+                                  className="text-xs text-slate-300 mt-1.5 leading-relaxed line-clamp-2 block"
                                 />
                               </div>
 
                               {/* Hook Box */}
-                              <div className="p-3 bg-slate-800/80 rounded-xl border border-slate-700/60 text-xs">
-                                <div className="text-[10px] uppercase font-bold text-amber-400">
+                              <div className="p-2.5 bg-slate-800/80 rounded-xl border border-slate-700/60 text-xs">
+                                <div className="text-[9px] uppercase font-bold text-amber-400 font-mono tracking-wider">
                                   Opening Hook Strategy:
                                 </div>
                                 <EditableText
-                                  value={video.hook}
+                                  value={video.hook || "0-3s pattern interrupt"}
                                   onChange={(val) => {
                                     if (onChange) {
                                       const updatedVideos = [...canvaVideos];
@@ -2859,11 +3004,11 @@ export const PortfolioPreview = ({
                                       });
                                     }
                                   }}
-                                  className="text-slate-200 mt-0.5 italic block"
+                                  className="text-slate-200 mt-0.5 italic block line-clamp-2"
                                 />
                               </div>
 
-                              <div className="flex items-center gap-3 pt-1">
+                              <div className="flex items-center gap-2 pt-1 border-t border-slate-800">
                                 {isEditable && (
                                   <button
                                     type="button"
@@ -2887,10 +3032,10 @@ export const PortfolioPreview = ({
                                         }
                                       )
                                     }
-                                    className="text-xs font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer"
+                                    className="text-[11px] font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer"
                                   >
                                     <Camera className="w-3 h-3" />
-                                    <span>Change Thumbnail</span>
+                                    <span>Thumbnail</span>
                                   </button>
                                 )}
                                 <button
@@ -2902,16 +3047,16 @@ export const PortfolioPreview = ({
                                       true
                                     )
                                   }
-                                  className="text-xs font-semibold text-slate-400 hover:text-slate-200 flex items-center gap-1 ml-auto cursor-pointer"
+                                  className="text-[11px] font-semibold text-slate-400 hover:text-slate-200 flex items-center gap-1 ml-auto cursor-pointer"
                                 >
-                                  <span>Enlarge Player</span>
+                                  <span>Enlarge</span>
                                   <ExternalLink className="w-3 h-3" />
                                 </button>
                               </div>
                             </div>
                           </div>
-                        ))}
-                      </div>
+                        )}
+                      />
                     </div>
                   )}
                 </div>
@@ -3003,12 +3148,14 @@ export const PortfolioPreview = ({
                     </div>
                   </div>
 
-                  {/* Profile Cards Grid */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {smoProfiles.map((profile, pIdx) => (
+                  {/* Infinite Horizontal Cards Marquee */}
+                  <InfiniteCardMarquee
+                    items={smoProfiles}
+                    itemKeyPrefix="smo-profile"
+                    renderItem={(profile, pIdx) => (
                       <div
                         key={profile.id || pIdx}
-                        className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-shadow relative"
+                        className="w-[360px] sm:w-[420px] lg:w-[450px] h-full bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col justify-between group hover:shadow-md transition-shadow relative shrink-0"
                       >
                         {/* Header Navy Banner */}
                         <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
@@ -3411,8 +3558,8 @@ export const PortfolioPreview = ({
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    )}
+                  />
 
                   {/* Add Profile Card Button */}
                   {isEditable && (
@@ -6647,12 +6794,14 @@ export const PortfolioPreview = ({
                     </div>
                   </div>
 
-                  {/* Video Cards Grid */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {reels.map((reel, rIdx) => (
+                  {/* Infinite Horizontal Cards Marquee */}
+                  <InfiniteCardMarquee
+                    items={reels}
+                    itemKeyPrefix="video-reel"
+                    renderItem={(reel, rIdx) => (
                       <div
                         key={reel.id || rIdx}
-                        className="bg-slate-900 text-white rounded-2xl border border-slate-800 overflow-hidden shadow-md flex flex-col justify-between group relative"
+                        className="w-[380px] sm:w-[440px] lg:w-[480px] h-full bg-slate-900 text-white rounded-2xl border border-slate-800 overflow-hidden shadow-md flex flex-col justify-between group relative shrink-0"
                       >
                         {/* Video Thumbnail Area */}
                         <div className="relative aspect-[16/9] bg-black overflow-hidden group/vid">
@@ -6845,8 +6994,8 @@ export const PortfolioPreview = ({
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    )}
+                  />
                 </div>
               </section>
             );
@@ -8161,6 +8310,14 @@ export const PortfolioPreview = ({
       </footer>
 
       {/* 6. MODAL FOR UPDATING IMAGES DIRECTLY */}
+      <PortfolioPdfExporter
+        isOpen={isPdfExportOpen}
+        onClose={() => setIsPdfExportOpen(false)}
+        portfolioData={portfolioData}
+        theme={theme}
+        moduleVisibility={moduleVisibility}
+        moduleOrder={moduleOrder}
+      />
       <ImageUploadModal
         isOpen={imageModalConfig.isOpen && isEditable}
         onClose={closeImageModal}

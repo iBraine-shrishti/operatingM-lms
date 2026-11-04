@@ -66,6 +66,7 @@ export const PortfolioFormEditor = ({
 }) => {
   const { currentUser, crmProfile } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
+  const [showVisibilityManager, setShowVisibilityManager] = useState(false);
   const [sectionFilter, setSectionFilter] = useState("all"); // "all", "profile", "m1-5", "m6-13", "settings"
   const [openSections, setOpenSections] = useState({
     personal: true,
@@ -1000,6 +1001,56 @@ export const PortfolioFormEditor = ({
             Theme & Sequence
           </button>
         </div>
+
+        {/* QUICK SHOW / HIDE MODULES TOGGLE BAR */}
+        <div className="mt-2.5 pt-2 border-t border-slate-200 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => setShowVisibilityManager((prev) => !prev)}
+            className="flex items-center gap-1.5 text-xs font-bold text-slate-700 hover:text-blue-600 cursor-pointer transition-colors"
+          >
+            <div className="w-5 h-5 rounded bg-blue-100 text-blue-700 flex items-center justify-center">
+              <Eye size={12} />
+            </div>
+            <span>Show / Hide Modules ({MODULES_CATALOG.filter((m) => moduleVisibility[m.id] !== false).length}/13 Visible)</span>
+            <ChevronDown size={13} className={`transition-transform ${showVisibilityManager ? "rotate-180" : ""}`} />
+          </button>
+
+          <span className="text-[10px] text-slate-400 font-mono">Click Eye icon to toggle</span>
+        </div>
+
+        {/* EXPANDED SHOW / HIDE GRID */}
+        {showVisibilityManager && (
+          <div className="mt-2.5 p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5 max-h-56 overflow-y-auto custom-scrollbar">
+            {MODULES_CATALOG.map((mod, idx) => {
+              const isVisible = moduleVisibility[mod.id] !== false;
+              return (
+                <div
+                  key={mod.id}
+                  className={`flex items-center justify-between p-2 rounded-lg border transition-all ${
+                    isVisible ? "bg-white border-slate-200" : "bg-slate-100/70 border-slate-200 opacity-60"
+                  }`}
+                >
+                  <span className="text-xs font-semibold text-slate-800">
+                    {idx + 1}. {mod.title}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onToggleModule && onToggleModule(mod.id)}
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-bold flex items-center gap-1.5 cursor-pointer transition-all ${
+                      isVisible
+                        ? "bg-blue-600 text-white shadow-2xs hover:bg-blue-700"
+                        : "bg-slate-200 text-slate-600 hover:bg-slate-300"
+                    }`}
+                  >
+                    {isVisible ? <Eye size={12} /> : <EyeOff size={12} />}
+                    <span>{isVisible ? "Visible" : "Hidden"}</span>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* 2. Scrollable Accordion Section List */}
@@ -1354,10 +1405,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.wordpress ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("wordpress");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["wordpress"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["wordpress"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["wordpress"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.wordpress ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.wordpress && (
@@ -1785,10 +1853,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.canva ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("canva");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["canva"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["canva"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["canva"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.canva ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.canva && (
@@ -2218,10 +2303,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.socialOrganic ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("socialOrganic");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["socialOrganic"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["socialOrganic"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["socialOrganic"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.socialOrganic ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.socialOrganic && (
@@ -2779,10 +2881,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.socialMarketing ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("socialMarketing");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["socialMarketing"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["socialMarketing"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["socialMarketing"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.socialMarketing ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.socialMarketing && (
@@ -3100,10 +3219,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.googleAds ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("googleAds");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["googleAds"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["googleAds"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["googleAds"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.googleAds ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.googleAds && (
@@ -3471,10 +3607,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.seo ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("seo");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["seo"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["seo"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["seo"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.seo ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.seo && (
@@ -4093,10 +4246,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.digitalPlanning ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("digitalPlanning");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["digitalPlanning"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["digitalPlanning"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["digitalPlanning"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.digitalPlanning ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.digitalPlanning && (
@@ -4720,10 +4890,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.influencerMarketing ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("influencerMarketing");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["influencerMarketing"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["influencerMarketing"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["influencerMarketing"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.influencerMarketing ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.influencerMarketing && (
@@ -4997,10 +5184,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.shopify ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("shopify");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["shopify"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["shopify"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["shopify"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.shopify ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.shopify && (
@@ -5362,10 +5566,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.videoEditing ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("videoEditing");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["videoEditing"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["videoEditing"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["videoEditing"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.videoEditing ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.videoEditing && (
@@ -5704,10 +5925,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.dropshipping ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("dropshipping");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["dropshipping"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["dropshipping"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["dropshipping"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.dropshipping ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.dropshipping && (
@@ -6119,10 +6357,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.aiApp ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("aiApp");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["aiApp"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["aiApp"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["aiApp"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.aiApp ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.aiApp && (
@@ -6524,10 +6779,27 @@ export const PortfolioFormEditor = ({
                   </div>
                 </div>
               </div>
-              <ChevronDown
-                size={16}
-                className={`text-slate-400 transition-transform ${openSections.performanceMarketing ? "rotate-180" : ""}`}
-              />
+              <div className="flex items-center space-x-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onToggleModule) onToggleModule("performanceMarketing");
+                  }}
+                  className={`p-1.5 rounded-lg border transition-all cursor-pointer ${
+                    moduleVisibility["performanceMarketing"] !== false
+                      ? "bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100"
+                      : "bg-slate-100 border-slate-200 text-slate-400 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200"
+                  }`}
+                  title={moduleVisibility["performanceMarketing"] !== false ? "Module Visible (Click to Hide)" : "Module Hidden (Click to Show)"}
+                >
+                  {moduleVisibility["performanceMarketing"] !== false ? <Eye size={14} /> : <EyeOff size={14} />}
+                </button>
+                <ChevronDown
+                  size={16}
+                  className={`text-slate-400 transition-transform ${openSections.performanceMarketing ? "rotate-180" : ""}`}
+                />
+              </div>
             </button>
 
             {openSections.performanceMarketing && (
