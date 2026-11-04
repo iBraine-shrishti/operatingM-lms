@@ -4,6 +4,7 @@ import {
   Phone,
   MapPin,
   Linkedin,
+  Globe,
   Briefcase,
   GraduationCap,
   Award,
@@ -11,9 +12,11 @@ import {
   Layers,
   ChevronRight,
   TrendingUp,
+  ExternalLink,
 } from "lucide-react";
 import { EditableHeading } from "../EditableHeading";
 import { ResumeFooter } from "../ResumeFooter";
+import { formatUrl } from "../resumeData";
 
 export const CreativeMarketerTemplate = ({
   data,
@@ -111,28 +114,52 @@ export const CreativeMarketerTemplate = ({
 
           <div className="flex flex-col gap-1 text-[11px] print:text-[10px] text-white/90 self-start sm:self-auto sm:text-right border-l sm:border-l-0 sm:border-r pl-2.5 sm:pl-0 sm:pr-3 border-white/25">
             {personalInfo.email && (
-              <span className="flex items-center sm:justify-end gap-1.5">
-                <Mail size={12} className="text-white/80" />
-                {personalInfo.email}
-              </span>
+              <a
+                href={`mailto:${personalInfo.email}`}
+                className="flex items-center sm:justify-end gap-1.5 hover:underline hover:text-white transition-colors"
+              >
+                <Mail size={12} className="text-white/80 shrink-0" />
+                <span className="truncate">{personalInfo.email}</span>
+              </a>
             )}
             {personalInfo.phone && (
-              <span className="flex items-center sm:justify-end gap-1.5">
-                <Phone size={12} className="text-white/80" />
-                {personalInfo.phone}
-              </span>
+              <a
+                href={`tel:${personalInfo.phone.replace(/\s+/g, "")}`}
+                className="flex items-center sm:justify-end gap-1.5 hover:underline hover:text-white transition-colors"
+              >
+                <Phone size={12} className="text-white/80 shrink-0" />
+                <span>{personalInfo.phone}</span>
+              </a>
             )}
             {personalInfo.location && (
               <span className="flex items-center sm:justify-end gap-1.5">
-                <MapPin size={12} className="text-white/80" />
-                {personalInfo.location}
+                <MapPin size={12} className="text-white/80 shrink-0" />
+                <span>{personalInfo.location}</span>
               </span>
             )}
             {personalInfo.linkedin && (
-              <span className="flex items-center sm:justify-end gap-1.5">
-                <Linkedin size={12} className="text-white/80" />
-                {personalInfo.linkedin}
-              </span>
+              <a
+                href={formatUrl(personalInfo.linkedin)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center sm:justify-end gap-1.5 hover:underline hover:text-white font-medium transition-colors"
+              >
+                <Linkedin size={12} className="text-white/80 shrink-0" />
+                <span className="truncate max-w-[190px]">{personalInfo.linkedin}</span>
+                <ExternalLink size={9} className="opacity-70 shrink-0" />
+              </a>
+            )}
+            {personalInfo.portfolio && (
+              <a
+                href={formatUrl(personalInfo.portfolio)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center sm:justify-end gap-1.5 hover:underline hover:text-white font-medium transition-colors"
+              >
+                <Globe size={12} className="text-white/80 shrink-0" />
+                <span className="truncate max-w-[190px]">{personalInfo.portfolio}</span>
+                <ExternalLink size={9} className="opacity-70 shrink-0" />
+              </a>
             )}
           </div>
         </div>
@@ -526,22 +553,37 @@ export const CreativeMarketerTemplate = ({
               </div>
             ))}
           {hasCert &&
-            certifications.map((cert) => (
-              <div
-                key={cert.id}
-                className="flex items-center gap-1.5 text-[10.5px] print:text-[9.5px]"
-              >
-                <Award
-                  size={12}
-                  style={{ color: theme.accent }}
-                  className="shrink-0"
-                />
-                <span className="font-bold text-slate-800 truncate">{cert.name}</span>
-                <span className="text-[9.5px] text-slate-400 shrink-0">
-                  {cert.year && `(${cert.year})`}
-                </span>
-              </div>
-            ))}
+            certifications.map((cert) => {
+              const certUrl = cert.url || cert.link || cert.credentialUrl;
+              return (
+                <div
+                  key={cert.id}
+                  className="flex items-center gap-1.5 text-[10.5px] print:text-[9.5px]"
+                >
+                  <Award
+                    size={12}
+                    style={{ color: theme.accent }}
+                    className="shrink-0"
+                  />
+                  {certUrl ? (
+                    <a
+                      href={formatUrl(certUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-slate-800 hover:text-blue-700 hover:underline truncate inline-flex items-center gap-1 transition-colors"
+                    >
+                      <span className="truncate">{cert.name}</span>
+                      <ExternalLink size={9} className="opacity-60 shrink-0" />
+                    </a>
+                  ) : (
+                    <span className="font-bold text-slate-800 truncate">{cert.name}</span>
+                  )}
+                  <span className="text-[9.5px] text-slate-400 shrink-0">
+                    {cert.year && `(${cert.year})`}
+                  </span>
+                </div>
+              );
+            })}
         </div>
       </section>
     );

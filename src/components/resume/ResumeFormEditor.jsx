@@ -615,6 +615,7 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
       name: "Certification Name",
       issuer: "Issuing Organization",
       year: "2026",
+      url: "",
     };
     onChange({
       ...data,
@@ -899,12 +900,22 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
               />
             </div>
-            <div className="sm:col-span-2">
+            <div>
               <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">Portfolio / Website</label>
               <input
                 type="text"
-                value={data.personalInfo.portfolio}
+                value={data.personalInfo.portfolio || ""}
                 onChange={(e) => updatePersonalInfo("portfolio", e.target.value)}
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
+              />
+            </div>
+            <div>
+              <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">GitHub / Extra Link (Optional)</label>
+              <input
+                type="text"
+                value={data.personalInfo.github || ""}
+                onChange={(e) => updatePersonalInfo("github", e.target.value)}
+                placeholder="github.com/username"
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-hidden focus:border-[#003873]"
               />
             </div>
@@ -1728,28 +1739,40 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
           {data.certifications.map((cert) => (
             <div
               key={cert.id}
-              className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-900/40 flex items-center gap-3"
+              className="p-3 rounded-xl border border-slate-200 dark:border-slate-700/80 bg-slate-50/70 dark:bg-slate-900/40 flex items-start gap-3"
             >
-              <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <input
-                  type="text"
-                  value={cert.name}
-                  onChange={(e) => updateCert(cert.id, "name", e.target.value)}
-                  placeholder="Certificate Title"
-                  className="sm:col-span-2 px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
-                />
-                <input
-                  type="text"
-                  value={cert.issuer}
-                  onChange={(e) => updateCert(cert.id, "issuer", e.target.value)}
-                  placeholder="Issuer (e.g. Google)"
-                  className="px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
-                />
+              <div className="flex-1 space-y-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <input
+                    type="text"
+                    value={cert.name}
+                    onChange={(e) => updateCert(cert.id, "name", e.target.value)}
+                    placeholder="Certificate Title"
+                    className="sm:col-span-2 px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                  />
+                  <input
+                    type="text"
+                    value={cert.issuer}
+                    onChange={(e) => updateCert(cert.id, "issuer", e.target.value)}
+                    placeholder="Issuer (e.g. Google)"
+                    className="px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
+                  />
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    value={cert.url || ""}
+                    onChange={(e) => updateCert(cert.id, "url", e.target.value)}
+                    placeholder="Verification / Credential URL (e.g. https://skillshop.credential.net/...)"
+                    className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white text-xs"
+                  />
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => removeCert(cert.id)}
-                className="p-1 text-slate-400 hover:text-red-500 cursor-pointer"
+                className="p-1 mt-1 text-slate-400 hover:text-red-500 cursor-pointer"
+                title="Delete Certificate"
               >
                 <Trash2 size={14} />
               </button>

@@ -12,9 +12,11 @@ import {
   FolderGit2,
   CheckCircle2,
   Target,
+  ExternalLink,
 } from "lucide-react";
 import { EditableHeading } from "../EditableHeading";
 import { ResumeFooter } from "../ResumeFooter";
+import { formatUrl } from "../resumeData";
 
 export const MinimalistPerformanceTemplate = ({
   data,
@@ -110,34 +112,52 @@ export const MinimalistPerformanceTemplate = ({
         {/* Contact Info Pills */}
         <div className="flex flex-wrap gap-y-1.5 gap-x-4 pt-3 text-[12px] text-slate-600 font-medium">
           {personalInfo.email && (
-            <span className="flex items-center gap-1.5">
-              <Mail size={13} style={{ color: theme.primary }} />
-              {personalInfo.email}
-            </span>
+            <a
+              href={`mailto:${personalInfo.email}`}
+              className="flex items-center gap-1.5 hover:underline hover:text-slate-900 transition-colors"
+            >
+              <Mail size={13} style={{ color: theme.primary }} className="shrink-0" />
+              <span>{personalInfo.email}</span>
+            </a>
           )}
           {personalInfo.phone && (
-            <span className="flex items-center gap-1.5">
-              <Phone size={13} style={{ color: theme.primary }} />
-              {personalInfo.phone}
-            </span>
+            <a
+              href={`tel:${personalInfo.phone.replace(/\s+/g, "")}`}
+              className="flex items-center gap-1.5 hover:underline hover:text-slate-900 transition-colors"
+            >
+              <Phone size={13} style={{ color: theme.primary }} className="shrink-0" />
+              <span>{personalInfo.phone}</span>
+            </a>
           )}
           {personalInfo.location && (
             <span className="flex items-center gap-1.5">
-              <MapPin size={13} style={{ color: theme.primary }} />
-              {personalInfo.location}
+              <MapPin size={13} style={{ color: theme.primary }} className="shrink-0" />
+              <span>{personalInfo.location}</span>
             </span>
           )}
           {personalInfo.linkedin && (
-            <span className="flex items-center gap-1.5">
-              <Linkedin size={13} style={{ color: theme.primary }} />
+            <a
+              href={formatUrl(personalInfo.linkedin)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 hover:underline hover:text-blue-700 font-semibold transition-colors"
+            >
+              <Linkedin size={13} style={{ color: theme.primary }} className="shrink-0" />
               <span className="truncate max-w-[200px]">{personalInfo.linkedin}</span>
-            </span>
+              <ExternalLink size={9} className="opacity-60 shrink-0" />
+            </a>
           )}
           {personalInfo.portfolio && (
-            <span className="flex items-center gap-1.5">
-              <Globe size={13} style={{ color: theme.primary }} />
+            <a
+              href={formatUrl(personalInfo.portfolio)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 hover:underline hover:text-blue-700 font-semibold transition-colors"
+            >
+              <Globe size={13} style={{ color: theme.primary }} className="shrink-0" />
               <span className="truncate max-w-[200px]">{personalInfo.portfolio}</span>
-            </span>
+              <ExternalLink size={9} className="opacity-60 shrink-0" />
+            </a>
           )}
         </div>
       </header>
@@ -447,23 +467,38 @@ export const MinimalistPerformanceTemplate = ({
         </div>
 
         <div className={isOnePage ? "space-y-1" : "space-y-2"}>
-          {certifications.map((cert) => (
-            <div key={cert.id} className="flex items-start gap-1.5">
-              <CheckCircle2
-                size={12}
-                className="mt-0.5 shrink-0"
-                style={{ color: theme.accent }}
-              />
-              <div className="min-w-0">
-                <div className={`font-bold text-slate-900 leading-tight truncate ${isOnePage ? "text-[10.5px] print:text-[9.5px]" : "text-[12px]"}`}>
-                  {cert.name}
-                </div>
-                <div className="text-[10px] print:text-[9px] text-slate-500 truncate">
-                  {cert.issuer} {cert.year && `• ${cert.year}`}
+          {certifications.map((cert) => {
+            const certUrl = cert.url || cert.link || cert.credentialUrl;
+            return (
+              <div key={cert.id} className="flex items-start gap-1.5">
+                <CheckCircle2
+                  size={12}
+                  className="mt-0.5 shrink-0"
+                  style={{ color: theme.accent }}
+                />
+                <div className="min-w-0">
+                  <div className={`font-bold text-slate-900 leading-tight truncate ${isOnePage ? "text-[10.5px] print:text-[9.5px]" : "text-[12px]"}`}>
+                    {certUrl ? (
+                      <a
+                        href={formatUrl(certUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline hover:text-blue-700 transition-colors inline-flex items-center gap-1"
+                      >
+                        <span className="truncate">{cert.name}</span>
+                        <ExternalLink size={9} className="opacity-60 shrink-0" />
+                      </a>
+                    ) : (
+                      cert.name
+                    )}
+                  </div>
+                  <div className="text-[10px] print:text-[9px] text-slate-500 truncate">
+                    {cert.issuer} {cert.year && `• ${cert.year}`}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
     );

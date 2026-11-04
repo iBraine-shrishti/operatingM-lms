@@ -1,5 +1,13 @@
 // Initial student profile prefill + professional editable dummy resume data
 
+export const formatUrl = (url) => {
+  if (!url || typeof url !== "string") return "";
+  const trimmed = url.trim();
+  if (!trimmed) return "";
+  if (/^(https?:\/\/|mailto:|tel:)/i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+};
+
 export const DEFAULT_SECTION_ORDERS = {
   "modern-executive": [
     "summary",
@@ -89,6 +97,7 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
         name: cert.title || cert.name || "Operating Media Certified Specialist",
         issuer: cert.issuer || "Operating Media",
         year: cert.issueDate ? new Date(cert.issueDate).getFullYear().toString() : "2026",
+        url: cert.verificationUrl || cert.url || cert.certificateUrl || "https://operatingmedia.com/verify-certificate",
       }))
     : [
         {
@@ -96,24 +105,28 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
           name: "Operating Media Diploma in Advanced Digital Marketing",
           issuer: "Operating Media • Digital Career Academy",
           year: "2026",
+          url: "https://operatingmedia.com/verify-certificate",
         },
         {
           id: "cert-2",
           name: "Google Ads Search & Performance Max Certification",
           issuer: "Google Skillshop",
           year: "2026",
+          url: "https://skillshop.credential.net/",
         },
         {
           id: "cert-3",
           name: "Meta Certified Digital Marketing Associate",
           issuer: "Meta Blueprint",
           year: "2025",
+          url: "https://www.credly.com/organizations/meta",
         },
         {
           id: "cert-4",
           name: "HubSpot Inbound Marketing & Content Strategy",
           issuer: "HubSpot Academy",
           year: "2025",
+          url: "https://academy.hubspot.com/",
         },
       ];
 

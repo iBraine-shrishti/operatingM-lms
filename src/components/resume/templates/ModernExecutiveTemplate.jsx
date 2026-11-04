@@ -11,9 +11,11 @@ import {
   Layers,
   FolderGit2,
   Languages,
+  ExternalLink,
 } from "lucide-react";
 import { EditableHeading } from "../EditableHeading";
 import { ResumeFooter } from "../ResumeFooter";
+import { formatUrl } from "../resumeData";
 
 export const ModernExecutiveTemplate = ({
   data,
@@ -88,24 +90,30 @@ export const ModernExecutiveTemplate = ({
             } text-slate-700`}
           >
             {personalInfo.email && (
-              <div className="flex items-center gap-2">
+              <a
+                href={`mailto:${personalInfo.email}`}
+                className="flex items-center gap-2 hover:underline hover:text-slate-900 transition-colors"
+              >
                 <Mail
                   size={12}
                   style={{ color: theme.primary }}
                   className="shrink-0"
                 />
                 <span className="truncate">{personalInfo.email}</span>
-              </div>
+              </a>
             )}
             {personalInfo.phone && (
-              <div className="flex items-center gap-2">
+              <a
+                href={`tel:${personalInfo.phone.replace(/\s+/g, "")}`}
+                className="flex items-center gap-2 hover:underline hover:text-slate-900 transition-colors"
+              >
                 <Phone
                   size={12}
                   style={{ color: theme.primary }}
                   className="shrink-0"
                 />
                 <span>{personalInfo.phone}</span>
-              </div>
+              </a>
             )}
             {personalInfo.location && (
               <div className="flex items-center gap-2">
@@ -118,24 +126,36 @@ export const ModernExecutiveTemplate = ({
               </div>
             )}
             {personalInfo.linkedin && (
-              <div className="flex items-center gap-2">
+              <a
+                href={formatUrl(personalInfo.linkedin)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:underline hover:text-blue-700 font-semibold transition-colors"
+              >
                 <Linkedin
                   size={12}
                   style={{ color: theme.primary }}
                   className="shrink-0"
                 />
                 <span className="truncate">{personalInfo.linkedin}</span>
-              </div>
+                <ExternalLink size={9} className="opacity-60 shrink-0" />
+              </a>
             )}
             {personalInfo.portfolio && (
-              <div className="flex items-center gap-2">
+              <a
+                href={formatUrl(personalInfo.portfolio)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 hover:underline hover:text-blue-700 font-semibold transition-colors"
+              >
                 <Globe
                   size={12}
                   style={{ color: theme.primary }}
                   className="shrink-0"
                 />
                 <span className="truncate">{personalInfo.portfolio}</span>
-              </div>
+                <ExternalLink size={9} className="opacity-60 shrink-0" />
+              </a>
             )}
           </div>
         </div>
@@ -304,22 +324,37 @@ export const ModernExecutiveTemplate = ({
             isOnePage ? "text-[10.5px] print:text-[9.5px]" : "text-[11.5px]"
           }`}
         >
-          {certifications.map((cert) => (
-            <div key={cert.id} className="flex items-start gap-1.5">
-              <span
-                className="w-1.5 h-1.5 rounded-full mt-1 shrink-0"
-                style={{ backgroundColor: theme.accent }}
-              />
-              <div className="min-w-0">
-                <div className="font-bold text-slate-800 leading-tight truncate">
-                  {cert.name}
-                </div>
-                <div className="text-[10px] print:text-[9px] text-slate-500 truncate">
-                  {cert.issuer} {cert.year && `• ${cert.year}`}
+          {certifications.map((cert) => {
+            const certUrl = cert.url || cert.link || cert.credentialUrl;
+            return (
+              <div key={cert.id} className="flex items-start gap-1.5">
+                <span
+                  className="w-1.5 h-1.5 rounded-full mt-1 shrink-0"
+                  style={{ backgroundColor: theme.accent }}
+                />
+                <div className="min-w-0">
+                  <div className="font-bold text-slate-800 leading-tight truncate">
+                    {certUrl ? (
+                      <a
+                        href={formatUrl(certUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline hover:text-blue-700 transition-colors inline-flex items-center gap-1"
+                      >
+                        <span className="truncate">{cert.name}</span>
+                        <ExternalLink size={9} className="opacity-60 shrink-0" />
+                      </a>
+                    ) : (
+                      cert.name
+                    )}
+                  </div>
+                  <div className="text-[10px] print:text-[9px] text-slate-500 truncate">
+                    {cert.issuer} {cert.year && `• ${cert.year}`}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     );

@@ -4,10 +4,13 @@ import {
   Mail,
   Globe,
   MapPin,
+  Linkedin,
   FolderGit2,
+  ExternalLink,
 } from "lucide-react";
 import { EditableHeading } from "../EditableHeading";
 import { ResumeFooter } from "../ResumeFooter";
+import { formatUrl } from "../resumeData";
 
 export const DualArchCreativeTemplate = ({
   data,
@@ -131,7 +134,10 @@ export const DualArchCreativeTemplate = ({
   const renderContactInfo = () => (
     <div className="w-[82%] sm:w-[84%] mx-auto py-4 space-y-2.5 text-slate-800 dark:text-slate-100 text-[11px] font-semibold">
       {personalInfo.phone && (
-        <div className="flex items-center gap-3">
+        <a
+          href={`tel:${personalInfo.phone.replace(/\s+/g, "")}`}
+          className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
+        >
           <div
             className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
             style={{ backgroundColor: theme.primary }}
@@ -139,11 +145,14 @@ export const DualArchCreativeTemplate = ({
             <Phone size={11} />
           </div>
           <span>{personalInfo.phone}</span>
-        </div>
+        </a>
       )}
 
       {personalInfo.email && (
-        <div className="flex items-center gap-3">
+        <a
+          href={`mailto:${personalInfo.email}`}
+          className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
+        >
           <div
             className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
             style={{ backgroundColor: theme.primary }}
@@ -151,11 +160,34 @@ export const DualArchCreativeTemplate = ({
             <Mail size={11} />
           </div>
           <span className="truncate">{personalInfo.email}</span>
-        </div>
+        </a>
+      )}
+
+      {personalInfo.linkedin && (
+        <a
+          href={formatUrl(personalInfo.linkedin)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
+        >
+          <div
+            className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
+            style={{ backgroundColor: theme.primary }}
+          >
+            <Linkedin size={11} />
+          </div>
+          <span className="truncate">{personalInfo.linkedin}</span>
+          <ExternalLink size={9} className="opacity-60 shrink-0" />
+        </a>
       )}
 
       {personalInfo.portfolio && (
-        <div className="flex items-center gap-3">
+        <a
+          href={formatUrl(personalInfo.portfolio)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 hover:underline text-slate-800 dark:text-slate-100 transition-colors"
+        >
           <div
             className="w-6 h-6 rounded flex items-center justify-center text-white shrink-0 shadow-2xs"
             style={{ backgroundColor: theme.primary }}
@@ -163,7 +195,8 @@ export const DualArchCreativeTemplate = ({
             <Globe size={11} />
           </div>
           <span className="truncate">{personalInfo.portfolio}</span>
-        </div>
+          <ExternalLink size={9} className="opacity-60 shrink-0" />
+        </a>
       )}
 
       {personalInfo.location && (
@@ -211,6 +244,39 @@ export const DualArchCreativeTemplate = ({
           ) : (
             <div className="text-white/70 text-xs">
               Education history prefilled
+            </div>
+          )}
+
+          {certifications && certifications.length > 0 && (
+            <div className="pt-2 border-t border-white/20 space-y-2">
+              <div className="text-[10px] font-black uppercase tracking-[1.5px] text-white/70">
+                CERTIFICATIONS
+              </div>
+              {certifications.map((c) => {
+                const certUrl = c.url || c.link || c.credentialUrl;
+                return (
+                  <div key={c.id} className="space-y-0.5">
+                    <div className="font-bold text-white text-[11px] leading-tight">
+                      {certUrl ? (
+                        <a
+                          href={formatUrl(certUrl)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:underline text-white inline-flex items-center gap-1"
+                        >
+                          <span>{c.name}</span>
+                          <ExternalLink size={9} className="opacity-80 shrink-0" />
+                        </a>
+                      ) : (
+                        c.name
+                      )}
+                    </div>
+                    <div className="text-white/75 text-[10px]">
+                      {c.issuer} {c.year && `• ${c.year}`}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

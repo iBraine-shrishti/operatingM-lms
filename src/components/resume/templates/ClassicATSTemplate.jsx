@@ -1,6 +1,8 @@
 import React from "react";
+import { ExternalLink } from "lucide-react";
 import { EditableHeading } from "../EditableHeading";
 import { ResumeFooter } from "../ResumeFooter";
+import { formatUrl } from "../resumeData";
 
 export const ClassicATSTemplate = ({
   data,
@@ -20,14 +22,6 @@ export const ClassicATSTemplate = ({
     languages = [],
     sectionHeadings = {},
   } = data || {};
-
-  const contactItems = [
-    personalInfo.phone,
-    personalInfo.email,
-    personalInfo.location,
-    personalInfo.linkedin,
-    personalInfo.portfolio,
-  ].filter(Boolean);
 
   // SECTION: Header
   const renderHeader = () => {
@@ -49,14 +43,59 @@ export const ClassicATSTemplate = ({
           {personalInfo.jobTitle}
         </div>
         <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11.5px] text-slate-600 mt-2 font-medium">
-          {contactItems.map((item, idx) => (
-            <React.Fragment key={idx}>
-              <span>{item}</span>
-              {idx < contactItems.length - 1 && (
-                <span className="text-slate-300">•</span>
-              )}
-            </React.Fragment>
-          ))}
+          {personalInfo.phone && (
+            <a
+              href={`tel:${personalInfo.phone.replace(/\s+/g, "")}`}
+              className="hover:underline hover:text-slate-900 transition-colors"
+            >
+              {personalInfo.phone}
+            </a>
+          )}
+          {personalInfo.phone && (personalInfo.email || personalInfo.location || personalInfo.linkedin || personalInfo.portfolio) && (
+            <span className="text-slate-300">•</span>
+          )}
+          {personalInfo.email && (
+            <a
+              href={`mailto:${personalInfo.email}`}
+              className="hover:underline hover:text-slate-900 transition-colors"
+            >
+              {personalInfo.email}
+            </a>
+          )}
+          {personalInfo.email && (personalInfo.location || personalInfo.linkedin || personalInfo.portfolio) && (
+            <span className="text-slate-300">•</span>
+          )}
+          {personalInfo.location && <span>{personalInfo.location}</span>}
+          {personalInfo.location && (personalInfo.linkedin || personalInfo.portfolio) && (
+            <span className="text-slate-300">•</span>
+          )}
+          {personalInfo.linkedin && (
+            <a
+              href={formatUrl(personalInfo.linkedin)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline font-semibold hover:text-blue-700 transition-colors inline-flex items-center gap-0.5"
+              style={{ color: theme.primary }}
+            >
+              <span>{personalInfo.linkedin}</span>
+              <ExternalLink size={9} className="opacity-60 inline shrink-0" />
+            </a>
+          )}
+          {personalInfo.linkedin && personalInfo.portfolio && (
+            <span className="text-slate-300">•</span>
+          )}
+          {personalInfo.portfolio && (
+            <a
+              href={formatUrl(personalInfo.portfolio)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline font-semibold hover:text-blue-700 transition-colors inline-flex items-center gap-0.5"
+              style={{ color: theme.secondary || theme.primary }}
+            >
+              <span>{personalInfo.portfolio}</span>
+              <ExternalLink size={9} className="opacity-60 inline shrink-0" />
+            </a>
+          )}
         </div>
       </header>
     );
@@ -320,11 +359,28 @@ export const ClassicATSTemplate = ({
           tag="h2"
         />
         <ul className="space-y-0.5 text-[10.5px] print:text-[9.5px] text-slate-700 list-disc list-outside pl-4">
-          {certifications.map((c) => (
-            <li key={c.id}>
-              <strong>{c.name}</strong> – {c.issuer} {c.year && `(${c.year})`}
-            </li>
-          ))}
+          {certifications.map((c) => {
+            const certUrl = c.url || c.link || c.credentialUrl;
+            return (
+              <li key={c.id}>
+                {certUrl ? (
+                  <a
+                    href={formatUrl(certUrl)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-bold hover:underline hover:text-blue-700 transition-colors inline-flex items-center gap-1"
+                    style={{ color: theme.primary }}
+                  >
+                    <span>{c.name}</span>
+                    <ExternalLink size={9} className="inline opacity-70 shrink-0" />
+                  </a>
+                ) : (
+                  <strong>{c.name}</strong>
+                )}
+                {" "}– {c.issuer} {c.year && `(${c.year})`}
+              </li>
+            );
+          })}
         </ul>
       </section>
     );
