@@ -171,10 +171,17 @@ export const MinimalistPerformanceTemplate = ({
 
   // SUB-RENDERER: Work Experience
   const renderExperience = () => {
+    const list =
+      totalPages === 2
+        ? page === 1
+          ? experiences.slice(0, 2)
+          : experiences.slice(2)
+        : experiences;
+
     if (
       data.hiddenSections?.experience ||
-      !experiences ||
-      experiences.length === 0
+      !list ||
+      list.length === 0
     )
       return null;
     const isOnePage = totalPages === 1;
@@ -185,7 +192,7 @@ export const MinimalistPerformanceTemplate = ({
           <Briefcase size={14} style={{ color: theme.primary }} />
           <EditableHeading
             value={sectionHeadings.experience}
-            fallback="Career History"
+            fallback={page === 2 && experiences.length > 2 ? "Career History (Continued)" : "Career History"}
             onChange={(val) => onUpdateHeading?.("experience", val)}
             className="text-xs font-black uppercase tracking-wider"
             style={{ color: theme.primary }}
@@ -194,7 +201,7 @@ export const MinimalistPerformanceTemplate = ({
         </div>
 
         <div className={isOnePage ? "space-y-2" : "space-y-3"}>
-          {experiences.map((exp) => {
+          {list.map((exp) => {
             const bulletsToRender = exp.bullets || [];
 
             return (
@@ -528,7 +535,10 @@ export const MinimalistPerformanceTemplate = ({
   };
 
   const page1LeftIds = ["experience"].filter((id) => leftSectionIds.includes(id));
-  const page2LeftIds = ["projects"].filter((id) => leftSectionIds.includes(id));
+  const page2LeftIds = (experiences.length > 2
+    ? ["experience", "projects"]
+    : ["projects"]
+  ).filter((id) => leftSectionIds.includes(id));
 
   const page1RightIds = ["skills"].filter((id) => rightSectionIds.includes(id));
   const page2RightIds = ["education", "certifications"].filter((id) =>

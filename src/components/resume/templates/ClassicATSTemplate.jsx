@@ -164,10 +164,17 @@ export const ClassicATSTemplate = ({
 
   // SECTION: Experience
   const renderExperience = () => {
+    const list =
+      totalPages === 2
+        ? page === 1
+          ? experiences.slice(0, 2)
+          : experiences.slice(2)
+        : experiences;
+
     if (
       data.hiddenSections?.experience ||
-      !experiences ||
-      experiences.length === 0
+      !list ||
+      list.length === 0
     )
       return null;
 
@@ -175,14 +182,14 @@ export const ClassicATSTemplate = ({
       <section className="mt-2.5 print:mt-2 resume-section break-inside-avoid print:break-inside-avoid">
         <EditableHeading
           value={sectionHeadings.experience}
-          fallback="Work Experience"
+          fallback={page === 2 && experiences.length > 2 ? "Work Experience (Continued)" : "Work Experience"}
           onChange={(val) => onUpdateHeading?.("experience", val)}
           className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-2"
           style={{ color: theme.primary, borderColor: theme.border }}
           tag="h2"
         />
         <div className="space-y-2.5">
-          {experiences.map((exp) => {
+          {list.map((exp) => {
             const bulletsToRender = exp.bullets || [];
 
             return (
@@ -401,7 +408,10 @@ export const ClassicATSTemplate = ({
 
   const page1DefaultSections = ["summary", "skills", "experience"];
   const page1Sections = contentOrder.filter((id) => page1DefaultSections.includes(id));
-  const page2Sections = contentOrder.filter((id) => !page1DefaultSections.includes(id));
+  const page2Sections = [
+    ...(experiences.length > 2 ? ["experience"] : []),
+    ...contentOrder.filter((id) => !page1DefaultSections.includes(id)),
+  ];
 
   const sectionsToRender =
     totalPages === 1

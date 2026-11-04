@@ -47,9 +47,7 @@ export const ModernExecutiveTemplate = ({
       >
         {personalInfo.photo ? (
           <div
-            className={`${
-              isOnePage ? "w-14 h-14" : "w-18 h-18"
-            } rounded-2xl overflow-hidden border-2 shadow-xs shrink-0 bg-white`}
+            className="w-12 h-12 sm:w-14 sm:h-14 print:w-11 print:h-11 rounded-xl overflow-hidden border-2 shadow-xs shrink-0 bg-white"
             style={{ borderColor: theme.primary }}
           >
             <img
@@ -60,9 +58,7 @@ export const ModernExecutiveTemplate = ({
           </div>
         ) : (
           <div
-            className={`${
-              isOnePage ? "w-12 h-12 text-lg" : "w-16 h-16 text-2xl"
-            } rounded-2xl flex items-center justify-center text-white font-black shadow-xs`}
+            className="w-11 h-11 sm:w-12 sm:h-12 print:w-10 print:h-10 text-base font-black rounded-xl flex items-center justify-center text-white shadow-xs"
             style={{ backgroundColor: theme.primary }}
           >
             {personalInfo.fullName
@@ -444,10 +440,17 @@ export const ModernExecutiveTemplate = ({
 
   // SUB-RENDERER: Work Experience
   const renderExperience = () => {
+    const list =
+      totalPages === 2
+        ? page === 1
+          ? experiences.slice(0, 2)
+          : experiences.slice(2)
+        : experiences;
+
     if (
       data.hiddenSections?.experience ||
-      !experiences ||
-      experiences.length === 0
+      !list ||
+      list.length === 0
     )
       return null;
     const isOnePage = totalPages === 1;
@@ -458,7 +461,7 @@ export const ModernExecutiveTemplate = ({
           <Briefcase size={14} style={{ color: theme.secondary }} />
           <EditableHeading
             value={sectionHeadings.experience}
-            fallback="Professional Experience"
+            fallback={page === 2 && experiences.length > 2 ? "Previous Experience" : "Professional Experience"}
             onChange={(val) => onUpdateHeading?.("experience", val)}
             className="text-xs font-black uppercase tracking-wider"
             style={{ color: theme.primary }}
@@ -467,7 +470,7 @@ export const ModernExecutiveTemplate = ({
         </div>
 
         <div className="space-y-2.5">
-          {experiences.map((exp) => {
+          {list.map((exp) => {
             const bulletsToRender = exp.bullets || [];
 
             return (
@@ -672,9 +675,10 @@ export const ModernExecutiveTemplate = ({
   const page1MainIds = ["summary", "experience"].filter((id) =>
     mainSectionIds.includes(id)
   );
-  const page2MainIds = ["projects"].filter((id) =>
-    mainSectionIds.includes(id)
-  );
+  const page2MainIds = (experiences.length > 2
+    ? ["experience", "projects"]
+    : ["projects"]
+  ).filter((id) => mainSectionIds.includes(id));
 
   const activeSidebarIds =
     totalPages === 1

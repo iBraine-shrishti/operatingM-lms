@@ -313,12 +313,18 @@ export const DualArchCreativeTemplate = ({
 
   // SUB-RENDERER: Work Experience
   const renderWorkExperience = () => {
-    if (!experiences || experiences.length === 0) return null;
+    const list =
+      totalPages === 2
+        ? page === 1
+          ? experiences.slice(0, 2)
+          : experiences.slice(2)
+        : experiences;
+    if (!list || list.length === 0) return null;
     return (
       <section className="space-y-2.5 pt-1">
         <EditableHeading
           value={sectionHeadings.experience}
-          fallback="WORK EXPERIENCE"
+          fallback={page === 2 && experiences.length > 2 ? "WORK EXPERIENCE (CONTINUED)" : "WORK EXPERIENCE"}
           onChange={(val) => onUpdateHeading?.("experience", val)}
           className="text-sm font-black uppercase tracking-[2px]"
           style={{ color: theme.primary }}
@@ -326,7 +332,7 @@ export const DualArchCreativeTemplate = ({
         />
 
         <div className="space-y-3.5">
-          {experiences.map((exp) => (
+          {list.map((exp) => (
             <div
               key={exp.id}
               className="pl-3.5 border-l-2 space-y-1"
@@ -508,6 +514,9 @@ export const DualArchCreativeTemplate = ({
                   {personalInfo?.jobTitle} • Projects & Highlights (Page 2)
                 </div>
               </header>
+
+              {/* WORK EXPERIENCE (CONTINUED IF > 2 JOBS) */}
+              {experiences.length > 2 && renderWorkExperience()}
 
               {/* KEY PROJECTS & CASE STUDIES */}
               {renderProjects()}

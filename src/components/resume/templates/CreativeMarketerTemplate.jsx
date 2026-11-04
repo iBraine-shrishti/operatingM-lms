@@ -67,11 +67,7 @@ export const CreativeMarketerTemplate = ({
 
     return (
       <header
-        className={`${
-          isOnePage
-            ? "p-4 sm:p-5 print:p-3.5"
-            : "p-7 sm:p-9 print:p-5"
-        } text-white relative overflow-hidden shrink-0`}
+        className="p-4 sm:p-5 print:p-3 text-white relative overflow-hidden shrink-0"
         style={{ backgroundColor: theme.primary }}
       >
         <div
@@ -83,11 +79,7 @@ export const CreativeMarketerTemplate = ({
           <div className="flex items-center gap-3.5 sm:gap-4">
             {personalInfo.photo && (
               <div
-                className={`${
-                  isOnePage
-                    ? "w-14 h-14 sm:w-16 sm:h-16"
-                    : "w-20 h-20 sm:w-22 sm:h-22"
-                } rounded-full overflow-hidden border-2 border-white/90 shadow-md bg-white shrink-0`}
+                className="w-12 h-12 sm:w-14 sm:h-14 print:w-11 print:h-11 rounded-full overflow-hidden border-2 border-white/90 shadow-md bg-white shrink-0"
               >
                 <img
                   src={personalInfo.photo}
@@ -105,18 +97,12 @@ export const CreativeMarketerTemplate = ({
                 tag="span"
               />
               <h1
-                className={`${
-                  isOnePage
-                    ? "text-2xl sm:text-3xl leading-tight"
-                    : "text-3xl sm:text-4xl leading-tight"
-                } font-black uppercase tracking-tight text-white`}
+                className="text-2xl sm:text-3xl print:text-2xl font-black uppercase tracking-tight text-white leading-tight"
               >
                 {personalInfo.fullName}
               </h1>
               <p
-                className={`${
-                  isOnePage ? "text-xs sm:text-sm" : "text-base sm:text-lg"
-                } font-medium text-white/90`}
+                className="text-xs sm:text-sm print:text-xs font-medium text-white/90"
               >
                 {personalInfo.jobTitle}
               </p>
@@ -202,10 +188,17 @@ export const CreativeMarketerTemplate = ({
 
   // SUB-RENDERER: Work Experience
   const renderExperience = () => {
+    const list =
+      totalPages === 2
+        ? page === 1
+          ? experiences.slice(0, 2)
+          : experiences.slice(2)
+        : experiences;
+
     if (
       data.hiddenSections?.experience ||
-      !experiences ||
-      experiences.length === 0
+      !list ||
+      list.length === 0
     )
       return null;
     const isOnePage = totalPages === 1;
@@ -220,7 +213,7 @@ export const CreativeMarketerTemplate = ({
             <Briefcase size={15} style={{ color: theme.primary }} />
             <EditableHeading
               value={sectionHeadings.experience}
-              fallback="Experience & Track Record"
+              fallback={page === 2 && experiences.length > 2 ? "Previous Experience & Track Record" : "Experience & Track Record"}
               onChange={(val) => onUpdateHeading?.("experience", val)}
               className="text-xs font-black uppercase tracking-wider"
               style={{ color: theme.primary }}
@@ -233,7 +226,7 @@ export const CreativeMarketerTemplate = ({
         </div>
 
         <div className={`grid grid-cols-1 ${isOnePage ? "gap-2" : "gap-4"}`}>
-          {experiences.map((exp) => {
+          {list.map((exp) => {
             const bulletsToRender = exp.bullets || [];
 
             return (
@@ -623,9 +616,10 @@ export const CreativeMarketerTemplate = ({
   const page1TopSections = ["summary", "experience"].filter((id) =>
     topSections.includes(id)
   );
-  const page2TopSections = ["projects"].filter((id) =>
-    topSections.includes(id)
-  );
+  const page2TopSections = (experiences.length > 2
+    ? ["experience", "projects"]
+    : ["projects"]
+  ).filter((id) => topSections.includes(id));
 
   const curTopSections =
     totalPages === 1
