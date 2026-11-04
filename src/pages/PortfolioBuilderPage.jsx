@@ -25,6 +25,7 @@ import {
   Check,
   ExternalLink,
   Copy,
+  Printer,
 } from "lucide-react";
 
 export const PortfolioBuilderPage = () => {
