@@ -72,7 +72,7 @@ export const CreativeMarketerTemplate = ({
 
     return (
       <header
-        className="p-4 sm:p-5 print:p-3 text-white relative overflow-hidden shrink-0"
+        className={`${isOnePage ? "p-3 sm:p-3.5 print:p-2.5" : "p-4 sm:p-5 print:p-3"} text-white relative overflow-hidden shrink-0`}
         style={{ backgroundColor: theme.primary }}
       >
         <div
@@ -684,8 +684,10 @@ export const CreativeMarketerTemplate = ({
       ? page1TopSections
       : page2TopSections;
 
+  const isOnePage = totalPages === 1;
+
   return (
-    <div className="bg-white text-slate-800 font-sans leading-relaxed text-[13px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.8mm] h-full flex flex-col justify-between print:p-0 print:m-0">
+    <div className={`bg-white text-slate-800 font-sans ${isOnePage ? "leading-snug text-[12px]" : "leading-relaxed text-[13px]"} print:text-[11px] w-full min-h-[1080px] print:min-h-[296.8mm] h-full flex flex-col justify-between print:p-0 print:m-0`}>
       {/* HEADER BANNER: Full hero on Page 1, sleek accent strip on Page 2 (bringing content upward with zero bulky text) */}
       {page === 1 ? (
         renderHeroBanner(false)
@@ -697,7 +699,7 @@ export const CreativeMarketerTemplate = ({
       )}
 
       {/* BODY CONTENT */}
-      <div className={`p-4.5 sm:p-5 print:p-3.5 space-y-2.5 print:space-y-1.5 flex-1 ${page > 1 ? "pt-3 print:pt-2" : ""}`}>
+      <div className={`${isOnePage ? "p-3.5 sm:p-4 print:p-2.5 space-y-1.5" : "p-4.5 sm:p-5 print:p-3.5 space-y-2.5"} print:space-y-1.5 flex-1 ${page > 1 ? "pt-3 print:pt-2" : ""}`}>
         {/* Render top sections according to sequence */}
         {curTopSections.map((id) => (
           <React.Fragment key={id}>{renderTopSection(id)}</React.Fragment>

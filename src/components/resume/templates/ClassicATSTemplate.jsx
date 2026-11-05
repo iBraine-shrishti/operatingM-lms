@@ -23,6 +23,8 @@ export const ClassicATSTemplate = ({
     sectionHeadings = {},
   } = data || {};
 
+  const isOnePage = totalPages === 1;
+
   // SECTION: Header
   const renderHeader = () => {
     if (data.hiddenSections?.personal) return null;
@@ -101,25 +103,33 @@ export const ClassicATSTemplate = ({
 
     return (
       <header
-        className="text-center pb-3.5 border-b-2 resume-section break-inside-avoid print:break-inside-avoid"
+        className={`text-center border-b-2 resume-section break-inside-avoid print:break-inside-avoid ${
+          isOnePage ? "pb-2" : "pb-3.5"
+        }`}
         style={{ borderColor: theme.primary }}
       >
         <h1
-          className="text-2xl sm:text-3xl font-extrabold uppercase tracking-tight"
+          className={`font-extrabold uppercase tracking-tight ${
+            isOnePage ? "text-2xl sm:text-2xl print:text-xl" : "text-2xl sm:text-3xl"
+          }`}
           style={{ color: theme.primary }}
         >
           {personalInfo.fullName}
         </h1>
         {personalInfo.jobTitle && (
           <div
-            className="text-sm sm:text-base font-bold mt-0.5 tracking-wide"
+            className={`font-bold mt-0.5 tracking-wide ${
+              isOnePage ? "text-xs sm:text-sm" : "text-sm sm:text-base"
+            }`}
             style={{ color: theme.secondary }}
           >
             {personalInfo.jobTitle}
           </div>
         )}
         {contactItems.length > 0 && (
-          <div className="flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1 text-[11.5px] text-slate-600 mt-2 font-medium">
+          <div className={`flex flex-wrap items-center justify-center gap-x-2.5 gap-y-0.5 text-slate-600 font-medium ${
+            isOnePage ? "text-[11px] mt-1.5" : "text-[11.5px] mt-2"
+          }`}>
             {contactItems.map((item, idx) => (
               <React.Fragment key={idx}>
                 {idx > 0 && <span className="text-slate-300">•</span>}
@@ -146,16 +156,16 @@ export const ClassicATSTemplate = ({
   const renderSummary = () => {
     if (data.hiddenSections?.summary || !summary || !summary.trim()) return null;
     return (
-      <section className="mt-2.5 print:mt-2 resume-section break-inside-avoid print:break-inside-avoid">
+      <section className={`${isOnePage ? "mt-1.5 print:mt-1" : "mt-2.5 print:mt-2"} resume-section break-inside-avoid print:break-inside-avoid`}>
         <EditableHeading
           value={sectionHeadings.summary}
           fallback="Professional Summary"
           onChange={(val) => onUpdateHeading?.("summary", val)}
-          className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-1.5"
+          className={`${isOnePage ? "text-[11.5px] pb-0.5 mb-1" : "text-[12px] pb-1 mb-1.5"} font-black uppercase tracking-wider border-b`}
           style={{ color: theme.primary, borderColor: theme.border }}
           tag="h2"
         />
-        <p className="text-[11.5px] print:text-[10px] leading-snug text-slate-800 text-justify">
+        <p className={`${isOnePage ? "text-[11px] print:text-[9.5px]" : "text-[11.5px] print:text-[10px]"} leading-snug text-slate-800 text-justify`}>
           {summary}
         </p>
       </section>
@@ -172,17 +182,17 @@ export const ClassicATSTemplate = ({
     if (data.hiddenSections?.skills || !hasAnySkills) return null;
 
     return (
-      <section className="mt-2.5 print:mt-2 resume-section break-inside-avoid print:break-inside-avoid">
+      <section className={`${isOnePage ? "mt-1.5 print:mt-1" : "mt-2.5 print:mt-2"} resume-section break-inside-avoid print:break-inside-avoid`}>
         <EditableHeading
           value={sectionHeadings.skills}
           fallback="Core Competencies & Tools"
           onChange={(val) => onUpdateHeading?.("skills", val)}
-          className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-1.5"
+          className={`${isOnePage ? "text-[11.5px] pb-0.5 mb-1" : "text-[12px] pb-1 mb-1.5"} font-black uppercase tracking-wider border-b`}
           style={{ color: theme.primary, borderColor: theme.border }}
           tag="h2"
         />
 
-        <div className="space-y-1 text-[11px] print:text-[10px]">
+        <div className={`${isOnePage ? "space-y-0.5" : "space-y-1"} text-[11px] print:text-[10px]`}>
           {Object.entries(skills || {}).map(([catKey, skillList], idx) => {
             if (!skillList || skillList.length === 0) return null;
             const headingKey = `skillCat_${catKey}`;
@@ -234,37 +244,37 @@ export const ClassicATSTemplate = ({
       return null;
 
     return (
-      <section className="mt-2.5 print:mt-2 resume-section break-inside-avoid print:break-inside-avoid">
+      <section className={`${isOnePage ? "mt-1.5 print:mt-1" : "mt-2.5 print:mt-2"} resume-section break-inside-avoid print:break-inside-avoid`}>
         <EditableHeading
           value={sectionHeadings.experience}
           fallback={page === 2 && experiences.length > 2 ? "Work Experience (Continued)" : "Work Experience"}
           onChange={(val) => onUpdateHeading?.("experience", val)}
-          className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-2"
+          className={`${isOnePage ? "text-[11.5px] pb-0.5 mb-1" : "text-[12px] pb-1 mb-2"} font-black uppercase tracking-wider border-b`}
           style={{ color: theme.primary, borderColor: theme.border }}
           tag="h2"
         />
-        <div className="space-y-2.5">
+        <div className={isOnePage ? "space-y-1.5" : "space-y-2.5"}>
           {list.map((exp) => {
             const bulletsToRender = exp.bullets || [];
 
             return (
               <div key={exp.id} className="space-y-0.5 resume-section-item break-inside-avoid print:break-inside-avoid">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between font-bold text-slate-900">
-                  <span className="text-[12px]">
+                  <span className={isOnePage ? "text-[11.5px]" : "text-[12px]"}>
                     {exp.role}
                   </span>
-                  <span className="text-[11px] print:text-[10px] font-semibold text-slate-600">
+                  <span className="text-[10.5px] print:text-[9.5px] font-semibold text-slate-600">
                     {exp.startDate} – {exp.endDate}
                   </span>
                 </div>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-[11px] print:text-[10px]">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-[10.5px] print:text-[9.5px]">
                   <span className="font-bold" style={{ color: theme.secondary }}>
                     {exp.company}
                   </span>
                   <span className="text-slate-500 italic">{exp.location}</span>
                 </div>
                 {bulletsToRender.length > 0 && (
-                  <ul className="list-disc list-outside pl-4 space-y-0.5 text-[11px] print:text-[9.5px] text-slate-700 pt-0.5">
+                  <ul className="list-disc list-outside pl-4 space-y-0.5 text-[10.5px] print:text-[9px] text-slate-700 pt-0.5">
                     {bulletsToRender.map((b, idx) => (
                       <li key={idx} className="leading-snug">
                         {b}
@@ -286,16 +296,16 @@ export const ClassicATSTemplate = ({
       return null;
 
     return (
-      <section className="mt-2.5 print:mt-2 resume-section break-inside-avoid print:break-inside-avoid">
+      <section className={`${isOnePage ? "mt-1.5 print:mt-1" : "mt-2.5 print:mt-2"} resume-section break-inside-avoid print:break-inside-avoid`}>
         <EditableHeading
           value={sectionHeadings.projects}
           fallback="Featured Projects & Case Studies"
           onChange={(val) => onUpdateHeading?.("projects", val)}
-          className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-1.5"
+          className={`${isOnePage ? "text-[11.5px] pb-0.5 mb-1" : "text-[12px] pb-1 mb-1.5"} font-black uppercase tracking-wider border-b`}
           style={{ color: theme.primary, borderColor: theme.border }}
           tag="h2"
         />
-        <div className="space-y-1.5">
+        <div className={isOnePage ? "space-y-1" : "space-y-1.5"}>
           {projects.map((proj) => (
             <div key={proj.id} className="text-[11px] print:text-[10px] resume-section-item break-inside-avoid print:break-inside-avoid">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between font-bold">
@@ -331,16 +341,16 @@ export const ClassicATSTemplate = ({
       return null;
 
     return (
-      <section className="mt-2.5 print:mt-2 resume-section break-inside-avoid print:break-inside-avoid">
+      <section className={`${isOnePage ? "mt-1.5 print:mt-1" : "mt-2.5 print:mt-2"} resume-section break-inside-avoid print:break-inside-avoid`}>
         <EditableHeading
           value={sectionHeadings.education}
           fallback="Education & Training"
           onChange={(val) => onUpdateHeading?.("education", val)}
-          className="text-[12px] font-black uppercase tracking-wider pb-1 border-b mb-1.5"
+          className={`${isOnePage ? "text-[11.5px] pb-0.5 mb-1" : "text-[12px] pb-1 mb-1.5"} font-black uppercase tracking-wider border-b`}
           style={{ color: theme.primary, borderColor: theme.border }}
           tag="h2"
         />
-        <div className="space-y-1.5 text-[11px] print:text-[10px]">
+        <div className={`${isOnePage ? "space-y-1" : "space-y-1.5"} text-[11px] print:text-[10px]`}>
           {education.map((edu) => (
             <div key={edu.id} className="space-y-0.5 resume-section-item break-inside-avoid print:break-inside-avoid">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between font-bold text-slate-900">
@@ -494,9 +504,13 @@ export const ClassicATSTemplate = ({
 
   return (
     <div
-      className="bg-white text-slate-900 font-sans leading-relaxed text-[12.5px] print:text-[11px] w-full min-h-[1080px] print:min-h-[296.8mm] h-full p-6 sm:p-7 print:p-5 flex flex-col justify-between print:m-0"
+      className={`bg-white text-slate-900 font-sans ${
+        isOnePage
+          ? "leading-snug text-[11.5px] p-5 sm:p-5.5 print:p-4"
+          : "leading-relaxed text-[12.5px] p-6 sm:p-7 print:p-5"
+      } print:text-[11px] w-full min-h-[1080px] print:min-h-[296.8mm] h-full flex flex-col justify-between print:m-0`}
     >
-      <div className="space-y-2 flex-1">
+      <div className={`${isOnePage ? "space-y-1" : "space-y-2"} flex-1`}>
         {page === 1 ? renderHeader() : renderPage2Header()}
         {sectionsToRender.map((secId) => (
           <React.Fragment key={secId}>

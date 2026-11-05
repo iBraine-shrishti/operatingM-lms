@@ -7,7 +7,6 @@ import {
   MessagesSquare,
   Calendar,
   Activity,
-  Image as ImageIcon,
 } from "lucide-react";
 
 /**
@@ -78,14 +77,6 @@ export const STUDENT_HEADERS_CONFIG = {
     description:
       "Chronological audit timeline tracking your course progress, quiz submissions, assignment evaluations, and certifications.",
     icon: Activity,
-  },
-  gallery: {
-    category: "Campus Life & Practical Sessions",
-    badgeText: "Media Archive",
-    title: "Classroom & Event Gallery",
-    description:
-      "Glimpses of offline workshops, campus events, hackathons, convocation ceremonies, and live mentoring sessions.",
-    icon: ImageIcon,
   },
 };
 

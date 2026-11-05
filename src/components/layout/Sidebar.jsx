@@ -30,7 +30,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Calendar,
-  Images,
   MessagesSquare,
   Briefcase,
   Sparkles,

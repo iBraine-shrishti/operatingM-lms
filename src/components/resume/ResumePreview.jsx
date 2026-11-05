@@ -8,19 +8,29 @@ import { FileText, CheckCircle2, AlertCircle, Sparkles } from "lucide-react";
 
 export const ResumePreview = ({ data, templateId, theme, onChange }) => {
   const docRef = useRef(null);
+  const page1SheetRef = useRef(null);
   const [docHeight, setDocHeight] = useState(1120);
+  const [page1ContentHeight, setPage1ContentHeight] = useState(1120);
 
-  // Measure rendered document height to provide live A4 pagination feedback
+  // Measure rendered document and Page 1 sheet height to provide live A4 pagination feedback
   useEffect(() => {
     if (!docRef.current) return;
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        if (entry.contentRect) {
+        if (entry.target === docRef.current && entry.contentRect) {
           setDocHeight(entry.contentRect.height);
+        }
+        if (entry.target === page1SheetRef.current) {
+          const inner = entry.target.firstElementChild;
+          const actualH = inner ? inner.scrollHeight : entry.target.scrollHeight;
+          setPage1ContentHeight(actualH);
         }
       }
     });
     observer.observe(docRef.current);
+    if (page1SheetRef.current) {
+      observer.observe(page1SheetRef.current);
+    }
     return () => observer.disconnect();
   }, [data, templateId]);
 
@@ -55,10 +65,10 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
     (explicitMode !== "1" && (isContentExceedingA4() || docHeight > 1220));
   const totalPages = isMultiPage ? 2 : 1;
 
-  // Single-page indication: ONLY when user explicitly selects "1 Page" and content exceeds standard A4
+  // Single-page indication: ONLY when user explicitly selects "1 Page" and content ACTUALLY exceeds standard A4
   const isExplicitOnePage = explicitMode === "1";
   const showRedBreakLine =
-    isExplicitOnePage && (docHeight > 1130 || isContentExceedingA4());
+    isExplicitOnePage && (page1ContentHeight > 1125 || docHeight > 1130);
 
   const handleSetPageMode = (mode) => {
     if (onChange) {
@@ -202,6 +212,7 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
       >
         {/* PAGE 1 SHEET */}
         <div
+          ref={page1SheetRef}
           className={`resume-page-sheet w-full max-w-[820px] min-h-[1120px] bg-white rounded-2xl shadow-md border border-slate-200/90 relative ${
             isExplicitOnePage ? "overflow-visible" : "overflow-hidden"
           } transition-all flex flex-col justify-between print:border-none print:shadow-none print:rounded-none print:max-w-none print:w-full ${
@@ -218,7 +229,7 @@ export const ResumePreview = ({ data, templateId, theme, onChange }) => {
             >
               <div className="h-0 border-t-2 border-dashed border-[#e11d48] flex-1" />
               <span className="mx-2 px-3.5 py-1 rounded-full bg-[#e11d48] text-white text-[10.5px] font-black uppercase tracking-wider shadow-md flex items-center gap-1.5">
-                <span>✂ A4 PAGE 1 END • PAGE 2 STARTS HERE</span>
+                <span>✂ A4 1-PAGE LIMIT • CONTENT EXCEEDS PAGE</span>
               </span>
               <div className="h-0 border-t-2 border-dashed border-[#e11d48] flex-1" />
             </div>

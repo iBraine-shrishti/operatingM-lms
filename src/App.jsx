@@ -15,7 +15,6 @@ import { AchievementsPage } from "./pages/AchievementsPage";
 import { NotesReviewsPage } from "./pages/NotesReviewsPage";
 import { ActivityPage } from "./pages/ActivityPage";
 import { ProfilePage } from "./pages/ProfilePage";
-import { GalleryPage } from "./pages/GalleryPage";
 import { SchedulePage } from "./pages/SchedulePage";
 import { QuestionDiscussionsPage } from "./pages/QuestionDiscussionsPage";
 import { LoginPage } from "./pages/LoginPage.jsx";
@@ -93,7 +92,6 @@ function AppRoutes() {
         <Route path="question-discussions/:postId" element={<QuestionDiscussionsPage />} />
         <Route path="schedule" element={<SchedulePage />} />
         <Route path="attendance-fees" element={<Navigate to="/profile?tab=attendance" replace />} />
-        <Route path="gallery" element={<GalleryPage />} />
         <Route path="exam" element={<OfficialExamPage />} />
         <Route path="grievance" element={<GrievancePage />} />
         <Route path="course-feedback-form" element={<GrievancePage initialTab="course" />} />
