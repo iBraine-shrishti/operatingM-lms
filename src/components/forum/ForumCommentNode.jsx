@@ -1,5 +1,11 @@
 import React, { useState, useRef } from "react";
-import { MessageSquare, Send, X, CornerDownRight, CheckCircle2 } from "lucide-react";
+import {
+  MessageSquare,
+  Send,
+  X,
+  CornerDownRight,
+  CheckCircle2,
+} from "lucide-react";
 import { ForumVoteButtons } from "./ForumVoteButtons";
 import { cleanAuthorHandle } from "./ForumSidebar";
 
@@ -123,12 +129,16 @@ const formatInlineMentions = (text = "") => {
       </span>
     ) : (
       part
-    )
+    ),
   );
 };
 
 // Helper to highlight @mentions inside comments (full name + surname highlighted together)
-export const formatCommentContent = (content = "", replyToAuthor = null, threadAuthors = []) => {
+export const formatCommentContent = (
+  content = "",
+  replyToAuthor = null,
+  threadAuthors = [],
+) => {
   if (!content) return null;
 
   // 1. If explicit replyToAuthor is provided (e.g. "Aryan Jawale")
@@ -157,7 +167,7 @@ export const formatCommentContent = (content = "", replyToAuthor = null, threadA
 
   // Sort by length descending so longer full names match first
   const sortedCandidates = Array.from(new Set(candidateAuthors)).sort(
-    (a, b) => b.length - a.length
+    (a, b) => b.length - a.length,
   );
 
   for (const author of sortedCandidates) {
@@ -180,7 +190,7 @@ export const formatCommentContent = (content = "", replyToAuthor = null, threadA
 
   // 3. Fallback: match full name mentions (@FirstName LastName)
   const fullMentionMatch = content.match(
-    /^(@[A-Z][a-zA-Z0-9_.\-]*(?:\s+[A-Z][a-zA-Z0-9_.\-]*)+)(?:\s+(.*)|$)/s
+    /^(@[A-Z][a-zA-Z0-9_.\-]*(?:\s+[A-Z][a-zA-Z0-9_.\-]*)+)(?:\s+(.*)|$)/s,
   );
   if (fullMentionMatch) {
     const mention = fullMentionMatch[1];
@@ -227,11 +237,19 @@ export const ForumCommentNode = ({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const textareaRef = useRef(null);
 
-  const authorDisplay = cleanAuthorHandle(comment.authorHandle, comment.authorName);
-  const targetAuthor = cleanAuthorHandle(comment.authorHandle, comment.authorName);
+  const authorDisplay = cleanAuthorHandle(
+    comment.authorHandle,
+    comment.authorName,
+  );
+  const targetAuthor = cleanAuthorHandle(
+    comment.authorHandle,
+    comment.authorName,
+  );
   const voteData = commentVotes[comment.id] || {
     score: comment.likesCount ?? comment.score ?? comment.upvotes ?? 0,
-    reaction: comment.userReaction || (comment.userVote === 1 ? "up" : (comment.userVote === -1 ? "down" : null)),
+    reaction:
+      comment.userReaction ||
+      (comment.userVote === 1 ? "up" : comment.userVote === -1 ? "down" : null),
   };
 
   const handleSendReply = (e) => {
@@ -295,7 +313,9 @@ export const ForumCommentNode = ({
           )}
 
           <span>•</span>
-          <span className="tabular-nums">{comment.createdAt || "Just now"}</span>
+          <span className="tabular-nums">
+            {comment.createdAt || "Just now"}
+          </span>
 
           {/* Toggle collapse thread */}
           <button
@@ -314,7 +334,7 @@ export const ForumCommentNode = ({
               {formatCommentContent(
                 comment.content,
                 comment.replyToAuthor,
-                threadAuthors
+                threadAuthors,
               )}
             </div>
 
@@ -345,7 +365,10 @@ export const ForumCommentNode = ({
 
             {/* Inline Reply Composer */}
             {isReplying && (
-              <form onSubmit={handleSendReply} className="mt-2.5 ml-7 space-y-2">
+              <form
+                onSubmit={handleSendReply}
+                className="mt-2.5 ml-7 space-y-2"
+              >
                 <div className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 sm:p-3 focus-within:border-[#3b49df] focus-within:ring-2 focus-within:ring-[#3b49df]/20 transition-all shadow-xs">
                   <div className="flex items-start gap-2">
                     {/* Format: @Name is ALWAYS 1st and HIGHLIGHTED */}
