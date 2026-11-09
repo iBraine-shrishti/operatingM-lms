@@ -65,6 +65,7 @@ import {
 import { EditableText, PortfolioEditableContext } from "./EditableText";
 import { ImageUploadModal } from "./ImageUploadModal";
 import { PortfolioPdfExporter } from "./PortfolioPdfExporter";
+import { PortfolioMediaModal } from "./PortfolioMediaModal";
 import { MODULES_CATALOG, DEFAULT_MODULE_ORDER, createInitialPortfolioData } from "./portfolioData";
 import logoHorizontalDarkImg from "../../assets/logo-horizontal-dark.png";
 import logoHorizontalImg from "../../assets/logo-horizontal.png";
@@ -391,6 +392,313 @@ export const PortfolioPreview = ({
 
   const closeImageModal = () => {
     setImageModalConfig((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  // Universal Lightbox Modal state for image & video work inspection
+  const [activeMediaItem, setActiveMediaItem] = useState(null);
+
+  const handleNavigateMedia = (newIndex) => {
+    if (!activeMediaItem || typeof activeMediaItem.navigateFn !== "function") return;
+    activeMediaItem.navigateFn(newIndex);
+  };
+
+  const openAvatarMedia = () => {
+    setActiveMediaItem({
+      type: "image",
+      moduleNumber: "DOSSIER",
+      moduleTitle: "Executive Profile",
+      category: "Curriculum Verified Student Dossier",
+      title: student.name || "Student Dossier",
+      imageUrl: student.avatarUrl,
+      clientType: student.location || "Mumbai, India",
+      description: student.bio || "Student Profile & Curriculum Verified Dossier",
+      metrics: (student.highlights || []).map((h) => ({
+        label: h.label,
+        value: h.value,
+        highlight: "emerald",
+      })),
+      tags: [student.email, student.phone, student.location].filter(Boolean),
+      liveUrl: student.portfolioUrl || (student.socials && student.socials[0]?.url) || "",
+      currentIndex: 0,
+      itemsList: [student],
+      navigateFn: null,
+    });
+  };
+
+  const openWpMedia = (index) => {
+    const wpProjects = Array.isArray(modules.wordpress) ? modules.wordpress : [];
+    if (!wpProjects[index]) return;
+    const p = wpProjects[index];
+    setActiveMediaItem({
+      type: "image",
+      moduleNumber: "MODULE 01",
+      moduleTitle: "WordPress CMS Development",
+      category: p.type || "Full-Stack CMS Build",
+      title: p.title || "WordPress Website",
+      imageUrl: p.imageUrl || mockupLaptopImg,
+      clientType: p.client || p.category || "Client Website",
+      description: p.description || "Custom built WordPress website with sub-second load times and responsive architecture.",
+      metrics: [
+        { label: "PageSpeed Score", value: `${p.speedScore ?? 96}/100`, highlight: "emerald" },
+        { label: "Mobile Responsive", value: "100% Tested", highlight: "purple" },
+        { label: "Theme / Builder", value: p.builder || p.theme || "Elementor Pro", highlight: "slate" },
+        { label: "Active Plugins", value: p.pluginsCount ? `${p.pluginsCount}+` : "Optimized", highlight: "slate" },
+      ],
+      tags: [p.builder, p.theme, ...(p.tags || ["WordPress", "WooCommerce", "Elementor Pro"])].filter(Boolean),
+      liveUrl: p.liveUrl || "",
+      currentIndex: index,
+      itemsList: wpProjects,
+      navigateFn: (nextIdx) => openWpMedia(nextIdx),
+    });
+  };
+
+  const openCanvaDesignMedia = (index) => {
+    const canvaDesigns = Array.isArray(modules.canva?.designs) ? modules.canva.designs : [];
+    if (!canvaDesigns[index]) return;
+    const d = canvaDesigns[index];
+    setActiveMediaItem({
+      type: "image",
+      moduleNumber: "MODULE 02",
+      moduleTitle: "Visual Branding & Graphic Design",
+      category: d.category || "Canva Creative Deliverable",
+      title: d.title || "Graphic Design Asset",
+      imageUrl: d.imageUrl || mockupCreativesImg,
+      dimensions: d.dimensions || d.format || "1080 × 1350 px (4:5)",
+      clientType: d.clientType || d.format || "Commercial Creative",
+      description: d.description || "High-impact visual creative engineered for commercial conversion, branding consistency, and brand identity standards.",
+      metrics: [
+        { label: "Design Format", value: d.dimensions || d.format || "Social Grid", highlight: "purple" },
+        { label: "Asset Category", value: d.category || "Branding", highlight: "emerald" },
+      ],
+      tags: [d.category, d.dimensions, ...(d.tags || ["Canva Pro", "Visual Identity", "Typography"])].filter(Boolean),
+      currentIndex: index,
+      itemsList: canvaDesigns,
+      navigateFn: (nextIdx) => openCanvaDesignMedia(nextIdx),
+    });
+  };
+
+  const openCanvaVideoMedia = (index) => {
+    const canvaVideos = Array.isArray(modules.canva?.videos) ? modules.canva.videos : [];
+    if (!canvaVideos[index]) return;
+    const v = canvaVideos[index];
+    setActiveMediaItem({
+      type: "video",
+      moduleNumber: "MODULE 02",
+      moduleTitle: "Canva Motion Reels & Video Ads",
+      category: v.format || "9:16 Vertical Video Reel",
+      title: v.title || "Short-Form Video Creative",
+      videoUrl: v.videoUrl || "",
+      thumbnailUrl: v.thumbnailUrl || mockupCreativesImg,
+      duration: v.duration || "0:30",
+      dimensions: "1080 × 1920 px (9:16)",
+      format: v.format || "9:16 Reel",
+      hook: v.hook || "0-3s Pattern Interrupt & Hook Architecture",
+      retentionMetric: v.retention || "84% Target 3s Retention",
+      clientType: v.platform || "Instagram Reels & TikTok",
+      description: v.description || "High-retention vertical short-form video creative edited with dynamic kinetic typography, audio synchronization, and high-converting CTA pacing.",
+      metrics: [
+        { label: "Video Duration", value: v.duration || "0:30", highlight: "amber" },
+        { label: "Aspect Ratio", value: v.format || "9:16 Reel", highlight: "purple" },
+        { label: "Retention Rate", value: v.retention || "84% Completion", highlight: "emerald" },
+        { label: "Soundtrack", value: v.music || "Trending Audio Sync", highlight: "slate" },
+      ],
+      tags: [v.format, "Canva Video Suite", "Audio Keyframing", "Hook Optimization"],
+      currentIndex: index,
+      itemsList: canvaVideos,
+      navigateFn: (nextIdx) => openCanvaVideoMedia(nextIdx),
+    });
+  };
+
+  const openSmoMedia = (index) => {
+    const smoProfiles = Array.isArray(modules.socialOrganic) ? modules.socialOrganic : [];
+    if (!smoProfiles[index]) return;
+    const p = smoProfiles[index];
+    setActiveMediaItem({
+      type: "image",
+      moduleNumber: "MODULE 03",
+      moduleTitle: "Organic Social Growth Engineering",
+      category: `${p.platform || "Social Media"} Organic Strategy`,
+      title: `${p.handle || "@profile"} — ${p.name || "Brand Account"}`,
+      imageUrl: p.screenshotUrl || mockupCreativesImg,
+      clientType: p.platform || "Organic Social Profile",
+      description: p.strategy || `End-to-end 9-grid visual aesthetic curation, bio conversion funnel, hashtag clustering, and audience growth roadmap for ${p.name || p.handle}.`,
+      metrics: [
+        { label: "Followers", value: p.followers || "12.4K", highlight: "purple" },
+        { label: "Engagement Rate", value: p.engagementRate || "4.8%", highlight: "emerald" },
+        { label: "30-Day Growth", value: p.growth || "+34%", highlight: "amber" },
+        { label: "Total Posts", value: p.postsCount || "84 Posts", highlight: "slate" },
+      ],
+      tags: [p.platform, "9-Grid Aesthetics", "Hashtag Clustering", "Content Pillars", p.topPostTopic].filter(Boolean),
+      liveUrl: p.profileUrl || "",
+      currentIndex: index,
+      itemsList: smoProfiles,
+      navigateFn: (nextIdx) => openSmoMedia(nextIdx),
+    });
+  };
+
+  const openMetaAdMedia = (index) => {
+    const metaAds = Array.isArray(modules.socialMarketing) ? modules.socialMarketing : [];
+    if (!metaAds[index]) return;
+    const ad = metaAds[index];
+    setActiveMediaItem({
+      type: ad.videoUrl ? "video" : "image",
+      moduleNumber: "MODULE 04",
+      moduleTitle: "Meta Ads & Paid Social Acquisition",
+      category: ad.campaignType || "Meta Ads Manager",
+      title: ad.title || "Meta Campaign Ad Creative",
+      imageUrl: ad.screenshotUrl || mockupCreativesImg,
+      videoUrl: ad.videoUrl || "",
+      thumbnailUrl: ad.screenshotUrl || mockupCreativesImg,
+      clientType: ad.objective || "Conversions / Sales",
+      duration: ad.videoUrl ? "0:30" : undefined,
+      hook: ad.hookText || (ad.summary ? `Hook: ${ad.summary.slice(0, 70)}...` : ""),
+      description: ad.summary || `High-ROAS Meta advertising creative designed for Advantage+ placements across Instagram Stories, Reels, and Facebook Feeds.`,
+      metrics: [
+        { label: "ROAS Achieved", value: ad.roas ? `${ad.roas}x` : "4.2x", highlight: "emerald" },
+        { label: "Click-Through Rate", value: ad.ctr ? `${ad.ctr}%` : "3.1%", highlight: "amber" },
+        { label: "Monthly Spend", value: ad.spend ? `₹${ad.spend}` : "₹45,000", highlight: "purple" },
+        { label: "Target CPA", value: ad.cpa ? `₹${ad.cpa}` : "₹180", highlight: "slate" },
+      ],
+      tags: ["Meta Ads Manager", "Advantage+ Placements", ad.objective, "Retargeting CBO"].filter(Boolean),
+      currentIndex: index,
+      itemsList: metaAds,
+      navigateFn: (nextIdx) => openMetaAdMedia(nextIdx),
+    });
+  };
+
+  const openGoogleAdMedia = (index) => {
+    const gAds = Array.isArray(modules.googleAds) ? modules.googleAds : [];
+    if (!gAds[index]) return;
+    const gad = gAds[index];
+    setActiveMediaItem({
+      type: "image",
+      moduleNumber: "MODULE 05",
+      moduleTitle: "Google Ads & High-Intent Search Architecture",
+      category: gad.campaignType || "Google Search Campaign",
+      title: gad.campaignName || "Google Ads Architecture",
+      imageUrl: gad.screenshotUrl || mockupLaptopImg,
+      clientType: gad.campaignType || "Search Network",
+      description: `${gad.headline1 || "High Converting Search Ad"} | ${gad.description1 || "Comprehensive keyword bidding structure with sitelink extensions, callouts, and conversion tracking."}`,
+      metrics: [
+        { label: "Monthly Spend", value: gad.spend ? `₹${gad.spend}` : "₹60,000", highlight: "purple" },
+        { label: "Conversion Rate", value: gad.conversionRate ? `${gad.conversionRate}%` : "5.4%", highlight: "emerald" },
+        { label: "Average CPC", value: gad.cpc ? `₹${gad.cpc}` : "₹12.40", highlight: "amber" },
+        { label: "ROAS / Quality Score", value: gad.qualityScore ? `${gad.qualityScore}/10` : "9/10 QS", highlight: "slate" },
+      ],
+      tags: ["Google Ads", gad.campaignType, "SKAG Keyword Structure", "Sitelink Extensions", "Negative Keywords"].filter(Boolean),
+      liveUrl: gad.landingPageUrl || "",
+      currentIndex: index,
+      itemsList: gAds,
+      navigateFn: (nextIdx) => openGoogleAdMedia(nextIdx),
+    });
+  };
+
+  const openSeoMedia = () => {
+    const seoData = modules.seo || {};
+    const localSeo = seoData.localSeo || {};
+    setActiveMediaItem({
+      type: "image",
+      moduleNumber: "MODULE 06",
+      moduleTitle: "SEO & Google Business Profile 3-Pack",
+      category: "Local SEO & Map Pack Optimization",
+      title: localSeo.businessName || "Local Google Business Profile",
+      imageUrl: mockupLaptopImg,
+      clientType: localSeo.addressSnippet || "Google Maps Geo-Targeted Business",
+      description: "Verified Google Business Profile ranking #1-#3 in the Google Maps Local 3-Pack, optimized with NAP citations, geo-tagged photo geotags, review velocity, and primary category alignment.",
+      metrics: [
+        { label: "Google Rating", value: `${localSeo.rating || 4.9} ★`, highlight: "amber" },
+        { label: "Verified Reviews", value: `${localSeo.reviewCount || 128}+`, highlight: "emerald" },
+        { label: "Local 3-Pack Rank", value: "#1 Rank", highlight: "purple" },
+        { label: "NAP Consistency", value: "100% Citations", highlight: "slate" },
+      ],
+      tags: ["Google Business Profile", "Local 3-Pack", "Geo-Targeting", "NAP Citations", "Review Funnels"],
+      currentIndex: 0,
+      itemsList: [localSeo],
+      navigateFn: null,
+    });
+  };
+
+  const openShopifyMedia = () => {
+    const shopData = modules.shopify || {};
+    setActiveMediaItem({
+      type: "image",
+      moduleNumber: "MODULE 09",
+      moduleTitle: "Shopify E-Commerce Store Architecture",
+      category: shopData.topBadge || "Shopify Partner Certified",
+      title: shopData.storeName || "Shopify Store Showcase",
+      imageUrl: shopData.imageUrl || mockupCreativesImg,
+      clientType: shopData.niche || "Direct-To-Consumer (D2C)",
+      description: shopData.description || `Fully functional Shopify storefront with customized Liquid templates, streamlined 1-click checkout, conversion-rate optimized product pages, and app integrations.`,
+      metrics: [
+        { label: "Conversion Rate", value: shopData.conversionRate || "3.8%", highlight: "emerald" },
+        { label: "Average Order Value", value: shopData.aov || "₹2,450", highlight: "amber" },
+        { label: "Monthly Revenue", value: shopData.monthlyRevenue || "₹4,80,000", highlight: "purple" },
+        { label: "Mobile Speed Score", value: shopData.speedScore || "94/100", highlight: "slate" },
+      ],
+      tags: ["Shopify Liquid", shopData.themeUsed || "Dawn 2.0", "Klaviyo CRM", "Loox Reviews", "1-Page Checkout"],
+      liveUrl: shopData.liveUrl || "",
+      currentIndex: 0,
+      itemsList: [shopData],
+      navigateFn: null,
+    });
+  };
+
+  const openVideoEditingMedia = (index) => {
+    const veData = modules.videoEditing || {};
+    const reels = Array.isArray(veData.reels) ? veData.reels : [];
+    if (!reels[index]) return;
+    const reel = reels[index];
+    setActiveMediaItem({
+      type: "video",
+      moduleNumber: "MODULE 10",
+      moduleTitle: "Video Editing & Post-Production",
+      category: reel.formatTag || "Reels / TikTok Commercial Cut",
+      title: reel.title || "Video Commercial Deliverable",
+      imageUrl: reel.imageUrl || mockupCreativesImg,
+      thumbnailUrl: reel.imageUrl || mockupCreativesImg,
+      videoUrl: reel.videoUrl || "",
+      duration: reel.duration || "0:30",
+      format: reel.formatTag || "9:16 Vertical",
+      hook: reel.hookStyle || reel.overlayTitle || "Pattern Interrupt Hook (0-3s)",
+      retentionMetric: reel.retentionRate || "87% 3-Second Retention",
+      clientType: reel.software || "Premiere Pro / After Effects / CapCut",
+      description: reel.description || "High-energy commercial video cut with fast-paced beat sync, sound effects (SFX) layering, animated keyframes, subtitle kinetic typography, and color grading.",
+      metrics: [
+        { label: "Editing Software", value: reel.software || "Premiere Pro", highlight: "purple" },
+        { label: "Target Retention", value: reel.retentionRate || "87%", highlight: "emerald" },
+        { label: "Video Duration", value: reel.duration || "0:30", highlight: "amber" },
+        { label: "Sound Design", value: reel.musicSoundFx || "Dynamic SFX", highlight: "slate" },
+      ],
+      tags: [reel.software, reel.formatTag, "Sound Design", "Kinetic Subtitles", "Color Grading"].filter(Boolean),
+      currentIndex: index,
+      itemsList: reels,
+      navigateFn: (nextIdx) => openVideoEditingMedia(nextIdx),
+    });
+  };
+
+  const openDropshippingMedia = () => {
+    const dropData = modules.dropshipping || {};
+    const winProd = dropData.winningProduct || "Ergonomic Lumbar Cushion Pro";
+    setActiveMediaItem({
+      type: "image",
+      moduleNumber: "MODULE 11",
+      moduleTitle: "Dropshipping Store & Winning Product Validation",
+      category: dropData.categoryBadge || "Direct-To-Consumer Fulfillment",
+      title: winProd,
+      imageUrl: dropData.productImage || mockupLaptopImg,
+      clientType: dropData.storefrontDetails || "AliExpress / CJ Dropshipping Private Supplier",
+      description: `Validated winning product with confirmed product-market fit, proven Facebook/TikTok ad angles, optimized supplier lead times (7-10 days), and high operating profit margin.`,
+      metrics: [
+        { label: "Selling Price", value: dropData.sellingPrice || "₹1,899", highlight: "emerald" },
+        { label: "Product COGS", value: dropData.cogs || "₹450", highlight: "amber" },
+        { label: "Net Margin", value: dropData.netMargin || "62%", highlight: "purple" },
+        { label: "Orders Validated", value: dropData.totalOrders || "450+ Units", highlight: "slate" },
+      ],
+      tags: ["Product Research", "CJ Dropshipping", "Winning Creative", "Unit Economics", "Private Labeling"],
+      currentIndex: 0,
+      itemsList: [dropData],
+      navigateFn: null,
+    });
   };
 
   // Student field updater
@@ -1984,33 +2292,45 @@ export const PortfolioPreview = ({
 
                 {/* Main Card Body */}
                 <div className="relative bg-slate-900 rounded-2xl p-2 border border-slate-700/80 shadow-2xl overflow-hidden group">
-                  <div className="relative overflow-hidden rounded-xl">
+                  <div
+                    className="relative overflow-hidden rounded-xl cursor-pointer group/avatar"
+                    onClick={() => openAvatarMedia()}
+                    title="Click to inspect student dossier & photo in high-resolution"
+                  >
                     <img
                       src={student.avatarUrl}
                       alt={student.name}
                       referrerPolicy="no-referrer"
-                      className="w-full aspect-[4/5] max-h-[460px] object-cover rounded-xl transition-transform duration-500 group-hover:scale-102"
+                      className="w-full aspect-[4/5] max-h-[460px] object-cover rounded-xl transition-transform duration-500 group-hover/avatar:scale-102"
                     />
 
-                    {/* Change Photo Hover Overlay Button */}
+                    {/* Hover Inspect Indicator */}
+                    <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover/avatar:opacity-100 transition-opacity flex flex-col items-center justify-center text-white space-y-2 pointer-events-none">
+                      <div className="p-3 rounded-full bg-blue-600/90 text-white shadow-xl backdrop-blur-xs flex items-center justify-center">
+                        <Eye size={20} />
+                      </div>
+                      <span className="text-xs font-bold tracking-wide">Inspect Profile Dossier</span>
+                      <span className="text-[10px] text-slate-300">View complete credentials & bio</span>
+                    </div>
+
+                    {/* Change Photo Button in Edit Mode */}
                     {isEditable && (
                       <button
                         type="button"
-                        onClick={() =>
+                        onClick={(e) => {
+                          e.stopPropagation();
                           openImageModal(
                             "Update Profile Photo",
                             student.avatarUrl,
                             true,
                             (newUrl) => handleUpdateStudentField("avatarUrl", newUrl)
-                          )
-                        }
-                        className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white space-y-1.5 cursor-pointer"
+                          );
+                        }}
+                        className="absolute bottom-3 right-3 p-2 rounded-xl bg-slate-900/90 hover:bg-blue-600 text-white shadow-lg backdrop-blur-md transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-semibold z-10 border border-slate-700/80"
+                        title="Upload or change profile photo"
                       >
-                        <div className="p-2.5 rounded-full bg-blue-600 text-white shadow-lg">
-                          <Camera size={18} />
-                        </div>
-                        <span className="text-xs font-bold tracking-wide">Change Photo</span>
-                        <span className="text-[10px] text-slate-300">Click to upload or pick avatar</span>
+                        <Camera size={13} />
+                        <span className="text-[11px]">Change</span>
                       </button>
                     )}
                   </div>
@@ -2338,18 +2658,34 @@ export const PortfolioPreview = ({
                           </div>
 
                           {/* Laptop Mockup Image */}
-                          <div className="relative bg-slate-950 aspect-[16/10] w-full max-h-[380px] overflow-hidden group/img">
+                          <div
+                            className="relative bg-slate-950 aspect-[16/10] w-full max-h-[380px] overflow-hidden group/img cursor-pointer"
+                            onClick={() => openWpMedia(pIdx)}
+                            title="Click to view full project data & screenshot"
+                          >
                             <img
                               src={proj.imageUrl || mockupLaptopImg}
                               alt={proj.title}
                               className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-103"
                             />
                             {/* Hover View Screenshot Overlay */}
-                            <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2">
+                            <div className="absolute inset-0 bg-blue-950/60 opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2">
                               <button
                                 type="button"
-                                onClick={() => {
-                                  if (isEditable) {
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openWpMedia(pIdx);
+                                }}
+                                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-lg hover:bg-slate-100 cursor-pointer"
+                              >
+                                <Eye className="w-3.5 h-3.5 text-blue-600" />
+                                <span>Inspect Project & Data</span>
+                              </button>
+                              {isEditable && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
                                     openImageModal(
                                       `Update WordPress Screenshot: ${proj.title}`,
                                       proj.imageUrl || mockupLaptopImg,
@@ -2365,15 +2701,13 @@ export const PortfolioPreview = ({
                                         }
                                       }
                                     );
-                                  } else {
-                                    window.open(proj.imageUrl || mockupLaptopImg, "_blank");
-                                  }
-                                }}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
-                              >
-                                <Eye className="w-3.5 h-3.5 text-blue-600" />
-                                <span>{isEditable ? "Change / View Screenshot" : "View Fullscreen"}</span>
-                              </button>
+                                  }}
+                                  className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-900/90 text-white rounded-lg text-xs font-semibold shadow-lg hover:bg-blue-600 transition-colors cursor-pointer border border-slate-700"
+                                >
+                                  <Camera className="w-3.5 h-3.5 text-blue-400" />
+                                  <span>Change</span>
+                                </button>
+                              )}
                             </div>
                           </div>
 
@@ -2725,7 +3059,11 @@ export const PortfolioPreview = ({
                                 <Trash2 size={13} />
                               </button>
                             )}
-                            <div className="relative aspect-[4/5] bg-slate-900 overflow-hidden group/img">
+                            <div
+                              className="relative aspect-[4/5] bg-slate-900 overflow-hidden group/img cursor-pointer"
+                              onClick={() => openCanvaDesignMedia(dIdx)}
+                              title="Click to inspect graphic design deliverable & specifications"
+                            >
                               <img
                                 src={design.imageUrl || mockupCreativesImg}
                                 alt={design.title}
@@ -2746,12 +3084,24 @@ export const PortfolioPreview = ({
                                   }}
                                 />
                               </div>
-                              {/* Change Screenshot Overlay */}
-                              {isEditable && (
-                                <div className="absolute inset-0 bg-blue-900/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                              {/* Hover Overlay with Inspect Work & Change Image */}
+                              <div className="absolute inset-0 bg-blue-950/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openCanvaDesignMedia(dIdx);
+                                  }}
+                                  className="px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer flex items-center gap-1.5"
+                                >
+                                  <Eye className="w-3.5 h-3.5 text-blue-600" />
+                                  <span>Inspect Work</span>
+                                </button>
+                                {isEditable && (
                                   <button
                                     type="button"
-                                    onClick={() =>
+                                    onClick={(e) => {
+                                      e.stopPropagation();
                                       openImageModal(
                                         `Update Canva Design: ${design.title}`,
                                         design.imageUrl || mockupCreativesImg,
@@ -2772,15 +3122,15 @@ export const PortfolioPreview = ({
                                             });
                                           }
                                         }
-                                      )
-                                    }
-                                    className="px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer flex items-center gap-1.5"
+                                      );
+                                    }}
+                                    className="px-2.5 py-1.5 bg-slate-900/90 text-white rounded-lg text-xs font-semibold shadow-md hover:bg-blue-600 cursor-pointer flex items-center gap-1 border border-slate-700"
                                   >
-                                    <Camera className="w-3.5 h-3.5 text-blue-600" />
-                                    <span>Change Image</span>
+                                    <Camera className="w-3.5 h-3.5 text-blue-400" />
+                                    <span>Change</span>
                                   </button>
-                                </div>
-                              )}
+                                )}
+                              </div>
                             </div>
 
                             <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
@@ -2832,33 +3182,11 @@ export const PortfolioPreview = ({
                               </div>
                               <button
                                 type="button"
-                                onClick={() =>
-                                  openImageModal(
-                                    `${design.title} (${design.dimensions || "Creative Display"})`,
-                                    design.imageUrl || mockupCreativesImg,
-                                    true,
-                                    (newUrl) => {
-                                      if (onChange) {
-                                        const updatedDesigns = [...canvaDesigns];
-                                        updatedDesigns[dIdx] = { ...updatedDesigns[dIdx], imageUrl: newUrl };
-                                        onChange({
-                                          ...portfolioData,
-                                          modules: {
-                                            ...modules,
-                                            canva: {
-                                              ...modules.canva,
-                                              designs: updatedDesigns,
-                                            },
-                                          },
-                                        });
-                                      }
-                                    }
-                                  )
-                                }
-                                className="text-[11px] font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 self-start pt-2 cursor-pointer"
+                                onClick={() => openCanvaDesignMedia(dIdx)}
+                                className="text-[11px] font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1.5 self-start pt-2 cursor-pointer"
                               >
-                                <span>Expand / View Design</span>
-                                <ExternalLink className="w-3 h-3" />
+                                <Eye className="w-3.5 h-3.5" />
+                                <span>Inspect Design & Specifications</span>
                               </button>
                             </div>
                           </div>
@@ -2914,7 +3242,11 @@ export const PortfolioPreview = ({
                             )}
 
                             {/* Compact Video Thumbnail mockup */}
-                            <div className="relative w-full aspect-[16/10] bg-slate-950 overflow-hidden flex items-center justify-center shrink-0 group/thumb">
+                            <div
+                              className="relative w-full aspect-[16/10] bg-slate-950 overflow-hidden flex items-center justify-center shrink-0 group/thumb cursor-pointer"
+                              onClick={() => openCanvaVideoMedia(vIdx)}
+                              title="Click to play video reel & view performance metrics"
+                            >
                               <img
                                 src={video.thumbnailUrl || mockupCreativesImg}
                                 alt={video.title}
@@ -2958,8 +3290,8 @@ export const PortfolioPreview = ({
                                   }}
                                 />
                               </div>
-                              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                <div className="w-10 h-10 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg group-hover/thumb:scale-110 transition-transform">
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-11 h-11 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg group-hover/thumb:scale-110 transition-transform">
                                   <Play className="w-5 h-5 fill-slate-950 ml-0.5" />
                                 </div>
                               </div>
@@ -3061,17 +3393,11 @@ export const PortfolioPreview = ({
                                 )}
                                 <button
                                   type="button"
-                                  onClick={() =>
-                                    openImageModal(
-                                      `${video.title} (${video.format || "Video Reel"})`,
-                                      video.thumbnailUrl || mockupCreativesImg,
-                                      true
-                                    )
-                                  }
-                                  className="text-[11px] font-semibold text-slate-400 hover:text-slate-200 flex items-center gap-1 ml-auto cursor-pointer"
+                                  onClick={() => openCanvaVideoMedia(vIdx)}
+                                  className="text-[11px] font-semibold text-amber-400 hover:text-amber-300 flex items-center gap-1.5 ml-auto cursor-pointer"
                                 >
-                                  <span>Enlarge</span>
-                                  <ExternalLink className="w-3 h-3" />
+                                  <Play className="w-3 h-3 fill-amber-400" />
+                                  <span>Play & View Reel Data</span>
                                 </button>
                               </div>
                             </div>
@@ -3422,17 +3748,33 @@ export const PortfolioPreview = ({
                         )}
 
                         {/* Grid Mockup Image */}
-                        <div className="relative aspect-[16/9] max-h-[260px] bg-slate-950 overflow-hidden group/img">
+                        <div
+                          className="relative aspect-[16/9] max-h-[260px] bg-slate-950 overflow-hidden group/img cursor-pointer"
+                          onClick={() => openSmoMedia(pIdx)}
+                          title="Click to view 9-grid mockup & organic growth data"
+                        >
                           <img
                             src={profile.screenshotUrl || mockupCreativesImg}
                             alt={profile.handle}
                             className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                           />
-                          <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                          <div className="absolute inset-0 bg-slate-950/60 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center gap-2">
                             <button
                               type="button"
-                              onClick={() => {
-                                if (isEditable) {
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openSmoMedia(pIdx);
+                              }}
+                              className="px-3.5 py-2 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-lg hover:bg-slate-100 cursor-pointer flex items-center gap-1.5"
+                            >
+                              <Eye className="w-3.5 h-3.5 text-blue-600" />
+                              <span>Inspect Grid & Data</span>
+                            </button>
+                            {isEditable && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
                                   openImageModal(
                                     `Update SMO Grid Screenshot: ${profile.handle}`,
                                     profile.screenshotUrl || mockupCreativesImg,
@@ -3448,19 +3790,13 @@ export const PortfolioPreview = ({
                                       }
                                     }
                                   );
-                                } else {
-                                  openImageModal(
-                                    `${profile.handle} Organic Social Grid`,
-                                    profile.screenshotUrl || mockupCreativesImg,
-                                    true
-                                  );
-                                }
-                              }}
-                              className="px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer flex items-center gap-1.5"
-                            >
-                              <Eye className="w-3.5 h-3.5 text-blue-600" />
-                              <span>{isEditable ? "Change / Inspect Screenshot" : "Inspect Profile Grid Screenshot"}</span>
-                            </button>
+                                }}
+                                className="px-3 py-2 bg-slate-900/90 text-white rounded-lg text-xs font-semibold shadow-lg hover:bg-blue-600 transition-colors cursor-pointer flex items-center gap-1.5 border border-slate-700"
+                              >
+                                <Camera className="w-3.5 h-3.5 text-blue-400" />
+                                <span>Change</span>
+                              </button>
+                            )}
                           </div>
                         </div>
 
@@ -3797,17 +4133,42 @@ export const PortfolioPreview = ({
                                 <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
                                   Ad Creative & Placement Screenshot:
                                 </div>
-                                <div className="relative bg-slate-900 rounded-xl overflow-hidden aspect-[4/3] border border-slate-200 shadow-xs group/ad">
+                                <div
+                                  className="relative bg-slate-900 rounded-xl overflow-hidden aspect-[4/3] border border-slate-200 shadow-xs group/ad cursor-pointer"
+                                  onClick={() => openMetaAdMedia(idx)}
+                                  title="Click to inspect ad creative & campaign data"
+                                >
                                   <img
                                     src={ad.screenshotUrl || mockupCreativesImg}
                                     alt={ad.title}
                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                                   />
-                                  {isEditable && (
-                                    <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/ad:opacity-100 transition-opacity flex items-center justify-center">
+                                  {/* Center Play Button if video ad */}
+                                  {ad.videoUrl && (
+                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                      <div className="w-11 h-11 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg">
+                                        <Play className="w-5 h-5 fill-slate-950 ml-0.5" />
+                                      </div>
+                                    </div>
+                                  )}
+                                  {/* Hover Inspect Overlay */}
+                                  <div className="absolute inset-0 bg-blue-950/60 opacity-0 group-hover/ad:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        openMetaAdMedia(idx);
+                                      }}
+                                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-lg hover:bg-slate-100 cursor-pointer"
+                                    >
+                                      <Eye className="w-3.5 h-3.5 text-blue-600" />
+                                      <span>Inspect Creative & KPIs</span>
+                                    </button>
+                                    {isEditable && (
                                       <button
                                         type="button"
-                                        onClick={() =>
+                                        onClick={(e) => {
+                                          e.stopPropagation();
                                           openImageModal(
                                             `Change Meta Ad Creative: ${ad.title}`,
                                             ad.screenshotUrl || mockupCreativesImg,
@@ -3822,15 +4183,15 @@ export const PortfolioPreview = ({
                                                 });
                                               }
                                             }
-                                          )
-                                        }
-                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
+                                          );
+                                        }}
+                                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-900/90 text-white rounded-lg text-xs font-semibold shadow-lg hover:bg-blue-600 transition-colors cursor-pointer border border-slate-700"
                                       >
-                                        <Camera className="w-3.5 h-3.5 text-blue-600" />
-                                        <span>Change Ad Screenshot</span>
+                                        <Camera className="w-3.5 h-3.5 text-blue-400" />
+                                        <span>Change</span>
                                       </button>
-                                    </div>
-                                  )}
+                                    )}
+                                  </div>
                                   <div className="absolute bottom-2.5 right-2.5 bg-slate-900/80 backdrop-blur-xs text-amber-400 text-[10px] font-mono px-2 py-0.5 rounded shadow-xs">
                                     Meta Ads Manager Verified
                                   </div>
@@ -4204,17 +4565,34 @@ export const PortfolioPreview = ({
                                 <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
                                   Search Architecture & Extension Preview:
                                 </div>
-                                <div className="relative bg-slate-950 rounded-xl overflow-hidden aspect-[4/3] border border-slate-200 shadow-xs group/gad">
+                                <div
+                                  className="relative bg-slate-950 rounded-xl overflow-hidden aspect-[4/3] border border-slate-200 shadow-xs group/gad cursor-pointer"
+                                  onClick={() => openGoogleAdMedia(idx)}
+                                  title="Click to inspect Google Ad & performance data"
+                                >
                                   <img
                                     src={gad.screenshotUrl || mockupLaptopImg}
                                     alt={gad.campaignName}
                                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                                   />
-                                  {isEditable && (
-                                    <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover/gad:opacity-100 transition-opacity flex items-center justify-center">
+                                  {/* Hover Inspect Overlay */}
+                                  <div className="absolute inset-0 bg-blue-950/60 opacity-0 group-hover/gad:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        openGoogleAdMedia(idx);
+                                      }}
+                                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-lg hover:bg-slate-100 cursor-pointer"
+                                    >
+                                      <Eye className="w-3.5 h-3.5 text-blue-600" />
+                                      <span>Inspect Ad & Metrics</span>
+                                    </button>
+                                    {isEditable && (
                                       <button
                                         type="button"
-                                        onClick={() =>
+                                        onClick={(e) => {
+                                          e.stopPropagation();
                                           openImageModal(
                                             `Change Google Ads Preview: ${gad.campaignName}`,
                                             gad.screenshotUrl || mockupLaptopImg,
@@ -4229,15 +4607,15 @@ export const PortfolioPreview = ({
                                                 });
                                               }
                                             }
-                                          )
-                                        }
-                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-md hover:bg-slate-100 cursor-pointer"
+                                          );
+                                        }}
+                                        className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-900/90 text-white rounded-lg text-xs font-semibold shadow-lg hover:bg-blue-600 transition-colors cursor-pointer border border-slate-700"
                                       >
-                                        <Camera className="w-3.5 h-3.5 text-blue-600" />
-                                        <span>Change Ad Screenshot</span>
+                                        <Camera className="w-3.5 h-3.5 text-blue-400" />
+                                        <span>Change</span>
                                       </button>
-                                    </div>
-                                  )}
+                                    )}
+                                  </div>
                                   <div className="absolute bottom-2.5 right-2.5 bg-slate-900/80 backdrop-blur-xs text-emerald-400 text-[10px] font-mono px-2 py-0.5 rounded shadow-xs">
                                     Google Ads Verified
                                   </div>
@@ -5128,12 +5506,23 @@ export const PortfolioPreview = ({
                           </div>
 
                           {/* Laptop / Mockup Showcase Image */}
-                          <div className="relative rounded-xl overflow-hidden border border-slate-200 bg-slate-950 aspect-[16/10] shadow-xs group">
+                          <div
+                            className="relative rounded-xl overflow-hidden border border-slate-200 bg-slate-950 aspect-[16/10] shadow-xs group cursor-pointer"
+                            onClick={() => openSeoMedia()}
+                            title="Click to view Google Business Profile data & Local 3-Pack rank"
+                          >
                             <img
                               src={mockupLaptopImg}
                               alt="Local SEO Live Website Build"
                               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                             />
+                            {/* Hover Inspect Indicator */}
+                            <div className="absolute inset-0 bg-blue-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <div className="px-3.5 py-2 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-lg flex items-center gap-1.5">
+                                <Eye className="w-3.5 h-3.5 text-blue-600" />
+                                <span>Inspect 3-Pack & GBP Data</span>
+                              </div>
+                            </div>
                             <div className="absolute bottom-2.5 left-2.5 bg-slate-900/85 backdrop-blur-xs text-emerald-400 text-[10px] font-mono px-2 py-0.5 rounded shadow-xs">
                               Verified Google Maps Local 3-Pack
                             </div>
@@ -6444,12 +6833,23 @@ export const PortfolioPreview = ({
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                       {/* Left: Store Screenshot Mockup */}
                       <div className="lg:col-span-6 space-y-3">
-                        <div className="relative bg-slate-950 aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 shadow-xs group">
+                        <div
+                          className="relative bg-slate-950 aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 shadow-xs group cursor-pointer"
+                          onClick={() => openShopifyMedia()}
+                          title="Click to inspect Shopify store data & CRO metrics"
+                        >
                           <img
                             src={shopData.imageUrl || mockupCreativesImg}
                             alt={storeName}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                           />
+                          {/* Hover Inspect Indicator */}
+                          <div className="absolute inset-0 bg-blue-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                            <div className="px-3.5 py-2 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-lg flex items-center gap-1.5">
+                              <Eye className="w-3.5 h-3.5 text-blue-600" />
+                              <span>Inspect Store & CRO Metrics</span>
+                            </div>
+                          </div>
                           <div className="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-xs text-amber-400 font-mono text-[10px] px-2.5 py-1 rounded-md border border-slate-700 shadow-xs font-bold">
                             <EditableText
                               value={themeBadge}
@@ -6460,7 +6860,10 @@ export const PortfolioPreview = ({
 
                           {/* Editable Image Upload Overlay */}
                           {isEditable && (
-                            <div className="absolute bottom-3 right-3 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 text-xs shadow-lg">
+                            <div
+                              className="absolute bottom-3 right-3 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 text-xs shadow-lg z-10"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <label className="text-white hover:text-blue-300 font-semibold cursor-pointer flex items-center gap-1.5">
                                 <Camera size={13} />
                                 <span>Change Image</span>
@@ -6825,7 +7228,11 @@ export const PortfolioPreview = ({
                         className="w-[380px] sm:w-[440px] lg:w-[480px] h-full bg-slate-900 text-white rounded-2xl border border-slate-800 overflow-hidden shadow-md flex flex-col justify-between group relative shrink-0"
                       >
                         {/* Video Thumbnail Area */}
-                        <div className="relative aspect-[16/9] bg-black overflow-hidden group/vid">
+                        <div
+                          className="relative aspect-[16/9] bg-black overflow-hidden group/vid cursor-pointer"
+                          onClick={() => openVideoEditingMedia(rIdx)}
+                          title="Click to play video reel & view post-production data"
+                        >
                           <img
                             src={reel.imageUrl || mockupCreativesImg}
                             alt={reel.title}
@@ -6858,14 +7265,17 @@ export const PortfolioPreview = ({
 
                           {/* Center Play Button */}
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-12 h-12 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform cursor-pointer">
+                            <div className="w-12 h-12 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                               <Play className="w-5 h-5 fill-slate-950 ml-0.5" />
                             </div>
                           </div>
 
                           {/* Editable Image Upload Overlay */}
                           {isEditable && (
-                            <div className="absolute bottom-3 right-3 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-lg border border-slate-700 text-xs shadow-lg">
+                            <div
+                              className="absolute bottom-3 right-3 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-2.5 py-1 rounded-lg border border-slate-700 text-xs shadow-lg z-10"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <label className="text-white hover:text-amber-300 font-semibold cursor-pointer flex items-center gap-1 text-[11px]">
                                 <Camera size={12} />
                                 <span>Change Thumbnail</span>
@@ -6902,8 +7312,11 @@ export const PortfolioPreview = ({
                           {isEditable && reels.length > 1 && (
                             <button
                               type="button"
-                              onClick={() => handleDeleteVideoReel(rIdx)}
-                              className="absolute bottom-3 left-3 p-1.5 bg-rose-600/90 hover:bg-rose-700 text-white rounded-lg shadow-md cursor-pointer transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteVideoReel(rIdx);
+                              }}
+                              className="absolute bottom-3 left-3 p-1.5 bg-rose-600/90 hover:bg-rose-700 text-white rounded-lg shadow-md cursor-pointer transition-colors z-10"
                               title="Delete Video Reel"
                             >
                               <Trash2 size={13} />
@@ -7007,10 +7420,11 @@ export const PortfolioPreview = ({
 
                             <button
                               type="button"
-                              className="text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1 cursor-pointer"
+                              onClick={() => openVideoEditingMedia(rIdx)}
+                              className="text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1.5 cursor-pointer"
                             >
-                              <span>Enlarge Player</span>
-                              <ExternalLink className="w-3 h-3" />
+                              <Play className="w-3.5 h-3.5 fill-amber-400" />
+                              <span>Play Reel & View Data</span>
                             </button>
                           </div>
                         </div>
@@ -7122,14 +7536,28 @@ export const PortfolioPreview = ({
                         </div>
 
                         {/* Product Image Manager */}
-                        <div className="relative aspect-[16/9] bg-slate-950 rounded-xl overflow-hidden border border-slate-200 shadow-xs group">
+                        <div
+                          className="relative aspect-[16/9] bg-slate-950 rounded-xl overflow-hidden border border-slate-200 shadow-xs group cursor-pointer"
+                          onClick={() => openDropshippingMedia()}
+                          title="Click to view winning product validation & unit economics"
+                        >
                           <img
                             src={dropData.productImage || mockupLaptopImg}
                             alt={winProd}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
                           />
+                          {/* Hover Inspect Indicator */}
+                          <div className="absolute inset-0 bg-blue-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                            <div className="px-3.5 py-2 bg-white text-slate-900 rounded-lg text-xs font-semibold shadow-lg flex items-center gap-1.5">
+                              <Eye className="w-3.5 h-3.5 text-blue-600" />
+                              <span>Inspect Product & Economics</span>
+                            </div>
+                          </div>
                           {isEditable && (
-                            <div className="absolute bottom-3 right-3 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 text-xs shadow-lg">
+                            <div
+                              className="absolute bottom-3 right-3 flex items-center gap-2 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-700 text-xs shadow-lg z-10"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <label className="text-white hover:text-blue-300 font-semibold cursor-pointer flex items-center gap-1.5">
                                 <Camera size={13} />
                                 <span>Change Image</span>
@@ -8353,6 +8781,12 @@ export const PortfolioPreview = ({
           }
           closeImageModal();
         }}
+      />
+      {/* 7. UNIVERSAL LIGHTBOX MODAL WITH BLURRED BACKDROP FOR ALL IMAGE & VIDEO WORK */}
+      <PortfolioMediaModal
+        mediaItem={activeMediaItem}
+        onClose={() => setActiveMediaItem(null)}
+        onNavigate={handleNavigateMedia}
       />
     </div>
     </PortfolioEditableContext.Provider>
