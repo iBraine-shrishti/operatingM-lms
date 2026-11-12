@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { X, Upload, Link as LinkIcon, Image as ImageIcon, Check } from "lucide-react";
+import {
+  X,
+  Upload,
+  Link as LinkIcon,
+  Image as ImageIcon,
+  Check,
+  Globe,
+  Camera,
+  Loader2,
+  Sparkles,
+} from "lucide-react";
+import { captureWebsiteScreenshot, isValidWebUrl } from "./screenshotService";
 
 export const PRESET_AVATARS = [
   {
@@ -35,12 +46,47 @@ export const ImageUploadModal = ({
   onSave,
   title = "Update Image",
   isAvatar = false,
+  initialWebsiteUrl = "",
 }) => {
   const [urlInput, setUrlInput] = useState(currentUrl || "");
   const [previewUrl, setPreviewUrl] = useState(currentUrl || "");
   const [uploadError, setUploadError] = useState("");
+  const [websiteUrlInput, setWebsiteUrlInput] = useState(initialWebsiteUrl || "");
+  const [isCapturingWeb, setIsCapturingWeb] = useState(false);
+  const [webCaptureStatus, setWebCaptureStatus] = useState(null);
 
   if (!isOpen) return null;
+
+  const handleCaptureFromLink = async () => {
+    if (!websiteUrlInput || !isValidWebUrl(websiteUrlInput)) {
+      setWebCaptureStatus({
+        type: "error",
+        message: "Please enter a valid website link (e.g. https://wordpress.org or mybrand.com)",
+      });
+      return;
+    }
+
+    setIsCapturingWeb(true);
+    setWebCaptureStatus(null);
+    setUploadError("");
+
+    try {
+      const captured = await captureWebsiteScreenshot(websiteUrlInput);
+      setUrlInput(captured);
+      setPreviewUrl(captured);
+      setWebCaptureStatus({
+        type: "success",
+        message: "Live UI screenshot captured! Click 'Apply Photo' to save as card thumbnail.",
+      });
+    } catch (err) {
+      setWebCaptureStatus({
+        type: "error",
+        message: err.message || "Failed to capture live screenshot.",
+      });
+    } finally {
+      setIsCapturingWeb(false);
+    }
+  };
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
@@ -125,10 +171,83 @@ export const ImageUploadModal = ({
             </div>
           )}
 
-          {/* Option A: Upload Local File */}
+          {/* Option A: Auto-Capture Screenshot from Website Link */}
+          {!isAvatar && (
+            <div className="p-3.5 bg-blue-50/70 rounded-xl border border-blue-200/90 space-y-2">
+              <label className="font-extrabold text-blue-900 flex items-center justify-between text-xs">
+                <span className="flex items-center gap-1.5">
+                  <Globe size={14} className="text-blue-600" />
+                  <span>Capture Screenshot from Website Link</span>
+                </span>
+                <span className="text-[10px] text-blue-700 font-mono font-bold uppercase tracking-wider bg-blue-100/90 px-2 py-0.5 rounded border border-blue-200">
+                  Auto UI Snapshot
+                </span>
+              </label>
+              <p className="text-[11px] text-blue-700 leading-normal">
+                Enter any live website URL to automatically snapshot its UI and use it as this card&apos;s thumbnail.
+              </p>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    value={websiteUrlInput}
+                    onChange={(e) => {
+                      setWebsiteUrlInput(e.target.value);
+                      setWebCaptureStatus(null);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleCaptureFromLink();
+                      }
+                    }}
+                    placeholder="e.g. https://wordpress.org or your-site.com"
+                    className="w-full pl-8 pr-2.5 py-1.5 text-xs font-mono border border-blue-300 rounded-lg bg-white text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-500"
+                  />
+                  <Globe size={13} className="absolute left-2.5 top-2.5 text-blue-500" />
+                </div>
+                <button
+                  type="button"
+                  disabled={isCapturingWeb || !websiteUrlInput.trim()}
+                  onClick={handleCaptureFromLink}
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold text-xs rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shrink-0 shadow-xs"
+                >
+                  {isCapturingWeb ? (
+                    <>
+                      <Loader2 size={13} className="animate-spin" />
+                      <span>Capturing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Camera size={13} />
+                      <span>Capture UI</span>
+                    </>
+                  )}
+                </button>
+              </div>
+              {webCaptureStatus && (
+                <div
+                  className={`text-[11px] font-semibold flex items-center gap-1.5 p-1.5 rounded-lg ${
+                    webCaptureStatus.type === "success"
+                      ? "text-emerald-800 bg-emerald-50 border border-emerald-200"
+                      : "text-rose-700 bg-rose-50 border border-rose-200"
+                  }`}
+                >
+                  {webCaptureStatus.type === "success" ? (
+                    <Check size={12} className="text-emerald-600 shrink-0" />
+                  ) : (
+                    <X size={12} className="text-rose-600 shrink-0" />
+                  )}
+                  <span>{webCaptureStatus.message}</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Option B: Upload Local File */}
           <div>
             <label className="font-bold text-slate-700 block mb-1.5">
-              Upload from Device (PNG / JPG / WebP)
+              Or Upload Custom Image (PNG / JPG / WebP)
             </label>
             <label className="flex items-center justify-center space-x-2 p-3 border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-xl cursor-pointer bg-slate-50 hover:bg-blue-50/40 transition-colors">
               <Upload size={16} className="text-blue-600" />

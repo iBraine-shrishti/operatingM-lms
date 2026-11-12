@@ -61,11 +61,13 @@ import {
   Activity,
   Flame,
   Upload,
+  Loader2,
 } from "lucide-react";
 import { EditableText, PortfolioEditableContext } from "./EditableText";
 import { ImageUploadModal } from "./ImageUploadModal";
 import { PortfolioPdfExporter } from "./PortfolioPdfExporter";
 import { PortfolioMediaModal } from "./PortfolioMediaModal";
+import { captureWebsiteScreenshot, isValidWebUrl } from "./screenshotService";
 import { MODULES_CATALOG, DEFAULT_MODULE_ORDER, createInitialPortfolioData } from "./portfolioData";
 import logoHorizontalDarkImg from "../../assets/logo-horizontal-dark.png";
 import logoHorizontalImg from "../../assets/logo-horizontal.png";
@@ -376,22 +378,54 @@ export const PortfolioPreview = ({
     title: "",
     currentUrl: "",
     isAvatar: false,
+    initialWebsiteUrl: "",
     onSave: null,
   });
 
-  const openImageModal = (title, currentUrl, isAvatar, onSave) => {
+  const openImageModal = (title, currentUrl, isAvatar, onSave, initialWebsiteUrl = "") => {
     if (!isEditable) return;
     setImageModalConfig({
       isOpen: true,
       title,
       currentUrl,
       isAvatar,
+      initialWebsiteUrl,
       onSave,
     });
   };
 
   const closeImageModal = () => {
     setImageModalConfig((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  // State for live screenshot capture on WordPress cards
+  const [isCapturingWpIdx, setIsCapturingWpIdx] = useState(null);
+
+  const handleCaptureWpCardScreenshot = async (pIdx, urlToCapture) => {
+    if (!urlToCapture || !isValidWebUrl(urlToCapture)) {
+      alert("Please enter a valid live website URL to capture its UI screenshot.");
+      return;
+    }
+
+    setIsCapturingWpIdx(pIdx);
+    try {
+      const screenshot = await captureWebsiteScreenshot(urlToCapture);
+      const wpProjects = Array.isArray(modules.wordpress) ? [...modules.wordpress] : [];
+      if (wpProjects[pIdx]) {
+        wpProjects[pIdx] = { ...wpProjects[pIdx], imageUrl: screenshot };
+        if (onChange) {
+          onChange({
+            ...portfolioData,
+            modules: { ...modules, wordpress: wpProjects },
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Card screenshot capture failed:", err);
+      alert("Failed to capture live website screenshot: " + (err.message || "Unknown error"));
+    } finally {
+      setIsCapturingWpIdx(null);
+    }
   };
 
   // Universal Lightbox Modal state for image & video work inspection
@@ -2623,6 +2657,26 @@ export const PortfolioPreview = ({
                                   }}
                                 />
                               </div>
+                              {isEditable && (proj.liveUrl || proj.domain) && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    handleCaptureWpCardScreenshot(
+                                      pIdx,
+                                      proj.liveUrl || (proj.domain ? `https://${proj.domain}` : "")
+                                    )
+                                  }
+                                  disabled={isCapturingWpIdx === pIdx}
+                                  className="p-1 rounded bg-slate-800 hover:bg-blue-600 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                                  title="Capture screenshot from this live website link"
+                                >
+                                  {isCapturingWpIdx === pIdx ? (
+                                    <Loader2 size={12} className="animate-spin text-blue-400" />
+                                  ) : (
+                                    <Camera size={12} />
+                                  )}
+                                </button>
+                              )}
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                               {isEditable && (
@@ -2668,8 +2722,18 @@ export const PortfolioPreview = ({
                               alt={proj.title}
                               className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-103"
                             />
+
+                            {/* Loading overlay when capturing live UI screenshot */}
+                            {isCapturingWpIdx === pIdx && (
+                              <div className="absolute inset-0 bg-slate-950/85 backdrop-blur-xs flex flex-col items-center justify-center text-white space-y-2 z-20 animate-in fade-in">
+                                <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+                                <span className="text-xs font-bold font-mono tracking-wide">Capturing Live Website UI...</span>
+                                <span className="text-[10px] text-slate-300">Fetching high-res screenshot</span>
+                              </div>
+                            )}
+
                             {/* Hover View Screenshot Overlay */}
-                            <div className="absolute inset-0 bg-blue-950/60 opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2">
+                            <div className="absolute inset-0 bg-blue-950/60 opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 flex flex-wrap items-center justify-center gap-2 p-3">
                               <button
                                 type="button"
                                 onClick={(e) => {
@@ -2682,31 +2746,53 @@ export const PortfolioPreview = ({
                                 <span>Inspect Project & Data</span>
                               </button>
                               {isEditable && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    openImageModal(
-                                      `Update WordPress Screenshot: ${proj.title}`,
-                                      proj.imageUrl || mockupLaptopImg,
-                                      false,
-                                      (newUrl) => {
-                                        if (onChange) {
-                                          const updated = [...wpProjects];
-                                          updated[pIdx] = { ...updated[pIdx], imageUrl: newUrl };
-                                          onChange({
-                                            ...portfolioData,
-                                            modules: { ...modules, wordpress: updated },
-                                          });
-                                        }
-                                      }
-                                    );
-                                  }}
-                                  className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-900/90 text-white rounded-lg text-xs font-semibold shadow-lg hover:bg-blue-600 transition-colors cursor-pointer border border-slate-700"
-                                >
-                                  <Camera className="w-3.5 h-3.5 text-blue-400" />
-                                  <span>Change</span>
-                                </button>
+                                <>
+                                  {/* Auto-capture screenshot from link button */}
+                                  {(proj.liveUrl || proj.domain) && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleCaptureWpCardScreenshot(
+                                          pIdx,
+                                          proj.liveUrl || (proj.domain ? `https://${proj.domain}` : "")
+                                        );
+                                      }}
+                                      disabled={isCapturingWpIdx === pIdx}
+                                      className="inline-flex items-center gap-1.5 px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-semibold shadow-lg transition-colors cursor-pointer"
+                                      title="Capture screenshot of live website UI"
+                                    >
+                                      <Camera className="w-3.5 h-3.5" />
+                                      <span>Capture from Link</span>
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openImageModal(
+                                        `Update WordPress Screenshot: ${proj.title}`,
+                                        proj.imageUrl || mockupLaptopImg,
+                                        false,
+                                        (newUrl) => {
+                                          if (onChange) {
+                                            const updated = [...wpProjects];
+                                            updated[pIdx] = { ...updated[pIdx], imageUrl: newUrl };
+                                            onChange({
+                                              ...portfolioData,
+                                              modules: { ...modules, wordpress: updated },
+                                            });
+                                          }
+                                        },
+                                        proj.liveUrl || (proj.domain ? `https://${proj.domain}` : "")
+                                      );
+                                    }}
+                                    className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-900/90 text-white rounded-lg text-xs font-semibold shadow-lg hover:bg-blue-600 transition-colors cursor-pointer border border-slate-700"
+                                  >
+                                    <Camera className="w-3.5 h-3.5 text-blue-400" />
+                                    <span>Change</span>
+                                  </button>
+                                </>
                               )}
                             </div>
                           </div>
@@ -8775,6 +8861,7 @@ export const PortfolioPreview = ({
         title={imageModalConfig.title}
         currentUrl={imageModalConfig.currentUrl}
         isAvatar={imageModalConfig.isAvatar}
+        initialWebsiteUrl={imageModalConfig.initialWebsiteUrl}
         onSave={(newUrl) => {
           if (imageModalConfig.onSave) {
             imageModalConfig.onSave(newUrl);

@@ -49,11 +49,13 @@ import {
   Music,
   Pin,
   X,
+  Loader2,
 } from "lucide-react";
 import { PORTFOLIO_THEMES } from "./portfolioThemes";
 import { MODULES_CATALOG, DEFAULT_MODULE_ORDER, createInitialPortfolioData } from "./portfolioData";
 import { PRESET_AVATARS } from "./ImageUploadModal";
 import { useAuth } from "../../context/AuthContext";
+import { captureWebsiteScreenshot, extractCleanDomain, isValidWebUrl } from "./screenshotService";
 
 export const PortfolioFormEditor = ({
   data,
@@ -193,6 +195,82 @@ export const PortfolioFormEditor = ({
         [moduleKey]: updatedContent,
       },
     });
+  };
+
+  // Screenshot capture states for WordPress projects
+  const [wpCapturingMap, setWpCapturingMap] = useState({});
+  const [wpCaptureStatusMap, setWpCaptureStatusMap] = useState({});
+  const wpCaptureDebounceTimers = useRef({});
+
+  const handleCaptureWpScreenshot = async (pIdx, urlToCapture, isAuto = false) => {
+    if (!urlToCapture || !isValidWebUrl(urlToCapture)) {
+      if (!isAuto) {
+        setWpCaptureStatusMap((prev) => ({
+          ...prev,
+          [pIdx]: { type: "error", message: "Please enter a valid website link (e.g. https://my-site.com)" },
+        }));
+      }
+      return;
+    }
+
+    setWpCapturingMap((prev) => ({ ...prev, [pIdx]: true }));
+    setWpCaptureStatusMap((prev) => ({
+      ...prev,
+      [pIdx]: { type: "loading", message: "Capturing UI screenshot from live site..." },
+    }));
+
+    try {
+      const screenshotDataUrl = await captureWebsiteScreenshot(urlToCapture);
+      const cleanDomain = extractCleanDomain(urlToCapture);
+
+      const currentWp = Array.isArray(modules.wordpress) ? [...modules.wordpress] : [];
+      if (currentWp[pIdx]) {
+        currentWp[pIdx] = {
+          ...currentWp[pIdx],
+          imageUrl: screenshotDataUrl,
+          domain: currentWp[pIdx].domain || (cleanDomain ? `${cleanDomain}.demo` : ""),
+        };
+        handleModuleDataChange("wordpress", currentWp);
+      }
+
+      setWpCaptureStatusMap((prev) => ({
+        ...prev,
+        [pIdx]: {
+          type: "success",
+          message: "Live UI screenshot captured & applied to card thumbnail!",
+        },
+      }));
+    } catch (err) {
+      console.error("Screenshot capture error:", err);
+      setWpCaptureStatusMap((prev) => ({
+        ...prev,
+        [pIdx]: {
+          type: "error",
+          message: err.message || "Failed to capture screenshot. You can upload a custom image below.",
+        },
+      }));
+    } finally {
+      setWpCapturingMap((prev) => ({ ...prev, [pIdx]: false }));
+    }
+  };
+
+  const handleWpLiveUrlChange = (pIdx, newUrl) => {
+    const updated = [...(Array.isArray(modules.wordpress) ? modules.wordpress : [])];
+    if (!updated[pIdx]) return;
+    updated[pIdx] = { ...updated[pIdx], liveUrl: newUrl };
+    handleModuleDataChange("wordpress", updated);
+
+    // Clear previous timer
+    if (wpCaptureDebounceTimers.current[pIdx]) {
+      clearTimeout(wpCaptureDebounceTimers.current[pIdx]);
+    }
+
+    // Debounce auto-capture when a valid web URL is entered
+    if (isValidWebUrl(newUrl)) {
+      wpCaptureDebounceTimers.current[pIdx] = setTimeout(() => {
+        handleCaptureWpScreenshot(pIdx, newUrl, true);
+      }, 900);
+    }
   };
 
   // Generic Image file uploader
@@ -1560,17 +1638,63 @@ export const PortfolioFormEditor = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                       <div>
-                        <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Live Demo URL</label>
-                        <input
-                          type="text"
-                          value={proj.liveUrl || ""}
-                          onChange={(e) => {
-                            const updated = [...modules.wordpress];
-                            updated[pIdx] = { ...updated[pIdx], liveUrl: e.target.value };
-                            handleModuleDataChange("wordpress", updated);
-                          }}
-                          className="w-full px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono text-slate-600"
-                        />
+                        <div className="flex items-center justify-between mb-0.5">
+                          <label className="text-[10px] font-bold text-slate-700 flex items-center gap-1">
+                            <Globe size={11} className="text-blue-600" />
+                            <span>Live Demo URL</span>
+                          </label>
+                          <span className="text-[9px] font-mono font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                            Auto-Snapshot
+                          </span>
+                        </div>
+                        <div className="flex gap-1.5">
+                          <input
+                            type="text"
+                            value={proj.liveUrl || ""}
+                            placeholder="https://example.com"
+                            onChange={(e) => handleWpLiveUrlChange(pIdx, e.target.value)}
+                            onBlur={(e) => {
+                              if (e.target.value && isValidWebUrl(e.target.value) && !wpCapturingMap[pIdx]) {
+                                handleCaptureWpScreenshot(pIdx, e.target.value, true);
+                              }
+                            }}
+                            className="flex-1 min-w-0 px-2.5 py-1 text-xs rounded-lg border border-slate-200 bg-white font-mono text-slate-700 placeholder-slate-400 focus:ring-1 focus:ring-blue-600"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleCaptureWpScreenshot(pIdx, proj.liveUrl || proj.domain, false)}
+                            disabled={wpCapturingMap[pIdx] || (!proj.liveUrl && !proj.domain)}
+                            className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold text-[11px] rounded-lg flex items-center gap-1 shadow-2xs transition-colors cursor-pointer shrink-0"
+                            title="Capture live screenshot of this website UI now"
+                          >
+                            {wpCapturingMap[pIdx] ? (
+                              <Loader2 size={12} className="animate-spin text-white" />
+                            ) : (
+                              <Camera size={12} />
+                            )}
+                            <span className="hidden sm:inline">Capture</span>
+                          </button>
+                        </div>
+                        {wpCaptureStatusMap[pIdx] && (
+                          <div
+                            className={`mt-1 text-[10px] font-semibold flex items-center gap-1 ${
+                              wpCaptureStatusMap[pIdx].type === "loading"
+                                ? "text-blue-600"
+                                : wpCaptureStatusMap[pIdx].type === "success"
+                                ? "text-emerald-700"
+                                : "text-amber-700"
+                            }`}
+                          >
+                            {wpCaptureStatusMap[pIdx].type === "loading" ? (
+                              <Loader2 size={10} className="animate-spin" />
+                            ) : wpCaptureStatusMap[pIdx].type === "success" ? (
+                              <CheckCircle2 size={10} className="text-emerald-600" />
+                            ) : (
+                              <Sparkles size={10} className="text-amber-600" />
+                            )}
+                            <span>{wpCaptureStatusMap[pIdx].message}</span>
+                          </div>
+                        )}
                       </div>
                       <div>
                         <label className="text-[10px] font-bold text-slate-500 block mb-0.5">Mac Bar Domain URL</label>
@@ -1623,6 +1747,18 @@ export const PortfolioFormEditor = ({
                           <span>Project Mockup / Screenshot Image</span>
                         </label>
                         <div className="flex items-center gap-2">
+                          {(proj.liveUrl || proj.domain) && (
+                            <button
+                              type="button"
+                              onClick={() => handleCaptureWpScreenshot(pIdx, proj.liveUrl || proj.domain, false)}
+                              disabled={wpCapturingMap[pIdx]}
+                              className="text-[10px] text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1 cursor-pointer"
+                              title="Re-capture screenshot from live website link"
+                            >
+                              <Camera size={11} />
+                              <span>Re-capture from Link</span>
+                            </button>
+                          )}
                           <button
                             type="button"
                             onClick={() => {
@@ -1630,7 +1766,7 @@ export const PortfolioFormEditor = ({
                               updated[pIdx] = { ...updated[pIdx], imageUrl: mockupLaptopImg };
                               handleModuleDataChange("wordpress", updated);
                             }}
-                            className="text-[10px] text-blue-600 hover:underline cursor-pointer"
+                            className="text-[10px] text-slate-500 hover:text-slate-800 cursor-pointer"
                           >
                             Reset Mockup
                           </button>
@@ -1662,10 +1798,16 @@ export const PortfolioFormEditor = ({
                               <span>No Image</span>
                             </div>
                           )}
+                          {wpCapturingMap[pIdx] && (
+                            <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-xs flex flex-col items-center justify-center text-white space-y-1">
+                              <Loader2 size={16} className="animate-spin text-blue-400" />
+                              <span className="text-[9px] font-mono">Capturing...</span>
+                            </div>
+                          )}
                         </div>
 
                         <div className="flex-1 w-full space-y-2">
-                          <div className="flex items-center gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
                             <label className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg cursor-pointer flex items-center gap-1.5 shadow-2xs transition-colors">
                               <Upload size={13} />
                               <span>Upload Custom Image</span>
