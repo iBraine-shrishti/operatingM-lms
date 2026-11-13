@@ -2,20 +2,13 @@ import React, { useState, useEffect } from "react";
 import {
   X,
   Mail,
-  Phone,
-  MessageCircle,
   Copy,
   Check,
   MapPin,
-  ExternalLink,
-  Send,
   Building2,
   Sparkles,
   CheckCircle2,
-  Briefcase,
-  Share2,
 } from "lucide-react";
-import { renderSocialIcon } from "./preview/previewShared";
 
 export const PortfolioContactModal = ({
   isOpen,
@@ -23,10 +16,10 @@ export const PortfolioContactModal = ({
   student = {},
   theme = { primary: "#2563eb" },
 }) => {
-  const [copiedType, setCopiedType] = useState(null); // 'email' | 'phone' | 'draft'
+  const [copiedType, setCopiedType] = useState(null); // 'email' | 'draft'
   const [inquiryType, setInquiryType] = useState("hiring");
   const [senderName, setSenderName] = useState("");
-  const [senderContact, setSenderContact] = useState("");
+  const [senderEmail, setSenderEmail] = useState("");
   const [messageText, setMessageText] = useState(
     "Hi " +
       (student.name || "there") +
@@ -84,34 +77,26 @@ export const PortfolioContactModal = ({
 
   const studentName = student.name || "Student Candidate";
   const studentEmail = student.email || "student@operatingmedia.com";
-  const studentPhone = student.phone || "+91 98201 54321";
-  const rawPhoneDigits = (student.phone || "").replace(/[^0-9]/g, "");
-  const waDigits = rawPhoneDigits.length === 10 ? `91${rawPhoneDigits}` : rawPhoneDigits;
 
-  // Build subject and body for email & whatsapp
+  // Build subject and body for email
   const emailSubject = encodeURIComponent(
     `Portfolio Inquiry for ${studentName} [${inquiryType.toUpperCase()}]`
   );
   const formattedBody = encodeURIComponent(
     `From: ${senderName || "Recruiter / Client"}\n` +
-      `Contact Info: ${senderContact || "Not provided"}\n` +
+      `Sender Email: ${senderEmail || "Not provided"}\n` +
       `Inquiry Type: ${inquiryType}\n\n` +
       `Message:\n${messageText}\n\n` +
       `Sent via ${studentName}'s Operating Media Verified Portfolio`
   );
 
   const emailHref = `mailto:${studentEmail}?subject=${emailSubject}&body=${formattedBody}`;
-  const whatsappHref = waDigits
-    ? `https://wa.me/${waDigits}?text=${formattedBody}`
-    : `https://wa.me/?text=${formattedBody}`;
 
   const fullDraftText =
-    `Candidate: ${studentName}\n` +
-    `Email: ${studentEmail}\n` +
-    `Phone: ${studentPhone}\n` +
+    `To: ${studentName} <${studentEmail}>\n` +
     `From: ${senderName || "Interested Recruiter / Client"}\n` +
-    `Contact: ${senderContact || "Not provided"}\n` +
-    `Purpose: ${inquiryType}\n\n` +
+    `Sender Email: ${senderEmail || "Not provided"}\n` +
+    `Subject: Portfolio Inquiry for ${studentName} [${inquiryType.toUpperCase()}]\n\n` +
     `Message:\n${messageText}`;
 
   return (
@@ -128,7 +113,7 @@ export const PortfolioContactModal = ({
       />
 
       {/* Modal Dialog Card */}
-      <div className="relative w-full max-w-xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto z-10 animate-in fade-in zoom-in-95 duration-200 text-slate-900">
+      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-auto z-10 animate-in fade-in zoom-in-95 duration-200 text-slate-900">
         {/* Top Header with Accent Gradient */}
         <div
           className="relative px-6 pt-7 pb-6 text-white overflow-hidden"
@@ -211,91 +196,61 @@ export const PortfolioContactModal = ({
         </div>
 
         {/* Modal Body */}
-        <div className="p-5 sm:p-6 space-y-5 max-h-[calc(85vh-180px)] overflow-y-auto custom-scrollbar">
-          {/* Quick Contact Buttons Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {/* Email Card */}
-            <div className="p-3 rounded-2xl border border-slate-200 bg-slate-50/80 hover:bg-slate-50 transition-colors flex items-center justify-between group">
-              <div className="flex items-center space-x-2.5 min-w-0 pr-2">
-                <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
-                  <Mail size={16} />
-                </div>
-                <div className="min-w-0">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Direct Email
-                  </span>
-                  <a
-                    href={`mailto:${studentEmail}`}
-                    className="text-xs font-bold text-slate-900 hover:text-blue-600 truncate block transition-colors"
-                    title={studentEmail}
-                  >
-                    {studentEmail}
-                  </a>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => copyToClipboard(studentEmail, "email")}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/80 transition-colors cursor-pointer shrink-0"
-                title="Copy email to clipboard"
+        <div className="p-5 sm:p-6 space-y-4 max-h-[calc(85vh-180px)] overflow-y-auto custom-scrollbar">
+          {/* Direct Email Card (Only Source of Contact) */}
+          <div className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/80 hover:bg-slate-50 transition-colors flex items-center justify-between group">
+            <div className="flex items-center space-x-3 min-w-0 pr-2">
+              <div
+                className="w-10 h-10 rounded-xl text-white flex items-center justify-center shrink-0 shadow-2xs"
+                style={{ backgroundColor: theme.primary }}
               >
-                {copiedType === "email" ? (
-                  <Check size={14} className="text-emerald-600" />
-                ) : (
-                  <Copy size={14} />
-                )}
-              </button>
+                <Mail size={18} />
+              </div>
+              <div className="min-w-0">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                  Official Contact Email
+                </span>
+                <a
+                  href={`mailto:${studentEmail}`}
+                  className="text-xs sm:text-sm font-bold text-slate-900 hover:text-blue-600 truncate block transition-colors"
+                  title={studentEmail}
+                >
+                  {studentEmail}
+                </a>
+              </div>
             </div>
 
-            {/* Phone & WhatsApp Card */}
-            <div className="p-3 rounded-2xl border border-slate-200 bg-slate-50/80 hover:bg-slate-50 transition-colors flex items-center justify-between group">
-              <div className="flex items-center space-x-2.5 min-w-0 pr-2">
-                <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                  <MessageCircle size={16} />
-                </div>
-                <div className="min-w-0">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                    Phone & WhatsApp
-                  </span>
-                  <a
-                    href={waDigits ? `https://wa.me/${waDigits}` : `tel:${studentPhone}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-xs font-bold text-slate-900 hover:text-emerald-600 truncate block transition-colors"
-                    title={studentPhone}
-                  >
-                    {studentPhone}
-                  </a>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => copyToClipboard(studentPhone, "phone")}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/80 transition-colors cursor-pointer shrink-0"
-                title="Copy phone to clipboard"
-              >
-                {copiedType === "phone" ? (
-                  <Check size={14} className="text-emerald-600" />
-                ) : (
-                  <Copy size={14} />
-                )}
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => copyToClipboard(studentEmail, "email")}
+              className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200 shadow-2xs transition-all cursor-pointer shrink-0"
+              title="Copy email to clipboard"
+            >
+              {copiedType === "email" ? (
+                <>
+                  <Check size={13} className="text-emerald-600" />
+                  <span className="text-emerald-600 font-bold">Copied</span>
+                </>
+              ) : (
+                <>
+                  <Copy size={13} />
+                  <span>Copy</span>
+                </>
+              )}
+            </button>
           </div>
 
-          {/* Interactive Inquiry Composer */}
+          {/* Interactive Email Inquiry Composer */}
           <div className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 bg-white shadow-2xs space-y-3.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-1.5">
                 <Sparkles size={14} style={{ color: theme.primary }} />
                 <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                  Direct Inquiry Composer
+                  Compose Direct Email
                 </h3>
               </div>
               <span className="text-[10px] text-slate-400 font-medium">
-                Instant pre-filled message
+                Opens in your mail app
               </span>
             </div>
 
@@ -305,7 +260,7 @@ export const PortfolioContactModal = ({
                 { id: "hiring", label: "💼 Full-Time Role" },
                 { id: "freelance", label: "🚀 Project / Freelance" },
                 { id: "consultation", label: "📈 Growth Audit" },
-                { id: "general", label: "🤝 Connect" },
+                { id: "general", label: "🤝 General Inquiry" },
               ].map((chip) => (
                 <button
                   key={chip.id}
@@ -327,16 +282,16 @@ export const PortfolioContactModal = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <input
                 type="text"
-                placeholder="Your Name or Company"
+                placeholder="Your Name / Company"
                 value={senderName}
                 onChange={(e) => setSenderName(e.target.value)}
                 className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
               />
               <input
-                type="text"
-                placeholder="Your Email or Phone"
-                value={senderContact}
-                onChange={(e) => setSenderContact(e.target.value)}
+                type="email"
+                placeholder="Your Email Address"
+                value={senderEmail}
+                onChange={(e) => setSenderEmail(e.target.value)}
                 className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400"
               />
             </div>
@@ -347,41 +302,29 @@ export const PortfolioContactModal = ({
                 rows={3}
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
-                placeholder="Write a message..."
+                placeholder="Write your email message..."
                 className="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 text-slate-800 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all resize-none leading-relaxed placeholder:text-slate-400"
               />
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              {/* Email Send Button */}
+            {/* Action Buttons: Email Only */}
+            <div className="flex items-center gap-2 pt-1">
+              {/* Primary: Open in Email Client */}
               <a
                 href={emailHref}
-                className="flex-1 min-w-[130px] inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white shadow-xs transition-all hover:brightness-105 active:scale-[0.99] cursor-pointer"
+                className="flex-1 inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white shadow-xs transition-all hover:brightness-105 active:scale-[0.99] cursor-pointer"
                 style={{ backgroundColor: theme.primary }}
               >
-                <Mail size={13} />
-                <span>Open in Email</span>
+                <Mail size={14} />
+                <span>Open in Email App</span>
               </a>
 
-              {/* WhatsApp Send Button (if digits exist) */}
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center space-x-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-all cursor-pointer"
-                title="Send inquiry directly via WhatsApp"
-              >
-                <MessageCircle size={14} className="text-emerald-600" />
-                <span>WhatsApp</span>
-              </a>
-
-              {/* Copy Draft Button */}
+              {/* Secondary: Copy Draft */}
               <button
                 type="button"
                 onClick={() => copyToClipboard(fullDraftText, "draft")}
-                className="inline-flex items-center justify-center space-x-1.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors cursor-pointer"
-                title="Copy pre-filled message text"
+                className="inline-flex items-center justify-center space-x-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors cursor-pointer"
+                title="Copy complete pre-filled email draft"
               >
                 {copiedType === "draft" ? (
                   <>
@@ -397,34 +340,6 @@ export const PortfolioContactModal = ({
               </button>
             </div>
           </div>
-
-          {/* Verified Social & Professional Profiles */}
-          {Array.isArray(student.socials) && student.socials.length > 0 && (
-            <div className="space-y-2 pt-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                Verified Social & Professional Handles
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {student.socials.map((soc, idx) => (
-                  <a
-                    key={idx}
-                    href={soc.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 transition-all group cursor-pointer"
-                    title={soc.url}
-                  >
-                    {renderSocialIcon(soc.platform)}
-                    <span>{soc.label || soc.platform}</span>
-                    <ExternalLink
-                      size={10}
-                      className="text-slate-400 group-hover:text-slate-600"
-                    />
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Modal Institutional Footer */}
