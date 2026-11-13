@@ -54,10 +54,15 @@ export const mapStudentDataFromCrm = (crm, user) => {
     user?.center ||
     user?.branch ||
     "Andheri Center";
-  const batch =
-    source.batchName ||
-    user?.batchName ||
-    `${course} (${isDiploma ? "DDM-A1" : "WD-M1"})`;
+  // Batch details: strictly from CRM manage-batch / student assignment
+  const rawBatch = source.batchName || user?.batchName || source.batchCode || user?.batchCode || "";
+  const hasAssignedBatch = Boolean(
+    rawBatch &&
+    rawBatch !== "WD-M1" &&
+    rawBatch.trim().length > 0 &&
+    !rawBatch.toLowerCase().includes("not assigned")
+  );
+  const batch = hasAssignedBatch ? rawBatch.trim() : "Not Assigned";
 
   const admissionDate =
     source.admissionDate ||
@@ -95,9 +100,59 @@ export const mapStudentDataFromCrm = (crm, user) => {
     : batchAssignedFaculty.facultyLeadRole;
   const courseDuration =
     source.courseDuration || (isDiploma ? "6 Months" : "12 Months");
-  const courseStart = source.courseStart || admissionDate;
-  const courseEnd = source.courseEnd || (isDiploma ? "09 Sep 2026" : "20 Apr 2027");
-  const daysLeft = typeof source.daysLeft === "number" ? source.daysLeft : 147;
+
+  let courseStart = "Not Assigned";
+  let courseEnd = "Not Assigned";
+  let daysLeft = null;
+
+  if (hasAssignedBatch) {
+    courseStart =
+      source.courseStart && source.courseStart !== "Not Assigned"
+        ? source.courseStart
+        : source.submission_time
+          ? crmService.formatDate(source.submission_time)
+          : admissionDate;
+
+    if (source.courseEnd && source.courseEnd !== "Not Assigned") {
+      courseEnd = source.courseEnd;
+    } else {
+      try {
+        const startDt = new Date(courseStart);
+        if (!isNaN(startDt.getTime())) {
+          const endDt = new Date(startDt);
+          endDt.setMonth(endDt.getMonth() + (isDiploma ? 6 : 12));
+          courseEnd = endDt.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+          const diffMs = endDt.getTime() - Date.now();
+          daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+        }
+      } catch (e) {
+        courseEnd = isDiploma ? "09 Sep 2026" : "20 Apr 2027";
+      }
+    }
+    if (daysLeft === null && typeof source.daysLeft === "number") {
+      daysLeft = source.daysLeft;
+    }
+  }
+
+  // Real course progress from LMS watch state (default to 0, never hardcode 65)
+  const progressPercentage =
+    typeof user?.overallProgress === "number"
+      ? user.overallProgress
+      : typeof source.progress === "number"
+        ? source.progress
+        : typeof source.progressPercentage === "number"
+          ? source.progressPercentage
+          : 0;
+
+  const hasCourseAssigned = Boolean(
+    hasAssignedBatch &&
+    course &&
+    !course.toLowerCase().includes("not assigned")
+  );
   const totalFees = typeof source.totalFees === "number" ? source.totalFees : 25000;
   const amountPaid = typeof source.totalPaid === "number" ? source.totalPaid : 2000;
   const balanceDue =
@@ -224,7 +279,10 @@ export const mapStudentDataFromCrm = (crm, user) => {
     courseStart,
     courseEnd,
     daysLeft,
-    progressPercentage: 65,
+    progressPercentage,
+    hasAssignedBatch,
+    hasCourseAssigned,
+    hasWatchingProgress: progressPercentage > 0,
     totalFees,
     amountPaid,
     balanceDue,

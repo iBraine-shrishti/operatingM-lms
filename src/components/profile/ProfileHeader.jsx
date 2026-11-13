@@ -119,13 +119,23 @@ export const ProfileHeader = ({ studentData, activeTab, onTabChange }) => {
               </div>
               <div className="pr-5">
                 <div className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-tight">
-                  {studentData.daysLeft}{" "}
-                  <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
-                    Days Left
-                  </span>
+                  {studentData.hasAssignedBatch && studentData.daysLeft !== null && studentData.daysLeft !== undefined ? (
+                    <>
+                      {studentData.daysLeft}{" "}
+                      <span className="text-xs font-bold text-slate-600 dark:text-slate-300">
+                        Days Left
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                      Batch Not Assigned
+                    </span>
+                  )}
                 </div>
                 <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                  Course ends on {studentData.courseEnd}
+                  {studentData.hasAssignedBatch && studentData.courseEnd && studentData.courseEnd !== "Not Assigned"
+                    ? `Course ends on ${studentData.courseEnd}`
+                    : "Timeline begins upon batch assignment"}
                 </div>
               </div>
               <Calendar
@@ -145,38 +155,40 @@ export const ProfileHeader = ({ studentData, activeTab, onTabChange }) => {
           </div>
         </div>
 
-        {/* Stretched Course Progress Bar - Aligning with Active Student on Desktop, Responsive Full-Width on Mobile */}
-        <div className="relative z-10 mt-4 sm:mt-5 w-full lg:pl-[116px]">
-          {/* Progress Info Row */}
-          <div className="flex flex-wrap items-center justify-between gap-2 text-xs mb-1.5">
-            <div className="flex items-center space-x-2">
-              <TrendingUp size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
-              <span className="font-bold text-slate-800 dark:text-slate-200">
-                Course Progress
-              </span>
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100/70 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/80">
-                {studentData.progressPercentage || 65}% Completed
-              </span>
+        {/* Stretched Course Progress Bar - Only if batch and course assigned, and watching */}
+        {studentData.hasAssignedBatch && studentData.hasCourseAssigned && (studentData.hasWatchingProgress || (Number(studentData.progressPercentage) > 0)) && (
+          <div className="relative z-10 mt-4 sm:mt-5 w-full lg:pl-[116px]">
+            {/* Progress Info Row */}
+            <div className="flex flex-wrap items-center justify-between gap-2 text-xs mb-1.5">
+              <div className="flex items-center space-x-2">
+                <TrendingUp size={14} className="text-blue-600 dark:text-blue-400 shrink-0" />
+                <span className="font-bold text-slate-800 dark:text-slate-200">
+                  Course Progress
+                </span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100/70 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800/80">
+                  {Number(studentData.progressPercentage) || 0}% Completed
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-2 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                <span>Overall Curriculum</span>
+                <span className="text-slate-300 dark:text-slate-700">•</span>
+                <span className="font-bold text-slate-700 dark:text-slate-300">
+                  {studentData.courseDuration || "12 Months"} Program
+                </span>
+              </div>
             </div>
 
-            <div className="flex items-center space-x-2 text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              <span>Overall Curriculum</span>
-              <span className="text-slate-300 dark:text-slate-700">•</span>
-              <span className="font-bold text-slate-700 dark:text-slate-300">
-                {studentData.courseDuration || "12 Months"} Program
-              </span>
+            {/* Stretched Gradient Progress Track */}
+            <div className="w-full h-2 sm:h-2.5 bg-blue-100/90 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
+              <div
+                className="h-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 rounded-full transition-all duration-500"
+                style={{ width: `${Number(studentData.progressPercentage) || 0}%` }}
+                title={`${Number(studentData.progressPercentage) || 0}% Course Completed`}
+              />
             </div>
           </div>
-
-          {/* Stretched Gradient Progress Track */}
-          <div className="w-full h-2 sm:h-2.5 bg-blue-100/90 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
-            <div
-              className="h-full bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 rounded-full transition-all duration-500"
-              style={{ width: `${studentData.progressPercentage || 65}%` }}
-              title={`${studentData.progressPercentage || 65}% Course Completed`}
-            />
-          </div>
-        </div>
+        )}
 
         {/* Bottom Metadata Pills Strip */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 pt-4 sm:pt-5 mt-4 sm:mt-5 border-t border-blue-100/80 dark:border-slate-800/80">

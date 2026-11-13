@@ -37,8 +37,8 @@ export const DEFAULT_CRM_PROFILE = {
   branch: "Borivali Center",
   center: "Borivali Center",
   course: "Masters in Digital Marketing",
-  batchName: "WD-M1",
-  batchCode: "WD-M1",
+  batchName: "",
+  batchCode: "",
   admissionDate: "22 Apr 2026",
   registrationDate: "18 Apr 2026",
   joiningDate: "2026-04-22",
@@ -419,24 +419,38 @@ class CrmService {
           ? this.formatDate(d.registration_date)
           : admissionDateStr;
 
-        let courseEndStr = isDiploma ? "09 Sep 2026" : "20 Apr 2027";
-        let daysLeft = 180;
-        try {
-          if (d.submission_time) {
-            const startDt = new Date(d.submission_time);
-            if (!isNaN(startDt.getTime())) {
-              const endDt = new Date(startDt);
-              endDt.setMonth(endDt.getMonth() + (isDiploma ? 6 : 12));
-              courseEndStr = endDt.toLocaleDateString("en-GB", {
-                day: "numeric",
-                month: "short",
-                year: "numeric",
-              });
-              const diffMs = endDt.getTime() - Date.now();
-              daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+        const rawBatchName = d.batch_name || d.batch || "";
+        const hasBatch = Boolean(rawBatchName && rawBatchName.trim().length > 0 && rawBatchName !== "WD-M1");
+        const batchName = hasBatch ? rawBatchName.trim() : null;
+
+        let courseStartStr = hasBatch
+          ? (d.batch_start_date ? this.formatDate(d.batch_start_date) : admissionDateStr)
+          : "Not Assigned";
+        let courseEndStr = "Not Assigned";
+        let daysLeft = null;
+
+        if (hasBatch) {
+          try {
+            const baseDate = d.batch_start_date || d.submission_time || d.registration_date;
+            if (baseDate) {
+              const startDt = new Date(baseDate);
+              if (!isNaN(startDt.getTime())) {
+                const endDt = new Date(startDt);
+                endDt.setMonth(endDt.getMonth() + (isDiploma ? 6 : 12));
+                courseEndStr = endDt.toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                });
+                const diffMs = endDt.getTime() - Date.now();
+                daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+              }
             }
+          } catch (e) {
+            courseEndStr = isDiploma ? "09 Sep 2026" : "20 Apr 2027";
+            daysLeft = 180;
           }
-        } catch (e) {}
+        }
 
         const installments = [];
         let totalInstallmentsPaid = 0;
@@ -511,8 +525,12 @@ class CrmService {
           branch: d.branch ? `${d.branch} Center` : "Andheri Center",
           center: d.branch ? `${d.branch} Center` : "Andheri Center",
           course: d.course || "Diploma in Digital Marketing",
-          batchName: d.batch_name || d.batch || null,
-          batchCode: d.batch_code || null,
+          batchName: batchName,
+          batchCode: batchName,
+          hasAssignedBatch: hasBatch,
+          courseStart: courseStartStr,
+          courseEnd: courseEndStr,
+          daysLeft: daysLeft,
           batchTiming: d.batch_timing || d.timing || null,
           joiningDate: d.submission_time || "2026-03-09",
           admissionDate: admissionDateStr,
