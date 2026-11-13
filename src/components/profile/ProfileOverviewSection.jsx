@@ -27,6 +27,13 @@ export const ProfileOverviewSection = ({
   onNavigateCourse,
   onNavigateTab,
 }) => {
+  const progressVal = Number(studentData.progressPercentage) || 0;
+  const showCourseProgressCard = Boolean(
+    studentData.hasAssignedBatch &&
+    studentData.hasCourseAssigned &&
+    (studentData.hasWatchingProgress || progressVal > 0)
+  );
+
   return (
     <div className="space-y-5">
       {/* 1. ACADEMIC MILESTONES & MENTORSHIP BAR */}
@@ -92,90 +99,94 @@ export const ProfileOverviewSection = ({
       </div>
 
       {/* TWO-COLUMN MIDDLE SECTION */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      <div className={`grid grid-cols-1 ${showCourseProgressCard ? "lg:grid-cols-2" : "lg:grid-cols-1"} gap-5`}>
         {/* LEFT: Course Progress & Timeline */}
-        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">
-          <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
-              <div className="flex items-center space-x-2">
-                <GraduationCap size={18} className="text-blue-600 dark:text-blue-400" />
-                <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                  Course Progress & Timeline
-                </h3>
+        {showCourseProgressCard && (
+          <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">
+            <div>
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
+                <div className="flex items-center space-x-2">
+                  <GraduationCap size={18} className="text-blue-600 dark:text-blue-400" />
+                  <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
+                    Course Progress & Timeline
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => onNavigateCourse && onNavigateCourse(respectiveCourseId)}
+                  className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center space-x-1 cursor-pointer"
+                >
+                  <span>View Course Details</span>
+                  <ArrowRight size={13} />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => onNavigateCourse && onNavigateCourse(respectiveCourseId)}
-                className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center space-x-1 cursor-pointer"
-              >
-                <span>View Course Details</span>
-                <ArrowRight size={13} />
-              </button>
-            </div>
 
-            {/* Course graphic & summary */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 pt-4">
-              <img
-                src={continueLearningLaptop}
-                alt="Course laptop"
-                className="w-28 sm:w-32 h-auto object-contain shrink-0"
-              />
-              <div className="space-y-1 text-center sm:text-left">
-                <h4 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
-                  {studentData.course}
-                </h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                  {studentData.courseDesc}
-                </p>
-              </div>
-            </div>
-
-            {/* Progress bar */}
-            <div className="space-y-2 pt-4">
-              <div className="flex items-center justify-between text-xs font-semibold">
-                <span className="text-slate-700 dark:text-slate-300">
-                  {studentData.progressPercentage}% Completed
-                </span>
-                <span className="text-slate-500 dark:text-slate-400">
-                  {studentData.daysLeft} Days Left
-                </span>
-              </div>
-              <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
-                <div
-                  className="h-full bg-blue-600 rounded-full transition-all duration-500"
-                  style={{ width: `${studentData.progressPercentage}%` }}
+              {/* Course graphic & summary */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 pt-4">
+                <img
+                  src={continueLearningLaptop}
+                  alt="Course laptop"
+                  className="w-28 sm:w-32 h-auto object-contain shrink-0"
                 />
+                <div className="space-y-1 text-center sm:text-left">
+                  <h4 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white">
+                    {studentData.course}
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    {studentData.courseDesc}
+                  </p>
+                </div>
+              </div>
+
+              {/* Progress bar */}
+              <div className="space-y-2 pt-4">
+                <div className="flex items-center justify-between text-xs font-semibold">
+                  <span className="text-slate-700 dark:text-slate-300">
+                    {progressVal}% Completed
+                  </span>
+                  <span className="text-slate-500 dark:text-slate-400">
+                    {studentData.hasAssignedBatch && studentData.daysLeft !== null && studentData.daysLeft !== undefined
+                      ? `${studentData.daysLeft} Days Left`
+                      : "—"}
+                  </span>
+                </div>
+                <div className="w-full h-2.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden shadow-inner">
+                  <div
+                    className="h-full bg-blue-600 rounded-full transition-all duration-500"
+                    style={{ width: `${progressVal}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom 3 metrics grid */}
+            <div className="grid grid-cols-3 gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 text-center">
+                <Calendar size={14} className="mx-auto text-blue-600 dark:text-blue-400 mb-1" />
+                <span className="text-[10px] text-slate-400 block">Total Duration</span>
+                <strong className="text-slate-800 dark:text-slate-200 font-bold block">
+                  {studentData.courseDuration}
+                </strong>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 text-center">
+                <Clock size={14} className="mx-auto text-blue-600 dark:text-blue-400 mb-1" />
+                <span className="text-[10px] text-slate-400 block">Started On</span>
+                <strong className="text-slate-800 dark:text-slate-200 font-bold block">
+                  {studentData.hasAssignedBatch ? (studentData.courseStart || "—") : "—"}
+                </strong>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 text-center">
+                <Calendar size={14} className="mx-auto text-blue-600 dark:text-blue-400 mb-1" />
+                <span className="text-[10px] text-slate-400 block">Ends On</span>
+                <strong className="text-slate-800 dark:text-slate-200 font-bold block">
+                  {studentData.hasAssignedBatch ? (studentData.courseEnd || "—") : "—"}
+                </strong>
               </div>
             </div>
           </div>
-
-          {/* Bottom 3 metrics grid */}
-          <div className="grid grid-cols-3 gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
-            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 text-center">
-              <Calendar size={14} className="mx-auto text-blue-600 dark:text-blue-400 mb-1" />
-              <span className="text-[10px] text-slate-400 block">Total Duration</span>
-              <strong className="text-slate-800 dark:text-slate-200 font-bold block">
-                {studentData.courseDuration}
-              </strong>
-            </div>
-
-            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 text-center">
-              <Clock size={14} className="mx-auto text-blue-600 dark:text-blue-400 mb-1" />
-              <span className="text-[10px] text-slate-400 block">Started On</span>
-              <strong className="text-slate-800 dark:text-slate-200 font-bold block">
-                {studentData.courseStart}
-              </strong>
-            </div>
-
-            <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 text-center">
-              <Calendar size={14} className="mx-auto text-blue-600 dark:text-blue-400 mb-1" />
-              <span className="text-[10px] text-slate-400 block">Ends On</span>
-              <strong className="text-slate-800 dark:text-slate-200 font-bold block">
-                {studentData.courseEnd}
-              </strong>
-            </div>
-          </div>
-        </div>
+        )}
 
         {/* RIGHT: Payment Summary */}
         <div className="bg-white dark:bg-[#0b1329] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between space-y-4">

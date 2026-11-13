@@ -60,7 +60,7 @@ export const StudentStatCards = ({ stats = [], onNavigate }) => {
               subtitle={item.subtitle}
               color={item.color}
               showCircularProgress={Boolean(item.showCircularProgress)}
-              progressPercent={item.progressPercent || 65}
+              progressPercent={item.progressPercent ?? 0}
               icon={IconComp}
               onClick={() => handleCardClick(item.link || "/enrolled-courses")}
             />

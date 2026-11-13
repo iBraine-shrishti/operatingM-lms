@@ -49,7 +49,7 @@ export const StudentStatCard = ({
   color = "blue",
   icon: IconComponent,
   showCircularProgress = false,
-  progressPercent = 65,
+  progressPercent = 0,
   onClick,
 }) => {
   const theme = STAT_THEMES[color] || STAT_THEMES.blue;

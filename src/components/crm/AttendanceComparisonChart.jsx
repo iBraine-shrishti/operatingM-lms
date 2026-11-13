@@ -482,10 +482,28 @@ export const DEGREE_PROGRAMS = [
 const CustomComparisonTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
+    if (data.isFuture || (data.attended === null && data.missed === null)) {
+      return (
+        <div className="bg-slate-900 border border-slate-700 text-white p-3 rounded-xl shadow-xl space-y-1.5 min-w-[190px]">
+          <div className="border-b border-slate-700/80 pb-1.5 flex items-center justify-between gap-2">
+            <span className="font-extrabold text-xs text-slate-100">
+              {data.label || label}
+            </span>
+            <span className="text-[10px] uppercase font-black px-1.5 py-0.5 rounded bg-slate-700 text-slate-300">
+              Upcoming
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-400 leading-snug">
+            Cohort timeline beyond till date. Attendance will record when sessions occur.
+          </p>
+        </div>
+      );
+    }
+
     const attended = data.attended || 0;
     const missed = data.missed || 0;
     const total = data.total || attended + missed;
-    const rate = data.rate || Math.round((attended / total) * 100);
+    const rate = data.rate ?? (total > 0 ? Math.round((attended / total) * 100) : 0);
 
     return (
       <div className="bg-slate-900 border border-slate-700 text-white p-3.5 rounded-xl shadow-xl space-y-2 min-w-[200px]">
@@ -563,145 +581,184 @@ export const AttendanceComparisonChart = ({
 
   const [breakdownMode, setBreakdownMode] = useState("monthly"); // "weekly" | "monthly"
 
+  const rawBatch = studentData?.batch || crmAttendance?.batch || "";
+  const hasAssignedBatch = Boolean(
+    studentData?.hasAssignedBatch ??
+    (rawBatch && rawBatch !== "Not Assigned" && rawBatch !== "WD-M1" && rawBatch !== "—")
+  );
+
   const realLogs = useMemo(
     () => crmAttendance?.logs || [],
     [crmAttendance?.logs]
   );
   const hasRealAttendance = Boolean(
     crmAttendance &&
-      (realLogs.length > 0 || crmAttendance.totalLectures !== undefined)
+      (realLogs.length > 0 || (crmAttendance.totalLectures !== undefined && crmAttendance.totalLectures > 0))
   );
 
-  const totalConducted = hasRealAttendance
-    ? (crmAttendance.totalLectures ?? realLogs.length)
-    : activeProgram.totalLectures;
+  const totalConducted = hasAssignedBatch
+    ? (hasRealAttendance ? (crmAttendance.totalLectures ?? realLogs.length) : 0)
+    : 0;
 
-  const totalAttended = hasRealAttendance
-    ? (crmAttendance.presentCount ??
-      realLogs.filter((l) => l.status === "PRESENT").length)
-    : activeProgram.attendedCount;
+  const totalAttended = hasAssignedBatch
+    ? (hasRealAttendance
+        ? (crmAttendance.presentCount ?? realLogs.filter((l) => l.status === "PRESENT").length)
+        : 0)
+    : 0;
 
-  const totalMissed = hasRealAttendance
-    ? (crmAttendance.absentCount ??
-      realLogs.filter((l) => l.status !== "PRESENT").length)
-    : activeProgram.missedCount;
+  const totalMissed = hasAssignedBatch
+    ? (hasRealAttendance
+        ? (crmAttendance.absentCount ?? realLogs.filter((l) => l.status !== "PRESENT").length)
+        : 0)
+    : 0;
 
-  const overallRate = hasRealAttendance
-    ? (crmAttendance.attendancePercentage ??
-      (totalConducted > 0
-        ? Math.round((totalAttended / totalConducted) * 100)
-        : 0))
-    : Math.round((totalAttended / totalConducted) * 100);
+  const overallRate = totalConducted > 0 ? Math.round((totalAttended / totalConducted) * 100) : 0;
+  const absentRate = totalConducted > 0 ? Math.round((totalMissed / totalConducted) * 100) : 0;
 
-  const absentRate =
-    totalConducted > 0
-      ? Math.round((totalMissed / totalConducted) * 100)
-      : 0;
+  const durationMonths = activeProgram.durationMonths || 2;
+  const durationWeeks = activeProgram.durationWeeks || 8;
 
-  // Chart data according to breakdown mode - computed dynamically from real CRM attendance logs
-  const chartData = useMemo(() => {
-    if (!realLogs || realLogs.length === 0) {
-      if (breakdownMode === "weekly") return activeProgram.weeklyData;
-      return activeProgram.monthlyData;
+  const batchStartDate = useMemo(() => {
+    if (studentData?.courseStart && studentData.courseStart !== "Not Assigned" && studentData.courseStart !== "—") {
+      const parsed = new Date(studentData.courseStart);
+      if (!isNaN(parsed.getTime())) return parsed;
     }
+    if (realLogs && realLogs.length > 0) {
+      const times = realLogs
+        .map((l) => new Date(l.raw_date || l.date).getTime())
+        .filter((t) => !isNaN(t));
+      if (times.length > 0) return new Date(Math.min(...times));
+    }
+    return new Date();
+  }, [studentData?.courseStart, realLogs]);
 
-    // Sort chronologically ascending (oldest to newest)
-    const sorted = [...realLogs].sort(
-      (a, b) => new Date(a.raw_date || a.date) - new Date(b.raw_date || b.date)
-    );
-    const firstDate = new Date(sorted[0].raw_date || sorted[0].date);
-    const durationMonths = activeProgram.durationMonths || 2;
-    const durationWeeks = activeProgram.durationWeeks || 8;
+  const elapsedDays = useMemo(() => {
+    const today = new Date();
+    const diff = today.getTime() - batchStartDate.getTime();
+    return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+  }, [batchStartDate]);
+
+  const elapsedWeeks = useMemo(() => {
+    return Math.max(1, Math.min(durationWeeks, Math.floor(elapsedDays / 7) + 1));
+  }, [elapsedDays, durationWeeks]);
+
+  const elapsedMonths = useMemo(() => {
+    return Math.max(1, Math.min(durationMonths, Math.floor(elapsedDays / 30) + 1));
+  }, [elapsedDays, durationMonths]);
+
+  // Chart data: strictly calculated from batch start date to till date; future periods kept unplotted/grey
+  const chartData = useMemo(() => {
+    const sorted = [...realLogs]
+      .filter((l) => l.raw_date || l.date)
+      .sort((a, b) => new Date(a.raw_date || a.date) - new Date(b.raw_date || b.date));
 
     if (breakdownMode === "weekly") {
-      const weekMap = {};
-      sorted.forEach((log) => {
-        const logDate = new Date(log.raw_date || log.date);
-        const diffDays = Math.max(
-          0,
-          Math.floor((logDate - firstDate) / (1000 * 60 * 60 * 24))
-        );
-        const weekNum = Math.min(durationWeeks, Math.floor(diffDays / 7) + 1);
-        const key = `Wk ${weekNum}`;
-        if (!weekMap[key]) {
-          weekMap[key] = {
-            period: key,
-            label: `Week ${weekNum}`,
-            attended: 0,
-            missed: 0,
+      const weeks = [];
+      for (let w = 1; w <= durationWeeks; w++) {
+        const isFuture = w > elapsedWeeks;
+        if (isFuture) {
+          weeks.push({
+            period: `Wk ${w}`,
+            label: `Week ${w} (Upcoming)`,
+            attended: null,
+            missed: null,
             total: 0,
-          };
+            rate: null,
+            isFuture: true,
+          });
+        } else {
+          const logsInWeek = sorted.filter((log) => {
+            const logDate = new Date(log.raw_date || log.date);
+            const diffDays = Math.max(0, Math.floor((logDate - batchStartDate) / (1000 * 60 * 60 * 24)));
+            const weekNum = Math.min(durationWeeks, Math.floor(diffDays / 7) + 1);
+            return weekNum === w;
+          });
+          const attended = logsInWeek.filter((l) => l.status === "PRESENT").length;
+          const missed = logsInWeek.filter((l) => l.status !== "PRESENT").length;
+          const total = logsInWeek.length;
+          const rate = total > 0 ? Math.round((attended / total) * 100) : 0;
+          weeks.push({
+            period: `Wk ${w}`,
+            label: `Week ${w}`,
+            attended,
+            missed,
+            total,
+            rate,
+            isFuture: false,
+          });
         }
-        weekMap[key].total += 1;
-        if (log.status === "PRESENT") weekMap[key].attended += 1;
-        else weekMap[key].missed += 1;
-      });
-
-      const list = Object.values(weekMap).map((w) => ({
-        ...w,
-        rate: w.total > 0 ? Math.round((w.attended / w.total) * 100) : 0,
-      }));
-
-      return list.length > 0
-        ? list
-        : [
-            {
-              period: "Wk 1",
-              label: "Week 1",
-              attended: totalAttended,
-              missed: totalMissed,
-              total: totalConducted,
-              rate: overallRate,
-            },
-          ];
-    }
-
-    // Monthly Mode (Default)
-    const monthMap = {};
-    for (let m = 1; m <= durationMonths; m++) {
-      monthMap[m] = {
-        period: `Month ${m}`,
-        label: `Month ${m}`,
-        attended: 0,
-        missed: 0,
-        total: 0,
-      };
-    }
-
-    sorted.forEach((log) => {
-      const logDate = new Date(log.raw_date || log.date);
-      const diffDays = Math.max(
-        0,
-        Math.floor((logDate - firstDate) / (1000 * 60 * 60 * 24))
-      );
-      const monthNum = Math.min(durationMonths, Math.floor(diffDays / 30) + 1);
-      if (!monthMap[monthNum]) {
-        monthMap[monthNum] = {
-          period: `Month ${monthNum}`,
-          label: `Month ${monthNum}`,
-          attended: 0,
-          missed: 0,
-          total: 0,
-        };
       }
-      monthMap[monthNum].total += 1;
-      if (log.status === "PRESENT") monthMap[monthNum].attended += 1;
-      else monthMap[monthNum].missed += 1;
-    });
+      return weeks;
+    }
 
-    return Object.values(monthMap).map((m) => ({
-      ...m,
-      rate: m.total > 0 ? Math.round((m.attended / m.total) * 100) : 0,
-    }));
+    // Monthly Mode
+    const months = [];
+    for (let m = 1; m <= durationMonths; m++) {
+      const isFuture = m > elapsedMonths;
+      if (isFuture) {
+        months.push({
+          period: `Month ${m}`,
+          label: `Month ${m} (Upcoming)`,
+          attended: null,
+          missed: null,
+          total: 0,
+          rate: null,
+          isFuture: true,
+        });
+      } else {
+        const logsInMonth = sorted.filter((log) => {
+          const logDate = new Date(log.raw_date || log.date);
+          const diffDays = Math.max(0, Math.floor((logDate - batchStartDate) / (1000 * 60 * 60 * 24)));
+          const monthNum = Math.min(durationMonths, Math.floor(diffDays / 30) + 1);
+          return monthNum === m;
+        });
+        const attended = logsInMonth.filter((l) => l.status === "PRESENT").length;
+        const missed = logsInMonth.filter((l) => l.status !== "PRESENT").length;
+        const total = logsInMonth.length;
+        const rate = total > 0 ? Math.round((attended / total) * 100) : 0;
+        months.push({
+          period: `Month ${m}`,
+          label: `Month ${m}`,
+          attended,
+          missed,
+          total,
+          rate,
+          isFuture: false,
+        });
+      }
+    }
+    return months;
   }, [
     realLogs,
     breakdownMode,
-    activeProgram,
-    totalAttended,
-    totalMissed,
-    totalConducted,
-    overallRate,
+    durationWeeks,
+    durationMonths,
+    elapsedWeeks,
+    elapsedMonths,
+    batchStartDate,
   ]);
+
+  // If no batch is assigned, display clear placeholder
+  if (!hasAssignedBatch) {
+    return (
+      <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl sm:rounded-3xl p-8 sm:p-12 text-center space-y-4 shadow-xs">
+        <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex items-center justify-center text-amber-600 dark:text-amber-400">
+          <Calendar size={28} />
+        </div>
+        <div className="max-w-md mx-auto space-y-1.5">
+          <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+            Classroom Batch Not Assigned
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+            Attendance tracking and 2-way comparison analysis will begin automatically once a classroom batch is assigned to your enrollment.
+          </p>
+        </div>
+        <div className="inline-flex items-center space-x-2 text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 px-4 py-2 rounded-xl">
+          <span>Batch Status: Pending Allocation</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xs dark:shadow-[0_4px_24px_rgba(0,0,0,0.3)] space-y-5">
@@ -842,7 +899,7 @@ export const AttendanceComparisonChart = ({
         </div>
 
         {/* 2-WAY COLOR LEGEND */}
-        <div className="flex items-center space-x-3 text-xs font-black">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-black">
           <div className="flex items-center space-x-1.5 text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/40 px-2.5 py-1 rounded-lg shadow-2xs">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
             <span>Attended Lectures</span>
@@ -850,6 +907,10 @@ export const AttendanceComparisonChart = ({
           <div className="flex items-center space-x-1.5 text-rose-800 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-500/40 px-2.5 py-1 rounded-lg shadow-2xs">
             <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
             <span>Missed Lectures</span>
+          </div>
+          <div className="flex items-center space-x-1.5 text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 px-2.5 py-1 rounded-lg shadow-2xs">
+            <span className="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-600" />
+            <span>Upcoming (Beyond Till Date)</span>
           </div>
         </div>
       </div>
@@ -900,6 +961,7 @@ export const AttendanceComparisonChart = ({
               name="Attended Lectures"
               stroke="#10b981"
               strokeWidth={3}
+              connectNulls={false}
               dot={{
                 r: 4.5,
                 fill: "#10b981",
@@ -920,6 +982,7 @@ export const AttendanceComparisonChart = ({
               name="Missed Lectures"
               stroke="#ef4444"
               strokeWidth={3}
+              connectNulls={false}
               dot={{
                 r: 4.5,
                 fill: "#ef4444",
@@ -955,15 +1018,29 @@ export const AttendanceComparisonChart = ({
             Cohort Standing:
           </span>
           <span className={`inline-flex items-center space-x-1 px-2.5 py-1 rounded-full text-xs font-black shadow-2xs ${
-            overallRate >= 85
-              ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40"
-              : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-500/40"
+            totalConducted === 0
+              ? "bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-500/40"
+              : overallRate >= 85
+                ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/40"
+                : "bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-500/40"
           }`}>
             <CheckCircle2
               size={13}
-              className={overallRate >= 85 ? "text-emerald-700 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}
+              className={
+                totalConducted === 0
+                  ? "text-blue-700 dark:text-blue-400"
+                  : overallRate >= 85
+                    ? "text-emerald-700 dark:text-emerald-400"
+                    : "text-rose-600 dark:text-rose-400"
+              }
             />
-            <span>{overallRate >= 85 ? "Eligible" : "Attendance Shortage"} ({overallRate}%)</span>
+            <span>
+              {totalConducted === 0
+                ? "Batch In Progress (No sessions yet)"
+                : overallRate >= 85
+                  ? `Eligible (${overallRate}%)`
+                  : `Attendance Shortage (${overallRate}%)`}
+            </span>
           </span>
         </div>
       </div>
