@@ -16,7 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
-import { renderSmoIcon, InfiniteCardMarquee } from "./previewShared";
+import { renderSmoIcon, InfiniteCardMarquee, formatModuleCategory } from "./previewShared";
 import mockupCreativesImg from "../../../assets/mockup-creatives.jpg";
 
 export const Module03SocialOrganic = ({
@@ -28,6 +28,8 @@ export const Module03SocialOrganic = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-100/90 border-b border-slate-200/90",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const smoProfiles = Array.isArray(modules.socialOrganic) ? modules.socialOrganic : [];
   const smoMeta = modules.socialOrganicMeta || {};
@@ -44,7 +46,7 @@ export const Module03SocialOrganic = ({
     const p = smoProfiles[index];
     onOpenMedia && onOpenMedia({
       type: "image",
-      moduleNumber: "MODULE 03",
+      moduleNumber: `MODULE ${formattedRank}`,
       moduleTitle: "Organic Social Growth Engineering",
       category: `${p.platform || "Social Media"} Organic Strategy`,
       title: `${p.handle || "@profile"} — ${p.name || "Brand Account"}`,
@@ -121,7 +123,7 @@ export const Module03SocialOrganic = ({
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
                         <EditableText
-                          value={smoMeta.category || "Module 03 · Organic Growth Engineering"}
+                          value={formatModuleCategory(smoMeta.category, "Organic Growth Engineering", formattedRank)}
                           onChange={(val) => {
                             if (onChange) {
                               onChange({

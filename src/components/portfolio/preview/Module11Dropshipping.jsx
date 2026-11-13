@@ -19,6 +19,8 @@ import {
   X,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
+import { formatModuleCategory } from "./previewShared";
+import mockupLaptopImg from "../../../assets/mockup-laptop.jpg";
 
 export const Module11Dropshipping = ({
   portfolioData,
@@ -29,6 +31,8 @@ export const Module11Dropshipping = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-100/90 border-b border-slate-200/90",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const dropData = modules.dropshipping || {};
   const winProd = dropData.winningProduct || "Smart Ergonomic Cervical Contour Pillow with Cooling Gel";
@@ -65,7 +69,7 @@ export const Module11Dropshipping = ({
     const winProd = dropData.winningProduct || "Ergonomic Lumbar Cushion Pro";
     onOpenMedia && onOpenMedia({
       type: "image",
-      moduleNumber: "MODULE 11",
+      moduleNumber: `MODULE ${formattedRank}`,
       moduleTitle: "Dropshipping Store & Winning Product Validation",
       category: dropData.categoryBadge || "Direct-To-Consumer Fulfillment",
       title: winProd,
@@ -212,9 +216,9 @@ export const Module11Dropshipping = ({
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
                         <EditableText
-                          value={dropData.categoryBadge || "Module 11 · Direct-To-Consumer Fulfillment"}
+                          value={formatModuleCategory(dropData.categoryBadge, "Direct-To-Consumer Fulfillment", formattedRank)}
                           path="modules.dropshipping.categoryBadge"
-                          placeholder="Module 11 · Direct-To-Consumer Fulfillment"
+                          placeholder={`Module ${formattedRank} · Direct-To-Consumer Fulfillment`}
                         />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">

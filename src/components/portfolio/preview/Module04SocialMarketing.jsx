@@ -16,7 +16,7 @@ import {
   Play,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
-import { InfiniteCardMarquee } from "./previewShared";
+import { InfiniteCardMarquee, formatModuleCategory } from "./previewShared";
 import mockupCreativesImg from "../../../assets/mockup-creatives.jpg";
 
 export const Module04SocialMarketing = ({
@@ -28,6 +28,8 @@ export const Module04SocialMarketing = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-50/70 border-b border-slate-200/40",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const metaAds = Array.isArray(modules.socialMarketing) ? modules.socialMarketing : [];
   const metaMeta = modules.socialMarketingMeta || {};
@@ -45,7 +47,7 @@ export const Module04SocialMarketing = ({
     const ad = metaAds[index];
     onOpenMedia && onOpenMedia({
       type: ad.videoUrl ? "video" : "image",
-      moduleNumber: "MODULE 04",
+      moduleNumber: `MODULE ${formattedRank}`,
       moduleTitle: "Meta Ads & Paid Social Acquisition",
       category: ad.campaignType || "Meta Ads Manager",
       title: ad.title || "Meta Campaign Ad Creative",
@@ -121,7 +123,7 @@ export const Module04SocialMarketing = ({
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
                         <EditableText
-                          value={metaMeta.category || "Module 04 · Paid Social Advertising"}
+                          value={formatModuleCategory(metaMeta.category, "Paid Social Advertising", formattedRank)}
                           onChange={(val) => {
                             if (onChange) {
                               onChange({

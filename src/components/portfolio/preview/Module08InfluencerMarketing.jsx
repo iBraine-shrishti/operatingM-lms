@@ -16,7 +16,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
-import { renderCustomIcon } from "./previewShared";
+import { renderCustomIcon, formatModuleCategory } from "./previewShared";
 import { createInitialPortfolioData } from "../portfolioData";
 
 export const Module08InfluencerMarketing = ({
@@ -28,6 +28,8 @@ export const Module08InfluencerMarketing = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-50/70 border-b border-slate-200/40",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const initialInf = createInitialPortfolioData().modules.influencerMarketing;
   const infData = modules.influencerMarketing || initialInf;
@@ -107,9 +109,9 @@ export const Module08InfluencerMarketing = ({
                     <div className="space-y-1">
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
                         <EditableText
-                          value={infData.categoryBadge || "MODULE 08 · CREATOR & AFFILIATE PARTNERSHIPS"}
+                          value={formatModuleCategory(infData.categoryBadge, "CREATOR & AFFILIATE PARTNERSHIPS", formattedRank)}
                           path="modules.influencerMarketing.categoryBadge"
-                          placeholder="MODULE 08 · CREATOR & AFFILIATE PARTNERSHIPS"
+                          placeholder={`MODULE ${formattedRank} · CREATOR & AFFILIATE PARTNERSHIPS`}
                         />
                       </div>
                       <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">

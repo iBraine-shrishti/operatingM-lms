@@ -17,7 +17,7 @@ import {
   Video,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
-import { InfiniteCardMarquee } from "./previewShared";
+import { InfiniteCardMarquee, formatModuleCategory } from "./previewShared";
 import mockupCreativesImg from "../../../assets/mockup-creatives.jpg";
 
 export const Module02Canva = ({
@@ -29,6 +29,8 @@ export const Module02Canva = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-50/70 border-b border-slate-200/40",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const canvaDesigns = Array.isArray(modules.canva?.designs)
     ? modules.canva.designs
@@ -54,7 +56,7 @@ export const Module02Canva = ({
     const d = canvaDesigns[index];
     onOpenMedia && onOpenMedia({
       type: "image",
-      moduleNumber: "MODULE 02",
+      moduleNumber: `MODULE ${formattedRank}`,
       moduleTitle: "Visual Branding & Graphic Design",
       category: d.category || "Canva Creative Deliverable",
       title: d.title || "Graphic Design Asset",
@@ -80,7 +82,7 @@ export const Module02Canva = ({
     const v = canvaVideos[index];
     onOpenMedia && onOpenMedia({
       type: "video",
-      moduleNumber: "MODULE 02",
+      moduleNumber: `MODULE ${formattedRank}`,
       moduleTitle: "Canva Motion Reels & Video Ads",
       category: v.format || "9:16 Vertical Video Reel",
       title: v.title || "Short-Form Video Creative",
@@ -209,7 +211,7 @@ export const Module02Canva = ({
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
                         <EditableText
-                          value={canvaMeta.category || "Module 02 · Visual Branding & Motion"}
+                          value={formatModuleCategory(canvaMeta.category, "Visual Branding & Motion", formattedRank)}
                           onChange={(val) => {
                             if (onChange) {
                               onChange({

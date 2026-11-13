@@ -16,7 +16,7 @@ import {
   Search,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
-import { renderCustomIcon } from "./previewShared";
+import { renderCustomIcon, formatModuleCategory } from "./previewShared";
 import { createInitialPortfolioData } from "../portfolioData";
 
 export const Module12AiApp = ({
@@ -28,6 +28,8 @@ export const Module12AiApp = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-50/70 border-b border-slate-200/40",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const initialAi = createInitialPortfolioData().modules.aiApp;
   const aiData = modules.aiApp?.systemPromptInstruction ? modules.aiApp : initialAi;
@@ -195,9 +197,9 @@ export const Module12AiApp = ({
                     <div className="space-y-1">
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
                         <EditableText
-                          value={aiData.moduleEyebrow || "MODULE 12 · ARTIFICIAL INTELLIGENCE & AUTOMATION"}
+                          value={formatModuleCategory(aiData.moduleEyebrow, "ARTIFICIAL INTELLIGENCE & AUTOMATION", formattedRank)}
                           path="modules.aiApp.moduleEyebrow"
-                          placeholder="MODULE 12 · ARTIFICIAL INTELLIGENCE & AUTOMATION"
+                          placeholder={`MODULE ${formattedRank} · ARTIFICIAL INTELLIGENCE & AUTOMATION`}
                         />
                       </div>
                       <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">

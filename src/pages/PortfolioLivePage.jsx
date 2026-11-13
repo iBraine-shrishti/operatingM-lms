@@ -92,6 +92,47 @@ export const PortfolioLivePage = () => {
 
   const [copied, setCopied] = useState(false);
 
+  // Cross-tab real-time sync with localStorage
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === "om_lms_portfolio_modules" && e.newValue) {
+        try {
+          setModuleVisibility(JSON.parse(e.newValue));
+        } catch (err) {}
+      }
+      if (e.key === "om_lms_portfolio_data" && e.newValue) {
+        try {
+          const defaultData = createInitialPortfolioData();
+          const parsed = JSON.parse(e.newValue);
+          setPortfolioData({
+            ...defaultData,
+            ...parsed,
+            moduleOrder:
+              Array.isArray(parsed.moduleOrder) && parsed.moduleOrder.length > 0
+                ? parsed.moduleOrder
+                : defaultData.moduleOrder,
+            student: {
+              ...defaultData.student,
+              ...(parsed.student || {}),
+            },
+            modules: {
+              ...defaultData.modules,
+              ...(parsed.modules || {}),
+            },
+          });
+        } catch (err) {}
+      }
+      if (e.key === "om_lms_portfolio_theme" && e.newValue) {
+        try {
+          setTheme(JSON.parse(e.newValue));
+        } catch (err) {}
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);

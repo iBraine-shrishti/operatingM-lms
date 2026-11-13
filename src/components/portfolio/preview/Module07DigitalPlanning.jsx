@@ -20,6 +20,7 @@ import {
   Zap,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
+import { formatModuleCategory } from "./previewShared";
 
 export const Module07DigitalPlanning = ({
   portfolioData,
@@ -30,6 +31,8 @@ export const Module07DigitalPlanning = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-100/90 border-b border-slate-200/90",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const planData = modules.digitalPlanning || {};
   const planMeta = modules.digitalPlanningMeta || {};
@@ -210,7 +213,7 @@ export const Module07DigitalPlanning = ({
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
                         <EditableText
-                          value={planMeta.category || "MODULE 07 · STRATEGIC GROWTH ARCHITECTURE"}
+                          value={formatModuleCategory(planMeta.category, "STRATEGIC GROWTH ARCHITECTURE", formattedRank)}
                           onChange={(val) => {
                             if (onChange) {
                               onChange({

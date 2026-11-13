@@ -21,7 +21,7 @@ import {
 import { EditableText } from "../EditableText";
 import mockupLaptopImg from "../../../assets/mockup-laptop.jpg";
 import { captureWebsiteScreenshot, isValidWebUrl } from "../screenshotService";
-import { InfiniteCardMarquee } from "./previewShared";
+import { InfiniteCardMarquee, formatModuleCategory } from "./previewShared";
 
 export const Module01WordPress = ({
   portfolioData,
@@ -32,6 +32,8 @@ export const Module01WordPress = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-100/90 border-b border-slate-200/90",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const wpProjects = Array.isArray(modules.wordpress) ? modules.wordpress : [];
   const wpMeta = modules.wordpressMeta || {};
@@ -45,7 +47,7 @@ export const Module01WordPress = ({
 
   const handleCaptureWpCardScreenshot = async (pIdx, urlToCapture) => {
     if (!urlToCapture || !isValidWebUrl(urlToCapture)) {
-      alert("Please enter a valid live website URL to capture its UI screenshot.");
+      if (typeof window !== "undefined") window.alert("Please enter a valid live website URL to capture its UI screenshot.");
       return;
     }
 
@@ -64,7 +66,7 @@ export const Module01WordPress = ({
       }
     } catch (err) {
       console.error("Card screenshot capture failed:", err);
-      alert("Failed to capture live website screenshot: " + (err.message || "Unknown error"));
+      if (typeof window !== "undefined") window.alert("Failed to capture live website screenshot: " + (err.message || "Unknown error"));
     } finally {
       setIsCapturingWpIdx(null);
     }
@@ -77,7 +79,7 @@ export const Module01WordPress = ({
     const p = wpProjects[index];
     onOpenMedia && onOpenMedia({
       type: "image",
-      moduleNumber: "MODULE 01",
+      moduleNumber: `MODULE ${formattedRank}`,
       moduleTitle: "WordPress CMS Development",
       category: p.type || "Full-Stack CMS Build",
       title: p.title || "WordPress Website",
@@ -148,7 +150,7 @@ export const Module01WordPress = ({
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
                         <EditableText
-                          value={wpMeta.category || "Module 01 · Full-Stack CMS"}
+                          value={formatModuleCategory(wpMeta.category, "Full-Stack CMS", formattedRank)}
                           onChange={(val) => {
                             if (onChange) {
                               onChange({

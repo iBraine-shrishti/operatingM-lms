@@ -16,7 +16,7 @@ import {
   DollarSign,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
-import { InfiniteCardMarquee } from "./previewShared";
+import { InfiniteCardMarquee, formatModuleCategory } from "./previewShared";
 import mockupCreativesImg from "../../../assets/mockup-creatives.jpg";
 
 export const Module10VideoEditing = ({
@@ -28,6 +28,8 @@ export const Module10VideoEditing = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-50/70 border-b border-slate-200/40",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const veData = modules.videoEditing || {};
   const defaultReels = [
@@ -77,7 +79,7 @@ export const Module10VideoEditing = ({
     const reel = reels[index];
     onOpenMedia && onOpenMedia({
       type: "video",
-      moduleNumber: "MODULE 10",
+      moduleNumber: `MODULE ${formattedRank}`,
       moduleTitle: "Video Editing & Post-Production",
       category: reel.formatTag || "Reels / TikTok Commercial Cut",
       title: reel.title || "Video Commercial Deliverable",
@@ -199,9 +201,9 @@ export const Module10VideoEditing = ({
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
                         <EditableText
-                          value={veData.categoryBadge || "Module 10 · Post-Production & Motion"}
+                          value={formatModuleCategory(veData.categoryBadge, "Post-Production & Motion", formattedRank)}
                           path="modules.videoEditing.categoryBadge"
-                          placeholder="Module 10 · Post-Production & Motion"
+                          placeholder={`Module ${formattedRank} · Post-Production & Motion`}
                         />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">

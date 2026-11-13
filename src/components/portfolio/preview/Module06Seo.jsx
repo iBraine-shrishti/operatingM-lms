@@ -20,6 +20,8 @@ import {
   Store,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
+import { formatModuleCategory } from "./previewShared";
+import mockupLaptopImg from "../../../assets/mockup-laptop.jpg";
 
 export const Module06Seo = ({
   portfolioData,
@@ -30,6 +32,8 @@ export const Module06Seo = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-50/70 border-b border-slate-200/40",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const seoData = modules.seo || {};
   const seoMeta = modules.seoMeta || {};
@@ -117,7 +121,7 @@ export const Module06Seo = ({
     const localSeo = seoData.localSeo || {};
     onOpenMedia && onOpenMedia({
       type: "image",
-      moduleNumber: "MODULE 06",
+      moduleNumber: `MODULE ${formattedRank}`,
       moduleTitle: "SEO & Google Business Profile 3-Pack",
       category: "Local SEO & Map Pack Optimization",
       title: localSeo.businessName || "Local Google Business Profile",
@@ -191,7 +195,7 @@ export const Module06Seo = ({
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
                         <EditableText
-                          value={seoMeta.category || "Module 06 · Organic Search Engine Optimization"}
+                          value={formatModuleCategory(seoMeta.category, "Organic Search Engine Optimization", formattedRank)}
                           onChange={(val) => {
                             if (onChange) {
                               onChange({

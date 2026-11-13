@@ -17,6 +17,8 @@ import {
   Camera,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
+import { formatModuleCategory } from "./previewShared";
+import mockupLaptopImg from "../../../assets/mockup-laptop.jpg";
 
 export const Module05GoogleAds = ({
   portfolioData,
@@ -27,6 +29,8 @@ export const Module05GoogleAds = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-100/90 border-b border-slate-200/90",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const gAds = Array.isArray(modules.googleAds) ? modules.googleAds : [];
   const gMeta = modules.googleAdsMeta || {};
@@ -38,7 +42,7 @@ export const Module05GoogleAds = ({
     const gad = gAds[index];
     onOpenMedia && onOpenMedia({
       type: "image",
-      moduleNumber: "MODULE 05",
+      moduleNumber: `MODULE ${formattedRank}`,
       moduleTitle: "Google Ads & High-Intent Search Architecture",
       category: gad.campaignType || "Google Search Campaign",
       title: gad.campaignName || "Google Ads Architecture",
@@ -117,7 +121,7 @@ export const Module05GoogleAds = ({
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
                         <EditableText
-                          value={gMeta.category || "Module 05 · Search Engine & Intent Advertising"}
+                          value={formatModuleCategory(gMeta.category, "Search Engine & Intent Advertising", formattedRank)}
                           onChange={(val) => {
                             if (onChange) {
                               onChange({
@@ -299,7 +303,7 @@ export const Module05GoogleAds = ({
                                         type="button"
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          openImageModal(
+                                          onOpenImageModal && onOpenImageModal(
                                             `Change Google Ads Preview: ${gad.campaignName}`,
                                             gad.screenshotUrl || mockupLaptopImg,
                                             false,

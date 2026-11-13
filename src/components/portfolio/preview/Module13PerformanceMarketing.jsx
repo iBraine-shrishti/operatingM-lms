@@ -18,7 +18,7 @@ import {
   BarChart3,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
-import { renderCustomIcon } from "./previewShared";
+import { renderCustomIcon, formatModuleCategory } from "./previewShared";
 import { createInitialPortfolioData } from "../portfolioData";
 
 export const Module13PerformanceMarketing = ({
@@ -30,6 +30,8 @@ export const Module13PerformanceMarketing = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-100/90 border-b border-slate-200/90",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const initialPerf = createInitialPortfolioData().modules.performanceMarketing;
   const perfData = modules.performanceMarketing?.funnelArchitecture
@@ -261,9 +263,9 @@ export const Module13PerformanceMarketing = ({
                     <div className="space-y-1">
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600">
                         <EditableText
-                          value={perfData.moduleEyebrow || "MODULE 13 · ADVANCED PERFORMANCE MARKETING"}
+                          value={formatModuleCategory(perfData.moduleEyebrow, "ADVANCED PERFORMANCE MARKETING", formattedRank)}
                           path="modules.performanceMarketing.moduleEyebrow"
-                          placeholder="MODULE 13 · ADVANCED PERFORMANCE MARKETING"
+                          placeholder={`MODULE ${formattedRank} · ADVANCED PERFORMANCE MARKETING`}
                         />
                       </div>
                       <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">

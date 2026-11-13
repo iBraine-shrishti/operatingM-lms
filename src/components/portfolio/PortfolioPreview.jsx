@@ -10,6 +10,7 @@ import {
   renderSmoIcon,
   getModuleIcon,
   InfiniteCardMarquee,
+  formatModuleCategory,
 } from "./preview/previewShared";
 
 // Modular Preview Components
@@ -39,6 +40,7 @@ export {
   renderSmoIcon,
   getModuleIcon,
   InfiniteCardMarquee,
+  formatModuleCategory,
 };
 
 // Component registry for dynamic sequencing
@@ -129,9 +131,10 @@ export const PortfolioPreview = ({
     }
   };
 
-  // Ordered navItems matching the student's custom module sequence
+  // Ordered navItems matching the student's custom module sequence (filtered first so ranks dynamically update when any module is hidden)
   const navItems = useMemo(() => {
     return moduleOrder
+      .filter((modId) => moduleVisibility[modId] !== false)
       .map((modId, index) => {
         const catalogMod = MODULES_CATALOG.find((m) => m.id === modId);
         if (!catalogMod) return null;
@@ -142,7 +145,7 @@ export const PortfolioPreview = ({
           icon: getModuleIcon(modId),
         };
       })
-      .filter((item) => item && moduleVisibility[item.id] !== false);
+      .filter(Boolean);
   }, [moduleOrder, moduleVisibility]);
 
   const scrollSlider = (direction) => {
@@ -303,6 +306,8 @@ export const PortfolioPreview = ({
               const bgClass = isEven
                 ? "bg-slate-100/90 border-b border-slate-200/90"
                 : "bg-slate-50/70 border-b border-slate-200/40";
+              const sequenceNumber = modIndex + 1;
+              const formattedRank = String(sequenceNumber).padStart(2, "0");
 
               return (
                 <Component
@@ -315,6 +320,8 @@ export const PortfolioPreview = ({
                   onOpenImageModal={openImageModal}
                   onOpenMedia={setActiveMediaItem}
                   bgClass={bgClass}
+                  sequenceNumber={sequenceNumber}
+                  formattedRank={formattedRank}
                 />
               );
             })}

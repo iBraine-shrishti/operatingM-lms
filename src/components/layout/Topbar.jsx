@@ -177,7 +177,14 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
           personalNotifs = snap.val() || {};
           updateCombined();
         },
-        (err) => console.warn("Firebase personal listener error:", err),
+        (err) => {
+          // Gracefully suppress permission_denied warning if RTDB rules restrict direct client reads
+          if (err?.code === "PERMISSION_DENIED" || err?.message?.toLowerCase().includes("permission_denied")) {
+            try { unsubPersonal(); } catch (_) {}
+            return;
+          }
+          console.warn("Firebase personal listener error:", err);
+        },
       );
 
       unsubBroadcast = onValue(
@@ -186,7 +193,14 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
           broadcastNotifs = snap.val() || {};
           updateCombined();
         },
-        (err) => console.warn("Firebase broadcast listener error:", err),
+        (err) => {
+          // Gracefully suppress permission_denied warning if RTDB rules restrict direct client reads
+          if (err?.code === "PERMISSION_DENIED" || err?.message?.toLowerCase().includes("permission_denied")) {
+            try { unsubBroadcast(); } catch (_) {}
+            return;
+          }
+          console.warn("Firebase broadcast listener error:", err);
+        },
       );
     } catch (fbErr) {
       console.warn("Firebase listener setup:", fbErr);

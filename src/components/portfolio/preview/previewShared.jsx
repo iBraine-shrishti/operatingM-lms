@@ -112,6 +112,24 @@ export const renderCustomIcon = (iconName, defaultIcon = "check", className = "w
 };
 
 /**
+ * Dynamically format a module category/eyebrow string with the current visible rank
+ * e.g., "Module 02 · Visual Branding" with rank "01" becomes "Module 01 · Visual Branding"
+ */
+export const formatModuleCategory = (category, fallbackSuffix, rank) => {
+  const formattedRank = String(rank || "01").padStart(2, "0");
+  if (!category || typeof category !== "string") {
+    return `Module ${formattedRank} · ${fallbackSuffix}`;
+  }
+  if (/^module\s+\d+\s*[·•\-:]\s*/i.test(category)) {
+    return category.replace(/^module\s+\d+(\s*[·•\-:]\s*)/i, (match, sep) => {
+      const isUpper = match.toUpperCase() === match;
+      return `${isUpper ? "MODULE" : "Module"} ${formattedRank}${sep}`;
+    });
+  }
+  return category;
+};
+
+/**
  * InfiniteCardMarquee:
  * Horizontally scrolling infinite loop for portfolio cards.
  * Automatically glides across the screen, hides scrollbar,

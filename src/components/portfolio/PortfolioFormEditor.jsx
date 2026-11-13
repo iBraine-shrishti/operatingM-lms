@@ -50,6 +50,8 @@ import {
   Pin,
   X,
   Loader2,
+  Store,
+  Calendar,
 } from "lucide-react";
 import { PORTFOLIO_THEMES } from "./portfolioThemes";
 import { MODULES_CATALOG, DEFAULT_MODULE_ORDER, createInitialPortfolioData } from "./portfolioData";
@@ -91,6 +93,31 @@ export const PortfolioFormEditor = ({
     Array.isArray(data?.moduleOrder) && data.moduleOrder.length > 0
       ? data.moduleOrder
       : defaultData.moduleOrder;
+
+  // Dynamic module sequence calculator based on moduleOrder and moduleVisibility
+  const getModuleSequence = (modId) => {
+    const isVisible = moduleVisibility[modId] !== false;
+    if (!isVisible) {
+      return {
+        isVisible: false,
+        rank: null,
+        formattedRank: "--",
+        badgeText: "Hidden",
+        displayPrefix: "Hidden",
+      };
+    }
+    const visibleModules = moduleOrder.filter((id) => moduleVisibility[id] !== false);
+    const visibleIndex = visibleModules.indexOf(modId);
+    const rank = visibleIndex >= 0 ? visibleIndex + 1 : 1;
+    const formattedRank = String(rank).padStart(2, "0");
+    return {
+      isVisible: true,
+      rank,
+      formattedRank,
+      badgeText: `Module ${formattedRank}`,
+      displayPrefix: `Module ${formattedRank}`,
+    };
+  };
 
   // Toggle accordion open/close
   const toggleSection = (sectionId) => {
@@ -1100,8 +1127,9 @@ export const PortfolioFormEditor = ({
         {/* EXPANDED SHOW / HIDE GRID */}
         {showVisibilityManager && (
           <div className="mt-2.5 p-2.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5 max-h-56 overflow-y-auto custom-scrollbar">
-            {MODULES_CATALOG.map((mod, idx) => {
-              const isVisible = moduleVisibility[mod.id] !== false;
+            {MODULES_CATALOG.map((mod) => {
+              const seq = getModuleSequence(mod.id);
+              const isVisible = seq.isVisible;
               return (
                 <div
                   key={mod.id}
@@ -1109,9 +1137,22 @@ export const PortfolioFormEditor = ({
                     isVisible ? "bg-white border-slate-200" : "bg-slate-100/70 border-slate-200 opacity-60"
                   }`}
                 >
-                  <span className="text-xs font-semibold text-slate-800">
-                    {idx + 1}. {mod.title}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                        isVisible ? "bg-blue-100 text-blue-700" : "bg-slate-200 text-slate-500"
+                      }`}
+                    >
+                      {isVisible ? seq.formattedRank : "--"}
+                    </span>
+                    <span
+                      className={`text-xs font-semibold ${
+                        isVisible ? "text-slate-800" : "text-slate-400 line-through"
+                      }`}
+                    >
+                      {mod.title}
+                    </span>
+                  </div>
                   <button
                     type="button"
                     onClick={() => onToggleModule && onToggleModule(mod.id)}
@@ -1475,8 +1516,19 @@ export const PortfolioFormEditor = ({
                   <Globe size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    3. Module 01 · WordPress Website Development
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("wordpress").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("wordpress").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("wordpress").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      WordPress Website Development
+                    </span>
+                    {!getModuleSequence("wordpress").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Live client projects, Elementor Pro architectures, speed scores & custom features
@@ -1987,8 +2039,19 @@ export const PortfolioFormEditor = ({
                   <Palette size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    4. Module 02 · Canva Creative Graphics & Video Ads
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("canva").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("canva").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("canva").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      Canva Creative Graphics & Video Ads
+                    </span>
+                    {!getModuleSequence("canva").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Display banners, ad creatives, 9:16 vertical reels & design dimensions
@@ -2437,8 +2500,19 @@ export const PortfolioFormEditor = ({
                   <Share2 size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    5. Module 03 · Social Media Organic (SMO)
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("socialOrganic").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("socialOrganic").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("socialOrganic").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      Social Media Organic (SMO)
+                    </span>
+                    {!getModuleSequence("socialOrganic").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Channel teardowns, growth metrics, bio funnels & content pillars
@@ -3015,8 +3089,19 @@ export const PortfolioFormEditor = ({
                   <TrendingUp size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    6. Module 04 · Meta Paid Ads Accordions
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("socialMarketing").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("socialMarketing").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("socialMarketing").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      Meta Paid Ads Accordions
+                    </span>
+                    {!getModuleSequence("socialMarketing").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Advantage+ Shopping, CBO scaling, DCT hooks & CPA teardowns
@@ -3353,8 +3438,19 @@ export const PortfolioFormEditor = ({
                   <Search size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    7. Module 05 · Google Ads Campaigns & Search Architecture
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("googleAds").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("googleAds").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("googleAds").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      Google Ads Campaigns & Search Architecture
+                    </span>
+                    {!getModuleSequence("googleAds").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Tight STAG ad groups, RSA headline tests, extensions & conversions
@@ -3741,8 +3837,19 @@ export const PortfolioFormEditor = ({
                   <BarChart3 size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    8. Module 06 · SEO & Local Google Business Profile
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("seo").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("seo").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("seo").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      SEO & Local Google Business Profile
+                    </span>
+                    {!getModuleSequence("seo").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Keyword research sheet, technical site audits & Google Maps 3-pack dominance
@@ -4380,8 +4487,19 @@ export const PortfolioFormEditor = ({
                   <Briefcase size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    9. Module 07 · Digital Planning & Strategy Deck
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("digitalPlanning").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("digitalPlanning").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("digitalPlanning").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      Digital Planning & Strategy Deck
+                    </span>
+                    {!getModuleSequence("digitalPlanning").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Executive pitch deck slides, gap analysis matrix & 16-week execution roadmap
@@ -5024,8 +5142,19 @@ export const PortfolioFormEditor = ({
                   <Users size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    10. Module 08 · Influencer Marketing Research & Vetting Sheet
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("influencerMarketing").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("influencerMarketing").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("influencerMarketing").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      Influencer Marketing Research & Vetting Sheet
+                    </span>
+                    {!getModuleSequence("influencerMarketing").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Follower authenticity audit, demographic skew, engagement rates & fit assessments
@@ -5318,8 +5447,19 @@ export const PortfolioFormEditor = ({
                   <ShoppingBag size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    11. Module 09 · Shopify Store & E-Commerce CRO Architecture
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("shopify").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("shopify").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("shopify").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      Shopify Store & E-Commerce CRO Architecture
+                    </span>
+                    {!getModuleSequence("shopify").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Store deployment, high AOV cross-sells, checkout flows & CRO features
@@ -5700,8 +5840,19 @@ export const PortfolioFormEditor = ({
                   <Video size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    12. Module 10 · Video Editing, UGC Creatives & Commercial Reels
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("videoEditing").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("videoEditing").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("videoEditing").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      Video Editing, UGC Creatives & Commercial Reels
+                    </span>
+                    {!getModuleSequence("videoEditing").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     High-retention UGC hook architecture, pacing, sound design & completion rates
@@ -6059,8 +6210,19 @@ export const PortfolioFormEditor = ({
                   <Truck size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    13. Module 11 · Dropshipping Store & Product Validation
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("dropshipping").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("dropshipping").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("dropshipping").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      Dropshipping Store & Product Validation
+                    </span>
+                    {!getModuleSequence("dropshipping").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Product discovery, supply chain, margin modeling & pilot sprint results
@@ -6491,8 +6653,19 @@ export const PortfolioFormEditor = ({
                   <Cpu size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    14. Module 12 · AI-Powered Marketing Application & Creative Co-Pilot
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("aiApp").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("aiApp").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("aiApp").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      AI-Powered Marketing Application & Creative Co-Pilot
+                    </span>
+                    {!getModuleSequence("aiApp").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Engineered system prompts, Gemini API workflow & interactive copy test drive
@@ -6913,8 +7086,19 @@ export const PortfolioFormEditor = ({
                   <Zap size={14} />
                 </div>
                 <div>
-                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm">
-                    15. Module 13 · Performance Marketing & Full-Funnel Scaling
+                  <div className="font-extrabold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                    <span className={getModuleSequence("performanceMarketing").isVisible ? "text-blue-600 font-black" : "text-slate-400 font-bold"}>
+                      {getModuleSequence("performanceMarketing").displayPrefix}
+                    </span>
+                    <span className="text-slate-300">·</span>
+                    <span className={getModuleSequence("performanceMarketing").isVisible ? "text-slate-900" : "text-slate-500 line-through"}>
+                      Performance Marketing & Full-Funnel Scaling
+                    </span>
+                    {!getModuleSequence("performanceMarketing").isVisible && (
+                      <span className="ml-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-200 text-slate-600">
+                        Hidden
+                      </span>
+                    )}
                   </div>
                   <div className="text-[11px] text-slate-500">
                     Scaled spend, blended ROAS, multi-stage funnel mix & independent first-party tracking

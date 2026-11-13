@@ -19,8 +19,9 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { EditableText } from "../EditableText";
-import { renderCustomIcon } from "./previewShared";
+import { renderCustomIcon, formatModuleCategory } from "./previewShared";
 import mockupLaptopImg from "../../../assets/mockup-laptop.jpg";
+import mockupCreativesImg from "../../../assets/mockup-creatives.jpg";
 
 export const Module09Shopify = ({
   portfolioData,
@@ -31,6 +32,8 @@ export const Module09Shopify = ({
   onOpenImageModal,
   onOpenMedia,
   bgClass = "bg-slate-100/90 border-b border-slate-200/90",
+  sequenceNumber = 1,
+  formattedRank = "01",
 }) => {
   const shopData = modules.shopify || {};
   const storeName = shopData.storeName || "Terra & Tide Apparel";
@@ -68,7 +71,7 @@ export const Module09Shopify = ({
     const shopData = modules.shopify || {};
     onOpenMedia && onOpenMedia({
       type: "image",
-      moduleNumber: "MODULE 09",
+      moduleNumber: `MODULE ${formattedRank}`,
       moduleTitle: "Shopify E-Commerce Store Architecture",
       category: shopData.topBadge || "Shopify Partner Certified",
       title: shopData.storeName || "Shopify Store Showcase",
@@ -231,9 +234,9 @@ export const Module09Shopify = ({
                     <div>
                       <div className="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
                         <EditableText
-                          value={shopData.categoryBadge || "Module 09 · E-Commerce Architecture"}
+                          value={formatModuleCategory(shopData.categoryBadge, "E-Commerce Architecture", formattedRank)}
                           path="modules.shopify.categoryBadge"
-                          placeholder="Module 09 · E-Commerce Architecture"
+                          placeholder={`Module ${formattedRank} · E-Commerce Architecture`}
                         />
                       </div>
                       <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
