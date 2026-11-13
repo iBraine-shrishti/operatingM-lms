@@ -15,7 +15,7 @@ import {
   Briefcase,
   Share2,
 } from "lucide-react";
-import { renderSocialIcon } from "./previewShared";
+import { renderSocialIcon } from "./preview/previewShared";
 
 export const PortfolioContactModal = ({
   isOpen,
