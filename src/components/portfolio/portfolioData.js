@@ -41,31 +41,53 @@ export const createInitialPortfolioData = (
   crmBatch = {},
   crmCertificates = []
 ) => {
+  // Read cached backend CRM student profile if available
+  let cachedProfile = null;
+  if (typeof localStorage !== "undefined") {
+    try {
+      const raw = localStorage.getItem("om_lms_crm_cached_profile");
+      if (raw) cachedProfile = JSON.parse(raw);
+    } catch (_) {}
+  }
+
+  // Purely professional portfolio details dynamically fetched from backend account:
+  // Strictly excludes private personal records (Aadhar cards, DOB, home address, religion, marital status, fees)
   const studentName =
     currentUser?.name ||
     crmProfile?.name ||
     crmProfile?.fullName ||
-    "Ram Charan";
+    cachedProfile?.name ||
+    cachedProfile?.fullName ||
+    "Student Candidate";
 
   const studentEmail =
     currentUser?.email ||
     crmProfile?.email ||
-    "ram.charan@operatingmedia.com";
+    cachedProfile?.email ||
+    "student@operatingmedia.com";
 
   const studentPhone =
     crmProfile?.phone ||
     crmProfile?.mobile ||
+    currentUser?.phone ||
+    currentUser?.mobile ||
+    cachedProfile?.phone ||
+    cachedProfile?.mobile ||
     "+91 98201 54321";
 
   const studentBranch =
     crmProfile?.branch ||
     crmBatch?.branch ||
-    "Andheri Center, Mumbai";
+    currentUser?.branch ||
+    cachedProfile?.branch ||
+    "Operating Media Academy, Mumbai";
 
   const courseTitle =
     crmBatch?.courseName ||
     crmProfile?.courseName ||
     crmProfile?.course ||
+    currentUser?.course ||
+    cachedProfile?.course ||
     "Diploma in Digital Marketing";
 
   const backendAvatar =
@@ -73,8 +95,14 @@ export const createInitialPortfolioData = (
     currentUser?.profilePicture ||
     crmProfile?.photo ||
     crmProfile?.avatar ||
+    cachedProfile?.photo ||
+    cachedProfile?.avatar ||
     (typeof localStorage !== "undefined" ? localStorage.getItem("om_lms_student_avatar") : null) ||
     "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400";
+
+  const nameSlug = studentName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const cleanPhone = String(studentPhone).replace(/[^0-9]/g, "");
+  const waNumber = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
 
   return {
     moduleOrder: [...DEFAULT_MODULE_ORDER],
@@ -88,12 +116,12 @@ export const createInitialPortfolioData = (
       phone: studentPhone,
       location: studentBranch,
       socials: [
-        { platform: "linkedin", url: "https://linkedin.com/in/ram-charan-marketing", label: "LinkedIn" },
-        { platform: "twitter", url: "https://x.com/ram_growth", label: "X (Twitter)" },
-        { platform: "instagram", url: "https://instagram.com/ram.digital", label: "Instagram" },
-        { platform: "behance", url: "https://behance.net/ram_creatives", label: "Behance" },
+        { platform: "linkedin", url: `https://linkedin.com/in/${nameSlug}`, label: "LinkedIn" },
+        { platform: "twitter", url: `https://x.com/${nameSlug}`, label: "X (Twitter)" },
+        { platform: "instagram", url: `https://instagram.com/${nameSlug}`, label: "Instagram" },
+        { platform: "behance", url: `https://behance.net/${nameSlug}`, label: "Behance" },
         { platform: "github", url: "https://github.com/operating-media", label: "GitHub" },
-        { platform: "whatsapp", url: "https://wa.me/919820154321", label: "WhatsApp" },
+        { platform: "whatsapp", url: `https://wa.me/${waNumber}`, label: "WhatsApp" },
       ],
       highlights: [
         { label: "Total Ad Spend Managed", value: "₹1,450,000+", detail: "Across Meta, Google & PMax Ads" },

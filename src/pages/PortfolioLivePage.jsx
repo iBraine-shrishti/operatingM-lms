@@ -7,14 +7,30 @@ import {
   PORTFOLIO_THEMES,
 } from "../components/portfolio/portfolioThemes";
 import { Copy, Check, Mail } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export const PortfolioLivePage = () => {
+  const { currentUser, crmProfile, crmBatch } = useAuth();
   const [portfolioData, setPortfolioData] = useState(() => {
-    const defaultData = createInitialPortfolioData();
+    const defaultData = createInitialPortfolioData(
+      currentUser,
+      crmProfile,
+      crmBatch
+    );
     try {
-      const saved = localStorage.getItem("om_lms_portfolio_data");
+      const sid = crmProfile?.id || currentUser?.id || "default";
+      const saved =
+        localStorage.getItem(`om_lms_portfolio_data_${sid}`) ||
+        localStorage.getItem("om_lms_portfolio_data");
       if (saved) {
         const parsed = JSON.parse(saved);
+        const savedStudent = parsed.student || {};
+        const isDefaultStudent =
+          savedStudent.name === "Ram Charan" ||
+          savedStudent.name === "Student Candidate" ||
+          savedStudent.email === "ram.charan@operatingmedia.com" ||
+          savedStudent.email === "student@operatingmedia.com";
+
         return {
           ...defaultData,
           ...parsed,
@@ -24,7 +40,12 @@ export const PortfolioLivePage = () => {
               : defaultData.moduleOrder,
           student: {
             ...defaultData.student,
-            ...(parsed.student || {}),
+            ...savedStudent,
+            name: isDefaultStudent ? defaultData.student.name : (savedStudent.name || defaultData.student.name),
+            email: isDefaultStudent ? defaultData.student.email : (savedStudent.email || defaultData.student.email),
+            phone: isDefaultStudent ? defaultData.student.phone : (savedStudent.phone || defaultData.student.phone),
+            location: isDefaultStudent ? defaultData.student.location : (savedStudent.location || defaultData.student.location),
+            avatarUrl: defaultData.student.avatarUrl || savedStudent.avatarUrl,
           },
           modules: {
             ...defaultData.modules,
@@ -133,6 +154,47 @@ export const PortfolioLivePage = () => {
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  // Dynamic backend profile sync for live preview
+  useEffect(() => {
+    if (!currentUser && !crmProfile) return;
+    const backendAvatar =
+      crmProfile?.photo ||
+      crmProfile?.avatar ||
+      currentUser?.avatar ||
+      currentUser?.profilePicture ||
+      (typeof localStorage !== "undefined" ? localStorage.getItem("om_lms_student_avatar") : null);
+
+    const backendName = crmProfile?.name || crmProfile?.fullName || currentUser?.name;
+    const backendEmail = crmProfile?.email || currentUser?.email;
+    const backendPhone = crmProfile?.phone || crmProfile?.mobile || currentUser?.phone;
+    const backendBranch = crmProfile?.branch || crmBatch?.branch;
+
+    setPortfolioData((prev) => {
+      if (!prev) return prev;
+      const currentStudent = prev.student || {};
+      const isDefault =
+        currentStudent.name === "Ram Charan" ||
+        currentStudent.name === "Student Candidate" ||
+        currentStudent.email === "ram.charan@operatingmedia.com" ||
+        currentStudent.email === "student@operatingmedia.com";
+
+      if (isDefault || (backendEmail && currentStudent.email !== backendEmail)) {
+        return {
+          ...prev,
+          student: {
+            ...currentStudent,
+            name: backendName || currentStudent.name,
+            email: backendEmail || currentStudent.email,
+            phone: backendPhone || currentStudent.phone,
+            location: backendBranch || currentStudent.location,
+            avatarUrl: backendAvatar || currentStudent.avatarUrl,
+          },
+        };
+      }
+      return prev;
+    });
+  }, [currentUser, crmProfile, crmBatch]);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href);

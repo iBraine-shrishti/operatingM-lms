@@ -41,9 +41,19 @@ export const PortfolioBuilderPage = () => {
       crmCertificates
     );
     try {
-      const saved = localStorage.getItem("om_lms_portfolio_data");
+      const sid = crmProfile?.id || currentUser?.id || "default";
+      const saved =
+        localStorage.getItem(`om_lms_portfolio_data_${sid}`) ||
+        localStorage.getItem("om_lms_portfolio_data");
       if (saved) {
         const parsed = JSON.parse(saved);
+        const savedStudent = parsed.student || {};
+        const isDefaultStudent =
+          savedStudent.name === "Ram Charan" ||
+          savedStudent.name === "Student Candidate" ||
+          savedStudent.email === "ram.charan@operatingmedia.com" ||
+          savedStudent.email === "student@operatingmedia.com";
+
         return {
           ...defaultData,
           ...parsed,
@@ -51,9 +61,15 @@ export const PortfolioBuilderPage = () => {
             Array.isArray(parsed.moduleOrder) && parsed.moduleOrder.length > 0
               ? parsed.moduleOrder
               : defaultData.moduleOrder,
+          // Prioritize dynamic backend profile photo & contact details
           student: {
             ...defaultData.student,
-            ...(parsed.student || {}),
+            ...savedStudent,
+            name: isDefaultStudent ? defaultData.student.name : (savedStudent.name || defaultData.student.name),
+            email: isDefaultStudent ? defaultData.student.email : (savedStudent.email || defaultData.student.email),
+            phone: isDefaultStudent ? defaultData.student.phone : (savedStudent.phone || defaultData.student.phone),
+            location: isDefaultStudent ? defaultData.student.location : (savedStudent.location || defaultData.student.location),
+            avatarUrl: defaultData.student.avatarUrl || savedStudent.avatarUrl,
           },
           modules: {
             ...defaultData.modules,
@@ -127,38 +143,94 @@ export const PortfolioBuilderPage = () => {
   const [viewMode, setViewMode] = useState("split");
   const [isPdfExportOpen, setIsPdfExportOpen] = useState(false);
 
-  // Auto-sync backend student profile details on load if available (like Resume)
+  // Auto-sync backend student profile details dynamically (Profile Photo & Contact Details)
   useEffect(() => {
     const backendAvatar =
-      currentUser?.avatar ||
-      currentUser?.profilePicture ||
       crmProfile?.photo ||
       crmProfile?.avatar ||
-      localStorage.getItem("om_lms_student_avatar");
+      currentUser?.avatar ||
+      currentUser?.profilePicture ||
+      (typeof localStorage !== "undefined" ? localStorage.getItem("om_lms_student_avatar") : null);
 
     const studentName =
-      currentUser?.name ||
-      currentUser?.fullName ||
       crmProfile?.name ||
-      crmProfile?.fullName;
+      crmProfile?.fullName ||
+      currentUser?.name ||
+      currentUser?.fullName;
 
-    if (backendAvatar || studentName) {
+    const studentEmail =
+      crmProfile?.email ||
+      currentUser?.email;
+
+    const studentPhone =
+      crmProfile?.phone ||
+      crmProfile?.mobile ||
+      currentUser?.phone;
+
+    const studentBranch =
+      crmProfile?.branch ||
+      crmBatch?.branch ||
+      currentUser?.branch;
+
+    if (backendAvatar || studentName || studentEmail || studentPhone || studentBranch) {
       setPortfolioData((prev) => {
         let changed = false;
         const updatedStudent = { ...prev.student };
 
-        if (
-          backendAvatar &&
-          (!updatedStudent.avatarUrl ||
-            updatedStudent.avatarUrl.includes("photo-1534528741775-53994a69daeb") ||
-            updatedStudent.avatarUrl.includes("photo-1507003211169-0a1dd7228f2d"))
-        ) {
+        // 1. Profile photo
+        if (backendAvatar && updatedStudent.avatarUrl !== backendAvatar) {
           updatedStudent.avatarUrl = backendAvatar;
           changed = true;
         }
 
-        if (studentName && (updatedStudent.name === "Ram Charan" || !updatedStudent.name)) {
+        // 2. Full Name
+        if (
+          studentName &&
+          (updatedStudent.name === "Ram Charan" ||
+            updatedStudent.name === "Student Candidate" ||
+            !updatedStudent.name)
+        ) {
           updatedStudent.name = studentName;
+          changed = true;
+        }
+
+        // 3. Email
+        if (
+          studentEmail &&
+          (updatedStudent.email === "ram.charan@operatingmedia.com" ||
+            updatedStudent.email === "student@operatingmedia.com" ||
+            !updatedStudent.email)
+        ) {
+          updatedStudent.email = studentEmail;
+          changed = true;
+        }
+
+        // 4. Phone
+        if (
+          studentPhone &&
+          (updatedStudent.phone === "+91 98201 54321" || !updatedStudent.phone)
+        ) {
+          updatedStudent.phone = studentPhone;
+          changed = true;
+        }
+
+        // 5. Branch
+        if (
+          studentBranch &&
+          (updatedStudent.location === "Andheri Center, Mumbai" ||
+            !updatedStudent.location)
+        ) {
+          updatedStudent.location = studentBranch;
+          changed = true;
+        }
+
+        // Account Switch detection: if logged in as a different student with a valid email
+        if (studentEmail && updatedStudent.email && studentEmail !== updatedStudent.email) {
+          updatedStudent.name = studentName || updatedStudent.name;
+          updatedStudent.email = studentEmail;
+          updatedStudent.phone = studentPhone || updatedStudent.phone;
+          updatedStudent.location = studentBranch || updatedStudent.location;
+          if (backendAvatar) updatedStudent.avatarUrl = backendAvatar;
           changed = true;
         }
 
@@ -168,6 +240,8 @@ export const PortfolioBuilderPage = () => {
             student: updatedStudent,
           };
           try {
+            const sid = crmProfile?.id || currentUser?.id || "default";
+            localStorage.setItem(`om_lms_portfolio_data_${sid}`, JSON.stringify(updated));
             localStorage.setItem("om_lms_portfolio_data", JSON.stringify(updated));
           } catch (e) {}
           return updated;
@@ -175,12 +249,27 @@ export const PortfolioBuilderPage = () => {
         return prev;
       });
     }
-  }, [currentUser?.avatar, currentUser?.name, crmProfile?.photo, crmProfile?.name]);
+  }, [
+    currentUser?.avatar,
+    currentUser?.name,
+    currentUser?.email,
+    currentUser?.phone,
+    crmProfile?.photo,
+    crmProfile?.avatar,
+    crmProfile?.name,
+    crmProfile?.email,
+    crmProfile?.phone,
+    crmProfile?.mobile,
+    crmProfile?.branch,
+    crmBatch?.branch,
+  ]);
 
   // Save changes to localStorage
   const handleDataChange = (updated) => {
     setPortfolioData(updated);
     try {
+      const sid = crmProfile?.id || currentUser?.id || "default";
+      localStorage.setItem(`om_lms_portfolio_data_${sid}`, JSON.stringify(updated));
       localStorage.setItem("om_lms_portfolio_data", JSON.stringify(updated));
     } catch (e) {}
   };

@@ -318,8 +318,10 @@ export const PortfolioFormEditor = ({
     }
   };
 
-  // Sync photo directly from student account in backend / CRM
-  const handleSyncBackendPhoto = () => {
+  // Sync profile photo & contact details directly from student account in backend / CRM
+  const [syncFeedback, setSyncFeedback] = useState("");
+
+  const handleSyncBackendDetails = () => {
     const backendAvatar =
       currentUser?.avatar ||
       currentUser?.profilePicture ||
@@ -327,13 +329,39 @@ export const PortfolioFormEditor = ({
       crmProfile?.avatar ||
       (typeof localStorage !== "undefined" ? localStorage.getItem("om_lms_student_avatar") : null);
 
-    if (backendAvatar) {
-      handleStudentFieldChange("avatarUrl", backendAvatar);
-      alert("Profile photo synced from student LMS account!");
-    } else {
-      alert("No backend photo found in current student account. You can upload one using the 'Upload Custom Photo' button.");
-    }
+    const studentName =
+      crmProfile?.name ||
+      crmProfile?.fullName ||
+      currentUser?.name ||
+      currentUser?.fullName;
+
+    const studentEmail =
+      crmProfile?.email ||
+      currentUser?.email;
+
+    const studentPhone =
+      crmProfile?.phone ||
+      crmProfile?.mobile ||
+      currentUser?.phone;
+
+    const studentBranch =
+      crmProfile?.branch ||
+      "Operating Media Academy, Mumbai";
+
+    const updated = {
+      ...student,
+      ...(backendAvatar ? { avatarUrl: backendAvatar } : {}),
+      ...(studentName ? { name: studentName } : {}),
+      ...(studentEmail ? { email: studentEmail } : {}),
+      ...(studentPhone ? { phone: studentPhone } : {}),
+      ...(studentBranch ? { location: studentBranch } : {}),
+    };
+
+    onChange({ ...data, student: updated });
+    setSyncFeedback("Synced from backend student account!");
+    setTimeout(() => setSyncFeedback(""), 3000);
   };
+  const handleSyncBackendPhoto = handleSyncBackendDetails;
 
   // Highlights Add/Remove
   const handleAddHighlight = () => {
@@ -1229,12 +1257,17 @@ export const PortfolioFormEditor = ({
                         {/* Sync from Backend button */}
                         <button
                           type="button"
-                          onClick={handleSyncBackendPhoto}
+                          onClick={handleSyncBackendDetails}
                           className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
                         >
                           <RotateCcw size={13} />
-                          <span>Sync Photo from Student Account</span>
+                          <span>Sync Details & Photo from Account</span>
                         </button>
+                        {syncFeedback && (
+                          <span className="text-xs text-emerald-600 font-bold self-center animate-in fade-in">
+                            {syncFeedback}
+                          </span>
+                        )}
 
                         {/* Upload custom photo */}
                         <button
@@ -1361,6 +1394,14 @@ export const PortfolioFormEditor = ({
                       className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200"
                     />
                   </div>
+                </div>
+
+                {/* Privacy Safeguard Note */}
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-[11px] text-slate-500 flex items-start space-x-2">
+                  <ShieldCheck size={14} className="text-emerald-600 shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Dynamic Backend Sync:</strong> Profile Photo, Name, Email, and Contact details are dynamically sourced from the logged-in student account. Private personal records (Aadhar, DOB, Home Address, Financials) are strictly protected and omitted from the public portfolio.
+                  </span>
                 </div>
 
                 {/* Social Links List */}
