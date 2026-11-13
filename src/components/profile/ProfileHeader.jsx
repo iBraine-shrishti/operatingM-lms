@@ -258,18 +258,20 @@ export const ProfileHeader = ({ studentData, activeTab, onTabChange }) => {
           <span>Attendance & Fees</span>
         </button>
 
-        <button
-          type="button"
-          onClick={() => onTabChange("history")}
-          className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center space-x-2 shrink-0 ${
-            activeTab === "history"
-              ? "bg-slate-900 dark:bg-blue-600 text-white shadow-xs"
-              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/70"
-          }`}
-        >
-          <History size={14} />
-          <span>Course History</span>
-        </button>
+        {studentData?.hasCourseChange && (
+          <button
+            type="button"
+            onClick={() => onTabChange("history")}
+            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer flex items-center space-x-2 shrink-0 ${
+              activeTab === "history"
+                ? "bg-slate-900 dark:bg-blue-600 text-white shadow-xs"
+                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/70"
+            }`}
+          >
+            <History size={14} />
+            <span>Course History</span>
+          </button>
+        )}
       </div>
     </div>
   );

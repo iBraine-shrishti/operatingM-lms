@@ -97,7 +97,11 @@ export const ProfilePage = () => {
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 60;
       if (atBottom) {
-        setActiveTab("history");
+        if (studentData.hasCourseChange) {
+          setActiveTab("history");
+        } else {
+          setActiveTab("attendance");
+        }
         return;
       }
 
@@ -105,7 +109,7 @@ export const ProfilePage = () => {
 
       // 1. Check Course History
       const histEl = document.getElementById("section-course-history");
-      if (histEl && histEl.getBoundingClientRect().top <= targetY) {
+      if (studentData.hasCourseChange && histEl && histEl.getBoundingClientRect().top <= targetY) {
         setActiveTab("history");
         return;
       }
@@ -219,11 +223,13 @@ export const ProfilePage = () => {
         onOpenReceipt={handleOpenReceipt}
       />
 
-      {/* 4. Course Change History Section */}
-      <ProfileCourseHistorySection
-        studentData={studentData}
-        activeTab={activeTab}
-      />
+      {/* 4. Course Change History Section (Only if student has logged course changes) */}
+      {studentData.hasCourseChange && (
+        <ProfileCourseHistorySection
+          studentData={studentData}
+          activeTab={activeTab}
+        />
+      )}
 
       {/* Fee Receipt Modal */}
       <FeeReceiptModal

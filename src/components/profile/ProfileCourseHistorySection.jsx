@@ -12,6 +12,10 @@ export const ProfileCourseHistorySection = ({
   studentData,
   activeTab,
 }) => {
+  if (!studentData?.hasCourseChange || !studentData?.courseHistory?.length) {
+    return null;
+  }
+
   return (
     <div
       id="section-course-history"

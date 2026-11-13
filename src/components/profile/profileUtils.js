@@ -161,34 +161,38 @@ export const mapStudentDataFromCrm = (crm, user) => {
     }));
   }
 
-  // Course History
-  let courseHistory = source.courseChangeHistory;
-  if (!courseHistory && source.courseHistoryRaw) {
+  // Course History (Only active if the student actually changed courses in CRM)
+  let courseHistory = [];
+  let hasCourseChange = false;
+
+  if (Array.isArray(source.courseChangeHistory) && source.courseChangeHistory.length > 0) {
+    const actualChanges = source.courseChangeHistory.filter((item) => {
+      const titleLower = String(item.title || "").toLowerCase();
+      return !titleLower.startsWith("enrolled in");
+    });
+    if (actualChanges.length > 0) {
+      courseHistory = source.courseChangeHistory;
+      hasCourseChange = true;
+    }
+  } else if (source.courseHistoryRaw && String(source.courseHistoryRaw).trim().length > 0) {
     const rawLines = String(source.courseHistoryRaw)
       .split("\n")
-      .filter((l) => l.trim());
-    courseHistory = rawLines.map((line, idx) => {
-      const parts = line.split(":");
-      const date = parts[0]?.trim() || "Logged Date";
-      const title = parts.slice(1).join(":").trim() || line;
-      return {
-        id: `ch-${idx}`,
-        date,
-        title,
-        description: "Course transition recorded in Operating Media CRM.",
-      };
-    });
-  }
-  if (!courseHistory || courseHistory.length === 0) {
-    courseHistory = [
-      {
-        id: "ch-0",
-        date: admissionDate,
-        title: `Enrolled in ${course}`,
-        description:
-          "Official student admission confirmed in Operating Media CRM records.",
-      },
-    ];
+      .map((l) => l.trim())
+      .filter(Boolean);
+    if (rawLines.length > 0) {
+      courseHistory = rawLines.map((line, idx) => {
+        const parts = line.split(":");
+        const date = parts[0]?.trim() || "Logged Date";
+        const title = parts.slice(1).join(":").trim() || line;
+        return {
+          id: `ch-${idx}`,
+          date,
+          title,
+          description: "Course transition recorded in Operating Media CRM.",
+        };
+      });
+      hasCourseChange = true;
+    }
   }
 
   return {
@@ -227,6 +231,7 @@ export const mapStudentDataFromCrm = (crm, user) => {
     feesClearedPercent,
     paymentStatus,
     installments,
+    hasCourseChange,
     courseHistory,
   };
 };
