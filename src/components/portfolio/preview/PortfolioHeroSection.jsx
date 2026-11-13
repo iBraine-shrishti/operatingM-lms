@@ -154,9 +154,9 @@ export const PortfolioHeroSection = ({
   return (
       <div id="portfolio-section-hero" className="w-full">
       <header className="relative z-20 bg-white border-b border-slate-200 shadow-2xs">
-        <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 min-h-16 py-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4">
+        <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-3 sm:px-6 lg:px-8 min-h-16 py-2.5 flex items-center justify-between gap-3">
           {/* Left Brand & Institutional Accreditation */}
-          <div className="flex items-center space-x-3 sm:space-x-3.5 shrink min-w-0">
+          <div className="flex items-center space-x-3 sm:space-x-3.5 shrink-0 min-w-0">
             {/* Operating Media Academy Logo (Subtle & Professional) */}
             <a
               href="https://operatingmedia.com"
@@ -168,7 +168,7 @@ export const PortfolioHeroSection = ({
               <img
                 src={logoHorizontalImg}
                 alt="Operating Media"
-                className="h-6 sm:h-7 w-auto object-contain"
+                className="h-6 sm:h-7 w-auto object-contain shrink-0"
               />
             </a>
 
@@ -179,7 +179,7 @@ export const PortfolioHeroSection = ({
             >
               {student.name.split(" ").map((n) => n[0]).slice(0, 2).join("") || "DM"}
             </div>
-            <div className="truncate">
+            <div className="truncate shrink min-w-0">
               <div className="font-extrabold text-slate-900 text-xs sm:text-sm leading-tight truncate">
                 <EditableText
                   value={student.name}
@@ -194,19 +194,21 @@ export const PortfolioHeroSection = ({
             </div>
           </div>
 
-          {/* Center Links (Desktop) */}
-          <nav className="hidden xl:flex items-center space-x-5 text-xs font-semibold text-slate-600">
-            {navItems.slice(0, 7).map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => scrollToSection(item.id)}
-                className="hover:text-blue-600 transition-colors cursor-pointer truncate max-w-[140px]"
-              >
-                {item.label.replace(/^\d+\.\s*/, "")}
-              </button>
-            ))}
-          </nav>
+          {/* Center Links (Only displayed in standalone full-window mode on wide screens; hidden in side preview to avoid overlapping) */}
+          {isStandalone && (
+            <nav className="hidden 2xl:flex items-center space-x-5 text-xs font-semibold text-slate-600 shrink min-w-0 overflow-hidden">
+              {navItems.slice(0, 7).map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => scrollToSection(item.id)}
+                  className="hover:text-blue-600 transition-colors cursor-pointer truncate max-w-[140px] whitespace-nowrap"
+                >
+                  {item.label.replace(/^\d+\.\s*/, "")}
+                </button>
+              ))}
+            </nav>
+          )}
 
           {/* Right Action Buttons */}
           <div className="flex items-center space-x-1.5 sm:space-x-2.5 shrink-0">
