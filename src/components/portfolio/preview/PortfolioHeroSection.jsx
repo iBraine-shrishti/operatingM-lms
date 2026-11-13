@@ -28,6 +28,7 @@ export const PortfolioHeroSection = ({
   onOpenMedia,
   onOpenCustomizer,
   onOpenPdfExport,
+  onOpenContact,
   scrollToSection,
 }) => {
   // Student field updater
@@ -221,16 +222,16 @@ export const PortfolioHeroSection = ({
               <Printer size={15} />
             </button>
 
-            {isStandalone && student.email && (
-              <a
-                href={`mailto:${student.email}`}
-                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 sm:py-2 text-xs font-bold text-slate-950 rounded-lg transition-colors shadow-xs cursor-pointer"
-                style={{ backgroundColor: theme.primary }}
-              >
-                <Mail size={13} />
-                <span>Get in Touch</span>
-              </a>
-            )}
+            <button
+              type="button"
+              onClick={onOpenContact}
+              className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 sm:py-2 text-xs font-bold text-slate-950 rounded-lg transition-all shadow-xs cursor-pointer hover:brightness-105 active:scale-95"
+              style={{ backgroundColor: theme.primary }}
+              title="Get in Touch with candidate"
+            >
+              <Mail size={13} />
+              <span>Get in Touch</span>
+            </button>
           </div>
         </div>
       </header>
@@ -415,15 +416,15 @@ export const PortfolioHeroSection = ({
                   <span>Save / Print Portfolio</span>
                 </button>
 
-                {isStandalone && student.email && (
-                  <a
-                    href={`mailto:${student.email}`}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-colors"
-                  >
-                    <Mail size={16} style={{ color: theme.primary }} />
-                    <span>Connect Directly</span>
-                  </a>
-                )}
+                <button
+                  type="button"
+                  onClick={onOpenContact}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-slate-200 bg-slate-800 hover:bg-slate-700 rounded-lg border border-slate-700 transition-all cursor-pointer hover:border-slate-500"
+                  title="Open direct contact and inquiry dialog"
+                >
+                  <Mail size={16} style={{ color: theme.primary }} />
+                  <span>Get in Touch</span>
+                </button>
               </div>
             </div>
 

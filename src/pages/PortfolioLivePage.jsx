@@ -6,7 +6,7 @@ import {
 import {
   PORTFOLIO_THEMES,
 } from "../components/portfolio/portfolioThemes";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, Mail } from "lucide-react";
 
 export const PortfolioLivePage = () => {
   const [portfolioData, setPortfolioData] = useState(() => {
@@ -91,6 +91,7 @@ export const PortfolioLivePage = () => {
   });
 
   const [copied, setCopied] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
 
   // Cross-tab real-time sync with localStorage
   useEffect(() => {
@@ -141,15 +142,25 @@ export const PortfolioLivePage = () => {
 
   return (
     <div className="relative min-h-screen bg-slate-50">
-      {/* Floating Share Link Pill */}
-      <div className="fixed bottom-4 right-4 z-50 flex items-center space-x-2 bg-slate-900/90 backdrop-blur-md text-white px-4 py-2.5 rounded-full shadow-2xl border border-slate-700/80">
+      {/* Floating Share & Contact Pill */}
+      <div className="fixed bottom-4 right-4 z-50 flex items-center space-x-2 bg-slate-900/90 backdrop-blur-md text-white px-3.5 py-2 rounded-full shadow-2xl border border-slate-700/80">
+        <button
+          type="button"
+          onClick={() => setIsContactOpen(true)}
+          className="text-xs font-bold text-white hover:text-amber-300 flex items-center space-x-1.5 cursor-pointer transition-colors pr-2.5 border-r border-slate-700"
+          title="Open candidate contact and message modal"
+        >
+          <Mail size={13} className="text-amber-400" />
+          <span>Get in Touch</span>
+        </button>
+
         <button
           type="button"
           onClick={handleCopyLink}
-          className="text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center space-x-1.5 cursor-pointer transition-colors"
+          className="text-xs font-bold text-slate-300 hover:text-white flex items-center space-x-1.5 cursor-pointer transition-colors pl-0.5"
         >
-          {copied ? <Check size={13} /> : <Copy size={13} />}
-          <span>{copied ? "Link Copied!" : "Copy Share Link"}</span>
+          {copied ? <Check size={13} className="text-emerald-400" /> : <Copy size={13} />}
+          <span>{copied ? "Link Copied!" : "Share Link"}</span>
         </button>
       </div>
 
@@ -159,6 +170,8 @@ export const PortfolioLivePage = () => {
         theme={theme}
         moduleVisibility={moduleVisibility}
         isStandalone={true}
+        isContactOpen={isContactOpen}
+        onContactOpenChange={setIsContactOpen}
       />
     </div>
   );

@@ -3,6 +3,7 @@ import { PortfolioEditableContext } from "./EditableText";
 import { ImageUploadModal } from "./ImageUploadModal";
 import { PortfolioPdfExporter } from "./PortfolioPdfExporter";
 import { PortfolioMediaModal } from "./PortfolioMediaModal";
+import { PortfolioContactModal } from "./PortfolioContactModal";
 import { MODULES_CATALOG, createInitialPortfolioData } from "./portfolioData";
 import {
   renderCustomIcon,
@@ -68,6 +69,8 @@ export const PortfolioPreview = ({
   onOpenCustomizer,
   isStandalone = false,
   isExportCapture = false,
+  isContactOpen,
+  onContactOpenChange,
 }) => {
   const defaultData = useMemo(() => createInitialPortfolioData(), []);
   const student = portfolioData?.student || defaultData.student;
@@ -80,6 +83,18 @@ export const PortfolioPreview = ({
 
   const [activeTab, setActiveTab] = useState("wordpress");
   const [isPdfExportOpen, setIsPdfExportOpen] = useState(false);
+  const [internalContactModalOpen, setInternalContactModalOpen] = useState(false);
+  const isContactModalOpen = isContactOpen !== undefined ? isContactOpen : internalContactModalOpen;
+
+  const openContactModal = () => {
+    if (onContactOpenChange) onContactOpenChange(true);
+    setInternalContactModalOpen(true);
+  };
+
+  const closeContactModal = () => {
+    if (onContactOpenChange) onContactOpenChange(false);
+    setInternalContactModalOpen(false);
+  };
 
   // Universal Lightbox Modal state for image & video work inspection
   const [activeMediaItem, setActiveMediaItem] = useState(null);
@@ -283,6 +298,7 @@ export const PortfolioPreview = ({
           onOpenMedia={setActiveMediaItem}
           onOpenCustomizer={onOpenCustomizer}
           onOpenPdfExport={() => setIsPdfExportOpen(true)}
+          onOpenContact={openContactModal}
           scrollToSection={scrollToSection}
         />
 
@@ -332,6 +348,7 @@ export const PortfolioPreview = ({
           theme={theme}
           student={student}
           navItems={navItems}
+          onOpenContact={openContactModal}
         />
 
         {/* 5. MODALS */}
@@ -365,6 +382,13 @@ export const PortfolioPreview = ({
           mediaItem={activeMediaItem}
           onClose={() => setActiveMediaItem(null)}
           onNavigate={handleNavigateMedia}
+        />
+
+        <PortfolioContactModal
+          isOpen={isContactModalOpen}
+          onClose={closeContactModal}
+          student={student}
+          theme={theme}
         />
       </div>
     </PortfolioEditableContext.Provider>

@@ -1,8 +1,13 @@
 import React from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Mail } from "lucide-react";
 import logoHorizontalDarkImg from "../../../assets/logo-horizontal-dark.png";
 
-export const PortfolioFooterSection = ({ theme, student, navItems = [] }) => {
+export const PortfolioFooterSection = ({
+  theme,
+  student,
+  navItems = [],
+  onOpenContact,
+}) => {
   return (
       <footer className="bg-slate-950 text-white py-12 border-t border-slate-800">
         <div className="w-[min(100%-clamp(1.5rem,4vw,3.5rem),1480px)] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
@@ -24,19 +29,34 @@ export const PortfolioFooterSection = ({ theme, student, navItems = [] }) => {
               </div>
             </div>
 
-            {/* Right: Verified Student Credentials Badge */}
-            <div className="flex items-center space-x-3 bg-slate-900/90 border border-slate-800 px-4 py-2.5 rounded-2xl">
-              <div
-                className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-black shrink-0"
-                style={{ backgroundColor: theme.primary }}
-              >
-                {student.name.charAt(0)}
-              </div>
-              <div className="text-left">
-                <div className="font-bold text-xs text-white">{student.name}</div>
-                <div className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
-                  <CheckCircle2 size={11} />
-                  <span>Curriculum Verified • Cohort 2026</span>
+            {/* Right: Verified Student Credentials & Get In Touch CTA */}
+            <div className="flex flex-wrap items-center gap-3">
+              {onOpenContact && (
+                <button
+                  type="button"
+                  onClick={onOpenContact}
+                  className="inline-flex items-center space-x-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-950 transition-all hover:brightness-110 active:scale-95 shadow-md cursor-pointer"
+                  style={{ backgroundColor: theme.primary }}
+                  title="Send inquiry or message directly"
+                >
+                  <Mail size={13} />
+                  <span>Get in Touch</span>
+                </button>
+              )}
+
+              <div className="flex items-center space-x-3 bg-slate-900/90 border border-slate-800 px-4 py-2.5 rounded-2xl">
+                <div
+                  className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-xs font-black shrink-0"
+                  style={{ backgroundColor: theme.primary }}
+                >
+                  {student.name.charAt(0)}
+                </div>
+                <div className="text-left">
+                  <div className="font-bold text-xs text-white">{student.name}</div>
+                  <div className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
+                    <CheckCircle2 size={11} />
+                    <span>Curriculum Verified • Cohort 2026</span>
+                  </div>
                 </div>
               </div>
             </div>
