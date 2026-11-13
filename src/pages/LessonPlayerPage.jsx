@@ -222,7 +222,7 @@ export const LessonPlayerPage = () => {
   }, [currentLesson?.videoUrl, currentLesson?.id]);
 
   // Tab & Notes states
-  const [activeTab, setActiveTab] = useState("overview"); // overview | notes | resources | discussion
+  const [activeTab, setActiveTab] = useState("overview"); // overview | notes | discussion
   const [noteContent, setNoteContent] = useState("");
   const [userNotes, setUserNotes] = useState(() => lmsService.getNotes(studentId));
 
@@ -659,7 +659,6 @@ export const LessonPlayerPage = () => {
             currentTime={currentTime}
             onInsertTimestamp={handleInsertTimestamp}
             onSaveNote={handleSaveNote}
-            onDownloadResource={() => showToast("Downloading resource...", "info")}
             onNavigateForums={() => navigate("/forums")}
           />
         </div>

@@ -2,12 +2,11 @@ import { lmsService } from "../../../services/lmsService";
 import React from "react";
 import { LessonOverviewTab } from "./LessonOverviewTab";
 import { LessonNotesTab } from "./LessonNotesTab";
-import { LessonResourcesTab } from "./LessonResourcesTab";
 import { LessonDiscussionTab } from "./LessonDiscussionTab";
 
 /**
  * LessonTabsContainer Component
- * Tabbed interactive container for Overview, Notes, Resources, and Discussion.
+ * Tabbed interactive container for Overview, Notes, and Discussion.
  */
 export const LessonTabsContainer = ({
   activeTab = "overview",
@@ -20,7 +19,6 @@ export const LessonTabsContainer = ({
   currentTime = 0,
   onInsertTimestamp,
   onSaveNote,
-  onDownloadResource,
   onNavigateForums,
 }) => {
   const courseNotesCount = userNotes.filter((n) =>
@@ -30,7 +28,6 @@ export const LessonTabsContainer = ({
   const tabs = [
     { key: "overview", label: "Lesson Overview" },
     { key: "notes", label: `Personal Notes (${courseNotesCount})` },
-    { key: "resources", label: "Resources & Cheat Sheet" },
     { key: "discussion", label: "Student Q&A & Forums" },
   ];
 
@@ -71,13 +68,6 @@ export const LessonTabsContainer = ({
           currentTime={currentTime}
           onInsertTimestamp={onInsertTimestamp}
           onSaveNote={onSaveNote}
-        />
-      )}
-
-      {activeTab === "resources" && (
-        <LessonResourcesTab
-          currentLesson={currentLesson}
-          onDownloadResource={onDownloadResource}
         />
       )}
 
