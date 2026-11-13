@@ -133,7 +133,7 @@ export const PortfolioHeroSection = ({
           value: h.value,
           highlight: "emerald",
         })),
-        tags: [student.email, student.phone, student.location].filter(Boolean),
+        tags: [student.email, student.showPhone ? student.phone : null, student.location].filter(Boolean),
         liveUrl: student.portfolioUrl || (student.socials && student.socials[0]?.url) || "",
         currentIndex: 0,
         itemsList: [student],
@@ -320,14 +320,16 @@ export const PortfolioHeroSection = ({
                     className="hover:text-white transition-colors"
                   />
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Phone size={14} style={{ color: theme.primary }} className="shrink-0" />
-                  <EditableText
-                    value={student.phone}
-                    onChange={(val) => handleUpdateStudentField("phone", val)}
-                    className="hover:text-white transition-colors"
-                  />
-                </div>
+                {Boolean(student.showPhone && student.phone) && (
+                  <div className="flex items-center gap-1.5">
+                    <Phone size={14} style={{ color: theme.primary }} className="shrink-0" />
+                    <EditableText
+                      value={student.phone}
+                      onChange={(val) => handleUpdateStudentField("phone", val)}
+                      className="hover:text-white transition-colors"
+                    />
+                  </div>
+                )}
                 <div className="flex items-center gap-1.5">
                   <MapPin size={14} style={{ color: theme.primary }} className="shrink-0" />
                   <EditableText

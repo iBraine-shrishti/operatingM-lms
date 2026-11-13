@@ -55,7 +55,6 @@ import {
 } from "lucide-react";
 import { PORTFOLIO_THEMES } from "./portfolioThemes";
 import { MODULES_CATALOG, DEFAULT_MODULE_ORDER, createInitialPortfolioData } from "./portfolioData";
-import { PRESET_AVATARS } from "./ImageUploadModal";
 import { useAuth } from "../../context/AuthContext";
 import { captureWebsiteScreenshot, extractCleanDomain, isValidWebUrl } from "./screenshotService";
 
@@ -1300,26 +1299,6 @@ export const PortfolioFormEditor = ({
                       </div>
                     </div>
                   </div>
-
-                  {/* Preset Avatars Row */}
-                  <div className="pt-2 border-t border-slate-200/80">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
-                      Or Select from Curated Student Avatars:
-                    </span>
-                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-                      {PRESET_AVATARS.map((preset, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => handleStudentFieldChange("avatarUrl", preset.url)}
-                          className="w-9 h-9 rounded-xl overflow-hidden border-2 border-slate-200 hover:border-blue-500 hover:scale-105 transition-all shrink-0 cursor-pointer shadow-2xs"
-                          title={preset.label}
-                        >
-                          <img src={preset.url} alt={preset.label} className="w-full h-full object-cover" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
                 </div>
 
                 {/* Name & Titles */}
@@ -1386,13 +1365,39 @@ export const PortfolioFormEditor = ({
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-slate-500 block mb-1">Phone Number</label>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-[10px] font-bold text-slate-500">Phone Number</label>
+                      <button
+                        type="button"
+                        onClick={() => handleStudentFieldChange("showPhone", !student.showPhone)}
+                        className={`text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors px-1.5 py-0.5 rounded ${
+                          student.showPhone
+                            ? "text-blue-600 bg-blue-50 border border-blue-200"
+                            : "text-slate-500 bg-slate-100 hover:bg-slate-200 border border-slate-200"
+                        }`}
+                        title={student.showPhone ? "Visible in portfolio. Click to hide." : "Hidden from portfolio. Click to unhide."}
+                      >
+                        {student.showPhone ? <Eye size={11} /> : <EyeOff size={11} />}
+                        <span>{student.showPhone ? "Visible in Portfolio" : "Hidden in Portfolio"}</span>
+                      </button>
+                    </div>
                     <input
                       type="tel"
                       value={student.phone || ""}
                       onChange={(e) => handleStudentFieldChange("phone", e.target.value)}
+                      placeholder="+91..."
                       className="w-full px-3 py-1.5 text-xs rounded-lg border border-slate-200"
                     />
+                    <div className="mt-1 flex items-center justify-between text-[10px] text-slate-400">
+                      <span>{student.showPhone ? "✓ Visible in portfolio preview" : "🔒 Hidden from portfolio preview"}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleStudentFieldChange("showPhone", !student.showPhone)}
+                        className="text-blue-600 hover:underline font-semibold cursor-pointer"
+                      >
+                        {student.showPhone ? "Hide Phone" : "Unhide / Add to Portfolio"}
+                      </button>
+                    </div>
                   </div>
                 </div>
 

@@ -114,6 +114,7 @@ export const createInitialPortfolioData = (
       avatarUrl: backendAvatar,
       email: studentEmail,
       phone: studentPhone,
+      showPhone: false,
       location: studentBranch,
       socials: [
         { platform: "linkedin", url: `https://linkedin.com/in/${nameSlug}`, label: "LinkedIn" },
