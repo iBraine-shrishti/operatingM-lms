@@ -223,7 +223,7 @@ export const SchedulePage = () => {
                 },
                 {
                   value: isAndheri ? "Andheri" : "Borivali",
-                  label: "Campus",
+                  label: "Center",
                   dotColor: "bg-rose-500",
                 },
               ]
@@ -245,7 +245,7 @@ export const SchedulePage = () => {
                 },
                 {
                   value: isAndheri ? "Andheri" : "Borivali",
-                  label: "Campus",
+                  label: "Center",
                   dotColor: "bg-rose-500",
                 },
               ]
@@ -401,7 +401,8 @@ export const SchedulePage = () => {
                 <button
                   type="button"
                   disabled
-                  className="bg-[#2563eb] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-xs flex items-center space-x-1 cursor-default select-none pointer-events-none"
+                  className="bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700/60 text-xs font-semibold px-3.5 py-1.5 rounded-lg flex items-center space-x-1 cursor-not-allowed select-none"
+                  title="Lecture access is restricted"
                 >
                   <span>Join Lecture</span>
                   <Video size={13} />
@@ -609,7 +610,8 @@ export const SchedulePage = () => {
                             <button
                               type="button"
                               disabled
-                              className="inline-flex items-center justify-center gap-1.5 bg-[#2563eb] text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-2xs cursor-default select-none pointer-events-none"
+                              className="inline-flex items-center justify-center gap-1.5 bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700/60 text-xs font-semibold px-3.5 py-1.5 rounded-lg cursor-not-allowed select-none"
+                              title="Room access is restricted"
                             >
                               <span>Enter Room</span>
                               <ArrowRight size={12} />

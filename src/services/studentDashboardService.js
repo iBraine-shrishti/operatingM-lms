@@ -121,12 +121,30 @@ export const studentDashboardService = {
     if (pendingList.length === 0) {
       summaryParts.push("No Pending Tasks");
     }
-    summaryParts.push(isFeesCleared ? "Fees Cleared" : "1 Fee Notice");
+
+    const dueDateRaw = crmProfile?.nextDueDate;
+    const dueDetails = studentDashboardService.calculateDueDetails(dueDateRaw);
+    const isPaymentDueSoon =
+      !isFeesCleared && dueDetails.hasValidDate && dueDetails.isDueSoon;
+
+    if (isFeesCleared) {
+      summaryParts.push("Fees Cleared");
+    } else if (isPaymentDueSoon) {
+      summaryParts.push(
+        dueDetails.isOverdue ? "1 Overdue Installment" : "1 Fee Due Soon"
+      );
+    }
 
     const notificationsSummary = {
       overdue: overdueCount > 0 ? `${overdueCount} Overdue` : "0 Overdue",
       dueToday: dueTodayCount > 0 ? `${dueTodayCount} Due Today` : "0 Due Today",
-      feeNotice: isFeesCleared ? "Fees Cleared" : "1 Fee Notice",
+      feeNotice: isFeesCleared
+        ? "Fees Cleared"
+        : isPaymentDueSoon
+        ? dueDetails.isOverdue
+          ? "Installment Overdue"
+          : "1 Fee Due Soon"
+        : "Fees Up to Date",
       fullText: summaryParts.join(" • "),
     };
 
@@ -200,22 +218,48 @@ export const studentDashboardService = {
   calculateDueDetails: (dueDateStr) => {
     if (!dueDateStr) {
       return {
-        daysLeft: 0,
+        hasValidDate: false,
+        isScheduled: false,
+        daysLeft: null,
         isOverdue: false,
-        badgeText: "Payment Due",
-        stripText: "DUE",
-        dueDateFormatted: "Upcoming",
-        daysRemainingText: "Payment Installment Due",
+        isDueSoon: false,
+        badgeText: "Unscheduled",
+        stripText: "FEES",
+        dueDateFormatted: "Pending Schedule",
+        daysRemainingText: "Payment Schedule Pending",
+      };
+    }
+
+    const lower = String(dueDateStr).toLowerCase().trim();
+    if (
+      lower === "pending schedule" ||
+      lower === "upcoming" ||
+      lower === "no pending dues" ||
+      lower === "pending notice"
+    ) {
+      return {
+        hasValidDate: false,
+        isScheduled: false,
+        daysLeft: null,
+        isOverdue: false,
+        isDueSoon: false,
+        badgeText: "Pending Schedule",
+        stripText: "FEES",
+        dueDateFormatted: dueDateStr,
+        daysRemainingText: "Payment Schedule Pending",
       };
     }
 
     const parsed = new Date(dueDateStr);
     if (isNaN(parsed.getTime())) {
       return {
-        daysLeft: 0,
+        hasValidDate: false,
+        isScheduled: false,
+        daysLeft: null,
         isOverdue: false,
-        badgeText: "Payment Due",
-        stripText: "DUE",
+        isDueSoon: false,
+        badgeText: "Unscheduled",
+        stripText: "FEES",
         dueDateFormatted: dueDateStr,
         daysRemainingText: `Due on ${dueDateStr}`,
       };
@@ -227,12 +271,17 @@ export const studentDashboardService = {
 
     const diffMs = parsed.getTime() - today.getTime();
     const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+    // Due notification ONLY shown within 7 days before payment or when overdue
+    const isDueSoon = diffDays <= 7;
 
     if (diffDays < 0) {
       const overdueDays = Math.abs(diffDays);
       return {
+        hasValidDate: true,
+        isScheduled: true,
         daysLeft: diffDays,
         isOverdue: true,
+        isDueSoon: true,
         badgeText: overdueDays === 1 ? "1 Day Overdue" : `${overdueDays} Days Overdue`,
         stripText: "OVERDUE",
         dueDateFormatted: dueDateStr,
@@ -240,8 +289,11 @@ export const studentDashboardService = {
       };
     } else if (diffDays === 0) {
       return {
+        hasValidDate: true,
+        isScheduled: true,
         daysLeft: 0,
         isOverdue: false,
+        isDueSoon: true,
         badgeText: "Due Today",
         stripText: "TODAY",
         dueDateFormatted: dueDateStr,
@@ -249,8 +301,11 @@ export const studentDashboardService = {
       };
     } else {
       return {
+        hasValidDate: true,
+        isScheduled: true,
         daysLeft: diffDays,
         isOverdue: false,
+        isDueSoon: isDueSoon, // true ONLY if diffDays <= 7!
         badgeText: diffDays === 1 ? "Due in 1 Day" : `Due in ${diffDays} Days`,
         stripText: diffDays > 99 ? "DUE" : `${diffDays}d LEFT`,
         dueDateFormatted: dueDateStr,
@@ -350,7 +405,7 @@ export const studentDashboardService = {
     }
 
     // Fee installment or cleared notice
-    let itemPayment;
+    let itemPayment = null;
     if (isFeesCleared) {
       itemPayment = {
         id: "notif-payment",
@@ -364,6 +419,7 @@ export const studentDashboardService = {
         actionType: "open_payment_modal",
         btnText: "View Receipts",
       };
+      notifItems.push(itemPayment);
     } else if (reminderSnoozedInfo) {
       itemPayment = {
         id: "notif-payment",
@@ -377,30 +433,33 @@ export const studentDashboardService = {
         actionType: "open_payment_modal",
         btnText: "Pay / Change",
       };
+      notifItems.push(itemPayment);
     } else {
       const dueDateRaw = crmProfile?.nextDueDate;
       const dueDetails = studentDashboardService.calculateDueDetails(dueDateRaw);
-      const dueDateDisplay = dueDateRaw
-        ? `Due on ${dueDateRaw}`
-        : "Pending Installment Notice";
 
-      itemPayment = {
-        id: "notif-payment",
-        type: "payment",
-        title: dueDetails.isOverdue
-          ? "Course Fee Installment Overdue"
-          : "Course Fee Installment Due",
-        course: `Next Installment • ₹${Number(nextDueAmount).toLocaleString("en-IN")}`,
-        dueDate: dueDateDisplay,
-        daysLeft: dueDetails.daysLeft,
-        badgeText: dueDetails.badgeText,
-        stripText: dueDetails.stripText,
-        severity: dueDetails.isOverdue ? "payment_overdue" : "payment",
-        actionType: "open_payment_modal",
-        btnText: "Pay Online",
-      };
+      // ONLY display due notification if payment has a valid schedule AND is due within 7 days or overdue!
+      // This strictly suppresses premature notifications (+15 days like Afsha Shaikh) and new registrations without batch scheduling.
+      if (dueDetails.hasValidDate && dueDetails.isDueSoon) {
+        const dueDateDisplay = `Due on ${dueDateRaw}`;
+        itemPayment = {
+          id: "notif-payment",
+          type: "payment",
+          title: dueDetails.isOverdue
+            ? "Course Fee Installment Overdue"
+            : "Course Fee Installment Due",
+          course: `Next Installment • ₹${Number(nextDueAmount).toLocaleString("en-IN")}`,
+          dueDate: dueDateDisplay,
+          daysLeft: dueDetails.daysLeft,
+          badgeText: dueDetails.badgeText,
+          stripText: dueDetails.stripText,
+          severity: dueDetails.isOverdue ? "payment_overdue" : "payment",
+          actionType: "open_payment_modal",
+          btnText: "Pay Online",
+        };
+        notifItems.push(itemPayment);
+      }
     }
-    notifItems.push(itemPayment);
 
     // Item: Quiz - ONLY show if an active quiz exists and student hasn't completed/passed it!
     const availableQuiz = Array.isArray(quizzes)
@@ -746,6 +805,10 @@ export const studentDashboardService = {
         dueDateText: "No Pending Dues",
         daysRemainingText: "Account Fully Paid & Verified",
         isCleared: true,
+        isOverdue: false,
+        daysLeft: 0,
+        hasValidDate: false,
+        isDueSoon: false,
       };
     }
 
@@ -755,11 +818,13 @@ export const studentDashboardService = {
     return {
       installmentAmount: `₹${Number(nextDueAmount).toLocaleString("en-IN")}`,
       termText: `Pending Balance • ₹${Number(totalPaid).toLocaleString("en-IN")} Paid of ₹${Number(totalFees).toLocaleString("en-IN")}`,
-      dueDateText: dueDateRaw || "Pending Notice",
+      dueDateText: dueDetails.hasValidDate ? dueDateRaw : "Pending Schedule",
       daysRemainingText: dueDetails.daysRemainingText,
       isCleared: false,
       isOverdue: dueDetails.isOverdue,
       daysLeft: dueDetails.daysLeft,
+      hasValidDate: dueDetails.hasValidDate,
+      isDueSoon: dueDetails.hasValidDate && dueDetails.isDueSoon,
     };
   },
 

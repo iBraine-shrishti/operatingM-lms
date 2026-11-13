@@ -145,8 +145,8 @@ export const EnrolledCoursesPage = () => {
         if (sortBy === "progress") {
           return metricsB.progress - metricsA.progress;
         }
-        if (sortBy === "popular") {
-          return (b.studentsCount || 0) - (a.studentsCount || 0);
+        if (sortBy === "alphabetical") {
+          return (a.title || "").localeCompare(b.title || "");
         }
         return 0; // Default order
       });

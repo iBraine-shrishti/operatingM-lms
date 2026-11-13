@@ -328,7 +328,26 @@ export const FirstLoginGlanceModal = ({
           {/* ========================================================== */}
           {/* 2. CONDITIONAL FEES NOTICE                                 */}
           {/* ========================================================== */}
-          {!isFeesCleared ? (
+          {isFeesCleared ? (
+            <div className="rounded-2xl p-3.5 sm:p-4 bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                  <CheckCircle2 size={18} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
+                    Tuition Fees Fully Cleared
+                  </h4>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">
+                    Your account has no outstanding fees. Official fee receipts are verified.
+                  </p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700/50 shrink-0">
+                Verified
+              </span>
+            </div>
+          ) : paymentInfo?.isDueSoon ? (
             <div className="rounded-2xl p-4 sm:p-4.5 bg-gradient-to-br from-amber-50 via-orange-50/50 to-amber-100/40 dark:from-amber-950/40 dark:via-[#1c180e] dark:to-amber-900/30 border border-amber-300/80 dark:border-amber-600/40 shadow-xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5">
                 <div className="flex items-start gap-3">
@@ -367,23 +386,30 @@ export const FirstLoginGlanceModal = ({
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl p-3.5 sm:p-4 bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 flex items-center justify-between gap-3">
+            <div className="rounded-2xl p-3.5 sm:p-4 bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                  <CheckCircle2 size={18} />
+                <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                  <CreditCard size={18} />
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900 dark:text-white text-xs sm:text-sm">
-                    Tuition Fees Fully Cleared
+                    {paymentInfo?.hasValidDate
+                      ? `Fee Installment Scheduled on ${dueDateText}`
+                      : "Batch & Payment Scheduling Pending"}
                   </h4>
-                  <p className="text-[11px] text-slate-600 dark:text-slate-400">
-                    Your account has no outstanding fees. Official fee receipts are verified.
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                    {paymentInfo?.hasValidDate
+                      ? `${daysRemainingText} • No immediate action required`
+                      : "Your batch and fee schedule will be assigned by the Operating Media counselor."}
                   </p>
                 </div>
               </div>
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700/50 shrink-0">
-                Verified
-              </span>
+              <button
+                onClick={handleOpenFeesAction}
+                className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer shrink-0"
+              >
+                View Fee Details
+              </button>
             </div>
           )}
 

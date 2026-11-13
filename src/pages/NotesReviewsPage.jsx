@@ -714,7 +714,6 @@ export const NotesReviewsPage = () => {
                 },
               ]
             : []),
-          { value: "6 Domains", label: "Covered", dotColor: "bg-purple-500" },
           { value: "Auto-Saved", label: "Cloud Sync", dotColor: "bg-cyan-500" },
         ]}
         action={

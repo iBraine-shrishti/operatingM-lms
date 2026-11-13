@@ -87,7 +87,7 @@ export const EnrolledCoursesFilterBar = ({
           >
             <option value="recent">Sort: Recently Active</option>
             <option value="progress">Sort: Highest Progress</option>
-            <option value="popular">Sort: Most Popular</option>
+            <option value="alphabetical">Sort: Alphabetical (A-Z)</option>
           </select>
         </div>
       </div>
