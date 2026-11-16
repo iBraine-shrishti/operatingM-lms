@@ -10,6 +10,7 @@ import {
 } from "../data/studentDashboardData";
 import { lmsService } from "./lmsService";
 import { crmService } from "./crmService";
+import { checkStudentCourseAccess } from "../components/profile/profileUtils";
 
 const STORAGE_PREFIX = "om_lms_student_dashboard_";
 
@@ -83,14 +84,38 @@ export const studentDashboardService = {
     const quickActions = studentDashboardService.getQuickActions();
     const paymentInfo = studentDashboardService.getPaymentInfo(crmProfile, currentUser);
 
+    // Check student course & video access period (0 days left lock)
+    const accessStatus = checkStudentCourseAccess(crmProfile, currentUser);
+    const rawDays =
+      crmProfile?.daysLeft !== undefined && crmProfile?.daysLeft !== null
+        ? crmProfile.daysLeft
+        : crmProfile?.days_left !== undefined && crmProfile?.days_left !== null
+          ? crmProfile.days_left
+          : currentUser?.daysLeft !== undefined && currentUser?.daysLeft !== null
+            ? currentUser.daysLeft
+            : currentUser?.days_left;
+    let parsedDays = null;
+    if (rawDays !== undefined && rawDays !== null) {
+      const p = parseInt(rawDays, 10);
+      if (!isNaN(p)) parsedDays = p;
+    }
+    const isAccessExpired =
+      accessStatus.isExpired || (parsedDays !== null && parsedDays <= 0);
+
     const stats = studentDashboardService.getStudentStats({
       currentUser,
       crmProfile,
       crmAttendance,
-      assignedCourseIds,
+      assignedCourseIds: isAccessExpired ? [] : assignedCourseIds,
       studentCoursesAccess,
-      enrolledCoursesCount,
-      coursesCount: enrolledCoursesCount !== undefined ? enrolledCoursesCount : (assignedCourseIds ? assignedCourseIds.length : 0),
+      enrolledCoursesCount: isAccessExpired ? 0 : enrolledCoursesCount,
+      coursesCount: isAccessExpired
+        ? 0
+        : enrolledCoursesCount !== undefined
+          ? enrolledCoursesCount
+          : assignedCourseIds
+            ? assignedCourseIds.length
+            : 0,
       quizzesCount: quizzes.length > 0 ? quizzes.length : undefined,
       assignments,
       quizzes,
@@ -567,6 +592,44 @@ export const studentDashboardService = {
     const currentUser = params.currentUser || {};
     const crmProfile = params.crmProfile || {};
     const crmBatch = params.crmBatch || {};
+
+    // Validate student course & video access period (0 days left check)
+    const accessStatus = checkStudentCourseAccess(crmProfile, currentUser);
+    const rawDays =
+      crmProfile?.daysLeft !== undefined && crmProfile?.daysLeft !== null
+        ? crmProfile.daysLeft
+        : crmProfile?.days_left !== undefined && crmProfile?.days_left !== null
+          ? crmProfile.days_left
+          : currentUser?.daysLeft !== undefined && currentUser?.daysLeft !== null
+            ? currentUser.daysLeft
+            : currentUser?.days_left;
+    let parsedDays = null;
+    if (rawDays !== undefined && rawDays !== null) {
+      const p = parseInt(rawDays, 10);
+      if (!isNaN(p)) parsedDays = p;
+    }
+    const isExpired =
+      accessStatus.isExpired || (parsedDays !== null && parsedDays <= 0);
+
+    // When validity is expired (0 days left), strictly lock continue learning and hide video modules
+    if (isExpired) {
+      return {
+        hasAssignedCourses: false,
+        isExpired: true,
+        daysLeft: 0,
+        enrolledCount: 0,
+        progressPercent: 0,
+        segments: [],
+        timeStats: {
+          watchedMinutes: 0,
+          remainingMinutes: 0,
+          alertText: "Access Expired (0 Days Left)",
+        },
+        message:
+          "Your course access period has concluded (0 days remaining). Video lessons, outlines, and module streaming are locked.",
+      };
+    }
+
     const assignedCourseIds =
       Array.isArray(params.assignedCourseIds)
         ? params.assignedCourseIds
@@ -575,6 +638,7 @@ export const studentDashboardService = {
     if (!assignedCourseIds || assignedCourseIds.length === 0) {
       return {
         hasAssignedCourses: false,
+        isExpired: false,
         enrolledCount: 0,
         progressPercent: 0,
         segments: [],

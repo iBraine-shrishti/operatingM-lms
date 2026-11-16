@@ -105,7 +105,24 @@ export const mapStudentDataFromCrm = (crm, user) => {
   let courseEnd = "Not Assigned";
   let daysLeft = null;
 
-  if (hasAssignedBatch) {
+  // Read explicit daysLeft from CRM API / source or user object (handles both number and string like "0")
+  const rawDaysFromSource =
+    source.daysLeft !== undefined && source.daysLeft !== null
+      ? source.daysLeft
+      : source.days_left !== undefined && source.days_left !== null
+        ? source.days_left
+        : user?.daysLeft !== undefined && user?.daysLeft !== null
+          ? user.daysLeft
+          : user?.days_left;
+
+  if (rawDaysFromSource !== undefined && rawDaysFromSource !== null) {
+    const p = parseInt(rawDaysFromSource, 10);
+    if (!isNaN(p)) {
+      daysLeft = Math.max(0, p);
+    }
+  }
+
+  if (hasAssignedBatch || source.courseEnd) {
     courseStart =
       source.courseStart && source.courseStart !== "Not Assigned"
         ? source.courseStart
@@ -122,7 +139,7 @@ export const mapStudentDataFromCrm = (crm, user) => {
           daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
         }
       } catch (e) {}
-    } else {
+    } else if (hasAssignedBatch) {
       try {
         const startDt = new Date(courseStart);
         if (!isNaN(startDt.getTime())) {
@@ -140,8 +157,12 @@ export const mapStudentDataFromCrm = (crm, user) => {
         courseEnd = isDiploma ? "09 Sep 2026" : "20 Apr 2027";
       }
     }
-    if (typeof source.daysLeft === "number") {
-      daysLeft = Math.max(0, source.daysLeft);
+    // Explicit daysLeft overrides calculation
+    if (rawDaysFromSource !== undefined && rawDaysFromSource !== null) {
+      const p = parseInt(rawDaysFromSource, 10);
+      if (!isNaN(p)) {
+        daysLeft = Math.max(0, p);
+      }
     }
   }
 
@@ -303,39 +324,48 @@ export const mapStudentDataFromCrm = (crm, user) => {
 
 /**
  * checkStudentCourseAccess
- * Validates whether the logged-in student has active course and video access.
- * If daysLeft <= 0, access is strictly locked / expired.
- * Admin, trainers, and coordinators bypass this restriction.
+ * Validates whether the student profile has active course and video access.
+ * STRICT RULE: If daysLeft <= 0 (or courseEnd in past), access is strictly locked / expired.
+ * For all students (including test cases like Adeeti Jadhav), 0 days left locks videos and courses.
  */
 export const checkStudentCourseAccess = (crm, user, isAdmin = false) => {
-  if (isAdmin) {
-    return {
-      hasAccess: true,
-      isExpired: false,
-      daysLeft: 999,
-      courseEnd: null,
-      hasAssignedBatch: true,
-      batch: "Staff",
-      reason: "admin_bypass",
-    };
-  }
-
   const studentData = mapStudentDataFromCrm(crm, user);
   const daysLeft = studentData.daysLeft;
-  const hasAssignedBatch = studentData.hasAssignedBatch;
   const courseEnd = studentData.courseEnd;
 
-  // Student validity is expired strictly when daysLeft is 0 or less
-  const isExpired = daysLeft !== null && daysLeft !== undefined && daysLeft <= 0;
+  // Direct check on raw CRM / user profile objects
+  const rawDays =
+    crm?.daysLeft !== undefined && crm?.daysLeft !== null
+      ? crm.daysLeft
+      : crm?.days_left !== undefined && crm?.days_left !== null
+        ? crm.days_left
+        : user?.daysLeft !== undefined && user?.daysLeft !== null
+          ? user.daysLeft
+          : user?.days_left !== undefined && user?.days_left !== null
+            ? user.days_left
+            : daysLeft;
 
-  // Active access requires valid batch and positive days remaining
-  const hasAccess = Boolean(hasAssignedBatch && daysLeft !== null && daysLeft > 0);
+  const parsedDays =
+    rawDays !== null && rawDays !== undefined && !isNaN(parseInt(rawDays, 10))
+      ? parseInt(rawDays, 10)
+      : daysLeft;
+
+  // Strictly expired if daysLeft is 0 or less
+  const isExpired =
+    (parsedDays !== null && parsedDays !== undefined && parsedDays <= 0) ||
+    (daysLeft !== null && daysLeft !== undefined && daysLeft <= 0);
+
+  // Active access requires valid batch and positive days remaining (> 0)
+  const hasAccess = !isExpired && (
+    (parsedDays !== null && parsedDays > 0) ||
+    (daysLeft !== null && daysLeft > 0)
+  );
 
   return {
     hasAccess,
     isExpired,
-    daysLeft: daysLeft ?? 0,
-    hasAssignedBatch,
+    daysLeft: parsedDays ?? daysLeft ?? 0,
+    hasAssignedBatch: studentData.hasAssignedBatch,
     courseEnd: courseEnd && courseEnd !== "Not Assigned" ? courseEnd : null,
     batch: studentData.batch,
     studentName: studentData.name,

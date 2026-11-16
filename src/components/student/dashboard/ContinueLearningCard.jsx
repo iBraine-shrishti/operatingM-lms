@@ -7,6 +7,7 @@ import {
   Calendar,
   ChevronRight,
   BookOpen,
+  Lock,
 } from "lucide-react";
 import continueLearningLaptopImg from "../../../assets/continue-learning-laptop.png";
 
@@ -23,6 +24,65 @@ export const ContinueLearningCard = ({ data = {}, onNavigate }) => {
       navigate(path);
     }
   };
+
+  // If student course validity has expired (0 days left), display locked state
+  if (data?.isExpired) {
+    return (
+      <div className="w-full h-full bg-white dark:bg-[#0b1329]/95 rounded-2xl border border-rose-100 dark:border-rose-900/40 p-4 sm:p-5 lg:p-5 xl:p-6 flex flex-col justify-between shadow-[0_10px_35px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.35)] transition-all duration-200">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-rose-50 dark:bg-rose-500/15 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0 border border-rose-100 dark:border-rose-500/30">
+              <Lock size={13} className="ml-0.5" />
+            </div>
+            <h3 className="text-sm sm:text-base 2xl:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+              Continue Learning
+            </h3>
+          </div>
+          <button
+            type="button"
+            onClick={() => handleNav("/profile")}
+            className="text-xs 2xl:text-[13px] font-semibold text-rose-600 dark:text-rose-400 hover:text-rose-700 flex items-center gap-1 cursor-pointer transition-all group"
+          >
+            <span>View Profile Timeline</span>
+            <ArrowRight size={12} strokeWidth={2.5} className="group-hover:translate-x-0.5 transition-transform" />
+          </button>
+        </div>
+
+        <div className="flex-1 flex flex-col items-center justify-center py-6 sm:py-8 px-4 text-center my-auto">
+          <div className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-800/60 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3 shadow-xs">
+            <Lock size={26} />
+          </div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 text-xs font-semibold border border-rose-200/90 dark:border-rose-800/60 mb-2.5">
+            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+            <span>0 Days Left • Course Validity Expired</span>
+          </div>
+          <h4 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mb-1">
+            Course Access Period Concluded
+          </h4>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md mb-4 leading-relaxed">
+            Your course access period has concluded (0 days remaining). In accordance with Operating Media LMS policy, interactive video lessons and module streaming are locked. Please contact your center coordinator to renew your course validity.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => handleNav("/profile")}
+              className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>View Profile</span>
+              <ArrowRight size={12} />
+            </button>
+            <button
+              type="button"
+              onClick={() => handleNav("/schedule")}
+              className="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all cursor-pointer"
+            >
+              <span>Batch Schedule</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // If student has 0 assigned courses, display empty state
   if (data?.hasAssignedCourses === false || data?.enrolledCount === 0) {

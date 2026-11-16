@@ -74,9 +74,9 @@ export const EnrolledCoursesPage = () => {
 
   // Enrolled courses: Only courses granted to the student in CRM
   const enrolledCourses = useMemo(() => {
-    if (isAdmin) return allPublishedCourses;
     // When course access period has concluded (0 days left), strictly hide all courses
     if (isExpired) return [];
+    if (isAdmin) return allPublishedCourses;
     if (!permittedCourseIds || permittedCourseIds.length === 0) {
       return [];
     }

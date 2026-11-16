@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { Lock } from "lucide-react";
 import { lmsService } from "../services/lmsService";
 import { crmService } from "../services/crmService";
 import { useToast } from "../context/ToastContext";
@@ -551,20 +552,24 @@ export const LessonPlayerPage = () => {
     <div className="space-y-6">
       {/* 1. STANDARDIZED STUDENT PAGE HERO BANNER */}
       <StudentPageHeader
-        category="Interactive Video Lecture Room"
-        badgeText="HD Video Streaming"
-        title={currentLesson.title}
-        description={`Enrolled in ${currentCourse.title}. Study with step-by-step video instructions, timestamp bookmarks, auto-resume, and downloadable resources.`}
+        category={isExpired ? "Course Access Period Expired" : "Interactive Video Lecture Room"}
+        badgeText={isExpired ? "Access Concluded" : "HD Video Streaming"}
+        title={isExpired ? "Course Validity Expired (0 Days Left)" : currentLesson.title}
+        description={
+          isExpired
+            ? "Your course access period has concluded (0 days remaining). Video lectures, course outlines, and lesson streaming are locked. Please contact your center coordinator or counsellor to renew your validity."
+            : `Enrolled in ${currentCourse.title}. Study with step-by-step video instructions, timestamp bookmarks, auto-resume, and downloadable resources.`
+        }
         metrics={[
           {
             label: "Lesson",
-            value: `${activeLessonIdx + 1} of ${units.length}`,
-            color: "text-blue-600 dark:text-cyan-400",
+            value: isExpired ? "Locked" : `${activeLessonIdx + 1} of ${units.length}`,
+            color: isExpired ? "text-slate-400" : "text-blue-600 dark:text-cyan-400",
           },
           {
             label: "Course Progress",
-            value: `${progressPercent}%`,
-            color: "text-emerald-600 dark:text-emerald-400",
+            value: isExpired ? "0%" : `${progressPercent}%`,
+            color: isExpired ? "text-slate-400" : "text-emerald-600 dark:text-emerald-400",
           },
           {
             label: "Validity",
@@ -572,146 +577,185 @@ export const LessonPlayerPage = () => {
             color: isExpired ? "text-rose-600 dark:text-rose-400" : "text-emerald-600 dark:text-emerald-400",
           },
           {
-            label: "Speed",
-            value: `${playbackSpeed}x`,
-            color: "text-amber-600 dark:text-amber-400",
+            label: "Status",
+            value: isExpired ? "Locked (0d)" : `${playbackSpeed}x`,
+            color: isExpired ? "text-rose-600 dark:text-rose-400" : "text-amber-600 dark:text-amber-400",
           },
         ]}
       />
 
-      {/* 2. TOP ACTION CONTROL BAR & COURSE SWITCHER */}
-      <LessonTopBar
-        currentCourse={currentCourse}
-        currentLesson={currentLesson}
-        activeLessonIdx={activeLessonIdx}
-        totalLessons={units.length}
-        playbackSpeed={playbackSpeed}
-        theaterMode={theaterMode}
-        onBackToCourse={() => navigate(`/courses/${currentCourse.id}`)}
-        onPreviousLesson={() => setActiveLessonIdx((prev) => Math.max(0, prev - 1))}
-        onNextLesson={() =>
-          setActiveLessonIdx((prev) => Math.min(units.length - 1, prev + 1))
-        }
-        onToggleCompleted={() => handleMarkCompleted()}
-        onCycleSpeed={cyclePlaybackSpeed}
-        onToggleTheater={() => setTheaterMode(!theaterMode)}
-      />
+      {/* When student validity has expired (0 days left): Display Expired Video Access Lock */}
+      {isExpired ? (
+        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-8 sm:p-12 shadow-2xs text-center space-y-5">
+          <div className="w-16 h-16 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-800/60 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto shadow-xs">
+            <Lock size={32} />
+          </div>
 
-      {/* 3. MAIN WORKSPACE (Video Player & Syllabus Playlist) */}
-      <div
-        className={`grid gap-6 ${
-          theaterMode ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-3"
-        }`}
-      >
-        {/* LEFT / CENTER COLUMN: Video Player & Tabs */}
-        <div className={theaterMode ? "col-span-1" : "lg:col-span-2 space-y-4"}>
-          {/* CUSTOM STREAMING VIDEO PLAYER */}
-          <PremiumVideoPlayer
-            videoRef={videoRef}
-            streamUrl={streamData.url}
-            videoMime={streamData.mime}
-            isLoading={streamData.isLoading}
-            isLocked={streamData.isLocked}
-            lockMessage={streamData.lockMessage}
-            title={currentLesson.title}
-            moduleName={currentLesson.moduleName || "Curriculum Track"}
-            lessonNumber={activeLessonIdx + 1}
-            totalLessons={units.length}
-            poster={currentCourse.thumbnail}
-            playbackSpeed={playbackSpeed}
-            onSpeedChange={(spd) => {
-              setPlaybackSpeed(spd);
-              if (videoRef.current) {
-                videoRef.current.playbackRate = spd;
-              }
-              showToast(`Speed set to ${spd}x`, "info");
-            }}
-            theaterMode={theaterMode}
-            onToggleTheater={() => setTheaterMode(!theaterMode)}
-            onTimeUpdate={handleTimeUpdate}
-            onLoadedMetadata={handleLoadedMetadata}
-            onEnded={handleVideoEnded}
-            resumePrompt={resumePrompt}
-            onRestartVideo={handleRestartVideo}
-            onDismissResume={() => setResumePrompt(null)}
-            onPreviousLesson={
-              activeLessonIdx > 0
-                ? () => setActiveLessonIdx((prev) => Math.max(0, prev - 1))
-                : null
-            }
-            onNextLesson={
-              activeLessonIdx < units.length - 1
-                ? () =>
-                    setActiveLessonIdx((prev) =>
-                      Math.min(units.length - 1, prev + 1),
-                    )
-                : null
-            }
-            hasPrevLesson={activeLessonIdx > 0}
-            hasNextLesson={activeLessonIdx < units.length - 1}
-            isCompleted={currentLesson.isCompleted}
-            onToggleCompleted={handleMarkCompleted}
-            onNavigateToFees={() => navigate("/profile?tab=attendance")}
-            onBackToCourse={() => navigate(`/courses/${currentCourse.id}`)}
-          />
+          <div className="max-w-md mx-auto space-y-2">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 text-xs font-semibold border border-rose-200/90 dark:border-rose-800/60">
+              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+              <span>0 Days Remaining • Course Validity Expired</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
+              Video Lectures & Lessons Locked
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+              Your course access period has concluded (0 days remaining). Video lectures, course outlines, and streaming are locked in accordance with Operating Media LMS policy. Please contact your center coordinator to renew or extend your course validity.
+            </p>
+          </div>
 
-          {/* LOWER ACTIONS STRIP */}
-          <LessonControlsStrip
-            currentTime={currentTime}
-            duration={duration}
-            autoPlayNext={autoPlayNext}
-            onToggleAutoPlay={() => setAutoPlayNext(!autoPlayNext)}
-            onBookmarkNote={() => {
-              setActiveTab("notes");
-              handleInsertTimestamp();
-            }}
-            isCompleted={currentLesson.isCompleted}
-            onToggleCompleted={() => handleMarkCompleted()}
-          />
-
-          {/* TABBED INTERACTIVE CONTENT PANEL */}
-          <LessonTabsContainer
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            userNotes={userNotes}
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => navigate("/profile")}
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <span>View Profile Timeline</span>
+            </button>
+            <button
+              onClick={() => navigate("/enrolled-courses")}
+              className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-semibold transition-all cursor-pointer"
+            >
+              <span>Enrolled Courses</span>
+            </button>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* 2. TOP ACTION CONTROL BAR & COURSE SWITCHER */}
+          <LessonTopBar
             currentCourse={currentCourse}
             currentLesson={currentLesson}
-            noteContent={noteContent}
-            setNoteContent={setNoteContent}
-            currentTime={currentTime}
-            onInsertTimestamp={handleInsertTimestamp}
-            onSaveNote={handleSaveNote}
-            onNavigateForums={() => navigate("/forums")}
-          />
-        </div>
-
-        {/* RIGHT COLUMN: COURSE SYLLABUS PLAYLIST WITH FOLDER & SECTION ACCORDIONS */}
-        <LessonPlaylist
-          currentCourse={currentCourse}
-          allPlayerItemsCount={allPlayerItems.length}
-          sections={sections}
-          filteredSections={filteredSections}
-          completedCount={completedCount}
-          progressPercent={progressPercent}
-          expandedSections={expandedSections}
-          onToggleSection={toggleSection}
-          onExpandAll={expandAllSections}
-          onCollapseAll={collapseAllSections}
-          playlistSearch={playlistSearch}
-          onSearchChange={setPlaylistSearch}
-          currentLessonId={currentLesson.id}
-          onSelectUnit={(unit) => {
-            const targetIdx = units.findIndex((u) => u.id === unit.id);
-            if (targetIdx !== -1) {
-              setActiveLessonIdx(targetIdx);
+            activeLessonIdx={activeLessonIdx}
+            totalLessons={units.length}
+            playbackSpeed={playbackSpeed}
+            theaterMode={theaterMode}
+            onBackToCourse={() => navigate(`/courses/${currentCourse.id}`)}
+            onPreviousLesson={() => setActiveLessonIdx((prev) => Math.max(0, prev - 1))}
+            onNextLesson={() =>
+              setActiveLessonIdx((prev) => Math.min(units.length - 1, prev + 1))
             }
-          }}
-          onNavigateQuiz={(quizId) => navigate(`/take-quiz/${quizId}`)}
-          onNavigateAssignment={(assignmentId) =>
-            navigate(`/take-assignment/${assignmentId}`)
-          }
-        />
-      </div>
+            onToggleCompleted={() => handleMarkCompleted()}
+            onCycleSpeed={cyclePlaybackSpeed}
+            onToggleTheater={() => setTheaterMode(!theaterMode)}
+          />
+
+          {/* 3. MAIN WORKSPACE (Video Player & Syllabus Playlist) */}
+          <div
+            className={`grid gap-6 ${
+              theaterMode ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-3"
+            }`}
+          >
+            {/* LEFT / CENTER COLUMN: Video Player & Tabs */}
+            <div className={theaterMode ? "col-span-1" : "lg:col-span-2 space-y-4"}>
+              {/* CUSTOM STREAMING VIDEO PLAYER */}
+              <PremiumVideoPlayer
+                videoRef={videoRef}
+                streamUrl={streamData.url}
+                videoMime={streamData.mime}
+                isLoading={streamData.isLoading}
+                isLocked={streamData.isLocked}
+                lockMessage={streamData.lockMessage}
+                title={currentLesson.title}
+                moduleName={currentLesson.moduleName || "Curriculum Track"}
+                lessonNumber={activeLessonIdx + 1}
+                totalLessons={units.length}
+                poster={currentCourse.thumbnail}
+                playbackSpeed={playbackSpeed}
+                onSpeedChange={(spd) => {
+                  setPlaybackSpeed(spd);
+                  if (videoRef.current) {
+                    videoRef.current.playbackRate = spd;
+                  }
+                  showToast(`Speed set to ${spd}x`, "info");
+                }}
+                theaterMode={theaterMode}
+                onToggleTheater={() => setTheaterMode(!theaterMode)}
+                onTimeUpdate={handleTimeUpdate}
+                onLoadedMetadata={handleLoadedMetadata}
+                onEnded={handleVideoEnded}
+                resumePrompt={resumePrompt}
+                onRestartVideo={handleRestartVideo}
+                onDismissResume={() => setResumePrompt(null)}
+                onPreviousLesson={
+                  activeLessonIdx > 0
+                    ? () => setActiveLessonIdx((prev) => Math.max(0, prev - 1))
+                    : null
+                }
+                onNextLesson={
+                  activeLessonIdx < units.length - 1
+                    ? () =>
+                        setActiveLessonIdx((prev) =>
+                          Math.min(units.length - 1, prev + 1),
+                        )
+                    : null
+                }
+                hasPrevLesson={activeLessonIdx > 0}
+                hasNextLesson={activeLessonIdx < units.length - 1}
+                isCompleted={currentLesson.isCompleted}
+                onToggleCompleted={handleMarkCompleted}
+                onNavigateToFees={() => navigate("/profile?tab=attendance")}
+                onBackToCourse={() => navigate(`/courses/${currentCourse.id}`)}
+              />
+
+              {/* LOWER ACTIONS STRIP */}
+              <LessonControlsStrip
+                currentTime={currentTime}
+                duration={duration}
+                autoPlayNext={autoPlayNext}
+                onToggleAutoPlay={() => setAutoPlayNext(!autoPlayNext)}
+                onBookmarkNote={() => {
+                  setActiveTab("notes");
+                  handleInsertTimestamp();
+                }}
+                isCompleted={currentLesson.isCompleted}
+                onToggleCompleted={() => handleMarkCompleted()}
+              />
+
+              {/* TABBED INTERACTIVE CONTENT PANEL */}
+              <LessonTabsContainer
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                userNotes={userNotes}
+                currentCourse={currentCourse}
+                currentLesson={currentLesson}
+                noteContent={noteContent}
+                setNoteContent={setNoteContent}
+                currentTime={currentTime}
+                onInsertTimestamp={handleInsertTimestamp}
+                onSaveNote={handleSaveNote}
+                onNavigateForums={() => navigate("/forums")}
+              />
+            </div>
+
+            {/* RIGHT COLUMN: COURSE SYLLABUS PLAYLIST WITH FOLDER & SECTION ACCORDIONS */}
+            <LessonPlaylist
+              currentCourse={currentCourse}
+              allPlayerItemsCount={allPlayerItems.length}
+              sections={sections}
+              filteredSections={filteredSections}
+              completedCount={completedCount}
+              progressPercent={progressPercent}
+              expandedSections={expandedSections}
+              onToggleSection={toggleSection}
+              onExpandAll={expandAllSections}
+              onCollapseAll={collapseAllSections}
+              playlistSearch={playlistSearch}
+              onSearchChange={setPlaylistSearch}
+              currentLessonId={currentLesson.id}
+              onSelectUnit={(unit) => {
+                const targetIdx = units.findIndex((u) => u.id === unit.id);
+                if (targetIdx !== -1) {
+                  setActiveLessonIdx(targetIdx);
+                }
+              }}
+              onNavigateQuiz={(quizId) => navigate(`/take-quiz/${quizId}`)}
+              onNavigateAssignment={(assignmentId) =>
+                navigate(`/take-assignment/${assignmentId}`)
+              }
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

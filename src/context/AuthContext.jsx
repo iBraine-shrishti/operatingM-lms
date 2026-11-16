@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { crmService, DEFAULT_CRM_PROFILE, DEFAULT_CRM_ATTENDANCE, DEFAULT_CRM_BATCH, DEFAULT_CRM_CERTIFICATES } from '../services/crmService';
 import { lmsService } from '../services/lmsService';
+import { checkStudentCourseAccess } from '../components/profile/profileUtils';
 
 /**
  * Filter out any mock/placeholder image references from localStorage or cached objects
@@ -215,6 +216,21 @@ export const AuthProvider = ({ children }) => {
                     const currentFacultyLead = isAndheri ? 'Nilkamal Mukharjee' : 'Rahul Shende';
                     const currentFacultyRole = isAndheri ? 'Lead Faculty - Andheri Center' : 'Lead Faculty - Borivali Center';
 
+                    const profileRawDays =
+                        profile?.daysLeft !== undefined && profile?.daysLeft !== null
+                            ? profile.daysLeft
+                            : profile?.days_left;
+                    let profileParsedDays = null;
+                    if (profileRawDays !== undefined && profileRawDays !== null) {
+                        const p = parseInt(profileRawDays, 10);
+                        if (!isNaN(p)) profileParsedDays = p;
+                    }
+                    const isProfileExpired = Boolean(
+                        (profileParsedDays !== null && profileParsedDays <= 0) ||
+                        checkStudentCourseAccess(profile, prev).isExpired
+                    );
+                    const safeCount = isProfileExpired ? 0 : activePermittedIds.length;
+
                     return {
                         ...prev,
                         id: profile.id ? `std-${profile.id}` : prev.id,
@@ -230,14 +246,17 @@ export const AuthProvider = ({ children }) => {
                         facultyLeadRole: currentFacultyRole,
                         designation: `${profile.course || 'Digital Marketing'} Student`,
                         avatar: resolvedAvatar || null,
-                        enrolledCoursesCount: activePermittedIds.length
+                        enrolledCoursesCount: safeCount
                     };
                 });
             } else {
-                setStudentUser((prev) => ({
-                    ...prev,
-                    enrolledCoursesCount: activePermittedIds.length
-                }));
+                setStudentUser((prev) => {
+                    const access = checkStudentCourseAccess(crmProfile, prev);
+                    return {
+                        ...prev,
+                        enrolledCoursesCount: access.isExpired ? 0 : activePermittedIds.length
+                    };
+                });
             }
 
             const hasEnrolled = Boolean(
@@ -401,7 +420,14 @@ export const AuthProvider = ({ children }) => {
             availableStudents,
             assignedCourseIds,
             studentCoursesAccess,
-            enrolledCoursesCount: assignedCourseIds.length,
+            enrolledCoursesCount: Boolean(
+                (crmProfile?.daysLeft !== undefined && crmProfile?.daysLeft !== null && parseInt(crmProfile.daysLeft, 10) <= 0) ||
+                (crmProfile?.days_left !== undefined && crmProfile?.days_left !== null && parseInt(crmProfile.days_left, 10) <= 0) ||
+                (currentUser?.daysLeft !== undefined && currentUser?.daysLeft !== null && parseInt(currentUser.daysLeft, 10) <= 0) ||
+                checkStudentCourseAccess(crmProfile, currentUser).isExpired
+            )
+                ? 0
+                : assignedCourseIds.length,
             assignmentsCount,
             crmLoading,
             switchCrmStudent,

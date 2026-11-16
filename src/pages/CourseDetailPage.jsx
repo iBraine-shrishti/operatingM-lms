@@ -37,11 +37,35 @@ export const CourseDetailPage = () => {
   const isExpired = accessStatus.isExpired;
 
   const hasCourseAccess =
-    isAdmin ||
-    (!isExpired &&
+    !isExpired &&
+    (isAdmin ||
       (!assignedCourseIds ||
         assignedCourseIds.length === 0 ||
         assignedCourseIds.includes(course.id)));
+
+  const handleNavigate = (path) => {
+    if (isExpired && typeof path === "string" && path.includes("/lesson-player")) {
+      showToast(
+        "Video lessons are locked because your course access validity has expired (0 days left).",
+        "warning",
+        "Video Access Locked",
+      );
+      return;
+    }
+    navigate(path);
+  };
+
+  const handleStartLearning = () => {
+    if (isExpired) {
+      showToast(
+        "Video lessons are locked because your course access validity has expired (0 days left).",
+        "warning",
+        "Video Access Locked",
+      );
+      return;
+    }
+    navigate(`/lesson-player?courseId=${course.id}`);
+  };
 
   const [units, setUnits] = useState(() =>
     lmsService.getUnitsByCourse(course.id),
@@ -413,7 +437,7 @@ export const CourseDetailPage = () => {
         isAdmin={isAdmin}
         onBack={() => navigate("/courses")}
         onEditCourse={() => navigate(`/create-course?edit=${course.id}`)}
-        onStartLearning={() => navigate(`/lesson-player?courseId=${course.id}`)}
+        onStartLearning={handleStartLearning}
       />
 
       {/* ------------------------------------------------------------- */}
@@ -459,7 +483,7 @@ export const CourseDetailPage = () => {
           onExpandAll={handleExpandAll}
           onCollapseAll={handleCollapseAll}
           onSetActiveMenuIdx={setActiveMenuIdx}
-          onNavigate={navigate}
+          onNavigate={handleNavigate}
           onToggleCompletion={handleToggleCompletion}
           onShowAiModal={() => setShowAiModal(true)}
           onShowToast={showToast}
@@ -478,7 +502,7 @@ export const CourseDetailPage = () => {
           allAssignmentsCount={allAssignmentsCount}
           assessmentFilter={assessmentFilter}
           onFilterChange={setAssessmentFilter}
-          onNavigate={navigate}
+          onNavigate={handleNavigate}
         />
       )}
 
