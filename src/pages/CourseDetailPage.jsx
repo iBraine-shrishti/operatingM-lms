@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { lmsService } from "../services/lmsService";
 import { useAuth } from "../context/AuthContext";
+import { checkStudentCourseAccess } from "../components/profile/profileUtils";
 import { useToast } from "../context/ToastContext";
 import {
   CourseDetailHeader,
@@ -31,11 +32,16 @@ export const CourseDetailPage = () => {
     courses.find((c) => c.title.toLowerCase().includes("social")) ||
     courses[0];
 
+  // Validate student course validity (0 days left check)
+  const accessStatus = checkStudentCourseAccess(crmProfile, currentUser, isAdmin);
+  const isExpired = accessStatus.isExpired;
+
   const hasCourseAccess =
     isAdmin ||
-    !assignedCourseIds ||
-    assignedCourseIds.length === 0 ||
-    assignedCourseIds.includes(course.id);
+    (!isExpired &&
+      (!assignedCourseIds ||
+        assignedCourseIds.length === 0 ||
+        assignedCourseIds.includes(course.id)));
 
   const [units, setUnits] = useState(() =>
     lmsService.getUnitsByCourse(course.id),
@@ -403,6 +409,7 @@ export const CourseDetailPage = () => {
         totalVideosCount={totalVideosCount}
         completedActivitiesCount={completedActivitiesCount}
         hasCourseAccess={hasCourseAccess}
+        isExpired={isExpired}
         isAdmin={isAdmin}
         onBack={() => navigate("/courses")}
         onEditCourse={() => navigate(`/create-course?edit=${course.id}`)}

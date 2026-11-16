@@ -12,6 +12,9 @@ export const EnrolledCoursesGrid = ({
   courseMetricsMap = {},
   isAdmin = false,
   hasNoEnrollments = false,
+  isExpired = false,
+  courseEnd = "",
+  daysLeft = 0,
   onResetFilters,
   onCardClick,
   onOutlineClick,
@@ -22,6 +25,9 @@ export const EnrolledCoursesGrid = ({
     return (
       <EnrolledCoursesEmptyState
         hasNoEnrollments={hasNoEnrollments}
+        isExpired={isExpired}
+        courseEnd={courseEnd}
+        daysLeft={daysLeft}
         onResetFilters={onResetFilters}
       />
     );

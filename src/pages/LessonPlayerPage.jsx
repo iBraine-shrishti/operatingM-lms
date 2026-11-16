@@ -5,6 +5,7 @@ import { crmService } from "../services/crmService";
 import { useToast } from "../context/ToastContext";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
 import { useAuth } from "../context/AuthContext";
+import { checkStudentCourseAccess } from "../components/profile/profileUtils";
 import { formatTime } from "../utils/playerUtils";
 import {
   PremiumVideoPlayer,
@@ -21,7 +22,14 @@ import {
  * personal notes, downloadable resources, and assessment navigation.
  */
 export const LessonPlayerPage = () => {
-  const { currentUser, crmProfile } = useAuth();
+  const { currentUser, crmProfile, isAdmin } = useAuth();
+
+  // Validate student course & video access period (0 days left check)
+  const accessStatus = useMemo(
+    () => checkStudentCourseAccess(crmProfile, currentUser, isAdmin),
+    [crmProfile, currentUser, isAdmin],
+  );
+  const isExpired = accessStatus.isExpired;
   const studentId = lmsService.getActiveStudentId(
     crmProfile?.id ||
     currentUser?.crmAdmissionId ||
@@ -135,6 +143,20 @@ export const LessonPlayerPage = () => {
   useEffect(() => {
     let isCancelled = false;
     if (!currentLesson || !currentLesson.id) return;
+
+    // Strict validity lock: 0 days left
+    if (isExpired) {
+      setStreamData({
+        url: "",
+        mime: "video/mp4",
+        isLoading: false,
+        isLocked: true,
+        lockMessage:
+          "Your course access period has concluded (0 days remaining). Video lectures, outlines, and lesson streaming are locked. Please contact your center coordinator or counsellor to renew your course validity.",
+      });
+      setIsBuffering(false);
+      return;
+    }
 
     setStreamData((prev) => ({
       ...prev,
@@ -545,9 +567,9 @@ export const LessonPlayerPage = () => {
             color: "text-emerald-600 dark:text-emerald-400",
           },
           {
-            label: "Duration",
-            value: currentLesson.duration || "20:00",
-            color: "text-purple-600 dark:text-purple-400",
+            label: "Validity",
+            value: isExpired ? "0d Left (Expired)" : `${accessStatus.daysLeft}d Left`,
+            color: isExpired ? "text-rose-600 dark:text-rose-400" : "text-emerald-600 dark:text-emerald-400",
           },
           {
             label: "Speed",

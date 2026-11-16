@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { lmsService } from "../services/lmsService";
+import { checkStudentCourseAccess } from "../components/profile/profileUtils";
 import {
   EnrolledCoursesHeader,
   EnrolledCoursesFilterBar,
@@ -22,7 +23,14 @@ const CATEGORIES = [
 
 export const EnrolledCoursesPage = () => {
   const navigate = useNavigate();
-  const { currentUser, studentUser, isAdmin, assignedCourseIds } = useAuth();
+  const { currentUser, studentUser, isAdmin, assignedCourseIds, crmProfile } = useAuth();
+
+  // Validate student course & video access period (0 days left check)
+  const accessStatus = useMemo(
+    () => checkStudentCourseAccess(crmProfile, currentUser, isAdmin),
+    [crmProfile, currentUser, isAdmin],
+  );
+  const isExpired = accessStatus.isExpired;
 
   const studentId =
     currentUser?.crmAdmissionId || studentUser?.crmAdmissionId || 375;
@@ -67,13 +75,15 @@ export const EnrolledCoursesPage = () => {
   // Enrolled courses: Only courses granted to the student in CRM
   const enrolledCourses = useMemo(() => {
     if (isAdmin) return allPublishedCourses;
+    // When course access period has concluded (0 days left), strictly hide all courses
+    if (isExpired) return [];
     if (!permittedCourseIds || permittedCourseIds.length === 0) {
       return [];
     }
     return allPublishedCourses.filter((c) =>
       permittedCourseIds.includes(c.id),
     );
-  }, [isAdmin, allPublishedCourses, permittedCourseIds]);
+  }, [isAdmin, isExpired, allPublishedCourses, permittedCourseIds]);
 
   // Real course metrics computed directly from real video units
   const courseMetricsMap = useMemo(() => {
@@ -183,6 +193,7 @@ export const EnrolledCoursesPage = () => {
         inProgressCount={inProgressCount}
         completedCount={completedCount}
         avgProgress={avgProgress}
+        isExpired={isExpired}
         onResumeActiveLesson={handleResumeActiveLesson}
       />
 
@@ -215,6 +226,9 @@ export const EnrolledCoursesPage = () => {
         courseMetricsMap={courseMetricsMap}
         isAdmin={isAdmin}
         hasNoEnrollments={enrolledCourses.length === 0}
+        isExpired={isExpired}
+        courseEnd={accessStatus.courseEnd}
+        daysLeft={accessStatus.daysLeft}
         onResetFilters={handleResetFilters}
         onCardClick={(courseId) => navigate(`/courses/${courseId}`)}
         onOutlineClick={(courseId) => navigate(`/courses/${courseId}`)}

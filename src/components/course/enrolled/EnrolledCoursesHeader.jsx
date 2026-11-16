@@ -1,5 +1,5 @@
 import React from "react";
-import { Play } from "lucide-react";
+import { Play, Lock } from "lucide-react";
 import { StudentPageHeader } from "../../student/StudentPageHeader";
 import { STUDENT_HEADERS_CONFIG } from "../../../config/studentHeadersConfig";
 
@@ -17,6 +17,7 @@ export const EnrolledCoursesHeader = ({
   inProgressCount = 0,
   completedCount = 0,
   avgProgress = 0,
+  isExpired = false,
   onResumeActiveLesson,
 }) => {
   return (
@@ -45,13 +46,20 @@ export const EnrolledCoursesHeader = ({
         },
       ]}
       action={
-        <button
-          onClick={onResumeActiveLesson}
-          className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
-        >
-          <Play size={16} className="fill-white 2xl:w-4.5 2xl:h-4.5" />
-          <span>Resume Active Lesson</span>
-        </button>
+        isExpired ? (
+          <div className="w-full sm:w-auto bg-rose-50 dark:bg-rose-950/60 border border-rose-200/90 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 text-xs sm:text-sm font-bold px-4 py-2.5 rounded-xl flex items-center justify-center space-x-2 select-none shadow-xs">
+            <Lock size={15} />
+            <span>Access Expired (0 Days Left)</span>
+          </div>
+        ) : totalCount > 0 ? (
+          <button
+            onClick={onResumeActiveLesson}
+            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm 2xl:text-base font-bold px-5 py-3 2xl:px-6 2xl:py-3.5 rounded-xl shadow-xs hover:shadow-md hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap"
+          >
+            <Play size={16} className="fill-white 2xl:w-4.5 2xl:h-4.5" />
+            <span>Resume Active Lesson</span>
+          </button>
+        ) : null
       }
     />
   );

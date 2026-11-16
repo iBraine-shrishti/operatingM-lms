@@ -115,6 +115,13 @@ export const mapStudentDataFromCrm = (crm, user) => {
 
     if (source.courseEnd && source.courseEnd !== "Not Assigned") {
       courseEnd = source.courseEnd;
+      try {
+        const endDt = new Date(courseEnd);
+        if (!isNaN(endDt.getTime())) {
+          const diffMs = endDt.getTime() - Date.now();
+          daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+        }
+      } catch (e) {}
     } else {
       try {
         const startDt = new Date(courseStart);
@@ -133,8 +140,8 @@ export const mapStudentDataFromCrm = (crm, user) => {
         courseEnd = isDiploma ? "09 Sep 2026" : "20 Apr 2027";
       }
     }
-    if (daysLeft === null && typeof source.daysLeft === "number") {
-      daysLeft = source.daysLeft;
+    if (typeof source.daysLeft === "number") {
+      daysLeft = Math.max(0, source.daysLeft);
     }
   }
 
@@ -291,5 +298,48 @@ export const mapStudentDataFromCrm = (crm, user) => {
     installments,
     hasCourseChange,
     courseHistory,
+  };
+};
+
+/**
+ * checkStudentCourseAccess
+ * Validates whether the logged-in student has active course and video access.
+ * If daysLeft <= 0, access is strictly locked / expired.
+ * Admin, trainers, and coordinators bypass this restriction.
+ */
+export const checkStudentCourseAccess = (crm, user, isAdmin = false) => {
+  if (isAdmin) {
+    return {
+      hasAccess: true,
+      isExpired: false,
+      daysLeft: 999,
+      courseEnd: null,
+      hasAssignedBatch: true,
+      batch: "Staff",
+      reason: "admin_bypass",
+    };
+  }
+
+  const studentData = mapStudentDataFromCrm(crm, user);
+  const daysLeft = studentData.daysLeft;
+  const hasAssignedBatch = studentData.hasAssignedBatch;
+  const courseEnd = studentData.courseEnd;
+
+  // Student validity is expired strictly when daysLeft is 0 or less
+  const isExpired = daysLeft !== null && daysLeft !== undefined && daysLeft <= 0;
+
+  // Active access requires valid batch and positive days remaining
+  const hasAccess = Boolean(hasAssignedBatch && daysLeft !== null && daysLeft > 0);
+
+  return {
+    hasAccess,
+    isExpired,
+    daysLeft: daysLeft ?? 0,
+    hasAssignedBatch,
+    courseEnd: courseEnd && courseEnd !== "Not Assigned" ? courseEnd : null,
+    batch: studentData.batch,
+    studentName: studentData.name,
+    facultyLead: studentData.facultyLead,
+    center: studentData.center,
   };
 };

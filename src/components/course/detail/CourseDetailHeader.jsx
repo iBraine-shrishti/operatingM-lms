@@ -13,6 +13,7 @@ export const CourseDetailHeader = ({
   totalVideosCount = 0,
   completedActivitiesCount = 0,
   hasCourseAccess = true,
+  isExpired = false,
   isAdmin = false,
   onBack,
   onEditCourse,
@@ -143,11 +144,11 @@ export const CourseDetailHeader = ({
           ) : (
             <button
               disabled
-              className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-500 dark:text-amber-400 text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center justify-center space-x-2 cursor-not-allowed"
-              title="Course access managed in Operating Media CRM"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center justify-center space-x-2 cursor-not-allowed select-none"
+              title={isExpired ? "Course validity has expired (0 days left)" : "Course access managed in Operating Media CRM"}
             >
               <Lock size={14} />
-              <span>Access Restricted in CRM</span>
+              <span>{isExpired ? "Validity Expired (0 Days Left)" : "Access Restricted in CRM"}</span>
             </button>
           )}
         </div>
