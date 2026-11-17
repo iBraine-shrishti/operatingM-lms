@@ -11,7 +11,7 @@ import { MyQuizzesPage } from "./pages/MyQuizzesPage";
 import { TakeQuizPage } from "./pages/TakeQuizPage";
 import { MyAssignmentsPage } from "./pages/MyAssignmentsPage";
 import { TakeAssignmentPage } from "./pages/TakeAssignmentPage";
-import { AchievementsPage } from "./pages/AchievementsPage";
+// import { AchievementsPage } from "./pages/AchievementsPage";
 import { NotesReviewsPage } from "./pages/NotesReviewsPage";
 import { ActivityPage } from "./pages/ActivityPage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -63,7 +63,10 @@ function AppRoutes() {
       <Route path="/login" element={<PublicLoginRoute />} />
 
       {/* Public Certificate Verification */}
-      <Route path="/verify-certificate" element={<CertificateVerificationPage />} />
+      <Route
+        path="/verify-certificate"
+        element={<CertificateVerificationPage />}
+      />
 
       {/* Public Standalone Portfolio Live Preview */}
       <Route path="/portfolio-live" element={<PortfolioLivePage />} />
@@ -81,21 +84,36 @@ function AppRoutes() {
         <Route path="my-assignments" element={<MyAssignmentsPage />} />
         <Route path="take-assignment/:id" element={<TakeAssignmentPage />} />
         <Route path="take-assignment" element={<TakeAssignmentPage />} />
-        <Route path="achievements" element={<AchievementsPage />} />
+        {/* <Route path="achievements" element={<AchievementsPage />} /> */}
         <Route path="notes-reviews" element={<NotesReviewsPage />} />
         <Route path="notes" element={<NotesReviewsPage />} />
         <Route path="activity" element={<ActivityPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="forums" element={<QuestionDiscussionsPage />} />
         <Route path="forums/:postId" element={<QuestionDiscussionsPage />} />
-        <Route path="question-discussions" element={<QuestionDiscussionsPage />} />
-        <Route path="question-discussions/:postId" element={<QuestionDiscussionsPage />} />
+        <Route
+          path="question-discussions"
+          element={<QuestionDiscussionsPage />}
+        />
+        <Route
+          path="question-discussions/:postId"
+          element={<QuestionDiscussionsPage />}
+        />
         <Route path="schedule" element={<SchedulePage />} />
-        <Route path="attendance-fees" element={<Navigate to="/profile?tab=attendance" replace />} />
+        <Route
+          path="attendance-fees"
+          element={<Navigate to="/profile?tab=attendance" replace />}
+        />
         <Route path="exam" element={<OfficialExamPage />} />
         <Route path="grievance" element={<GrievancePage />} />
-        <Route path="course-feedback-form" element={<GrievancePage initialTab="course" />} />
-        <Route path="trainer-feedback-form" element={<GrievancePage initialTab="trainer" />} />
+        <Route
+          path="course-feedback-form"
+          element={<GrievancePage initialTab="course" />}
+        />
+        <Route
+          path="trainer-feedback-form"
+          element={<GrievancePage initialTab="trainer" />}
+        />
         <Route path="resume-builder" element={<ResumeBuilderPage />} />
         <Route path="portfolio-builder" element={<PortfolioBuilderPage />} />
       </Route>
