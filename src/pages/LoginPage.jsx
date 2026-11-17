@@ -668,19 +668,8 @@ export const LoginPage = () => {
           </button>
         </form>
 
-        {/* Footer Verification Link & Help Desk */}
+        {/* Footer Help Desk / Official Portal Badge */}
         <div className="pt-3 border-t border-slate-100 space-y-2.5 text-center">
-          <div>
-            <button
-              type="button"
-              onClick={() => navigate("/verify-certificate")}
-              className="text-xs font-semibold text-blue-600 hover:text-blue-800 hover:underline cursor-pointer inline-flex items-center space-x-1"
-            >
-              <BookOpen size={13} />
-              <span>Verify an Operating Media Certificate</span>
-            </button>
-          </div>
-
           <div className="text-[11px] text-slate-400 flex items-center justify-center space-x-1 font-medium">
             <ShieldCheck size={13} className="text-emerald-500" />
             <span>Operating Media LMS • Official Student Portal</span>

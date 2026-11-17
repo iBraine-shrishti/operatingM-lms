@@ -15,7 +15,6 @@ import {
   User,
   GraduationCap,
   Award,
-  Trophy,
   CheckSquare,
   FileText,
   BookCheck,
@@ -244,14 +243,25 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
     {
       title: "MAIN",
       items: [
-        { name: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
+        {
+          name: "Dashboard",
+          path: "/dashboard",
+          icon: LayoutDashboard,
+          color: "text-blue-500 dark:text-blue-400",
+        },
         { 
           name: "Activity", 
           path: "/activity", 
           icon: Activity, 
-          badge: String(liveActivitiesCount ?? 0) 
+          badge: String(liveActivitiesCount ?? 0),
+          color: "text-emerald-500 dark:text-emerald-400",
         },
-        { name: "Profile", path: "/profile", icon: User },
+        {
+          name: "Profile",
+          path: "/profile",
+          icon: User,
+          color: "text-indigo-500 dark:text-indigo-400",
+        },
       ],
     },
     {
@@ -262,42 +272,67 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           path: "/enrolled-courses",
           icon: GraduationCap,
           badge: String(enrolledCoursesCount ?? 0),
+          color: "text-sky-500 dark:text-sky-400",
         },
         {
           name: "Exams",
           path: "/exam",
           icon: Award,
           badge: String(liveExamsCount ?? 0),
-        },
-        {
-          name: "Achievements",
-          path: "/achievements",
-          icon: Trophy,
-          badge: "4",
+          color: "text-amber-500 dark:text-amber-400",
         },
         {
           name: "My Assignments",
           path: "/my-assignments",
           icon: BookCheck,
           badge: String(liveAssignmentsCount ?? 0),
+          color: "text-violet-500 dark:text-violet-400",
         },
         {
           name: "My Quizzes",
           path: "/my-quizzes",
           icon: CheckSquare,
           badge: String(liveQuizzesCount ?? 0),
+          color: "text-teal-500 dark:text-teal-400",
         },
         {
           name: "Notes",
           path: "/notes",
           icon: FileText,
           badge: String(liveNotesCount ?? 0),
+          color: "text-orange-500 dark:text-orange-400",
         },
-        { name: "Forums", path: "/forums", icon: MessagesSquare },
-        { name: "Schedule", path: "/schedule", icon: Calendar },
-        { name: "Grievance", path: "/grievance", icon: HelpCircle },
-        { name: "Resume Builder", path: "/resume-builder", icon: Briefcase },
-        { name: "Portfolio Builder", path: "/portfolio-builder", icon: Sparkles, badge: "New" },
+        {
+          name: "Forums",
+          path: "/forums",
+          icon: MessagesSquare,
+          color: "text-rose-500 dark:text-rose-400",
+        },
+        {
+          name: "Schedule",
+          path: "/schedule",
+          icon: Calendar,
+          color: "text-cyan-500 dark:text-cyan-400",
+        },
+        {
+          name: "Grievance",
+          path: "/grievance",
+          icon: HelpCircle,
+          color: "text-yellow-600 dark:text-yellow-400",
+        },
+        {
+          name: "Resume Builder",
+          path: "/resume-builder",
+          icon: Briefcase,
+          color: "text-purple-600 dark:text-purple-400",
+        },
+        {
+          name: "Portfolio Builder",
+          path: "/portfolio-builder",
+          icon: Sparkles,
+          badge: "New",
+          color: "text-pink-500 dark:text-pink-400",
+        },
       ],
     },
   ];
@@ -382,10 +417,10 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
                   >
                     <Icon
                       size={18}
-                      className={`shrink-0 transition-colors ${
+                      className={`shrink-0 transition-all duration-200 ${item.color || "text-blue-500 dark:text-blue-400"} ${
                         isActive
-                          ? "text-[#2563eb] dark:text-cyan-400"
-                          : "text-slate-400 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-cyan-300"
+                          ? "opacity-100 scale-105"
+                          : "opacity-85 group-hover:opacity-100 group-hover:scale-110"
                       }`}
                     />
                     {!collapsed && (
@@ -428,7 +463,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
         >
           <LogOut
             size={18}
-            className="text-slate-400 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200 shrink-0"
+            className="text-rose-500 dark:text-rose-400 opacity-85 group-hover:opacity-100 group-hover:scale-110 transition-all duration-200 shrink-0"
           />
           {!collapsed && (
             <span className="text-xs sm:text-sm font-semibold">Sign Out</span>
