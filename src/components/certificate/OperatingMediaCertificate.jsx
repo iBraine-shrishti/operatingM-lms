@@ -62,7 +62,7 @@ export const OperatingMediaCertificate = ({
   return (
     <div
       data-certificate-document="true"
-      className={`certificate-document relative w-full max-w-[940px] mx-auto min-h-[520px] sm:min-h-0 aspect-auto sm:aspect-[1.38/1] select-none overflow-hidden print:w-full print:max-w-none print:shadow-none print:m-0 print:p-0 ${
+      className={`certificate-document relative w-full max-w-[1020px] mx-auto min-h-[520px] sm:min-h-0 aspect-auto sm:aspect-[1.38/1] select-none overflow-hidden print:w-full print:max-w-none print:shadow-none print:m-0 print:p-0 ${
         showBorder ? "shadow-2xl rounded-sm" : ""
       } ${className}`}
       style={{
@@ -77,14 +77,14 @@ export const OperatingMediaCertificate = ({
     >
       <div
         data-cert-paper="true"
-        className="w-full h-full relative flex flex-col justify-between p-6 sm:p-10 md:p-12 lg:p-14 bg-white"
+        className="w-full h-full relative flex flex-col justify-between p-5 sm:p-8 md:p-10 lg:p-11 bg-white"
       >
         {/* Subtle Watermark in background */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.035] overflow-hidden">
           <img
             src={logoImg}
             alt=""
-            className="w-[60%] max-w-[440px] object-contain grayscale mix-blend-multiply"
+            className="w-[72%] max-w-[520px] object-contain grayscale mix-blend-multiply"
           />
         </div>
 
@@ -97,8 +97,7 @@ export const OperatingMediaCertificate = ({
             <img
               src={logoImg}
               alt="Operating Media - Digitize Your Career"
-              className="h-28 sm:h-36 md:h-44 lg:h-48 w-auto max-w-[90%] object-contain drop-shadow-sm mix-blend-multiply transition-all"
-              style={{ filter: "none", clipPath: "inset(1.5% 1.5% 1.5% 1.5%)" }}
+              className="h-36 sm:h-44 md:h-52 lg:h-56 w-auto max-w-[95%] object-contain drop-shadow-sm mix-blend-multiply transition-all"
             />
           </div>
           <div className="flex items-center gap-2 mt-1.5 sm:mt-2">
