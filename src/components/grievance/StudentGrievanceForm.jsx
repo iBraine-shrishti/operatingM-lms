@@ -827,7 +827,7 @@ export const StudentGrievanceForm = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto min-w-[240px] h-[52px] px-8 bg-[#163b65] hover:bg-[#0f2a49] text-white font-extrabold uppercase tracking-wider text-xs sm:text-sm rounded-xl flex items-center justify-center gap-3 transition-all shadow-[0_8px_20px_rgba(22,59,101,0.25)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50"
+            className="w-full sm:w-auto min-w-[220px] h-[48px] px-8 bg-[#163b65] hover:bg-[#0f2a49] text-white font-extrabold uppercase tracking-wider text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-[0_6px_18px_rgba(22,59,101,0.25)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50"
           >
             <Send size={16} />
             <span>

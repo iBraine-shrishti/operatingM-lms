@@ -47,7 +47,7 @@ export const GrievancePage = ({ initialTab = "grievance" }) => {
 
   return (
     <div className="font-jakarta space-y-6">
-      {/* 1. HERO HEADER BANNER */}
+      {/* 1. HERO HEADER BANNER (Full width) */}
       <StudentPageHeader
         category="Student Quality & Academic Resolution"
         badgeText="Official CRM Integration"
@@ -72,7 +72,7 @@ export const GrievancePage = ({ initialTab = "grievance" }) => {
         ]}
       />
 
-      {/* 2. TAB SWITCHER STRIP (MATCHING CRM NAVY THEME) */}
+      {/* 2. TAB SWITCHER STRIP (Full width) */}
       <div className="bg-white dark:bg-[#0b1329] p-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {tabs.map((tab) => {
@@ -113,8 +113,8 @@ export const GrievancePage = ({ initialTab = "grievance" }) => {
         </div>
       </div>
 
-      {/* 3. ACTIVE FORM CONTAINER */}
-      <div>
+      {/* 3. ACTIVE FORM CONTAINER - Margined only here after the switch, with half the previous margin */}
+      <div className="max-w-6xl mx-auto px-1 sm:px-3">
         {activeTab === "grievance" && <StudentGrievanceForm />}
         {activeTab === "trainer" && <TrainerFeedbackForm />}
         {/* Note: Counsellor / Course feedback form is temporarily hidden as requested */}

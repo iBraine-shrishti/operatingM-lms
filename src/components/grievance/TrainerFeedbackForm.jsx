@@ -99,14 +99,14 @@ export const TrainerFeedbackForm = () => {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* SECTION 1: PRIMARY INFO */}
-        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-9 shadow-xs">
-          <div className="flex items-center gap-3 pb-4 mb-6 border-b border-slate-100 dark:border-slate-800 text-[#003873] dark:text-sky-400 font-extrabold text-sm sm:text-base uppercase tracking-wider">
+        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs">
+          <div className="flex items-center gap-3 pb-3 mb-5 border-b border-slate-100 dark:border-slate-800 text-[#003873] dark:text-sky-400 font-extrabold text-sm sm:text-base uppercase tracking-wider">
             <User size={18} className="text-[#003873] dark:text-sky-400" />
             <span>1. Enrollment Details</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
             <div>
-              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-2">
+              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-1.5">
                 Your Full Name *
               </label>
               <input
@@ -116,11 +116,11 @@ export const TrainerFeedbackForm = () => {
                 onChange={handleChange}
                 required
                 placeholder="Student Name"
-                className="h-[52px] bg-[#f8fafc] dark:bg-slate-900 border-[1.5px] border-[#cbd5e1] dark:border-slate-700 rounded-lg px-4 text-[14px] font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-4 focus:ring-[#003873]/10 outline-none transition-all w-full"
+                className="h-11 bg-[#f8fafc] dark:bg-slate-900 border border-[#cbd5e1] dark:border-slate-700 rounded-lg px-3.5 text-[13px] font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-[#003873]/10 outline-none transition-all w-full"
               />
             </div>
             <div>
-              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-2">
+              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-1.5">
                 Which Course? *
               </label>
               <select
@@ -128,7 +128,7 @@ export const TrainerFeedbackForm = () => {
                 value={formData.course}
                 onChange={handleChange}
                 required
-                className="h-[52px] bg-[#f8fafc] dark:bg-slate-900 border-[1.5px] border-[#cbd5e1] dark:border-slate-700 rounded-lg px-4 text-[14px] font-medium text-slate-900 dark:text-white focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-4 focus:ring-[#003873]/10 outline-none transition-all w-full cursor-pointer"
+                className="h-11 bg-[#f8fafc] dark:bg-slate-900 border border-[#cbd5e1] dark:border-slate-700 rounded-lg px-3 text-[13px] font-medium text-slate-900 dark:text-white focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-[#003873]/10 outline-none transition-all w-full cursor-pointer"
               >
                 <option value="">Select Course</option>
                 <option value="Search Engine Optimization">Search Engine Optimization</option>
@@ -152,7 +152,7 @@ export const TrainerFeedbackForm = () => {
               </select>
             </div>
             <div>
-              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-2">
+              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-1.5">
                 Trainer's Name *
               </label>
               <select
@@ -160,7 +160,7 @@ export const TrainerFeedbackForm = () => {
                 value={formData.trainer}
                 onChange={handleChange}
                 required
-                className="h-[52px] bg-[#f8fafc] dark:bg-slate-900 border-[1.5px] border-[#cbd5e1] dark:border-slate-700 rounded-lg px-4 text-[14px] font-medium text-slate-900 dark:text-white focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-4 focus:ring-[#003873]/10 outline-none transition-all w-full cursor-pointer"
+                className="h-11 bg-[#f8fafc] dark:bg-slate-900 border border-[#cbd5e1] dark:border-slate-700 rounded-lg px-3 text-[13px] font-medium text-slate-900 dark:text-white focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-[#003873]/10 outline-none transition-all w-full cursor-pointer"
               >
                 <option value="">Select Trainer</option>
                 <option value="Shraddha Rane">Shraddha Rane</option>
@@ -178,7 +178,7 @@ export const TrainerFeedbackForm = () => {
         </section>
 
         {/* SECTION 2: EVALUATION */}
-        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-9 shadow-xs">
+        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs">
           <div className="flex items-center gap-3 pb-4 mb-6 border-b border-slate-100 dark:border-slate-800 text-[#003873] dark:text-sky-400 font-extrabold text-sm sm:text-base uppercase tracking-wider">
             <Award size={18} className="text-[#003873] dark:text-sky-400" />
             <span>2. Trainer Evaluation</span>
@@ -234,8 +234,8 @@ export const TrainerFeedbackForm = () => {
         </section>
 
         {/* SECTION 3: COMMUNICATION & 1-10 RATING */}
-        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-9 shadow-xs">
-          <div className="flex items-center gap-3 pb-4 mb-6 border-b border-slate-100 dark:border-slate-800 text-[#003873] dark:text-sky-400 font-extrabold text-sm sm:text-base uppercase tracking-wider">
+        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs">
+          <div className="flex items-center gap-3 pb-3 mb-5 border-b border-slate-100 dark:border-slate-800 text-[#003873] dark:text-sky-400 font-extrabold text-sm sm:text-base uppercase tracking-wider">
             <Zap size={18} className="text-[#003873] dark:text-sky-400" />
             <span>3. Communication & Final Rating</span>
           </div>
@@ -288,8 +288,8 @@ export const TrainerFeedbackForm = () => {
         </section>
 
         {/* SECTION 4: COMMENTS */}
-        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-6 sm:p-9 shadow-xs">
-          <div className="flex items-center gap-3 pb-4 mb-6 border-b border-slate-100 dark:border-slate-800 text-[#003873] dark:text-sky-400 font-extrabold text-sm sm:text-base uppercase tracking-wider">
+        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs">
+          <div className="flex items-center gap-3 pb-3 mb-5 border-b border-slate-100 dark:border-slate-800 text-[#003873] dark:text-sky-400 font-extrabold text-sm sm:text-base uppercase tracking-wider">
             <MessageSquare size={18} className="text-[#003873] dark:text-sky-400" />
             <span>4. Additional Suggestions & Comments</span>
           </div>
@@ -300,20 +300,20 @@ export const TrainerFeedbackForm = () => {
               onChange={handleChange}
               rows={4}
               placeholder="Share any specific suggestions for the trainer, class pace, or academic support..."
-              className="w-full bg-[#f8fafc] dark:bg-slate-900 border-[1.5px] border-[#cbd5e1] dark:border-slate-700 rounded-lg p-4 text-[14px] font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-4 focus:ring-[#003873]/10 outline-none transition-all"
+              className="w-full bg-[#f8fafc] dark:bg-slate-900 border border-[#cbd5e1] dark:border-slate-700 rounded-lg p-4 text-[13px] font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-[#003873]/10 outline-none transition-all"
             />
           </div>
         </section>
 
         {/* SUBMIT BUTTON */}
-        <div>
+        <div className="pt-2 flex justify-end">
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full h-[60px] sm:h-[65px] bg-[#003873] hover:bg-[#002d5c] text-white font-extrabold uppercase tracking-wider text-sm sm:text-base rounded-xl flex items-center justify-center gap-3 transition-all shadow-[0_10px_25px_rgba(0,56,115,0.25)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50"
+            className="w-full sm:w-auto min-w-[220px] h-[48px] px-8 bg-[#003873] hover:bg-[#002d5c] text-white font-extrabold uppercase tracking-wider text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-[0_4px_16px_rgba(0,56,115,0.25)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50"
           >
             <span>{isSubmitting ? "STORING FEEDBACK..." : "SUBMIT TRAINER FEEDBACK"}</span>
-            <ArrowRight size={20} />
+            <ArrowRight size={17} />
           </button>
         </div>
       </form>
