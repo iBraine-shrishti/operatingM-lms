@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import QRCode from "qrcode";
-import logoImg from "../../assets/logo-certificate.png";
+import logoImg from "../../assets/logo-certificate-blue.png";
 import { CheckCircle2, ShieldCheck } from "lucide-react";
 
 export const OperatingMediaCertificate = ({
