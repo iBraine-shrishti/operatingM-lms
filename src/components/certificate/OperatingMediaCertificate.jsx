@@ -69,7 +69,7 @@ export const OperatingMediaCertificate = ({
         backgroundColor: "#ffffff",
         color: "#0f172a",
         colorScheme: "light",
-        border: showBorder ? "10px solid #dc2626" : "none", // THICK RED FRAMING BORDER
+        border: showBorder ? "5px solid #2563eb" : "none", // 5px BLUE FRAMING BORDER (reduced by half)
         borderRadius: showBorder ? "2px" : "0px",
         fontFamily:
           "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
@@ -150,7 +150,7 @@ export const OperatingMediaCertificate = ({
               className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-[22px] font-bold tracking-tight whitespace-nowrap truncate max-w-full inline-block pb-0.5 sm:pb-1 font-sans"
               style={{
                 color: "#0f172a",
-                borderBottom: "2px solid #dc2626",
+                borderBottom: "2px solid #2563eb",
               }}
             >
               {courseTitle}

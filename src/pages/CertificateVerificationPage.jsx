@@ -171,7 +171,7 @@ export const CertificateVerificationPage = () => {
           {/* Verification Metadata Ledger Details */}
           <div className="bg-white rounded-2xl border border-slate-200/80 p-5 sm:p-6 shadow-xs space-y-4 print:hidden">
             <div className="flex items-center space-x-2 pb-3 border-b border-slate-100">
-              <Award size={18} className="text-[#dc2626]" />
+              <Award size={18} className="text-[#2563eb]" />
               <h3 className="font-extrabold text-sm sm:text-base text-slate-900">
                 Academic Ledger Record & Accreditation
               </h3>
