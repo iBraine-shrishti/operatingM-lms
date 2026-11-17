@@ -23,7 +23,7 @@ import {
  * personal notes, downloadable resources, and assessment navigation.
  */
 export const LessonPlayerPage = () => {
-  const { currentUser, crmProfile, isAdmin } = useAuth();
+  const { currentUser, crmProfile, isAdmin, crmLoading } = useAuth();
 
   // Validate student course & video access period (0 days left check)
   const accessStatus = useMemo(
@@ -584,8 +584,14 @@ export const LessonPlayerPage = () => {
         ]}
       />
 
-      {/* When student validity has expired (0 days left): Display Expired Video Access Lock */}
-      {isExpired ? (
+      {/* When student CRM data is verifying, show loading skeleton to avoid flashing video */}
+      {crmLoading ? (
+        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-12 text-center animate-pulse">
+          <div className="w-12 h-12 bg-slate-200 dark:bg-slate-800 rounded-2xl mx-auto mb-4" />
+          <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-1/3 mx-auto mb-2" />
+          <div className="h-3 bg-slate-100 dark:bg-slate-800/60 rounded w-1/4 mx-auto" />
+        </div>
+      ) : isExpired ? (
         <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-8 sm:p-12 shadow-2xs text-center space-y-5">
           <div className="w-16 h-16 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-800/60 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto shadow-xs">
             <Lock size={32} />

@@ -43,7 +43,7 @@ export const DEFAULT_CRM_PROFILE = {
   registrationDate: "18 Apr 2026",
   joiningDate: "2026-04-22",
   courseEnd: "20 Apr 2027",
-  daysLeft: 360,
+  daysLeft: 0,
   facultyLead: "Rahul Shende",
   facultyLeadRole: "Lead Faculty - Borivali Center",
   photo: null,

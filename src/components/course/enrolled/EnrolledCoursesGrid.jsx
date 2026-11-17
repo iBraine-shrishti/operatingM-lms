@@ -15,13 +15,39 @@ export const EnrolledCoursesGrid = ({
   isExpired = false,
   courseEnd = "",
   daysLeft = 0,
+  isLoading = false,
   onResetFilters,
   onCardClick,
   onOutlineClick,
   onResumeClick,
   onEditClick,
 }) => {
-  if (courses.length === 0) {
+  // If CRM profile or permissions are still loading, show animated skeleton placeholders
+  // NEVER show "No Enrolled Courses Found" empty state while asynchronous network requests are loading!
+  if (isLoading && !isExpired) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 animate-pulse">
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+          <div
+            key={item}
+            className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 space-y-4"
+          >
+            <div className="w-full h-36 bg-slate-100 dark:bg-slate-800 rounded-xl" />
+            <div className="space-y-2">
+              <div className="h-4 bg-slate-100 dark:bg-slate-800 rounded w-3/4" />
+              <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/2" />
+            </div>
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between">
+              <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/4" />
+              <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded w-1/4" />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (courses.length === 0 || isExpired) {
     return (
       <EnrolledCoursesEmptyState
         hasNoEnrollments={hasNoEnrollments}

@@ -191,11 +191,35 @@ export const AuthProvider = ({ children }) => {
                 lmsService.fetchStudentBatchAssignments(targetId)
             ]);
 
+            const profileRawDays =
+                profile?.daysLeft !== undefined && profile?.daysLeft !== null
+                    ? profile.daysLeft
+                    : profile?.days_left;
+            let profileParsedDays = null;
+            if (profileRawDays !== undefined && profileRawDays !== null) {
+                const p = parseInt(profileRawDays, 10);
+                if (!isNaN(p)) profileParsedDays = p;
+            }
+            const access = checkStudentCourseAccess(profile, studentUser);
+            const isProfileExpired = Boolean(
+                (profileParsedDays !== null && profileParsedDays <= 0) ||
+                access.isExpired
+            );
+
             let activePermittedIds = [];
             if (permissions && Array.isArray(permissions)) {
-                activePermittedIds = permissions.filter(p => p.hasAccess).map(p => p.courseId);
-                setStudentCoursesAccess(permissions);
-                setAssignedCourseIds(activePermittedIds); if (batchAssignments && Array.isArray(batchAssignments)) { setAssignmentsCount(batchAssignments.length); }
+                activePermittedIds = isProfileExpired
+                    ? []
+                    : permissions.filter(p => p.hasAccess).map(p => p.courseId);
+                setStudentCoursesAccess(
+                    isProfileExpired
+                        ? permissions.map(p => ({ ...p, hasAccess: false }))
+                        : permissions
+                );
+                setAssignedCourseIds(activePermittedIds);
+                if (batchAssignments && Array.isArray(batchAssignments)) {
+                    setAssignmentsCount(batchAssignments.length);
+                }
             }
 
             if (profile) {

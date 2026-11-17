@@ -39,12 +39,12 @@ export const CourseDetailPage = () => {
   const hasCourseAccess =
     !isExpired &&
     (isAdmin ||
-      (!assignedCourseIds ||
-        assignedCourseIds.length === 0 ||
+      (Array.isArray(assignedCourseIds) &&
+        assignedCourseIds.length > 0 &&
         assignedCourseIds.includes(course.id)));
 
   const handleNavigate = (path) => {
-    if (isExpired && typeof path === "string" && path.includes("/lesson-player")) {
+    if ((isExpired || !hasCourseAccess) && typeof path === "string" && path.includes("/lesson-player")) {
       showToast(
         "Video lessons are locked because your course access validity has expired (0 days left).",
         "warning",
@@ -56,7 +56,7 @@ export const CourseDetailPage = () => {
   };
 
   const handleStartLearning = () => {
-    if (isExpired) {
+    if (isExpired || !hasCourseAccess) {
       showToast(
         "Video lessons are locked because your course access validity has expired (0 days left).",
         "warning",

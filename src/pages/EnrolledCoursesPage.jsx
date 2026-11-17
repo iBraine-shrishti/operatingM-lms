@@ -23,7 +23,14 @@ const CATEGORIES = [
 
 export const EnrolledCoursesPage = () => {
   const navigate = useNavigate();
-  const { currentUser, studentUser, isAdmin, assignedCourseIds, crmProfile } = useAuth();
+  const {
+    currentUser,
+    studentUser,
+    isAdmin,
+    assignedCourseIds,
+    crmProfile,
+    crmLoading,
+  } = useAuth();
 
   // Validate student course & video access period (0 days left check)
   const accessStatus = useMemo(
@@ -33,11 +40,23 @@ export const EnrolledCoursesPage = () => {
   const isExpired = accessStatus.isExpired;
 
   const studentId =
-    currentUser?.crmAdmissionId || studentUser?.crmAdmissionId || 375;
+    currentUser?.crmAdmissionId ||
+    studentUser?.crmAdmissionId ||
+    crmProfile?.id ||
+    375;
   const [permittedCourseIds, setPermittedCourseIds] = useState(
-    () => assignedCourseIds || [],
+    () => (isExpired ? [] : (assignedCourseIds || [])),
   );
-  const [, setIsLoadingPerms] = useState(false);
+  const [isLoadingPerms, setIsLoadingPerms] = useState(false);
+
+  // Keep permitted course IDs synced with AuthContext and access status
+  useEffect(() => {
+    if (isExpired || accessStatus.daysLeft <= 0) {
+      setPermittedCourseIds([]);
+    } else if (Array.isArray(assignedCourseIds)) {
+      setPermittedCourseIds(assignedCourseIds);
+    }
+  }, [assignedCourseIds, isExpired, accessStatus.daysLeft]);
 
   // Sync real course permissions from CRM API
   useEffect(() => {
@@ -49,6 +68,10 @@ export const EnrolledCoursesPage = () => {
         .then((perms) => {
           if (isMounted) {
             setIsLoadingPerms(false);
+            if (isExpired || accessStatus.daysLeft <= 0) {
+              setPermittedCourseIds([]);
+              return;
+            }
             if (Array.isArray(perms)) {
               const granted = perms
                 .filter((p) => p.hasAccess)
@@ -64,7 +87,7 @@ export const EnrolledCoursesPage = () => {
     return () => {
       isMounted = false;
     };
-  }, [studentId]);
+  }, [studentId, isExpired, accessStatus.daysLeft]);
 
   // All published courses from service
   const allPublishedCourses = useMemo(
@@ -75,7 +98,7 @@ export const EnrolledCoursesPage = () => {
   // Enrolled courses: Only courses granted to the student in CRM
   const enrolledCourses = useMemo(() => {
     // When course access period has concluded (0 days left), strictly hide all courses
-    if (isExpired) return [];
+    if (isExpired || accessStatus.daysLeft <= 0) return [];
     if (isAdmin) return allPublishedCourses;
     if (!permittedCourseIds || permittedCourseIds.length === 0) {
       return [];
@@ -83,7 +106,7 @@ export const EnrolledCoursesPage = () => {
     return allPublishedCourses.filter((c) =>
       permittedCourseIds.includes(c.id),
     );
-  }, [isAdmin, isExpired, allPublishedCourses, permittedCourseIds]);
+  }, [isAdmin, isExpired, accessStatus.daysLeft, allPublishedCourses, permittedCourseIds]);
 
   // Real course metrics computed directly from real video units
   const courseMetricsMap = useMemo(() => {
@@ -229,6 +252,7 @@ export const EnrolledCoursesPage = () => {
         isExpired={isExpired}
         courseEnd={accessStatus.courseEnd}
         daysLeft={accessStatus.daysLeft}
+        isLoading={Boolean(crmLoading || isLoadingPerms)}
         onResetFilters={handleResetFilters}
         onCardClick={(courseId) => navigate(`/courses/${courseId}`)}
         onOutlineClick={(courseId) => navigate(`/courses/${courseId}`)}

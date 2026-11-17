@@ -1,4 +1,4 @@
-import { crmService } from "../../services/crmService";
+import { crmService } from "../../services/crmService.js";
 
 /**
  * Resolves faculty lead based on student batch / branch condition:
