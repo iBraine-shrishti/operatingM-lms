@@ -11,11 +11,12 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { CRM_BACKEND_API } from "../../services/lmsService";
+import { crmService, CRM_BASE_URL } from "../../services/crmService";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
 
 export const StudentGrievanceForm = () => {
-  const { currentUser, crmProfile, crmBatch } = useAuth();
+  const { currentUser, crmProfile, crmBatch, crmAttendance } = useAuth();
   const { showToast } = useToast();
 
   const studentName =
@@ -50,8 +51,13 @@ export const StudentGrievanceForm = () => {
     "Master in Digital Marketing";
 
   const batchSection =
+    crmProfile?.batchName ||
+    crmProfile?.batchCode ||
     crmProfile?.batch ||
+    crmBatch?.batchName ||
     crmBatch?.name ||
+    crmAttendance?.primaryBatchName ||
+    (crmAttendance?.enrolledBatches && crmAttendance.enrolledBatches[0]) ||
     currentUser?.batch ||
     "";
 
@@ -87,11 +93,98 @@ export const StudentGrievanceForm = () => {
   };
 
   const [formData, setFormData] = useState(initialFormState);
+  const [loadingBatch, setLoadingBatch] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionSuccess, setSubmissionSuccess] = useState(null);
 
+  // Directly fetch student Batch / Section from CRM backend API
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchBatchDirectly = async () => {
+      const targetId =
+        crmService.getSelectedStudentId() ||
+        crmProfile?.id ||
+        currentUser?.crmAdmissionId ||
+        currentUser?.id ||
+        375;
+
+      try {
+        setLoadingBatch(true);
+
+        // Fetch student profile, attendance, and raw admission directly from backend in parallel
+        const [profile, attendance, rawAdmission] = await Promise.all([
+          crmService.getStudentProfile(targetId).catch(() => null),
+          crmService.getStudentAttendance(targetId).catch(() => null),
+          fetch(`${CRM_BASE_URL}/admissions/${targetId}/`, {
+            headers: { Accept: "application/json" },
+          })
+            .then((r) => (r.ok ? r.json() : null))
+            .catch(() => null),
+        ]);
+
+        if (!isMounted) return;
+
+        const resolvedBatch =
+          rawAdmission?.batch_name ||
+          rawAdmission?.batch ||
+          profile?.batchName ||
+          profile?.batchCode ||
+          profile?.batch ||
+          attendance?.primaryBatchName ||
+          (attendance?.enrolledBatches && attendance.enrolledBatches[0]) ||
+          (attendance?.training_chart?.normal_batches && attendance.training_chart.normal_batches[0]) ||
+          (attendance?.training_chart?.master_batches && attendance.training_chart.master_batches[0]) ||
+          crmProfile?.batchName ||
+          crmProfile?.batchCode ||
+          crmBatch?.batchName ||
+          crmBatch?.name ||
+          crmAttendance?.primaryBatchName ||
+          currentUser?.batch ||
+          "";
+
+        const resolvedBranch =
+          rawAdmission?.branch ||
+          profile?.branch ||
+          crmProfile?.branch ||
+          "";
+
+        if (resolvedBatch) {
+          setFormData((prev) => ({
+            ...prev,
+            batchSection: resolvedBatch,
+            ...(resolvedBranch && !prev.branch ? { branch: resolvedBranch.replace(" Center", "") } : {}),
+          }));
+        }
+      } catch (err) {
+        console.warn("Direct backend fetch for batch/section failed:", err);
+      } finally {
+        if (isMounted) {
+          setLoadingBatch(false);
+        }
+      }
+    };
+
+    fetchBatchDirectly();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [crmProfile?.id, currentUser?.crmAdmissionId, currentUser?.id]);
+
   // Sync auth details if loaded asynchronously
   useEffect(() => {
+    const currentBatch =
+      crmProfile?.batchName ||
+      crmProfile?.batchCode ||
+      crmProfile?.batch ||
+      crmBatch?.batchName ||
+      crmBatch?.name ||
+      crmAttendance?.primaryBatchName ||
+      (crmAttendance?.enrolledBatches && crmAttendance.enrolledBatches[0]) ||
+      currentUser?.batch ||
+      "";
+
     setFormData((prev) => ({
       ...prev,
       fullName: prev.fullName || studentName,
@@ -99,9 +192,22 @@ export const StudentGrievanceForm = () => {
       email: prev.email || studentEmail,
       phone: prev.phone || studentPhone,
       courseName: prev.courseName || programCourse,
-      batchSection: prev.batchSection || batchSection,
+      batchSection: prev.batchSection || currentBatch || "",
     }));
-  }, [studentName, studentId, studentEmail, studentPhone, programCourse, batchSection]);
+  }, [
+    studentName,
+    studentId,
+    studentEmail,
+    studentPhone,
+    programCourse,
+    crmProfile?.batchName,
+    crmProfile?.batchCode,
+    crmProfile?.batch,
+    crmBatch?.batchName,
+    crmBatch?.name,
+    crmAttendance?.primaryBatchName,
+    currentUser?.batch,
+  ]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -393,15 +499,20 @@ export const StudentGrievanceForm = () => {
               </div>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center px-3 py-2 gap-1 sm:gap-2">
-                <span className="font-bold text-slate-900 dark:text-slate-100 shrink-0 min-w-[160px]">
+                <span className="font-bold text-slate-900 dark:text-slate-100 shrink-0 min-w-[160px] flex items-center gap-1.5">
                   Batch / Section:
+                  {loadingBatch && (
+                    <span className="text-[10px] text-blue-500 font-normal animate-pulse">
+                      (fetching...)
+                    </span>
+                  )}
                 </span>
                 <input
                   type="text"
                   name="batchSection"
                   value={formData.batchSection}
                   onChange={handleInputChange}
-                  placeholder="e.g. Weekend Batch B-14"
+                  placeholder={loadingBatch ? "Fetching batch from CRM..." : "e.g. Andheri 12 pm - 02 pm"}
                   className="flex-1 bg-transparent border-0 px-2 py-1 text-slate-900 dark:text-white outline-none focus:bg-blue-50/50 dark:focus:bg-slate-800/50 rounded"
                 />
               </div>
