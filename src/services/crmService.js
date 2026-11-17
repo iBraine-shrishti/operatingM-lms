@@ -412,43 +412,85 @@ class CrmService {
 
         const isDiploma = (d.course || "").toLowerCase().includes("diploma");
         const courseDuration = isDiploma ? "6 Months" : "12 Months";
-        const admissionDateStr = d.submission_time
-          ? this.formatDate(d.submission_time)
+        const validityMonths = isDiploma ? 6 : 12;
+
+        const rawAdmission =
+          d.submission_time || d.admission_date || d.registration_date || null;
+        const admissionDateStr = rawAdmission
+          ? this.formatDate(rawAdmission)
           : "09 Mar 2026";
         const registrationDateStr = d.registration_date
           ? this.formatDate(d.registration_date)
           : admissionDateStr;
 
         const rawBatchName = d.batch_name || d.batch || "";
-        const hasBatch = Boolean(rawBatchName && rawBatchName.trim().length > 0 && rawBatchName !== "WD-M1");
-        const batchName = hasBatch ? rawBatchName.trim() : null;
+        const isOnlineBatch =
+          rawBatchName.toLowerCase().includes("online") ||
+          (d.branch || "").toLowerCase().includes("online");
+        const hasBatch = Boolean(
+          rawBatchName &&
+          rawBatchName.trim().length > 0 &&
+          rawBatchName !== "WD-M1" &&
+          !rawBatchName.toLowerCase().includes("not assigned")
+        );
+        const batchName = hasBatch
+          ? rawBatchName.trim()
+          : isOnlineBatch
+            ? "Online Batch"
+            : null;
 
-        let courseStartStr = hasBatch
-          ? (d.batch_start_date ? this.formatDate(d.batch_start_date) : admissionDateStr)
-          : "Not Assigned";
+        let courseStartStr = rawAdmission
+          ? this.formatDate(rawAdmission)
+          : admissionDateStr;
+        if (d.batch_start_date && !isOnlineBatch) {
+          courseStartStr = this.formatDate(d.batch_start_date);
+        }
+
         let courseEndStr = "Not Assigned";
-        let daysLeft = null;
+        let daysLeft = 0;
 
-        if (hasBatch) {
-          try {
-            const baseDate = d.batch_start_date || d.submission_time || d.registration_date;
-            if (baseDate) {
-              const startDt = new Date(baseDate);
-              if (!isNaN(startDt.getTime())) {
-                const endDt = new Date(startDt);
-                endDt.setMonth(endDt.getMonth() + (isDiploma ? 6 : 12));
-                courseEndStr = endDt.toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                });
-                const diffMs = endDt.getTime() - Date.now();
-                daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+        // Parse Admission Date to determine elapsed validity for ALL students (Online and Offline)
+        let admissionDt = null;
+        if (rawAdmission) {
+          admissionDt = new Date(rawAdmission);
+          if (isNaN(admissionDt.getTime())) {
+            const parts = String(rawAdmission).split(/[-/\s]/);
+            if (parts.length === 3) {
+              if (parts[0].length === 4) {
+                admissionDt = new Date(parts[0], parseInt(parts[1], 10) - 1, parts[2]);
+              } else if (parts[2].length === 4) {
+                admissionDt = new Date(parts[2], parseInt(parts[1], 10) - 1, parts[0]);
               }
             }
-          } catch (e) {
-            courseEndStr = isDiploma ? "09 Sep 2026" : "20 Apr 2027";
-            daysLeft = 180;
+          }
+        }
+
+        if (admissionDt && !isNaN(admissionDt.getTime())) {
+          const now = Date.now();
+          const elapsedDays = Math.floor((now - admissionDt.getTime()) / (1000 * 60 * 60 * 24));
+          const maxAllowedDays = isDiploma ? 180 : 365;
+
+          const endDt = new Date(admissionDt);
+          endDt.setMonth(endDt.getMonth() + validityMonths);
+          courseEndStr = endDt.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+
+          // 2ND CONDITION: IF ADMISSION DATE OVER 1 YEAR (or Diploma over 6 months) -> strictly 0 days left
+          if (elapsedDays >= maxAllowedDays || now >= endDt.getTime()) {
+            daysLeft = 0;
+          } else {
+            const diffMs = endDt.getTime() - now;
+            daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+          }
+        } else {
+          // If explicit daysLeft provided
+          if (typeof d.daysLeft === "number") {
+            daysLeft = Math.max(0, d.daysLeft);
+          } else {
+            daysLeft = 0;
           }
         }
 

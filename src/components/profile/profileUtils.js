@@ -105,6 +105,62 @@ export const mapStudentDataFromCrm = (crm, user) => {
   let courseEnd = "Not Assigned";
   let daysLeft = null;
 
+  // Extract raw admission date from any available field across CRM and user object
+  const rawAdmission =
+    source.submission_time ||
+    source.admission_date ||
+    source.admissionDate ||
+    source.registration_date ||
+    source.registrationDate ||
+    user?.submission_time ||
+    user?.admission_date ||
+    user?.admissionDate ||
+    user?.registration_date ||
+    null;
+
+  const validityMonths = isDiploma ? 6 : 12;
+  const maxAllowedDays = isDiploma ? 180 : 365;
+
+  let admissionDt = null;
+  if (rawAdmission) {
+    admissionDt = new Date(rawAdmission);
+    if (isNaN(admissionDt.getTime())) {
+      const parts = String(rawAdmission).split(/[-/\s]/);
+      if (parts.length === 3) {
+        if (parts[0].length === 4) {
+          admissionDt = new Date(parts[0], parseInt(parts[1], 10) - 1, parts[2]);
+        } else if (parts[2].length === 4) {
+          admissionDt = new Date(parts[2], parseInt(parts[1], 10) - 1, parts[0]);
+        }
+      }
+    }
+  }
+
+  const now = Date.now();
+  let isAdmissionOverOneYear = false;
+  let admissionComputedDaysLeft = null;
+  let admissionComputedCourseEnd = "Not Assigned";
+
+  if (admissionDt && !isNaN(admissionDt.getTime())) {
+    const elapsedDays = Math.floor((now - admissionDt.getTime()) / (1000 * 60 * 60 * 24));
+    const endDt = new Date(admissionDt);
+    endDt.setMonth(endDt.getMonth() + validityMonths);
+    admissionComputedCourseEnd = endDt.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+
+    // 2ND CONDITION: IF ADMISSION DATE OVER 1 YEAR (or Diploma 6 months) -> strictly 0 days left
+    if (elapsedDays >= maxAllowedDays || now >= endDt.getTime()) {
+      isAdmissionOverOneYear = true;
+      admissionComputedDaysLeft = 0;
+    } else {
+      const diffMs = endDt.getTime() - now;
+      admissionComputedDaysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+    }
+  }
+
   // Read explicit daysLeft from CRM API / source or user object (handles both number and string like "0")
   const rawDaysFromSource =
     source.daysLeft !== undefined && source.daysLeft !== null
@@ -115,53 +171,50 @@ export const mapStudentDataFromCrm = (crm, user) => {
           ? user.daysLeft
           : user?.days_left;
 
-  if (rawDaysFromSource !== undefined && rawDaysFromSource !== null) {
-    const p = parseInt(rawDaysFromSource, 10);
-    if (!isNaN(p)) {
-      daysLeft = Math.max(0, p);
-    }
-  }
-
-  if (hasAssignedBatch || source.courseEnd) {
-    courseStart =
-      source.courseStart && source.courseStart !== "Not Assigned"
-        ? source.courseStart
-        : source.submission_time
-          ? crmService.formatDate(source.submission_time)
-          : admissionDate;
-
-    if (source.courseEnd && source.courseEnd !== "Not Assigned") {
-      courseEnd = source.courseEnd;
-      try {
-        const endDt = new Date(courseEnd);
-        if (!isNaN(endDt.getTime())) {
-          const diffMs = endDt.getTime() - Date.now();
-          daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-        }
-      } catch (e) {}
-    } else if (hasAssignedBatch) {
-      try {
-        const startDt = new Date(courseStart);
-        if (!isNaN(startDt.getTime())) {
-          const endDt = new Date(startDt);
-          endDt.setMonth(endDt.getMonth() + (isDiploma ? 6 : 12));
-          courseEnd = endDt.toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          });
-          const diffMs = endDt.getTime() - Date.now();
-          daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-        }
-      } catch (e) {
-        courseEnd = isDiploma ? "09 Sep 2026" : "20 Apr 2027";
-      }
-    }
-    // Explicit daysLeft overrides calculation
+  // STRICT RULE: If admission date is over 1 year, force 0 days left universally for all batches (Online & Offline)
+  if (isAdmissionOverOneYear) {
+    daysLeft = 0;
+    courseEnd = admissionComputedCourseEnd;
+    courseStart = admissionDate;
+  } else {
     if (rawDaysFromSource !== undefined && rawDaysFromSource !== null) {
       const p = parseInt(rawDaysFromSource, 10);
       if (!isNaN(p)) {
         daysLeft = Math.max(0, p);
+      }
+    } else if (admissionComputedDaysLeft !== null) {
+      daysLeft = admissionComputedDaysLeft;
+      courseEnd = admissionComputedCourseEnd;
+      courseStart = admissionDate;
+    }
+
+    if (hasAssignedBatch || source.courseEnd) {
+      courseStart =
+        source.courseStart && source.courseStart !== "Not Assigned"
+          ? source.courseStart
+          : source.submission_time
+            ? crmService.formatDate(source.submission_time)
+            : admissionDate;
+
+      if (source.courseEnd && source.courseEnd !== "Not Assigned") {
+        courseEnd = source.courseEnd;
+        try {
+          const endDt = new Date(courseEnd);
+          if (!isNaN(endDt.getTime())) {
+            const diffMs = endDt.getTime() - Date.now();
+            daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+          }
+        } catch (e) {}
+      } else if (hasAssignedBatch && (!courseEnd || courseEnd === "Not Assigned")) {
+        courseEnd =
+          admissionComputedCourseEnd !== "Not Assigned"
+            ? admissionComputedCourseEnd
+            : isDiploma
+              ? "09 Sep 2026"
+              : "20 Apr 2027";
+        if (daysLeft === null) {
+          daysLeft = admissionComputedDaysLeft ?? 0;
+        }
       }
     }
   }
@@ -350,21 +403,58 @@ export const checkStudentCourseAccess = (crm, user, isAdmin = false) => {
       ? parseInt(rawDays, 10)
       : daysLeft;
 
-  // Strictly expired if daysLeft is 0 or less
+  // Universal Admission Date Check for ALL Batches (including Online)
+  const rawAdmission =
+    crm?.submission_time ||
+    crm?.admission_date ||
+    crm?.admissionDate ||
+    crm?.registration_date ||
+    crm?.registrationDate ||
+    user?.submission_time ||
+    user?.admission_date ||
+    user?.admissionDate;
+
+  let isAdmissionOverOneYear = false;
+  if (rawAdmission) {
+    let dt = new Date(rawAdmission);
+    if (isNaN(dt.getTime())) {
+      const parts = String(rawAdmission).split(/[-/\s]/);
+      if (parts.length === 3) {
+        if (parts[0].length === 4) {
+          dt = new Date(parts[0], parseInt(parts[1], 10) - 1, parts[2]);
+        } else if (parts[2].length === 4) {
+          dt = new Date(parts[2], parseInt(parts[1], 10) - 1, parts[0]);
+        }
+      }
+    }
+    if (dt && !isNaN(dt.getTime())) {
+      const elapsed = Math.floor((Date.now() - dt.getTime()) / (1000 * 60 * 60 * 24));
+      const isDip = (studentData.course || "").toLowerCase().includes("diploma");
+      const maxAllowed = isDip ? 180 : 365;
+      if (elapsed >= maxAllowed) {
+        isAdmissionOverOneYear = true;
+      }
+    }
+  }
+
+  // Strictly expired if:
+  // 1. Admission date is over 1 year (or diploma 6 months)
+  // 2. OR parsedDays <= 0
+  // 3. OR daysLeft <= 0
   const isExpired =
+    isAdmissionOverOneYear ||
     (parsedDays !== null && parsedDays !== undefined && parsedDays <= 0) ||
     (daysLeft !== null && daysLeft !== undefined && daysLeft <= 0);
 
-  // Active access requires valid batch and positive days remaining (> 0)
-  const hasAccess = !isExpired && (
-    (parsedDays !== null && parsedDays > 0) ||
-    (daysLeft !== null && daysLeft > 0)
-  );
+  const effectiveDaysLeft = isExpired ? 0 : (parsedDays ?? daysLeft ?? 0);
+
+  // Active access requires not expired AND positive days remaining (> 0)
+  const hasAccess = !isExpired && effectiveDaysLeft > 0;
 
   return {
     hasAccess,
     isExpired,
-    daysLeft: parsedDays ?? daysLeft ?? 0,
+    daysLeft: effectiveDaysLeft,
     hasAssignedBatch: studentData.hasAssignedBatch,
     courseEnd: courseEnd && courseEnd !== "Not Assigned" ? courseEnd : null,
     batch: studentData.batch,
