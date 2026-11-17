@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { checkStudentCourseAccess } from "../components/profile/profileUtils";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
 import { STUDENT_HEADERS_CONFIG } from "../config/studentHeadersConfig";
 import {
@@ -44,8 +45,13 @@ const getDayBadgeClass = (day = "") => {
 
 export const SchedulePage = () => {
   const navigate = useNavigate();
-  const { crmProfile, crmBatch, crmAttendance, isAdmin, hasEnrolledBatch } =
+  const { currentUser, crmProfile, crmBatch, crmAttendance, isAdmin, hasEnrolledBatch } =
     useAuth();
+
+  // Validate student course validity (0 days left check)
+  const accessStatus = checkStudentCourseAccess(crmProfile, currentUser, isAdmin);
+  const isExpired = accessStatus.isExpired;
+
   const [activeTab, setActiveTab] = useState("timetable"); // 1st default view: 7-Day Timetable
   const [scheduleData, setScheduleData] = useState({
     loading: true,
@@ -65,14 +71,18 @@ export const SchedulePage = () => {
     enrolledBatches[0] ||
     (crmBatch?.isEnrolled ? crmBatch?.batchName : null);
 
-  // Determine whether this student is actively assigned to any batch
-  const isEnrolledInBatch = Boolean(
+  // Determine whether this student is assigned to any batch
+  const hasAssignedBatch = Boolean(
     hasEnrolledBatch ||
     crmAttendance?.hasEnrolledBatch ||
     enrolledBatches.length > 0 ||
     crmProfile?.batchName ||
     (crmBatch?.isEnrolled && crmBatch?.batchName),
   );
+
+  // STRICT RULE: If validity has expired (0 days left), schedule is completely locked even if a batch was assigned.
+  // Schedule is visible ONLY during active validity period (daysLeft > 0) AND when assigned to a batch.
+  const canViewSchedule = !isExpired && hasAssignedBatch;
 
   // Helper to parse timing if embedded in batch name
   const extractTimingFromBatch = (str = "") => {
@@ -124,7 +134,7 @@ export const SchedulePage = () => {
     let isMounted = true;
 
     async function loadSchedule() {
-      if (!isEnrolledInBatch) {
+      if (!canViewSchedule) {
         if (isMounted) {
           setScheduleData({
             loading: false,
@@ -160,7 +170,7 @@ export const SchedulePage = () => {
       isMounted = false;
     };
   }, [
-    isEnrolledInBatch,
+    canViewSchedule,
     rawBranch,
     studentTiming,
     facultyLead,
@@ -181,7 +191,7 @@ export const SchedulePage = () => {
   );
 
   // Generate 7-day lecture rows starting from today
-  const timetableRows = isEnrolledInBatch
+  const timetableRows = canViewSchedule
     ? generate7DayTimetable(
         scheduleData.schedules,
         windowStartDate,
@@ -204,56 +214,114 @@ export const SchedulePage = () => {
         {...STUDENT_HEADERS_CONFIG.schedule}
         isAdmin={isAdmin}
         metrics={
-          isEnrolledInBatch
+          isExpired
             ? [
-                {
-                  value: `${scheduleData.schedules.length} Modules`,
-                  label: "Scheduled",
-                  dotColor: "bg-blue-600",
-                },
-                {
-                  value: "Live Hybrid",
-                  label: "In Session",
-                  dotColor: "bg-emerald-500",
-                },
-                {
-                  value: "Mon - Fri",
-                  label: studentTiming,
-                  dotColor: "bg-purple-500",
-                },
-                {
-                  value: isAndheri ? "Andheri" : "Borivali",
-                  label: "Center",
-                  dotColor: "bg-rose-500",
-                },
-              ]
-            : [
                 {
                   value: "0 Modules",
                   label: "Scheduled",
                   dotColor: "bg-slate-400",
                 },
                 {
-                  value: "Awaiting Allocation",
-                  label: "Status",
-                  dotColor: "bg-amber-500",
+                  value: "0d Left (Expired)",
+                  label: "Validity",
+                  dotColor: "bg-rose-500",
                 },
                 {
-                  value: "No Active Batch",
-                  label: "Timetable",
-                  dotColor: "bg-slate-400",
+                  value: "Access Concluded",
+                  label: "Status",
+                  dotColor: "bg-rose-500",
                 },
                 {
                   value: isAndheri ? "Andheri" : "Borivali",
                   label: "Center",
-                  dotColor: "bg-rose-500",
+                  dotColor: "bg-slate-400",
                 },
               ]
+            : canViewSchedule
+              ? [
+                  {
+                    value: `${scheduleData.schedules.length} Modules`,
+                    label: "Scheduled",
+                    dotColor: "bg-blue-600",
+                  },
+                  {
+                    value: "Live Hybrid",
+                    label: "In Session",
+                    dotColor: "bg-emerald-500",
+                  },
+                  {
+                    value: "Mon - Fri",
+                    label: studentTiming,
+                    dotColor: "bg-purple-500",
+                  },
+                  {
+                    value: isAndheri ? "Andheri" : "Borivali",
+                    label: "Center",
+                    dotColor: "bg-rose-500",
+                  },
+                ]
+              : [
+                  {
+                    value: "0 Modules",
+                    label: "Scheduled",
+                    dotColor: "bg-slate-400",
+                  },
+                  {
+                    value: "Awaiting Allocation",
+                    label: "Status",
+                    dotColor: "bg-amber-500",
+                  },
+                  {
+                    value: "No Active Batch",
+                    label: "Timetable",
+                    dotColor: "bg-slate-400",
+                  },
+                  {
+                    value: isAndheri ? "Andheri" : "Borivali",
+                    label: "Center",
+                    dotColor: "bg-rose-500",
+                  },
+                ]
         }
       />
 
-      {/* When student is NOT enrolled in any batch: Display Empty State */}
-      {!isEnrolledInBatch ? (
+      {/* 1. When validity is expired (0 days left): Display Dedicated Expired Lock Card */}
+      {isExpired ? (
+        <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-8 sm:p-12 shadow-2xs text-center space-y-5">
+          <div className="w-16 h-16 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-800/60 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto shadow-xs">
+            <Lock size={32} />
+          </div>
+
+          <div className="max-w-md mx-auto space-y-2">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 text-xs font-semibold border border-rose-200/90 dark:border-rose-800/60">
+              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+              <span>0 Days Remaining • Course Validity Expired</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
+              Schedule & Lectures Locked
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+              Your course access period has concluded (0 days remaining). In accordance with Operating Media LMS policy, live batch schedules, class timetables, and lecture sessions are locked. Please contact your center coordinator or counsellor to renew your course validity.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => navigate("/profile")}
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <span>View Profile Timeline</span>
+            </button>
+            <button
+              onClick={() => navigate("/course-feedback-form")}
+              className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-semibold transition-all cursor-pointer"
+            >
+              <span>Feedback & Help</span>
+            </button>
+          </div>
+        </div>
+      ) : !hasAssignedBatch ? (
+        /* 2. When student is in active course period but NOT enrolled in any batch: Display Awaiting Allocation State */
         <div className="bg-white dark:bg-[#0b1329] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-8 sm:p-12 shadow-2xs text-center space-y-5">
           <div className="w-16 h-16 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto shadow-xs">
             <Calendar size={32} />
