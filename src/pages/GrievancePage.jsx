@@ -72,49 +72,51 @@ export const GrievancePage = ({ initialTab = "grievance" }) => {
         ]}
       />
 
-      {/* 2. TAB SWITCHER STRIP (Full width) */}
-      <div className="bg-white dark:bg-[#0b1329] p-2 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => handleTabChange(tab.id)}
-                className={`flex items-center justify-between p-3.5 sm:p-4 rounded-xl border transition-all cursor-pointer ${
-                  isActive
-                    ? "bg-[#003873] text-white border-[#003873] shadow-sm"
-                    : "bg-slate-50/70 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-800 hover:border-[#003873]/40 hover:bg-slate-100 dark:hover:bg-slate-800"
-                }`}
-              >
-                <div className="flex items-center space-x-3">
-                  <Icon
-                    size={18}
-                    className={isActive ? "text-white" : "text-[#003873] dark:text-sky-400"}
-                  />
-                  <span className="text-xs sm:text-sm font-extrabold uppercase tracking-wide truncate">
-                    {tab.label}
-                  </span>
-                </div>
-                <span
-                  className={`text-[10px] font-black uppercase px-2.5 py-0.5 rounded-md ${
+      {/* 2. TAB SWITCHER STRIP (Compact, NOT stretched throughout) */}
+      <div className="flex justify-center">
+        <div className="bg-white dark:bg-[#0b1329] p-1.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-2xs w-full max-w-xl">
+          <div className="grid grid-cols-2 gap-2">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => handleTabChange(tab.id)}
+                  className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${
                     isActive
-                      ? "bg-white/20 text-white"
-                      : "bg-slate-200/70 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                      ? "bg-[#003873] text-white border-[#003873] shadow-sm"
+                      : "bg-slate-50/70 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 border-slate-200/80 dark:border-slate-800 hover:border-[#003873]/40 hover:bg-slate-100 dark:hover:bg-slate-800"
                   }`}
                 >
-                  {tab.badge}
-                </span>
-              </button>
-            );
-          })}
+                  <div className="flex items-center space-x-2.5 min-w-0">
+                    <Icon
+                      size={17}
+                      className={isActive ? "text-white" : "text-[#003873] dark:text-sky-400"}
+                    />
+                    <span className="text-xs sm:text-sm font-extrabold uppercase tracking-wide truncate">
+                      {tab.label}
+                    </span>
+                  </div>
+                  <span
+                    className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md shrink-0 ${
+                      isActive
+                        ? "bg-white/20 text-white"
+                        : "bg-slate-200/70 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+                    }`}
+                  >
+                    {tab.badge}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
       {/* 3. ACTIVE FORM CONTAINER - Margined only here after the switch, with half the previous margin */}
-      <div className="max-w-6xl mx-auto px-1 sm:px-3">
+      <div className="max-w-5xl mx-auto px-1 sm:px-3">
         {activeTab === "grievance" && <StudentGrievanceForm />}
         {activeTab === "trainer" && <TrainerFeedbackForm />}
         {/* Note: Counsellor / Course feedback form is temporarily hidden as requested */}
