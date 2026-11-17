@@ -183,18 +183,20 @@ export const TrainerFeedbackForm = () => {
             <Award size={18} className="text-[#003873] dark:text-sky-400" />
             <span>2. Trainer Evaluation</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+          <div className="space-y-6">
+            {/* Question 1: Quality & Knowledge */}
             <div>
               <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-3">
                 Quality & Knowledge of Trainer? *
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              <div className="flex flex-wrap gap-2.5">
                 {["Excellent", "Very Good", "Decent", "Average", "Below Average"].map((opt) => (
                   <button
                     type="button"
                     key={opt}
                     onClick={() => setFormData({ ...formData, knowledge_rating: opt })}
-                    className={`py-3 px-3 rounded-lg text-xs font-bold border transition-all cursor-pointer text-center ${
+                    className={`py-2.5 px-4 min-w-[110px] sm:min-w-[125px] rounded-lg text-xs font-bold border transition-all cursor-pointer text-center ${
                       formData.knowledge_rating === opt
                         ? "bg-[#003873] text-white border-[#003873] shadow-[0_4px_12px_rgba(0,56,115,0.25)]"
                         : "bg-[#f8fafc] dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-[#cbd5e1] dark:border-slate-700 hover:border-[#003873]"
@@ -206,17 +208,18 @@ export const TrainerFeedbackForm = () => {
               </div>
             </div>
 
+            {/* Question 2: Course Content Covered - Kept One Below the Other */}
             <div>
               <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-3">
                 How was the Course Content Covered? *
               </label>
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="flex flex-wrap gap-2.5">
                 {["In-Depth", "Above Average", "Average", "Below Average"].map((opt) => (
                   <button
                     type="button"
                     key={opt}
                     onClick={() => setFormData({ ...formData, coverage_rating: opt })}
-                    className={`py-3 px-3 rounded-lg text-xs font-bold border transition-all cursor-pointer text-center ${
+                    className={`py-2.5 px-4 min-w-[110px] sm:min-w-[125px] rounded-lg text-xs font-bold border transition-all cursor-pointer text-center ${
                       formData.coverage_rating === opt
                         ? "bg-[#003873] text-white border-[#003873] shadow-[0_4px_12px_rgba(0,56,115,0.25)]"
                         : "bg-[#f8fafc] dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-[#cbd5e1] dark:border-slate-700 hover:border-[#003873]"
@@ -242,13 +245,13 @@ export const TrainerFeedbackForm = () => {
               <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-3">
                 Was the Content & Language Understandable? *
               </label>
-              <div className="grid grid-cols-3 gap-3 max-w-md">
+              <div className="flex flex-wrap gap-2.5">
                 {["Yes", "No", "Partially"].map((opt) => (
                   <button
                     type="button"
                     key={opt}
                     onClick={() => setFormData({ ...formData, communication: opt })}
-                    className={`h-[50px] flex items-center justify-center rounded-lg text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
+                    className={`h-[42px] px-6 min-w-[90px] flex items-center justify-center rounded-lg text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
                       formData.communication === opt
                         ? "bg-[#003873] text-white border-[#003873] shadow-[0_4px_12px_rgba(0,56,115,0.25)]"
                         : "bg-[#f8fafc] dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-[#cbd5e1] dark:border-slate-700 hover:border-[#003873]"
@@ -264,7 +267,7 @@ export const TrainerFeedbackForm = () => {
               <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-3">
                 Rate the Trainer (1 to 10) *
               </label>
-              <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 sm:gap-2.5">
+              <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 sm:gap-2.5 max-w-xl">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
                   <button
                     type="button"

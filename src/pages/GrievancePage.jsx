@@ -1,26 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { StudentPageHeader } from "../components/student/StudentPageHeader";
-import { CourseFeedbackForm } from "../components/grievance/CourseFeedbackForm";
+import { StudentGrievanceForm } from "../components/grievance/StudentGrievanceForm";
 import { TrainerFeedbackForm } from "../components/grievance/TrainerFeedbackForm";
 import {
-  Sparkles,
+  FileText,
   Award,
 } from "lucide-react";
 
-export const GrievancePage = ({ initialTab = "trainer" }) => {
+export const GrievancePage = ({ initialTab = "grievance" }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromQuery = searchParams.get("tab");
   
   const [activeTab, setActiveTab] = useState(() => {
-    if (tabFromQuery === "course" || tabFromQuery === "trainer") {
+    if (tabFromQuery === "trainer" || tabFromQuery === "grievance") {
       return tabFromQuery;
     }
-    return initialTab === "course" ? "course" : "trainer";
+    return initialTab === "trainer" ? "trainer" : "grievance";
   });
 
   useEffect(() => {
-    if (tabFromQuery === "course" || tabFromQuery === "trainer") {
+    if (tabFromQuery === "trainer" || tabFromQuery === "grievance") {
       setActiveTab(tabFromQuery);
     }
   }, [tabFromQuery]);
@@ -32,16 +32,16 @@ export const GrievancePage = ({ initialTab = "trainer" }) => {
 
   const tabs = [
     {
+      id: "grievance",
+      label: "Grievance Form",
+      icon: FileText,
+      badge: "Official",
+    },
+    {
       id: "trainer",
       label: "Trainer Feedback",
       icon: Award,
       badge: "Faculty",
-    },
-    {
-      id: "course",
-      label: "Course Feedback",
-      icon: Sparkles,
-      badge: "Curriculum",
     },
   ];
 
@@ -52,7 +52,7 @@ export const GrievancePage = ({ initialTab = "trainer" }) => {
         category="Student Quality & Academic Resolution"
         badgeText="Official CRM Integration"
         title="Student Grievance & Feedback Portal"
-        description="Share official course evaluations and trainer performance reviews directly with Operating Media administration."
+        description="Submit official student grievances or share direct trainer evaluations with Operating Media academic administration."
         metrics={[
           {
             value: "Live CRM Sync",
@@ -115,8 +115,9 @@ export const GrievancePage = ({ initialTab = "trainer" }) => {
 
       {/* 3. ACTIVE FORM CONTAINER */}
       <div>
+        {activeTab === "grievance" && <StudentGrievanceForm />}
         {activeTab === "trainer" && <TrainerFeedbackForm />}
-        {activeTab === "course" && <CourseFeedbackForm />}
+        {/* Note: Counsellor / Course feedback form is temporarily hidden as requested */}
       </div>
     </div>
   );

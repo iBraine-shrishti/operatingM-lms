@@ -315,7 +315,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           color: "text-cyan-500 dark:text-cyan-400",
         },
         {
-          name: "Grievance",
+          name: "Grievance & Feedback",
           path: "/grievance",
           icon: HelpCircle,
           color: "text-yellow-600 dark:text-yellow-400",
