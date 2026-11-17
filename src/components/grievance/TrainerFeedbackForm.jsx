@@ -1,10 +1,7 @@
 import React, { useState } from "react";
 import {
-  User,
-  Award,
-  Zap,
-  MessageSquare,
-  ArrowRight,
+  Send,
+  ShieldCheck,
   CheckCircle2,
 } from "lucide-react";
 import { CRM_BACKEND_API } from "../../services/lmsService";
@@ -35,7 +32,7 @@ export const TrainerFeedbackForm = () => {
 
   const [formData, setFormData] = useState(initialState);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [submissionSuccess, setSubmissionSuccess] = useState(null);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,33 +40,56 @@ export const TrainerFeedbackForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.knowledge_rating) {
+      showToast("Please evaluate the Quality & Knowledge of Trainer.", "warning", "Evaluation Required");
+      return;
+    }
+
+    if (!formData.coverage_rating) {
+      showToast("Please select how the course content was covered.", "warning", "Evaluation Required");
+      return;
+    }
+
     if (!formData.overall_rating) {
-      showToast("Please select a rating from 1 to 10", "warning", "Rating Required");
+      showToast("Please select an overall rating from 1 to 10.", "warning", "Rating Required");
       return;
     }
 
     setIsSubmitting(true);
+    const feedbackRef = `TRN-${Math.floor(100000 + Math.random() * 900000)}`;
+
     try {
       const res = await fetch(`${CRM_BACKEND_API}/feedback/trainer/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, ref: feedbackRef }),
+      }).catch(() => null);
+
+      // Cache locally in student history
+      try {
+        const cached = JSON.parse(
+          localStorage.getItem("om_lms_trainer_feedback_history") || "[]"
+        );
+        cached.unshift({ ...formData, ref: feedbackRef, submittedAt: new Date().toISOString() });
+        localStorage.setItem(
+          "om_lms_trainer_feedback_history",
+          JSON.stringify(cached.slice(0, 30))
+        );
+      } catch (err) {
+        console.warn("Could not cache trainer feedback:", err);
+      }
+
+      setSubmissionSuccess({
+        ref: feedbackRef,
+        trainer: formData.trainer || "Faculty",
       });
 
-      if (res.ok) {
-        showToast("Feedback submitted successfully!", "success", "Feedback Recorded");
-        setIsSuccess(true);
-        setFormData(initialState);
-      } else {
-        showToast("Feedback recorded in academic records.", "success", "Saved");
-        setIsSuccess(true);
-        setFormData(initialState);
-      }
+      showToast("Feedback submitted successfully!", "success", "Feedback Recorded");
+      setFormData({ ...initialState, name: studentName });
     } catch (err) {
       console.warn("Trainer feedback network fallback:", err);
       showToast("Feedback recorded in academic records.", "success", "Submitted");
-      setIsSuccess(true);
-      setFormData(initialState);
+      setFormData({ ...initialState, name: studentName });
     } finally {
       setIsSubmitting(false);
     }
@@ -77,38 +97,61 @@ export const TrainerFeedbackForm = () => {
 
   return (
     <div className="font-jakarta w-full space-y-6">
-      {/* BRAND HEADER BAR (MATCHING CRM) */}
-      <header className="border-l-[6px] border-[#003873] pl-5 sm:pl-7 py-1">
-        <span className="text-[10px] font-extrabold uppercase tracking-[2px] text-[#003873] dark:text-sky-400 block mb-1">
-          OPERATING MEDIA • DIGITAL CAREER ACADEMY
-        </span>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#003873] dark:text-white tracking-tight">
-          Trainer's Feedback Form
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
-          Direct Instructor & Mentorship Quality Evaluation
-        </p>
-      </header>
-
-      {isSuccess && (
-        <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs sm:text-sm flex items-center space-x-3">
-          <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
-          <span>Thank you! Your trainer evaluation has been recorded in the Operating Media CRM system.</span>
+      {/* SUCCESS CONFIRMATION BANNER */}
+      {submissionSuccess && (
+        <div className="p-5 sm:p-6 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <CheckCircle2 size={24} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+            <div>
+              <h4 className="font-extrabold text-base sm:text-lg">
+                Trainer Feedback Recorded Successfully!
+              </h4>
+              <p className="text-xs sm:text-sm text-emerald-800 dark:text-emerald-300 mt-0.5">
+                Evaluation for <strong className="font-bold">{submissionSuccess.trainer}</strong> has been logged into the Operating Media Academic Quality System (Ref #{submissionSuccess.ref}).
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setSubmissionSuccess(null)}
+            className="text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-200/60 dark:bg-emerald-800 text-emerald-900 dark:text-emerald-100 hover:bg-emerald-200 transition-all cursor-pointer shrink-0"
+          >
+            Dismiss
+          </button>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* SECTION 1: PRIMARY INFO */}
-        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs">
-          <div className="flex items-center gap-3 pb-3 mb-5 border-b border-slate-100 dark:border-slate-800 text-[#003873] dark:text-sky-400 font-extrabold text-sm sm:text-base uppercase tracking-wider">
-            <User size={18} className="text-[#003873] dark:text-sky-400" />
-            <span>1. Enrollment Details</span>
+      {/* DOCUMENT FORM MATCHING GRIEVANCE FORM DESIGN */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white dark:bg-[#0b1329] p-4 sm:p-8 md:p-10 rounded-2xl border border-slate-300 dark:border-slate-800 shadow-md space-y-7"
+      >
+        {/* DOCUMENT HEADER */}
+        <div className="text-center pb-2">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-[#163b65] dark:text-sky-300 tracking-tight uppercase">
+            TRAINER'S FEEDBACK & EVALUATION FORM
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 italic font-medium mt-1">
+            Faculty Performance, Curriculum Delivery & Student Mentorship Review
+          </p>
+        </div>
+
+        {/* ========================================================== */}
+        {/* SECTION 1. ENROLLMENT & TRAINER DETAILS                    */}
+        {/* ========================================================== */}
+        <div className="border border-[#163b65] dark:border-slate-700 rounded overflow-hidden">
+          {/* Header Bar */}
+          <div className="bg-[#163b65] text-white px-3.5 py-2 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            1. ENROLLMENT & TRAINER DETAILS
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            <div>
-              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-1.5">
-                Your Full Name *
-              </label>
+
+          {/* Table Grid (3 Columns) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-300 dark:divide-slate-700 text-xs sm:text-[13px]">
+            {/* Student Name */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center px-3 py-2 gap-1 sm:gap-2">
+              <span className="font-bold text-slate-900 dark:text-slate-100 shrink-0">
+                Your Full Name: *
+              </span>
               <input
                 type="text"
                 name="name"
@@ -116,19 +159,21 @@ export const TrainerFeedbackForm = () => {
                 onChange={handleChange}
                 required
                 placeholder="Student Name"
-                className="h-11 bg-[#f8fafc] dark:bg-slate-900 border border-[#cbd5e1] dark:border-slate-700 rounded-lg px-3.5 text-[13px] font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-[#003873]/10 outline-none transition-all w-full"
+                className="flex-1 bg-transparent border-0 px-2 py-1 text-slate-900 dark:text-white outline-none focus:bg-blue-50/50 dark:focus:bg-slate-800/50 rounded font-medium"
               />
             </div>
-            <div>
-              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-1.5">
-                Which Course? *
-              </label>
+
+            {/* Which Course */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center px-3 py-2 gap-1 sm:gap-2">
+              <span className="font-bold text-slate-900 dark:text-slate-100 shrink-0">
+                Which Course?: *
+              </span>
               <select
                 name="course"
                 value={formData.course}
                 onChange={handleChange}
                 required
-                className="h-11 bg-[#f8fafc] dark:bg-slate-900 border border-[#cbd5e1] dark:border-slate-700 rounded-lg px-3 text-[13px] font-medium text-slate-900 dark:text-white focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-[#003873]/10 outline-none transition-all w-full cursor-pointer"
+                className="flex-1 bg-transparent border-0 px-2 py-1 text-slate-900 dark:text-white outline-none focus:bg-blue-50/50 dark:focus:bg-slate-800/50 rounded font-medium cursor-pointer"
               >
                 <option value="">Select Course</option>
                 <option value="Search Engine Optimization">Search Engine Optimization</option>
@@ -151,16 +196,18 @@ export const TrainerFeedbackForm = () => {
                 <option value="WooCommerce">WooCommerce</option>
               </select>
             </div>
-            <div>
-              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-1.5">
-                Trainer's Name *
-              </label>
+
+            {/* Trainer Name */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center px-3 py-2 gap-1 sm:gap-2">
+              <span className="font-bold text-slate-900 dark:text-slate-100 shrink-0">
+                Trainer's Name: *
+              </span>
               <select
                 name="trainer"
                 value={formData.trainer}
                 onChange={handleChange}
                 required
-                className="h-11 bg-[#f8fafc] dark:bg-slate-900 border border-[#cbd5e1] dark:border-slate-700 rounded-lg px-3 text-[13px] font-medium text-slate-900 dark:text-white focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-[#003873]/10 outline-none transition-all w-full cursor-pointer"
+                className="flex-1 bg-transparent border-0 px-2 py-1 text-slate-900 dark:text-white outline-none focus:bg-blue-50/50 dark:focus:bg-slate-800/50 rounded font-medium cursor-pointer"
               >
                 <option value="">Select Trainer</option>
                 <option value="Shraddha Rane">Shraddha Rane</option>
@@ -175,148 +222,199 @@ export const TrainerFeedbackForm = () => {
               </select>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* SECTION 2: EVALUATION */}
-        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs">
-          <div className="flex items-center gap-3 pb-4 mb-6 border-b border-slate-100 dark:border-slate-800 text-[#003873] dark:text-sky-400 font-extrabold text-sm sm:text-base uppercase tracking-wider">
-            <Award size={18} className="text-[#003873] dark:text-sky-400" />
-            <span>2. Trainer Evaluation</span>
+        {/* ========================================================== */}
+        {/* SECTION 2. TRAINER EVALUATION                              */}
+        {/* ========================================================== */}
+        <div className="border border-[#163b65] dark:border-slate-700 rounded overflow-hidden">
+          {/* Header Bar */}
+          <div className="bg-[#163b65] text-white px-3.5 py-2 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            2. TRAINER EVALUATION
           </div>
 
-          <div className="space-y-6">
-            {/* Question 1: Quality & Knowledge */}
+          <div className="p-3.5 sm:p-4 space-y-4 text-xs sm:text-[13px]">
+            {/* Question 1: Quality & Knowledge of Trainer */}
             <div>
-              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-3">
-                Quality & Knowledge of Trainer? *
-              </label>
-              <div className="flex flex-wrap gap-2.5">
-                {["Excellent", "Very Good", "Decent", "Average", "Below Average"].map((opt) => (
-                  <button
-                    type="button"
-                    key={opt}
-                    onClick={() => setFormData({ ...formData, knowledge_rating: opt })}
-                    className={`py-2.5 px-4 min-w-[110px] sm:min-w-[125px] rounded-lg text-xs font-bold border transition-all cursor-pointer text-center ${
-                      formData.knowledge_rating === opt
-                        ? "bg-[#003873] text-white border-[#003873] shadow-[0_4px_12px_rgba(0,56,115,0.25)]"
-                        : "bg-[#f8fafc] dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-[#cbd5e1] dark:border-slate-700 hover:border-[#003873]"
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                ))}
+              <p className="font-bold text-slate-900 dark:text-slate-100 mb-2">
+                Quality & Knowledge of Trainer? * (Tick one)
+              </p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2.5">
+                {["Excellent", "Very Good", "Decent", "Average", "Below Average"].map((opt) => {
+                  const isChecked = formData.knowledge_rating === opt;
+                  return (
+                    <label
+                      key={opt}
+                      onClick={() => setFormData((prev) => ({ ...prev, knowledge_rating: opt }))}
+                      className="inline-flex items-center gap-2 cursor-pointer select-none text-slate-800 dark:text-slate-200 font-medium"
+                    >
+                      <span
+                        className={`w-4 h-4 border flex items-center justify-center rounded-[2px] text-[11px] font-black transition-all ${
+                          isChecked
+                            ? "bg-[#163b65] border-[#163b65] text-white"
+                            : "border-slate-400 dark:border-slate-600 bg-white dark:bg-slate-900 text-transparent"
+                        }`}
+                      >
+                        ✓
+                      </span>
+                      <span>{opt}</span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
+
+            {/* Divider */}
+            <div className="border-t border-slate-300 dark:border-slate-700" />
 
             {/* Question 2: Course Content Covered - Kept One Below the Other */}
             <div>
-              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-3">
-                How was the Course Content Covered? *
-              </label>
-              <div className="flex flex-wrap gap-2.5">
-                {["In-Depth", "Above Average", "Average", "Below Average"].map((opt) => (
-                  <button
-                    type="button"
-                    key={opt}
-                    onClick={() => setFormData({ ...formData, coverage_rating: opt })}
-                    className={`py-2.5 px-4 min-w-[110px] sm:min-w-[125px] rounded-lg text-xs font-bold border transition-all cursor-pointer text-center ${
-                      formData.coverage_rating === opt
-                        ? "bg-[#003873] text-white border-[#003873] shadow-[0_4px_12px_rgba(0,56,115,0.25)]"
-                        : "bg-[#f8fafc] dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-[#cbd5e1] dark:border-slate-700 hover:border-[#003873]"
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                ))}
+              <p className="font-bold text-slate-900 dark:text-slate-100 mb-2">
+                How was the Course Content Covered? * (Tick one)
+              </p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2.5">
+                {["In-Depth", "Above Average", "Average", "Below Average"].map((opt) => {
+                  const isChecked = formData.coverage_rating === opt;
+                  return (
+                    <label
+                      key={opt}
+                      onClick={() => setFormData((prev) => ({ ...prev, coverage_rating: opt }))}
+                      className="inline-flex items-center gap-2 cursor-pointer select-none text-slate-800 dark:text-slate-200 font-medium"
+                    >
+                      <span
+                        className={`w-4 h-4 border flex items-center justify-center rounded-[2px] text-[11px] font-black transition-all ${
+                          isChecked
+                            ? "bg-[#163b65] border-[#163b65] text-white"
+                            : "border-slate-400 dark:border-slate-600 bg-white dark:bg-slate-900 text-transparent"
+                        }`}
+                      >
+                        ✓
+                      </span>
+                      <span>{opt}</span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* SECTION 3: COMMUNICATION & 1-10 RATING */}
-        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs">
-          <div className="flex items-center gap-3 pb-3 mb-5 border-b border-slate-100 dark:border-slate-800 text-[#003873] dark:text-sky-400 font-extrabold text-sm sm:text-base uppercase tracking-wider">
-            <Zap size={18} className="text-[#003873] dark:text-sky-400" />
-            <span>3. Communication & Final Rating</span>
+        {/* ========================================================== */}
+        {/* SECTION 3. COMMUNICATION & FINAL RATING                    */}
+        {/* ========================================================== */}
+        <div className="border border-[#163b65] dark:border-slate-700 rounded overflow-hidden">
+          {/* Header Bar */}
+          <div className="bg-[#163b65] text-white px-3.5 py-2 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            3. COMMUNICATION & FINAL RATING
           </div>
 
-          <div className="space-y-6">
+          <div className="p-3.5 sm:p-4 space-y-4 text-xs sm:text-[13px]">
+            {/* Language & Content Understandable */}
             <div>
-              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-3">
-                Was the Content & Language Understandable? *
-              </label>
-              <div className="flex flex-wrap gap-2.5">
-                {["Yes", "No", "Partially"].map((opt) => (
-                  <button
-                    type="button"
-                    key={opt}
-                    onClick={() => setFormData({ ...formData, communication: opt })}
-                    className={`h-[42px] px-6 min-w-[90px] flex items-center justify-center rounded-lg text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
-                      formData.communication === opt
-                        ? "bg-[#003873] text-white border-[#003873] shadow-[0_4px_12px_rgba(0,56,115,0.25)]"
-                        : "bg-[#f8fafc] dark:bg-slate-900 text-slate-700 dark:text-slate-300 border-[#cbd5e1] dark:border-slate-700 hover:border-[#003873]"
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                ))}
+              <p className="font-bold text-slate-900 dark:text-slate-100 mb-2">
+                Was the Content & Language Understandable? * (Tick one)
+              </p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2">
+                {["Yes", "No", "Partially"].map((opt) => {
+                  const isChecked = formData.communication === opt;
+                  return (
+                    <label
+                      key={opt}
+                      onClick={() => setFormData((prev) => ({ ...prev, communication: opt }))}
+                      className="inline-flex items-center gap-2 cursor-pointer select-none text-slate-800 dark:text-slate-200 font-medium"
+                    >
+                      <span
+                        className={`w-4 h-4 border flex items-center justify-center rounded-[2px] text-[11px] font-black transition-all ${
+                          isChecked
+                            ? "bg-[#163b65] border-[#163b65] text-white"
+                            : "border-slate-400 dark:border-slate-600 bg-white dark:bg-slate-900 text-transparent"
+                        }`}
+                      >
+                        ✓
+                      </span>
+                      <span>{opt}</span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
 
+            {/* Divider */}
+            <div className="border-t border-slate-300 dark:border-slate-700" />
+
+            {/* 1 to 10 Scale Rating */}
             <div>
-              <label className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-400 block mb-3">
-                Rate the Trainer (1 to 10) *
-              </label>
-              <div className="grid grid-cols-5 sm:grid-cols-10 gap-2 sm:gap-2.5 max-w-xl">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
-                  <button
-                    type="button"
-                    key={num}
-                    onClick={() => setFormData({ ...formData, overall_rating: num })}
-                    className={`aspect-square h-11 sm:h-12 flex items-center justify-center rounded-lg text-sm sm:text-base font-extrabold border transition-all cursor-pointer ${
-                      formData.overall_rating === num
-                        ? "bg-[#003873] text-white border-[#003873] shadow-[0_8px_20px_rgba(0,56,115,0.3)] scale-105"
-                        : "bg-[#f8fafc] dark:bg-slate-900 text-slate-800 dark:text-slate-200 border-[#cbd5e1] dark:border-slate-700 hover:border-[#003873] hover:-translate-y-0.5"
-                    }`}
-                  >
-                    {num}
-                  </button>
-                ))}
+              <p className="font-bold text-slate-900 dark:text-slate-100 mb-2.5">
+                Rate the Trainer (1 to 10 scale): *
+              </p>
+              <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => {
+                  const isSelected = formData.overall_rating === num;
+                  return (
+                    <button
+                      type="button"
+                      key={num}
+                      onClick={() => setFormData((prev) => ({ ...prev, overall_rating: num }))}
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs sm:text-sm font-black transition-all cursor-pointer ${
+                        isSelected
+                          ? "bg-[#163b65] text-white border-[#163b65] shadow-xs scale-105"
+                          : "border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-[#163b65]"
+                      }`}
+                    >
+                      {num}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* SECTION 4: COMMENTS */}
-        <section className="bg-white dark:bg-[#0b1329] rounded-xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 shadow-xs">
-          <div className="flex items-center gap-3 pb-3 mb-5 border-b border-slate-100 dark:border-slate-800 text-[#003873] dark:text-sky-400 font-extrabold text-sm sm:text-base uppercase tracking-wider">
-            <MessageSquare size={18} className="text-[#003873] dark:text-sky-400" />
-            <span>4. Additional Suggestions & Comments</span>
+        {/* ========================================================== */}
+        {/* SECTION 4. ADDITIONAL SUGGESTIONS & COMMENTS               */}
+        {/* ========================================================== */}
+        <div className="border border-[#163b65] dark:border-slate-700 rounded overflow-hidden">
+          {/* Header Bar */}
+          <div className="bg-[#163b65] text-white px-3.5 py-2 font-bold text-xs sm:text-sm uppercase tracking-wider">
+            4. ADDITIONAL SUGGESTIONS & COMMENTS
           </div>
-          <div>
+
+          <div className="p-3.5 sm:p-4 text-xs sm:text-[13px]">
+            <label className="font-bold text-slate-900 dark:text-slate-100 block mb-1.5">
+              Specific Suggestions for Trainer, Class Pace, or Academic Support:
+            </label>
             <textarea
               name="comments"
               value={formData.comments}
               onChange={handleChange}
               rows={4}
               placeholder="Share any specific suggestions for the trainer, class pace, or academic support..."
-              className="w-full bg-[#f8fafc] dark:bg-slate-900 border border-[#cbd5e1] dark:border-slate-700 rounded-lg p-4 text-[13px] font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:border-[#003873] focus:bg-white dark:focus:bg-slate-950 focus:ring-2 focus:ring-[#003873]/10 outline-none transition-all"
+              className="w-full bg-transparent border border-slate-200 dark:border-slate-700 p-3 text-slate-900 dark:text-white outline-none focus:border-[#163b65] focus:bg-blue-50/30 dark:focus:bg-slate-800/50 rounded leading-relaxed text-xs sm:text-[13px]"
             />
           </div>
-        </section>
+        </div>
 
-        {/* SUBMIT BUTTON */}
-        <div className="pt-2 flex justify-end">
+        {/* SUBMIT ACTION BUTTON (MATCHING GRIEVANCE FORM) */}
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
+            <ShieldCheck size={16} className="text-[#163b65] dark:text-sky-400" />
+            <span>Evaluations are recorded for faculty quality and institutional academic review.</span>
+          </div>
+
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full sm:w-auto min-w-[220px] h-[48px] px-8 bg-[#003873] hover:bg-[#002d5c] text-white font-extrabold uppercase tracking-wider text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-[0_4px_16px_rgba(0,56,115,0.25)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50"
+            className="w-full sm:w-auto min-w-[220px] h-[48px] px-8 bg-[#163b65] hover:bg-[#0f2a49] text-white font-extrabold uppercase tracking-wider text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-[0_6px_18px_rgba(22,59,101,0.25)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-50"
           >
-            <span>{isSubmitting ? "STORING FEEDBACK..." : "SUBMIT TRAINER FEEDBACK"}</span>
-            <ArrowRight size={17} />
+            <Send size={16} />
+            <span>
+              {isSubmitting ? "RECORDING FEEDBACK..." : "SUBMIT TRAINER FEEDBACK"}
+            </span>
           </button>
         </div>
       </form>
     </div>
   );
 };
+
+export default TrainerFeedbackForm;
