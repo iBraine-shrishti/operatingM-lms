@@ -2076,15 +2076,24 @@ export const lmsService = {
       if (!studentId) return;
       const cleanId = String(studentId).replace("std-", "").replace("OMC-", "").replace(/^0+/, "");
       const sessionToken = localStorage.getItem("om_lms_session_token") || "";
+      const deviceId = localStorage.getItem("om_lms_device_id") || "";
+      const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+      const deviceType = isMobile ? "APP" : "PC";
+
       const res = await fetch(`${CRM_BACKEND_API}/lms/student-activity/heartbeat/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "X-Session-Token": sessionToken,
+          "X-Device-Id": deviceId,
+          "X-Device-Type": deviceType,
         },
         body: JSON.stringify({
           student_id: cleanId,
           session_token: sessionToken,
+          device_id: deviceId,
+          device_type: deviceType,
         }),
       });
 

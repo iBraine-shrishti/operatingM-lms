@@ -332,6 +332,8 @@ export const AuthProvider = ({ children }) => {
     }, [loadCrmDataForStudent]);
 
     // Live heartbeat: keeps student logged-in session active in CRM only when actively authenticated
+    const [revocationNotice, setRevocationNotice] = useState(null);
+
     useEffect(() => {
         if (!isAuthenticated || role !== 'STUDENT') {
             return;
@@ -344,21 +346,45 @@ export const AuthProvider = ({ children }) => {
         // Send immediate heartbeat on login / mount
         lmsService.pingStudentActivity(studentId);
 
-        // Ping every 60 seconds while authenticated and active
+        // Ping every 5 seconds for near-instant (Netflix-grade) concurrent session revocation
         const interval = setInterval(() => {
             lmsService.pingStudentActivity(studentId);
-        }, 60000);
+        }, 5000);
 
-        return () => clearInterval(interval);
+        // Immediate ping whenever student switches tabs or focuses the window
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === 'visible') {
+                lmsService.pingStudentActivity(studentId);
+            }
+        };
+        const handleFocus = () => {
+            lmsService.pingStudentActivity(studentId);
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        window.addEventListener('focus', handleFocus);
+
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('focus', handleFocus);
+        };
     }, [isAuthenticated, role, crmProfile?.id]);
 
     // Listen for session revocation (if account is logged in on another device of the same slot)
     useEffect(() => {
         const handleSessionRevoked = (e) => {
-            const msg = e.detail?.message || "Your session ended because your account was logged into on another device.";
-            alert(msg);
-            logout();
-            window.location.href = "/login";
+            const msg = e.detail?.message || "Your session was terminated because your account was logged into on another device.";
+            setRevocationNotice(msg);
+            setIsAuthenticated(false);
+            try {
+                localStorage.removeItem(AUTH_KEY);
+                localStorage.removeItem('om_lms_crm_cached_profile');
+                localStorage.removeItem('om_lms_student_avatar');
+                localStorage.removeItem('crm_selected_student_id');
+                localStorage.removeItem('om_lms_session_token');
+            } catch (err) {
+                console.error("Storage clear error on revocation:", err);
+            }
         };
 
         window.addEventListener("om_lms_session_revoked", handleSessionRevoked);
@@ -491,6 +517,76 @@ export const AuthProvider = ({ children }) => {
             refreshCrmData
         }}>
             {children}
+            {revocationNotice && (
+                <div style={{
+                    position: 'fixed',
+                    inset: 0,
+                    zIndex: 999999,
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                    backdropFilter: 'blur(8px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '16px',
+                    fontFamily: 'system-ui, -apple-system, sans-serif'
+                }}>
+                    <div style={{
+                        maxWidth: '440px',
+                        width: '100%',
+                        backgroundColor: '#ffffff',
+                        borderRadius: '24px',
+                        padding: '28px',
+                        textAlign: 'center',
+                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                        border: '2px solid rgba(239, 68, 68, 0.4)'
+                    }}>
+                        <div style={{
+                            width: '64px',
+                            height: '64px',
+                            borderRadius: '20px',
+                            backgroundColor: '#fee2e2',
+                            color: '#dc2626',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            margin: '0 auto 16px'
+                        }}>
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+                                <line x1="12" y1="8" x2="12" y2="12" />
+                                <line x1="12" y1="16" x2="12.01" y2="16" />
+                            </svg>
+                        </div>
+                        <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#0f172a', margin: '0 0 8px' }}>
+                            Session Terminated
+                        </h3>
+                        <p style={{ fontSize: '13px', color: '#475569', lineHeight: '1.6', margin: '0 0 20px' }}>
+                            {revocationNotice}
+                        </p>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setRevocationNotice(null);
+                                window.location.href = "/login";
+                            }}
+                            style={{
+                                width: '100%',
+                                backgroundColor: '#2563eb',
+                                color: '#ffffff',
+                                fontWeight: 700,
+                                fontSize: '14px',
+                                padding: '12px 20px',
+                                borderRadius: '12px',
+                                border: 'none',
+                                cursor: 'pointer',
+                                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)'
+                            }}
+                        >
+                            Log In on this Device
+                        </button>
+                    </div>
+                </div>
+            )}
         </AuthContext.Provider>
     );
 };

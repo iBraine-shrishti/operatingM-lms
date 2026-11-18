@@ -4,10 +4,20 @@ import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
 import { GlobalSearchModal } from "../common/GlobalSearchModal";
 import { useAuth } from "../../context/AuthContext";
+import { lmsService } from "../../services/lmsService";
 
 export const SharedLayout = () => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, crmProfile } = useAuth();
   const location = useLocation();
+
+  // On every route change / click, immediately verify that this device is still the active session
+  React.useEffect(() => {
+    const studentId = crmProfile?.id;
+    if (studentId) {
+      lmsService.pingStudentActivity(studentId);
+    }
+  }, [location.pathname, crmProfile?.id]);
+
   // Default to collapsed (<>) on smaller / tablet screens (< 1024px)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     if (typeof window !== "undefined") {
