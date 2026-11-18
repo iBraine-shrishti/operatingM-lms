@@ -85,54 +85,17 @@ export const DEFAULT_CRM_ATTENDANCE = {
 
 // Default Batch & Schedule Fallback
 export const DEFAULT_CRM_BATCH = {
-  batchName: "Masters in Digital Marketing - Weekday Morning",
-  batchCode: "WD-M1",
-  timing: "10:00 AM - 12:00 PM",
-  frequency: "Monday to Friday",
-  branch: "Andheri Center",
-  classroom: "Room 302 & Zoom Live Link",
-  faculty: "Nilkamal Mukharjee (Lead Faculty - Andheri)",
-  status: "In Progress",
-  currentTopic: "Google Ads (PPC) Strategy & Campaign Architecture",
-  currentDateRange: "25 Mar 2026 - 12 Apr 2026",
-  upcomingSchedule: [
-    {
-      id: 1,
-      topic: "Google Ads (PPC) & Search Advertising",
-      batch_timing: "10:00 AM - 12:00 PM",
-      date_range: "25 Mar 2026 - 12 Apr 2026",
-      branch: "Andheri",
-      highlight: 1,
-      badge: "Active Module",
-    },
-    {
-      id: 2,
-      topic: "Display & YouTube Video Advertising",
-      batch_timing: "10:00 AM - 12:00 PM",
-      date_range: "13 Apr 2026 - 24 Apr 2026",
-      branch: "Andheri",
-      highlight: 0,
-      badge: "Upcoming",
-    },
-    {
-      id: 3,
-      topic: "Social Media Marketing (Meta Ads & Pixel)",
-      batch_timing: "10:00 AM - 12:00 PM",
-      date_range: "27 Apr 2026 - 15 May 2026",
-      branch: "Andheri",
-      highlight: 0,
-      badge: "Upcoming",
-    },
-    {
-      id: 4,
-      topic: "Google Analytics 4 (GA4) & Tag Manager",
-      batch_timing: "10:00 AM - 12:00 PM",
-      date_range: "18 May 2026 - 29 May 2026",
-      branch: "Andheri",
-      highlight: 0,
-      badge: "Upcoming",
-    },
-  ],
+  batchName: "",
+  batchCode: "",
+  timing: "",
+  frequency: "",
+  branch: "",
+  classroom: "",
+  faculty: "",
+  status: "",
+  currentTopic: "",
+  currentDateRange: "",
+  upcomingSchedule: [],
 };
 
 // Default Certificates Fallback
@@ -639,22 +602,21 @@ class CrmService {
             scheduleList.find((s) => s.highlight) || scheduleList[0];
           return {
             ...DEFAULT_CRM_BATCH,
-            timing: activeItem.batch_timing || DEFAULT_CRM_BATCH.timing,
-            currentTopic: activeItem.topic || DEFAULT_CRM_BATCH.currentTopic,
-            currentDateRange:
-              activeItem.date_range || DEFAULT_CRM_BATCH.currentDateRange,
+            timing: activeItem.batch_timing || "",
+            currentTopic: activeItem.topic || "",
+            currentDateRange: activeItem.date_range || "",
             upcomingSchedule: scheduleList.slice(0, 5),
           };
         }
       }
     } catch (err) {
       console.warn(
-        "Failed to fetch batch schedule from CRM, using fallback",
+        "Failed to fetch batch schedule from CRM",
         err,
       );
     }
 
-    return DEFAULT_CRM_BATCH;
+    return null;
   }
 
   /**

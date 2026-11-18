@@ -9,18 +9,7 @@ import {
 import { ForumVoteButtons } from "./ForumVoteButtons";
 import { cleanAuthorHandle } from "./ForumSidebar";
 
-const KNOWN_AUTHORS = [
-  "Aryan Jawale",
-  "Ayesha Chunawala",
-  "Prem Chaurasiya",
-  "Vikram Malhotra",
-  "Rohan Mehta",
-  "Harsh Pareek",
-  "Sneha Roy",
-  "Aarav Sharma",
-  "Pooja Hegde",
-  "Karan Patel",
-];
+const KNOWN_AUTHORS = [];
 
 /**
  * Resolves avatar URL:
@@ -140,7 +129,7 @@ export const formatCommentContent = (
 ) => {
   if (!content) return null;
 
-  // 1. If explicit replyToAuthor is provided (e.g. "Aryan Jawale")
+  // 1. If explicit replyToAuthor is provided
   if (replyToAuthor) {
     const cleanMention = `@${replyToAuthor.replace(/^@/, "").trim()}`;
     const escaped = cleanMention.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
