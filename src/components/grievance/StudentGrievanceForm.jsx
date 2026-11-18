@@ -487,7 +487,7 @@ export const StudentGrievanceForm = () => {
                   name="studentId"
                   value={formData.studentId}
                   onChange={handleInputChange}
-                  placeholder="e.g. OMC-8001"
+                  placeholder="e.g. OMC-8214"
                   className="flex-1 bg-transparent border-0 px-2 py-1 text-slate-900 dark:text-white outline-none focus:bg-blue-50/50 dark:focus:bg-slate-800/50 rounded"
                 />
               </div>
