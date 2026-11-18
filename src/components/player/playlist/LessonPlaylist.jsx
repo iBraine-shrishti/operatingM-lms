@@ -4,9 +4,7 @@ import { ModuleAccordionItem } from "./ModuleAccordionItem";
 
 /**
  * LessonPlaylist Component
- * Right column container directly rendering the Course Modules section,
- * overall progress indicator, Expand/Collapse controls, playlist search bar,
- * and collapsible module accordions.
+ * Clean, intuitive course video playlist sidebar modeled after modern video learning platforms.
  */
 export const LessonPlaylist = ({
   currentCourse,
@@ -27,8 +25,8 @@ export const LessonPlaylist = ({
   onNavigateAssignment,
 }) => {
   return (
-    <div className="bg-white dark:bg-[#0b1329] rounded-3xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs space-y-4">
-      {/* LEVEL 1: COURSE MODULES SECTION HEADER & SEARCH */}
+    <div className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 shadow-xs space-y-3">
+      {/* Course Content Header */}
       <PlaylistHeader
         modulesCount={sections.length}
         totalItemsCount={allPlayerItemsCount}
@@ -40,12 +38,11 @@ export const LessonPlaylist = ({
         onSearchChange={onSearchChange}
       />
 
-      {/* LEVEL 2: MODULES ACCORDION LIST */}
-      <div className="space-y-3 max-h-[640px] overflow-y-auto pr-1 custom-scrollbar">
+      {/* Accordion Module List */}
+      <div className="space-y-3 max-h-[680px] overflow-y-auto pr-1">
         {filteredSections.length === 0 ? (
-          <div className="text-center py-8 text-xs text-slate-400 space-y-1">
-            <p className="font-semibold">No matching modules found</p>
-            <p className="text-[11px]">Try adjusting your search query</p>
+          <div className="text-center py-6 text-xs text-slate-400">
+            <p>No lectures matching your search</p>
           </div>
         ) : (
           filteredSections.map((sec) => (

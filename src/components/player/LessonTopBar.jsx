@@ -40,10 +40,16 @@ export const LessonTopBar = ({
         </button>
 
         <div className="min-w-0">
-          <span className="text-[11px] font-bold text-blue-600 dark:text-cyan-400 uppercase tracking-wider block truncate">
-            {currentLesson?.moduleName || "Curriculum Track"}
-          </span>
-          <h2 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white truncate">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-cyan-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-600 dark:bg-cyan-400 animate-ping" />
+              <span>Playing • Lesson {activeLessonIdx + 1} of {totalLessons}</span>
+            </span>
+            <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 truncate hidden sm:inline">
+              {currentLesson?.moduleName || "Curriculum Track"}
+            </span>
+          </div>
+          <h2 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white truncate mt-0.5">
             {currentLesson?.title}
           </h2>
         </div>
