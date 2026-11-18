@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   Lock,
   Mail,
@@ -53,10 +53,22 @@ export const LoginPage = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [searchParams] = useSearchParams();
+  const [error, setError] = useState(() => {
+    if (typeof window !== "undefined" && window.location.search.includes("revoked=1")) {
+      return "Your session ended because your account was logged into on another device.";
+    }
+    return "";
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [saveToast, setSaveToast] = useState("");
   const [conflictData, setConflictData] = useState(null);
+
+  useEffect(() => {
+    if (searchParams.get("revoked") === "1") {
+      setError("Your session ended because your account was logged into on another device.");
+    }
+  }, [searchParams]);
 
   const handleSaveCredentials = (e) => {
     e?.preventDefault();

@@ -2050,22 +2050,41 @@ export const lmsService = {
   },
   logoutStudentActivity: async (studentId) => {
     try {
-      if (!studentId) return;
-      const cleanId = String(studentId).replace("std-", "").replace("OMC-", "").replace(/^0+/, "");
+      const cleanId = studentId
+        ? String(studentId).replace("std-", "").replace("OMC-", "").replace(/^0+/, "")
+        : "";
       const sessionToken = localStorage.getItem("om_lms_session_token") || "";
       const deviceId = localStorage.getItem("om_lms_device_id") || "";
+      const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+      const deviceType = isMobile ? "APP" : "PC";
+
+      const payload = JSON.stringify({
+        student_id: cleanId,
+        session_token: sessionToken,
+        device_id: deviceId,
+        device_type: deviceType,
+      });
+
+      // 1. sendBeacon for instant fire-and-forget release
+      if (typeof navigator !== "undefined" && navigator.sendBeacon) {
+        try {
+          const blob = new Blob([payload], { type: "application/json" });
+          navigator.sendBeacon(`${CRM_BACKEND_API}/lms/student-activity/logout/`, blob);
+        } catch {}
+      }
+
+      // 2. Guaranteed fetch with keepalive: true
       await fetch(`${CRM_BACKEND_API}/lms/student-activity/logout/`, {
         method: "POST",
+        keepalive: true,
         headers: {
           "Content-Type": "application/json",
           "X-Session-Token": sessionToken,
         },
-        body: JSON.stringify({
-          student_id: cleanId,
-          session_token: sessionToken,
-          device_id: deviceId,
-        }),
-      });
+        body: payload,
+      }).catch(() => {});
+
       localStorage.removeItem("om_lms_session_token");
     } catch (err) {
       // silent
@@ -2101,18 +2120,19 @@ export const lmsService = {
         try {
           const data = await res.json();
           if (data?.session_revoked) {
-            // Dispatch a window event to notify AuthContext immediately
-            window.dispatchEvent(
-              new CustomEvent("om_lms_session_revoked", {
-                detail: {
-                  message:
-                    data.error ||
-                    "Your session was ended because this account was logged into on another device.",
-                },
-              })
-            );
+            // Immediately purge all authentication tokens and cached session
+            localStorage.removeItem("om_lms_is_authenticated");
+            localStorage.removeItem("om_lms_session_token");
+            localStorage.removeItem("om_lms_crm_cached_profile");
+            localStorage.removeItem("om_lms_student_avatar");
+            localStorage.removeItem("crm_selected_student_id");
+
+            // Hard redirect to login with revoked notice parameter
+            window.location.replace("/login?revoked=1");
           }
-        } catch {}
+        } catch {
+          window.location.replace("/login?revoked=1");
+        }
       }
     } catch (err) {
       // silent

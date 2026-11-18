@@ -428,6 +428,8 @@ export const AuthProvider = ({ children }) => {
         const studentId = crmProfile?.id || (role === 'STUDENT' ? crmService.getSelectedStudentId() : null);
         if (studentId) {
             lmsService.logoutStudentActivity(studentId).catch(() => {});
+        } else {
+            lmsService.logoutStudentActivity("").catch(() => {});
         }
 
         setIsAuthenticated(false);
@@ -444,6 +446,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.removeItem('om_lms_crm_cached_profile');
             localStorage.removeItem('om_lms_student_avatar');
             localStorage.removeItem('crm_selected_student_id');
+            localStorage.removeItem('om_lms_selected_crm_student_id');
             localStorage.removeItem('om_lms_session_token');
         } catch (e) {
             console.error('Failed to clear auth state from localStorage', e);
