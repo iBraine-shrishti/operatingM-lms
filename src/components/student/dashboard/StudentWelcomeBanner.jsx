@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, MapPin, User, Sparkles } from "lucide-react";
+import { formatAdmissionNo } from "../../../utils/admissionUtils";
 import dashboardHeaderBg from "../../../assets/header-bg/dashboard-header.png";
 import dashboardHeaderDarkBg from "../../../assets/header-bg/dashboard-header-dark.png";
 
@@ -25,7 +26,7 @@ export const StudentWelcomeBanner = ({
 
   const studentName = currentUser?.name || crmProfile?.studentName || crmProfile?.name || "Student";
   const studentCourse = crmProfile?.course || currentUser?.course || "Digital Marketing";
-  const admissionId = crmProfile?.admissionNo || currentUser?.admissionNo || "";
+  const admissionId = formatAdmissionNo(crmProfile?.admissionNo || currentUser?.admissionNo || "");
   const centerBranch = crmProfile?.branch || currentUser?.branch || "";
 
   // Prioritize live backend photo from CRM API before any fallback asset

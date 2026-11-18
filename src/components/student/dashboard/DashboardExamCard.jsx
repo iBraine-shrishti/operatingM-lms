@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { formatAdmissionNo } from "../../../utils/admissionUtils";
 import {
   Award,
   ArrowRight,
@@ -85,7 +86,7 @@ export const DashboardExamCard = ({ crmProfile = {} }) => {
             </span>
             {crmProfile?.admissionNo || currentUser?.admissionNo ? (
               <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 hidden sm:inline">
-                Candidate: {crmProfile?.admissionNo || currentUser?.admissionNo}
+                Candidate: {formatAdmissionNo(crmProfile?.admissionNo || currentUser?.admissionNo)}
               </span>
             ) : null}
           </div>

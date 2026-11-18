@@ -14,6 +14,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { formatAdmissionNo } from "../utils/admissionUtils";
 import { FeeReceiptModal } from "../components/crm/FeeReceiptModal";
 import { AttendanceComparisonChart } from "../components/crm/AttendanceComparisonChart";
 
@@ -247,7 +248,7 @@ export const AttendanceFeesPage = () => {
             <strong className="text-slate-900 dark:text-white">
               {currentUser?.name || crmProfile?.name || "Student"}
             </strong>{" "}
-            {crmProfile?.admissionNo ? `(${crmProfile.admissionNo})` : ""}
+            {crmProfile?.admissionNo ? `(${formatAdmissionNo(crmProfile.admissionNo)})` : ""}
           </div>
         </div>
 
@@ -265,7 +266,7 @@ export const AttendanceFeesPage = () => {
             </div>
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
               {crmProfile?.admissionNo
-                ? `Ref ID: ${crmProfile.admissionNo} • `
+                ? `Ref ID: ${formatAdmissionNo(crmProfile.admissionNo)} • `
                 : ""}
               {crmProfile?.course || "Course Fee"}
             </div>

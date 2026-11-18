@@ -1,4 +1,6 @@
 
+import { formatAdmissionNo } from "../utils/admissionUtils";
+
 /**
  * Operating Media LMS - CRM Integration Service
  * Connects directly to Operating Media CRM API (https://crm.dmsoi.org/api)
@@ -329,7 +331,7 @@ class CrmService {
 
         const profile = {
           id: d.id,
-          admissionNo: `OMC-${String(d.id).padStart(4, "0")}`,
+          admissionNo: formatAdmissionNo(d.admission_no || d.id),
           name: `${d.first_name} ${d.last_name || ""}`.trim(),
           fullName:
             `${d.first_name} ${d.middle_name ? d.middle_name + " " : ""}${d.last_name || ""}`.trim(),
@@ -814,8 +816,7 @@ class CrmService {
                   id: candidate.id,
                   crmAdmissionId: candidate.id,
                   admissionNo:
-                    profile?.admissionNo ||
-                    `OMC-${String(candidate.id).padStart(4, "0")}`,
+                    formatAdmissionNo(profile?.admissionNo || candidate.id),
                   name: profile?.name || candidate.name,
                   fullName: profile?.fullName || candidate.name,
                   firstName: profile?.firstName || candidate.name.split(" ")[0],

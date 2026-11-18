@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { crmService, DEFAULT_CRM_PROFILE, DEFAULT_CRM_ATTENDANCE, DEFAULT_CRM_BATCH, DEFAULT_CRM_CERTIFICATES } from '../services/crmService';
 import { lmsService } from '../services/lmsService';
 import { checkStudentCourseAccess } from '../components/profile/profileUtils';
+import { formatAdmissionNo } from '../utils/admissionUtils';
 
 /**
  * Filter out any mock/placeholder image references from localStorage or cached objects
@@ -144,7 +145,7 @@ export const AuthProvider = ({ children }) => {
                 }
                 if (cached?.name) initial.name = cached.name;
                 if (cached?.fullName) initial.fullName = cached.fullName;
-                if (cached?.admissionNo) initial.admissionNo = cached.admissionNo;
+                if (cached?.admissionNo) initial.admissionNo = formatAdmissionNo(cached.admissionNo);
                 if (cached?.course) initial.course = cached.course;
                 if (cached?.branch) initial.branch = cached.branch;
                 if (cached?.center) initial.center = cached.center;
@@ -170,6 +171,7 @@ export const AuthProvider = ({ children }) => {
             if (cachedProfileStr) {
                 const cached = JSON.parse(cachedProfileStr);
                 if (cached && (cached.id || cached.admissionNo || cached.name)) {
+                    if (cached.admissionNo) cached.admissionNo = formatAdmissionNo(cached.admissionNo);
                     return cached;
                 }
             }
@@ -276,7 +278,7 @@ export const AuthProvider = ({ children }) => {
                         ...prev,
                         id: profile.id ? `std-${profile.id}` : prev.id,
                         crmAdmissionId: profile.id || prev.crmAdmissionId,
-                        admissionNo: profile.admissionNo || prev.admissionNo,
+                        admissionNo: formatAdmissionNo(profile.admissionNo || prev.admissionNo),
                         name: profile.name || prev.name,
                         fullName: profile.fullName || profile.name || prev.fullName,
                         email: profile.email || prev.email,

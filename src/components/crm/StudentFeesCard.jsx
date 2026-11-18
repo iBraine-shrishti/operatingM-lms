@@ -9,6 +9,7 @@ import {
   Download,
   ChevronRight,
 } from "lucide-react";
+import { formatAdmissionNo } from "../../utils/admissionUtils";
 
 export const StudentFeesCard = ({ profile, onOpenReceipt }) => {
   if (!profile) return null;
@@ -22,8 +23,10 @@ export const StudentFeesCard = ({ profile, onOpenReceipt }) => {
     nextDueDate = "",
     nextDueAmount = 0,
     installments = [],
-    admissionNo = "",
+    admissionNo: rawAdmissionNo = "",
   } = profile || {};
+
+  const admissionNo = formatAdmissionNo(rawAdmissionNo || profile?.id);
 
   return (
     <div className="bg-white border border-slate-200/90 shadow-2xs p-5 sm:p-6 transition-all">

@@ -12,12 +12,13 @@ import {
   Mail,
 } from "lucide-react";
 import logo from "../../assets/logo.png";
+import { formatAdmissionNo } from "../../utils/admissionUtils";
 
 export const FeeReceiptModal = ({ isOpen, onClose, profile }) => {
   if (!isOpen || !profile) return null;
 
   const {
-    admissionNo = "",
+    admissionNo: rawAdmissionNo = "",
     name = "Student",
     email = "",
     phone = "",
@@ -29,6 +30,8 @@ export const FeeReceiptModal = ({ isOpen, onClose, profile }) => {
     balanceDue = 0,
     installments = [],
   } = profile;
+
+  const admissionNo = formatAdmissionNo(rawAdmissionNo || profile.id);
 
   const today = new Date().toLocaleDateString("en-GB", {
     day: "numeric",

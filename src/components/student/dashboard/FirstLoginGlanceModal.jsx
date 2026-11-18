@@ -1,6 +1,7 @@
 import { ModalPortal } from "../../common/ModalPortal";
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { formatAdmissionNo } from "../../../utils/admissionUtils";
 import {
   Sparkles,
   CheckCircle2,
@@ -55,10 +56,11 @@ export const FirstLoginGlanceModal = ({
     crmProfile?.course ||
     currentUser?.course ||
     "Digital Marketing";
-  const admissionId =
+  const admissionId = formatAdmissionNo(
     crmProfile?.admissionNo ||
     currentUser?.admissionNo ||
-    (currentUser?.crmAdmissionId ? `OMC-${String(currentUser.crmAdmissionId).padStart(4, "0")}` : "");
+    currentUser?.crmAdmissionId
+  );
   const centerBranch =
     crmProfile?.branch ||
     currentUser?.branch ||

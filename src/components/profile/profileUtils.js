@@ -1,4 +1,5 @@
 import { crmService } from "../../services/crmService.js";
+import { formatAdmissionNo } from "../../utils/admissionUtils.js";
 
 /**
  * Resolves faculty lead based on student batch / branch condition:
@@ -38,9 +39,8 @@ export const mapStudentDataFromCrm = (crm, user) => {
   const source = crm || {};
   const rawId = source.id || user?.crmAdmissionId || user?.id || "";
   const numOnly = rawId ? String(rawId).replace(/[^0-9]/g, "") : "";
-  const numericId = numOnly ? `#${numOnly}` : "";
-  const studentId =
-    source.admissionNo || user?.admissionNo || (numOnly ? `OMC-${numOnly.padStart(4, "0")}` : "");
+  const studentId = formatAdmissionNo(source.admissionNo || user?.admissionNo || rawId);
+  const numericId = studentId || (numOnly ? `#${numOnly}` : "");
   const name = source.name || user?.name || "Student";
   const fullName =
     source.fullName || user?.fullName || source.name || user?.name || "Student";

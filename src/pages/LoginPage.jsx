@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { crmService } from "../services/crmService";
+import { formatAdmissionNo } from "../utils/admissionUtils";
 import logo from "../assets/logo.png";
 
 export const LoginPage = () => {
@@ -117,7 +118,7 @@ export const LoginPage = () => {
           updateCurrentUser({
             id: `std-${student.id}`,
             crmAdmissionId: student.id,
-            admissionNo: student.admissionNo,
+            admissionNo: formatAdmissionNo(student.admissionNo || student.id),
             name: student.name,
             fullName: student.fullName || student.name,
             email: student.email,
