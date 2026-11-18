@@ -66,7 +66,7 @@ export const ForumCreatePostModal = ({
       courseId,
       courseTitle: selectedCourseObj?.title || "Digital Marketing",
       imageUrl: imageUrl.trim() || null,
-      authorName: currentUser?.name || "Sahil Hasolkar",
+      authorName: currentUser?.name || "Student",
       authorRole: currentUser?.role || "Student",
       authorAvatar:
         currentUser?.avatar ||

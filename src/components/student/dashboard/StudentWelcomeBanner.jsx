@@ -23,10 +23,10 @@ export const StudentWelcomeBanner = ({
     img2.src = dashboardHeaderDarkBg;
   }, []);
 
-  const studentName = currentUser?.name || crmProfile?.studentName || crmProfile?.name || "Sahil Hasolkar";
-  const studentCourse = crmProfile?.course || currentUser?.course || "Masters in Digital Marketing";
-  const admissionId = crmProfile?.admissionNo || currentUser?.admissionNo || "OMC-0375";
-  const centerBranch = crmProfile?.branch || currentUser?.branch || "Borivali Center";
+  const studentName = currentUser?.name || crmProfile?.studentName || crmProfile?.name || "Student";
+  const studentCourse = crmProfile?.course || currentUser?.course || "Digital Marketing";
+  const admissionId = crmProfile?.admissionNo || currentUser?.admissionNo || "";
+  const centerBranch = crmProfile?.branch || currentUser?.branch || "";
 
   // Prioritize live backend photo from CRM API before any fallback asset
   const backendPhoto = crmProfile?.photo || crmProfile?.avatar || currentUser?.photo;

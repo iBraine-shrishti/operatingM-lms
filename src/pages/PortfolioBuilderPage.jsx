@@ -48,10 +48,19 @@ export const PortfolioBuilderPage = () => {
       if (saved) {
         const parsed = JSON.parse(saved);
         const savedStudent = parsed.student || {};
+        const lowerSavedName = (savedStudent.name || "").toLowerCase();
+        const lowerSavedEmail = (savedStudent.email || "").toLowerCase();
         const isDefaultStudent =
-          savedStudent.name === "Ram Charan" ||
+          lowerSavedName.includes("ram charan") ||
+          lowerSavedName.includes("sahil") ||
+          lowerSavedName.includes("hasolkar") ||
+          lowerSavedName.includes("aditya jadhav") ||
+          lowerSavedName.includes("vishal chaurasiya") ||
+          lowerSavedName.includes("sakshi") ||
           savedStudent.name === "Student Candidate" ||
-          savedStudent.email === "ram.charan@operatingmedia.com" ||
+          lowerSavedEmail.includes("ram.charan") ||
+          lowerSavedEmail.includes("hasolkar") ||
+          lowerSavedEmail.includes("adityajadhav") ||
           savedStudent.email === "student@operatingmedia.com";
 
         return {
@@ -184,9 +193,15 @@ export const PortfolioBuilderPage = () => {
         }
 
         // 2. Full Name
+        const lowerName = (updatedStudent.name || "").toLowerCase();
         if (
           studentName &&
-          (updatedStudent.name === "Ram Charan" ||
+          (lowerName.includes("ram charan") ||
+            lowerName.includes("sahil") ||
+            lowerName.includes("hasolkar") ||
+            lowerName.includes("aditya jadhav") ||
+            lowerName.includes("vishal chaurasiya") ||
+            lowerName.includes("sakshi") ||
             updatedStudent.name === "Student Candidate" ||
             !updatedStudent.name)
         ) {
@@ -195,9 +210,12 @@ export const PortfolioBuilderPage = () => {
         }
 
         // 3. Email
+        const lowerEmail = (updatedStudent.email || "").toLowerCase();
         if (
           studentEmail &&
-          (updatedStudent.email === "ram.charan@operatingmedia.com" ||
+          (lowerEmail.includes("ram.charan") ||
+            lowerEmail.includes("hasolkar") ||
+            lowerEmail.includes("adityajadhav") ||
             updatedStudent.email === "student@operatingmedia.com" ||
             !updatedStudent.email)
         ) {

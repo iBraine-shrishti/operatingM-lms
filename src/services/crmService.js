@@ -20,211 +20,67 @@ export const CRM_BASE_URL =
     : "https://operatingmedia.org/api");
 const CRM_STORAGE_KEY_STUDENT_ID = "om_lms_selected_crm_student_id";
 
-// Default Student Profile Fallback (matching CRM schema & profile.png)
+// Default Student Profile Fallback (Clean empty schema)
 export const DEFAULT_CRM_PROFILE = {
-  id: 375,
-  admissionNo: "OMC-0375",
-  name: "Sahil Hasolkar",
-  fullName: "Sahil Nilesh Hasolkar",
-  firstName: "Sahil",
-  lastName: "Hasolkar",
-  email: "hasolkarsahil@gmail.com",
-  phone: "+91 93720 17331",
-  mobile: "9372017331",
-  dob: "28 Nov 2006",
-  gender: "Male",
-  maritalStatus: "Single",
-  branch: "Borivali Center",
-  center: "Borivali Center",
-  course: "Masters in Digital Marketing",
+  id: null,
+  admissionNo: "",
+  name: "",
+  fullName: "",
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  mobile: "",
+  dob: "",
+  gender: "",
+  maritalStatus: "",
+  branch: "",
+  center: "",
+  course: "",
   batchName: "",
   batchCode: "",
-  admissionDate: "22 Apr 2026",
-  registrationDate: "18 Apr 2026",
-  joiningDate: "2026-04-22",
-  courseEnd: "20 Apr 2027",
+  admissionDate: "",
+  registrationDate: "",
+  joiningDate: "",
+  courseEnd: "",
   daysLeft: 0,
-  facultyLead: "Rahul Shende",
-  facultyLeadRole: "Lead Faculty - Borivali Center",
+  facultyLead: "",
+  facultyLeadRole: "",
   photo: null,
   avatar: null,
-  // Financial Overview matching profile.png (Fees Pending)
-  totalFees: 90000,
-  regAmount: 5000,
+  totalFees: 0,
+  regAmount: 0,
   refundAmount: 0,
-  totalPaid: 5000,
-  balanceDue: 85000,
-  paidPercentage: 5.6,
-  paymentStatus: "Fees Pending",
-  nextDueDate: "01 Oct 2026",
-  nextDueAmount: 17000,
-  installments: [
-    {
-      id: "inst-0",
-      number: 0,
-      title: "Registration Fee",
-      amount: 5000,
-      status: "PAID",
-      date: "30 Sep 2026",
-      mode: "GPay",
-      action: "view",
-    },
-    {
-      id: "inst-1",
-      number: 1,
-      title: "Inst 1",
-      amount: 17000,
-      status: "UNPAID",
-      date: "01 Oct 2026",
-      mode: "Bank Transfer",
-      action: "pay",
-    },
-    {
-      id: "inst-2",
-      number: 2,
-      title: "Inst 2",
-      amount: 17000,
-      status: "UNPAID",
-      date: "01 Nov 2026",
-      mode: "Bank Transfer",
-      action: "pay",
-    },
-    {
-      id: "inst-3",
-      number: 3,
-      title: "Inst 3",
-      amount: 17000,
-      status: "UNPAID",
-      date: "01 Dec 2026",
-      mode: "Bank Transfer",
-      action: "pay",
-    },
-    {
-      id: "inst-4",
-      number: 4,
-      title: "Inst 4",
-      amount: 17000,
-      status: "UNPAID",
-      date: "01 Jan 2027",
-      mode: "Bank Transfer",
-      action: "pay",
-    },
-    {
-      id: "inst-5",
-      number: 5,
-      title: "Inst 5",
-      amount: 17000,
-      status: "UNPAID",
-      date: "01 Feb 2027",
-      mode: "Bank Transfer",
-      action: "pay",
-    },
-  ],
-  courseChangeHistory: [
-    {
-      date: "01 Oct 2026",
-      title:
-        "Upgraded: Masters Only (₹0.00) -> Masters in Digital Marketing (₹90,000)",
-      description: "Course upgraded by admin. Payment adjusted.",
-    },
-  ],
+  totalPaid: 0,
+  balanceDue: 0,
+  paidPercentage: 0,
+  paymentStatus: "Verified",
+  nextDueDate: "",
+  nextDueAmount: 0,
+  installments: [],
+  courseChangeHistory: [],
 };
 
 // Default Attendance Data Fallback
 export const DEFAULT_CRM_ATTENDANCE = {
-  studentId: 375,
-  studentName: "Sahil Hasolkar",
-  course: "Masters in Digital Marketing",
-  totalLectures: 28,
-  presentCount: 25,
-  absentCount: 3,
-  attendancePercentage: 89.3,
+  studentId: null,
+  studentName: "",
+  course: "",
+  totalLectures: 0,
+  presentCount: 0,
+  absentCount: 0,
+  attendancePercentage: 0,
   standing: {
-    label: "Verified Standing",
+    label: "Active Standing",
     class: "status-excellent",
     icon: "🟢",
     bg: "bg-emerald-50",
     text: "text-emerald-700",
     border: "border-emerald-200",
   },
-  monthlyTrend: [
-    { month: "Nov", rate: 91, present: 7, absent: 1, total: 8 },
-    { month: "Dec", rate: 88, present: 7, absent: 1, total: 8 },
-    { month: "Jan", rate: 94, present: 8, absent: 0, total: 8 },
-    { month: "Feb", rate: 89, present: 7, absent: 1, total: 8 },
-    { month: "Mar", rate: 93, present: 8, absent: 0, total: 8 },
-  ],
-  weeklyTimeline: [
-    {
-      day: "Mon",
-      status: "PRESENT",
-      topic: "Technical SEO Audits & Core Web Vitals",
-    },
-    { day: "Tue", status: "PRESENT", topic: "Schema Markup & Rich Snippets" },
-    { day: "Wed", status: "PRESENT", topic: "Robots.txt & XML Sitemaps" },
-    { day: "Thu", status: "PRESENT", topic: "Google Search Console Advanced" },
-    { day: "Fri", status: "ABSENT", topic: "Site Migration & 301 Redirects" },
-    { day: "Mon", status: "PRESENT", topic: "Google Ads Search Campaigns" },
-    { day: "Tue", status: "PRESENT", topic: "Ad Copy & Keyword Match Types" },
-  ],
-  logs: [
-    {
-      lecture_id: 28,
-      date: "28 Mar 2026",
-      topic: "Ad Copy & Keyword Match Types",
-      batch_name: "Masters Weekday Morning",
-      trainer_name: "Rahul Shende",
-      status: "PRESENT",
-    },
-    {
-      lecture_id: 27,
-      date: "27 Mar 2026",
-      topic: "Google Ads Search Campaigns",
-      batch_name: "Masters Weekday Morning",
-      trainer_name: "Rahul Shende",
-      status: "PRESENT",
-    },
-    {
-      lecture_id: 26,
-      date: "24 Mar 2026",
-      topic: "Site Migration & 301 Redirects",
-      batch_name: "Masters Weekday Morning",
-      trainer_name: "Nishi",
-      status: "ABSENT",
-    },
-    {
-      lecture_id: 25,
-      date: "23 Mar 2026",
-      topic: "Google Search Console Advanced",
-      batch_name: "Masters Weekday Morning",
-      trainer_name: "Rahul Shende",
-      status: "PRESENT",
-    },
-    {
-      lecture_id: 24,
-      date: "20 Mar 2026",
-      topic: "Robots.txt & XML Sitemaps",
-      batch_name: "Masters Weekday Morning",
-      trainer_name: "Rahul Shende",
-      status: "PRESENT",
-    },
-    {
-      lecture_id: 23,
-      date: "19 Mar 2026",
-      topic: "Schema Markup & Rich Snippets",
-      batch_name: "Masters Weekday Morning",
-      trainer_name: "Rahul Shende",
-      status: "PRESENT",
-    },
-    {
-      lecture_id: 22,
-      date: "17 Mar 2026",
-      topic: "Technical SEO Audits & Core Web Vitals",
-      batch_name: "Masters Weekday Morning",
-      trainer_name: "Rahul Shende",
-      status: "PRESENT",
-    },
-  ],
+  monthlyTrend: [],
+  recentLectures: [],
+  logs: [],
 };
 
 // Default Batch & Schedule Fallback
@@ -280,34 +136,7 @@ export const DEFAULT_CRM_BATCH = {
 };
 
 // Default Certificates Fallback
-export const DEFAULT_CRM_CERTIFICATES = [
-  {
-    id: 132929482,
-    certificate_id: "132929482",
-    name: "Hiteshpuri Goswami",
-    course: "Diploma in Digital Marketing & Artificial Intelligence",
-    date: "February 10, 2025",
-    expiryDate: "February 10, 2026",
-    rating: 9.6,
-    grade: "A+ Distinction",
-    issuer: "Operating Media Institute of Digital Marketing",
-    signer: "Harsh Pareek, Director",
-    status: "Verified",
-  },
-  {
-    id: 132929483,
-    certificate_id: "132929483",
-    name: "Hiteshpuri Goswami",
-    course: "Advanced Search Engine Optimization (SEO) Masterclass",
-    date: "January 15, 2025",
-    expiryDate: "January 15, 2026",
-    rating: 9.8,
-    grade: "Honors with Distinction",
-    issuer: "Operating Media Institute of Digital Marketing",
-    signer: "Harsh Pareek, Director",
-    status: "Verified",
-  },
-];
+export const DEFAULT_CRM_CERTIFICATES = [];
 
 class CrmService {
   constructor() {
@@ -320,15 +149,19 @@ class CrmService {
   getSelectedStudentId() {
     try {
       const saved = localStorage.getItem(CRM_STORAGE_KEY_STUDENT_ID);
-      return saved ? parseInt(saved, 10) : 375; // default to Sahil Hasolkar (admission 375 / OMC-0375) matching profile.png
+      return saved ? parseInt(saved, 10) : null;
     } catch {
-      return 375;
+      return null;
     }
   }
 
   setSelectedStudentId(id) {
     try {
-      localStorage.setItem(CRM_STORAGE_KEY_STUDENT_ID, String(id));
+      if (id) {
+        localStorage.setItem(CRM_STORAGE_KEY_STUDENT_ID, String(id));
+      } else {
+        localStorage.removeItem(CRM_STORAGE_KEY_STUDENT_ID);
+      }
     } catch (e) {
       console.warn("Could not save selected CRM student id", e);
     }
@@ -364,36 +197,15 @@ class CrmService {
       );
     }
 
-    // Default fallback student list
-    return [
-      {
-        id: 266,
-        name: "Aditya Jadhav",
-        course: "Masters in Digital Marketing",
-        branch: "Online / Andheri",
-        phone: "+91 80972 12986",
-      },
-      {
-        id: 264,
-        name: "Sakshi Kesharwani",
-        course: "Masters in Digital Marketing",
-        branch: "Andheri",
-        phone: "+91 91362 27195",
-      },
-      {
-        id: 267,
-        name: "Ram Charan",
-        course: "Diploma in Digital Marketing",
-        branch: "Andheri",
-        phone: "+91 73047 48384",
-      },
-    ];
+    // Default fallback student list (empty if network unavailable)
+    return [];
   }
 
   /**
    * Fetch complete student profile including uploaded photograph and fee breakdown
    */
   async getStudentProfile(admissionId = this.getSelectedStudentId()) {
+    if (!admissionId) return null;
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 6000);
@@ -710,116 +522,14 @@ class CrmService {
       return this.cachedProfile;
     }
 
-    // Fallback: check if we requested student 264 (Sakshi) or 267 (Ram)
-    if (admissionId === 264) {
-      return {
-        ...DEFAULT_CRM_PROFILE,
-        id: 264,
-        admissionNo: "OMC-0264",
-        name: "Sakshi Kesharwani",
-        firstName: "Sakshi",
-        lastName: "Kesharwani",
-        email: "sakshi.k@operatingmedia.com",
-        phone: "+91 91362 27195",
-        totalFees: 65000,
-        totalPaid: 45000,
-        balanceDue: 20000,
-        paidPercentage: 69.2,
-      };
-    }
-
-    if (admissionId === 267) {
-      return {
-        ...DEFAULT_CRM_PROFILE,
-        id: 267,
-        admissionNo: "OMC-0267",
-        name: "Ram Charan",
-        fullName: "Ram Balbir Charan",
-        firstName: "Ram",
-        middleName: "Balbir",
-        lastName: "Charan",
-        email: "ram@lmsoperatingmedia.org",
-        phone: "+91 73047 48384",
-        mobile: "+91 73047 48384",
-        branch: "Andheri Center",
-        center: "Andheri Center",
-        course: "Diploma in Digital Marketing",
-        batchName: "Diploma in Digital Marketing (DDM-A1)",
-        batchCode: "DDM-A1",
-        dob: "25 Jun 1994",
-        gender: "Male",
-        maritalStatus: "Single",
-        employedStatus: "Employed",
-        organization: "Sitel",
-        address: "Pawar Chawl Kadam wadi Marol Pipeline Andheri E",
-        city: "Mumbai",
-        state: "Maharashtra",
-        pincode: "400059",
-        country: "India",
-        emergencyName: "Sangeeta Chraran",
-        emergencyPhone: "+91 84520 76467",
-        admissionDate: "09 Mar 2026",
-        registrationDate: "09 Mar 2026",
-        courseDuration: "6 Months",
-        courseStart: "09 Mar 2026",
-        courseEnd: "09 Sep 2026",
-        daysLeft: 147,
-        totalFees: 25000,
-        regAmount: 2000,
-        totalPaid: 2000,
-        balanceDue: 23000,
-        paidPercentage: 8,
-        feesClearedPercent: 8,
-        paymentStatus: "Fees Pending",
-        nextDueDate: "09 Mar 2026",
-        nextDueAmount: 11500,
-        installments: [
-          {
-            id: "inst-0",
-            number: 0,
-            title: "Registration Fee",
-            amount: 2000,
-            status: "PAID",
-            dueDate: "09 Mar 2026",
-            date: "09 Mar 2026",
-            mode: "Registration",
-            isOverdue: false,
-          },
-          {
-            id: "inst-1",
-            number: 1,
-            title: "Inst 1",
-            amount: 11500,
-            status: "UNPAID",
-            dueDate: "09 Mar 2026",
-            date: "09 Mar 2026",
-            mode: "Pending",
-            isOverdue: true,
-          },
-          {
-            id: "inst-2",
-            number: 2,
-            title: "Inst 2",
-            amount: 11500,
-            status: "UNPAID",
-            dueDate: "04 Apr 2026",
-            date: "04 Apr 2026",
-            mode: "Pending",
-            isOverdue: true,
-          },
-        ],
-        courseHistoryRaw:
-          "16/06/2026 ⬇️ Downgraded: Advanced Diploma in Digital Marketing (₹30000.00) → Diploma in Digital Marketing (₹25000)\n16/06/2026: Diploma in Digital Marketing (₹25000.00) → Advanced Diploma in Digital Marketing (₹30000)",
-      };
-    }
-
-    return DEFAULT_CRM_PROFILE;
+    return null;
   }
 
   /**
    * Fetch attendance stats and monthly graph trends
    */
   async getStudentAttendance(studentId = this.getSelectedStudentId()) {
+    if (!studentId) return null;
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 6000);
@@ -950,8 +660,8 @@ class CrmService {
   /**
    * Fetch verified certificates from CRM
    */
-  async getCertificates(studentName = "Hiteshpuri Goswami") {
-    // Client-side created certificates matching CERTIFICATE.png specification
+  async getCertificates(studentName = "") {
+    if (!studentName) return [];
     return DEFAULT_CRM_CERTIFICATES.map((c) => ({
       ...c,
       name: studentName || c.name,
@@ -1173,80 +883,6 @@ class CrmService {
       }
     } catch (searchErr) {
       console.warn("Dynamic admissions search check:", searchErr);
-    }
-
-    // 3. Direct match for Sahil Hasolkar (ID 375 - default student)
-    if (
-      trimmedLogin.toLowerCase() === "hasolkarsahil@gmail.com" ||
-      trimmedLogin.toLowerCase() === "sahil" ||
-      trimmedLogin.toLowerCase() === "omc-0375" ||
-      trimmedLogin === "375"
-    ) {
-      if (trimmedPass === "Sahil@123" || trimmedPass === "123456" || trimmedPass === "password" || trimmedPass === "Sahil@375") {
-        const profile = await this.getStudentProfile(375);
-        this.setSelectedStudentId(375);
-        return {
-          id: 375,
-          crmAdmissionId: 375,
-          admissionNo: profile?.admissionNo || "OMC-0375",
-          name: profile?.name || "Sahil Hasolkar",
-          fullName: profile?.fullName || profile?.name || "Sahil Nilesh Hasolkar",
-          firstName: "Sahil",
-          lastName: "Hasolkar",
-          email: "hasolkarsahil@gmail.com",
-          loginId: "hasolkarsahil@gmail.com",
-          phone: profile?.phone || "+91 93720 17331",
-          course: profile?.course || "Masters in Digital Marketing",
-          branch: profile?.branch || "Borivali Center",
-          center: profile?.center || "Borivali Center",
-          batchCode: profile?.batchCode || "WD-M1",
-          batchName:
-            profile?.batchName || "Masters in Digital Marketing (WD-M1)",
-          totalFees: profile?.totalFees || 90000,
-          photo: profile?.photo || null,
-          role: "STUDENT",
-          roleLabel: "STUDENT",
-          designation: `${profile?.course || "Masters in Digital Marketing"} Student`,
-        };
-      } else {
-        throw new Error("Invalid password. Please check your password.");
-      }
-    }
-
-    // 4. Direct match for Ram Charan (ID 267)
-    if (
-      trimmedLogin.toLowerCase() === "ram@lmsoperatingmedia.org" ||
-      trimmedLogin.toLowerCase() === "ram"
-    ) {
-      if (trimmedPass === "Ram@123") {
-        const profile = await this.getStudentProfile(267);
-        this.setSelectedStudentId(267);
-        return {
-          id: 267,
-          crmAdmissionId: 267,
-          admissionNo: profile?.admissionNo || "OMC-0267",
-          name: profile?.name || "Ram Charan",
-          fullName: profile?.fullName || profile?.name || "Ram Charan",
-          firstName: profile?.firstName || "Ram",
-          lastName: profile?.lastName || "Charan",
-          email: "ram@lmsoperatingmedia.org",
-          loginId: "ram@lmsoperatingmedia.org",
-          phone: profile?.phone || "+91 73047 48384",
-          course: profile?.course || "Diploma in Digital Marketing",
-          branch: profile?.branch || "Andheri Center",
-          center: profile?.center || "Andheri Center",
-          batchCode: profile?.batchCode || "DDM-A1",
-          batchName:
-            profile?.batchName || "Diploma in Digital Marketing (DDM-A1)",
-          totalFees: profile?.totalFees || 45000,
-          photo: profile?.photo || null,
-          role: "STUDENT",
-          roleLabel: "STUDENT",
-          designation: `${profile?.course || "Diploma in Digital Marketing"} Student`,
-        };
-      } else {
-        throw new Error("Invalid password. Please check your password.");
-      }
     }
 
     throw new Error(

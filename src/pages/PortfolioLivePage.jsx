@@ -25,10 +25,19 @@ export const PortfolioLivePage = () => {
       if (saved) {
         const parsed = JSON.parse(saved);
         const savedStudent = parsed.student || {};
+        const lowerSavedName = (savedStudent.name || "").toLowerCase();
+        const lowerSavedEmail = (savedStudent.email || "").toLowerCase();
         const isDefaultStudent =
-          savedStudent.name === "Ram Charan" ||
+          lowerSavedName.includes("ram charan") ||
+          lowerSavedName.includes("sahil") ||
+          lowerSavedName.includes("hasolkar") ||
+          lowerSavedName.includes("aditya jadhav") ||
+          lowerSavedName.includes("vishal chaurasiya") ||
+          lowerSavedName.includes("sakshi") ||
           savedStudent.name === "Student Candidate" ||
-          savedStudent.email === "ram.charan@operatingmedia.com" ||
+          lowerSavedEmail.includes("ram.charan") ||
+          lowerSavedEmail.includes("hasolkar") ||
+          lowerSavedEmail.includes("adityajadhav") ||
           savedStudent.email === "student@operatingmedia.com";
 
         return {
@@ -173,10 +182,19 @@ export const PortfolioLivePage = () => {
     setPortfolioData((prev) => {
       if (!prev) return prev;
       const currentStudent = prev.student || {};
+      const lowerName = (currentStudent.name || "").toLowerCase();
+      const lowerEmail = (currentStudent.email || "").toLowerCase();
       const isDefault =
-        currentStudent.name === "Ram Charan" ||
+        lowerName.includes("ram charan") ||
+        lowerName.includes("sahil") ||
+        lowerName.includes("hasolkar") ||
+        lowerName.includes("aditya jadhav") ||
+        lowerName.includes("vishal chaurasiya") ||
+        lowerName.includes("sakshi") ||
         currentStudent.name === "Student Candidate" ||
-        currentStudent.email === "ram.charan@operatingmedia.com" ||
+        lowerEmail.includes("ram.charan") ||
+        lowerEmail.includes("hasolkar") ||
+        lowerEmail.includes("adityajadhav") ||
         currentStudent.email === "student@operatingmedia.com";
 
       if (isDefault || (backendEmail && currentStudent.email !== backendEmail)) {

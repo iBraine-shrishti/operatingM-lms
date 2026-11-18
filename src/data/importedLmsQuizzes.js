@@ -67,7 +67,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "A",
               chosenText: "Increase website traffic",
@@ -88,14 +88,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "A",
               chosenText: "Increase website traffic",
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "Generate leads and sales",
@@ -148,7 +148,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "A single ad that appears in search results",
@@ -210,7 +210,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "A specific type of ad format",
@@ -406,7 +406,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "D",
               chosenText: "A type of bidding strategy",
@@ -467,14 +467,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "A tool used to measure campaign performance",
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "D",
               chosenText: "A type of bidding strategy",
@@ -535,7 +535,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText: "A tool used to measure campaign performance",
@@ -602,7 +602,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "A tool used to measure campaign performance",
@@ -669,14 +669,14 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "A type of ad format",
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText: "A tool used to measure campaign performance",
@@ -744,7 +744,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "A specific type of ad format",
@@ -765,7 +765,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "A specific type of ad format",
@@ -819,7 +819,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "A type of ad format",
@@ -840,7 +840,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "A type of ad format",
@@ -901,7 +901,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "A type of ad format",
@@ -922,7 +922,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "A type of ad format",
@@ -997,14 +997,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "D",
               chosenText: "A type of bidding strategy",
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "A type of ad format",
@@ -1139,7 +1139,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "D",
               chosenText: "A type of ad extension",
@@ -1213,7 +1213,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "A tool used to measure campaign performance",
@@ -1276,7 +1276,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText:
@@ -1338,7 +1338,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "To improve the quality score of ads",
@@ -1391,14 +1391,14 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "A",
               chosenText: "To identify relevant keywords to target",
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "To improve the quality score of ads",
@@ -1451,7 +1451,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "A",
               chosenText: "To persuade users to click on an ad",
@@ -1518,7 +1518,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "A",
               chosenText: "To improve the user experience on a landing page",
@@ -1585,7 +1585,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText: "To track website traffic and user behavior",
@@ -1607,7 +1607,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "A",
               chosenText: "To track website traffic and user behavior",
@@ -1675,14 +1675,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To increase conversions",
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -1751,7 +1751,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To increase conversions",
@@ -1833,7 +1833,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "To build brand reputation",
@@ -1900,14 +1900,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To capture customer information",
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText: "To nurture leads",
@@ -1981,7 +1981,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To encourage purchases",
@@ -2002,7 +2002,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To encourage purchases",
@@ -2063,7 +2063,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "To make campaign management easier",
@@ -2084,7 +2084,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To make campaign management easier",
@@ -2138,14 +2138,14 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "A",
               chosenText: "To improve campaign performance",
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "To make campaign management easier",
@@ -2226,7 +2226,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -2297,7 +2297,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -2319,7 +2319,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -2374,7 +2374,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -2396,7 +2396,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -2466,14 +2466,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "D",
               chosenText: "A measure of user engagement on a website or app",
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -2541,7 +2541,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "D",
               chosenText: "To enhance the visual appearance of GA4 reports",
@@ -2622,7 +2622,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "D",
               chosenText: "To track user behavior across different devices",
@@ -2696,14 +2696,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "D",
               chosenText: "To enhance the visual appearance of GA4 reports",
@@ -2777,7 +2777,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To measure the performance of advertising campaigns",
@@ -2798,7 +2798,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To measure the performance of advertising campaigns",
@@ -2858,7 +2858,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
@@ -2911,14 +2911,14 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To analyze user behavior in real-time",
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
@@ -2971,7 +2971,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To create custom reports in GA4",
@@ -3032,7 +3032,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "To track user behavior over time",
@@ -3092,7 +3092,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "To identify individual users",
@@ -3173,7 +3173,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "D",
               chosenText: "To enhance the visual appearance of GA4 reports",
@@ -3240,7 +3240,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "D",
               chosenText: "To track user behavior across different devices",
@@ -3307,7 +3307,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "Tracking user interactions with specific content",
@@ -3374,14 +3374,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "D",
               chosenText: "To enhance the visual appearance of GA4 reports",
@@ -3448,7 +3448,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
@@ -3522,7 +3522,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
@@ -3543,7 +3543,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
@@ -3596,14 +3596,14 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To track user behavior over time",
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
@@ -3624,7 +3624,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
@@ -3677,7 +3677,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To track user behavior over time",
@@ -3698,14 +3698,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To track user behavior over time",
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
@@ -3758,7 +3758,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "To track user behavior over time",
@@ -3818,7 +3818,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "To track user behavior over time",
@@ -3839,7 +3839,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "To track user behavior over time",
@@ -4086,7 +4086,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
@@ -4146,7 +4146,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
@@ -4208,7 +4208,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the accuracy of data in GA4",
@@ -4295,7 +4295,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -4364,7 +4364,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -4388,7 +4388,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -4443,7 +4443,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -4467,7 +4467,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -4535,14 +4535,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "Video ads, audio ads, and in-app ads",
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText: "Text ads, display ads, and in-feed ads",
@@ -4617,7 +4617,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "D",
               chosenText:
@@ -4692,7 +4692,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "D",
               chosenText: "It enhances user experience",
@@ -4766,14 +4766,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "Choosing the right ad formats and sizes",
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText:
@@ -4849,7 +4849,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "Placing ads in prominent positions on the website",
@@ -4870,7 +4870,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "Placing ads in prominent positions on the website",
@@ -4931,7 +4931,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -4986,14 +4986,14 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "A",
               chosenText: "Placing too many ads on a website",
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "Using low-quality ad formats",
@@ -5072,7 +5072,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "A",
               chosenText: "Tracking website traffic",
@@ -5140,7 +5140,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "A",
               chosenText: "A specific webpage on a website",
@@ -5161,7 +5161,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "A",
               chosenText: "A specific webpage on a website",
@@ -5214,7 +5214,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -5236,7 +5236,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -5305,14 +5305,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "D",
               chosenText: "Measuring the performance of Google Ads campaigns",
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText: "Identifying and fixing indexing issues",
@@ -5381,7 +5381,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "D",
               chosenText: "Measuring the performance of Google Ads campaigns",
@@ -5465,7 +5465,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "D",
               chosenText: "Measuring the performance of Google Ads campaigns",
@@ -5539,14 +5539,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "A tool for tracking website traffic",
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "D",
               chosenText: "A type of Google Search Console report",
@@ -5622,7 +5622,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To increase website traffic",
@@ -5643,7 +5643,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To increase website traffic",
@@ -5705,7 +5705,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "It can increase website traffic",
@@ -5759,7 +5759,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -5767,7 +5767,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -5822,7 +5822,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "A",
               chosenText: "By identifying and fixing technical SEO issues",
@@ -5883,7 +5883,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -5945,7 +5945,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText: "By identifying security vulnerabilities",
@@ -6027,7 +6027,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "It can help measure ROI",
@@ -6107,7 +6107,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To track website traffic and user behavior",
@@ -6175,7 +6175,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "A container for multiple tags",
@@ -6197,7 +6197,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "A container for multiple tags",
@@ -6250,7 +6250,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -6273,7 +6273,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -6343,14 +6343,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "A rule that determines when a tag should fire",
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -6418,7 +6418,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "D",
               chosenText:
@@ -6501,7 +6501,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "D",
               chosenText: "To create custom reports",
@@ -6575,14 +6575,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To roll back to previous versions",
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText: "To collaborate with other team members",
@@ -6657,7 +6657,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "By optimizing code and reducing HTTP requests",
@@ -6679,7 +6679,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "By optimizing code and reducing HTTP requests",
@@ -6740,7 +6740,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "To implement A/B testing tools",
@@ -6794,14 +6794,14 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "A",
               chosenText: "To track user clicks, scrolls, and form submissions",
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "To measure website traffic and engagement",
@@ -6880,7 +6880,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "Niche, Audience, Purpose",
@@ -6948,7 +6948,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "They improve website loading speed",
@@ -7016,7 +7016,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText: "They can improve a business's local search rankings",
@@ -7037,7 +7037,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "A",
               chosenText: "They can improve a business's local search rankings",
@@ -7106,14 +7106,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "D",
               chosenText: "They track the website's traffic and engagement",
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "They improve website loading speed",
@@ -7181,7 +7181,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText: "Offer incentives for leaving reviews",
@@ -7255,7 +7255,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "It can help generate positive reviews",
@@ -7330,7 +7330,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -7338,7 +7338,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText:
@@ -7415,7 +7415,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -7437,7 +7437,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -7498,7 +7498,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "To promote products and services",
@@ -7551,7 +7551,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -7559,7 +7559,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -7613,7 +7613,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "A",
               chosenText: "It helps customers find businesses",
@@ -7675,7 +7675,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "It improves website loading speed",
@@ -7737,7 +7737,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -7821,7 +7821,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText:
@@ -7889,7 +7889,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText:
@@ -7958,7 +7958,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "To make data-driven decisions",
@@ -8018,14 +8018,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "They can help build trust and credibility",
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText: "They can encourage more customers to leave reviews",
@@ -8093,7 +8093,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -8169,7 +8169,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -8192,7 +8192,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -8247,7 +8247,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -8255,7 +8255,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -8279,7 +8279,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -8333,7 +8333,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -8356,7 +8356,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -8364,7 +8364,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "It can help improve local search rankings",
@@ -8419,7 +8419,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "They improve website loading speed",
@@ -8441,7 +8441,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "They improve website loading speed",
@@ -8502,7 +8502,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -8524,7 +8524,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -8775,7 +8775,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "They can help build trust and credibility",
@@ -8855,7 +8855,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -8878,7 +8878,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -8886,7 +8886,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText: "To improve the page's loading speed",
@@ -8939,7 +8939,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "To temporarily redirect a webpage to a new URL",
@@ -9000,7 +9000,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "To improve website loading speed",
@@ -9199,7 +9199,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "D",
               chosenText: "To track website traffic and engagement",
@@ -9259,14 +9259,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "Backlinks",
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "D",
               chosenText: "Header tags",
@@ -9326,7 +9326,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "Good UX can improve user satisfaction",
@@ -9394,7 +9394,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText: "Social media can drive traffic to a website",
@@ -9455,14 +9455,14 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To improve website loading speed",
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText: "To create internal links between pages",
@@ -9529,7 +9529,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To improve website loading speed",
@@ -9550,7 +9550,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To improve website loading speed",
@@ -9603,7 +9603,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -9626,7 +9626,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -9688,7 +9688,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText: "Good UX can improve a website's ranking",
@@ -9709,7 +9709,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "A",
               chosenText: "Good UX can improve a website's ranking",
@@ -9785,7 +9785,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "D",
               chosenText:
@@ -9793,7 +9793,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "White-hat SEO is more effective than black-hat SEO",
@@ -9867,7 +9867,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "D",
               chosenText: "A profile of the website's social media presence",
@@ -9948,7 +9948,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText:
@@ -10026,7 +10026,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText:
@@ -10087,7 +10087,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To create internal links between pages",
@@ -10147,7 +10147,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "When a website uses irrelevant keywords",
@@ -10201,14 +10201,14 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText: "To improve website loading speed",
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText: "To create internal links between pages",
@@ -10261,7 +10261,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "A",
               chosenText: "Mobile-friendly websites load faster",
@@ -10329,7 +10329,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -10397,7 +10397,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "A",
               chosenText:
@@ -10480,14 +10480,14 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "D",
               chosenText: "To track website traffic and engagement",
               attemptDate: "3 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "B",
               chosenText: "To improve website loading speed",
@@ -10554,7 +10554,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "D",
               chosenText: "To track website traffic and engagement",
@@ -10630,7 +10630,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "D",
               chosenText: "To track the website's traffic and engagement",
@@ -10699,7 +10699,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText:
@@ -10707,7 +10707,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "2 days ago",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "D",
               chosenText:
@@ -10777,7 +10777,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To create internal links between pages",
@@ -10798,7 +10798,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To create internal links between pages",
@@ -10858,7 +10858,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText: "To display search results",
@@ -10879,7 +10879,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Aditya Jadhav",
+              studentName: "Aryan Sharma",
               avatar: null,
               chosenOption: "C",
               chosenText: "To display search results",
@@ -10933,7 +10933,7 @@ export const IMPORTED_LMS_QUIZZES = [
           },
           wrongStudents: [
             {
-              studentName: "Sahil Hasolkar",
+              studentName: "Alok Verma",
               avatar: null,
               chosenOption: "B",
               chosenText:
@@ -10941,7 +10941,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "Yesterday, 04:15 PM",
             },
             {
-              studentName: "Ram Charan",
+              studentName: "Karan Kapoor",
               avatar: null,
               chosenOption: "C",
               chosenText:
@@ -10965,7 +10965,7 @@ export const IMPORTED_LMS_QUIZZES = [
               attemptDate: "4 days ago",
             },
             {
-              studentName: "Sakshi Kesharwani",
+              studentName: "Ritika Sen",
               avatar: null,
               chosenOption: "C",
               chosenText:

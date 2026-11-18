@@ -31,6 +31,18 @@ export const AttendanceFeesPage = () => {
     { month: "Mar", rate: 93 },
   ];
 
+  const totalFees = crmProfile?.totalFees || 0;
+  const totalPaid = crmProfile?.totalPaid || 0;
+  const balanceDue =
+    crmProfile?.balanceDue !== undefined
+      ? crmProfile.balanceDue
+      : Math.max(0, totalFees - totalPaid);
+  const paidPct =
+    totalFees > 0 ? Math.min(100, Math.round((totalPaid / totalFees) * 100)) : 0;
+  const installments = Array.isArray(crmProfile?.installments)
+    ? crmProfile.installments
+    : [];
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -233,9 +245,9 @@ export const AttendanceFeesPage = () => {
           <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             Student:{" "}
             <strong className="text-slate-900 dark:text-white">
-              {currentUser.name || "Hiteshpuri Goswami"}
+              {currentUser?.name || crmProfile?.name || "Student"}
             </strong>{" "}
-            ({crmProfile.admissionNo || "OMC-0266"})
+            {crmProfile?.admissionNo ? `(${crmProfile.admissionNo})` : ""}
           </div>
         </div>
 
@@ -249,10 +261,13 @@ export const AttendanceFeesPage = () => {
               <Award size={16} className="text-blue-500" />
             </div>
             <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums">
-              ₹45,000
+              ₹{totalFees.toLocaleString()}
             </div>
             <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              Ref ID: OMC-0266 • Diploma Track
+              {crmProfile?.admissionNo
+                ? `Ref ID: ${crmProfile.admissionNo} • `
+                : ""}
+              {crmProfile?.course || "Course Fee"}
             </div>
           </div>
 
@@ -264,13 +279,16 @@ export const AttendanceFeesPage = () => {
               <CheckCircle2 size={16} className="text-emerald-500" />
             </div>
             <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums">
-              ₹55,000
+              ₹{totalPaid.toLocaleString()}
             </div>
             <div className="w-full h-2 bg-emerald-100 dark:bg-emerald-950/60 rounded-full overflow-hidden mt-1">
-              <div className="w-full h-full bg-emerald-500 rounded-full" />
+              <div
+                className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                style={{ width: `${paidPct}%` }}
+              />
             </div>
             <div className="text-xs text-right font-black text-emerald-700 dark:text-emerald-400">
-              122.2% Realized
+              {paidPct}% Realized
             </div>
           </div>
 
@@ -282,10 +300,18 @@ export const AttendanceFeesPage = () => {
               <Clock size={16} className="text-amber-500" />
             </div>
             <div className="text-2xl font-black text-slate-900 dark:text-white tabular-nums">
-              ₹0
+              ₹{balanceDue.toLocaleString()}
             </div>
-            <div className="text-xs text-emerald-600 dark:text-emerald-400 font-bold flex items-center space-x-1">
-              <span>All Dues Cleared ✓</span>
+            <div className="text-xs font-bold flex items-center space-x-1">
+              {balanceDue <= 0 ? (
+                <span className="text-emerald-600 dark:text-emerald-400">
+                  All Dues Cleared ✓
+                </span>
+              ) : (
+                <span className="text-amber-600 dark:text-amber-400">
+                  Payment Pending
+                </span>
+              )}
             </div>
           </div>
         </div>
@@ -301,49 +327,50 @@ export const AttendanceFeesPage = () => {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 flex items-center justify-between text-xs">
-              <div className="space-y-0.5">
-                <span className="text-slate-500 dark:text-slate-400 font-medium block">
-                  Registration Fee
-                </span>
-                <span className="font-black text-slate-900 dark:text-white text-sm">
-                  ₹3,000
-                </span>
-                <span className="text-[11px] text-slate-400 dark:text-slate-500 block">
-                  Mode: UPI / Online
-                </span>
-              </div>
-              <div className="text-right space-y-1">
-                <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 block">
-                  PAID
-                </span>
-                <span className="text-[11px] text-slate-400 dark:text-slate-500">
-                  Admission Day
-                </span>
-              </div>
+          {installments.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {installments.map((inst, idx) => {
+                const isPaid =
+                  inst.status === "PAID" || inst.status === "Paid";
+                return (
+                  <div
+                    key={inst.id || idx}
+                    className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 flex items-center justify-between text-xs"
+                  >
+                    <div className="space-y-0.5">
+                      <span className="text-slate-500 dark:text-slate-400 font-medium block">
+                        {inst.title || `Installment ${idx + 1}`}
+                      </span>
+                      <span className="font-black text-slate-900 dark:text-white text-sm">
+                        ₹{(inst.amount || 0).toLocaleString()}
+                      </span>
+                      <span className="text-[11px] text-slate-400 dark:text-slate-500 block">
+                        Mode: {inst.mode || "Online"}
+                      </span>
+                    </div>
+                    <div className="text-right space-y-1">
+                      <span
+                        className={`text-[10px] font-black px-2 py-0.5 rounded block ${
+                          isPaid
+                            ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300"
+                            : "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300"
+                        }`}
+                      >
+                        {isPaid ? "PAID" : "DUE"}
+                      </span>
+                      <span className="text-[11px] text-slate-400 dark:text-slate-500">
+                        {inst.date || inst.dueDate || ""}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-
-            <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 flex items-center justify-between text-xs">
-              <div className="space-y-0.5">
-                <span className="text-slate-500 dark:text-slate-400 font-medium block">
-                  Installment 1
-                </span>
-                <span className="font-black text-slate-900 dark:text-white text-sm">
-                  ₹52,000
-                </span>
-                <span className="text-[11px] text-slate-400 dark:text-slate-500 block">
-                  Mode: Bank Transfer
-                </span>
-              </div>
-              <div className="text-right space-y-1">
-                <span className="text-[10px] font-black px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 block">
-                  PAID
-                </span>
-                <span className="text-[11px] text-slate-400 dark:text-slate-500">25 Feb 2026</span>
-              </div>
-            </div>
-          </div>
+          ) : (
+            <p className="text-xs text-slate-400 italic">
+              No installment schedule on record.
+            </p>
+          )}
         </div>
       </div>
 

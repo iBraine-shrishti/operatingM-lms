@@ -70,7 +70,8 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
         crmService.getSelectedStudentId() ||
         crmProfile?.id ||
         currentUser?.crmAdmissionId ||
-        "375";
+        null;
+      if (!studentId) return 0;
       const notes = lmsService.getNotes(studentId);
       return Array.isArray(notes) ? notes.length : 0;
     } catch {

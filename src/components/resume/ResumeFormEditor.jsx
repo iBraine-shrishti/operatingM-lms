@@ -881,10 +881,10 @@ export const ResumeFormEditor = ({ data, templateId = "modern-executive", onChan
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {[
-                { key: "fullName", label: "Full Name", icon: User, placeholder: "e.g. Ram Charan" },
+                { key: "fullName", label: "Full Name", icon: User, placeholder: "e.g. Your Full Name" },
                 { key: "jobTitle", label: "Target Job Title", icon: Briefcase, placeholder: "e.g. Performance Marketing & SEO Strategist" },
-                { key: "email", label: "Email Address", icon: Mail, type: "email", placeholder: "e.g. ramcharan0811@gmail.com" },
-                { key: "phone", label: "Phone Number", icon: Phone, placeholder: "e.g. +91 93720 17331" },
+                { key: "email", label: "Email Address", icon: Mail, type: "email", placeholder: "e.g. yourname@gmail.com" },
+                { key: "phone", label: "Phone Number", icon: Phone, placeholder: "e.g. +91 98765 43210" },
                 { key: "location", label: "Location / Branch", icon: MapPin, placeholder: "e.g. Andheri Center, Mumbai" },
                 { key: "linkedin", label: "LinkedIn Profile", icon: Linkedin, placeholder: "e.g. linkedin.com/in/username" },
                 { key: "portfolio", label: "Portfolio / Website", icon: Globe, placeholder: "e.g. operatingmedia.org/portfolio" },

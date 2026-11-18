@@ -44,11 +44,11 @@ export const AdminProfileView = ({ currentUser = {} }) => {
               ADMINISTRATOR PROFILE
             </span>
             <h1 className="text-2xl font-black text-slate-900 dark:text-white mt-1">
-              {currentUser.name || "Vishal Chaurasiya"}
+              {currentUser.name || "Administrator"}
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {currentUser.email || "vishal.c@operatingmedia.com"} •{" "}
-              {currentUser.designation || "Head of Operations & Lead Instructor"}
+              {currentUser.email || "admin@operatingmedia.com"} •{" "}
+              {currentUser.designation || "System Administrator"}
             </p>
           </div>
         </div>

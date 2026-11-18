@@ -107,7 +107,12 @@ export const StudentGrievanceForm = () => {
         crmProfile?.id ||
         currentUser?.crmAdmissionId ||
         currentUser?.id ||
-        375;
+        null;
+
+      if (!targetId) {
+        setLoadingBatch(false);
+        return;
+      }
 
       try {
         setLoadingBatch(true);

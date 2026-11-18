@@ -59,18 +59,18 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
     currentUser?.fullName ||
     crmProfile?.name ||
     crmProfile?.fullName ||
-    "Vishal Chaurasiya";
+    "";
 
   const studentEmail =
     currentUser?.email ||
     crmProfile?.email ||
-    "vishal.chaurasiya@operatingmedia.com";
+    "";
 
   const studentPhone =
     currentUser?.phone ||
     crmProfile?.phone ||
     crmProfile?.mobile ||
-    "+91 98200 12345";
+    "";
 
   const studentBranch =
     crmProfile?.branch ||
@@ -88,7 +88,7 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
     crmProfile?.photo ||
     crmProfile?.avatar ||
     localStorage.getItem("om_lms_student_avatar") ||
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400";
+    null;
 
   // Real certificates from student CRM record if present, otherwise professional industry certificates
   const defaultCerts = (crmCertificates && crmCertificates.length > 0)
@@ -138,9 +138,9 @@ export const createInitialResumeData = (currentUser, crmProfile, crmBatch, crmCe
       email: studentEmail,
       phone: studentPhone,
       location: studentBranch,
-      linkedin: "linkedin.com/in/vishal-marketer",
-      portfolio: "operatingmedia.org/alumni/portfolio",
-      github: "github.com/vishal-digital",
+      linkedin: "",
+      portfolio: "",
+      github: "",
     },
     summary:
       "Results-oriented Digital Marketer with specialized training in full-funnel acquisition, paid media scaling, and programmatic SEO. Proven ability in managing Google & Meta ad budgets with a track record of boosting ROAS by 160% and scaling organic search visibility. Skilled in data analytics, landing page conversion rate optimization (CRO), and generative AI workflows.",

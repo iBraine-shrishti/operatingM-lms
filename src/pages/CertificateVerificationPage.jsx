@@ -21,13 +21,13 @@ export const CertificateVerificationPage = () => {
   const [copied, setCopied] = useState(false);
 
   // Read query params or fallback to current student certificate
-  const certificateId = searchParams.get("id") || "132929482";
-  const studentName = searchParams.get("name") || "Sahil Hasolkar";
+  const certificateId = searchParams.get("id") || "";
+  const studentName = searchParams.get("name") || "";
   const courseTitle =
     searchParams.get("course") ||
-    "Masters in Digital Marketing & Artificial Intelligence";
-  const issueDate = searchParams.get("issued") || "February 10, 2025";
-  const expiryDate = searchParams.get("expiry") || "February 10, 2026";
+    "Digital Marketing & Artificial Intelligence";
+  const issueDate = searchParams.get("issued") || "";
+  const expiryDate = searchParams.get("expiry") || "";
 
   const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 

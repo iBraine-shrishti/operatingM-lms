@@ -12,7 +12,6 @@ import { cleanAuthorHandle } from "./ForumSidebar";
 const KNOWN_AUTHORS = [
   "Aryan Jawale",
   "Ayesha Chunawala",
-  "Sahil Hasolkar",
   "Prem Chaurasiya",
   "Vikram Malhotra",
   "Rohan Mehta",

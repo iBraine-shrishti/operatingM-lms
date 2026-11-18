@@ -17,16 +17,16 @@ export const FeeReceiptModal = ({ isOpen, onClose, profile }) => {
   if (!isOpen || !profile) return null;
 
   const {
-    admissionNo = "OMC-0266",
-    name = "Aditya Jadhav",
-    email = "adityajadhav14@gmail.com",
-    phone = "+91 80972 12986",
-    course = "Masters in Digital Marketing",
-    branch = "Andheri Center",
-    totalFees = 35000,
-    regAmount = 2000,
-    totalPaid = 25000,
-    balanceDue = 10000,
+    admissionNo = "",
+    name = "Student",
+    email = "",
+    phone = "",
+    course = "",
+    branch = "",
+    totalFees = 0,
+    regAmount = 0,
+    totalPaid = 0,
+    balanceDue = 0,
     installments = [],
   } = profile;
 

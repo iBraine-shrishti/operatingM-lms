@@ -58,9 +58,7 @@ export const FirstLoginGlanceModal = ({
   const admissionId =
     crmProfile?.admissionNo ||
     currentUser?.admissionNo ||
-    currentUser?.crmAdmissionId ||
-    currentUser?.id ||
-    "OMC-0000";
+    (currentUser?.crmAdmissionId ? `OMC-${String(currentUser.crmAdmissionId).padStart(4, "0")}` : "");
   const centerBranch =
     crmProfile?.branch ||
     currentUser?.branch ||

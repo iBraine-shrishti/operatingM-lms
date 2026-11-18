@@ -5,7 +5,7 @@ import { GraduationCap, LogOut, ArrowLeft } from "lucide-react";
  * Institutional top header for the exam experience.
  */
 export const ExamHeader = ({
-  rollNumber = "OMC-0375",
+  rollNumber = "",
   activeTrack = null,
   examStage = "CATALOG",
   onExitHall,

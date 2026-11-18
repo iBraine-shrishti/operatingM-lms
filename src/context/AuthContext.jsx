@@ -26,7 +26,7 @@ export const sanitizeMockAvatar = (url) => {
     return url;
 };
 
-// Immediate client cache sanitization on app boot
+// Immediate client cache sanitization on app boot: purge stale mock data
 if (typeof window !== 'undefined' && window.localStorage) {
     try {
         const rawAvatar = localStorage.getItem('om_lms_student_avatar');
@@ -37,17 +37,30 @@ if (typeof window !== 'undefined' && window.localStorage) {
         const cachedProfileStr = localStorage.getItem('om_lms_crm_cached_profile');
         if (cachedProfileStr) {
             const parsed = JSON.parse(cachedProfileStr);
-            let modified = false;
-            if (parsed.photo && !sanitizeMockAvatar(parsed.photo)) {
-                parsed.photo = null;
-                modified = true;
-            }
-            if (parsed.avatar && !sanitizeMockAvatar(parsed.avatar)) {
-                parsed.avatar = null;
-                modified = true;
-            }
-            if (modified) {
-                localStorage.setItem('om_lms_crm_cached_profile', JSON.stringify(parsed));
+            const lowerName = (parsed.name || '').toLowerCase();
+            const lowerEmail = (parsed.email || '').toLowerCase();
+            if (
+                lowerName.includes('hasolkar') ||
+                lowerName.includes('sahil') ||
+                lowerName.includes('aditya jadhav') ||
+                lowerEmail.includes('hasolkarsahil') ||
+                lowerEmail.includes('adityajadhav')
+            ) {
+                localStorage.removeItem('om_lms_crm_cached_profile');
+                localStorage.removeItem('om_lms_selected_crm_student_id');
+            } else {
+                let modified = false;
+                if (parsed.photo && !sanitizeMockAvatar(parsed.photo)) {
+                    parsed.photo = null;
+                    modified = true;
+                }
+                if (parsed.avatar && !sanitizeMockAvatar(parsed.avatar)) {
+                    parsed.avatar = null;
+                    modified = true;
+                }
+                if (modified) {
+                    localStorage.setItem('om_lms_crm_cached_profile', JSON.stringify(parsed));
+                }
             }
         }
     } catch (e) {
@@ -57,42 +70,42 @@ if (typeof window !== 'undefined' && window.localStorage) {
 
 export const ADMIN_USER = {
     id: 'admin-1',
-    name: 'Vishal Chaurasiya',
-    email: 'vishal.c@operatingmedia.com',
+    name: 'Administrator',
+    email: 'admin@operatingmedia.com',
     role: 'ADMIN',
     roleLabel: 'HR_ADMIN',
     avatar: null,
-    designation: 'Head of Operations & Lead Instructor'
+    designation: 'Head of Operations'
 };
 
 export const STUDENT_USER = {
-    id: 'std-375',
-    crmAdmissionId: 375,
-    admissionNo: 'OMC-0375',
-    name: 'Sahil Hasolkar',
-    fullName: 'Sahil Nilesh Hasolkar',
-    email: 'hasolkarsahil@gmail.com',
-    phone: '919372017331',
-    dob: '28 Nov 2006',
-    gender: 'Male',
-    maritalStatus: 'Single',
-    admissionDate: '22 Apr 2026',
-    registrationDate: '18 Apr 2026',
-    facultyLead: 'Rahul Shende',
-    facultyLeadRole: 'Lead Faculty - Borivali Center',
+    id: null,
+    crmAdmissionId: null,
+    admissionNo: '',
+    name: '',
+    fullName: '',
+    email: '',
+    phone: '',
+    dob: '',
+    gender: '',
+    maritalStatus: '',
+    admissionDate: '',
+    registrationDate: '',
+    facultyLead: '',
+    facultyLeadRole: '',
     role: 'STUDENT',
     roleLabel: 'STUDENT',
-    avatar: null, // Clean default: loaded dynamically from CRM API
-    designation: 'Masters in Digital Marketing Student',
-    course: 'Masters in Digital Marketing',
-    center: 'Borivali Center',
-    branch: 'Borivali Center',
-    batchCode: 'WD-M1',
-    batchName: 'WD-M1',
+    avatar: null,
+    designation: 'Student',
+    course: '',
+    center: '',
+    branch: '',
+    batchCode: '',
+    batchName: '',
     enrolledCoursesCount: 0,
     completedCoursesCount: 0,
     overallProgress: 0,
-    joinedDate: '2026-04-22'
+    joinedDate: ''
 };
 
 const AuthContext = createContext(undefined);
@@ -161,11 +174,11 @@ export const AuthProvider = ({ children }) => {
                 }
             }
         } catch {}
-        return DEFAULT_CRM_PROFILE;
+        return null;
     });
-    const [crmAttendance, setCrmAttendance] = useState(DEFAULT_CRM_ATTENDANCE);
-    const [crmBatch, setCrmBatch] = useState(DEFAULT_CRM_BATCH);
-    const [crmCertificates, setCrmCertificates] = useState(DEFAULT_CRM_CERTIFICATES);
+    const [crmAttendance, setCrmAttendance] = useState(null);
+    const [crmBatch, setCrmBatch] = useState(null);
+    const [crmCertificates, setCrmCertificates] = useState([]);
     const [availableStudents, setAvailableStudents] = useState([]);
     const [assignedCourseIds, setAssignedCourseIds] = useState([]);
     const [studentCoursesAccess, setStudentCoursesAccess] = useState([]);
@@ -177,10 +190,14 @@ export const AuthProvider = ({ children }) => {
         setCrmLoading(true);
         try {
             const targetId = admissionId || crmService.getSelectedStudentId();
+            if (!targetId) {
+                setCrmLoading(false);
+                return;
+            }
             crmService.setSelectedStudentId(targetId);
 
             const profile = await crmService.getStudentProfile(targetId);
-            const studentName = profile?.name || 'Aditya Jadhav';
+            const studentName = profile?.name || studentUser?.name || '';
 
             const [attendance, batch, certs, studentsList, permissions, batchAssignments] = await Promise.all([
                 crmService.getStudentAttendance(targetId),

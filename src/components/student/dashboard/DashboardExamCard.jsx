@@ -83,9 +83,11 @@ export const DashboardExamCard = ({ crmProfile = {} }) => {
             <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
               8 Tracks Available
             </span>
-            <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 hidden sm:inline">
-              Candidate: {crmProfile?.admissionNo || "OMC-0375"}
-            </span>
+            {crmProfile?.admissionNo || currentUser?.admissionNo ? (
+              <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 hidden sm:inline">
+                Candidate: {crmProfile?.admissionNo || currentUser?.admissionNo}
+              </span>
+            ) : null}
           </div>
 
           <div className="flex items-center gap-3">

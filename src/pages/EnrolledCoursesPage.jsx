@@ -43,7 +43,7 @@ export const EnrolledCoursesPage = () => {
     currentUser?.crmAdmissionId ||
     studentUser?.crmAdmissionId ||
     crmProfile?.id ||
-    375;
+    null;
   const [permittedCourseIds, setPermittedCourseIds] = useState(
     () => (isExpired ? [] : (assignedCourseIds || [])),
   );

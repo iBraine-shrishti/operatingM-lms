@@ -14,16 +14,16 @@ export const StudentFeesCard = ({ profile, onOpenReceipt }) => {
   if (!profile) return null;
 
   const {
-    totalFees = 35000,
-    totalPaid = 25000,
-    balanceDue = 10000,
-    paidPercentage = 71.4,
-    paymentStatus = "Partial Due",
-    nextDueDate = "15 May 2026",
-    nextDueAmount = 10000,
+    totalFees = 0,
+    totalPaid = 0,
+    balanceDue = 0,
+    paidPercentage = 0,
+    paymentStatus = "Verified",
+    nextDueDate = "",
+    nextDueAmount = 0,
     installments = [],
-    admissionNo = "OMC-0266",
-  } = profile;
+    admissionNo = "",
+  } = profile || {};
 
   return (
     <div className="bg-white border border-slate-200/90 shadow-2xs p-5 sm:p-6 transition-all">

@@ -4,11 +4,11 @@ import logoImg from "../../assets/logo-certificate-blue.png";
 import { CheckCircle2, ShieldCheck } from "lucide-react";
 
 export const OperatingMediaCertificate = ({
-  studentName = "Hiteshpuri Goswami",
+  studentName = "Student",
   courseTitle = "Diploma in Digital Marketing",
-  certificateId = "132929482",
-  issueDate = "February 10, 2025",
-  expiryDate = "February 10, 2026",
+  certificateId = "",
+  issueDate = "",
+  expiryDate = "",
   verificationUrl = null,
   showBorder = true,
   className = "",

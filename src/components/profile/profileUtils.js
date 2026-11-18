@@ -36,14 +36,14 @@ export const resolveFacultyByBatchOrBranch = (branchOrCenter = "", batchNameOrCo
  */
 export const mapStudentDataFromCrm = (crm, user) => {
   const source = crm || {};
-  const rawId = source.id || user?.crmAdmissionId || user?.id || 375;
-  const numOnly = String(rawId).replace(/[^0-9]/g, "") || "375";
-  const numericId = `#${numOnly}`;
+  const rawId = source.id || user?.crmAdmissionId || user?.id || "";
+  const numOnly = rawId ? String(rawId).replace(/[^0-9]/g, "") : "";
+  const numericId = numOnly ? `#${numOnly}` : "";
   const studentId =
-    source.admissionNo || user?.admissionNo || `OMC-${numOnly.padStart(4, "0")}`;
-  const name = source.name || user?.name || "Sahil Hasolkar";
+    source.admissionNo || user?.admissionNo || (numOnly ? `OMC-${numOnly.padStart(4, "0")}` : "");
+  const name = source.name || user?.name || "Student";
   const fullName =
-    source.fullName || user?.fullName || source.name || user?.name || "Sahil Nilesh Hasolkar";
+    source.fullName || user?.fullName || source.name || user?.name || "Student";
   const rawAvatar = source.photo || source.avatar || user?.avatar;
   const avatar = rawAvatar || null;
   const course = source.course || user?.course || "Diploma in Digital Marketing";

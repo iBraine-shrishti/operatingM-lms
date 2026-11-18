@@ -1672,7 +1672,6 @@ export const lmsService = {
       crmAttendance &&
       Array.isArray(crmAttendance.logs) &&
       crmAttendance.logs.length > 0 &&
-      (crmAttendance.studentName !== "Sahil Hasolkar" || studentName.toLowerCase().includes("sahil")) &&
       (String(crmAttendance.studentId) === String(targetId) || crmAttendance.studentName === studentName);
 
     if (isRealStudentAttendance) {
@@ -1706,7 +1705,6 @@ export const lmsService = {
     // 6. Program Enrollment Milestone
     const isRealProfile =
       crmProfile &&
-      (crmProfile.name !== "Sahil Hasolkar" || studentName.toLowerCase().includes("sahil")) &&
       (crmProfile.registrationDate || crmProfile.joiningDate);
 
     if (isRealProfile) {
@@ -1745,15 +1743,7 @@ export const lmsService = {
   // Activities
   getActivities: () => {
     const stored = getStored("activities", []);
-    const clean = Array.isArray(stored)
-      ? stored.filter(
-          (a) =>
-            !a.id?.startsWith("act-sahil-") &&
-            !a.id?.startsWith("act-peer-") &&
-            a.user?.name !== "Sahil Hasolkar",
-        )
-      : [];
-    return clean;
+    return Array.isArray(stored) ? stored : [];
   },
   // Achievements
   getAchievements: () => getStored("achievements", INITIAL_ACHIEVEMENTS),
@@ -1822,11 +1812,12 @@ export const lmsService = {
         }
       } catch {}
     }
-    return "375";
+    return null;
   },
 
   getNotes: (studentId = null) => {
     const sId = lmsService.getActiveStudentId(studentId);
+    if (!sId) return [];
     const key = `notes_${sId}`;
     let stored = getStored(key, null);
 

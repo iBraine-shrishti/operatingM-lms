@@ -20,10 +20,10 @@ export const PaymentDueModal = ({
 }) => {
   if (!isOpen) return null;
 
-  const studentName = currentUser.name || "Hiteshpuri Goswami";
-  const admissionId = crmProfile.admissionNo || "OMC-0266";
-  const studentCourse = crmProfile.course || "Diploma in Digital Marketing";
-  const centerBranch = crmProfile.branch || "Borivali Center";
+  const studentName = currentUser?.name || crmProfile?.studentName || crmProfile?.name || "Student";
+  const admissionId = crmProfile?.admissionNo || currentUser?.admissionNo || "";
+  const studentCourse = crmProfile?.course || currentUser?.course || "Digital Marketing";
+  const centerBranch = crmProfile?.branch || currentUser?.branch || "";
 
   const installmentAmount = paymentInfo.installmentAmount || "₹12,500";
   const termText =

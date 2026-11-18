@@ -34,7 +34,7 @@ export const OfficialExamPage = () => {
   // Candidate identity details
   const candidateName = studentData?.name || currentUser?.name || "Student";
   const rollNumber =
-    studentData?.studentId || currentUser?.admissionNo || "OMC-0375";
+    studentData?.studentId || currentUser?.admissionNo || "";
   const candidateAvatar = studentData?.avatar || currentUser?.avatar || null;
   const centerNode = `${studentData?.center || "Borivali Center"} • Assessment Node`;
   const sessionHash = "SHA256: 9e887f4c10a30b2e847d91";

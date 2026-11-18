@@ -16,7 +16,7 @@ export const CertificateViewerModal = ({
   isOpen,
   onClose,
   certificate,
-  studentName = "Hiteshpuri Goswami",
+  studentName = "Student",
 }) => {
   const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
@@ -26,12 +26,12 @@ export const CertificateViewerModal = ({
   const name =
     certificate?.name ||
     studentName ||
-    "Hiteshpuri Goswami";
+    "Student";
 
   const certId =
     certificate?.certificate_id ||
     certificate?.id ||
-    "132929482";
+    "";
 
   const course =
     certificate?.course ||
