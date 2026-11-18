@@ -1,5 +1,6 @@
 import React from "react";
 import { CreditCard, X, Clock, ChevronDown, Check } from "lucide-react";
+import { formatAdmissionNo } from "../../../utils/admissionUtils";
 
 /**
  * Reusable Payment Due Modal Component
@@ -21,7 +22,15 @@ export const PaymentDueModal = ({
   if (!isOpen) return null;
 
   const studentName = currentUser?.name || crmProfile?.studentName || crmProfile?.name || "Student";
-  const admissionId = crmProfile?.admissionNo || currentUser?.admissionNo || "";
+  const admissionId = formatAdmissionNo(
+    crmProfile?.admissionNo ||
+    crmProfile?.admission_no ||
+    currentUser?.admissionNo ||
+    crmProfile?.id ||
+    currentUser?.crmAdmissionId ||
+    currentUser?.id ||
+    ""
+  );
   const studentCourse = crmProfile?.course || currentUser?.course || "Digital Marketing";
   const centerBranch = crmProfile?.branch || currentUser?.branch || "";
 

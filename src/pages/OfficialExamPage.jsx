@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { mapStudentDataFromCrm } from "../components/profile";
+import { formatAdmissionNo } from "../utils/admissionUtils";
 import { lmsService } from "../services/lmsService";
 import { crmService } from "../services/crmService";
 
@@ -33,8 +34,13 @@ export const OfficialExamPage = () => {
 
   // Candidate identity details
   const candidateName = studentData?.name || currentUser?.name || "Student";
-  const rollNumber =
-    studentData?.studentId || currentUser?.admissionNo || "";
+  const rollNumber = formatAdmissionNo(
+    studentData?.studentId ||
+    currentUser?.admissionNo ||
+    currentUser?.crmAdmissionId ||
+    currentUser?.id ||
+    ""
+  );
   const candidateAvatar = studentData?.avatar || currentUser?.avatar || null;
   const centerNode = `${studentData?.center || "Borivali Center"} • Assessment Node`;
   const sessionHash = "SHA256: 9e887f4c10a30b2e847d91";

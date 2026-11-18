@@ -14,6 +14,7 @@ import { CRM_BACKEND_API } from "../../services/lmsService";
 import { crmService, CRM_BASE_URL } from "../../services/crmService";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
+import { formatAdmissionNo } from "../../utils/admissionUtils";
 
 export const StudentGrievanceForm = () => {
   const { currentUser, crmProfile, crmBatch, crmAttendance } = useAuth();
@@ -26,13 +27,16 @@ export const StudentGrievanceForm = () => {
     crmProfile?.fullName ||
     "";
 
-  const studentId =
+  const studentId = formatAdmissionNo(
+    crmProfile?.admissionNo ||
     crmProfile?.admission_no ||
     crmProfile?.roll_number ||
+    currentUser?.admissionNo ||
     crmProfile?.id ||
     currentUser?.crmAdmissionId ||
     currentUser?.id ||
-    "";
+    ""
+  );
 
   const studentEmail =
     currentUser?.email ||
@@ -193,7 +197,7 @@ export const StudentGrievanceForm = () => {
     setFormData((prev) => ({
       ...prev,
       fullName: prev.fullName || studentName,
-      studentId: prev.studentId || studentId,
+      studentId: prev.studentId ? formatAdmissionNo(prev.studentId) : studentId,
       email: prev.email || studentEmail,
       phone: prev.phone || studentPhone,
       courseName: prev.courseName || programCourse,
@@ -483,7 +487,7 @@ export const StudentGrievanceForm = () => {
                   name="studentId"
                   value={formData.studentId}
                   onChange={handleInputChange}
-                  placeholder="e.g. OM-2026-441"
+                  placeholder="e.g. OMC-8001"
                   className="flex-1 bg-transparent border-0 px-2 py-1 text-slate-900 dark:text-white outline-none focus:bg-blue-50/50 dark:focus:bg-slate-800/50 rounded"
                 />
               </div>

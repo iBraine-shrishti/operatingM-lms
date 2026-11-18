@@ -26,7 +26,15 @@ export const StudentWelcomeBanner = ({
 
   const studentName = currentUser?.name || crmProfile?.studentName || crmProfile?.name || "Student";
   const studentCourse = crmProfile?.course || currentUser?.course || "Digital Marketing";
-  const admissionId = formatAdmissionNo(crmProfile?.admissionNo || currentUser?.admissionNo || "");
+  const admissionId = formatAdmissionNo(
+    crmProfile?.admissionNo ||
+    crmProfile?.admission_no ||
+    currentUser?.admissionNo ||
+    crmProfile?.id ||
+    currentUser?.crmAdmissionId ||
+    currentUser?.id ||
+    ""
+  );
   const centerBranch = crmProfile?.branch || currentUser?.branch || "";
 
   // Prioritize live backend photo from CRM API before any fallback asset
