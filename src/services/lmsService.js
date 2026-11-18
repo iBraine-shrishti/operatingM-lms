@@ -2066,21 +2066,22 @@ export const lmsService = {
         device_type: deviceType,
       });
 
+      const query = `student_id=${encodeURIComponent(cleanId)}&session_token=${encodeURIComponent(sessionToken)}&device_id=${encodeURIComponent(deviceId)}&device_type=${encodeURIComponent(deviceType)}`;
+
       // 1. sendBeacon for instant fire-and-forget release
       if (typeof navigator !== "undefined" && navigator.sendBeacon) {
         try {
           const blob = new Blob([payload], { type: "application/json" });
-          navigator.sendBeacon(`${CRM_BACKEND_API}/lms/student-activity/logout/`, blob);
+          navigator.sendBeacon(`${CRM_BACKEND_API}/lms/student-activity/logout/?${query}`, blob);
         } catch {}
       }
 
       // 2. Guaranteed fetch with keepalive: true
-      await fetch(`${CRM_BACKEND_API}/lms/student-activity/logout/`, {
+      await fetch(`${CRM_BACKEND_API}/lms/student-activity/logout/?${query}`, {
         method: "POST",
         keepalive: true,
         headers: {
           "Content-Type": "application/json",
-          "X-Session-Token": sessionToken,
         },
         body: payload,
       }).catch(() => {});
@@ -2100,13 +2101,12 @@ export const lmsService = {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
       const deviceType = isMobile ? "APP" : "PC";
 
-      const res = await fetch(`${CRM_BACKEND_API}/lms/student-activity/heartbeat/`, {
+      const query = `student_id=${encodeURIComponent(cleanId)}&session_token=${encodeURIComponent(sessionToken)}&device_id=${encodeURIComponent(deviceId)}&device_type=${encodeURIComponent(deviceType)}`;
+
+      const res = await fetch(`${CRM_BACKEND_API}/lms/student-activity/heartbeat/?${query}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-Session-Token": sessionToken,
-          "X-Device-Id": deviceId,
-          "X-Device-Type": deviceType,
         },
         body: JSON.stringify({
           student_id: cleanId,
