@@ -352,6 +352,19 @@ export const AuthProvider = ({ children }) => {
         return () => clearInterval(interval);
     }, [isAuthenticated, role, crmProfile?.id]);
 
+    // Listen for session revocation (if account is logged in on another device of the same slot)
+    useEffect(() => {
+        const handleSessionRevoked = (e) => {
+            const msg = e.detail?.message || "Your session ended because your account was logged into on another device.";
+            alert(msg);
+            logout();
+            window.location.href = "/login";
+        };
+
+        window.addEventListener("om_lms_session_revoked", handleSessionRevoked);
+        return () => window.removeEventListener("om_lms_session_revoked", handleSessionRevoked);
+    }, []);
+
     useEffect(() => {
         try {
             localStorage.setItem(STORAGE_KEY, role);
@@ -405,6 +418,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.removeItem('om_lms_crm_cached_profile');
             localStorage.removeItem('om_lms_student_avatar');
             localStorage.removeItem('crm_selected_student_id');
+            localStorage.removeItem('om_lms_session_token');
         } catch (e) {
             console.error('Failed to clear auth state from localStorage', e);
         }

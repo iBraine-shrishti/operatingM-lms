@@ -1,5 +1,6 @@
 
 import { formatAdmissionNo } from "../utils/admissionUtils";
+import { getDeviceId, getDeviceType, getDeviceName, setSessionToken } from "../utils/deviceUtils";
 
 /**
  * Operating Media LMS - CRM Integration Service
@@ -718,13 +719,17 @@ class CrmService {
   /**
    * Authenticate student with CRM database via login_id/email and password
    */
-  async studentLogin(loginId, password) {
+  async studentLogin(loginId, password, options = {}) {
     const trimmedLogin = String(loginId || "").trim();
     const trimmedPass = String(password || "").trim();
 
     if (!trimmedLogin || !trimmedPass) {
       throw new Error("Please enter your LMS Login ID and password.");
     }
+
+    const deviceType = options.deviceType || getDeviceType();
+    const deviceId = options.deviceId || getDeviceId();
+    const deviceName = options.deviceName || getDeviceName();
 
     try {
       const controller = new AbortController();
@@ -739,22 +744,43 @@ class CrmService {
         body: JSON.stringify({
           login_id: trimmedLogin,
           password: trimmedPass,
+          device_type: deviceType,
+          device_id: deviceId,
+          device_name: deviceName,
+          force_kick_previous: Boolean(options.forceKickPrevious),
+          conflict_token: options.conflictToken || "",
         }),
         signal: controller.signal,
       });
       clearTimeout(timeoutId);
 
       const cType = res.headers.get("content-type") || "";
-      if (res.ok && cType.includes("application/json")) {
+      if (cType.includes("application/json")) {
         const data = await res.json();
-        if (data?.success && data?.student) {
-          this.setSelectedStudentId(data.student.id);
-          return data.student;
+        // Check Option B device conflict
+        if (data?.device_conflict) {
+          return {
+            deviceConflict: true,
+            deviceType: data.device_type || deviceType,
+            activeDevice: data.active_device || {},
+            conflictToken: data.conflict_token || "",
+            message: data.message || "Active session detected on another device.",
+          };
         }
-      } else if (!res.ok && cType.includes("application/json")) {
-        const errData = await res.json();
-        if (errData?.error) {
-          throw new Error(errData.error);
+
+        if (data?.success && data?.student) {
+          if (data.session_token) {
+            setSessionToken(data.session_token);
+          }
+          this.setSelectedStudentId(data.student.id);
+          return {
+            ...data.student,
+            sessionToken: data.session_token,
+          };
+        }
+
+        if (data?.error) {
+          throw new Error(data.error);
         }
       }
     } catch (err) {

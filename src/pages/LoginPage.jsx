@@ -13,6 +13,11 @@ import {
   BookOpen,
   Save,
   ShieldCheck,
+  Monitor,
+  Smartphone,
+  ShieldAlert,
+  LogOut,
+  RefreshCw,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { crmService } from "../services/crmService";
@@ -51,6 +56,7 @@ export const LoginPage = () => {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [saveToast, setSaveToast] = useState("");
+  const [conflictData, setConflictData] = useState(null);
 
   const handleSaveCredentials = (e) => {
     e?.preventDefault();
@@ -98,6 +104,20 @@ export const LoginPage = () => {
 
     try {
       const student = await crmService.studentLogin(trimmedLogin, trimmedPass);
+
+      // Handle Option B Device Conflict (Another device active in this slot)
+      if (student?.deviceConflict) {
+        setIsSubmitting(false);
+        setConflictData({
+          activeDevice: student.activeDevice || {},
+          conflictToken: student.conflictToken || "",
+          deviceType: student.deviceType || "PC",
+          loginId: trimmedLogin,
+          password: trimmedPass,
+        });
+        return;
+      }
+
       if (student) {
         try {
           if (rememberMe) {
@@ -153,6 +173,54 @@ export const LoginPage = () => {
     setError(
       "Invalid student credentials. Please verify your email / login ID and password."
     );
+  };
+
+  const handleConfirmKickAndLogin = async () => {
+    if (!conflictData) return;
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      const student = await crmService.studentLogin(
+        conflictData.loginId,
+        conflictData.password,
+        {
+          forceKickPrevious: true,
+          conflictToken: conflictData.conflictToken,
+          deviceType: conflictData.deviceType,
+        }
+      );
+
+      if (student && !student.deviceConflict) {
+        setConflictData(null);
+
+        login("STUDENT");
+        if (updateCurrentUser) {
+          updateCurrentUser({
+            id: `std-${student.id}`,
+            crmAdmissionId: student.id,
+            admissionNo: formatAdmissionNo(student.admissionNo || student.id),
+            name: student.name,
+            fullName: student.fullName || student.name,
+            email: student.email,
+            course: student.course,
+            branch: student.branch,
+            center: student.center,
+            designation: student.designation,
+            avatar: student.photo || undefined,
+          });
+        }
+        if (student.id) {
+          await switchCrmStudent(student.id);
+        }
+        navigate("/dashboard");
+        return;
+      }
+    } catch (err) {
+      setError(err.message || "Failed to replace active device session.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -677,6 +745,94 @@ export const LoginPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Option B: Netflix-Style Device Limit Confirmation Modal */}
+      {conflictData && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-5 animate-in zoom-in-95 duration-200">
+            {/* Header Badge & Title */}
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30 flex items-center justify-center shrink-0 shadow-xs">
+                {conflictData.deviceType === "APP" ? (
+                  <Smartphone size={24} />
+                ) : (
+                  <Monitor size={24} />
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2.5 py-0.5 rounded-full border border-amber-200 dark:border-amber-800 mb-1">
+                  Device Slot In Use
+                </span>
+                <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                  Active {conflictData.deviceType === "APP" ? "Mobile" : "PC"} Session Detected
+                </h3>
+              </div>
+            </div>
+
+            {/* Explanatory Context */}
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Operating Media LMS allows <strong>1 active PC</strong> and <strong>1 Mobile App</strong> at a time. Your account is currently open on:
+            </p>
+
+            {/* Currently Active Device Card */}
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                  {conflictData.deviceType === "APP" ? (
+                    <Smartphone size={18} />
+                  ) : (
+                    <Monitor size={18} />
+                  )}
+                </div>
+                <div className="min-w-0">
+                  <div className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate">
+                    {conflictData.activeDevice?.device_name || `Active ${conflictData.deviceType}`}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-0.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Active {conflictData.activeDevice?.last_active || "recently"}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 italic">
+              Continuing will log out the other {conflictData.deviceType === "APP" ? "mobile" : "PC"} so you can learn on this screen without interruption.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-1">
+              <button
+                type="button"
+                onClick={handleConfirmKickAndLogin}
+                disabled={isSubmitting}
+                className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-60 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {isSubmitting ? (
+                  <>
+                    <RefreshCw size={15} className="animate-spin" />
+                    <span>Switching Session...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogOut size={15} />
+                    <span>Log Out Other {conflictData.deviceType === "APP" ? "Mobile" : "PC"} & Continue</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setConflictData(null)}
+                disabled={isSubmitting}
+                className="px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs sm:text-sm hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

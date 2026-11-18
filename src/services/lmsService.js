@@ -2052,11 +2052,21 @@ export const lmsService = {
     try {
       if (!studentId) return;
       const cleanId = String(studentId).replace("std-", "").replace("OMC-", "").replace(/^0+/, "");
+      const sessionToken = localStorage.getItem("om_lms_session_token") || "";
+      const deviceId = localStorage.getItem("om_lms_device_id") || "";
       await fetch(`${CRM_BACKEND_API}/lms/student-activity/logout/`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ student_id: cleanId }),
+        headers: {
+          "Content-Type": "application/json",
+          "X-Session-Token": sessionToken,
+        },
+        body: JSON.stringify({
+          student_id: cleanId,
+          session_token: sessionToken,
+          device_id: deviceId,
+        }),
       });
+      localStorage.removeItem("om_lms_session_token");
     } catch (err) {
       // silent
     }
@@ -2065,11 +2075,36 @@ export const lmsService = {
     try {
       if (!studentId) return;
       const cleanId = String(studentId).replace("std-", "").replace("OMC-", "").replace(/^0+/, "");
-      await fetch(`${CRM_BACKEND_API}/lms/student-activity/heartbeat/`, {
+      const sessionToken = localStorage.getItem("om_lms_session_token") || "";
+      const res = await fetch(`${CRM_BACKEND_API}/lms/student-activity/heartbeat/`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ student_id: cleanId }),
+        headers: {
+          "Content-Type": "application/json",
+          "X-Session-Token": sessionToken,
+        },
+        body: JSON.stringify({
+          student_id: cleanId,
+          session_token: sessionToken,
+        }),
       });
+
+      if (res.status === 401) {
+        try {
+          const data = await res.json();
+          if (data?.session_revoked) {
+            // Dispatch a window event to notify AuthContext immediately
+            window.dispatchEvent(
+              new CustomEvent("om_lms_session_revoked", {
+                detail: {
+                  message:
+                    data.error ||
+                    "Your session was ended because this account was logged into on another device.",
+                },
+              })
+            );
+          }
+        } catch {}
+      }
     } catch (err) {
       // silent
     }
