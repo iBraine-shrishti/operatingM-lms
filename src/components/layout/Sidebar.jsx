@@ -32,6 +32,7 @@ import {
   MessagesSquare,
   Briefcase,
   Sparkles,
+  Wrench,
 } from "lucide-react";
 
 export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
@@ -333,6 +334,13 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           icon: Sparkles,
           badge: "New",
           color: "text-pink-500 dark:text-pink-400",
+        },
+        {
+          name: "SEO Tools",
+          path: "/seo-tools",
+          icon: Wrench,
+          badge: "New",
+          color: "text-blue-600 dark:text-cyan-400",
         },
       ],
     },

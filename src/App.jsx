@@ -24,6 +24,7 @@ import { GrievancePage } from "./pages/GrievancePage.jsx";
 import { ResumeBuilderPage } from "./pages/ResumeBuilderPage.jsx";
 import { PortfolioBuilderPage } from "./pages/PortfolioBuilderPage.jsx";
 import { PortfolioLivePage } from "./pages/PortfolioLivePage.jsx";
+import { SeoToolsPage } from "./pages/SeoToolsPage.jsx";
 
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
@@ -116,6 +117,8 @@ function AppRoutes() {
         />
         <Route path="resume-builder" element={<ResumeBuilderPage />} />
         <Route path="portfolio-builder" element={<PortfolioBuilderPage />} />
+        <Route path="seo-tools" element={<SeoToolsPage />} />
+        <Route path="seo-tool" element={<Navigate to="/seo-tools" replace />} />
       </Route>
 
       {/* Wildcard: redirects to RootRoute */}
