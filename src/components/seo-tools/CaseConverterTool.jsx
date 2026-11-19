@@ -8,17 +8,19 @@ export const CaseConverterTool = () => {
   const [outputText, setOutputText] = useState("");
   const [copied, setCopied] = useState(false);
 
-  // 1. Remove Duplicates (lines or words)
+  // 1. Remove Duplicates
   const handleRemoveDuplicates = () => {
     if (!inputText) return;
     const lines = inputText.split("\n");
     if (lines.length > 1) {
       const unique = Array.from(new Set(lines.map((l) => l.trim()))).filter(Boolean);
       setOutputText(unique.join("\n"));
+      showToast?.(`Removed duplicates (${unique.length} lines)`, "success");
     } else {
       const words = inputText.split(/\s+/);
       const unique = Array.from(new Set(words));
       setOutputText(unique.join(" "));
+      showToast?.(`Removed duplicates (${unique.length} words)`, "success");
     }
   };
 
@@ -31,6 +33,7 @@ export const CaseConverterTool = () => {
       .filter((l) => l.length > 0)
       .join("\n");
     setOutputText(cleaned);
+    showToast?.("Removed blank lines", "success");
   };
 
   // 3. Sort Alphabetically
@@ -45,12 +48,14 @@ export const CaseConverterTool = () => {
       const sorted = [...words].sort((a, b) => a.localeCompare(b));
       setOutputText(sorted.join(" "));
     }
+    showToast?.("Sorted alphabetically", "success");
   };
 
-  // 4. Make Alphanumeric (removes special chars)
+  // 4. Make Alphanumeric
   const handleMakeAlphanumeric = () => {
     if (!inputText) return;
     setOutputText(inputText.replace(/[^a-zA-Z0-9\s]/g, ""));
+    showToast?.("Made alphanumeric", "success");
   };
 
   // 5. Make All Uppercase
@@ -86,7 +91,7 @@ export const CaseConverterTool = () => {
       showToast?.(`Extracted ${unique.length} email(s)`, "success");
     } else {
       setOutputText("");
-      showToast?.("No valid email addresses found", "info");
+      showToast?.("No valid emails found", "info");
     }
   };
 
@@ -110,7 +115,7 @@ export const CaseConverterTool = () => {
     try {
       await navigator.clipboard.writeText(outputText);
       setCopied(true);
-      showToast?.("Converted text copied!", "success");
+      showToast?.("Copied to clipboard!", "success");
       setTimeout(() => setCopied(false), 2000);
     } catch {
       showToast?.("Failed to copy", "error");
@@ -118,28 +123,28 @@ export const CaseConverterTool = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white dark:bg-[#0b1329] p-6 sm:p-8 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-5">
-      <h2 className="text-xl sm:text-2xl font-serif font-bold text-center text-slate-800 dark:text-slate-100">
+    <div className="max-w-2xl mx-auto bg-white dark:bg-[#0b1329] p-5 sm:p-6 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-3.5">
+      <h2 className="text-lg sm:text-xl font-serif font-bold text-center text-slate-800 dark:text-slate-100">
         Case Converter Tool
       </h2>
 
       {/* Input Box */}
       <div>
         <textarea
-          rows={5}
+          rows={3}
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Enter your text here..."
-          className="w-full p-3.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:border-[#f58220] transition-all placeholder:text-slate-400"
+          className="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs sm:text-sm focus:outline-none focus:border-[#f58220] transition-all placeholder:text-slate-400"
         />
       </div>
 
       {/* Buttons Grid matching Screenshot exactly */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
           onClick={handleRemoveDuplicates}
-          className="w-full py-2.5 px-3 rounded-lg bg-[#f58220] hover:bg-[#e07113] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
+          className="w-full py-2 px-2.5 rounded-lg bg-[#f58220] hover:bg-[#e07113] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
         >
           Remove Duplicates
         </button>
@@ -147,7 +152,7 @@ export const CaseConverterTool = () => {
         <button
           type="button"
           onClick={handleRemoveBlankLines}
-          className="w-full py-2.5 px-3 rounded-lg bg-[#6d4c28] hover:bg-[#5a3e20] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
+          className="w-full py-2 px-2.5 rounded-lg bg-[#6d4c28] hover:bg-[#5a3e20] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
         >
           Remove Blank Lines
         </button>
@@ -155,7 +160,7 @@ export const CaseConverterTool = () => {
         <button
           type="button"
           onClick={handleSortAlphabetically}
-          className="w-full py-2.5 px-3 rounded-lg bg-[#f58220] hover:bg-[#e07113] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
+          className="w-full py-2 px-2.5 rounded-lg bg-[#f58220] hover:bg-[#e07113] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
         >
           Sort Alphabetically
         </button>
@@ -163,7 +168,7 @@ export const CaseConverterTool = () => {
         <button
           type="button"
           onClick={handleMakeAlphanumeric}
-          className="w-full py-2.5 px-3 rounded-lg bg-[#f58220] hover:bg-[#e07113] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
+          className="w-full py-2 px-2.5 rounded-lg bg-[#f58220] hover:bg-[#e07113] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
         >
           Make Alphanumeric
         </button>
@@ -171,7 +176,7 @@ export const CaseConverterTool = () => {
         <button
           type="button"
           onClick={handleMakeUppercase}
-          className="w-full py-2.5 px-3 rounded-lg bg-[#f58220] hover:bg-[#e07113] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
+          className="w-full py-2 px-2.5 rounded-lg bg-[#f58220] hover:bg-[#e07113] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
         >
           Make All Uppercase
         </button>
@@ -179,7 +184,7 @@ export const CaseConverterTool = () => {
         <button
           type="button"
           onClick={handleMakeLowercase}
-          className="w-full py-2.5 px-3 rounded-lg bg-[#f58220] hover:bg-[#e07113] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
+          className="w-full py-2 px-2.5 rounded-lg bg-[#f58220] hover:bg-[#e07113] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
         >
           Make All Lowercase
         </button>
@@ -187,7 +192,7 @@ export const CaseConverterTool = () => {
         <button
           type="button"
           onClick={handleMakeTitleCase}
-          className="w-full py-2.5 px-3 rounded-lg bg-[#f58220] hover:bg-[#e07113] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
+          className="w-full py-2 px-2.5 rounded-lg bg-[#f58220] hover:bg-[#e07113] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
         >
           Make Title Case
         </button>
@@ -195,7 +200,7 @@ export const CaseConverterTool = () => {
         <button
           type="button"
           onClick={handleExtractEmails}
-          className="w-full py-2.5 px-3 rounded-lg bg-[#f58220] hover:bg-[#e07113] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
+          className="w-full py-2 px-2.5 rounded-lg bg-[#f58220] hover:bg-[#e07113] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
         >
           Extract Valid Emails Only
         </button>
@@ -203,7 +208,7 @@ export const CaseConverterTool = () => {
         <button
           type="button"
           onClick={handleExtractUrls}
-          className="col-span-2 w-full py-2.5 px-3 rounded-lg bg-[#f58220] hover:bg-[#e07113] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
+          className="col-span-2 w-full py-2 px-2.5 rounded-lg bg-[#f58220] hover:bg-[#e07113] active:scale-[0.98] text-white text-xs sm:text-sm font-semibold transition-all shadow-2xs"
         >
           Extract Valid URLs Only
         </button>
@@ -212,18 +217,18 @@ export const CaseConverterTool = () => {
       {/* Output Box */}
       <div className="relative">
         <textarea
-          rows={5}
+          rows={3}
           value={outputText}
           readOnly
           placeholder="Your converted text will appear here..."
-          className="w-full p-3.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm focus:outline-none placeholder:text-slate-400"
+          className="w-full p-3 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-xs sm:text-sm focus:outline-none placeholder:text-slate-400 font-mono"
         />
 
         {outputText && (
           <button
             type="button"
             onClick={handleCopy}
-            className="absolute top-2.5 right-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#003873] hover:bg-[#002855] text-white text-xs font-bold shadow-2xs transition-all"
+            className="absolute top-2 right-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#003873] hover:bg-[#002855] text-white text-xs font-bold shadow-2xs transition-all"
           >
             {copied ? <Check size={12} /> : <Copy size={12} />}
             <span>{copied ? "Copied" : "Copy"}</span>

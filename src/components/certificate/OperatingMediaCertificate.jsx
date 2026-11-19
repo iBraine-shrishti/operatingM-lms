@@ -12,6 +12,7 @@ export const OperatingMediaCertificate = ({
   verificationUrl = null,
   showBorder = true,
   className = "",
+  isDemo = false,
 }) => {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
 

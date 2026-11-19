@@ -11,7 +11,7 @@ import { MyQuizzesPage } from "./pages/MyQuizzesPage";
 import { TakeQuizPage } from "./pages/TakeQuizPage";
 import { MyAssignmentsPage } from "./pages/MyAssignmentsPage";
 import { TakeAssignmentPage } from "./pages/TakeAssignmentPage";
-// import { AchievementsPage } from "./pages/AchievementsPage";
+import { AchievementsPage } from "./pages/AchievementsPage";
 import { NotesReviewsPage } from "./pages/NotesReviewsPage";
 import { ActivityPage } from "./pages/ActivityPage";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -85,7 +85,7 @@ function AppRoutes() {
         <Route path="my-assignments" element={<MyAssignmentsPage />} />
         <Route path="take-assignment/:id" element={<TakeAssignmentPage />} />
         <Route path="take-assignment" element={<TakeAssignmentPage />} />
-        {/* <Route path="achievements" element={<AchievementsPage />} /> */}
+        <Route path="achievements" element={<AchievementsPage />} />
         <Route path="notes-reviews" element={<NotesReviewsPage />} />
         <Route path="notes" element={<NotesReviewsPage />} />
         <Route path="activity" element={<ActivityPage />} />

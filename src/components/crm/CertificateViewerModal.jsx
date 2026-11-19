@@ -17,16 +17,17 @@ export const CertificateViewerModal = ({
   onClose,
   certificate,
   studentName = "Student",
+  isDemo = false,
 }) => {
   const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
 
   if (!isOpen) return null;
 
-  const name =
-    certificate?.name ||
-    studentName ||
-    "Student";
+  const demoActive = isDemo || certificate?.isDemo;
+  const name = demoActive
+    ? "YOUR NAME"
+    : certificate?.name || studentName || "Student";
 
   const certId =
     certificate?.certificate_id ||
@@ -71,10 +72,10 @@ export const CertificateViewerModal = ({
             </div>
             <div>
               <h3 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white leading-tight">
-                Official Operating Media Certificate
+                {demoActive ? "Official Operating Media Certificate Specimen" : "Official Operating Media Certificate"}
               </h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                Verified Credential #{certId} • Conferred to {name}
+                {demoActive ? `Verified Demo Specimen • Course: ${course}` : `Verified Credential #${certId} • Conferred to ${name}`}
               </p>
             </div>
           </div>
@@ -125,6 +126,7 @@ export const CertificateViewerModal = ({
             expiryDate={expiryDate}
             verificationUrl={verifyUrl}
             showBorder={true}
+            isDemo={demoActive}
           />
         </div>
 

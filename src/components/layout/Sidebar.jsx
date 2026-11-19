@@ -15,6 +15,7 @@ import {
   User,
   GraduationCap,
   Award,
+  Trophy,
   CheckSquare,
   FileText,
   BookCheck,
@@ -281,6 +282,12 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           path: "/exam",
           icon: Award,
           badge: String(liveExamsCount ?? 0),
+          color: "text-amber-500 dark:text-amber-400",
+        },
+        {
+          name: "Achievements",
+          path: "/achievements",
+          icon: Trophy,
           color: "text-amber-500 dark:text-amber-400",
         },
         {
