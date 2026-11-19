@@ -1,17 +1,16 @@
 import React from "react";
-import { BookOpen, Layers, CheckSquare, BookMarked, UserCheck } from "lucide-react";
+import { Layers, CheckSquare, BookMarked, UserCheck } from "lucide-react";
 
 /**
  * CourseDetailTabs Component
  * Sticky tab navigation bar for switching between:
- * - Overview
  * - Modules & Lessons (Outline)
  * - Quizzes & Assignments (Assessments)
  * - Notes
  * - Enrolled Students (Admin only)
  */
 export const CourseDetailTabs = ({
-  activeTab = "overview",
+  activeTab = "outline",
   onTabChange,
   courseQuizzesCount = 0,
   courseAssignmentsCount = 0,
@@ -22,7 +21,6 @@ export const CourseDetailTabs = ({
   const totalAssessmentsCount = courseQuizzesCount + courseAssignmentsCount;
 
   const tabs = [
-    { key: "overview", label: "Overview", icon: BookOpen },
     { key: "outline", label: "Modules & Lessons", icon: Layers },
     ...(totalAssessmentsCount > 0
       ? [

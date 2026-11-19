@@ -7,7 +7,6 @@ import { useToast } from "../context/ToastContext";
 import {
   CourseDetailHeader,
   CourseDetailTabs,
-  CourseOverviewTab,
   CourseOutlineTab,
   CourseAssessmentsTab,
   CourseNotesTab,
@@ -73,10 +72,11 @@ export const CourseDetailPage = () => {
   const students = lmsService.getStudents();
 
   const [searchParams] = useSearchParams();
-  // Tab state: 'overview' 1st by default as requested, 'outline', 'assessments', 'notes', 'students'
-  const [activeTab, setActiveTab] = useState(
-    () => searchParams.get("tab") || "overview",
-  );
+  // Tab state: 'outline' (Modules & Lessons) 1st by default, 'assessments', 'notes', 'students'
+  const [activeTab, setActiveTab] = useState(() => {
+    const tabParam = searchParams.get("tab");
+    return tabParam && tabParam !== "overview" ? tabParam : "outline";
+  });
   const [assessmentFilter, setAssessmentFilter] = useState("all"); // 'all' | 'quizzes' | 'assignments'
 
   // Module Accordion states - all closed by default
@@ -430,6 +430,7 @@ export const CourseDetailPage = () => {
       <CourseDetailHeader
         course={course}
         sections={sections}
+        units={units}
         totalVideosCount={totalVideosCount}
         completedActivitiesCount={completedActivitiesCount}
         hasCourseAccess={hasCourseAccess}
@@ -454,20 +455,7 @@ export const CourseDetailPage = () => {
       />
 
       {/* ------------------------------------------------------------- */}
-      {/* 3. TAB 1: OVERVIEW COMPONENT                                  */}
-      {/* ------------------------------------------------------------- */}
-      {activeTab === "overview" && (
-        <CourseOverviewTab
-          course={course}
-          courseInformationText={courseInformationText}
-          courseDescriptionText={courseDescriptionText}
-          sections={sections}
-          units={units}
-        />
-      )}
-
-      {/* ------------------------------------------------------------- */}
-      {/* 4. TAB 2: MODULES & LESSONS (OUTLINE) COMPONENT               */}
+      {/* 3. TAB 1: MODULES & LESSONS (OUTLINE) COMPONENT               */}
       {/* ------------------------------------------------------------- */}
       {activeTab === "outline" && (
         <CourseOutlineTab
