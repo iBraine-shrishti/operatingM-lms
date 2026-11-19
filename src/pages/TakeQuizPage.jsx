@@ -23,46 +23,68 @@ import {
   LogOut,
 } from "lucide-react";
 import { CourseBadge } from "../components/common/CourseBadge";
-import { IMPORTED_LMS_QUIZZES } from "../data/importedLmsQuizzes";
-
-const DEFAULT_QUIZ_QUESTIONS = IMPORTED_LMS_QUIZZES[0]?.questions || [];
 
 export const TakeQuizPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { showToast } = useToast();
 
-  const quizzes = useMemo(() => lmsService.getQuizzes(), []);
+  const [quizzes, setQuizzes] = useState(() => lmsService.getQuizzes());
   const [liveQuiz, setLiveQuiz] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load quiz details & questions from live API
   useEffect(() => {
-    if (!id) return;
-    const baseApi = CRM_BACKEND_API || "https://crm.dmsoi.org/api";
-    fetch(`${baseApi}/lms/quizzes/${id}/`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data && data.success && data.quiz) {
-          setLiveQuiz(data.quiz);
-        }
-      })
-      .catch(() => {});
+    let isMounted = true;
+    setIsLoading(true);
+
+    if (id) {
+      const baseApi = CRM_BACKEND_API || "https://crm.dmsoi.org/api";
+      fetch(`${baseApi}/lms/quizzes/${id}/`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (isMounted && data && data.success && data.quiz) {
+            setLiveQuiz(data.quiz);
+          }
+        })
+        .catch((err) => console.warn("Could not fetch quiz:", err))
+        .finally(() => {
+          if (isMounted) setIsLoading(false);
+        });
+    } else {
+      setIsLoading(false);
+    }
+
+    // Refresh student quizzes catalog
+    lmsService.fetchStudentQuizzes().then((fresh) => {
+      if (isMounted && Array.isArray(fresh) && fresh.length > 0) {
+        setQuizzes(fresh);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   const quiz = useMemo(() => {
     if (liveQuiz) return liveQuiz;
     if (id) {
-      return quizzes.find((q) => String(q.id) === String(id) || String(q.numericId) === String(id)) || quizzes[0];
+      return (
+        quizzes.find(
+          (q) => String(q.id) === String(id) || String(q.numericId) === String(id),
+        ) || null
+      );
     }
-    return quizzes.find((q) => q.studentStatus === "pending") || quizzes[0];
+    return quizzes.find((q) => q.studentStatus === "pending") || quizzes[0] || null;
   }, [id, quizzes, liveQuiz]);
 
-  // Questions for this quiz (fallback to DEFAULT_QUIZ_QUESTIONS)
+  // Questions for this quiz
   const questions = useMemo(() => {
-    if (quiz?.questions && Array.isArray(quiz.questions) && quiz.questions.length > 0) {
+    if (quiz?.questions && Array.isArray(quiz.questions)) {
       return quiz.questions;
     }
-    return DEFAULT_QUIZ_QUESTIONS;
+    return [];
   }, [quiz]);
 
   const perQuestionTimerSeconds = quiz?.perQuestionTimerSeconds || 60;
@@ -76,6 +98,12 @@ export const TakeQuizPage = () => {
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [examResult, setExamResult] = useState(null);
   const [showReviewAnswers, setShowReviewAnswers] = useState(false);
+
+  useEffect(() => {
+    if (quiz?.durationMinutes && !isSubmitted) {
+      setTimeRemaining(quiz.durationMinutes * 60);
+    }
+  }, [quiz?.durationMinutes, isSubmitted]);
 
   // Overall examination timer countdown
   useEffect(() => {
@@ -271,7 +299,7 @@ export const TakeQuizPage = () => {
             <ArrowLeft size={15} />
             <span>Back to My Quizzes</span>
           </Link>
-          <CourseBadge courseId={quiz.courseId} courseTitle={quiz.courseTitle} size="md" />
+          <CourseBadge courseId={quiz?.courseId} courseTitle={quiz?.courseTitle} size="md" />
         </div>
 
         {/* Hero Score Card */}
@@ -306,10 +334,10 @@ export const TakeQuizPage = () => {
               {examResult.isPassed ? "Passed • Certification Verified" : "Benchmark Not Met • Retake Allowed"}
             </span>
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white">
-              {quiz.title}
+              {quiz?.title}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Required Passing Benchmark: {quiz.passScorePercentage}% • Completed in{" "}
+              Required Passing Benchmark: {quiz?.passScorePercentage}% • Completed in{" "}
               {Math.max(1, Math.round(examResult.timeSpentSeconds / 60))} minutes
             </p>
           </div>
@@ -337,7 +365,7 @@ export const TakeQuizPage = () => {
             <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800">
               <span className="text-[10px] font-bold text-slate-400 uppercase block">Benchmark</span>
               <strong className="text-lg font-black text-blue-600 dark:text-blue-400">
-                {quiz.passScorePercentage}%
+                {quiz?.passScorePercentage}%
               </strong>
             </div>
           </div>
@@ -467,6 +495,41 @@ export const TakeQuizPage = () => {
   // -------------------------------------------------------------
   // ACTIVE EXAMINATION RUNNER
   // -------------------------------------------------------------
+  if (isLoading && (!quiz || questions.length === 0)) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-3">
+        <div className="w-9 h-9 border-3 border-blue-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+          Loading assessment questions...
+        </p>
+      </div>
+    );
+  }
+
+  if (!quiz || questions.length === 0 || !currentQ) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center space-y-4 p-6 text-center">
+        <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 flex items-center justify-center shadow-xs">
+          <AlertCircle size={26} />
+        </div>
+        <div className="space-y-1">
+          <h3 className="text-base font-bold text-slate-900 dark:text-white">
+            Quiz Not Found
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm">
+            The assessment you are trying to access is not available or has not been configured yet.
+          </p>
+        </div>
+        <button
+          onClick={() => navigate("/my-quizzes")}
+          className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition-all shadow-xs cursor-pointer"
+        >
+          Back to My Quizzes
+        </button>
+      </div>
+    );
+  }
+
   const isTotalTimeCritical = timeRemaining < 300; // < 5 mins
 
   return (
@@ -483,14 +546,14 @@ export const TakeQuizPage = () => {
           </button>
           <div>
             <div className="flex items-center space-x-2">
-              <CourseBadge courseId={quiz.courseId} courseTitle={quiz.courseTitle} size="sm" />
+              <CourseBadge courseId={quiz?.courseId} courseTitle={quiz?.courseTitle} size="sm" />
               <span className="text-slate-300 dark:text-slate-700">•</span>
               <span className="text-xs text-slate-500 font-bold">
-                Pass Mark: {quiz.passScorePercentage}%
+                Pass Mark: {quiz?.passScorePercentage}%
               </span>
             </div>
             <h1 className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-tight mt-0.5">
-              {quiz.title}
+              {quiz?.title}
             </h1>
           </div>
         </div>
@@ -623,7 +686,7 @@ export const TakeQuizPage = () => {
             {/* Question Title with min-height */}
             <div className="pt-1 min-h-[56px] flex items-center w-full">
               <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-relaxed break-words w-full">
-                {currentQ.title}
+                {currentQ?.title || currentQ?.question}
               </h3>
             </div>
 
@@ -816,7 +879,7 @@ export const TakeQuizPage = () => {
               <div className="flex justify-between items-center text-slate-600 dark:text-slate-300">
                 <span className="font-semibold">Quiz:</span>
                 <strong className="text-slate-900 dark:text-white font-bold max-w-[200px] truncate text-right">
-                  {quiz.title}
+                  {quiz?.title}
                 </strong>
               </div>
               <div className="flex justify-between items-center text-slate-600 dark:text-slate-300">
