@@ -20,7 +20,9 @@ export const CRM_BASE_URL =
     window.location.hostname === "127.0.0.1" ||
     window.location.hostname === "::1")
     ? "https://crm.dmsoi.org/api"
-    : "https://operatingmedia.org/api");
+    : (typeof window !== "undefined" && window.location.hostname.includes("lms.operatingmedia.org")
+        ? "https://lms.operatingmedia.org/api"
+        : "https://operatingmedia.org/api"));
 const CRM_STORAGE_KEY_STUDENT_ID = "om_lms_selected_crm_student_id";
 
 // Default Student Profile Fallback (Clean empty schema)
