@@ -65,15 +65,23 @@ export const CertificateViewerModal = ({
         )}&course=${encodeURIComponent(course)}`
       : `https://operatingmedia.com/verify-certificate?id=${certId}`;
 
-  const handlePrint = () => {
-    const certEl = certRef.current;
-    if (!certEl) {
-      window.print();
-      return;
-    }
-
+  const handlePrint = async () => {
+    if (!certRef.current) return;
     try {
-      // Create isolated print frame for 100% clean, full-bleed landscape certificate printing
+      showToast("Preparing certificate for printing...", "info");
+
+      // Use the exact same high-definition capture that powers Download PDF
+      const canvas = await html2canvas(certRef.current, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+      });
+
+      const imgData = canvas.toDataURL("image/png", 1.0);
+
+      // Create an isolated printable iframe containing strictly the high-res certificate image
       const printFrame = document.createElement("iframe");
       printFrame.style.position = "fixed";
       printFrame.style.right = "0";
@@ -85,62 +93,53 @@ export const CertificateViewerModal = ({
 
       const frameDoc = printFrame.contentWindow.document;
       frameDoc.open();
-      frameDoc.write(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>Operating Media Certificate - ${name}</title>
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-            <style>
-              @page {
-                size: 297mm 210mm; /* A4 Landscape */
-                margin: 0;
-              }
-              * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-              }
-              html, body {
-                width: 297mm;
-                height: 210mm;
-                margin: 0;
-                padding: 0;
-                background: #ffffff;
-                overflow: hidden;
-              }
-              .print-container {
-                width: 297mm;
-                height: 210mm;
-                padding: 7mm;
-                background: #ffffff;
-                box-sizing: border-box;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              }
-              .certificate-document {
-                width: 100% !important;
-                height: 100% !important;
-                max-width: none !important;
-                border: 5px solid #2563eb !important;
-                box-shadow: none !important;
-                margin: 0 !important;
-                box-sizing: border-box !important;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="print-container">
-              ${certEl.outerHTML}
-            </div>
-          </body>
-        </html>
-      `);
+      frameDoc.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Operating Media Certificate - ${name}</title>
+  <style>
+    @page {
+      size: 297mm 210mm; /* Exact A4 Landscape */
+      margin: 0;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    html, body {
+      width: 297mm;
+      height: 210mm;
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+      overflow: hidden;
+    }
+    .print-sheet {
+      width: 297mm;
+      height: 210mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="print-sheet">
+    <img src="${imgData}" alt="Operating Media Certificate">
+  </div>
+</body>
+</html>`);
       frameDoc.close();
 
       setTimeout(() => {
@@ -150,9 +149,10 @@ export const CertificateViewerModal = ({
           try {
             document.body.removeChild(printFrame);
           } catch {}
-        }, 2000);
+        }, 3000);
       }, 400);
-    } catch {
+    } catch (err) {
+      console.error("Print error:", err);
       window.print();
     }
   };
