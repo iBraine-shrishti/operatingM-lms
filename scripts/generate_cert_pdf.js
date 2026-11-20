@@ -249,7 +249,7 @@ async function generate() {
       <div class="footer-section">
         <div class="meta-details">
           <div><span class="meta-label">Issue Date:</span> <strong class="meta-val">${issueDate}</strong></div>
-          <div><span class="meta-label">Expiry Date:</span> <strong class="meta-val" style="color: #dc2626;">${expiryDate} <span style="color: #dc2626; border: 1px solid #fca5a5; background-color: #fef2f2; padding: 1px 4.5px; font-size: 7pt; font-weight: 800; text-transform: uppercase; border-radius: 3px; margin-left: 5px; display: inline-block; vertical-align: middle;">EXPIRED</span></strong></div>
+          <div><span class="meta-label">Expiry Date:</span> <strong class="meta-val" style="color: #dc2626;">${expiryDate} <span style="color: #dc2626; border: 1px solid #fca5a5; background-color: #fef2f2; padding: 2px 5px; font-size: 7.5pt; font-weight: 800; text-transform: uppercase; border-radius: 3px; margin-left: 6px; display: inline-flex; align-items: center; justify-content: center; vertical-align: middle; line-height: 1;">EXPIRED</span></strong></div>
           <div><span class="meta-label">Certificate ID:</span> <strong class="meta-val meta-id">${certId}</strong></div>
         </div>
 

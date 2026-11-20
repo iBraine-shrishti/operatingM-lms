@@ -200,8 +200,18 @@ export const OperatingMediaCertificate = React.forwardRef(({
                       borderColor: "#fca5a5",
                       backgroundColor: "#fef2f2",
                       border: "1px solid #fca5a5",
+                      lineHeight: "1",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      verticalAlign: "middle",
+                      padding: "2.5px 5px",
+                      fontSize: "8.5px",
+                      fontWeight: 800,
+                      letterSpacing: "0.05em",
+                      borderRadius: "3px",
+                      marginLeft: "6px",
                     }}
-                    className="ml-1.5 px-1.5 py-0.2 text-[9px] font-bold uppercase rounded border inline-block"
                   >
                     EXPIRED
                   </span>
