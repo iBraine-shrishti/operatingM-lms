@@ -24,22 +24,48 @@ export const AchievementsPage = () => {
   const { currentUser, crmProfile } = useAuth();
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
 
-  const courseTitle = "COURSE NAME";
+  // Dynamic student & course details from live CRM/Backend account
+  const studentName =
+    crmProfile?.name?.trim() ||
+    currentUser?.name?.trim() ||
+    currentUser?.fullName?.trim() ||
+    "YOUR NAME";
+
+  const courseTitle =
+    crmProfile?.course?.trim() ||
+    currentUser?.course?.trim() ||
+    "COURSE NAME";
+
+  const certId =
+    crmProfile?.certificate_id ||
+    (crmProfile?.admissionNo ? `OMC-${crmProfile.admissionNo}` : null) ||
+    (currentUser?.admissionNo ? `OMC-${currentUser.admissionNo}` : null) ||
+    "OMC-DEMO-2026";
+
+  const issueDate =
+    crmProfile?.admissionDate ||
+    crmProfile?.admission_date ||
+    "Feb 10, 2026";
+
+  const expiryDate =
+    crmProfile?.validity_date ||
+    crmProfile?.expiryDate ||
+    "February 10, 2026";
 
   const demoCert = {
-    id: "OMC-DEMO-2026",
-    certificate_id: "OMC-DEMO-2026",
+    id: certId,
+    certificate_id: certId,
     course: courseTitle,
     category: "OFFICIAL COURSE DEMO",
-    date: "Feb 10, 2026",
-    expiryDate: "Lifetime Credential",
+    date: issueDate,
+    expiryDate: expiryDate,
     rating: 9.9,
     grade: "Grade: A+ Distinction",
     badgeType: "gold",
     badgeImg: badgeGold,
     badgeTitle: "GOLD ACCREDITATION",
     shortDetail: "Official Operating Media Accredited Certification",
-    name: "YOUR NAME",
+    name: studentName,
     isDemo: true,
   };
 
@@ -127,7 +153,7 @@ export const AchievementsPage = () => {
 
                 {/* Subtitle */}
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium line-clamp-1">
-                  Accredited Program Certificate • Conferred to: YOUR NAME
+                  Accredited Program Certificate • Conferred to: {studentName}
                 </p>
               </div>
 
@@ -135,7 +161,7 @@ export const AchievementsPage = () => {
               <div className="space-y-2 pt-1">
                 <div className="flex items-center gap-1.5 text-[10.5px] text-slate-500 dark:text-slate-400 font-semibold">
                   <Calendar size={12} className="text-blue-500 shrink-0" />
-                  <span className="truncate">Sample ID: OMC-DEMO-2026</span>
+                  <span className="truncate">Sample ID: {certId}</span>
                 </div>
 
                 {/* View Demo Button */}
@@ -174,7 +200,7 @@ export const AchievementsPage = () => {
         isOpen={isCertModalOpen}
         onClose={() => setIsCertModalOpen(false)}
         certificate={demoCert}
-        studentName="YOUR NAME"
+        studentName={studentName}
         isDemo={true}
       />
     </div>

@@ -31,21 +31,35 @@ export const CertificateViewerModal = ({
   if (!isOpen) return null;
 
   const demoActive = isDemo || certificate?.isDemo;
-  const name = demoActive
-    ? "YOUR NAME"
-    : certificate?.name || studentName || "Student";
+
+  // Dynamic student name from backend/CRM or fallback to "YOUR NAME"
+  const name =
+    certificate?.name?.trim() ||
+    certificate?.student_name?.trim() ||
+    (studentName && studentName !== "Student" ? studentName.trim() : null) ||
+    "YOUR NAME";
 
   const certId =
     certificate?.certificate_id ||
     certificate?.id ||
     "OMC-DEMO-2026";
 
+  // Dynamic course name from backend/CRM or fallback to "COURSE NAME"
   const course =
-    certificate?.course ||
+    certificate?.course?.trim() ||
+    certificate?.course_name?.trim() ||
     "COURSE NAME";
 
-  const issueDate = certificate?.date || "February 10, 2026";
-  const expiryDate = certificate?.expiryDate || "Lifetime Credential";
+  const issueDate =
+    certificate?.date ||
+    certificate?.issueDate ||
+    certificate?.issue_date ||
+    "Feb 10, 2026";
+
+  const expiryDate =
+    certificate?.expiryDate ||
+    certificate?.expiry_date ||
+    "February 10, 2026";
 
   const verifyUrl =
     typeof window !== "undefined"

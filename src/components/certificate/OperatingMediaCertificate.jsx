@@ -155,10 +155,12 @@ export const OperatingMediaCertificate = React.forwardRef(({
           {/* Course Title: Sans-Serif font distinctly different from formal serif student name */}
           <div className="mt-1.5 sm:mt-2 w-full max-w-full px-2 sm:px-6 flex justify-center items-center">
             <h2
-              className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-[22px] font-bold tracking-tight whitespace-nowrap truncate max-w-full inline-block pb-0.5 sm:pb-1 font-sans"
+              className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-[22px] font-bold tracking-tight whitespace-nowrap truncate max-w-full inline-block font-sans"
               style={{
                 color: "#0f172a",
                 borderBottom: "2px solid #2563eb",
+                paddingBottom: "8px",
+                lineHeight: "1.4",
               }}
             >
               {courseTitle}
@@ -197,10 +199,11 @@ export const OperatingMediaCertificate = React.forwardRef(({
                       color: "#dc2626",
                       borderColor: "#fca5a5",
                       backgroundColor: "#fef2f2",
+                      border: "1px solid #fca5a5",
                     }}
                     className="ml-1.5 px-1.5 py-0.2 text-[9px] font-bold uppercase rounded border inline-block"
                   >
-                    Expired
+                    EXPIRED
                   </span>
                 )}
               </strong>

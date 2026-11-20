@@ -11,8 +11,8 @@ async function generate() {
   const certId = "OMC-DEMO-2026";
   const studentName = "YOUR NAME";
   const courseTitle = "COURSE NAME";
-  const issueDate = "February 10, 2026";
-  const expiryDate = "Lifetime Credential";
+  const issueDate = "Feb 10, 2026";
+  const expiryDate = "February 10, 2026";
   const verifyUrl = `https://operatingmedia.com/verify-certificate?id=${certId}&name=${encodeURIComponent(
     studentName
   )}&course=${encodeURIComponent(courseTitle)}`;
@@ -155,9 +155,10 @@ async function generate() {
     .course-title-wrap {
       display: inline-block;
       border-bottom: 2.5px solid #2563eb;
-      padding-bottom: 1.5mm;
-      padding-left: 5mm;
-      padding-right: 5mm;
+      padding-bottom: 3.5mm;
+      padding-left: 6mm;
+      padding-right: 6mm;
+      line-height: 1.4;
     }
     .course-title {
       font-size: 17pt;
@@ -248,7 +249,7 @@ async function generate() {
       <div class="footer-section">
         <div class="meta-details">
           <div><span class="meta-label">Issue Date:</span> <strong class="meta-val">${issueDate}</strong></div>
-          <div><span class="meta-label">Expiry Date:</span> <strong class="meta-val">${expiryDate}</strong></div>
+          <div><span class="meta-label">Expiry Date:</span> <strong class="meta-val" style="color: #dc2626;">${expiryDate} <span style="color: #dc2626; border: 1px solid #fca5a5; background-color: #fef2f2; padding: 1px 4.5px; font-size: 7pt; font-weight: 800; text-transform: uppercase; border-radius: 3px; margin-left: 5px; display: inline-block; vertical-align: middle;">EXPIRED</span></strong></div>
           <div><span class="meta-label">Certificate ID:</span> <strong class="meta-val meta-id">${certId}</strong></div>
         </div>
 
@@ -267,12 +268,22 @@ async function generate() {
   const tmpHtml = "D:/operating-media/temp_cert.html";
   fs.writeFileSync(tmpHtml, html, "utf8");
 
-  const pdfOutput = "D:/operating-media/Operating Media – digitize your career _ LMS.pdf";
   const chromePath = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 
-  const cmd = `"${chromePath}" --headless --disable-gpu --run-all-compositor-stages-before-draw --no-pdf-header-footer --print-to-pdf="${pdfOutput}" "${tmpHtml}"`;
-  execSync(cmd, { stdio: "inherit" });
-  console.log("PDF Generated Successfully at:", pdfOutput);
+  const targets = [
+    "D:/operating-media/Operating_Media_Certificate_YOUR_NAME.pdf",
+    "D:/operating-media/Operating Media – digitize your career _ LMS.pdf",
+  ];
+
+  for (const pdfOutput of targets) {
+    const cmd = `"${chromePath}" --headless --disable-gpu --run-all-compositor-stages-before-draw --no-pdf-header-footer --print-to-pdf="${pdfOutput}" "${tmpHtml}"`;
+    execSync(cmd, { stdio: "inherit" });
+    console.log("PDF Generated Successfully at:", pdfOutput);
+  }
+
+  if (fs.existsSync(tmpHtml)) {
+    fs.unlinkSync(tmpHtml);
+  }
 }
 
 generate().catch(console.error);
