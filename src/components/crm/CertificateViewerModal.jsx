@@ -66,7 +66,95 @@ export const CertificateViewerModal = ({
       : `https://operatingmedia.com/verify-certificate?id=${certId}`;
 
   const handlePrint = () => {
-    window.print();
+    const certEl = certRef.current;
+    if (!certEl) {
+      window.print();
+      return;
+    }
+
+    try {
+      // Create isolated print frame for 100% clean, full-bleed landscape certificate printing
+      const printFrame = document.createElement("iframe");
+      printFrame.style.position = "fixed";
+      printFrame.style.right = "0";
+      printFrame.style.bottom = "0";
+      printFrame.style.width = "0";
+      printFrame.style.height = "0";
+      printFrame.style.border = "0";
+      document.body.appendChild(printFrame);
+
+      const frameDoc = printFrame.contentWindow.document;
+      frameDoc.open();
+      frameDoc.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Operating Media Certificate - ${name}</title>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+            <style>
+              @page {
+                size: 297mm 210mm; /* A4 Landscape */
+                margin: 0;
+              }
+              * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+              }
+              html, body {
+                width: 297mm;
+                height: 210mm;
+                margin: 0;
+                padding: 0;
+                background: #ffffff;
+                overflow: hidden;
+              }
+              .print-container {
+                width: 297mm;
+                height: 210mm;
+                padding: 7mm;
+                background: #ffffff;
+                box-sizing: border-box;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+              .certificate-document {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: none !important;
+                border: 5px solid #2563eb !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                box-sizing: border-box !important;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="print-container">
+              ${certEl.outerHTML}
+            </div>
+          </body>
+        </html>
+      `);
+      frameDoc.close();
+
+      setTimeout(() => {
+        printFrame.contentWindow.focus();
+        printFrame.contentWindow.print();
+        setTimeout(() => {
+          try {
+            document.body.removeChild(printFrame);
+          } catch {}
+        }, 2000);
+      }, 400);
+    } catch {
+      window.print();
+    }
   };
 
   const handleDownloadPdf = async () => {
@@ -230,21 +318,19 @@ export const CertificateViewerModal = ({
             }
             #printable-certificate-document {
               position: fixed !important;
-              left: 0 !important;
-              top: 0 !important;
-              width: 100vw !important;
-              height: 100vh !important;
-              max-width: 100% !important;
+              left: 7mm !important;
+              top: 7mm !important;
+              width: calc(297mm - 14mm) !important;
+              height: calc(210mm - 14mm) !important;
+              max-width: none !important;
               margin: 0 !important;
-              padding: 8mm 12mm !important;
+              padding: 0 !important;
               box-sizing: border-box !important;
               z-index: 9999999 !important;
-              border: none !important;
+              border: 5px solid #2563eb !important;
               box-shadow: none !important;
               background: #ffffff !important;
-              display: flex !important;
-              align-items: center !important;
-              justify-content: center !important;
+              display: block !important;
             }
           }
         `}</style>
