@@ -194,27 +194,41 @@ export const OperatingMediaCertificate = React.forwardRef(({
               >
                 {expiryDate}
                 {isExpired && (
-                  <span
+                  <svg
+                    width="52"
+                    height="15"
+                    viewBox="0 0 52 15"
                     style={{
-                      color: "#dc2626",
-                      borderColor: "#fca5a5",
-                      backgroundColor: "#fef2f2",
-                      border: "1px solid #fca5a5",
-                      lineHeight: "1",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
+                      display: "inline-block",
                       verticalAlign: "middle",
-                      padding: "2.5px 5px",
-                      fontSize: "8.5px",
-                      fontWeight: 800,
-                      letterSpacing: "0.05em",
-                      borderRadius: "3px",
                       marginLeft: "6px",
                     }}
+                    aria-label="Expired badge"
                   >
-                    EXPIRED
-                  </span>
+                    <rect
+                      x="0.5"
+                      y="0.5"
+                      width="51"
+                      height="14"
+                      rx="3"
+                      fill="#fef2f2"
+                      stroke="#fca5a5"
+                      strokeWidth="1"
+                    />
+                    <text
+                      x="26"
+                      y="8"
+                      fill="#dc2626"
+                      fontSize="8"
+                      fontWeight="800"
+                      fontFamily="-apple-system, BlinkMacSystemFont, 'Inter', sans-serif"
+                      textAnchor="middle"
+                      dominantBaseline="central"
+                      letterSpacing="0.05em"
+                    >
+                      EXPIRED
+                    </text>
+                  </svg>
                 )}
               </strong>
             </div>
