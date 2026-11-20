@@ -616,27 +616,27 @@ export const StudentGrievanceForm = () => {
                 {[
                   {
                     id: "lms_tech",
-                    title: "LMS & Technical:",
+                    title: "LMS & Technical",
                     desc: "Login issues, video playback/buffering, missing study materials, assignment upload failure, quiz/grade sync error.",
                   },
                   {
                     id: "offline_campus",
-                    title: "Offline Sessions & Campus:",
+                    title: "Offline Sessions & Campus",
                     desc: "Classroom facilities (AV, seating, AC), faculty/instructor conduct, attendance discrepancy, lab/equipment issues, schedule clash.",
                   },
                   {
                     id: "academic_curriculum",
-                    title: "Academic & Curriculum:",
+                    title: "Academic & Curriculum",
                     desc: "Doubt resolution delay, syllabus coverage, evaluation/grading fairness, feedback quality.",
                   },
                   {
                     id: "admin_fees",
-                    title: "Administrative & Fees:",
+                    title: "Administrative & Fees",
                     desc: "Fee receipt/payment issue, certificate/document request, transport/hostel.",
                   },
                   {
                     id: "harassment_misconduct",
-                    title: "Harassment / Misconduct:",
+                    title: "Harassment / Misconduct",
                     desc: "Bullying, discrimination, safety concern (May be submitted anonymously if preferred).",
                   },
                 ].map((cat) => {
@@ -667,7 +667,7 @@ export const StudentGrievanceForm = () => {
                       </span>
                       <div className="text-slate-800 dark:text-slate-200 leading-snug">
                         <strong className="font-bold text-slate-900 dark:text-white mr-1.5">
-                          {cat.title}
+                          {cat.title}:
                         </strong>
                         <span className="text-slate-600 dark:text-slate-400">
                           {cat.desc}
