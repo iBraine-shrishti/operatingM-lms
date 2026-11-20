@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { db } from "../../firebase";
 import { ref, onValue, update } from "firebase/database";
 import { CRM_BACKEND_API } from "../../services/lmsService";
+import { showDesktopNotification } from "../../utils/desktopNotification";
 import {
   ChevronRight,
   Search,
@@ -140,9 +141,32 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
       );
       setNotificationsList(list);
       const unread = list.filter((n) => !n.isRead).length;
+
+      // Desktop push notification trigger (WhatsApp Web Style)
       if (prevUnreadRef.current !== null && unread > prevUnreadRef.current) {
         playNotificationSound();
+        list.filter((n) => !n.isRead).forEach((notif) => {
+          showDesktopNotification({
+            id: notif.id || notif.key,
+            title: notif.title || (notif.type === "student_notice" ? "📢 Student Notice" : "LMS Notification"),
+            body: notif.message || notif.topic || "New notification received.",
+            url: notif.link_url || notif.linkUrl || "/dashboard",
+            requireInteraction: notif.type === "student_notice" || notif.priority === "urgent",
+          });
+        });
+      } else if (prevUnreadRef.current === null && unread > 0) {
+        // Initial load: show recent unread alerts if not seen yet
+        list.filter((n) => !n.isRead).slice(0, 2).forEach((notif) => {
+          showDesktopNotification({
+            id: notif.id || notif.key,
+            title: notif.title || (notif.type === "student_notice" ? "📢 Student Notice" : "LMS Notification"),
+            body: notif.message || notif.topic || "New notification received.",
+            url: notif.link_url || notif.linkUrl || "/dashboard",
+            requireInteraction: notif.type === "student_notice" || notif.priority === "urgent",
+          });
+        });
       }
+
       prevUnreadRef.current = unread;
       setUnreadNotifications(unread);
     };

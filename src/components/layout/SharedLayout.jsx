@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { Topbar } from "./Topbar";
+import DesktopNotificationBanner from "../DesktopNotificationBanner/DesktopNotificationBanner";
 import { GlobalSearchModal } from "../common/GlobalSearchModal";
 import { useAuth } from "../../context/AuthContext";
 import { lmsService } from "../../services/lmsService";
@@ -82,6 +83,7 @@ export const SharedLayout = () => {
       >
         {/* Topbar */}
         <div className="resume-hide-on-print print:hidden">
+          <DesktopNotificationBanner />
           <Topbar
             sidebarCollapsed={sidebarCollapsed}
             onToggleSidebar={toggleSidebar}

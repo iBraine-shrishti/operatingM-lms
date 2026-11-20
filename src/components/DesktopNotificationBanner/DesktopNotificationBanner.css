@@ -1,0 +1,139 @@
+.lms-desktop-notif-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: linear-gradient(135deg, #0284c7 0%, #1e40af 100%);
+  color: #ffffff;
+  padding: 10px 20px;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  font-family: inherit;
+  font-size: 13px;
+  z-index: 9999;
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  animation: slideDownLms 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDownLms {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.lms-desktop-notif-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.lms-desktop-notif-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bell-shake {
+  animation: subtleShakeLms 2s infinite ease-in-out;
+}
+
+@keyframes subtleShakeLms {
+  0%, 100% { transform: rotate(0); }
+  10%, 30% { transform: rotate(12deg); }
+  20%, 40% { transform: rotate(-12deg); }
+  50% { transform: rotate(0); }
+}
+
+.lms-desktop-notif-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.lms-desktop-notif-text strong {
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: -0.01em;
+}
+
+.lms-desktop-notif-text span {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.lms-desktop-notif-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.lms-desktop-notif-btn {
+  background: #ffffff;
+  color: #0369a1;
+  font-weight: 600;
+  font-size: 12.5px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.lms-desktop-notif-btn:hover {
+  background: #f0fdf4;
+  color: #15803d;
+  transform: translateY(-1px);
+}
+
+.lms-desktop-notif-success {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #86efac;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.lms-desktop-notif-close {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.lms-desktop-notif-close:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+  .lms-desktop-notif-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .lms-desktop-notif-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
