@@ -312,19 +312,30 @@ export const StudentGrievanceForm = () => {
     };
 
     try {
-      // 1. Try sending to backend
-      const res = await fetch(`${CRM_BACKEND_API}/feedback/grievance/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      }).catch(() => null);
+      // 1. Send to backend CRM
+      let serverTicketId = ticketId;
+      try {
+        const res = await fetch(`${CRM_BACKEND_API}/feedback/grievance/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (res && res.ok) {
+          const resData = await res.json().catch(() => null);
+          if (resData?.ticket_id) {
+            serverTicketId = resData.ticket_id;
+          }
+        }
+      } catch (netErr) {
+        console.warn("Backend grievance submission:", netErr);
+      }
 
       // 2. Cache in localStorage so submission is never lost
       try {
         const cached = JSON.parse(
           localStorage.getItem("om_lms_grievance_history") || "[]"
         );
-        cached.unshift(payload);
+        cached.unshift({ ...payload, ticketId: serverTicketId });
         localStorage.setItem(
           "om_lms_grievance_history",
           JSON.stringify(cached.slice(0, 30))
@@ -334,7 +345,7 @@ export const StudentGrievanceForm = () => {
       }
 
       setSubmissionSuccess({
-        ticketId,
+        ticketId: serverTicketId,
         date: new Date().toLocaleDateString("en-IN", {
           day: "numeric",
           month: "short",
@@ -343,7 +354,7 @@ export const StudentGrievanceForm = () => {
       });
 
       showToast(
-        `Grievance submitted successfully. Ticket #${ticketId}`,
+        `Grievance submitted successfully. Ticket #${serverTicketId}`,
         "success",
         "Recorded"
       );
