@@ -19,9 +19,7 @@ export const R2_STORAGE_BASE =
   "https://pub-e12f5dbd15e94f87bcde01ce90c0043e.r2.dev";
 
 export const CRM_MANAGE_COURSES_API =
-  typeof window !== "undefined" && window.location.hostname.includes("lms.operatingmedia.org")
-    ? "https://lms.operatingmedia.org/api/courses/manage/?page=1&size=100&name=Admin&updated_by=Admin"
-    : "https://operatingmedia.org/api/courses/manage/?page=1&size=100&name=Admin&updated_by=Admin";
+  "https://operatingmedia.org/api/courses/manage/?page=1&size=100&name=Admin&updated_by=Admin";
 
 export const deriveCourseCategory = (name = "") => {
   const n = String(name || "").toLowerCase();
@@ -95,9 +93,7 @@ export const CRM_BACKEND_API =
     window.location.hostname === "127.0.0.1" ||
     window.location.hostname === "::1")
     ? "https://crm.dmsoi.org/api"
-    : (typeof window !== "undefined" && window.location.hostname.includes("lms.operatingmedia.org")
-        ? "https://lms.operatingmedia.org/api"
-        : "https://operatingmedia.org/api"));
+    : "https://operatingmedia.org/api");
 const getStored = (key, initial) => {
   try {
     const item = localStorage.getItem(`${STORAGE_PREFIX}${key}`);
