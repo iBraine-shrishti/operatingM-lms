@@ -214,7 +214,7 @@ export const OperatingMediaCertificate = React.forwardRef(({
                 style={{ color: "#0f172a" }}
                 className="font-semibold font-mono"
               >
-                {certificateId}
+                {String(certificateId || "OMC-8480").replace(/^(OMC-)+/, "OMC-")}
               </strong>
             </div>
           </div>

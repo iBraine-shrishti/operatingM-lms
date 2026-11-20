@@ -8,10 +8,10 @@ async function generate() {
   const logoBase64 = fs.readFileSync(logoPath).toString("base64");
   const logoDataUrl = "data:image/png;base64," + logoBase64;
 
-  const certId = "OMC-DEMO-2026";
+  const certId = "OMC-8480";
   const studentName = "YOUR NAME";
   const courseTitle = "COURSE NAME";
-  const issueDate = "Feb 10, 2026";
+  const issueDate = "4 Sept 2026";
   const expiryDate = "February 10, 2026";
   const verifyUrl = `https://operatingmedia.com/verify-certificate?id=${certId}&name=${encodeURIComponent(
     studentName

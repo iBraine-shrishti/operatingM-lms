@@ -24,28 +24,25 @@ export const AchievementsPage = () => {
   const { currentUser, crmProfile } = useAuth();
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
 
-  // Dynamic student & course details from live CRM/Backend account
-  const studentName =
-    crmProfile?.name?.trim() ||
-    currentUser?.name?.trim() ||
-    currentUser?.fullName?.trim() ||
-    "YOUR NAME";
+  // For now keep as "YOUR NAME" and "COURSE NAME" as requested, with architecture ready for backend
+  const studentName = "YOUR NAME";
+  const courseTitle = "COURSE NAME";
 
-  const courseTitle =
-    crmProfile?.course?.trim() ||
-    currentUser?.course?.trim() ||
-    "COURSE NAME";
-
-  const certId =
+  // Sanitize certificate ID to avoid duplicate "OMC-OMC-"
+  const rawAdmissionNo =
     crmProfile?.certificate_id ||
-    (crmProfile?.admissionNo ? `OMC-${crmProfile.admissionNo}` : null) ||
-    (currentUser?.admissionNo ? `OMC-${currentUser.admissionNo}` : null) ||
-    "OMC-DEMO-2026";
+    crmProfile?.admissionNo ||
+    currentUser?.admissionNo ||
+    "OMC-8480";
+
+  const certId = String(rawAdmissionNo).startsWith("OMC-")
+    ? String(rawAdmissionNo).replace(/^(OMC-)+/, "OMC-")
+    : `OMC-${rawAdmissionNo}`;
 
   const issueDate =
     crmProfile?.admissionDate ||
     crmProfile?.admission_date ||
-    "Feb 10, 2026";
+    "4 Sept 2026";
 
   const expiryDate =
     crmProfile?.validity_date ||

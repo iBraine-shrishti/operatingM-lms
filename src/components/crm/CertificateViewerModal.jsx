@@ -32,29 +32,26 @@ export const CertificateViewerModal = ({
 
   const demoActive = isDemo || certificate?.isDemo;
 
-  // Dynamic student name from backend/CRM or fallback to "YOUR NAME"
-  const name =
-    certificate?.name?.trim() ||
-    certificate?.student_name?.trim() ||
-    (studentName && studentName !== "Student" ? studentName.trim() : null) ||
-    "YOUR NAME";
+  // For now keep as "YOUR NAME" and "COURSE NAME" as requested
+  const name = "YOUR NAME";
 
-  const certId =
+  // Sanitize certificate ID to avoid duplicate "OMC-OMC-"
+  const rawCertId =
     certificate?.certificate_id ||
     certificate?.id ||
-    "OMC-DEMO-2026";
+    "OMC-8480";
 
-  // Dynamic course name from backend/CRM or fallback to "COURSE NAME"
-  const course =
-    certificate?.course?.trim() ||
-    certificate?.course_name?.trim() ||
-    "COURSE NAME";
+  const certId = String(rawCertId).startsWith("OMC-")
+    ? String(rawCertId).replace(/^(OMC-)+/, "OMC-")
+    : `OMC-${rawCertId}`;
+
+  const course = "COURSE NAME";
 
   const issueDate =
     certificate?.date ||
     certificate?.issueDate ||
     certificate?.issue_date ||
-    "Feb 10, 2026";
+    "4 Sept 2026";
 
   const expiryDate =
     certificate?.expiryDate ||
