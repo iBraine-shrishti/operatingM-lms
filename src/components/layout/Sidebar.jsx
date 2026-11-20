@@ -41,6 +41,28 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const navigate = useNavigate();
   const { isStudent, logout, enrolledCoursesCount, assignmentsCount, crmProfile, crmAttendance, crmBatch, currentUser } = useAuth();
   const { isDark } = useTheme();
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => {
+    if (collapsed) {
+      setIsHovered(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (collapsed) {
+      setIsHovered(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!collapsed) {
+      setIsHovered(false);
+    }
+  }, [collapsed]);
+
+  const isExpanded = !collapsed || isHovered;
+
   const [liveAssignmentsCount, setLiveAssignmentsCount] = useState(assignmentsCount ?? 0);
   const [liveQuizzesCount, setLiveQuizzesCount] = useState(0);
   const [liveExamsCount, setLiveExamsCount] = useState(() => {
@@ -355,14 +377,20 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
 
   return (
     <aside
-      className={`fixed top-0 left-0 z-30 h-screen bg-white dark:bg-[#0b1329] border-r border-slate-200/80 dark:border-slate-800/90 transition-all duration-300 flex flex-col text-slate-800 dark:text-slate-200 ${
-        collapsed ? "w-20" : "w-64"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={`fixed top-0 left-0 h-screen bg-white dark:bg-[#0b1329] border-r border-slate-200/80 dark:border-slate-800/90 transition-all duration-300 flex flex-col text-slate-800 dark:text-slate-200 ${
+        isExpanded ? "w-64" : "w-20"
+      } ${
+        isHovered && collapsed
+          ? "z-50 shadow-2xl ring-1 ring-slate-900/10 dark:ring-white/10"
+          : "z-30"
       }`}
     >
       {/* Sidebar Header / Logo */}
       <div className="relative h-18 sm:h-20 flex items-center border-b border-slate-100 dark:border-slate-800/90 shrink-0">
         {/* When expanded: logo shown inside sidebar. When collapsed: logo shown outside in Topbar (guarantees strictly ONE logo) */}
-        {!collapsed && (
+        {isExpanded && (
           <NavLink
             to="/dashboard"
             className="flex items-center w-full h-full px-3.5 sm:px-4 py-2 overflow-hidden group"
@@ -384,7 +412,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? (
+          {!isExpanded ? (
             <ChevronRight size={14} strokeWidth={2.8} className="translate-x-px" />
           ) : (
             <ChevronLeft size={14} strokeWidth={2.8} className="-translate-x-px" />
@@ -393,10 +421,10 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
       </div>
 
       {/* Nav List */}
-      <div className={`flex-1 overflow-y-auto overflow-x-hidden py-5 ${collapsed ? "px-2" : "px-3"} space-y-6 custom-scrollbar`}>
+      <div className={`flex-1 overflow-y-auto overflow-x-hidden py-5 ${isExpanded ? "px-3" : "px-2"} space-y-6 custom-scrollbar`}>
         {sections.map((section, sIdx) => (
           <div key={sIdx} className="space-y-1">
-            {!collapsed && (
+            {isExpanded && (
               <h3 className="px-3 text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-2">
                 {section.title}
               </h3>
@@ -417,7 +445,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
                       (item.path === "/manage-courses" &&
                         location.pathname === "/");
                     return `group relative flex items-center ${
-                      collapsed
+                      !isExpanded
                         ? "justify-center px-2 py-2.5"
                         : "justify-between px-3.5 py-2.5"
                     } rounded-xl font-semibold text-xs sm:text-sm transition-all duration-150 ${
@@ -426,10 +454,10 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
                         : "text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white"
                     }`;
                   }}
-                  title={collapsed ? item.name : undefined}
+                  title={!isExpanded ? item.name : undefined}
                 >
                   <div
-                    className={`flex items-center ${collapsed ? "justify-center" : "space-x-3"}`}
+                    className={`flex items-center min-w-0 ${!isExpanded ? "justify-center" : "space-x-3"}`}
                   >
                     <Icon
                       size={18}
@@ -439,12 +467,12 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
                           : "opacity-85 group-hover:opacity-100 group-hover:scale-110"
                       }`}
                     />
-                    {!collapsed && (
-                      <span className="truncate">{item.name}</span>
+                    {isExpanded && (
+                      <span className="truncate whitespace-nowrap">{item.name}</span>
                     )}
                   </div>
 
-                  {!collapsed && item.badge && (
+                  {isExpanded && item.badge && (
                     <span
                       className={`ml-auto text-xs font-bold px-2 py-0.5 rounded-full ${
                         isActive
@@ -465,24 +493,24 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
       </div>
 
       {/* Footer / Sign Out (matching DASHBOARD.png) */}
-      <div className={`border-t border-slate-100 dark:border-slate-800/90 shrink-0 ${collapsed ? "p-2" : "p-3"}`}>
+      <div className={`border-t border-slate-100 dark:border-slate-800/90 shrink-0 ${!isExpanded ? "p-2" : "p-3"}`}>
         <button
           onClick={() => {
             logout();
             navigate("/login");
           }}
           className={`w-full flex items-center ${
-            collapsed ? "justify-center px-2 py-2.5" : "space-x-3 px-3.5 py-2.5"
+            !isExpanded ? "justify-center px-2 py-2.5" : "space-x-3 px-3.5 py-2.5"
           } rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-850 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer`}
-          title={collapsed ? "Sign Out" : undefined}
+          title={!isExpanded ? "Sign Out" : undefined}
 
         >
           <LogOut
             size={18}
             className="text-rose-500 dark:text-rose-400 opacity-85 group-hover:opacity-100 group-hover:scale-110 transition-all duration-200 shrink-0"
           />
-          {!collapsed && (
-            <span className="text-xs sm:text-sm font-semibold">Sign Out</span>
+          {isExpanded && (
+            <span className="text-xs sm:text-sm font-semibold whitespace-nowrap">Sign Out</span>
           )}
         </button>
       </div>
