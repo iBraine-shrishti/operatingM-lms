@@ -247,20 +247,40 @@ export const StudentGrievanceForm = () => {
     });
   };
 
-  const handleFileUpload = (e) => {
+  const handleFileUpload = async (e) => {
     const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    const fileMeta = files.map((f) => ({
-      name: f.name,
-      size: `${(f.size / 1024).toFixed(1)} KB`,
-      type: f.type,
-    }));
+    for (const f of files) {
+      const localMeta = {
+        name: f.name,
+        size: `${(f.size / 1024).toFixed(1)} KB`,
+        type: f.type,
+      };
 
-    setFormData((prev) => ({
-      ...prev,
-      uploadedFiles: [...prev.uploadedFiles, ...fileMeta],
-    }));
+      try {
+        const uploadData = new FormData();
+        uploadData.append("file", f);
+        const res = await fetch(`${CRM_BACKEND_API}/feedback/grievance/upload/`, {
+          method: "POST",
+          body: uploadData,
+        });
+        if (res.ok) {
+          const resJson = await res.json();
+          if (resJson?.url) {
+            localMeta.url = resJson.url;
+            localMeta.filename = resJson.filename;
+          }
+        }
+      } catch (err) {
+        console.warn("Evidence file upload to server:", err);
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        uploadedFiles: [...prev.uploadedFiles, localMeta],
+      }));
+    }
 
     showToast(`Attached ${files.length} file(s)`, "info", "File Uploaded");
   };
