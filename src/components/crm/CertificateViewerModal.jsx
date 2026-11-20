@@ -1,4 +1,6 @@
 import React, { useRef, useState } from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import {
   X,
   Printer,
@@ -8,6 +10,8 @@ import {
   Copy,
   Check,
   QrCode,
+  FileDown,
+  Loader2,
 } from "lucide-react";
 import { OperatingMediaCertificate } from "../certificate/OperatingMediaCertificate";
 import { useToast } from "../../context/ToastContext";
@@ -21,6 +25,8 @@ export const CertificateViewerModal = ({
 }) => {
   const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const certRef = useRef(null);
 
   if (!isOpen) return null;
 
@@ -32,14 +38,14 @@ export const CertificateViewerModal = ({
   const certId =
     certificate?.certificate_id ||
     certificate?.id ||
-    "";
+    "OMC-DEMO-2026";
 
   const course =
     certificate?.course ||
-    "Diploma in Digital Marketing & Artificial Intelligence";
+    "COURSE NAME";
 
-  const issueDate = certificate?.date || "February 10, 2025";
-  const expiryDate = certificate?.expiryDate || "February 10, 2026";
+  const issueDate = certificate?.date || "February 10, 2026";
+  const expiryDate = certificate?.expiryDate || "Lifetime Credential";
 
   const verifyUrl =
     typeof window !== "undefined"
@@ -50,6 +56,49 @@ export const CertificateViewerModal = ({
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!certRef.current) return;
+    try {
+      setIsGeneratingPdf(true);
+      showToast("Generating crystal-clear PDF certificate...", "info");
+
+      // High-res capture at 3x scale (300+ DPI equivalent) for zero blurring
+      const canvas = await html2canvas(certRef.current, {
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+      });
+
+      const imgData = canvas.toDataURL("image/png", 1.0);
+
+      // Create landscape A4 PDF (297mm x 210mm)
+      const pdf = new jsPDF({
+        orientation: "landscape",
+        unit: "mm",
+        format: "a4",
+        compress: true,
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth(); // 297mm
+      const pdfHeight = pdf.internal.pageSize.getHeight(); // 210mm
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, "FAST");
+
+      const cleanFileName = `Operating_Media_Certificate_${(name || "Student").replace(/[^a-zA-Z0-9_-]/g, "_")}.pdf`;
+      pdf.save(cleanFileName);
+
+      showToast("Certificate downloaded successfully in high definition!", "success");
+    } catch (err) {
+      console.error("PDF generation error:", err);
+      showToast("Could not generate direct PDF, opening browser print...", "error");
+      window.print();
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   const handleCopyLink = () => {
@@ -97,13 +146,30 @@ export const CertificateViewerModal = ({
               </span>
             </button>
 
+            {/* Direct High-Resolution PDF Download (Zero Blurring / 300+ DPI) */}
+            <button
+              type="button"
+              onClick={handleDownloadPdf}
+              disabled={isGeneratingPdf}
+              className="inline-flex items-center space-x-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-colors shadow-xs cursor-pointer disabled:opacity-70"
+              title="Download high-resolution PDF certificate"
+            >
+              {isGeneratingPdf ? (
+                <Loader2 size={13} className="animate-spin" />
+              ) : (
+                <FileDown size={13} />
+              )}
+              <span>{isGeneratingPdf ? "Generating PDF..." : "Download PDF"}</span>
+            </button>
+
             <button
               type="button"
               onClick={handlePrint}
-              className="inline-flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition-colors shadow-xs cursor-pointer"
+              className="inline-flex items-center space-x-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition-colors shadow-xs cursor-pointer"
+              title="Print or Save via Browser"
             >
               <Printer size={13} />
-              <span>Print / Save PDF</span>
+              <span className="hidden sm:inline">Print</span>
             </button>
 
             <button
@@ -119,6 +185,7 @@ export const CertificateViewerModal = ({
         {/* Modal Certificate Canvas / Preview */}
         <div className="p-3 sm:p-6 overflow-y-auto flex-1 bg-slate-100/70 dark:bg-slate-950/60 flex items-center justify-center">
           <OperatingMediaCertificate
+            ref={certRef}
             studentName={name}
             courseTitle={course}
             certificateId={certId}
@@ -129,6 +196,47 @@ export const CertificateViewerModal = ({
             isDemo={demoActive}
           />
         </div>
+
+        {/* Print Landscape Isolation Stylesheet */}
+        <style>{`
+          @media print {
+            @page {
+              size: A4 landscape;
+              margin: 0;
+            }
+            html, body {
+              margin: 0 !important;
+              padding: 0 !important;
+              background: #ffffff !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            body * {
+              visibility: hidden !important;
+            }
+            #printable-certificate-document, #printable-certificate-document * {
+              visibility: visible !important;
+            }
+            #printable-certificate-document {
+              position: fixed !important;
+              left: 0 !important;
+              top: 0 !important;
+              width: 100vw !important;
+              height: 100vh !important;
+              max-width: 100% !important;
+              margin: 0 !important;
+              padding: 8mm 12mm !important;
+              box-sizing: border-box !important;
+              z-index: 9999999 !important;
+              border: none !important;
+              box-shadow: none !important;
+              background: #ffffff !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+            }
+          }
+        `}</style>
 
         {/* Modal Bottom Bar */}
         <div className="px-5 sm:px-6 py-3.5 bg-white dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">

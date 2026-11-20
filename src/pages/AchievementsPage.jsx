@@ -32,6 +32,7 @@ export const AchievementsPage = () => {
     course: courseTitle,
     category: "OFFICIAL COURSE DEMO",
     date: "Feb 10, 2026",
+    expiryDate: "Lifetime Credential",
     rating: 9.9,
     grade: "Grade: A+ Distinction",
     badgeType: "gold",

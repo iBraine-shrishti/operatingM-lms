@@ -3,7 +3,7 @@ import QRCode from "qrcode";
 import logoImg from "../../assets/logo-certificate-blue.png";
 import { CheckCircle2, ShieldCheck } from "lucide-react";
 
-export const OperatingMediaCertificate = ({
+export const OperatingMediaCertificate = React.forwardRef(({
   studentName = "Student",
   courseTitle = "Diploma in Digital Marketing",
   certificateId = "",
@@ -13,7 +13,7 @@ export const OperatingMediaCertificate = ({
   showBorder = true,
   className = "",
   isDemo = false,
-}) => {
+}, ref) => {
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState("");
 
   // Determine public verification URL
@@ -51,7 +51,13 @@ export const OperatingMediaCertificate = ({
   const isExpired = (() => {
     if (!expiryDate) return false;
     const str = String(expiryDate).trim().toLowerCase();
-    if (str === "never" || str === "lifetime" || str === "no expiry")
+    if (
+      str === "never" ||
+      str === "lifetime" ||
+      str === "no expiry" ||
+      str.includes("lifetime") ||
+      str.includes("no expiry")
+    )
       return false;
     const d = new Date(expiryDate);
     if (!isNaN(d.getTime())) {
@@ -62,6 +68,8 @@ export const OperatingMediaCertificate = ({
 
   return (
     <div
+      ref={ref}
+      id="printable-certificate-document"
       data-certificate-document="true"
       className={`certificate-document relative w-full max-w-[1020px] mx-auto min-h-[520px] sm:min-h-0 aspect-auto sm:aspect-[1.38/1] select-none overflow-hidden print:w-full print:max-w-none print:shadow-none print:m-0 print:p-0 ${
         showBorder ? "shadow-2xl rounded-sm" : ""
@@ -248,6 +256,8 @@ export const OperatingMediaCertificate = ({
       </div>
     </div>
   );
-};
+});
+
+OperatingMediaCertificate.displayName = "OperatingMediaCertificate";
 
 export default OperatingMediaCertificate;
