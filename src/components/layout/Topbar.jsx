@@ -20,6 +20,9 @@ import {
   Sparkles,
   Volume2,
   VolumeX,
+  CalendarX,
+  Clock,
+  AlertTriangle,
 } from "lucide-react";
 import {
   playNotificationSound,
@@ -419,13 +422,20 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
                 notificationsList.map((notif) => {
                   const isApproval = notif.type === "forum_approval";
                   const isRejection = notif.type === "forum_rejection";
+                  const isNotice = notif.type === "student_notice";
+                  const noticeData = notif.data || {};
+                  const isUrgent = noticeData.priority === "urgent";
+                  const isImportant = noticeData.priority === "important";
+
                   return (
                     <div
                       key={notif.key || notif.id}
                       onClick={() => handleMarkNotificationRead(notif)}
                       className={`px-4 py-3 transition-colors flex space-x-3 items-start cursor-pointer ${
                         !notif.isRead
-                          ? "bg-blue-50/50 dark:bg-blue-950/30 hover:bg-blue-50 dark:hover:bg-blue-950/50"
+                          ? isUrgent
+                            ? "bg-rose-50/60 dark:bg-rose-950/40 hover:bg-rose-50 dark:hover:bg-rose-950/60"
+                            : "bg-blue-50/50 dark:bg-blue-950/30 hover:bg-blue-50 dark:hover:bg-blue-950/50"
                           : "hover:bg-slate-50 dark:hover:bg-slate-850"
                       }`}
                     >
@@ -434,28 +444,54 @@ export const Topbar = ({ onToggleSidebar, onOpenSearch, sidebarCollapsed }) => {
                           isApproval
                             ? "bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400"
                             : isRejection
-                              ? "bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400"
-                              : "bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400"
+                            ? "bg-rose-100 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400"
+                            : isNotice
+                            ? isUrgent
+                              ? "bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400 animate-pulse"
+                              : isImportant
+                              ? "bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-400"
+                              : "bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400"
+                            : "bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400"
                         }`}
                       >
                         {isApproval ? (
                           <Sparkles size={14} />
                         ) : isRejection ? (
                           <AlertCircle size={14} />
+                        ) : isNotice ? (
+                          isUrgent ? (
+                            <CalendarX size={14} />
+                          ) : isImportant ? (
+                            <Clock size={14} />
+                          ) : (
+                            <Bell size={14} />
+                          )
                         ) : (
                           <MessageSquare size={14} />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p
-                          className={`text-xs leading-snug ${
-                            !notif.isRead
-                              ? "font-bold text-slate-900 dark:text-white"
-                              : "font-medium text-slate-700 dark:text-slate-300"
-                          }`}
-                        >
-                          {notif.title || "Notification"}
-                        </p>
+                        <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
+                          {isNotice && noticeData.category && (
+                            <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                              {noticeData.category}
+                            </span>
+                          )}
+                          {isUrgent && (
+                            <span className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-rose-600 text-white">
+                              URGENT
+                            </span>
+                          )}
+                          <p
+                            className={`text-xs leading-snug ${
+                              !notif.isRead
+                                ? "font-bold text-slate-900 dark:text-white"
+                                : "font-medium text-slate-700 dark:text-slate-300"
+                            }`}
+                          >
+                            {notif.title || "Notification"}
+                          </p>
+                        </div>
                         <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-0.5">
                           {notif.message}
                         </p>
