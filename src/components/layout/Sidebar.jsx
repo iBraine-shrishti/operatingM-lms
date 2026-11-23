@@ -65,6 +65,18 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
 
   const [liveAssignmentsCount, setLiveAssignmentsCount] = useState(assignmentsCount ?? 0);
   const [liveQuizzesCount, setLiveQuizzesCount] = useState(0);
+  const [liveJobsCount, setLiveJobsCount] = useState(() => {
+    try {
+      const raw = localStorage.getItem("om_crm_job_postings");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return parsed.filter((j) => j.status === "approved").length;
+      }
+      return 3;
+    } catch {
+      return 3;
+    }
+  });
   const [liveExamsCount, setLiveExamsCount] = useState(() => {
     try {
       const cached = localStorage.getItem("om_lms_student_exams_cache");
@@ -264,6 +276,26 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
     };
   }, [crmProfile?.id, currentUser?.crmAdmissionId]);
 
+  useEffect(() => {
+    const updateJobsCount = () => {
+      try {
+        const raw = localStorage.getItem("om_crm_job_postings");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          setLiveJobsCount(parsed.filter((j) => j.status === "approved").length);
+        }
+      } catch (err) {
+        console.warn("Could not calculate jobs count in sidebar:", err);
+      }
+    };
+    window.addEventListener("storage", updateJobsCount);
+    window.addEventListener("om_crm_jobs_changed", updateJobsCount);
+    return () => {
+      window.removeEventListener("storage", updateJobsCount);
+      window.removeEventListener("om_crm_jobs_changed", updateJobsCount);
+    };
+  }, []);
+
   const sections = [
     {
       title: "MAIN",
@@ -350,6 +382,13 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           path: "/grievance",
           icon: HelpCircle,
           color: "text-yellow-600 dark:text-yellow-400",
+        },
+        {
+          name: "Placement",
+          path: "/placement",
+          icon: Briefcase,
+          badge: liveJobsCount > 0 ? String(liveJobsCount) : undefined,
+          color: "text-emerald-500 dark:text-emerald-400",
         },
         {
           name: "Resume Builder",

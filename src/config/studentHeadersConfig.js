@@ -7,6 +7,7 @@ import {
   MessagesSquare,
   Calendar,
   Activity,
+  Briefcase,
 } from "lucide-react";
 
 /**
@@ -77,6 +78,14 @@ export const STUDENT_HEADERS_CONFIG = {
     description:
       "Chronological audit timeline tracking your course progress, quiz submissions, assignment evaluations, and certifications.",
     icon: Activity,
+  },
+  placement: {
+    category: "Operating Media Placement Cell",
+    badgeText: "Direct Corporate Hiring",
+    title: "Career Placement & Job Openings",
+    description:
+      "Explore exclusive campus placement openings, apply directly to verified corporate partners, and track your application milestones in real time.",
+    icon: Briefcase,
   },
 };
 

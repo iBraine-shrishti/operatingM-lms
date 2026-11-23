@@ -1856,16 +1856,18 @@ export const lmsService = {
       if (resp.ok) {
         const data = await resp.json();
         if (data && data.success && Array.isArray(data.notes)) {
-          const normalized = data.notes.map((n) => ({
-            ...n,
-            studentId: n.studentId || sId,
-            lessonTag: n.lessonTag || n.lessonTitle || "General",
-            lessonTitle: n.lessonTitle || n.lessonTag || "General Lesson",
-            text: n.text || n.content || "",
-            content: n.content || n.text || "",
-            date: n.date || n.createdAt || "Recent",
-            createdAt: n.createdAt || n.date || "Recent",
-          }));
+          const normalized = data.notes
+            .filter((n) => n.category !== "SYSTEM_JOB_ACCESS" && n.courseId !== "CRM_JOB_ACCESS")
+            .map((n) => ({
+              ...n,
+              studentId: n.studentId || sId,
+              lessonTag: n.lessonTag || n.lessonTitle || "General",
+              lessonTitle: n.lessonTitle || n.lessonTag || "General Lesson",
+              text: n.text || n.content || "",
+              content: n.content || n.text || "",
+              date: n.date || n.createdAt || "Recent",
+              createdAt: n.createdAt || n.date || "Recent",
+            }));
           const key = `notes_${sId}`;
           setStored(key, normalized);
           if (courseId && courseId !== "all") {
@@ -1882,6 +1884,38 @@ export const lmsService = {
       return all.filter((n) => lmsService.isNoteMatchingCourse(n, courseId));
     }
     return all;
+  },
+
+  fetchStudentJobAccess: async (studentId) => {
+    const sId = lmsService.getActiveStudentId(studentId);
+    if (!sId) return [];
+    try {
+      const cleanId = String(sId).replace("std-", "").replace("OMC-", "").replace(/^0+/, "");
+      const url = `${CRM_BACKEND_API}/lms/notes/?student_id=${encodeURIComponent(cleanId)}`;
+      const resp = await fetch(url);
+      if (resp.ok) {
+        const data = await resp.json();
+        if (data && data.success && Array.isArray(data.notes)) {
+          const jobNote = data.notes.find(
+            (n) => n.category === "SYSTEM_JOB_ACCESS" || n.courseId === "CRM_JOB_ACCESS"
+          );
+          if (jobNote && jobNote.content) {
+            const parsed =
+              typeof jobNote.content === "string" ? JSON.parse(jobNote.content) : jobNote.content;
+            if (Array.isArray(parsed)) {
+              try {
+                localStorage.setItem(`om_lms_student_jobs_${cleanId}`, JSON.stringify(parsed));
+                localStorage.setItem(`om_lms_student_jobs_std-${cleanId}`, JSON.stringify(parsed));
+              } catch (e) {}
+              return parsed;
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("fetchStudentJobAccess error:", err);
+    }
+    return [];
   },
 
   addNote: (note) => {
