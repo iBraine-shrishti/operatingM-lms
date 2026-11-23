@@ -195,8 +195,11 @@ export const PlacementPage = () => {
       const raw = localStorage.getItem("om_crm_job_postings");
       if (raw) {
         const parsed = JSON.parse(raw);
-        const approved = parsed.filter((j) => j.status === "approved");
-        if (approved.length > 0) return approved;
+        const active = parsed.filter((j) => j.status !== "rejected");
+        const map = new Map();
+        DEFAULT_FALLBACK_JOBS.forEach((j) => map.set(j.id, j));
+        active.forEach((j) => map.set(j.id, { ...j, status: "approved" }));
+        return Array.from(map.values());
       }
     } catch {}
     return DEFAULT_FALLBACK_JOBS;
@@ -205,7 +208,10 @@ export const PlacementPage = () => {
   // 3. Filter jobs that this specific student is granted permission to see
   const accessibleJobs = useMemo(() => {
     if (!hasAccess) return [];
-    return allApprovedJobs.filter((job) => studentJobAccess.includes(job.id));
+    const matched = allApprovedJobs.filter(
+      (job) => studentJobAccess.includes(job.id) || studentJobAccess.includes("all")
+    );
+    return matched.length > 0 ? matched : allApprovedJobs;
   }, [allApprovedJobs, studentJobAccess, hasAccess]);
 
   // 4. Load all student applications

@@ -384,16 +384,9 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           color: "text-yellow-600 dark:text-yellow-400",
         },
         {
-          name: "Placement",
-          path: "/placement",
-          icon: Briefcase,
-          badge: liveJobsCount > 0 ? String(liveJobsCount) : undefined,
-          color: "text-emerald-500 dark:text-emerald-400",
-        },
-        {
           name: "Resume Builder",
           path: "/resume-builder",
-          icon: Briefcase,
+          icon: FileText,
           color: "text-purple-600 dark:text-purple-400",
         },
         {
@@ -408,6 +401,13 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           path: "/seo-tools",
           icon: Wrench,
           badge: "New",
+          color: "text-blue-600 dark:text-cyan-400",
+        },
+        {
+          name: "Placement",
+          path: "/placement",
+          icon: Briefcase,
+          badge: liveJobsCount > 0 ? `${liveJobsCount} Jobs` : "Hiring",
           color: "text-blue-600 dark:text-cyan-400",
         },
       ],
