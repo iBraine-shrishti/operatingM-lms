@@ -31,21 +31,22 @@ export const CourseDetailPage = () => {
     courses.find((c) => c.title.toLowerCase().includes("social")) ||
     courses[0];
 
-  // Validate student course validity (0 days left check)
+  // Validate student 365-day video access validity (366 in leap year)
   const accessStatus = checkStudentCourseAccess(crmProfile, currentUser, isAdmin);
-  const isExpired = accessStatus.isExpired;
+  const isVideoExpired = accessStatus.isVideoExpired;
+  const isExpired = isVideoExpired;
 
   const hasCourseAccess =
-    !isExpired &&
+    !isVideoExpired &&
     (isAdmin ||
       (Array.isArray(assignedCourseIds) &&
         assignedCourseIds.length > 0 &&
         assignedCourseIds.includes(course.id)));
 
   const handleNavigate = (path) => {
-    if ((isExpired || !hasCourseAccess) && typeof path === "string" && path.includes("/lesson-player")) {
+    if ((isVideoExpired || !hasCourseAccess) && typeof path === "string" && path.includes("/lesson-player")) {
       showToast(
-        "Video lessons are locked because your course access validity has expired (0 days left).",
+        "Video lessons are locked because your 365-day video access validity has expired.",
         "warning",
         "Video Access Locked",
       );
@@ -55,9 +56,9 @@ export const CourseDetailPage = () => {
   };
 
   const handleStartLearning = () => {
-    if (isExpired || !hasCourseAccess) {
+    if (isVideoExpired || !hasCourseAccess) {
       showToast(
-        "Video lessons are locked because your course access validity has expired (0 days left).",
+        "Video lessons are locked because your 365-day video access validity has expired.",
         "warning",
         "Video Access Locked",
       );

@@ -25,12 +25,13 @@ import {
 export const LessonPlayerPage = () => {
   const { currentUser, crmProfile, isAdmin, crmLoading } = useAuth();
 
-  // Validate student course & video access period (0 days left check)
+  // Validate student 365-day video lecture access period (366 days in leap year)
   const accessStatus = useMemo(
     () => checkStudentCourseAccess(crmProfile, currentUser, isAdmin),
     [crmProfile, currentUser, isAdmin],
   );
-  const isExpired = accessStatus.isExpired;
+  const isVideoExpired = accessStatus.isVideoExpired;
+  const isExpired = isVideoExpired;
   const studentId = lmsService.getActiveStudentId(
     crmProfile?.id ||
     currentUser?.crmAdmissionId ||
@@ -145,15 +146,15 @@ export const LessonPlayerPage = () => {
     let isCancelled = false;
     if (!currentLesson || !currentLesson.id) return;
 
-    // Strict validity lock: 0 days left
-    if (isExpired) {
+    // Strict video validity lock: 365 days (or 366 in leap year) from admission date
+    if (isVideoExpired) {
       setStreamData({
         url: "",
         mime: "video/mp4",
         isLoading: false,
         isLocked: true,
         lockMessage:
-          "Your course access period has concluded (0 days remaining). Video lectures, outlines, and lesson streaming are locked. Please contact your center coordinator or counsellor to renew your course validity.",
+          "Your 365-day video lecture access period has concluded (0 days remaining). Video lectures, outlines, and lesson streaming are locked. Please contact your center coordinator or counsellor to renew your video access.",
       });
       setIsBuffering(false);
       return;

@@ -29,6 +29,259 @@ export const resolveFacultyByBatchOrBranch = (branchOrCenter = "", batchNameOrCo
 };
 
 /**
+ * Calculates Video Lecture Validity:
+ * Videos are viewable for 365 days (or 366 days if a leap year is spanned)
+ * from the student's admission / registration date, IRRESPECTIVE of when the course completes.
+ *
+ * @param {string|Date} rawAdmission - Admission or registration date
+ * @returns {Object} Video validity calculation results
+ */
+export const calculateVideoValidity = (rawAdmission) => {
+  if (!rawAdmission) {
+    return {
+      totalDays: 365,
+      isLeapYear: false,
+      videoExpiryDate: "365 Days Access",
+      videoDaysLeft: 365,
+      isVideoExpired: false,
+      hasVideoAccess: true,
+      elapsedDays: 0,
+    };
+  }
+
+  let dt = new Date(rawAdmission);
+  if (isNaN(dt.getTime())) {
+    const parts = String(rawAdmission).split(/[-/\s]/);
+    if (parts.length === 3) {
+      if (parts[0].length === 4) {
+        dt = new Date(parts[0], parseInt(parts[1], 10) - 1, parts[2]);
+      } else if (parts[2].length === 4) {
+        dt = new Date(parts[2], parseInt(parts[1], 10) - 1, parts[0]);
+      }
+    }
+  }
+
+  if (!dt || isNaN(dt.getTime())) {
+    return {
+      totalDays: 365,
+      isLeapYear: false,
+      videoExpiryDate: "365 Days Access",
+      videoDaysLeft: 365,
+      isVideoExpired: false,
+      hasVideoAccess: true,
+      elapsedDays: 0,
+    };
+  }
+
+  // Exactly 1 full calendar year from admission date
+  const oneYearLater = new Date(dt);
+  oneYearLater.setFullYear(oneYearLater.getFullYear() + 1);
+
+  // Exact calendar days spanned (366 if leap year, 365 otherwise)
+  const totalDays = Math.round(
+    (oneYearLater.getTime() - dt.getTime()) / (1000 * 60 * 60 * 24)
+  );
+  const isLeapYear = totalDays === 366;
+
+  const now = Date.now();
+  const elapsedDays = Math.floor((now - dt.getTime()) / (1000 * 60 * 60 * 24));
+  const videoDaysLeft = Math.max(
+    0,
+    Math.ceil((oneYearLater.getTime() - now) / (1000 * 60 * 60 * 24))
+  );
+  const isVideoExpired = now >= oneYearLater.getTime() || videoDaysLeft <= 0;
+
+  return {
+    totalDays, // 365 or 366
+    isLeapYear,
+    videoExpiryDate: oneYearLater.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }),
+    videoDaysLeft,
+    isVideoExpired,
+    hasVideoAccess: !isVideoExpired && videoDaysLeft > 0,
+    elapsedDays,
+  };
+};
+
+/**
+ * Calculates Schedule Validity:
+ * The live batch timetable and upcoming modules are shown strictly till the enrolled
+ * program's time-period completes (derived dynamically from the CRM program duration,
+ * batch end date, or official program curriculum definition).
+ *
+ * @param {Object} studentData
+ * @param {Object} source
+ * @param {Object} user
+ * @returns {Object} Schedule validity calculation results
+ */
+export const calculateScheduleValidity = (studentData, source = {}, user = {}) => {
+  const course = studentData?.course || source?.course || user?.course || "";
+  const courseLower = course.toLowerCase();
+
+  // 1. Dynamically read program duration from CRM source / student record
+  const rawDuration =
+    source.courseDuration ||
+    source.course_duration ||
+    source.duration ||
+    source.batch_duration ||
+    user?.courseDuration ||
+    user?.course_duration ||
+    null;
+
+  let durationMonths = null;
+
+  if (rawDuration) {
+    const durStr = String(rawDuration).toLowerCase().trim();
+    if (durStr.includes("year")) {
+      const yrs = parseInt(durStr.replace(/[^0-9]/g, ""), 10) || 1;
+      durationMonths = yrs * 12;
+    } else if (durStr.includes("month")) {
+      const m = parseInt(durStr.replace(/[^0-9]/g, ""), 10);
+      if (!isNaN(m) && m > 0) durationMonths = m;
+    } else if (durStr.includes("day")) {
+      const d = parseInt(durStr.replace(/[^0-9]/g, ""), 10);
+      if (!isNaN(d) && d > 0) durationMonths = Math.max(1, Math.round(d / 30));
+    } else if (durStr.includes("week")) {
+      const w = parseInt(durStr.replace(/[^0-9]/g, ""), 10);
+      if (!isNaN(w) && w > 0) durationMonths = Math.max(1, Math.round((w * 7) / 30));
+    } else {
+      const num = parseInt(durStr.replace(/[^0-9]/g, ""), 10);
+      if (!isNaN(num) && num > 0) durationMonths = num;
+    }
+  }
+
+  // 2. If duration not explicitly defined on student record, derive from enrolled Program Curriculum
+  if (!durationMonths) {
+    if (courseLower.includes("master")) {
+      durationMonths = 12; // Master's Program (12 Months / 120 hrs)
+    } else if (
+      courseLower.includes("adv diploma") ||
+      courseLower.includes("advanced diploma")
+    ) {
+      durationMonths = 9; // Advanced Diploma in Digital Marketing (9 Months / 90 hrs)
+    } else if (courseLower.includes("diploma")) {
+      durationMonths = 6; // Diploma in Digital Marketing (6 Months / 60 hrs)
+    } else if (
+      courseLower.includes("crash") ||
+      courseLower.includes("short") ||
+      courseLower.includes("certif") ||
+      courseLower.includes("2 month") ||
+      courseLower.includes("fast")
+    ) {
+      durationMonths = 2; // Short-term / Certification Program (2 Months)
+    } else if (courseLower.includes("3 month")) {
+      durationMonths = 3; // 3-Month Fast Track Program
+    } else {
+      durationMonths = 6; // Standard default program duration
+    }
+  }
+
+  // Course / Batch start date
+  const rawStart =
+    source.courseStart ||
+    source.batchStartDate ||
+    source.batch_start_date ||
+    source.submission_time ||
+    source.admission_date ||
+    source.admissionDate ||
+    source.registration_date ||
+    user?.admissionDate ||
+    null;
+
+  let startDt = null;
+  if (rawStart && rawStart !== "Not Assigned") {
+    startDt = new Date(rawStart);
+    if (isNaN(startDt.getTime())) {
+      const parts = String(rawStart).split(/[-/\s]/);
+      if (parts.length === 3) {
+        if (parts[0].length === 4) {
+          startDt = new Date(parts[0], parseInt(parts[1], 10) - 1, parts[2]);
+        } else if (parts[2].length === 4) {
+          startDt = new Date(parts[2], parseInt(parts[1], 10) - 1, parts[0]);
+        }
+      }
+    }
+  }
+
+  // 3. Exact batch end date from CRM database (if set by coordinator/faculty)
+  const rawEnd =
+    source.courseEnd ||
+    source.course_end ||
+    source.batch_end_date ||
+    source.batchEndDate ||
+    user?.courseEnd ||
+    null;
+
+  let endDt = null;
+  if (rawEnd && rawEnd !== "Not Assigned") {
+    const parsedEnd = new Date(rawEnd);
+    if (!isNaN(parsedEnd.getTime())) {
+      endDt = parsedEnd;
+      // If both start and end dates are specified in CRM, derive exact months
+      if (startDt && !isNaN(startDt.getTime()) && endDt.getTime() > startDt.getTime()) {
+        const diffDays = (endDt.getTime() - startDt.getTime()) / (1000 * 60 * 60 * 24);
+        durationMonths = Math.max(1, Math.round(diffDays / 30));
+      }
+    }
+  }
+
+  // Fallback to startDt + durationMonths if no explicit batch end date
+  if (!endDt && startDt && !isNaN(startDt.getTime())) {
+    endDt = new Date(startDt);
+    endDt.setMonth(endDt.getMonth() + durationMonths);
+  }
+
+  const now = Date.now();
+  let scheduleDaysLeft = 0;
+  let isScheduleExpired = false;
+
+  if (endDt && !isNaN(endDt.getTime())) {
+    const diffMs = endDt.getTime() - now;
+    scheduleDaysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+    isScheduleExpired = now >= endDt.getTime() || scheduleDaysLeft <= 0;
+  } else {
+    // If dates unavailable, check explicit daysLeft from source
+    const rawDays =
+      source.daysLeft ?? source.days_left ?? user?.daysLeft ?? user?.days_left;
+    if (rawDays !== undefined && rawDays !== null) {
+      const p = parseInt(rawDays, 10);
+      if (!isNaN(p)) {
+        scheduleDaysLeft = Math.max(0, p);
+        isScheduleExpired = scheduleDaysLeft <= 0;
+      }
+    }
+  }
+
+  return {
+    durationMonths,
+    courseDuration: `${durationMonths} Months`,
+    scheduleStartDate:
+      startDt && !isNaN(startDt.getTime())
+        ? startDt.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })
+        : "Not Assigned",
+    scheduleEndDate:
+      endDt && !isNaN(endDt.getTime())
+        ? endDt.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })
+        : "Not Assigned",
+    scheduleDaysLeft,
+    isScheduleExpired,
+    hasScheduleAccess:
+      !isScheduleExpired && Boolean(studentData?.hasAssignedBatch),
+  };
+};
+
+/**
  * Maps CRM profile data and current user auth state into a normalized student profile object.
  *
  * @param {Object} crm - CRM profile object
@@ -98,13 +351,6 @@ export const mapStudentDataFromCrm = (crm, user) => {
   const facultyLeadRole = (rawFacultyRole && !rawFacultyRole.includes("Director"))
     ? rawFacultyRole
     : batchAssignedFaculty.facultyLeadRole;
-  const courseDuration =
-    source.courseDuration || (isDiploma ? "6 Months" : "12 Months");
-
-  let courseStart = "Not Assigned";
-  let courseEnd = "Not Assigned";
-  let daysLeft = null;
-
   // Extract raw admission date from any available field across CRM and user object
   const rawAdmission =
     source.submission_time ||
@@ -118,106 +364,22 @@ export const mapStudentDataFromCrm = (crm, user) => {
     user?.registration_date ||
     null;
 
-  const validityMonths = isDiploma ? 6 : 12;
-  const maxAllowedDays = isDiploma ? 180 : 365;
+  // 1. VIDEO VALIDITY: 365 Days (366 if leap year) Universal Video Access
+  const videoValidity = calculateVideoValidity(rawAdmission);
 
-  let admissionDt = null;
-  if (rawAdmission) {
-    admissionDt = new Date(rawAdmission);
-    if (isNaN(admissionDt.getTime())) {
-      const parts = String(rawAdmission).split(/[-/\s]/);
-      if (parts.length === 3) {
-        if (parts[0].length === 4) {
-          admissionDt = new Date(parts[0], parseInt(parts[1], 10) - 1, parts[2]);
-        } else if (parts[2].length === 4) {
-          admissionDt = new Date(parts[2], parseInt(parts[1], 10) - 1, parts[0]);
-        }
-      }
-    }
-  }
+  // 2. SCHEDULE VALIDITY: Live Batch Timetable & Upcoming Modules (Course Duration: 2 / 3 / 6 / 9 / 12 Months)
+  const scheduleValidity = calculateScheduleValidity(
+    { course, hasAssignedBatch },
+    source,
+    user
+  );
 
-  const now = Date.now();
-  let isAdmissionOverOneYear = false;
-  let admissionComputedDaysLeft = null;
-  let admissionComputedCourseEnd = "Not Assigned";
-
-  if (admissionDt && !isNaN(admissionDt.getTime())) {
-    const elapsedDays = Math.floor((now - admissionDt.getTime()) / (1000 * 60 * 60 * 24));
-    const endDt = new Date(admissionDt);
-    endDt.setMonth(endDt.getMonth() + validityMonths);
-    admissionComputedCourseEnd = endDt.toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-
-    // 2ND CONDITION: IF ADMISSION DATE OVER 1 YEAR (or Diploma 6 months) -> strictly 0 days left
-    if (elapsedDays >= maxAllowedDays || now >= endDt.getTime()) {
-      isAdmissionOverOneYear = true;
-      admissionComputedDaysLeft = 0;
-    } else {
-      const diffMs = endDt.getTime() - now;
-      admissionComputedDaysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-    }
-  }
-
-  // Read explicit daysLeft from CRM API / source or user object (handles both number and string like "0")
-  const rawDaysFromSource =
-    source.daysLeft !== undefined && source.daysLeft !== null
-      ? source.daysLeft
-      : source.days_left !== undefined && source.days_left !== null
-        ? source.days_left
-        : user?.daysLeft !== undefined && user?.daysLeft !== null
-          ? user.daysLeft
-          : user?.days_left;
-
-  // STRICT RULE: If admission date is over 1 year, force 0 days left universally for all batches (Online & Offline)
-  if (isAdmissionOverOneYear) {
-    daysLeft = 0;
-    courseEnd = admissionComputedCourseEnd;
-    courseStart = admissionDate;
-  } else {
-    if (rawDaysFromSource !== undefined && rawDaysFromSource !== null) {
-      const p = parseInt(rawDaysFromSource, 10);
-      if (!isNaN(p)) {
-        daysLeft = Math.max(0, p);
-      }
-    } else if (admissionComputedDaysLeft !== null) {
-      daysLeft = admissionComputedDaysLeft;
-      courseEnd = admissionComputedCourseEnd;
-      courseStart = admissionDate;
-    }
-
-    if (hasAssignedBatch || source.courseEnd) {
-      courseStart =
-        source.courseStart && source.courseStart !== "Not Assigned"
-          ? source.courseStart
-          : source.submission_time
-            ? crmService.formatDate(source.submission_time)
-            : admissionDate;
-
-      if (source.courseEnd && source.courseEnd !== "Not Assigned") {
-        courseEnd = source.courseEnd;
-        try {
-          const endDt = new Date(courseEnd);
-          if (!isNaN(endDt.getTime())) {
-            const diffMs = endDt.getTime() - Date.now();
-            daysLeft = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-          }
-        } catch (e) {}
-      } else if (hasAssignedBatch && (!courseEnd || courseEnd === "Not Assigned")) {
-        courseEnd =
-          admissionComputedCourseEnd !== "Not Assigned"
-            ? admissionComputedCourseEnd
-            : isDiploma
-              ? "09 Sep 2026"
-              : "20 Apr 2027";
-        if (daysLeft === null) {
-          daysLeft = admissionComputedDaysLeft ?? 0;
-        }
-      }
-    }
-  }
+  const courseDuration = scheduleValidity.courseDuration;
+  const courseStart = scheduleValidity.scheduleStartDate;
+  const courseEnd = scheduleValidity.scheduleEndDate;
+  const scheduleDaysLeft = scheduleValidity.scheduleDaysLeft;
+  const isScheduleExpired = scheduleValidity.isScheduleExpired;
+  const daysLeft = videoValidity.videoDaysLeft; // Universal 365-day video access countdown
 
   // Real course progress from LMS watch state (default to 0, never hardcode 65)
   const progressPercentage =
@@ -360,6 +522,20 @@ export const mapStudentDataFromCrm = (crm, user) => {
     courseStart,
     courseEnd,
     daysLeft,
+    // Two distinct validity types:
+    // 1. Video validity (365/366 days universal from admission date)
+    videoDaysLeft: videoValidity.videoDaysLeft,
+    videoExpiryDate: videoValidity.videoExpiryDate,
+    videoTotalDays: videoValidity.totalDays,
+    isLeapYear: videoValidity.isLeapYear,
+    isVideoExpired: videoValidity.isVideoExpired,
+    hasVideoAccess: videoValidity.hasVideoAccess,
+    // 2. Schedule validity (course duration 2/3/6/9/12 months)
+    scheduleDaysLeft,
+    scheduleStartDate: courseStart,
+    scheduleEndDate: courseEnd,
+    isScheduleExpired,
+    hasScheduleAccess: !isScheduleExpired && hasAssignedBatch,
     progressPercentage,
     hasAssignedBatch,
     hasCourseAssigned,
@@ -377,33 +553,17 @@ export const mapStudentDataFromCrm = (crm, user) => {
 
 /**
  * checkStudentCourseAccess
- * Validates whether the student profile has active course and video access.
- * STRICT RULE: If daysLeft <= 0 (or courseEnd in past), access is strictly locked / expired.
- * For all students (including test cases like Adeeti Jadhav), 0 days left locks videos and courses.
+ * Validates two distinct validity types:
+ * 1. Schedule Validity (Batch Timetable & Upcoming Modules):
+ *    Strictly valid till the course time-period (e.g. 2 / 3 / 6 / 9 / 12 months).
+ *    Once completed, only timetable & upcoming modules are blocked.
+ * 2. Video Lecture Validity:
+ *    Universally valid for 365 days (366 days in leap year) from admission/registration,
+ *    IRRESPECTIVE of when the batch/course completes. Videos remain 100% unlocked for the entire year.
  */
 export const checkStudentCourseAccess = (crm, user, isAdmin = false) => {
   const studentData = mapStudentDataFromCrm(crm, user);
-  const daysLeft = studentData.daysLeft;
-  const courseEnd = studentData.courseEnd;
 
-  // Direct check on raw CRM / user profile objects
-  const rawDays =
-    crm?.daysLeft !== undefined && crm?.daysLeft !== null
-      ? crm.daysLeft
-      : crm?.days_left !== undefined && crm?.days_left !== null
-        ? crm.days_left
-        : user?.daysLeft !== undefined && user?.daysLeft !== null
-          ? user.daysLeft
-          : user?.days_left !== undefined && user?.days_left !== null
-            ? user.days_left
-            : daysLeft;
-
-  const parsedDays =
-    rawDays !== null && rawDays !== undefined && !isNaN(parseInt(rawDays, 10))
-      ? parseInt(rawDays, 10)
-      : daysLeft;
-
-  // Universal Admission Date Check for ALL Batches (including Online)
   const rawAdmission =
     crm?.submission_time ||
     crm?.admission_date ||
@@ -412,51 +572,67 @@ export const checkStudentCourseAccess = (crm, user, isAdmin = false) => {
     crm?.registrationDate ||
     user?.submission_time ||
     user?.admission_date ||
-    user?.admissionDate;
+    user?.admissionDate ||
+    user?.registration_date ||
+    null;
 
-  let isAdmissionOverOneYear = false;
-  if (rawAdmission) {
-    let dt = new Date(rawAdmission);
-    if (isNaN(dt.getTime())) {
-      const parts = String(rawAdmission).split(/[-/\s]/);
-      if (parts.length === 3) {
-        if (parts[0].length === 4) {
-          dt = new Date(parts[0], parseInt(parts[1], 10) - 1, parts[2]);
-        } else if (parts[2].length === 4) {
-          dt = new Date(parts[2], parseInt(parts[1], 10) - 1, parts[0]);
-        }
-      }
-    }
-    if (dt && !isNaN(dt.getTime())) {
-      const elapsed = Math.floor((Date.now() - dt.getTime()) / (1000 * 60 * 60 * 24));
-      const isDip = (studentData.course || "").toLowerCase().includes("diploma");
-      const maxAllowed = isDip ? 180 : 365;
-      if (elapsed >= maxAllowed) {
-        isAdmissionOverOneYear = true;
-      }
-    }
+  // 1. Video Validity (365 / 366 days universal rule)
+  const videoValidity = calculateVideoValidity(rawAdmission);
+
+  // 2. Schedule Validity (course duration: 2 / 3 / 6 / 9 / 12 months)
+  const scheduleValidity = calculateScheduleValidity(studentData, crm, user);
+
+  if (isAdmin) {
+    return {
+      hasAccess: true,
+      hasVideoAccess: true,
+      isVideoExpired: false,
+      videoDaysLeft: videoValidity.videoDaysLeft,
+      videoExpiryDate: videoValidity.videoExpiryDate,
+      videoTotalDays: videoValidity.totalDays,
+      isLeapYear: videoValidity.isLeapYear,
+
+      hasScheduleAccess: true,
+      isScheduleExpired: false,
+      scheduleDaysLeft: scheduleValidity.scheduleDaysLeft,
+      scheduleEndDate: scheduleValidity.scheduleEndDate,
+      courseDuration: scheduleValidity.courseDuration,
+
+      isExpired: false,
+      daysLeft: videoValidity.videoDaysLeft,
+      hasAssignedBatch: true,
+      courseEnd: scheduleValidity.scheduleEndDate,
+      batch: studentData.batch,
+      studentName: studentData.name,
+      facultyLead: studentData.facultyLead,
+      center: studentData.center,
+    };
   }
 
-  // Strictly expired if:
-  // 1. Admission date is over 1 year (or diploma 6 months)
-  // 2. OR parsedDays <= 0
-  // 3. OR daysLeft <= 0
-  const isExpired =
-    isAdmissionOverOneYear ||
-    (parsedDays !== null && parsedDays !== undefined && parsedDays <= 0) ||
-    (daysLeft !== null && daysLeft !== undefined && daysLeft <= 0);
-
-  const effectiveDaysLeft = isExpired ? 0 : (parsedDays ?? daysLeft ?? 0);
-
-  // Active access requires not expired AND positive days remaining (> 0)
-  const hasAccess = !isExpired && effectiveDaysLeft > 0;
-
   return {
-    hasAccess,
-    isExpired,
-    daysLeft: effectiveDaysLeft,
+    // 1. Universal Video Lecture Access (365 / 366 days rule from admission)
+    hasAccess: videoValidity.hasVideoAccess,
+    hasVideoAccess: videoValidity.hasVideoAccess,
+    isVideoExpired: videoValidity.isVideoExpired,
+    videoDaysLeft: videoValidity.videoDaysLeft,
+    videoExpiryDate: videoValidity.videoExpiryDate,
+    videoTotalDays: videoValidity.totalDays,
+    isLeapYear: videoValidity.isLeapYear,
+
+    // 2. Live Batch Timetable & Upcoming Modules Access (2 / 3 / 6 / 9 / 12 months)
+    hasScheduleAccess: scheduleValidity.hasScheduleAccess,
+    isScheduleExpired: scheduleValidity.isScheduleExpired,
+    scheduleDaysLeft: scheduleValidity.scheduleDaysLeft,
+    scheduleEndDate: scheduleValidity.scheduleEndDate,
+    courseDuration: scheduleValidity.courseDuration,
+
+    // Legacy / Unified mappings:
+    // In video contexts, isExpired strictly tracks video validity (365 days rule)
+    isExpired: videoValidity.isVideoExpired,
+    daysLeft: videoValidity.videoDaysLeft,
+
     hasAssignedBatch: studentData.hasAssignedBatch,
-    courseEnd: courseEnd && courseEnd !== "Not Assigned" ? courseEnd : null,
+    courseEnd: scheduleValidity.scheduleEndDate,
     batch: studentData.batch,
     studentName: studentData.name,
     facultyLead: studentData.facultyLead,

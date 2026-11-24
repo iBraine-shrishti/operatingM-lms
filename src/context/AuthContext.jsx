@@ -220,10 +220,8 @@ export const AuthProvider = ({ children }) => {
                 if (!isNaN(p)) profileParsedDays = p;
             }
             const access = checkStudentCourseAccess(profile, studentUser);
-            const isProfileExpired = Boolean(
-                (profileParsedDays !== null && profileParsedDays <= 0) ||
-                access.isExpired
-            );
+            // Videos and enrolled courses are active for 365 days (366 in leap year) from admission
+            const isProfileExpired = Boolean(access.isVideoExpired || access.videoDaysLeft <= 0);
 
             let activePermittedIds = [];
             if (permissions && Array.isArray(permissions)) {
@@ -268,9 +266,9 @@ export const AuthProvider = ({ children }) => {
                         const p = parseInt(profileRawDays, 10);
                         if (!isNaN(p)) profileParsedDays = p;
                     }
+                    const profileAccess = checkStudentCourseAccess(profile, prev);
                     const isProfileExpired = Boolean(
-                        (profileParsedDays !== null && profileParsedDays <= 0) ||
-                        checkStudentCourseAccess(profile, prev).isExpired
+                        profileAccess.isVideoExpired || profileAccess.videoDaysLeft <= 0
                     );
                     const safeCount = isProfileExpired ? 0 : activePermittedIds.length;
 

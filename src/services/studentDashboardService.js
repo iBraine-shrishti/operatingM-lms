@@ -84,23 +84,9 @@ export const studentDashboardService = {
     const quickActions = studentDashboardService.getQuickActions();
     const paymentInfo = studentDashboardService.getPaymentInfo(crmProfile, currentUser);
 
-    // Check student course & video access period (0 days left lock)
+    // Check student 365-day video access validity (366 days in leap year)
     const accessStatus = checkStudentCourseAccess(crmProfile, currentUser);
-    const rawDays =
-      crmProfile?.daysLeft !== undefined && crmProfile?.daysLeft !== null
-        ? crmProfile.daysLeft
-        : crmProfile?.days_left !== undefined && crmProfile?.days_left !== null
-          ? crmProfile.days_left
-          : currentUser?.daysLeft !== undefined && currentUser?.daysLeft !== null
-            ? currentUser.daysLeft
-            : currentUser?.days_left;
-    let parsedDays = null;
-    if (rawDays !== undefined && rawDays !== null) {
-      const p = parseInt(rawDays, 10);
-      if (!isNaN(p)) parsedDays = p;
-    }
-    const isAccessExpired =
-      accessStatus.isExpired || (parsedDays !== null && parsedDays <= 0);
+    const isAccessExpired = Boolean(accessStatus.isVideoExpired || accessStatus.videoDaysLeft <= 0);
 
     const stats = studentDashboardService.getStudentStats({
       currentUser,
@@ -593,23 +579,9 @@ export const studentDashboardService = {
     const crmProfile = params.crmProfile || {};
     const crmBatch = params.crmBatch || {};
 
-    // Validate student course & video access period (0 days left check)
+    // Validate student 365-day video access validity (366 days in leap year)
     const accessStatus = checkStudentCourseAccess(crmProfile, currentUser);
-    const rawDays =
-      crmProfile?.daysLeft !== undefined && crmProfile?.daysLeft !== null
-        ? crmProfile.daysLeft
-        : crmProfile?.days_left !== undefined && crmProfile?.days_left !== null
-          ? crmProfile.days_left
-          : currentUser?.daysLeft !== undefined && currentUser?.daysLeft !== null
-            ? currentUser.daysLeft
-            : currentUser?.days_left;
-    let parsedDays = null;
-    if (rawDays !== undefined && rawDays !== null) {
-      const p = parseInt(rawDays, 10);
-      if (!isNaN(p)) parsedDays = p;
-    }
-    const isExpired =
-      accessStatus.isExpired || (parsedDays !== null && parsedDays <= 0);
+    const isExpired = Boolean(accessStatus.isVideoExpired || accessStatus.videoDaysLeft <= 0);
 
     // When validity is expired (0 days left), strictly lock continue learning and hide video modules
     if (isExpired) {

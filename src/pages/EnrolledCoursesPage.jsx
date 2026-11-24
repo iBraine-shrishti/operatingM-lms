@@ -32,12 +32,13 @@ export const EnrolledCoursesPage = () => {
     crmLoading,
   } = useAuth();
 
-  // Validate student course & video access period (0 days left check)
+  // Validate student 365-day video access period (366 days in leap year)
   const accessStatus = useMemo(
     () => checkStudentCourseAccess(crmProfile, currentUser, isAdmin),
     [crmProfile, currentUser, isAdmin],
   );
-  const isExpired = accessStatus.isExpired;
+  const isVideoExpired = accessStatus.isVideoExpired;
+  const isExpired = isVideoExpired;
 
   const studentId =
     currentUser?.crmAdmissionId ||
