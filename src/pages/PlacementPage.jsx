@@ -208,11 +208,19 @@ export const PlacementPage = () => {
   // 3. Filter jobs that this specific student is granted permission to see
   const accessibleJobs = useMemo(() => {
     if (!hasAccess) return [];
+    const studentBatch = (studentCourse || crmProfile?.batch || "").toLowerCase();
     const matched = allApprovedJobs.filter(
-      (job) => studentJobAccess.includes(job.id) || studentJobAccess.includes("all")
+      (job) =>
+        studentJobAccess.includes(job.id) ||
+        studentJobAccess.includes("all") ||
+        job.visibility === "All Students" ||
+        job.visibilityType === "all" ||
+        (job.visibilityType === "batch" &&
+          job.visibilityValue &&
+          studentBatch.includes(job.visibilityValue.toLowerCase()))
     );
     return matched.length > 0 ? matched : allApprovedJobs;
-  }, [allApprovedJobs, studentJobAccess, hasAccess]);
+  }, [allApprovedJobs, studentJobAccess, hasAccess, studentCourse, crmProfile?.batch]);
 
   // 4. Load all student applications
   const allApplications = useMemo(() => {
