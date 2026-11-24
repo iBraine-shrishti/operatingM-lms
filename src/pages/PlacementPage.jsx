@@ -26,11 +26,62 @@ import {
   AlertCircle,
   ExternalLink,
   Check,
-  X
+  X,
+  Eye,
+  ShieldCheck,
+  Layers,
+  Award,
+  Info
 } from "lucide-react";
 
 // Default fallback approved jobs if local storage has not populated yet
 const DEFAULT_FALLBACK_JOBS = [
+  {
+    id: "job-104",
+    positionTitle: "Digital Marketing & Campaign Operations Analyst",
+    companyName: "Accenture",
+    requesterName: "Siddharth Verma (Lead Campus Hiring)",
+    email: "india.campus@accenture.com",
+    department: "Digital Marketing & Campaign Operations",
+    positionType: "Full Time (Direct Placement)",
+    salaryRange: "Rs 4,50,000 - Rs 6,00,000 / annum",
+    location: "Vikhroli West, Mumbai (Hybrid)",
+    workMode: "Hybrid (3 Days Onsite / 2 Days Remote)",
+    experienceRequired: "Fresher / 0-1 Year (Operating Media Certified)",
+    postingDate: "2026-11-22",
+    jobDescription:
+      "Accenture Song is hiring Digital Marketing & Campaign Operations Analysts to manage enterprise multi-channel digital campaigns. In this role, you will plan, execute, and optimize cross-channel advertising for Fortune 500 global brands across Google Ads, Meta Ads Manager, LinkedIn, and programmatic networks, with deep reporting in Google Analytics 4 (GA4).",
+    responsibilities: [
+      "Set up, test, launch, and monitor enterprise digital advertising campaigns across Google Ads (Search, Display, PMax), Meta Ads Manager, and LinkedIn Campaign Manager.",
+      "Analyze full-funnel customer journeys, UTM tagging architectures, and conversion events via Google Analytics 4 (GA4) and Google Tag Manager (GTM).",
+      "Monitor weekly campaign pacing, budget allocations, ROAS, CPA, and CTR against enterprise client benchmarks.",
+      "Build automated client-ready weekly and monthly dashboards using Looker Studio, PowerBI, and Google Sheets.",
+      "Collaborate with international cross-functional creative, strategy, and engineering squads to implement A/B ad creative tests.",
+      "Conduct keyword research, competitive landscape audits, and landing page conversion rate optimization (CRO)."
+    ],
+    requirements:
+      "Operating Media Digital Marketing Diploma / Master Program Graduate. Practical certification in Google Ads Search & Display, GA4, and Meta Certified Digital Marketing Associate.",
+    eligibilityCriteria: [
+      "Operating Media Diploma / Master Course Completion with minimum 80% attendance.",
+      "Completed live module capstone assignments in Google Ads, GA4, SEO, and Meta Ads.",
+      "Proficient in Excel / Google Sheets (VLOOKUP, Pivot Tables, Data Visualization).",
+      "Excellent written and verbal business English communication skills for corporate reporting."
+    ],
+    skills: ["Google Ads", "Meta Ads Manager", "GA4", "GTM", "Looker Studio", "SEO", "PMax", "CRO"],
+    selectionProcess: [
+      "Round 1: Placement Cell Profile Shortlisting & Resume Validation",
+      "Round 2: Technical Digital Marketing Assessment & Campaign Simulation",
+      "Round 3: Technical Competency & Case Study Interview with Accenture Managers",
+      "Round 4: Final HR & Culture Alignment Discussion"
+    ],
+    perksAndBenefits: [
+      "Comprehensive Health & Medical Insurance Coverage for Employee & Dependents",
+      "Annual Performance Bonus & Bi-annual Career Growth Review Cycles",
+      "Hybrid Work Allowance & Enterprise Laptop / Hardware Provided",
+      "Access to Accenture Global Learning & Professional Certification Sponsorships"
+    ],
+    status: "approved",
+  },
   {
     id: "job-101",
     positionTitle: "SEO & Content Marketing Executive",
@@ -39,13 +90,37 @@ const DEFAULT_FALLBACK_JOBS = [
     email: "hr@zenithmedia.in",
     department: "Search Engine Optimization (SEO)",
     positionType: "Full Time",
-    salaryRange: "₹28,000 - ₹35,000 / month",
+    salaryRange: "Rs 28,000 - Rs 35,000 / month",
     location: "Andheri East, Mumbai",
+    workMode: "Onsite (Andheri East)",
+    experienceRequired: "Fresher to 1 Year",
     postingDate: "2026-11-18",
     jobDescription:
-      "Looking for an energetic SEO executive to conduct on-page optimization, backlink auditing, Screaming Frog technical audits, and keyword ranking tracking.",
+      "Looking for an energetic SEO executive to conduct on-page optimization, backlink auditing, Screaming Frog technical audits, and keyword ranking tracking for premier national accounts.",
+    responsibilities: [
+      "Conduct in-depth technical SEO audits using Screaming Frog, Semrush, and Google Search Console.",
+      "Perform competitor keyword research, search intent mapping, and on-page content optimization.",
+      "Execute high-quality link acquisition, digital PR outreach, and citation cleanups.",
+      "Track daily keyword rankings and weekly organic traffic trends in GA4."
+    ],
     requirements:
       "Operating Media Digital Marketing Diploma holder. Hands-on experience with GA4, GSC, Semrush, and WordPress.",
+    eligibilityCriteria: [
+      "Operating Media SEO Module & Live Project successfully completed.",
+      "Familiarity with WordPress CMS, schema markup, and meta tag optimization.",
+      "Good written English copywriting capabilities for blog and meta content."
+    ],
+    skills: ["SEO", "Google Search Console", "GA4", "Semrush", "Screaming Frog", "WordPress", "Content Strategy"],
+    selectionProcess: [
+      "Round 1: Resume & Live SEO Audit Assignment Evaluation",
+      "Round 2: Technical Interview with SEO Director",
+      "Round 3: Final HR Discussion & Offer Letter"
+    ],
+    perksAndBenefits: [
+      "Paid Performance Incentives on Keyword Ranking Milestones",
+      "Annual Health Insurance & Paid Leaves",
+      "Mentorship from Senior SEO Architects"
+    ],
     status: "approved",
   },
   {
@@ -56,13 +131,37 @@ const DEFAULT_FALLBACK_JOBS = [
     email: "talent@growthkite.co",
     department: "Google Ads / Performance Marketing",
     positionType: "Full Time",
-    salaryRange: "₹35,000 - ₹45,000 / month",
+    salaryRange: "Rs 35,000 - Rs 45,000 / month",
     location: "Bandra Kurla Complex (BKC), Mumbai",
+    workMode: "Hybrid (BKC)",
+    experienceRequired: "Fresher to 1 Year",
     postingDate: "2026-11-19",
     jobDescription:
-      "Scale high-budget e-commerce campaigns across Meta Ads Manager, Google Performance Max (PMax), and Google Search Ads. Analyze ROAS and CAC metrics.",
+      "Scale high-budget e-commerce direct-to-consumer (D2C) campaigns across Meta Ads Manager, Google Performance Max (PMax), and Google Search Ads. Analyze ROAS and CAC metrics across retail brands.",
+    responsibilities: [
+      "Set up and manage daily ad spends on Meta Advantage+ catalog ads and Google Shopping / PMax campaigns.",
+      "Analyze blended ROAS, customer acquisition cost (CAC), and lifetime value (LTV).",
+      "Set up conversion tracking using Meta Pixel, Conversions API (CAPI), and Google Tag Manager.",
+      "Coordinate with graphic designers to produce viral video hooks and static ad creatives."
+    ],
     requirements:
       "Proven live budget management experience. Strong analytical skills with GA4 funnel tracking and Tag Manager.",
+    eligibilityCriteria: [
+      "Operating Media Google Ads & Performance Marketing module completed.",
+      "Clear understanding of bidding strategies (tCPA, tROAS, Max Conversions).",
+      "Strong analytical mindset and proficiency in Google Sheets."
+    ],
+    skills: ["Meta Ads", "Google Ads", "Performance Max", "GTM", "GA4", "ROAS Optimization", "Looker Studio"],
+    selectionProcess: [
+      "Round 1: Screening & Live Campaign Case Study",
+      "Round 2: Technical Deep-Dive on Ad Account Architecture",
+      "Round 3: Managing Director Discussion"
+    ],
+    perksAndBenefits: [
+      "Quarterly Performance Profit Sharing Bonus",
+      "Flexible Hybrid Hours & Work From Home Fridays",
+      "Fast-track Growth to Campaign Lead within 12 Months"
+    ],
     status: "approved",
   },
   {
@@ -73,13 +172,37 @@ const DEFAULT_FALLBACK_JOBS = [
     email: "kunal@sparkbrand.agency",
     department: "Social Media Marketing",
     positionType: "Full Time",
-    salaryRange: "₹25,000 - ₹32,000 / month",
+    salaryRange: "Rs 25,000 - Rs 32,000 / month",
     location: "Lower Parel, Mumbai",
+    workMode: "Onsite (Lower Parel)",
+    experienceRequired: "Fresher to 1 Year",
     postingDate: "2026-11-20",
     jobDescription:
-      "Lead creative campaigns, monthly social media content calendars, influencer outreach, and visual branding across Instagram, LinkedIn, and YouTube.",
+      "Lead creative campaigns, monthly social media content calendars, influencer outreach, and visual branding across Instagram, LinkedIn, and YouTube for lifestyle and hospitality brands.",
+    responsibilities: [
+      "Conceptualize monthly social media content calendars, reel storylines, and static carousels.",
+      "Design social graphics using Canva and Adobe tools adhering to client brand guidelines.",
+      "Manage community engagement, comment responses, and brand reputation monitoring.",
+      "Execute influencer collaboration campaigns and measure engagement reach."
+    ],
     requirements:
       "Creative copywriter with Canva / Adobe designing proficiency. Hands-on experience with social media scheduling and analytics.",
+    eligibilityCriteria: [
+      "Operating Media Social Media Marketing & Canva certification.",
+      "Strong aesthetic sense and visual design portfolio.",
+      "Familiarity with trending audio, hashtags, and Instagram algorithm updates."
+    ],
+    skills: ["Social Media Marketing", "Canva", "Instagram Reels", "Content Writing", "Copywriting", "Influencer Marketing"],
+    selectionProcess: [
+      "Round 1: Portfolio Review & Reel Concept Task",
+      "Round 2: Creative Director Interview",
+      "Round 3: HR Final Discussion"
+    ],
+    perksAndBenefits: [
+      "Creative Freedom & High-Profile Brand Exposure",
+      "Casual Agency Culture & Weekly Creative Workshops",
+      "Travel Allowance & Performance Perks"
+    ],
     status: "approved",
   },
 ];
@@ -110,7 +233,8 @@ export const PlacementPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDept, setSelectedDept] = useState("all");
 
-  // Modal State for Applying
+  // Modal State for Applying & Full Details Popup
+  const [selectedJobDetails, setSelectedJobDetails] = useState(null);
   const [applyModalJob, setApplyModalJob] = useState(null);
   const [resumeLinkInput, setResumeLinkInput] = useState("");
   const [portfolioLinkInput, setPortfolioLinkInput] = useState("");
@@ -198,7 +322,10 @@ export const PlacementPage = () => {
         const active = parsed.filter((j) => j.status !== "rejected");
         const map = new Map();
         DEFAULT_FALLBACK_JOBS.forEach((j) => map.set(j.id, j));
-        active.forEach((j) => map.set(j.id, { ...j, status: "approved" }));
+        active.forEach((j) => {
+          const fallback = map.get(j.id) || {};
+          map.set(j.id, { ...fallback, ...j, status: "approved" });
+        });
         return Array.from(map.values());
       }
     } catch {}
@@ -575,8 +702,12 @@ export const PlacementPage = () => {
                           </div>
 
                           {/* Position Title */}
-                          <h3 className="text-sm font-extrabold text-slate-900 dark:text-white leading-snug mb-1">
-                            {job.positionTitle}
+                          <h3
+                            onClick={() => setSelectedJobDetails(job)}
+                            className="text-sm font-extrabold text-slate-900 dark:text-white leading-snug mb-1 hover:text-[#003873] dark:hover:text-sky-400 cursor-pointer transition flex items-center justify-between group"
+                          >
+                            <span>{job.positionTitle}</span>
+                            <ArrowUpRight size={13} className="opacity-0 group-hover:opacity-100 transition text-[#003873] dark:text-sky-400 shrink-0 ml-1" />
                           </h3>
 
                           {/* Department & Salary */}
@@ -603,10 +734,16 @@ export const PlacementPage = () => {
                         </div>
 
                         {/* Action Footer */}
-                        <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                          <span className="text-[10.5px] text-slate-400 flex items-center gap-1">
-                            <Calendar size={11} /> Posted {job.postingDate || "Recently"}
-                          </span>
+                        <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedJobDetails(job)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold transition cursor-pointer"
+                            title="View Full Job Description & Eligibility"
+                          >
+                            <Eye size={13} className="text-[#003873] dark:text-sky-400" />
+                            <span>View Details</span>
+                          </button>
 
                           {isApplied ? (
                             <div className="flex items-center gap-1.5">
@@ -622,7 +759,7 @@ export const PlacementPage = () => {
                             <button
                               type="button"
                               onClick={() => handleOpenApplyModal(job)}
-                              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#003873] hover:bg-[#002855] text-white text-xs font-bold transition shadow-xs"
+                              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#003873] hover:bg-[#002855] text-white text-xs font-bold transition shadow-xs cursor-pointer"
                             >
                               <Send size={12} /> Apply Now
                             </button>
@@ -720,6 +857,25 @@ export const PlacementPage = () => {
                             <FileText size={15} />
                           </a>
                         )}
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const foundJob = allApprovedJobs.find((j) => j.id === app.jobId) || {
+                              id: app.jobId,
+                              positionTitle: app.jobTitle,
+                              companyName: app.companyName,
+                              jobDescription: "Detailed job specifications archived in placement portal.",
+                              postingDate: app.appliedDate,
+                              status: "approved",
+                            };
+                            setSelectedJobDetails(foundJob);
+                          }}
+                          className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition cursor-pointer"
+                          title="View Full Job Description & Scope"
+                        >
+                          <Eye size={15} />
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -745,9 +901,18 @@ export const PlacementPage = () => {
                       <h3 className="text-sm font-extrabold text-slate-900 dark:text-white leading-tight">
                         Apply: {applyModalJob.positionTitle}
                       </h3>
-                      <p className="text-[11px] text-slate-400 font-medium">
-                        {applyModalJob.companyName} • {applyModalJob.location}
-                      </p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <p className="text-[11px] text-slate-400 font-medium">
+                          {applyModalJob.companyName} &bull; {applyModalJob.location}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedJobDetails(applyModalJob)}
+                          className="text-[11px] font-bold text-[#003873] dark:text-sky-400 hover:underline inline-flex items-center gap-1"
+                        >
+                          <Eye size={11} /> View Specs
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <button
@@ -849,6 +1014,220 @@ export const PlacementPage = () => {
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          )}
+
+          {/* 5. FULL JOB DESCRIPTION MODAL (ACCENTURE & CORPORATE OPENINGS) */}
+          {selectedJobDetails && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/70 backdrop-blur-xs animate-fadeIn overflow-y-auto"
+              onClick={() => setSelectedJobDetails(null)}
+            >
+              <div
+                className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200 dark:border-slate-800 w-full max-w-3xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden my-auto animate-scaleUp"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Modal Top Header */}
+                <div className="p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-r from-slate-50 via-blue-50/30 to-white dark:from-[#0b1329] dark:via-[#0e1726] dark:to-[#0b1329] flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-3.5 min-w-0">
+                    <div className="w-12 h-12 rounded-2xl bg-[#003873] text-white flex items-center justify-center font-extrabold text-lg shadow-sm shrink-0">
+                      {selectedJobDetails.companyName ? selectedJobDetails.companyName.charAt(0) : "J"}
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap mb-1">
+                        <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 tracking-wide uppercase">
+                          {selectedJobDetails.companyName}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/60 px-2 py-0.5 rounded-full border border-sky-200 dark:border-sky-800">
+                          <ShieldCheck size={11} /> Verified Corporate Partner
+                        </span>
+                      </div>
+                      <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-snug">
+                        {selectedJobDetails.positionTitle}
+                      </h2>
+                      <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
+                        <span className="inline-flex items-center gap-1 text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-1 rounded-lg font-medium">
+                          <MapPin size={12} className="text-[#003873] dark:text-sky-400" /> {selectedJobDetails.location || "Mumbai"}
+                        </span>
+                        <span className="inline-flex items-center gap-1 text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/50 px-2.5 py-1 rounded-lg font-bold border border-blue-200/60 dark:border-blue-900">
+                          <Briefcase size={12} /> {selectedJobDetails.positionType || "Full Time"}
+                        </span>
+                        {selectedJobDetails.workMode && (
+                          <span className="inline-flex items-center gap-1 text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/50 px-2.5 py-1 rounded-lg font-bold border border-purple-200/60 dark:border-purple-900">
+                            <Clock size={12} /> {selectedJobDetails.workMode}
+                          </span>
+                        )}
+                        <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-1 rounded-lg font-extrabold border border-emerald-200 dark:border-emerald-800">
+                          <DollarSign size={12} /> {selectedJobDetails.salaryRange || "Competitive"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedJobDetails(null)}
+                    className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                {/* Modal Scrollable Body */}
+                <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6">
+                  {/* Section 1: Role Overview */}
+                  <div>
+                    <h3 className="text-xs font-black uppercase tracking-wider text-[#003873] dark:text-sky-400 mb-2 flex items-center gap-1.5">
+                      <Info size={14} /> Role Overview & About Organization
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-normal bg-slate-50 dark:bg-slate-850 p-4 rounded-xl border border-slate-100 dark:border-slate-800">
+                      {selectedJobDetails.jobDescription}
+                    </p>
+                  </div>
+
+                  {/* Section 2: Key Responsibilities */}
+                  {selectedJobDetails.responsibilities && selectedJobDetails.responsibilities.length > 0 && (
+                    <div>
+                      <h3 className="text-xs font-black uppercase tracking-wider text-[#003873] dark:text-sky-400 mb-2.5 flex items-center gap-1.5">
+                        <Layers size={14} /> Key Responsibilities & Deliverables
+                      </h3>
+                      <div className="space-y-2">
+                        {selectedJobDetails.responsibilities.map((resp, i) => (
+                          <div
+                            key={i}
+                            className="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900/60 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800/80"
+                          >
+                            <span className="w-5 h-5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                              <Check size={11} strokeWidth={3} />
+                            </span>
+                            <span className="leading-relaxed">{resp}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section 3: Technical Skills & Tools */}
+                  {(selectedJobDetails.skills || selectedJobDetails.requirements) && (
+                    <div>
+                      <h3 className="text-xs font-black uppercase tracking-wider text-[#003873] dark:text-sky-400 mb-2.5 flex items-center gap-1.5">
+                        <Sparkles size={14} /> Technical Competencies & Tool Stack
+                      </h3>
+                      {selectedJobDetails.skills && (
+                        <div className="flex flex-wrap gap-1.5 mb-2.5">
+                          {selectedJobDetails.skills.map((skill, i) => (
+                            <span
+                              key={i}
+                              className="px-3 py-1 rounded-lg text-xs font-bold bg-[#003873]/10 dark:bg-sky-950/60 text-[#003873] dark:text-sky-300 border border-[#003873]/20 dark:border-sky-800"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {selectedJobDetails.requirements && (
+                        <p className="text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-850 p-3 rounded-xl border border-slate-100 dark:border-slate-800">
+                          <strong>Prerequisites:</strong> {selectedJobDetails.requirements}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Section 4: Eligibility Criteria */}
+                  {selectedJobDetails.eligibilityCriteria && selectedJobDetails.eligibilityCriteria.length > 0 && (
+                    <div>
+                      <h3 className="text-xs font-black uppercase tracking-wider text-[#003873] dark:text-sky-400 mb-2.5 flex items-center gap-1.5">
+                        <GraduationCap size={14} /> Placement Eligibility & Academic Criteria
+                      </h3>
+                      <div className="space-y-1.5 bg-slate-50 dark:bg-slate-850 p-3.5 rounded-xl border border-slate-100 dark:border-slate-800">
+                        {selectedJobDetails.eligibilityCriteria.map((crit, i) => (
+                          <div key={i} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#003873] dark:bg-sky-400 shrink-0" />
+                            <span>{crit}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section 5: Selection & Interview Process */}
+                  {selectedJobDetails.selectionProcess && selectedJobDetails.selectionProcess.length > 0 && (
+                    <div>
+                      <h3 className="text-xs font-black uppercase tracking-wider text-[#003873] dark:text-sky-400 mb-2.5 flex items-center gap-1.5">
+                        <Award size={14} /> Selection & Interview Stages
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {selectedJobDetails.selectionProcess.map((step, i) => (
+                          <div
+                            key={i}
+                            className="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/60 text-xs flex items-start gap-2.5"
+                          >
+                            <span className="w-5 h-5 rounded-lg bg-[#003873] text-white font-extrabold text-[10px] flex items-center justify-center shrink-0">
+                              {i + 1}
+                            </span>
+                            <span className="text-slate-800 dark:text-slate-200 font-medium leading-relaxed">{step}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section 6: Perks & Benefits */}
+                  {selectedJobDetails.perksAndBenefits && selectedJobDetails.perksAndBenefits.length > 0 && (
+                    <div>
+                      <h3 className="text-xs font-black uppercase tracking-wider text-[#003873] dark:text-sky-400 mb-2 flex items-center gap-1.5">
+                        <Briefcase size={14} /> Perks, Benefits & Work Environment
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {selectedJobDetails.perksAndBenefits.map((perk, i) => (
+                          <div
+                            key={i}
+                            className="p-2.5 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40 text-xs text-emerald-900 dark:text-emerald-200 flex items-center gap-2"
+                          >
+                            <CheckCircle2 size={13} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+                            <span className="font-medium">{perk}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Modal Bottom Action Footer */}
+                <div className="p-4 sm:p-5 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-850 flex items-center justify-between gap-3">
+                  <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
+                    <Calendar size={12} />
+                    <span>Job ID: {selectedJobDetails.id} &bull; Posted {selectedJobDetails.postingDate}</span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedJobDetails(null)}
+                      className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-slate-800 transition"
+                    >
+                      Close
+                    </button>
+                    {appliedJobIds.has(selectedJobDetails.id) ? (
+                      <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs font-bold">
+                        <CheckCircle2 size={14} /> Already Applied
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const target = selectedJobDetails;
+                          setSelectedJobDetails(null);
+                          handleOpenApplyModal(target);
+                        }}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#003873] hover:bg-[#002855] text-white text-xs font-black shadow-md transition"
+                      >
+                        <Send size={13} /> Apply for this Position
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           )}
