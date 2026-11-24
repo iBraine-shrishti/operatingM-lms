@@ -678,13 +678,14 @@ export const PlacementPage = () => {
                     return (
                       <div
                         key={job.id}
-                        className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+                        onClick={() => setSelectedJobDetails(job)}
+                        className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-5 shadow-xs hover:shadow-lg hover:border-[#003873]/50 dark:hover:border-sky-500/50 hover:-translate-y-0.5 transition-all flex flex-col justify-between cursor-pointer group"
                       >
                         <div>
                           {/* Company & Location Header */}
                           <div className="flex items-start justify-between gap-2 mb-3">
                             <div className="flex items-center gap-2">
-                              <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#003873] dark:text-[#60a5fa] border border-blue-100 dark:border-blue-900 flex items-center justify-center shrink-0 font-bold">
+                              <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#003873] dark:text-[#60a5fa] border border-blue-100 dark:border-blue-900 flex items-center justify-center shrink-0 font-bold group-hover:scale-105 transition-transform">
                                 <Building2 size={18} />
                               </div>
                               <div>
@@ -703,11 +704,10 @@ export const PlacementPage = () => {
 
                           {/* Position Title */}
                           <h3
-                            onClick={() => setSelectedJobDetails(job)}
-                            className="text-sm font-extrabold text-slate-900 dark:text-white leading-snug mb-1 hover:text-[#003873] dark:hover:text-sky-400 cursor-pointer transition flex items-center justify-between group"
+                            className="text-sm font-extrabold text-slate-900 dark:text-white leading-snug mb-1 group-hover:text-[#003873] dark:group-hover:text-sky-400 transition flex items-center justify-between"
                           >
                             <span>{job.positionTitle}</span>
-                            <ArrowUpRight size={13} className="opacity-0 group-hover:opacity-100 transition text-[#003873] dark:text-sky-400 shrink-0 ml-1" />
+                            <ArrowUpRight size={13} className="text-slate-300 dark:text-slate-600 group-hover:text-[#003873] dark:group-hover:text-sky-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition shrink-0 ml-1" />
                           </h3>
 
                           {/* Department & Salary */}
@@ -737,7 +737,10 @@ export const PlacementPage = () => {
                         <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
                           <button
                             type="button"
-                            onClick={() => setSelectedJobDetails(job)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedJobDetails(job);
+                            }}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/60 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold transition cursor-pointer"
                             title="View Full Job Description & Eligibility"
                           >
@@ -746,7 +749,10 @@ export const PlacementPage = () => {
                           </button>
 
                           {isApplied ? (
-                            <div className="flex items-center gap-1.5">
+                            <div
+                              className="flex items-center gap-1.5"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               <span
                                 className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${getWorkflowTagClass(
                                   appRecord?.workflowTag || "Shortlisted"
@@ -758,8 +764,11 @@ export const PlacementPage = () => {
                           ) : (
                             <button
                               type="button"
-                              onClick={() => handleOpenApplyModal(job)}
-                              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#003873] hover:bg-[#002855] text-white text-xs font-bold transition shadow-xs cursor-pointer"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenApplyModal(job);
+                              }}
+                              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#003873] hover:bg-[#002855] text-white text-xs font-bold transition shadow-xs cursor-pointer z-10"
                             >
                               <Send size={12} /> Apply Now
                             </button>
@@ -795,90 +804,96 @@ export const PlacementPage = () => {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {myApplications.map((app) => (
-                    <div
-                      key={app.id}
-                      className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-                    >
-                      <div className="flex items-start gap-3 min-w-0">
-                        <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#003873] dark:text-[#60a5fa] border border-blue-100 dark:border-blue-900 flex items-center justify-center shrink-0 font-bold">
-                          <Building2 size={20} />
+                  {myApplications.map((app) => {
+                    const foundJob = allApprovedJobs.find((j) => j.id === app.jobId) || {
+                      id: app.jobId,
+                      positionTitle: app.jobTitle,
+                      companyName: app.companyName,
+                      jobDescription: "Detailed job specifications archived in placement portal.",
+                      postingDate: app.appliedDate,
+                      status: "approved",
+                    };
+
+                    return (
+                      <div
+                        key={app.id}
+                        onClick={() => setSelectedJobDetails(foundJob)}
+                        className="bg-white dark:bg-[#0b1329] rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 sm:p-5 shadow-xs hover:shadow-md hover:border-[#003873]/50 dark:hover:border-sky-500/50 hover:-translate-y-0.5 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer group"
+                      >
+                        <div className="flex items-start gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-[#003873] dark:text-[#60a5fa] border border-blue-100 dark:border-blue-900 flex items-center justify-center shrink-0 font-bold group-hover:scale-105 transition-transform">
+                            <Building2 size={20} />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h4 className="text-sm font-extrabold text-slate-900 dark:text-white group-hover:text-[#003873] dark:group-hover:text-sky-400 transition-colors">
+                                {app.jobTitle}
+                              </h4>
+                              <span className="text-xs font-bold text-slate-500">
+                                at {app.companyName}
+                              </span>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-1">
+                              <span className="flex items-center gap-1">
+                                <Calendar size={11} /> Applied: {app.appliedDate}
+                              </span>
+                              {app.pushedToEmployer ? (
+                                <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                                  <CheckCircle2 size={11} /> Profile Pushed to Recruiter
+                                </span>
+                              ) : (
+                                <span className="text-slate-400 flex items-center gap-1">
+                                  <Clock size={11} /> Application Under Review
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="text-sm font-extrabold text-slate-900 dark:text-white">
-                              {app.jobTitle}
-                            </h4>
-                            <span className="text-xs font-bold text-slate-500">
-                              at {app.companyName}
+
+                        {/* Right Stage & Credentials */}
+                        <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100 dark:border-slate-800">
+                          <div className="text-right">
+                            <span className="block text-[10px] text-slate-400 uppercase tracking-wider font-extrabold mb-1">
+                              Current Stage
+                            </span>
+                            <span
+                              className={`text-xs font-bold px-3 py-1 rounded-full border inline-block ${getWorkflowTagClass(
+                                app.workflowTag || "Shortlisted"
+                              )}`}
+                            >
+                              {app.workflowTag || "Shortlisted"}
                             </span>
                           </div>
 
-                          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-1">
-                            <span className="flex items-center gap-1">
-                              <Calendar size={11} /> Applied: {app.appliedDate}
-                            </span>
-                            {app.pushedToEmployer ? (
-                              <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                                <CheckCircle2 size={11} /> Profile Pushed to Recruiter
-                              </span>
-                            ) : (
-                              <span className="text-slate-400 flex items-center gap-1">
-                                <Clock size={11} /> Application Under Review
-                              </span>
-                            )}
-                          </div>
+                          {app.resumeLink && (
+                            <a
+                              href={app.resumeLink}
+                              target="_blank"
+                              rel="noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition"
+                              title="View Submitted Resume"
+                            >
+                              <FileText size={15} />
+                            </a>
+                          )}
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedJobDetails(foundJob);
+                            }}
+                            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition cursor-pointer"
+                            title="View Full Job Description & Scope"
+                          >
+                            <Eye size={15} />
+                          </button>
                         </div>
                       </div>
-
-                      {/* Right Stage & Credentials */}
-                      <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-100 dark:border-slate-800">
-                        <div className="text-right">
-                          <span className="block text-[10px] text-slate-400 uppercase tracking-wider font-extrabold mb-1">
-                            Current Stage
-                          </span>
-                          <span
-                            className={`text-xs font-bold px-3 py-1 rounded-full border inline-block ${getWorkflowTagClass(
-                              app.workflowTag || "Shortlisted"
-                            )}`}
-                          >
-                            {app.workflowTag || "Shortlisted"}
-                          </span>
-                        </div>
-
-                        {app.resumeLink && (
-                          <a
-                            href={app.resumeLink}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition"
-                            title="View Submitted Resume"
-                          >
-                            <FileText size={15} />
-                          </a>
-                        )}
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const foundJob = allApprovedJobs.find((j) => j.id === app.jobId) || {
-                              id: app.jobId,
-                              positionTitle: app.jobTitle,
-                              companyName: app.companyName,
-                              jobDescription: "Detailed job specifications archived in placement portal.",
-                              postingDate: app.appliedDate,
-                              status: "approved",
-                            };
-                            setSelectedJobDetails(foundJob);
-                          }}
-                          className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition cursor-pointer"
-                          title="View Full Job Description & Scope"
-                        >
-                          <Eye size={15} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
