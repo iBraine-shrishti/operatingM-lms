@@ -89,6 +89,47 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
 
   const [liveAssignmentsCount, setLiveAssignmentsCount] = useState(assignmentsCount ?? 0);
   const [liveQuizzesCount, setLiveQuizzesCount] = useState(0);
+  const [hasJobAccess, setHasJobAccess] = useState(() => {
+    try {
+      const studentId = crmProfile?.id || currentUser?.crmAdmissionId || crmService.getSelectedStudentId() || "";
+      const cleanId = String(studentId).replace("std-", "").replace("OMC-", "").replace(/^0+/, "");
+      const studentAdmissionNo = crmProfile?.admission_no || currentUser?.admissionNo || "";
+
+      const keysToCheck = [
+        studentId ? `om_lms_student_jobs_${studentId}` : null,
+        cleanId ? `om_lms_student_jobs_${cleanId}` : null,
+        cleanId ? `om_lms_student_jobs_std-${cleanId}` : null,
+        studentAdmissionNo ? `om_lms_student_jobs_${studentAdmissionNo}` : null,
+      ].filter(Boolean);
+
+      for (const k of keysToCheck) {
+        const cached = localStorage.getItem(k);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) return true;
+        }
+      }
+
+      const rawMap = localStorage.getItem("om_crm_student_job_access_map");
+      if (rawMap) {
+        const map = JSON.parse(rawMap);
+        if (studentId && Array.isArray(map[studentId]) && map[studentId].length > 0) return true;
+        if (cleanId && Array.isArray(map[cleanId]) && map[cleanId].length > 0) return true;
+        if (studentAdmissionNo && Array.isArray(map[studentAdmissionNo]) && map[studentAdmissionNo].length > 0) return true;
+      }
+
+      const rawApps = localStorage.getItem("om_crm_student_job_applications");
+      if (rawApps) {
+        const apps = JSON.parse(rawApps);
+        if (apps.some((a) => a.studentAdmissionNo === studentAdmissionNo || a.studentId === studentId || a.studentEmail === currentUser?.email)) {
+          return true;
+        }
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  });
   const [liveJobsCount, setLiveJobsCount] = useState(() => {
     try {
       const raw = localStorage.getItem("om_crm_job_postings");
@@ -363,6 +404,79 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   }, [crmProfile?.id, currentUser?.crmAdmissionId]);
 
   useEffect(() => {
+    let isMounted = true;
+    const studentId = crmProfile?.id || currentUser?.crmAdmissionId || crmService.getSelectedStudentId() || "";
+    const cleanId = String(studentId).replace("std-", "").replace("OMC-", "").replace(/^0+/, "");
+    const studentAdmissionNo = crmProfile?.admission_no || currentUser?.admissionNo || "";
+
+    const checkAccess = () => {
+      try {
+        const keysToCheck = [
+          studentId ? `om_lms_student_jobs_${studentId}` : null,
+          cleanId ? `om_lms_student_jobs_${cleanId}` : null,
+          cleanId ? `om_lms_student_jobs_std-${cleanId}` : null,
+          studentAdmissionNo ? `om_lms_student_jobs_${studentAdmissionNo}` : null,
+        ].filter(Boolean);
+
+        for (const k of keysToCheck) {
+          const cached = localStorage.getItem(k);
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              if (isMounted) setHasJobAccess(true);
+              return;
+            }
+          }
+        }
+
+        const rawMap = localStorage.getItem("om_crm_student_job_access_map");
+        if (rawMap) {
+          const map = JSON.parse(rawMap);
+          if (
+            (studentId && Array.isArray(map[studentId]) && map[studentId].length > 0) ||
+            (cleanId && Array.isArray(map[cleanId]) && map[cleanId].length > 0) ||
+            (studentAdmissionNo && Array.isArray(map[studentAdmissionNo]) && map[studentAdmissionNo].length > 0)
+          ) {
+            if (isMounted) setHasJobAccess(true);
+            return;
+          }
+        }
+
+        const rawApps = localStorage.getItem("om_crm_student_job_applications");
+        if (rawApps) {
+          const apps = JSON.parse(rawApps);
+          if (
+            apps.some(
+              (a) =>
+                a.studentAdmissionNo === studentAdmissionNo ||
+                a.studentId === studentId ||
+                a.studentEmail === currentUser?.email
+            )
+          ) {
+            if (isMounted) setHasJobAccess(true);
+            return;
+          }
+        }
+
+        if (isMounted) setHasJobAccess(false);
+      } catch {
+        if (isMounted) setHasJobAccess(false);
+      }
+    };
+
+    checkAccess();
+
+    if (cleanId) {
+      lmsService
+        .fetchStudentJobAccess(cleanId)
+        .then((jobs) => {
+          if (isMounted && Array.isArray(jobs) && jobs.length > 0) {
+            setHasJobAccess(true);
+          }
+        })
+        .catch(() => {});
+    }
+
     const updateJobsCount = () => {
       try {
         const raw = localStorage.getItem("om_crm_job_postings");
@@ -374,13 +488,22 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
         console.warn("Could not calculate jobs count in sidebar:", err);
       }
     };
+
+    window.addEventListener("storage", checkAccess);
     window.addEventListener("storage", updateJobsCount);
+    window.addEventListener("om_crm_job_access_updated", checkAccess);
+    window.addEventListener("om_crm_jobs_changed", checkAccess);
     window.addEventListener("om_crm_jobs_changed", updateJobsCount);
+
     return () => {
+      isMounted = false;
+      window.removeEventListener("storage", checkAccess);
       window.removeEventListener("storage", updateJobsCount);
+      window.removeEventListener("om_crm_job_access_updated", checkAccess);
+      window.removeEventListener("om_crm_jobs_changed", checkAccess);
       window.removeEventListener("om_crm_jobs_changed", updateJobsCount);
     };
-  }, []);
+  }, [crmProfile?.id, crmProfile?.admission_no, currentUser?.crmAdmissionId, currentUser?.admissionNo]);
 
   const sections = [
     {
@@ -489,13 +612,17 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           badge: "New",
           color: "text-blue-600 dark:text-cyan-400",
         },
-        {
-          name: "Placement",
-          path: "/placement",
-          icon: Briefcase,
-          badge: liveJobsCount > 0 ? `${liveJobsCount} Jobs` : "Hiring",
-          color: "text-blue-600 dark:text-cyan-400",
-        },
+        ...(hasJobAccess
+          ? [
+              {
+                name: "Placement",
+                path: "/placement",
+                icon: Briefcase,
+                badge: liveJobsCount > 0 ? `${liveJobsCount} Jobs` : "Hiring",
+                color: "text-blue-600 dark:text-cyan-400",
+              },
+            ]
+          : []),
       ],
     },
   ];
