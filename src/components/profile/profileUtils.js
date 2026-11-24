@@ -118,17 +118,19 @@ export const calculateVideoValidity = (rawAdmission) => {
  * @returns {Object} Schedule validity calculation results
  */
 export const calculateScheduleValidity = (studentData, source = {}, user = {}) => {
-  const course = studentData?.course || source?.course || user?.course || "";
+  const safeSource = source || {};
+  const safeUser = user || {};
+  const course = studentData?.course || safeSource.course || safeUser.course || "";
   const courseLower = course.toLowerCase();
 
   // 1. Dynamically read program duration from CRM source / student record
   const rawDuration =
-    source.courseDuration ||
-    source.course_duration ||
-    source.duration ||
-    source.batch_duration ||
-    user?.courseDuration ||
-    user?.course_duration ||
+    safeSource.courseDuration ||
+    safeSource.course_duration ||
+    safeSource.duration ||
+    safeSource.batch_duration ||
+    safeUser.courseDuration ||
+    safeUser.course_duration ||
     null;
 
   let durationMonths = null;
@@ -181,14 +183,14 @@ export const calculateScheduleValidity = (studentData, source = {}, user = {}) =
 
   // Course / Batch start date
   const rawStart =
-    source.courseStart ||
-    source.batchStartDate ||
-    source.batch_start_date ||
-    source.submission_time ||
-    source.admission_date ||
-    source.admissionDate ||
-    source.registration_date ||
-    user?.admissionDate ||
+    safeSource.courseStart ||
+    safeSource.batchStartDate ||
+    safeSource.batch_start_date ||
+    safeSource.submission_time ||
+    safeSource.admission_date ||
+    safeSource.admissionDate ||
+    safeSource.registration_date ||
+    safeUser.admissionDate ||
     null;
 
   let startDt = null;
@@ -208,11 +210,11 @@ export const calculateScheduleValidity = (studentData, source = {}, user = {}) =
 
   // 3. Exact batch end date from CRM database (if set by coordinator/faculty)
   const rawEnd =
-    source.courseEnd ||
-    source.course_end ||
-    source.batch_end_date ||
-    source.batchEndDate ||
-    user?.courseEnd ||
+    safeSource.courseEnd ||
+    safeSource.course_end ||
+    safeSource.batch_end_date ||
+    safeSource.batchEndDate ||
+    safeUser.courseEnd ||
     null;
 
   let endDt = null;
@@ -245,7 +247,7 @@ export const calculateScheduleValidity = (studentData, source = {}, user = {}) =
   } else {
     // If dates unavailable, check explicit daysLeft from source
     const rawDays =
-      source.daysLeft ?? source.days_left ?? user?.daysLeft ?? user?.days_left;
+      safeSource.daysLeft ?? safeSource.days_left ?? safeUser.daysLeft ?? safeUser.days_left;
     if (rawDays !== undefined && rawDays !== null) {
       const p = parseInt(rawDays, 10);
       if (!isNaN(p)) {

@@ -230,7 +230,7 @@ export const SchedulePage = () => {
                   dotColor: "bg-amber-500",
                 },
                 {
-                  value: `${accessStatus.videoDaysLeft}d Active`,
+                  value: `${accessStatus?.videoDaysLeft ?? 0}d Active`,
                   label: "Video Lectures",
                   dotColor: "bg-blue-600",
                 },
@@ -298,13 +298,13 @@ export const SchedulePage = () => {
           <div className="max-w-md mx-auto space-y-2">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 text-xs font-semibold border border-amber-200/90 dark:border-amber-800/60">
               <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-              <span>Course Schedule Completed • {accessStatus.courseDuration}</span>
+              <span>Course Schedule Completed • {accessStatus?.courseDuration || "Program"}</span>
             </div>
             <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
               Batch Timetable & Modules Concluded
             </h3>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-              Your live batch timetable and scheduled lecture period has completed for this course. In accordance with Operating Media LMS policy, your recorded video lectures remain active and accessible for 365 days from your admission date ({accessStatus.videoDaysLeft} days remaining).
+              Your live batch timetable and scheduled lecture period has completed for this course. In accordance with Operating Media LMS policy, your recorded video lectures remain active and accessible for 365 days from your admission date ({accessStatus?.videoDaysLeft ?? 0} days remaining).
             </p>
           </div>
 
