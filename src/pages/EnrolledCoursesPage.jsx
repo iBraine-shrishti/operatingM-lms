@@ -109,6 +109,17 @@ export const EnrolledCoursesPage = () => {
     );
   }, [isAdmin, isExpired, accessStatus.daysLeft, allPublishedCourses, permittedCourseIds]);
 
+  // Keep sidebar liveCoursesCount synced in real time
+  useEffect(() => {
+    if (Array.isArray(enrolledCourses)) {
+      window.dispatchEvent(
+        new CustomEvent("om_lms_courses_updated", {
+          detail: enrolledCourses.length,
+        }),
+      );
+    }
+  }, [enrolledCourses]);
+
   // Real course metrics computed directly from real video units
   const courseMetricsMap = useMemo(() => {
     const map = {};

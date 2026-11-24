@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { lmsService, CRM_BACKEND_API } from "../../services/lmsService";
 import { crmService } from "../../services/crmService";
+import { checkStudentCourseAccess } from "../profile/profileUtils";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
@@ -39,7 +40,7 @@ import {
 export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isStudent, logout, enrolledCoursesCount, assignmentsCount, crmProfile, crmAttendance, crmBatch, currentUser } = useAuth();
+  const { isStudent, logout, enrolledCoursesCount, assignmentsCount, crmProfile, crmAttendance, crmBatch, currentUser, assignedCourseIds } = useAuth();
   const { isDark } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -62,6 +63,29 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
   }, [collapsed]);
 
   const isExpanded = !collapsed || isHovered;
+
+  const [liveCoursesCount, setLiveCoursesCount] = useState(() => {
+    try {
+      const studentId = crmService.getSelectedStudentId() || crmProfile?.id || currentUser?.crmAdmissionId;
+      if (studentId) {
+        const raw = localStorage.getItem(`om_lms_v12_perms_${studentId}`);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            const granted = parsed.filter((p) => p.hasAccess);
+            if (granted.length > 0) return granted.length;
+          }
+        }
+      }
+      if (typeof enrolledCoursesCount === "number" && enrolledCoursesCount > 0) {
+        return enrolledCoursesCount;
+      }
+      if (Array.isArray(assignedCourseIds) && assignedCourseIds.length > 0) {
+        return assignedCourseIds.length;
+      }
+    } catch {}
+    return enrolledCoursesCount ?? 0;
+  });
 
   const [liveAssignmentsCount, setLiveAssignmentsCount] = useState(assignmentsCount ?? 0);
   const [liveQuizzesCount, setLiveQuizzesCount] = useState(0);
@@ -114,6 +138,68 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
       return 0;
     }
   });
+
+  useEffect(() => {
+    if (typeof enrolledCoursesCount === "number" && enrolledCoursesCount > 0) {
+      setLiveCoursesCount(enrolledCoursesCount);
+    } else if (Array.isArray(assignedCourseIds) && assignedCourseIds.length > 0) {
+      setLiveCoursesCount(assignedCourseIds.length);
+    }
+  }, [enrolledCoursesCount, assignedCourseIds]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const studentId = crmService.getSelectedStudentId() || crmProfile?.id || currentUser?.crmAdmissionId;
+
+    if (studentId) {
+      lmsService
+        .fetchStudentCoursePermissions(studentId)
+        .then((perms) => {
+          if (isMounted && Array.isArray(perms)) {
+            const accessStatus = checkStudentCourseAccess(crmProfile, currentUser);
+            if (accessStatus.isVideoExpired || accessStatus.videoDaysLeft <= 0) {
+              setLiveCoursesCount(0);
+            } else {
+              const granted = perms.filter((p) => p.hasAccess);
+              setLiveCoursesCount(granted.length);
+            }
+          }
+        })
+        .catch(() => {});
+    }
+
+    const handleCoursesUpdated = (e) => {
+      if (isMounted) {
+        if (typeof e.detail === "number") {
+          setLiveCoursesCount(e.detail);
+        } else if (Array.isArray(e.detail)) {
+          setLiveCoursesCount(e.detail.length);
+        }
+      }
+    };
+
+    window.addEventListener("om_lms_courses_updated", handleCoursesUpdated);
+    window.addEventListener("storage", () => {
+      if (!isMounted) return;
+      try {
+        const sid = crmService.getSelectedStudentId() || crmProfile?.id || currentUser?.crmAdmissionId;
+        if (sid) {
+          const raw = localStorage.getItem(`om_lms_v12_perms_${sid}`);
+          if (raw) {
+            const p = JSON.parse(raw);
+            if (Array.isArray(p)) {
+              setLiveCoursesCount(p.filter((x) => x.hasAccess).length);
+            }
+          }
+        }
+      } catch {}
+    });
+
+    return () => {
+      isMounted = false;
+      window.removeEventListener("om_lms_courses_updated", handleCoursesUpdated);
+    };
+  }, [crmProfile?.id, currentUser?.crmAdmissionId]);
 
   useEffect(() => {
     if (typeof assignmentsCount === "number") {
@@ -328,7 +414,7 @@ export const Sidebar = ({ collapsed, onToggleCollapse, onCloseMobile }) => {
           name: "Enrolled Courses",
           path: "/enrolled-courses",
           icon: GraduationCap,
-          badge: String(enrolledCoursesCount ?? 0),
+          badge: String(liveCoursesCount ?? enrolledCoursesCount ?? 0),
           color: "text-sky-500 dark:text-sky-400",
         },
         {

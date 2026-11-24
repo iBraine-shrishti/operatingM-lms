@@ -182,7 +182,22 @@ export const AuthProvider = ({ children }) => {
     const [crmBatch, setCrmBatch] = useState(null);
     const [crmCertificates, setCrmCertificates] = useState([]);
     const [availableStudents, setAvailableStudents] = useState([]);
-    const [assignedCourseIds, setAssignedCourseIds] = useState([]);
+    const [assignedCourseIds, setAssignedCourseIds] = useState(() => {
+        try {
+            const sid = crmService.getSelectedStudentId();
+            if (sid) {
+                const raw = localStorage.getItem(`om_lms_v12_perms_${sid}`);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) {
+                        const granted = parsed.filter(p => p.hasAccess).map(p => p.courseId);
+                        if (granted.length > 0) return granted;
+                    }
+                }
+            }
+        } catch {}
+        return [];
+    });
     const [studentCoursesAccess, setStudentCoursesAccess] = useState([]);
     const [assignmentsCount, setAssignmentsCount] = useState(0);
     const [crmLoading, setCrmLoading] = useState(true);
@@ -504,14 +519,13 @@ export const AuthProvider = ({ children }) => {
             availableStudents,
             assignedCourseIds,
             studentCoursesAccess,
-            enrolledCoursesCount: Boolean(
-                (crmProfile?.daysLeft !== undefined && crmProfile?.daysLeft !== null && parseInt(crmProfile.daysLeft, 10) <= 0) ||
-                (crmProfile?.days_left !== undefined && crmProfile?.days_left !== null && parseInt(crmProfile.days_left, 10) <= 0) ||
-                (currentUser?.daysLeft !== undefined && currentUser?.daysLeft !== null && parseInt(currentUser.daysLeft, 10) <= 0) ||
-                checkStudentCourseAccess(crmProfile, currentUser).isExpired
-            )
+            enrolledCoursesCount: checkStudentCourseAccess(crmProfile, currentUser).isVideoExpired
                 ? 0
-                : assignedCourseIds.length,
+                : (assignedCourseIds.length > 0
+                    ? assignedCourseIds.length
+                    : (studentCoursesAccess.filter(c => c.hasAccess !== false).length > 0
+                        ? studentCoursesAccess.filter(c => c.hasAccess !== false).length
+                        : (studentUser?.enrolledCoursesCount || 0))),
             assignmentsCount,
             crmLoading,
             switchCrmStudent,
